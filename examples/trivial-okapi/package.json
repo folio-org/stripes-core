@@ -1,0 +1,18 @@
+{
+  "name": "@folio-sample-modules/trivial-okapi",
+  "version": "0.0.3-test",
+  "description": "A trivial use of stripes-connect with Okapi",
+  "repository": "folio-org/stripes-experiments",
+  "publishConfig" : {
+    "registry" : "https://repository.folio.org/repository/npm-folio/"
+  },
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=6.0.0"
+  },
+  "stripes": {
+    "type": "app",
+    "displayName": "Trivial Okapi",
+    "route":"/trivial-okapi"
+  }
+}

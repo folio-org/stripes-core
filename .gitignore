@@ -1,0 +1,9 @@
+.DS_Store
+*.swp
+*.swo
+node_modules
+npm-debug.log
+static
+README.html
+OVERVIEW.html
+stripes-modules.js

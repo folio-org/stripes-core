@@ -1,0 +1,19 @@
+{
+  "name": "@folio-sample-modules/trivial",
+  "version": "0.0.2-test",
+  "description": "A trivial Stripes module.",
+  "repository": "folio-org/stripes-experiments",
+  "publishConfig" : {
+    "registry" : "https://repository.folio.org/repository/npm-folio/"
+  },
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=6.0.0"
+  },
+  "main": "About.js",
+  "stripes": {
+    "type": "app",
+    "displayName": "Trivial",
+    "route":"/trivial"
+  }
+}
