@@ -23,12 +23,11 @@ module.exports = {
       path.join(__dirname, 'node_modules/@folio-sample-modules')
     ]
   },
-  sassLoader: {
-    sourceMap: true,
-    indentedSyntax: true,
-    outputStyle: 'expanded',
-    includePaths: [
-      'node_modules/bourbon/app/assets/stylesheets'
+  postcss(webpack) {
+    return [
+      require('postcss-import')({addDependencyTo: webpack}),
+      require('postcss-url'),
+      require('postcss-cssnext')
     ]
   },
   module: {
@@ -60,8 +59,8 @@ module.exports = {
    	loader:'file-loader?name=img/[path][name].[ext]'
       },
       {
-        test: /\.sass$/,
-        loader: ExtractTextPlugin.extract("style-loader", "css-loader?sourceMap!sass-loader")
+        test: /\.css$/,
+        loader: 'style!css?modules&localIdentName=[local]---[hash:base64:5]!postcss'
       }
     ]
   }

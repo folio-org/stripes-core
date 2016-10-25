@@ -4,8 +4,9 @@ import { render } from 'react-dom';
 import configureStore from './configureStore';
 import Root from './Root';
 
-// Stylesheets are stored in webpack/global.css via extract-text-webpack-plugin
-import '../styles/global.sass';
+// global styles need an explicit loader to be exempt from the 
+// local-scoping of the default loader configuration
+import '!style!css!postcss!../styles/global.css';
 
 const store = configureStore();
 
