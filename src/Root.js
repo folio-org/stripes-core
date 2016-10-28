@@ -7,6 +7,11 @@ import Match from 'react-router/Match';
 
 import { Front } from './Front';
 import { Menu } from './Menu';
+
+import MainContainer from './components/MainContainer';
+import MainNav from './components/MainNav';
+import ModuleContainer from './components/ModuleContainer';
+
 import moduleRoutes from './moduleRoutes';
 import initialReducers from './initialReducers';
 
@@ -31,8 +36,10 @@ export default class Root extends Component {
     const { store } = this.props;
     return (
       <Provider store={store}><Router>
+        <MainContainer> 
+        <MainNav />
+        <ModuleContainer>
         <Grid>
-          <Row><Menu /></Row>
           <Row>
             <Col id="content">
               <Match pattern="/" exactly component={Front} key="root" />
@@ -40,6 +47,8 @@ export default class Root extends Component {
             </Col>
           </Row>
         </Grid>
+        </ModuleContainer>
+        </MainContainer> 
       </Router></Provider>
     );
   }

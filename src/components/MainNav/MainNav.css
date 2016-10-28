@@ -1,0 +1,16 @@
+@import '../variables.css';
+
+.navRoot{
+    display: flex;
+    justify-content: space-between;
+    align-content: stretch;
+    width: 100%;
+    border-bottom: 2px solid #ccc;
+}
+
+@media (--large){
+  .linkLabel{
+    display: none;
+  }
+}
+

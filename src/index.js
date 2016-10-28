@@ -6,7 +6,7 @@ import Root from './Root';
 
 // global styles need an explicit loader to be exempt from the 
 // local-scoping of the default loader configuration
-import '!style!css!postcss!../styles/global.css';
+//import '!style!css!postcss!../styles/global.css';
 
 const store = configureStore();
 

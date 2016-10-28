@@ -1,0 +1,32 @@
+@import 'https://fonts.googleapis.com/css?family=Open+Sans:400,700&subset=cyrillic,cyrillic-ext,greek,greek-ext,latin-ext,vietnamese';
+
+*{
+    box-sizing: border-box;
+}
+
+body, html{
+    height: 100%;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 14px;
+}
+
+#root{
+    height: 100%;
+}
+
+hr{border: 1px solid #cdcdcd;
+   border-width: 0 0 1px 0;
+}
+
+.fullWidth{width: 100% !important;}
+.marginTop0{ margin-top: 0 !important}
+.marginBottom0{margin-bottom : 0 !important;}
+.marginBottomHalf{margin-bottom: .5rem !important;}
+.marginTopHalf{margin-top: .5rem !important;}
+.floatEnd{float: right !important;}
+
+body[dir="rtl"] .floatEnd, html[dir="rtl"] .floatEnd{
+
+    float: left !important;
+
+}

@@ -1,0 +1,18 @@
+@import '../../variables.css';
+
+.navGroup{
+    list-style: none;
+    padding-left: 0;
+    display: flex;
+    align-items: center;
+    align-content: space-between;
+    margin: 0 5px;
+}
+
+@media (--mediumDown){
+  .navGroup{
+    &.hideMed{
+      display:none;
+    }
+  }
+}

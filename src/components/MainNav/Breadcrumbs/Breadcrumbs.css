@@ -1,0 +1,19 @@
+.navBreadcrumbs{
+    list-style: none;
+    display: flex;
+    align-content: flex-start;
+    align-items: stretch;
+    padding: 0 6px;
+    
+    & li{
+        & a{
+            font-weight: bold;
+            text-decoration: none;
+            height: 100%;
+            color: #444;
+            display: block;
+            padding: 0 6px;
+        }
+    }
+}
+
