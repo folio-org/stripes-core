@@ -38,15 +38,10 @@ export default class Root extends Component {
       <Provider store={store}><Router>
         <MainContainer> 
         <MainNav />
-        <ModuleContainer>
-        <Grid>
-          <Row>
-            <Col id="content">
-              <Match pattern="/" exactly component={Front} key="root" />
+        <ModuleContainer id="content">
+        <Match pattern="/" exactly component={Front} key="root" />
               {moduleRoutes}
-            </Col>
-          </Row>
-        </Grid>
+        
         </ModuleContainer>
         </MainContainer> 
       </Router></Provider>
