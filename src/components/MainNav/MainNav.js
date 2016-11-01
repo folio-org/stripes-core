@@ -21,7 +21,7 @@ class MainNav extends React.Component{
     const menuLinks = modules.app.map(entry =>
       <Link to={entry.route} key={entry.route}>{
         ({href, onClick}) =>
-          <NavButton onClick={onClick} href={href}>
+          <NavButton onClick={onClick} href={href} title={entry.displayName}>
             <img src="http://placehold.it/22x22/00ff00/ffffff"/>
             <span className={css.linkLabel}>
               {entry.displayName}
