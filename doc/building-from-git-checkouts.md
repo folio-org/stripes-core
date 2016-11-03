@@ -1,52 +1,68 @@
-## For Stripes developers
+# For Stripes developers
 
 If you are working not just on Stripes _modules_ but on Stripes
 itself, you will want to use your own git checkouts of the various
 Stripes packages (`stripes-connect`, etc.) To do this, you basically
 have to trick NPM into pulling in these packages from your checkout
 instead of from the package repository. You do this by subverting the
-`@folio` scope as follows.
+`@folio` scope as described below.
 
-First, remove any NPM configuration you may already have which tell where
+We assume here that you have the
+`stripes-core`,
+`stripes-connect`,
+`stripes-loader`
+and
+`stripes-experiments`
+git modules all checked out next to each other.
+
+First, remove any NPM configuration you may already have which tells where
 to download the production versions of these packages from:
 
 	$ npm config delete @folio:registry
 	$ npm config delete @folio-sample-modules:registry
 
 Now pre-populate the Stripes core code's `node_modules` area with symbolic
-links to the code you want to work on:
+links to the code you want to work on. Starting in the `stripes-core`
+checkout:
 
 	$ mkdir -p node_modules/@folio
 	$ cd node_modules/@folio
 	$ ln -s ../../../stripes-connect
 	$ cd stripes-connect
 	$ npm install
-	$ cd ../../..
-
-We will also need to make `stripes-loader` available in a similar way:
-
-	$ cd node_modules/@folio
-	$ ln -s ../../../../stripes-loader
+	$ cd ..
+	$ ln -s ../../../stripes-loader
 	$ cd stripes-loader
 	$ npm install
 	$ npm run build
-	$ cd ../../..
 
-Next, we wire the trivial module into place: so that `stripes-loader`
-(not `stripes-core`) can see it:
+Next, we wire the trivial module into place. Two places, actually:
+`stripes-loader` and `stripes-core` both need to be able to see
+it. First we'll do `stripes-core` since we're already here:
 
-	$ cd ../../stripes-loader/node_modules
+	$ cd ../..
 	$ mkdir @folio-sample-modules
 	$ cd @folio-sample-modules
-	$ ln -s ../../../stripes-experiments/trivial
-	$ cd ../../../stripes-experiments/stripes-core
+	$ ln -s ../../examples/trivial
 
-You don't need to build the modules, as they get pulled into the
+Now `stripes-loader`. To avoid confusion about what links where, we'll
+use the natural home of the loader checkout rather than the link we
+made to it.
+
+	$ cd ../../../stripes-loader/node_modules
+	$ mkdir @folio-sample-modules
+	$ cd @folio-sample-modules
+	$ ln -s ../../../stripes-core/examples/trivial
+
+You don't need to build the trivial modules, as it gets pulled into the
 Stripes UI by WebPack when it is built. So now you are ready to build
-and run the service that provides the UI:
+and run the stripes core service that provides the UI:
 
+	$ cd ../../../stripes-core
 	$ npm install
 	$ npm run start
+
+## Troubleshooting (shouldn't be needed any more)
 
 This may fail with:
 
@@ -54,7 +70,7 @@ This may fail with:
 	Module parse failed: /home/mike/git/work/stripes-experiments/trivial/About.js Unexpected token (4:18)
 	You may need an appropriate loader to handle this file type.
 
-This is because Babel is not translating the trivial from JS6. The
+This is because Babel is not translating the trivial module from JS6. The
 rules that tell WebPack which files to transpile are found in
 `webpack.config.base.js`, These rules do say to transpile files
 within the `@folio` area. Unfortunately, WebPack resolves symbolic

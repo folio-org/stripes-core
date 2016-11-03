@@ -8,14 +8,14 @@ try {
   stripesModules = require('./stripes-modules');
 } catch (err) {
   if (err.message.match(/Cannot find module/)) {
-    console.log("can't find additional stripes-modules; skipping");
+    console.log("can't find additional 'stripes-modules.js'. That's fine; skipping");
   } else {
     throw err;
   }
 }
 
 if (stripesModules) {
-  console.log("additional stripes: modules = " + JSON.stringify(stripesModules));
+  console.log("additional stripes modules = " + JSON.stringify(stripesModules));
   Object.assign(config.stripesLoader.modules, stripesModules);
 }
 

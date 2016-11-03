@@ -3,7 +3,7 @@ import { Navbar, NavbarBrand, Nav, NavItem } from 'react-bootstrap';
 import Link from 'react-router/Link';
 import { modules } from 'stripes-loader!';
 
-if (!Array.isArray(modules.app) || modules.app.length < 1) {
+if (!modules || !modules.app || !Array.isArray(modules.app) || modules.app.length < 1) {
   throw new Error('At least one module of type "app" must be enabled.');
 }
 
