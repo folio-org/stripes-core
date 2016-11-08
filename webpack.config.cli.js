@@ -11,7 +11,7 @@ module.exports = {
     publicPath: '/static/'
   },
   stripesLoader: {
-    okapi: { 'url':'http://localhost:9130' },
+    okapi: { 'url':'http://localhost:9130', 'tenant':'diku' },
     modules: {
       '@folio-sample-modules/trivial': {}
       // You can also place additional modules that you want to load
