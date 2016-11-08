@@ -15,8 +15,8 @@ This is a single-page web application that provides a platform for React compone
 * Quick start guide: read on below
 * [Overview of the Stripes architecture](doc/overview.md)
 * [Running Stripes from git checkouts](doc/building-from-git-checkouts.md)
-* [Testing the Okapi Console and circulation module](../okapi-console/testing-the-circulation-module.md)
-* [The stripes-connect API](../stripes-connect/api.md)
+* [Testing the Okapi Console and circulation module](https://github.com/folio-org/stripes-experiments/blob/master/okapi-console/testing-the-circulation-module.md)
+* [The stripes-connect API](https://github.com/folio-org/stripes-connect/blob/master/api.md)
 * [A component example: the **PatronEdit** component](doc/component-example.md)
 * [A component hierarchy example: the "Patrons" module](doc/component-hierarchy.md)
 
