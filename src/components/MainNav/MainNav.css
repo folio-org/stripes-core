@@ -10,7 +10,7 @@
 
 @media (--large){
   .linkLabel{
-    display: none;
+    /*display: none;*/
   }
 }
 
