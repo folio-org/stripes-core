@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { combineReducers } from 'redux';
 import { Provider } from 'react-redux';
 import { Grid, Row, Col } from 'react-bootstrap';
-import Router from 'react-router/HashRouter';
+import Router from 'react-router/BrowserRouter';
 import Match from 'react-router/Match';
 
 import { Front } from './Front';
