@@ -3,22 +3,6 @@ var express = require('express');
 var webpack = require('webpack');
 var config = require('./webpack.config.cli.dev');
 
-let stripesModules;
-try {
-  stripesModules = require('./stripes-modules');
-} catch (err) {
-  if (err.message.match(/Cannot find module/)) {
-    console.log("can't find additional 'stripes-modules.js'. That's fine; skipping");
-  } else {
-    throw err;
-  }
-}
-
-if (stripesModules) {
-  console.log("additional stripes modules = " + JSON.stringify(stripesModules));
-  Object.assign(config.stripesLoader.modules, stripesModules);
-}
-
 var app = express();
 var compiler = webpack(config);
 

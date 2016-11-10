@@ -37,6 +37,7 @@ npm config set @folio:registry https://repository.folio.org/repository/npm-folio
 npm install
 npm config set @folio-sample-modules:registry https://repository.folio.org/repository/npm-folio/
 npm install @folio-sample-modules/trivial
+npm start
 ```
 
 ### Some details
@@ -67,7 +68,17 @@ The default configuration references a module, "trivial", which demonstrates a s
 
 Another demo, "trivial-okapi", shows the most basic communication with the [Okapi](https://github.com/folio-org/okapi) API gateway and will require a connection to it in order to run. It lists tenants and allows their deletion. This simple exercise only relies on Okapi rather than a collection of services so it's relatively easy to set up locally without needing Docker.
 
-After following build instructions in the [Okapi repository](https://github.com/folio-org/okapi) to get the service running, you can install the demo as below and activate it by editing `webpack.config.cli.js` before starting the dev server or building a bundle.
+After following build instructions in the [Okapi repository](https://github.com/folio-org/okapi) to get the service running, you can install the demo as below and activate it by editing `stripes.config.js` before starting the dev server or building a bundle. If you have yet to create this file, copy `stripes.config.js.example` as a base.
 
 `npm install @folio-sample-modules/trivial-okapi`
 
+## Including a module under development
+
+Both `stripes-loader` and `stripes-core` need to be able to resolve a `require()` of the string you use to reference your module when including it in `stripes.config.js` which governs which modules webpack bundles. One convenient approach is to place a symbolic link to it in `node_modules/@folio` or `node_modules/@folio-sample-modules` as these are already included in Webpack's search path.
+
+For example, to include `some-module` from `/devstuff/some-module`: 
+
+```
+cd stripes-core/node_modules/@folio-sample-modules
+ln -s /devstuff/some-module .
+```

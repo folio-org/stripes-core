@@ -1,5 +1,0 @@
-module.exports = {
-  '@folio-sample-modules/trivial-okapi': {},
-  '@folio-sample-modules/okapi-console': {},
-  '@folio-sample-modules/patrons': {}
-};
