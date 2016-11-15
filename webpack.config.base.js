@@ -46,7 +46,7 @@ module.exports = {
         // scripts to transpile into ES5, we include them here along with any
         // namespace prefixed @folio which presumably will contain Stripes
         // modules.
-        include:  [path.join(__dirname, 'src'), /@folio/, path.join(__dirname, '../dev'), /\/stripes-(?!.*\/node_modules\/)/, /\/folio-sample-modules/]
+        include:  [path.join(__dirname, 'src'), /@folio/, path.join(__dirname, '../dev'), /\/stripes-(?!.*\/node_modules\/)/, /\/@folio-sample-modules/]
                                                                                           
         //exclude: [/node_modules/]
       },
