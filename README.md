@@ -12,7 +12,7 @@ This is a single-page web application that provides a platform for React compone
 
 ## Documentation roadmap
 
-* Quick start guide: read on below
+* Quick start guide: [read on below](#quick-start)
 * [Overview of the Stripes architecture](doc/overview.md)
 * [Running Stripes from git checkouts](doc/building-from-git-checkouts.md)
 * [Testing the Okapi Console and circulation module](https://github.com/folio-org/ui-okapi-console/blob/master/testing-the-circulation-module.md) **[NOTE: this is badly outdated and will be replaced]**
@@ -21,7 +21,7 @@ This is a single-page web application that provides a platform for React compone
 * [A component hierarchy example: the "Patrons" module](doc/component-hierarchy.md)
 
 
-## Quick start
+## <a name="quick-start">Quick start</a>
 
 To run Stripes, you'll need to have [Node.js](https://nodejs.org/) 6.x installed.
 ```
