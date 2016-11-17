@@ -24,8 +24,7 @@ We assume here that you have the
 and
 `ui-okapi-console`
 git modules all checked out next to each other. (At present, the
-Experiments module still contains the Okapi Console and the Patrons
-module.)
+Experiments module still contains the Users module.)
 
 ## Avoiding uploaded NPM packages
 
@@ -94,16 +93,10 @@ three-stage process. You must instruct the Stripes Loader to include
 the module, and make it available to both Stripes Core and Stripes
 Loader.
 
-First, configure the loader. You can do this by adding the required
-module to the `stripesLoader.modules` object in
-`webpack.config.cli.js`. Or if you prefer to avoid making uncommitted
-local changes to version-controlled files, you can create a separate
-`stripes-modules.js` (see `stripes-modules.js.example` for an example)
-and add the module there. For example, that file might contain:
-
-	module.exports = {
-	  '@folio-sample-modules/trivial-okapi': {}
-	};
+First, configure the loader. You can do this by listing the required
+modules in `stripes.config.js`, along with other configuration
+information such as the Okapi URL. See `stripes.config.js.example` for
+an example.
 
 Second, make the module available to `stripes-core`:
 
@@ -111,7 +104,7 @@ Second, make the module available to `stripes-core`:
 	// One or more of the following
 	$ ln -s ../../examples/trivial-okapi
 	$ ln -s ../../../ui-okapi-console
-	$ ln -s ../../../stripes-experiments/patrons
+	$ ln -s ../../../stripes-experiments/users
 	$ cd ../..
 
 Third, make the module available to `stripes-loader`:
@@ -120,7 +113,7 @@ Third, make the module available to `stripes-loader`:
 	// One or more of the following
 	$ ln -s ../../../stripes-core/examples/trivial-okapi
 	$ ln -s ../../../ui-okapi-console
-	$ ln -s ../../../stripes-experiments/patrons
+	$ ln -s ../../../stripes-experiments/users
 	$ cd ../../../stripes-core
 
 Now you should be able to restart the Stripes service and see the
