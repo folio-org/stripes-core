@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { connect } from 'stripes-connect';
 import { Link } from 'react-router';
 
 class TenantList extends Component {
@@ -39,4 +38,4 @@ class TenantList extends Component {
     );
   }
 }
-export default connect(TenantList, 'trivial-okapi');
+export default TenantList;

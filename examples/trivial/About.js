@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
-import { connect } from 'stripes-connect';
 import css from './trivial.css';
 
 class About extends Component {
-  static manifest = { greetingParams: {} };
   componentWillMount() {
     this.props.mutator.greetingParams.replace({ greeting: 'Hi', name: 'Kurt' });
   }
@@ -32,4 +30,7 @@ class About extends Component {
       </div>
   }
 }
-export default connect(About, 'trivial');
+
+About.manifest = { greetingParams: {} };
+
+export default About;

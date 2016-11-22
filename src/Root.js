@@ -1,16 +1,13 @@
 import React, { Component, PropTypes } from 'react';
 import { combineReducers } from 'redux';
 import { Provider } from 'react-redux';
-import { Grid, Row, Col } from 'react-bootstrap';
 import Router from 'react-router/BrowserRouter';
 import Match from 'react-router/Match';
-
-import { Front } from './Front';
-import { Menu } from './Menu';
 
 import MainContainer from './components/MainContainer';
 import MainNav from './components/MainNav';
 import ModuleContainer from './components/ModuleContainer';
+import Front from './components/Front';
 
 import moduleRoutes from './moduleRoutes';
 import initialReducers from './initialReducers';
