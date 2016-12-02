@@ -8,7 +8,7 @@ if (!Array.isArray(modules.app) && modules.length < 0) {
 }
 
 export default modules.app.map((module) => {
-  const connect = connectFor(module);
+  const connect = connectFor(module.module);
   const Current = connect(module.getModule());
   return (
     <Match
