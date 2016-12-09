@@ -15,7 +15,7 @@
     "start": "node devServer.js",
     "test": "mocha --compilers js:babel-core/register",
     "test-watch": "mocha --compilers js:babel-core/register -w --watch-extensions json",
-    "lint": "eslint src"
+    "lint": "eslint src || true"
   },
   "engines": {
     "node": ">=6.0.0"
