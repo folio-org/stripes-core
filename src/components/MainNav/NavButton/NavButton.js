@@ -1,17 +1,46 @@
 import React from 'react';
-import style from './NavButton.css';
+import css from './NavButton.css';
 
-function NavButton(props){
-    if(!props.href){
-      return(
-        <button type="button" className={style.navButton} title={props.title} onClick={props.onClick}>{props.children}</button>
-      );
-    }else{
-      return(
-        <a href={props.href} title={props.title} className={style.navButton} onClick={props.onClick}>{props.children}</a>
-      );
-    }
+const propTypes = {
+  href: React.PropTypes.string,
+  title: React.PropTypes.string,
+  onClick: React.PropTypes.func,
+  children: React.PropTypes.node.isRequired,
+  md: React.PropTypes.string, //temporary as we work out the responsiveness of the header.
+};
+
+function NavButton(props) {
+  function getClass() {
+    const base = css.navButton;
+    const hide = props.md === 'hide' ? css.hideMed : null;
+    return `${base} ${hide}`;
+  }
+
+  if (props.href) {
+    return (
+      <a
+        href={props.href}
+        title={props.title}
+        className={getClass()}
+        onClick={props.onClick}
+      >
+        {props.children}
+      </a>
+    );
+  }
+
+  return (
+    <button
+      type="button"
+      className={getClass()}
+      title={props.title}
+      onClick={props.onClick}
+    >
+      {props.children}
+    </button>
+  );
 }
 
-export default NavButton;
+NavButton.propTypes = propTypes;
 
+export default NavButton;

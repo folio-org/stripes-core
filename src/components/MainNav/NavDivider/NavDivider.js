@@ -1,9 +1,21 @@
 import React from 'react';
 import css from './NavDivider.css';
 
-function NavDivider(props){
-  return <div className={css.navDivider}></div>;
+const propTypes = {
+  md: React.PropTypes.string, //temporary as we work out the responsiveness of the header.
+};
+
+function NavDivider(props) {
+  function getClass() {
+    const base = css.navDivider;
+    const hide = props.md === 'hide' ? css.hideMed : null;
+    return `${base} ${hide}`;
+  }
+
+  return <div className={getClass()} />;
 }
 
-export default NavDivider
+NavDivider.propTypes = propTypes;
+
+export default NavDivider;
 

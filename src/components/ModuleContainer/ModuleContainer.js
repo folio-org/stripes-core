@@ -1,12 +1,16 @@
-import React from 'react'
-import style from './ModuleContainer.css'
+import React from 'react';
+import style from './ModuleContainer.css';
 
-function ModuleContainer(props){
-    return(
-            <div className={style.moduleContainer}>{props.children}</div>
-    )
+const propTypes = {
+  children: React.PropTypes.node.isRequired,
+};
+
+function ModuleContainer(props) {
+  return (
+    <div className={style.moduleContainer}>{props.children}</div>
+  );
 }
 
-export default ModuleContainer
+ModuleContainer.propTypes = propTypes;
 
-
+export default ModuleContainer;

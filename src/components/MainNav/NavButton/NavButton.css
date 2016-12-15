@@ -29,5 +29,11 @@ a.navButton{
   }
 }
 
+@media(--mediumDown){
+  .navButton.hideMed, a.navButton.hideMed{
+    display: none;
+  }
+}
+
 
 

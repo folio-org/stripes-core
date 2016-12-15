@@ -1,3 +1,2 @@
-export {default} from './NavGroup';
-
+export { default } from './NavGroup';
 

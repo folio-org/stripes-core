@@ -1,3 +1,1 @@
-export {default} from './NavDivider';
-
-
+export { default } from './NavDivider';

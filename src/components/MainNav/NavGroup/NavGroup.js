@@ -1,31 +1,26 @@
 import React from 'react';
 import css from './NavGroup.css';
 
-class NavGroup extends React.Component{
-  constructor(props){
-    super(props);
+const propTypes = {
+  children: React.PropTypes.node.isRequired,
+};
+
+function NavGroup(props) {
+  function getClass() {
+    const base = css.navGroup;
+    const hide = props.md === 'hide' ? css.hideMed : null;
+    return `${base} ${hide}`;
   }
-  
-  getGroupStyle(){
-    let groupStyle = css.navGroup;
-    groupStyle += this.props.md === 'hide'? ' ' + css.hideMed : '';
-    return groupStyle;
-  }
-  
-  render(){
-    return(
-      <ul className={this.getGroupStyle()}>
-        {
-          React.Children.map(this.props.children, function(child, i){
-            return <li key={"navItem-" + i}>{child}</li>;
-          }, this)
-        }
-      </ul>
-    )
-  }
-  
+
+  return (
+    <ul className={getClass()}>
+      {
+        React.Children.map(props.children, (child, i) => <li key={`navItem-${i}`}>{child}</li>)
+      }
+    </ul>
+  );
 }
 
-export default NavGroup
+NavGroup.propTypes = propTypes;
 
-
+export default NavGroup;

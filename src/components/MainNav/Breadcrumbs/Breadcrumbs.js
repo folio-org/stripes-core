@@ -1,27 +1,27 @@
-import React from 'react'
-import style from './Breadcrumbs.css'
+import React from 'react';
+import css from './Breadcrumbs.css';
 
-class Breadcrumbs extends React.Component{
-  constructor(props){
-      super(props);
-  }
+const propTypes = {
+  links: React.PropTypes.array,
+};
 
-  render(){
-    let links = [];
-    this.props.links.map(function(link, i){
-      links.push(<li key={"breadcrumb_" + i}><a href={link.path}>{link.label}</a></li>);
-      if(i != this.props.links.length-1){
-          links.push(<li key={"divider"+i}>{">"}</li>)
-      }
-    }, this);
-    return(   
-      <ul className={style.navBreadcrumbs}>
-          {links}
-      </ul>
-    );
-  }
+function Breadcrumbs(props) {
+  const links = props.links.map((link, i) => {
+    const linkElem = <li key={`breadcrumb_${i}`}><a href={link.path}>{link.label}</a></li>;
+    const dividerElem = <li key={`divider${i}`}>{'>'}</li>;
+    if (i !== props.links.length - 1) {
+      return (linkElem + dividerElem);
+    }
+    return linkElem;
+  });
+
+  return (
+    <ul className={css.navBreadcrumbs}>
+      {links}
+    </ul>
+  );
 }
 
+Breadcrumbs.propTypes = propTypes;
+
 export default Breadcrumbs;
-
-

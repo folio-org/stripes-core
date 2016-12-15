@@ -1,2 +1,1 @@
-export {default} from './MainNav'
-
+export { default } from './MainNav';

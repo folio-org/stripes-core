@@ -1,15 +1,19 @@
 import React from 'react';
-//import globalCssReset from '!style!css!normalize.css';
+// import globalCssReset from '!style!css!normalize.css';
 import globalSystemCss from '!style!css!./global.css';
 
 import css from './MainContainer.css';
 
-function MainContainer(props){
-    return(
-      <div className={css.root}>{props.children}</div>
-    );
+const propTypes = {
+  children: React.PropTypes.node.isRequired,
+};
+
+function MainContainer(props) {
+  return (
+    <div className={css.root}>{props.children}</div>
+  );
 }
 
+MainContainer.propTypes = propTypes;
+
 export default MainContainer;
-
-

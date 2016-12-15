@@ -1,4 +1,1 @@
-import ModuleContainer from './ModuleContainer'
-export default ModuleContainer
-
-
+export { default } from './ModuleContainer';
