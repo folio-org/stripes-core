@@ -1,6 +1,6 @@
 import React from 'react';
 // import globalCssReset from '!style!css!normalize.css';
-import globalSystemCss from '!style!css!./global.css';
+import globalSystemCss from '!style!css!./global.css'; // eslint-disable-line
 
 import css from './MainContainer.css';
 

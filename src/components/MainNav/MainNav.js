@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'react-router/Link';
-import { modules } from 'stripes-loader!';
+import { modules } from 'stripes-loader!'; // eslint-disable-line
 
 import css from './MainNav.css';
 import NavButton from './NavButton';

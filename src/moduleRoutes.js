@@ -1,7 +1,7 @@
 import React from 'react';
 import Match from 'react-router/Match';
 import { connectFor } from '@folio/stripes-connect';
-import { modules } from 'stripes-loader!';
+import { modules } from 'stripes-loader!'; // eslint-disable-line
 
 if (!Array.isArray(modules.app) && modules.length < 0) {
   throw new Error('At least one module of type "app" must be enabled.');

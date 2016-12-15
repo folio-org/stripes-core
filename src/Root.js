@@ -7,7 +7,7 @@ import Match from 'react-router/Match';
 import MainContainer from './components/MainContainer';
 import MainNav from './components/MainNav';
 import ModuleContainer from './components/ModuleContainer';
-import Front from './components/Front';
+import { Front } from './components/Front';
 
 import moduleRoutes from './moduleRoutes';
 import initialReducers from './initialReducers';
@@ -33,14 +33,13 @@ export default class Root extends Component {
     const { store } = this.props;
     return (
       <Provider store={store}><Router>
-        <MainContainer> 
-        <MainNav />
-        <ModuleContainer id="content">
-        <Match pattern="/" exactly component={Front} key="root" />
-              {moduleRoutes}
-        
-        </ModuleContainer>
-        </MainContainer> 
+        <MainContainer>
+          <MainNav />
+          <ModuleContainer id="content">
+            <Match pattern="/" exactly component={Front} key="root" />
+            {moduleRoutes}
+          </ModuleContainer>
+        </MainContainer>
       </Router></Provider>
     );
   }
@@ -52,5 +51,10 @@ Root.childContextTypes = {
 };
 
 Root.propTypes = {
-  store: PropTypes.object.isRequired,
+  store: PropTypes.shape({
+    subscribe: PropTypes.func.isRequired,
+    dispatch: PropTypes.func.isRequired,
+    getState: PropTypes.func.isRequired,
+    replaceReducer: PropTypes.func.isRequired,
+  }),
 };
