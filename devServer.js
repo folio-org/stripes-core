@@ -7,7 +7,7 @@ var app = express();
 var compiler = webpack(config);
 
 var port = process.env.STRIPES_PORT || 3000;
-var host = process.env.STRIPES_IFACE || 'localhost';
+var host = process.env.STRIPES_HOST || 'localhost';
 
 app.use(express.static(__dirname + '/public'));
 
