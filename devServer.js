@@ -7,7 +7,7 @@ var app = express();
 var compiler = webpack(config);
 
 var port = process.env.STRIPES_PORT || 3000;
-var address = process.env.STRIPES_IFACE || 'localhost';
+var host = process.env.STRIPES_IFACE || 'localhost';
 
 app.use(express.static(__dirname + '/public'));
 
@@ -22,11 +22,11 @@ app.get('*', function(req, res) {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-app.listen(port, address, function(err) {
+app.listen(port, host, function(err) {
   if (err) {
     console.log(err);
     return;
   }
 
-  console.log('Listening at http://' + address + ':' + port);
+  console.log('Listening at http://' + host + ':' + port);
 });
