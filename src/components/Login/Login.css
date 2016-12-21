@@ -1,0 +1,87 @@
+:root{
+  --radius: 6px;
+}
+
+.loginOverlay{
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #f2f2f2;
+  background: -moz-radial-gradient(center, ellipse cover,  #fff 0%, #ececec 100%);
+  background: radial-gradient(ellipse at center,  #fff 0%, #ececec 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fff', endColorstr='#ececec',GradientType=1 );
+}
+
+.loginContainer{
+  width: 40rem;
+  display: flex;
+  top: -6rem;
+  position: relative;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  & h1{
+    font-size:3.5rem;
+    margin: 1rem auto;
+  }
+  & form{
+    width: 100%;
+  }
+}
+
+.loginInput{
+  font-size: 1.5rem;
+  background-color: transparent;
+  border-width: 0;
+  padding: 2.3rem 1rem;
+  width: 100%;
+  height: 100%;
+  align-self: stretch;
+  transition: background-color .2s ease;
+  border-radius: var(--radius);
+  &:focus{
+    background-color: #fbfbfb;
+    -moz-box-shadow: 1px 11px 50px -18px rgba(0,0,0,0.75);
+    box-shadow: 1px 11px 50px -18px rgba(0,0,0,0.75);
+  }
+}
+
+.slabStack{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.slab{
+  width: 100%;
+  min-height: 6rem;
+  margin-top: .5rem;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  border-radius: var(--radius);
+}
+
+.majorSlab{
+  composes: slab;
+  background-color: #dcdcdc;
+}
+
+.minorSlab{
+  composes: slab;
+  background-color: #ebebeb;
+}
+
+.loginError{
+  composes: slab;
+  color: #900;
+}
