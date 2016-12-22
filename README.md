@@ -29,7 +29,7 @@ node --version
 v6.8.0
 ```
 
-### Very quick
+Then install the Stripes modules and run as follows:
 
 ```
 cd stripes-core
@@ -40,7 +40,7 @@ npm install @folio-sample-modules/trivial
 npm start
 ```
 
-### Some details
+## Some details
 
 Add the FOLIO NPM registry to your local NPM configuration:
 ```
@@ -53,21 +53,21 @@ npm install
 
 At this point you have what you need to run the system. Edit `stripes.config.js` to indicate which modules you want to include and the URL to the back end. Run `npm start` to bring up a development server at http://localhost:3000/ or `npm run build` to output a set of files which can then be deployed to a web server.
 
-### Demos
+## Demos
 
 We have some sample modules to play with in the `@npm-sample-modules` scope on our registry. Run this to let it know where to look:
 ```
 npm config set @folio-sample-modules:registry https://repository.folio.org/repository/npm-folio/
 ```
 
-#### `trivial`
+### The `trivial` module
 
 The default configuration references a module, `trivial`, which demonstrates a simple use of `stripes-connect` to store data locally. You can install it via npm:
 ```
 npm install @folio-sample-modules/trivial
 ```
 
-#### `trivial-okapi`
+### The `trivial-okapi` module
 
 Another demo, `trivial-okapi`, shows the most basic communication with the [Okapi](https://github.com/folio-org/okapi) API gateway and will require a connection to it in order to run. It lists tenants and allows their deletion. This simple exercise only relies on Okapi rather than a collection of services so it's relatively easy to set up locally without needing Docker.
 
