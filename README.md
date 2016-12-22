@@ -50,7 +50,7 @@ Retrieve the necessary dependencies:
 
 `npm install`
 
-At this point you have what you need to run the system. Edit `webpack.config.cli.js` to indicate which modules you want to include and the URL to the back end. Run `npm start` to bring up a development server at http://localhost:3000/ or `npm run build` to output a set of files which can then be deployed to a web server.
+At this point you have what you need to run the system. Edit `stripes.config.js` to indicate which modules you want to include and the URL to the back end. Run `npm start` to bring up a development server at http://localhost:3000/ or `npm run build` to output a set of files which can then be deployed to a web server.
 
 ### Demos
 
