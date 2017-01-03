@@ -7,7 +7,7 @@ export default function okapiReducer(state = {}, action) {
         token: action.token,
       });
     case 'CLEAR_TOKEN':
-      return Object.assign({}, state, token: null);
+      return Object.assign({}, state, { token: null });
     default:
       return state;
   }
