@@ -7,6 +7,7 @@ import NavButton from './NavButton';
 import NavDivider from './NavDivider';
 import NavGroup from './NavGroup';
 import Breadcrumbs from './Breadcrumbs';
+import NavIcon from './NavIcon';
 
 if (!Array.isArray(modules.app) || modules.app.length < 1) {
   throw new Error('At least one module of type "app" must be enabled.');
@@ -20,7 +21,7 @@ class MainNav extends React.Component {
         {
           ({ href, onClick }) =>
             <NavButton onClick={onClick} href={href} title={entry.displayName}>
-              <img src="http://placehold.it/22x22/00ff00/ffffff" role="presentation" />
+              <NavIcon color="#61f160" />
               <span className={css.linkLabel}>
                 {entry.displayName}
               </span>
@@ -34,9 +35,9 @@ class MainNav extends React.Component {
 
     if (breadcrumbArray.length === 0) {
       firstNav = (
-        <NavGroup >
-          <NavButton href="#" md="hide">
-            <img src="http://placehold.it/22x22/ff9900/ffffff" role="presentation" />
+        <NavGroup md="hide">
+          <NavButton href="#">
+            <NavIcon color="#fdae35" />
             <span className={css.brandingLabel} style={{ fontSize: '22px' }}>FOLIO</span>
           </NavButton>
         </NavGroup>
@@ -45,7 +46,7 @@ class MainNav extends React.Component {
       firstNav = (
         <NavGroup>
           <NavButton md="hide">
-            <img src="http://placehold.it/22x22/00ff00/ffffff" role="presentation" />
+            <NavIcon color="#fdae35" />
           </NavButton>
           <Breadcrumbs linkArray={breadcrumbArray} />
         </NavGroup>
@@ -58,13 +59,13 @@ class MainNav extends React.Component {
         <NavGroup>
           {menuLinks}
           <NavDivider md="hide" />
-          <NavButton md="hide" ><img src="http://placehold.it/22x22/dc0000" role="presentation" /></NavButton>
-          <NavButton md="hide"><img src="http://placehold.it/22x22/00ab00" role="presentation" /></NavButton>
-          <NavButton md="hide"><img src="http://placehold.it/22x22/0000ab" role="presentation" /></NavButton>
-          <NavButton md="hide"><img src="http://placehold.it/22x22/a0000b" role="presentation" /></NavButton>
+          <NavButton md="hide" ><NavIcon color="#7eb970" /></NavButton>
+          <NavButton md="hide"><NavIcon color="#b33f3f" /></NavButton>
+          <NavButton md="hide"><NavIcon color="#3fb38e" /></NavButton>
+          <NavButton md="hide"><NavIcon color="#3f6cb3" /></NavButton>
           <NavDivider md="hide" />
-          <NavButton md="hide"><img src="http://placehold.it/22x22/dc0000" role="presentation" /></NavButton>
-          <NavButton md="hide"><img src="http://placehold.it/22x22/00ab00" role="presentation" /></NavButton>
+          <NavButton md="hide"><NavIcon color="#7d3fb3" /></NavButton>
+          <NavButton md="hide"><NavIcon color="#b33f94" /></NavButton>
         </NavGroup>
       </nav>
     );

@@ -2,13 +2,14 @@
 
 .navButton{
     background-color: transparent;
+    display: flex;
     border-width: 0;
     height: 42px;
     cursor: pointer;
-    padding: 0 8px;
+    padding: 0 5px;
     transition: transform .2s ease;
     &:hover{
-      & img, & div{
+      & img, & div, & svg{
         box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.2);
       }
        
@@ -20,8 +21,8 @@ a.navButton{
   display: flex;
   align-items: center;
   color: #555;
-  
-  & img, & div{
+  padding: 0 5px;
+  & img, & div, & svg{
     margin: 0 4px;
   }
   &:hover, &:visited, &:focus{
