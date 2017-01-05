@@ -1,5 +1,6 @@
 :root{
   --radius: 6px;
+  --primary: #106c9e;
 }
 
 .loginOverlay{
@@ -9,9 +10,7 @@
   top: 0;
   left: 0;
   z-index: 9999;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  overflow: auto;
   background: #f2f2f2;
   background: -moz-radial-gradient(center, ellipse cover,  #fff 0%, #ececec 100%);
   background: radial-gradient(ellipse at center,  #fff 0%, #ececec 100%);
@@ -20,8 +19,9 @@
 
 .loginContainer{
   width: 40rem;
+  margin: auto;
+  margin-top: 2rem;
   display: flex;
-  top: -6rem;
   position: relative;
   flex-direction: column;
   justify-content: center;
@@ -81,7 +81,61 @@
   background-color: #ebebeb;
 }
 
+.slabButton{
+  width: 100%;
+  min-height: 6rem;
+  margin-top: .5rem;
+  text-align: center;
+  font-weight: bold;
+  border-radius: var(--radius);
+  background-color: var(--primary);
+  color: #fff;
+  transition: background-color .3s;
+  appearance: none;
+  border: 1px solid transparent;
+  font-size: 1.5rem;
+  &:focus, &:hover{
+    background-color: color(var(--primary) shade(12%));
+  }
+}
+
 .loginError{
   composes: slab;
   color: #900;
+}
+
+@keyframes loadingAnim{
+  0%{
+    transform: rotate(0deg);
+  }
+  50%{
+    transform: rotate(180deg);
+  }
+  100%{
+    transform: rotate(360deg);
+  }  
+}
+
+.loading{
+  width: 40px; 
+  height: 40px; 
+  margin: 1rem;
+  border-radius: 50%; 
+  border:4px solid transparent; 
+  border-top-color: #cdcdcd;
+  animation: loadingAnim 1s infinite linear;
+  &.blue{
+    border-top-color: var(--primary);
+  }
+}
+
+@media (max-width: 640px){
+  .loginOverlay{
+    display: block;
+    height: 100%;
+    overflow: auto;
+  }
+  .loginContainer{
+    width: 100%;
+  }
 }
