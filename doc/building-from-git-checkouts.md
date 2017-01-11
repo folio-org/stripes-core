@@ -89,7 +89,7 @@ Now `stripes-loader`:
 	$ cd @folio-sample-modules
 	$ ln -s ../../../stripes-core/examples/trivial
 
-You don't need to build the trivial modules, as it gets pulled into the
+You don't need to build the trivial module (or indeed any Stripes module), as it gets pulled into the
 Stripes UI by WebPack when it is built. So now you are ready to build
 and run the stripes core service that provides the UI:
 
@@ -126,7 +126,6 @@ Second, make the module available to `stripes-core`:
 	$ ln -s ../../examples/trivial-okapi
 	$ ln -s ../../../ui-okapi-console
 	$ ln -s ../../../ui-users
-	$ cd ../..
 
 Third, make the module available to `stripes-loader`:
 
@@ -135,10 +134,10 @@ Third, make the module available to `stripes-loader`:
 	$ ln -s ../../../stripes-core/examples/trivial-okapi
 	$ ln -s ../../../ui-okapi-console
 	$ ln -s ../../../ui-users
-	$ cd ../../../stripes-core
 
 Now you should be able to restart the Stripes service and see the
 newly enabled modules running:
 
+	$ cd $ROOT/stripes-core
 	$ npm run start
 
