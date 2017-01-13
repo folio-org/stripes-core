@@ -17,7 +17,6 @@ class TenantList extends Component {
   };
 
   render() {
-    console.log(this.props);
     const { data, mutator, pathname } = this.props;
     if (!data.tenants) return null;
     var tenantNodes = data.tenants.map((tenant) => {
