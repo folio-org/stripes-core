@@ -5,11 +5,8 @@ import initialReducers from './initialReducers';
 
 
 const logger = createLogger({
-  predicate: function(action) {
-    const show = window.reduxLog;
-    // Show loggig, unless explicitly set false
-    return show === undefined || show;
-  },
+  // Show logging unless explicitly set false
+  predicate: () => window.reduxLog === undefined || window.reduxLog,
 });
 
 export default function configureStore(initialState) {
