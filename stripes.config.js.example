@@ -1,5 +1,6 @@
 module.exports = {
   okapi: { 'url':'http://localhost:9130', 'tenant':'diku' },
+  config: { reduxLog: true },
   modules: {
     '@folio-sample-modules/trivial': {}
   }
