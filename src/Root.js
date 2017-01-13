@@ -39,11 +39,12 @@ export default class Root extends Component {
           <ModuleContainer id="content">
             <Match pattern="/" exactly component={Front} key="root" />
             {moduleRoutes}
-            <Miss component={() => { return <div>
-                                     <h2>Uh-oh!</h2>
-                                     <p>This route does not exist.</p>
-                                     </div>
-                                   }} />
+            <Miss
+              component={() => <div>
+                <h2>Uh-oh!</h2>
+                <p>This route does not exist.</p>
+              </div>}
+            />
           </ModuleContainer>
         </MainContainer>
       </Router></Provider>
