@@ -3,13 +3,17 @@ import thunk from 'redux-thunk';
 import createLogger from 'redux-logger';
 import initialReducers from './initialReducers';
 
+export default function configureStore(initialState, config) {
+  const logger = createLogger({
+    // Show logging unless explicitly set false
+    predicate: () => {
+      let res = window.reduxLog;
+      if (res === undefined && config) res = config.reduxLog;
+      if (res !== undefined) return res;
+      return true; // Default default if neither global variable nor config item is set.
+    },
+  });
 
-const logger = createLogger({
-  // Show logging unless explicitly set false
-  predicate: () => window.reduxLog === undefined || window.reduxLog,
-});
-
-export default function configureStore(initialState) {
   const finalCreateStore = compose(
     applyMiddleware(thunk),
     applyMiddleware(logger),
