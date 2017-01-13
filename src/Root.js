@@ -3,6 +3,7 @@ import { combineReducers } from 'redux';
 import { Provider } from 'react-redux';
 import Router from 'react-router/BrowserRouter';
 import Match from 'react-router/Match';
+import Miss from 'react-router/Miss';
 
 import MainContainer from './components/MainContainer';
 import MainNav from './components/MainNav';
@@ -38,6 +39,11 @@ export default class Root extends Component {
           <ModuleContainer id="content">
             <Match pattern="/" exactly component={Front} key="root" />
             {moduleRoutes}
+            <Miss component={() => { return <div>
+                                     <h2>Uh-oh!</h2>
+                                     <p>This route does not exist.</p>
+                                     </div>
+                                   }} />
           </ModuleContainer>
         </MainContainer>
       </Router></Provider>
