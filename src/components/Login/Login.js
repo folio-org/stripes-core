@@ -1,8 +1,22 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { reduxForm, Field } from 'redux-form';
 import css from './Login.css';
 
-function Login(){
+const propTypes = {
+  handleSubmit: PropTypes.func.isRequired,
+  reset: PropTypes.func,
+  pristine: PropTypes.bool,
+  submitting: PropTypes.bool,
+  onCancel: PropTypes.func,
+  initialValues: PropTypes.object,
+};
+
+function Login(props){
+
+  const {
+    handleSubmit,
+  } = props;
+
   return(
       <div className={css.loginOverlay}>
         <div className={css.loginContainer}>
@@ -15,7 +29,7 @@ function Login(){
               <div className={css.minorSlab}>
                 <Field className={css.loginInput} name="password" type="password" component="input" placeholder="Password" />
               </div>
-              <button type="button" className={css.slabButton}>
+              <button type="submit" className={css.slabButton} onClick={handleSubmit}>
               Log in
               </button>
               {/*<div className={css.loading +" "+css.blue}></div>
@@ -30,6 +44,8 @@ function Login(){
       </div>
   );
 }
+
+Login.propTypes = propTypes;
 
 export default reduxForm(
   {
