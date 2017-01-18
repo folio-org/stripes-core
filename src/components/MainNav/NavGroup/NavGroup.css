@@ -7,7 +7,11 @@
     align-items: center;
     align-content: space-between;
     margin: 0 5px;
+    & .navGroup{
+      margin: 0;
+    }
 }
+
 
 @media (--mediumDown){
   .navGroup{

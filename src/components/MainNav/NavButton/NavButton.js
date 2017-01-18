@@ -5,8 +5,9 @@ const propTypes = {
   href: React.PropTypes.string,
   title: React.PropTypes.string,
   onClick: React.PropTypes.func,
+  onKeyDown: React.PropTypes.func,
   children: React.PropTypes.node.isRequired,
-  md: React.PropTypes.string, //temporary as we work out the responsiveness of the header.
+  md: React.PropTypes.string, // eslint-disable-line
 };
 
 function NavButton(props) {
@@ -16,13 +17,13 @@ function NavButton(props) {
     return `${base} ${hide}`;
   }
 
+  const { children, md, bsRole, bsClass, ...buttonProps } = props; // eslint-disable-line
+
   if (props.href) {
     return (
       <a
-        href={props.href}
-        title={props.title}
         className={getClass()}
-        onClick={props.onClick}
+        {...buttonProps}
       >
         {props.children}
       </a>
@@ -33,10 +34,9 @@ function NavButton(props) {
     <button
       type="button"
       className={getClass()}
-      title={props.title}
-      onClick={props.onClick}
+      {...buttonProps}
     >
-      {props.children}
+      {children}
     </button>
   );
 }

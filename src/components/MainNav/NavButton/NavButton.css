@@ -6,11 +6,18 @@
     border-width: 0;
     height: 42px;
     cursor: pointer;
-    padding: 0 5px;
+    padding: 9px 5px;
     transition: transform .2s ease;
+    & img, & div, & svg{
+      margin: 0 4px;
+      &+span{
+        align-self: center;
+      }
+    }
     &:hover{
       & img, & div, & svg{
         box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.2);
+        
       }
        
       transform: scale(1.1);
