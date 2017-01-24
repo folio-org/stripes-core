@@ -66,7 +66,7 @@ class MainNav extends Component {
     );
 
     const menuLinks = modules.app.map(entry =>
-      <Link to={entry.route} key={entry.route}>
+      <Link to={entry.home || entry.route} key={entry.route}>
         {
           ({ href, onClick }) =>
             <NavButton onClick={onClick} href={href} title={entry.displayName}>
