@@ -1,8 +1,10 @@
-import React from 'react';
+import React , { Component, PropTypes } from 'react';
 import Link from 'react-router/Link';
 import { modules } from 'stripes-loader!'; // eslint-disable-line
 
 import { Dropdown } from 'react-bootstrap';
+
+import { connect } from 'stripes-connect'; // eslint-disable-line
 
 import css from './MainNav.css';
 import NavButton from './NavButton';
@@ -17,14 +19,20 @@ if (!Array.isArray(modules.app) || modules.app.length < 1) {
   throw new Error('At least one module of type "app" must be enabled.');
 }
 
-class MainNav extends React.Component {
-  constructor(props) {
+class MainNav extends Component {
+
+  static contextTypes = {
+    store: PropTypes.object,
+  }
+
+  constructor(props, context) {
     super(props);
     this.state = {
       userMenuOpen: false,
     };
-
+    this.store = context.store;
     this.toggleUserMenu = this.toggleUserMenu.bind(this);
+    this.logout = this.logout.bind(this);
   }
 
   toggleUserMenu() {
@@ -32,6 +40,11 @@ class MainNav extends React.Component {
     this.setState({
       userMenuOpen: !isOpen,
     });
+  }
+
+  logout() {
+    this.store.dispatch({type: 'CLEAR_OKAPI_TOKEN',});
+    this.toggleUserMenu();
   }
 
   render() {
@@ -46,9 +59,9 @@ class MainNav extends React.Component {
 
     const userDD = (
       <ul>
-        <li className={`${css.nowrap} ${css.ddTextItem}`}>Logged in as <strong>James Whitcomb</strong></li>
+        <li className={`${css.nowrap} ${css.ddTextItem}`}>Logged in as <strong>{(this.store.getState()["@folio-sample-modules/Login-currentUser"] && this.store.getState()["@folio-sample-modules/Login-currentUser"]) ? this.store.getState()["@folio-sample-modules/Login-currentUser"].username : ""}</strong></li>
         <li className={css.ddDivider} aria-hidden="true" />
-        <li><button className={css.ddButton} type="button" onClick={this.toggleUserMenu}><span>Log out</span></button></li>
+        <li><button className={css.ddButton} type="button" onClick={this.logout}><span>Log out</span></button></li>
       </ul>
     );
 
@@ -115,4 +128,4 @@ class MainNav extends React.Component {
   }
 }
 
-export default MainNav;
+export default connect(MainNav,'MainNav');
