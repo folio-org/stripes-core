@@ -4,17 +4,16 @@ import css from './Login.css';
 
 const propTypes = {
   handleSubmit: PropTypes.func.isRequired,
-  reset: PropTypes.func,
   pristine: PropTypes.bool,
   submitting: PropTypes.bool,
-  onCancel: PropTypes.func,
-  initialValues: PropTypes.object,
 };
 
-function Login(props){
+function Login(props) {
 
   const {
     handleSubmit,
+    pristine,
+    submitting,
   } = props;
 
   return(
@@ -29,7 +28,7 @@ function Login(props){
               <div className={css.minorSlab}>
                 <Field className={css.loginInput} name="password" type="password" component="input" placeholder="Password" />
               </div>
-              <button type="submit" className={css.slabButton} onClick={handleSubmit}>
+              <button type="submit" className={css.slabButton} onClick={handleSubmit} disabled={submitting||pristine}>
               Log in
               </button>
               {/*<div className={css.loading +" "+css.blue}></div>
