@@ -1,4 +1,4 @@
-import React , { Component, PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 import Link from 'react-router/Link';
 import { modules } from 'stripes-loader!'; // eslint-disable-line
 
@@ -43,7 +43,7 @@ class MainNav extends Component {
   }
 
   logout() {
-    this.store.dispatch({type: 'CLEAR_OKAPI_TOKEN',});
+    this.store.dispatch({ type: 'CLEAR_OKAPI_TOKEN' });
     this.toggleUserMenu();
   }
 
@@ -59,7 +59,7 @@ class MainNav extends Component {
 
     const userDD = (
       <ul>
-        <li className={`${css.nowrap} ${css.ddTextItem}`}>Logged in as <strong>{(this.store.getState()["@folio-sample-modules/Login-currentUser"] && this.store.getState()["@folio-sample-modules/Login-currentUser"]) ? this.store.getState()["@folio-sample-modules/Login-currentUser"].username : ""}</strong></li>
+        <li className={`${css.nowrap} ${css.ddTextItem}`}>Logged in as <strong>{(this.store.getState()['@folio-sample-modules/Login-currentUser'] && this.store.getState()['@folio-sample-modules/Login-currentUser']) ? this.store.getState()['@folio-sample-modules/Login-currentUser'].username : ''}</strong></li>
         <li className={css.ddDivider} aria-hidden="true" />
         <li><button className={css.ddButton} type="button" onClick={this.logout}><span>Log out</span></button></li>
       </ul>
@@ -128,4 +128,4 @@ class MainNav extends Component {
   }
 }
 
-export default connect(MainNav,'MainNav');
+export default connect(MainNav, 'MainNav');
