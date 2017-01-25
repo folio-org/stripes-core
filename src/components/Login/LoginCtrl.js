@@ -9,13 +9,24 @@ class LoginCtrl extends Component {
     router: PropTypes.object,
   }
 
+  static propTypes = {
+    mutator: PropTypes.shape({
+      currentUser: PropTypes.shape({
+        replace: PropTypes.func.isRequired,
+      }),
+      login: PropTypes.shape({
+        POST: PropTypes.func.isRequired,
+      }),
+    }),
+  }
+
   static manifest = {
-    currentUser : {},
-    login : {
+    currentUser: {},
+    login: {
       type: 'okapi',
       path: 'authn/login',
-      fetch: false
-    }
+      fetch: false,
+    },
   }
 
   constructor(props, context) {
@@ -25,27 +36,27 @@ class LoginCtrl extends Component {
     this.requestLogin = this.requestLogin.bind(this);
   }
 
-  requestLogin (data) {
-    this.props.mutator.currentUser.replace({});
-    this.props.mutator.login.POST(data).then(() => {
-      this.getUser(data.username);
-      this.router.transitionTo("/");
-    })
-  }
-
-  getUser (username) {
+  getUser(username) {
     var sys = require('stripes-loader!'); // eslint-disable-line
     const okapiUrl = sys.okapi.url;
-    fetch(okapiUrl + '/users?query=(username="'+username+'")', {headers: Object.assign({}, {'X-Okapi-Tenant': sys.okapi.tenant, 'X-Okapi-Token': this.store.getState().okapi.token})})
+    fetch(`${okapiUrl}/users?query=(username="${username}")`, { headers: Object.assign({}, { 'X-Okapi-Tenant': sys.okapi.tenant, 'X-Okapi-Token': this.store.getState().okapi.token }) })
       .then((response) => {
         if (response.status >= 400) {
-          this.props.mutator.currentUser.replace({username: ''});
+          this.props.mutator.currentUser.replace({ username: '' });
         } else {
           response.json().then((json) => {
-            this.props.mutator.currentUser.replace({username: json.users[0].personal.full_name});
+            this.props.mutator.currentUser.replace({ username: json.users[0].personal.full_name });
           });
         }
       });
+  }
+
+  requestLogin(data) {
+    this.props.mutator.currentUser.replace({});
+    this.props.mutator.login.POST(data).then(() => {
+      this.getUser(data.username);
+      this.router.transitionTo('/');
+    });
   }
 
   render() {
