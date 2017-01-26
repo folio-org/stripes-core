@@ -23,6 +23,7 @@ class MainNav extends Component {
 
   static contextTypes = {
     store: PropTypes.object,
+    router: PropTypes.object.isRequired
   }
 
   constructor(props, context) {
@@ -45,6 +46,7 @@ class MainNav extends Component {
   logout() {
     this.store.dispatch({ type: 'CLEAR_OKAPI_TOKEN' });
     this.toggleUserMenu();
+    this.context.router.transitionTo('/login')
   }
 
   render() {
