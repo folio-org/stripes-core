@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react'; // eslint-disable-line
+import { connect } from 'stripes-connect'; // eslint-disable-line
 
 import Login from './Login';
 
@@ -64,4 +65,4 @@ class LoginCtrl extends Component {
   }
 }
 
-export default LoginCtrl;
+export default connect(LoginCtrl, 'Login');

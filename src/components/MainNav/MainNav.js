@@ -1,10 +1,10 @@
 import React, { Component, PropTypes } from 'react';
 import Link from 'react-router/Link';
+import { connect } from 'react-redux';
+
 import { modules } from 'stripes-loader!'; // eslint-disable-line
 
 import { Dropdown } from 'react-bootstrap';
-
-import { connect } from 'stripes-connect'; // eslint-disable-line
 
 import css from './MainNav.css';
 import NavButton from './NavButton';
@@ -50,6 +50,7 @@ class MainNav extends Component {
   }
 
   render() {
+    const { currentUser } = this.props;
     const userIcon = (
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 26 26">
         <rect width="26" height="26" style={{ fill: '#3D9964' }} />
@@ -61,7 +62,7 @@ class MainNav extends Component {
 
     const userDD = (
       <ul>
-        <li className={`${css.nowrap} ${css.ddTextItem}`}>Logged in as <strong>{(this.store.getState()['@folio-sample-modules/Login-currentUser'] && this.store.getState()['@folio-sample-modules/Login-currentUser']) ? this.store.getState()['@folio-sample-modules/Login-currentUser'].username : ''}</strong></li>
+        <li className={`${css.nowrap} ${css.ddTextItem}`}>Logged in as <strong>{ currentUser != null ? currentUser.username : null }</strong></li>
         <li className={css.ddDivider} aria-hidden="true" />
         <li><button className={css.ddButton} type="button" onClick={this.logout}><span>Log out</span></button></li>
       </ul>
@@ -130,4 +131,8 @@ class MainNav extends Component {
   }
 }
 
-export default connect(MainNav, 'MainNav');
+function mapStateToProps(state)  {
+  return { currentUser : state['Login-currentUser'] };
+}
+
+export default connect(mapStateToProps)(MainNav);

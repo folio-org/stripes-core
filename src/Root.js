@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { combineReducers } from 'redux';
-import { Provider } from 'react-redux';
+import { Provider, connect } from 'react-redux';
 import Router from 'react-router/BrowserRouter';
 import Match from 'react-router/Match';
 import Miss from 'react-router/Miss';
@@ -9,13 +9,15 @@ import MainContainer from './components/MainContainer';
 import MainNav from './components/MainNav';
 import ModuleContainer from './components/ModuleContainer';
 import { Front } from './components/Front';
+import LoginCtrl from './components/Login';
 
 import moduleRoutes from './moduleRoutes';
 import initialReducers from './initialReducers';
 
+
 const reducers = { ...initialReducers };
 
-export default class Root extends Component {
+class Root extends Component {
 
   getChildContext() {
     return { addReducer: this.addReducer.bind(this) };
@@ -31,10 +33,11 @@ export default class Root extends Component {
   }
 
   render() {
-    const { store } = this.props;
+    const { store, token } = this.props;
     return (
       <Provider store={store}><Router>
         <MainContainer>
+          { token != null ? null : <LoginCtrl /> }
           <MainNav />
           <ModuleContainer id="content">
             <Match pattern="/" exactly component={Front} key="root" />
@@ -65,3 +68,9 @@ Root.propTypes = {
     replaceReducer: PropTypes.func.isRequired,
   }),
 };
+
+function mapStateToProps(state) {
+  return { token : state.okapi.token }
+}
+
+export default connect(mapStateToProps)(Root);
