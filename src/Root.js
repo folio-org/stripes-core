@@ -67,10 +67,11 @@ Root.propTypes = {
     getState: PropTypes.func.isRequired,
     replaceReducer: PropTypes.func.isRequired,
   }),
+  token: PropTypes.string,
 };
 
 function mapStateToProps(state) {
-  return { token : state.okapi.token }
+  return { token: state.okapi.token };
 }
 
 export default connect(mapStateToProps)(Root);
