@@ -23,7 +23,11 @@ class MainNav extends Component {
 
   static contextTypes = {
     store: PropTypes.object,
-    router: PropTypes.object.isRequired
+    router: PropTypes.object.isRequired,
+  }
+
+  static propTypes = {
+    currentUser: PropTypes.string,
   }
 
   constructor(props, context) {
@@ -46,7 +50,7 @@ class MainNav extends Component {
   logout() {
     this.store.dispatch({ type: 'CLEAR_OKAPI_TOKEN' });
     this.toggleUserMenu();
-    this.context.router.transitionTo('/login')
+    this.context.router.transitionTo('/login');
   }
 
   render() {
@@ -131,8 +135,8 @@ class MainNav extends Component {
   }
 }
 
-function mapStateToProps(state)  {
-  return { currentUser : state['Login-currentUser'] };
+function mapStateToProps(state) {
+  return { currentUser: state['Login-currentUser'] };
 }
 
 export default connect(mapStateToProps)(MainNav);
