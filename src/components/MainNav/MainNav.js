@@ -27,7 +27,7 @@ class MainNav extends Component {
   }
 
   static propTypes = {
-    currentUser: PropTypes.shape({username: PropTypes.string }),
+    currentUser: PropTypes.shape({ username: PropTypes.string }),
   }
 
   constructor(props, context) {
