@@ -9,6 +9,6 @@ const initialState = { okapi };
 const store = configureStore(initialState, config);
 
 render(
-  <Root store={store} disableAuth={config.disableAuth || false} />,
+  <Root store={store} disableAuth={(config && config.disableAuth) || false} />,
   document.getElementById('root'),
 );
