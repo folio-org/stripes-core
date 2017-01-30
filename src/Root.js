@@ -68,6 +68,7 @@ Root.propTypes = {
     replaceReducer: PropTypes.func.isRequired,
   }),
   token: PropTypes.string,
+  disableAuth: PropTypes.bool.isRequired,
 };
 
 function mapStateToProps(state) {
