@@ -1,5 +1,7 @@
 import React, { Component, PropTypes } from 'react'; // eslint-disable-line
 
+import { setCurrentUser, clearCurrentUser, setOkapiToken, clearOkapiToken } from '../../okapiActions'
+
 import Login from './Login';
 
 export default class LoginCtrl extends Component {
@@ -18,40 +20,19 @@ export default class LoginCtrl extends Component {
     this.tenant = this.sys.okapi.tenant;
   }
 
-  setCurrentUser(username) {
-    return {
-      "type": "SET_CURRENT_USER",
-      "username": username,
-    }
-  }
 
   getUser(username) {
     fetch(`${this.okapiUrl}/users?query=(username="${username}")`, { headers: Object.assign({}, { 'X-Okapi-Tenant': this.tenant, 'X-Okapi-Token': this.store.getState().okapi.token }) })
       .then((response) => {
         if (response.status >= 400) {
-          this.store.dispatch(this.setCurrentUser(''));
+          this.store.dispatch(clearCurrentUser());
         } else {
           response.json().then((json) => {
-            this.store.dispatch(this.setCurrentUser(json.users[0].personal.full_name));
+            this.store.dispatch(setCurrentUser(json.users[0].personal.full_name));
           });
         }
       });
   }
-
-
-  setOkapiToken(token) {
-    return {
-      type: 'SET_OKAPI_TOKEN',
-      token,
-    };
-  }
-
-  clearOkapiToken() {
-    return {
-      type: 'CLEAR_OKAPI_TOKEN',
-    };
-  }
-
 
   requestLogin(data) {
     fetch(`${this.okapiUrl}/authn/login`, {
@@ -61,11 +42,11 @@ export default class LoginCtrl extends Component {
       }).then((response) => {
         if (response.status >= 400) {
           console.log("Request login responded: Authentication error");
-          this.store.dispatch(this.clearOkapiToken());
+          this.store.dispatch(clearOkapiToken());
         } else {
           let token = response.headers.get('X-Okapi-Token');
           console.log("Request login responded: Authentication with token: ", token);
-          this.store.dispatch(this.setOkapiToken(token));
+          this.store.dispatch(setOkapiToken(token));
           this.getUser(data.username);
         }
     });
