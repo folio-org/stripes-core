@@ -33,11 +33,11 @@ class Root extends Component {
   }
 
   render() {
-    const { store, token } = this.props;
+    const { store, token, disableAuth } = this.props;
     return (
       <Provider store={store}><Router>
         <MainContainer>
-          { token != null ? null : <LoginCtrl /> }
+          { token != null || disableAuth ? null : <LoginCtrl /> }
           <MainNav />
           <ModuleContainer id="content">
             <Match pattern="/" exactly component={Front} key="root" />
@@ -68,6 +68,7 @@ Root.propTypes = {
     replaceReducer: PropTypes.func.isRequired,
   }),
   token: PropTypes.string,
+  disableAuth: PropTypes.bool.isRequired,
 };
 
 function mapStateToProps(state) {
