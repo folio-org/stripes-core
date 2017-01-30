@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react'; // eslint-disable-line
 
-import { setCurrentUser, clearCurrentUser, setOkapiToken, clearOkapiToken } from '../../okapiActions'
+import { setCurrentUser, clearCurrentUser, setOkapiToken, clearOkapiToken } from '../../okapiActions';
 
 import Login from './Login';
 
@@ -36,19 +36,19 @@ export default class LoginCtrl extends Component {
 
   requestLogin(data) {
     fetch(`${this.okapiUrl}/authn/login`, {
-        method: 'POST',
-        headers: Object.assign({}, { 'X-Okapi-Tenant': this.tenant } ),
-        body: JSON.stringify(data),
-      }).then((response) => {
-        if (response.status >= 400) {
-          console.log("Request login responded: Authentication error");
-          this.store.dispatch(clearOkapiToken());
-        } else {
-          let token = response.headers.get('X-Okapi-Token');
-          console.log("Request login responded: Authentication with token: ", token);
-          this.store.dispatch(setOkapiToken(token));
-          this.getUser(data.username);
-        }
+      method: 'POST',
+      headers: Object.assign({}, { 'X-Okapi-Tenant': this.tenant }),
+      body: JSON.stringify(data),
+    }).then((response) => {
+      if (response.status >= 400) {
+        console.log('Request login responded: Authentication error');
+        this.store.dispatch(clearOkapiToken());
+      } else {
+        const token = response.headers.get('X-Okapi-Token');
+        console.log('Request login responded: Authentication with token: ', token);
+        this.store.dispatch(setOkapiToken(token));
+        this.getUser(data.username);
+      }
     });
   }
 

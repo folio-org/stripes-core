@@ -7,9 +7,9 @@ export default function okapiReducer(state = {}, action) {
     case 'CLEAR_OKAPI_TOKEN':
       return Object.assign({}, state, { token: null });
     case 'SET_CURRENT_USER':
-      return Object.assign({}, state, { currentUser: { username: action.username }});
+      return Object.assign({}, state, { currentUser: { username: action.username } });
     case 'CLEAR_CURRENT_USER':
-      return Object.assign({}, state, { currentUser: { }});
+      return Object.assign({}, state, { currentUser: { } });
     default:
       return state;
   }
