@@ -27,7 +27,7 @@ class MainNav extends Component {
   }
 
   static propTypes = {
-    currentUser: PropTypes.shape({username: PropTypes.string }),
+    currentUser: PropTypes.shape({ username: PropTypes.string }),
   }
 
   constructor(props, context) {
@@ -49,8 +49,9 @@ class MainNav extends Component {
 
   logout() {
     this.store.dispatch({ type: 'CLEAR_OKAPI_TOKEN' });
+    this.store.dispatch({ type: 'CLEAR_CURRENT_USER' });
     this.toggleUserMenu();
-    this.context.router.transitionTo('/login');
+    this.context.router.transitionTo('/');
   }
 
   render() {
@@ -136,7 +137,7 @@ class MainNav extends Component {
 }
 
 function mapStateToProps(state) {
-  return { currentUser: state['Login-currentUser'] };
+  return { currentUser: state.okapi.currentUser };
 }
 
 export default connect(mapStateToProps)(MainNav);
