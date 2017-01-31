@@ -14,9 +14,10 @@ function Login(props) {
     handleSubmit,
     pristine,
     submitting,
-    authFail
+    authFail,
   } = props;
 
+  const loadingCN = `${css.loading} ${css.blue}`;
   return (
     <div className={css.loginOverlay}>
       <div className={css.loginContainer}>
@@ -32,13 +33,13 @@ function Login(props) {
             <button type="submit" className={css.slabButton} onClick={handleSubmit} disabled={submitting || pristine}>
             Log in
             </button>
-            { submitting ? <div><div className={css.loading +" "+css.blue} /></div> : null }
-            { authFail ? 
-            <div>
-              <span className={css.loginError} >
-                Sorry, the information entered does not match our records!
-              </span>
-            </div> : null }
+            { submitting ? <div><div className={loadingCN} /></div> : null }
+            { authFail ?
+              <div>
+                <span className={css.loginError} >
+                  Sorry, the information entered does not match our records!
+                </span>
+              </div> : null }
           </div>
         </form>
       </div>

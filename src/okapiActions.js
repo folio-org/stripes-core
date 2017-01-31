@@ -26,16 +26,21 @@ function clearOkapiToken() {
   };
 }
 
-function authFailure () {
+function authFailure() {
   return {
     type: 'AUTH_FAILURE',
-  }
+  };
 }
 
-function clearAuthFailure () {
+function clearAuthFailure() {
   return {
     type: 'CLEAR_AUTH_FAILURE',
-  }
+  };
 }
 
-export { setCurrentUser, clearCurrentUser, setOkapiToken, clearOkapiToken, authFailure, clearAuthFailure };
+export { setCurrentUser,
+         clearCurrentUser,
+         setOkapiToken,
+         clearOkapiToken,
+         authFailure,
+         clearAuthFailure };

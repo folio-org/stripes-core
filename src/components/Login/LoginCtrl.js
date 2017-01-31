@@ -12,6 +12,10 @@ class LoginCtrl extends Component {
     authFail: PropTypes.bool,
   }
 
+  static propTypes = {
+    authFail: PropTypes.bool,
+  }
+
   constructor(props, context) {
     super();
     this.store = context.store;
