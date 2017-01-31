@@ -1,13 +1,15 @@
 import React, { Component, PropTypes } from 'react'; // eslint-disable-line
 
-import { setCurrentUser, clearCurrentUser, setOkapiToken, clearOkapiToken } from '../../okapiActions';
+import { connect as reduxConnect } from 'react-redux'; // eslint-disable-line
 
+import { setCurrentUser, clearCurrentUser, setOkapiToken, clearOkapiToken, authFailure, clearAuthFailure } from '../../okapiActions';
 import Login from './Login';
 
-export default class LoginCtrl extends Component {
+class LoginCtrl extends Component {
   static contextTypes = {
     store: PropTypes.object,
     router: PropTypes.object,
+    authFail: PropTypes.bool,
   }
 
   constructor(props, context) {
@@ -18,6 +20,7 @@ export default class LoginCtrl extends Component {
     this.sys = require('stripes-loader!'); // eslint-disable-line
     this.okapiUrl = this.sys.okapi.url;
     this.tenant = this.sys.okapi.tenant;
+    this.store.dispatch(clearAuthFailure());
   }
 
 
@@ -41,18 +44,25 @@ export default class LoginCtrl extends Component {
       body: JSON.stringify(data),
     }).then((response) => {
       if (response.status >= 400) {
-        console.log('Request login responded: Authentication error');
         this.store.dispatch(clearOkapiToken());
+        this.store.dispatch(authFailure());
       } else {
         const token = response.headers.get('X-Okapi-Token');
-        console.log('Request login responded: Authentication with token: ', token);
         this.store.dispatch(setOkapiToken(token));
+        this.store.dispatch(clearAuthFailure());
         this.getUser(data.username);
       }
     });
   }
 
   render() {
-    return <Login onSubmit={this.requestLogin} />;
+    const authFail = this.props.authFail;
+    return <Login onSubmit={this.requestLogin} authFail={authFail} />;
   }
 }
+
+function mapStateToProps(state) {
+  return { authFail: state.okapi.authFailure };
+}
+
+export default reduxConnect(mapStateToProps)(LoginCtrl);

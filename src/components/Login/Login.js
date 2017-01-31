@@ -6,6 +6,7 @@ const propTypes = {
   handleSubmit: PropTypes.func.isRequired,
   pristine: PropTypes.bool,
   submitting: PropTypes.bool,
+  authFail: PropTypes.bool,
 };
 
 function Login(props) {
@@ -13,6 +14,7 @@ function Login(props) {
     handleSubmit,
     pristine,
     submitting,
+    authFail
   } = props;
 
   return (
@@ -30,13 +32,13 @@ function Login(props) {
             <button type="submit" className={css.slabButton} onClick={handleSubmit} disabled={submitting || pristine}>
             Log in
             </button>
-            {/* <div className={css.loading +" "+css.blue}></div>
+            { submitting ? <div><div className={css.loading +" "+css.blue} /></div> : null }
+            { authFail ? 
             <div>
               <span className={css.loginError} >
                 Sorry, the information entered does not match our records!
               </span>
-            </div>
-            */}
+            </div> : null }
           </div>
         </form>
       </div>
