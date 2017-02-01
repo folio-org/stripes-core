@@ -2,6 +2,8 @@ import React, { Component, PropTypes } from 'react'; // eslint-disable-line
 
 import { connect as reduxConnect } from 'react-redux'; // eslint-disable-line
 
+import { reset } from 'redux-form';
+
 import { setCurrentUser, clearCurrentUser, setOkapiToken, clearOkapiToken, authFailure, clearAuthFailure } from '../../okapiActions';
 import Login from './Login';
 
@@ -25,6 +27,7 @@ class LoginCtrl extends Component {
     this.okapiUrl = this.sys.okapi.url;
     this.tenant = this.sys.okapi.tenant;
     this.store.dispatch(clearAuthFailure());
+    this.initialValues = { username: '', password: '' };
   }
 
 
@@ -49,6 +52,8 @@ class LoginCtrl extends Component {
     }).then((response) => {
       if (response.status >= 400) {
         this.store.dispatch(clearOkapiToken());
+        this.store.dispatch(reset('login'));
+        this.initialValues.username = data.username;
         this.store.dispatch(authFailure());
       } else {
         const token = response.headers.get('X-Okapi-Token');
@@ -61,7 +66,13 @@ class LoginCtrl extends Component {
 
   render() {
     const authFail = this.props.authFail;
-    return <Login onSubmit={this.requestLogin} authFail={authFail} />;
+    return (
+      <Login
+        onSubmit={this.requestLogin}
+        authFail={authFail}
+        initialValues={this.initialValues}
+      />
+    );
   }
 }
 
