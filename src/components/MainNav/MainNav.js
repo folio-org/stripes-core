@@ -6,6 +6,8 @@ import { modules } from 'stripes-loader!'; // eslint-disable-line
 
 import { Dropdown } from 'react-bootstrap';
 
+import { clearOkapiToken, clearCurrentUser } from '../../okapiActions';
+
 import css from './MainNav.css';
 import NavButton from './NavButton';
 import NavDivider from './NavDivider';
@@ -48,9 +50,10 @@ class MainNav extends Component {
   }
 
   logout() {
-    this.store.dispatch({ type: 'CLEAR_OKAPI_TOKEN' });
+    this.store.dispatch(clearOkapiToken());
+    this.store.dispatch(clearCurrentUser());
     this.toggleUserMenu();
-    this.context.router.transitionTo('/login');
+    this.context.router.transitionTo('/');
   }
 
   render() {
@@ -136,7 +139,7 @@ class MainNav extends Component {
 }
 
 function mapStateToProps(state) {
-  return { currentUser: state['Login-currentUser'] };
+  return { currentUser: state.okapi.currentUser };
 }
 
 export default connect(mapStateToProps)(MainNav);

@@ -6,6 +6,7 @@ const propTypes = {
   handleSubmit: PropTypes.func.isRequired,
   pristine: PropTypes.bool,
   submitting: PropTypes.bool,
+  authFail: PropTypes.bool,
 };
 
 function Login(props) {
@@ -13,8 +14,10 @@ function Login(props) {
     handleSubmit,
     pristine,
     submitting,
+    authFail,
   } = props;
 
+  const loadingCN = `${css.loading} ${css.blue}`;
   return (
     <div className={css.loginOverlay}>
       <div className={css.loginContainer}>
@@ -30,13 +33,13 @@ function Login(props) {
             <button type="submit" className={css.slabButton} onClick={handleSubmit} disabled={submitting || pristine}>
             Log in
             </button>
-            {/* <div className={css.loading +" "+css.blue}></div>
-            <div>
-              <span className={css.loginError} >
-                Sorry, the information entered does not match our records!
-              </span>
-            </div>
-            */}
+            { submitting ? <div><div className={loadingCN} /></div> : null }
+            { authFail ?
+              <div>
+                <span className={css.loginError} >
+                  Sorry, the information entered does not match our records!
+                </span>
+              </div> : null }
           </div>
         </form>
       </div>
