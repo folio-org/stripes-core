@@ -1,0 +1,23 @@
+{		
+  "name": "@folio-sample-modules/login",		
+  "version": "0.0.2-test",		
+  "description": "A Login module.",		
+  "repository": "folio-org/stripes-experiments",		
+  "publishConfig" : {		
+    "registry" : "https://repository.folio.org/repository/npm-folio/"		
+  },		
+  "license": "Apache-2.0",		
+  "engines": {		
+    "node": ">=6.0.0"		
+  },		
+  "main": "index.js",		
+  "stripes": {		
+    "type": "app",		
+    "displayName": "Login",		
+    "route":"/login"		
+  },		
+  "dependencies": {		
+    "react": "15",		
+    "redux-form": "6"		
+  }		
+}
