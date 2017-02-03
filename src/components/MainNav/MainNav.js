@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import Link from 'react-router/Link';
 import { connect } from 'react-redux';
 
-import { modules } from 'stripes-loader!'; // eslint-disable-line
+import { modules } from '@folio/stripes-loader!'; // eslint-disable-line
 
 import { Dropdown } from 'react-bootstrap';
 
