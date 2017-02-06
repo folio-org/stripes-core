@@ -4,6 +4,8 @@ const webpack = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 
+const bootstrapDist = require.resolve('bootstrap/package.json').replace('package.json', 'dist');
+
 module.exports = {
   plugins: [
     new webpack.optimize.OccurenceOrderPlugin(),
@@ -22,7 +24,7 @@ module.exports = {
       allChunks: true
     }),
     new CopyWebpackPlugin([
-      { from:"node_modules/bootstrap/dist", to:"bootstrap"},
+      { from:bootstrapDist, to:'bootstrap'},
     ])
   ]
 };

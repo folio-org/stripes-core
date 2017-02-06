@@ -17,6 +17,9 @@ try {
 }
 
 module.exports = {
+  // we want webpack to find src/ relative to where this script lives (__dirname)
+  // rather than where it was invoked (.)
+  context: __dirname,
   output: {
     path: path.join(__dirname, 'static'),
     filename: 'bundle.js',
