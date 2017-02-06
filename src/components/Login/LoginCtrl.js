@@ -38,7 +38,7 @@ class LoginCtrl extends Component {
           this.store.dispatch(clearCurrentUser());
         } else {
           response.json().then((json) => {
-            this.store.dispatch(setCurrentUser(json.users[0].personal.full_name));
+            this.store.dispatch(setCurrentUser(json.users[0].personal));
           });
         }
       });
