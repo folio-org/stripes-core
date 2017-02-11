@@ -22,11 +22,11 @@ commander
 
     var config = require('./webpack.config.cli.dev');
     var stripesLoaderConfig = require(path.resolve(loaderConfigFile));
-    config.resolve.fallback = cwdModules;
-    config.resolveLoader.fallback = cwdModules;
-    config.stripesLoader = stripesLoaderConfig;
-console.log(config);
-    // process.chdir(__dirname);
+    config.resolve.modules = ['node_modules', cwdModules];
+    config.resolveLoader = { modules: ['node_modules', cwdModules] };
+    config.plugins.push(new webpack.LoaderOptionsPlugin({
+      options: { stripesLoader: stripesLoaderConfig },
+    }));
     var compiler = webpack(config);
 
     var port = commander.port || process.env.STRIPES_PORT || 3000;
