@@ -1,0 +1,41 @@
+.paneset{
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
+  & .paneset{
+    position: relative;
+    flex-grow: 2;
+  }
+}
+
+.navPane{
+    border-right: 2px solid #ccc;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    transition: all .25s ease;
+}
+
+.header{
+  width: 100%;
+  display: flex;
+  align-content: center;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid #dcdcdc;
+  min-height: 44px;
+  position: relative;
+  font-weight: bold;
+}
+
+.content{
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  padding: 16px;
+}
+

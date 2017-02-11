@@ -1,9 +1,9 @@
 
 
-function setCurrentUser(username) {
+function setCurrentUser(currentUser) {
   return {
     type: 'SET_CURRENT_USER',
-    username,
+    currentUser,
   };
 }
 
