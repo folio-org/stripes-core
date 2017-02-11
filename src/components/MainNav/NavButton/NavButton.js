@@ -13,7 +13,7 @@ const propTypes = {
 function NavButton(props) {
   function getClass() {
     const base = css.navButton;
-    const hide = props.md === 'hide' ? css.hideMed : null;
+    const hide = props.md === 'hide' ? css.hideMed : '';
     return `${base} ${hide}`;
   }
 
@@ -36,7 +36,9 @@ function NavButton(props) {
       className={getClass()}
       {...buttonProps}
     >
-      {children}
+      <span>
+        {children}
+      </span>
     </button>
   );
 }
