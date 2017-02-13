@@ -1,6 +1,6 @@
 {
   "name": "@folio-sample-modules/trivial-okapi",
-  "version": "0.0.3-test",
+  "version": "0.0.4-test",
   "description": "A trivial use of stripes-connect with Okapi",
   "repository": "folio-org/stripes-experiments",
   "publishConfig" : {

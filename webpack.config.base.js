@@ -6,35 +6,27 @@ const ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 module.exports = {
   entry: [
-    './src/index'
+    path.join(__dirname, 'src', 'index')
   ],
   resolve: {
-    fallback: [
-      path.resolve('src'),
-      path.join(__dirname, 'node_modules'),
-      path.join(__dirname, 'node_modules/@folio'),
-      path.join(__dirname, 'node_modules/@folio-sample-modules')
-    ]
-  },
-  resolveLoader: {
-    fallback: [
-      path.join(__dirname, 'node_modules'),
-      path.join(__dirname, 'node_modules/@folio'),
-      path.join(__dirname, 'node_modules/@folio-sample-modules')
-    ]
-  },
-  postcss(webpack) {
-    return [
-      require('postcss-import')({addDependencyTo: webpack}),
-      require('postcss-url'),
-      require('postcss-cssnext')
-    ]
+    alias: {
+      'stripes-loader': '@folio/stripes-loader'
+    }
   },
   module: {
-    loaders: [
+    rules: [
+      {
+        test: function (inp) {
+          if (inp.includes('stripes-loader')) return true;
+        },
+        use: [{
+          loader: '@folio/stripes-loader',
+          options: { shenanigans: 'TODO: why doesn\'t this work?' }
+        }]
+      },
       {
         test: /\.js$/,
-        loader: 'babel',
+        loader: 'babel-loader',
         query: {
           presets: [
               require.resolve("babel-preset-es2015"),
@@ -57,7 +49,7 @@ module.exports = {
       },
       {
         test: /\.json$/,
-        loader: 'json'
+        loader: 'json-loader'
       },
       {
    	test: /\.(jpg|jpeg|gif|png|ico)$/,
@@ -65,7 +57,26 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        loader: 'style!css?modules&localIdentName=[local]---[hash:base64:5]!postcss'
+        use: [
+          {
+            loader: 'style-loader'
+          },
+          {
+            loader: 'css-loader?modules&localIdentName=[local]---[hash:base64:5]'
+          },
+          {
+            loader: 'postcss-loader',
+            options: {
+              plugins: function () {
+                return [
+                  require('postcss-import'),
+                  require('postcss-url'),
+                  require('postcss-cssnext')
+                ];
+              }
+            }
+          }
+        ]
       }
     ]
   }
