@@ -4,7 +4,10 @@ import css from './NavListSection.css';
 const propTypes = {
   label: React.PropTypes.string,
   activeLink: React.PropTypes.string,
-  children: React.PropTypes.element,
+  children: React.PropTypes.oneOfType([
+    React.PropTypes.arrayOf(React.PropTypes.node),
+    React.PropTypes.node
+  ]),
 };
 
 function NavListSection(props) {
