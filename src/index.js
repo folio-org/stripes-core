@@ -1,9 +1,9 @@
 import 'babel-polyfill';
 import React from 'react';
 import { render } from 'react-dom';
+import { okapi, config } from 'stripes-loader'; // eslint-disable-line
 import configureStore from './configureStore';
 import Root from './Root';
-import { okapi, config } from 'stripes-loader';
 
 const initialState = { okapi };
 const store = configureStore(initialState, config);

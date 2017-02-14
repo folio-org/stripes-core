@@ -4,7 +4,7 @@ import css from '../NavListSection/NavListSection.css';
 const propTypes = {
   children: React.PropTypes.oneOfType([
     React.PropTypes.arrayOf(React.PropTypes.node),
-    React.PropTypes.node
+    React.PropTypes.node,
   ]),
 };
 
