@@ -12,10 +12,6 @@
   },
   "scripts": {
     "clean": "rimraf static",
-    "build:webpack": "cross-env NODE_ENV=production webpack --config webpack.config.cli.prod.js",
-    "build:tenant": "cross-env NODE_ENV=production webpack --config webpack.config.cli.tenant.js",
-    "build": "npm run clean && npm run build:webpack",
-    "start": "node devServer.js",
     "test": "mocha --compilers js:babel-core/register",
     "test-watch": "mocha --compilers js:babel-core/register -w --watch-extensions json",
     "lint": "eslint src || true"
