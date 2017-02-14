@@ -1,5 +1,5 @@
 {
-  "name": "@folio-sample-modules/trivial",
+  "name": "@folio/trivial",
   "version": "0.0.2-test",
   "description": "A trivial Stripes module.",
   "repository": "folio-org/stripes-experiments",
