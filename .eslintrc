@@ -5,6 +5,7 @@
     "browser": true
   },
   "rules": {
-    "react/jsx-filename-extension":"off"
+    "react/jsx-filename-extension":"off",
+    "react/require-default-props":"off"
   }
 }
