@@ -8,7 +8,7 @@ chai.should();
 
 global.OKAPI_URL = 'http://localhost:9130';
 
-mockReq('stripes-loader!', { modules: {
+mockReq('stripes-loader', { modules: {
   app: [ {
     displayName: 'someApp',
     module: 'some-app',
