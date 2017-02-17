@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 
-var commander = require('commander');
-var webpack = require('webpack');
-var path = require('path');
+const commander = require('commander');
+const webpack = require('webpack');
+const path = require('path');
 
-var cwd = path.resolve();
-var cwdModules = path.join(cwd, 'node_modules');
+const cwd = path.resolve();
+const cwdModules = path.join(cwd, 'node_modules');
 
 const packageJSON = require ('./package.json');
 commander.version(packageJSON.version);
@@ -17,20 +17,20 @@ commander
   .option('--host [host]', 'Host')
   .description('Launch a webpack-dev-server')
   .action(function (loaderConfigFile) {
-    var express = require('express');
-    var app = express();
+    const express = require('express');
+    const app = express();
 
-    var config = require('./webpack.config.cli.dev');
-    var stripesLoaderConfig = require(path.resolve(loaderConfigFile));
+    const config = require('./webpack.config.cli.dev');
+    const stripesLoaderConfig = require(path.resolve(loaderConfigFile));
     config.resolve.modules = ['node_modules', cwdModules];
     config.resolveLoader = { modules: ['node_modules', cwdModules] };
     config.plugins.push(new webpack.LoaderOptionsPlugin({
       options: { stripesLoader: stripesLoaderConfig },
     }));
-    var compiler = webpack(config);
+    const compiler = webpack(config);
 
-    var port = commander.port || process.env.STRIPES_PORT || 3000;
-    var host = commander.host || process.env.STRIPES_HOST || 'localhost';
+    const port = commander.port || process.env.STRIPES_PORT || 3000;
+    const host = commander.host || process.env.STRIPES_HOST || 'localhost';
 
     app.use(express.static(__dirname + '/public'));
 
@@ -61,10 +61,18 @@ commander
 
 commander
   .command('build')
+  .arguments('<config> <output>')
   .description('Build a tenant bundle')
-  .action(function () {
-    var config = require('./webpack.config.cli.prod');
-    var compiler = webpack(config);
+  .action(function (loaderConfigFile, outputPath) {
+    const config = require('./webpack.config.cli.prod');
+    const stripesLoaderConfig = require(path.resolve(loaderConfigFile));
+    config.resolve.modules = ['node_modules', cwdModules];
+    config.resolveLoader = { modules: ['node_modules', cwdModules] };
+    config.plugins.push(new webpack.LoaderOptionsPlugin({
+      options: { stripesLoader: stripesLoaderConfig },
+    }));
+    config.output.path = path.resolve(outputPath);
+    const compiler = webpack(config);
     compiler.run(function (err, stats) { });
   });
 
