@@ -19,13 +19,10 @@ module.exports = Object.assign({}, base, cli, {
   ],
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
-    // new webpack.NoErrorsPlugin(),
-    new webpack.DefinePlugin( {
-      'OKAPI_URL': false
-    } ),
     new ExtractTextPlugin({filename: 'global.css', allChunks: true }),
     new CopyWebpackPlugin([
       { from:bootstrapDist, to:'bootstrap'},
+      { from: path.join(__dirname, 'index.html'), to:'index.html'},
     ])
   ]
 });
