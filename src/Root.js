@@ -36,8 +36,8 @@ class Root extends Component {
     const { store, token, disableAuth } = this.props;
     return (
       <Provider store={store}><Router>
+        { token != null || disableAuth ?
         <MainContainer>
-          { token != null || disableAuth ? null : <LoginCtrl /> }
           <MainNav />
           <ModuleContainer id="content">
             <Match pattern="/" exactly component={Front} key="root" />
@@ -50,6 +50,7 @@ class Root extends Component {
             />
           </ModuleContainer>
         </MainContainer>
+        : <LoginCtrl /> }
       </Router></Provider>
     );
   }
