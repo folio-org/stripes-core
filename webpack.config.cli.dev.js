@@ -11,8 +11,7 @@ const cli = require('./webpack.config.cli');
 const bootstrapDist = require.resolve('bootstrap/package.json').replace('package.json', 'dist');
 
 module.exports = Object.assign({}, base, cli, {
-  // devtool: 'inline-source-map',
-  devtool: false,
+  devtool: 'inline-source-map',
   entry: [
     'webpack-hot-middleware/client',
     path.join(__dirname, 'src', 'index')
