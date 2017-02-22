@@ -12,8 +12,6 @@ class About extends Component {
       name: document.getElementById('n').value });
   }
   render() {
-    console.log('RENDR ABOUT');
-    console.log(this.props);
     let greeting;
     if (this.props.data.greetingParams ) {
       greeting = <h3>{this.props.data.greetingParams.greeting} {this.props.data.greetingParams.name}</h3>
