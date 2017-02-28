@@ -1,0 +1,50 @@
+build=n
+dir=.
+
+if [ "x$1" = x-b ]; then
+   build=y
+   shift
+fi
+
+if [ $# != 0 ]; then
+   echo Running in directory $1
+   cd $1
+fi
+
+cd $dir
+for i in `echo '
+	stripes-loader
+	stripes-connect
+	stripes-components
+	stripes-core
+	stripes-sample-platform
+	ui-okapi-console
+	ui-users
+	ui-items
+	ui-scan
+'`; do
+    echo === $i ===
+    (
+	cd $i
+	branch=`git branch | sed -n 's/^\* //p'`
+	if [ "x$branch" != xmaster ]; then
+	    echo "*** on branch '$branch': doing nothing"
+	else
+	    if git status | grep 'nothing to commit' > /dev/null; then
+		if git status | grep 'Your branch is ahead' > /dev/null; then
+		    echo "*** some committed changes to push: doing nothing"
+		else
+		    git pull
+		    if [ $build = y ]; then
+			case $i in
+			    ui-*) echo "No need to build UI module";;
+			    *)    npm install;;
+			esac
+		    fi
+		fi
+	    else
+		echo "*** some changes to commit: doing nothing"
+	    fi
+	fi
+    )
+done
