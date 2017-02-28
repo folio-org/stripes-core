@@ -37,19 +37,19 @@ class Root extends Component {
     return (
       <Provider store={store}><Router>
         { token != null || disableAuth ?
-        <MainContainer>
-          <MainNav />
-          <ModuleContainer id="content">
-            <Match pattern="/" exactly component={Front} key="root" />
-            {moduleRoutes}
-            <Miss
-              component={() => <div>
-                <h2>Uh-oh!</h2>
-                <p>This route does not exist.</p>
-              </div>}
-            />
-          </ModuleContainer>
-        </MainContainer>
+          <MainContainer>
+            <MainNav />
+            <ModuleContainer id="content">
+              <Match pattern="/" exactly component={Front} key="root" />
+              {moduleRoutes}
+              <Miss
+                component={() => <div>
+                  <h2>Uh-oh!</h2>
+                  <p>This route does not exist.</p>
+                </div>}
+              />
+            </ModuleContainer>
+          </MainContainer>
         : <LoginCtrl /> }
       </Router></Provider>
     );
