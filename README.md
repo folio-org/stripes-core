@@ -15,8 +15,8 @@ Stripes is a toolkit for building single-page web applications that FOLIO UI mod
 * [Quick start guide](doc/quick-start.md) will allow you get Stripes up and running with a couple of sample modules downloaded using NPM, and to run locally a developed module.
 * [Overview of the Stripes architecture](doc/overview.md) explains the concepts that guided the design of Stripes.
 * [Running a complete FOLIO system](https://github.com/folio-org/ui-okapi-console/blob/master/doc/running-a-complete-system.md) goes further into explaining how you can also run your own instances of FOLIO's API gateway Okapi and application service modules, and how you can use the Okapi Console (running as part of Stripes) to manage modules and tenants.
-* [The stripes-connect API](https://github.com/folio-org/stripes-connect/blob/master/doc/api.md) describes how to use [Stripes Connect](https://github.com/folio-org/stripes-connect), the part of the Stripes toolkit that allows you to declaratively express what data you want to share with back-end services.
 * [Thinking in Stripes](https://github.com/folio-org/stripes-connect/blob/master/doc/thinking-in-stripes.md), an in-progress orientation document.
+* [The stripes-connect API](https://github.com/folio-org/stripes-connect/blob/master/doc/api.md) describes how to use [Stripes Connect](https://github.com/folio-org/stripes-connect), the part of the Stripes toolkit that allows you to declaratively express what data you want to share with back-end services.
 * [An evolving troubleshooting guide](doc/troubleshooting.md).
 * [The release procedure](doc/release-procedure.md) for Stripes packages.
 * [A component example: the **PatronEdit** component](doc/component-example.md) walks through a simple example of a component that is connected to the back-end service using Stripes Connect. **NOTE that this is somewhat out of date**, but still helpfully illustrative.
