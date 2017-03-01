@@ -34,7 +34,7 @@
     "react-addons-test-utils": "^15.3.2"
   },
   "dependencies": {
-    "@folio/stripes-components": "^0.0.1-test",
+    "@folio/stripes-components": "^0.0.2",
     "@folio/stripes-connect": "^0.0.6-test",
     "@folio/stripes-loader": "^0.0.2-test",
     "babel-core": "^6.23.1",
