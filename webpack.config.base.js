@@ -10,10 +10,7 @@ module.exports = {
   ],
   resolve: {
     alias: {
-      'stripes-loader': '@folio/stripes-loader',
-      // explicitly use only the copy of react in stripes-core to prevent
-      // react being included from multiple sources when using yarn link
-      'react': path.join(__dirname, 'node_modules', 'react'),
+      'stripes-loader': '@folio/stripes-loader'
     }
   },
   module: {
