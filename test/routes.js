@@ -19,7 +19,8 @@ mockReq('stripes-loader', { modules: {
 
 mockReq('some-app', () => <div></div>);
 
-const routes = require('../src/moduleRoutes').default;
+const fn = require('../src/moduleRoutes').default;
+const routes = fn();
 const inst = shallow(routes[0]).instance();
 describe('routes', () => {
   it('should be an array of Match components', () => {
