@@ -7,14 +7,18 @@ if (!Array.isArray(modules.app) && modules.length < 0) {
   throw new Error('At least one module of type "app" must be enabled.');
 }
 
-export default modules.app.map((module) => {
-  const connect = connectFor(module.module);
-  const Current = connect(module.getModule());
-  return (
-    <Match
+function getModuleRoutes(logger) {
+  return modules.app.map((module) => {
+    const connect = connectFor(module.module);
+    const Current = connect(module.getModule());
+    return (
+        <Match
       pattern={module.route}
       key={module.route}
-      render={props => <Current {...props} connect={connect} />}
-    />
-  );
-});
+      render={props => <Current {...props} logger={logger} connect={connect} />}
+        />
+    );
+  });
+}
+
+export default getModuleRoutes;
