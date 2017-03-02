@@ -37,6 +37,7 @@
     "@folio/stripes-components": "^0.0.2",
     "@folio/stripes-connect": "^0.0.9",
     "@folio/stripes-loader": "^0.0.2-test",
+    "@folio/stripes-logger": "^0.0.1",
     "babel-core": "^6.23.1",
     "babel-eslint": "^7.0.0",
     "babel-loader": "^6.3.0",
