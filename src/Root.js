@@ -10,6 +10,7 @@ import MainNav from './components/MainNav';
 import ModuleContainer from './components/ModuleContainer';
 import { Front } from './components/Front';
 import LoginCtrl from './components/Login';
+// import Settings from './components/Settings/Settings';
 
 import getModuleRoutes from './moduleRoutes';
 import initialReducers from './initialReducers';
@@ -41,6 +42,7 @@ class Root extends Component {
             <MainNav />
             <ModuleContainer id="content">
               <Match pattern="/" exactly component={Front} key="root" />
+              // <Match pattern="/settings" exactly component={Settings} />
               {getModuleRoutes(logger)}
               <Miss
                 component={() => <div>
