@@ -42,7 +42,7 @@ class Root extends Component {
             <MainNav />
             <ModuleContainer id="content">
               <Match pattern="/" exactly component={Front} key="root" />
-              // <Match pattern="/settings" exactly component={Settings} />
+              {/* <Match pattern="/settings" exactly component={Settings} /> */}
               {getModuleRoutes(logger)}
               <Miss
                 component={() => <div>
