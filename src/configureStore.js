@@ -3,15 +3,10 @@ import thunk from 'redux-thunk';
 import createLogger from 'redux-logger';
 import initialReducers from './initialReducers';
 
-export default function configureStore(initialState, config) {
+export default function configureStore(initialState, config, stripesLogger) {
   const logger = createLogger({
     // Show logging unless explicitly set false
-    predicate: () => {
-      let res = window.reduxLog;
-      if (res === undefined && config) res = config.reduxLog;
-      if (res !== undefined) return res;
-      return true; // Default default if neither global variable nor config item is set.
-    },
+    predicate: () => stripesLogger.hasCategory('redux'),
   });
 
   const finalCreateStore = compose(

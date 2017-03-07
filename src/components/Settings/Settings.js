@@ -6,9 +6,9 @@ import NavListSection from './NavListSection';
 import css from './Settings.css';
 
 // Should be replaced with something dynamically generated....
-import UsersSettings from '@folio-sample-modules/users/settings'; // eslint-disable-line
+import UsersSettings from '@folio/users/settings'; // eslint-disable-line
 const SettingsConfig = [
-  { name: 'Users', settingsPath: '@folio-sample-modules/users/settings', component: UsersSettings },
+  { name: 'Users', settingsPath: '@folio/users/settings', component: UsersSettings },
 ];
 
 class Settings extends React.Component {

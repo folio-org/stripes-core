@@ -10,8 +10,9 @@ import MainNav from './components/MainNav';
 import ModuleContainer from './components/ModuleContainer';
 import { Front } from './components/Front';
 import LoginCtrl from './components/Login';
+// import Settings from './components/Settings/Settings';
 
-import moduleRoutes from './moduleRoutes';
+import getModuleRoutes from './moduleRoutes';
 import initialReducers from './initialReducers';
 
 
@@ -33,23 +34,24 @@ class Root extends Component {
   }
 
   render() {
-    const { store, token, disableAuth } = this.props;
+    const { logger, store, token, disableAuth } = this.props;
     return (
       <Provider store={store}><Router>
         { token != null || disableAuth ?
-        <MainContainer>
-          <MainNav />
-          <ModuleContainer id="content">
-            <Match pattern="/" exactly component={Front} key="root" />
-            {moduleRoutes}
-            <Miss
-              component={() => <div>
-                <h2>Uh-oh!</h2>
-                <p>This route does not exist.</p>
-              </div>}
-            />
-          </ModuleContainer>
-        </MainContainer>
+          <MainContainer>
+            <MainNav />
+            <ModuleContainer id="content">
+              <Match pattern="/" exactly component={Front} key="root" />
+              {/* <Match pattern="/settings" exactly component={Settings} /> */}
+              {getModuleRoutes(logger)}
+              <Miss
+                component={() => <div>
+                  <h2>Uh-oh!</h2>
+                  <p>This route does not exist.</p>
+                </div>}
+              />
+            </ModuleContainer>
+          </MainContainer>
         : <LoginCtrl /> }
       </Router></Provider>
     );
