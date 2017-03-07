@@ -54,6 +54,7 @@ class MainNav extends Component {
     this.store.dispatch(clearCurrentUser());
     this.toggleUserMenu();
     this.context.router.transitionTo('/');
+    window.location.reload();
   }
 
   render() {
