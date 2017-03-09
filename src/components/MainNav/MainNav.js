@@ -96,7 +96,7 @@ class MainNav extends Component {
     if (breadcrumbArray.length === 0) {
       firstNav = (
         <NavGroup md="hide">
-          <NavButton href="#">
+          <NavButton href="/">
             <NavIcon color="#fdae35" />
             <span className={css.brandingLabel} style={{ fontSize: '22px' }}>FOLIO</span>
           </NavButton>
