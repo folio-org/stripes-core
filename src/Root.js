@@ -43,7 +43,7 @@ class Root extends Component {
             <ModuleContainer id="content">
               <Match pattern="/" exactly component={Front} key="root" />
               {/* <Match pattern="/settings" exactly component={Settings} /> */}
-              {getModuleRoutes(logger, currentPerms)}
+              {getModuleRoutes(logger, this.props.currentPerms)}
               <Miss
                 component={() => <div>
                   <h2>Uh-oh!</h2>
