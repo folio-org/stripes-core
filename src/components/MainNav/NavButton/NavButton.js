@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'react-router/Link';
 import css from './NavButton.css';
 
 const propTypes = {
@@ -17,16 +18,17 @@ function NavButton(props) {
     return `${base} ${hide}`;
   }
 
-  const { children, md, bsRole, bsClass, ...buttonProps } = props; // eslint-disable-line
+  const { children, md, bsRole, bsClass, href, ...buttonProps } = props; // eslint-disable-line
 
   if (props.href) {
     return (
-      <a
+      <Link
         className={getClass()}
+        to={href}
         {...buttonProps}
       >
         {props.children}
-      </a>
+      </Link>
     );
   }
 
