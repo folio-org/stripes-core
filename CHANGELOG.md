@@ -1,7 +1,7 @@
 # Change history for stripes-core
 
-## FORTHCOMING
-[Full Changelog](https://github.com/folio-org/stripes-core/compare/v0.0.12...master)
+## [0.1.0](https://github.com/folio-org/stripes-core/tree/v0.1.0) (Fri Mar 10 23:07:14 GMT 2017)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v0.0.12...v0.1.0)
 
 * The "FOLIO" button at top left now returns to the home page of the SPA. Fixes STRIPES-250.
 * When logging in as a user, the permissions of that user are now loaded, and are made available to the top-level component of loaded modules as a new `currentPerms` property. Its value is an object whose keys are machine-readable permission names and whose values are the corresponding human-readable names (for use in error messages). Fixes STRIPES-248.
