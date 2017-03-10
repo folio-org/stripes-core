@@ -29,7 +29,10 @@ class MainNav extends Component {
   }
 
   static propTypes = {
-    currentUser: PropTypes.shape({ username: PropTypes.string }),
+    currentUser: PropTypes.shape({
+      username: PropTypes.string,
+    }),
+    currentPerms: PropTypes.any, // ### make this more specific
   }
 
   constructor(props, context) {
@@ -58,7 +61,7 @@ class MainNav extends Component {
   }
 
   render() {
-    const { currentUser } = this.props;
+    const { currentUser, currentPerms } = this.props;
     const userIcon = (
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 26 26">
         <rect width="26" height="26" style={{ fill: '#3D9964' }} />
@@ -113,6 +116,7 @@ class MainNav extends Component {
       );
     }
 
+    console.log('currentPerms =', currentPerms);
     return (
       <nav role="navigation" className={css.navRoot}>
         {firstNav}
@@ -140,7 +144,10 @@ class MainNav extends Component {
 }
 
 function mapStateToProps(state) {
-  return { currentUser: state.okapi.currentUser };
+  return {
+    currentUser: state.okapi.currentUser,
+    currentPerms: state.okapi.currentPerms,
+  };
 }
 
 export default connect(mapStateToProps)(MainNav);

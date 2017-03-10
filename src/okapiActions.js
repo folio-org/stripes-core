@@ -7,6 +7,13 @@ function setCurrentUser(currentUser) {
   };
 }
 
+function setCurrentPerms(currentPerms) {
+  return {
+    type: 'SET_CURRENT_PERMS',
+    currentPerms,
+  };
+}
+
 function clearCurrentUser() {
   return {
     type: 'CLEAR_CURRENT_USER',
@@ -39,6 +46,7 @@ function clearAuthFailure() {
 }
 
 export { setCurrentUser,
+         setCurrentPerms,
          clearCurrentUser,
          setOkapiToken,
          clearOkapiToken,

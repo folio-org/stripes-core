@@ -4,7 +4,7 @@ import { connect as reduxConnect } from 'react-redux'; // eslint-disable-line
 
 import { reset } from 'redux-form';
 
-import { setCurrentUser, clearCurrentUser, setOkapiToken, clearOkapiToken, authFailure, clearAuthFailure } from '../../okapiActions';
+import { setCurrentUser, setCurrentPerms, clearCurrentUser, setOkapiToken, clearOkapiToken, authFailure, clearAuthFailure } from '../../okapiActions';
 import Login from './Login';
 
 class LoginCtrl extends Component {
@@ -44,6 +44,20 @@ class LoginCtrl extends Component {
       });
   }
 
+  getPerms(username) {
+    fetch(`${this.okapiUrl}/perms/users/${username}/permissions?expanded=true&full=true`,
+          { headers: Object.assign({}, { 'X-Okapi-Tenant': this.tenant, 'X-Okapi-Token': this.store.getState().okapi.token }) })
+      .then((response) => {
+        if (response.status >= 400) {
+          this.store.dispatch(clearCurrentUser());
+        } else {
+          response.json().then((json) => {
+            this.store.dispatch(setCurrentPerms(json));
+          });
+        }
+      });
+  }
+
   requestLogin(data) {
     fetch(`${this.okapiUrl}/authn/login`, {
       method: 'POST',
@@ -60,6 +74,7 @@ class LoginCtrl extends Component {
         this.store.dispatch(setOkapiToken(token));
         this.store.dispatch(clearAuthFailure());
         this.getUser(data.username);
+        this.getPerms(data.username);
       }
     });
   }
