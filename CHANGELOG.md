@@ -1,5 +1,12 @@
 # Change history for stripes-core
 
+## [0.0.12](https://github.com/folio-org/stripes-core/tree/v0.0.11) (Fri 10 Mar 11:46:53 GMT 2017)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v0.0.11...v0.0.12)
+
+* New dependency on `@foliostripes-logger`. This is used lightly within stripes-core itself, and more importantly a configured logger object is passed as the `logger` property to the top-level component of all loaded modules. Part of STRIPES-226.
+* Change to internal API of moduleRoutes: instead of exporting the list of routes, now exports a function that returns them. That function takes a logger object as a parameter, and passes it as a prop to the modules.
+* Use a specific copy of react when stripes-core is linked. Fixes STRIPES-220.
+
 ## [0.0.11](https://github.com/folio-org/stripes-core/tree/v0.0.11) (2017-03-01)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v0.0.10...v0.0.11)
 
