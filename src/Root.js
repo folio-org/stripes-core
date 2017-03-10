@@ -76,7 +76,11 @@ Root.propTypes = {
 };
 
 function mapStateToProps(state) {
-  return { token: state.okapi.token };
+  return {
+    token: state.okapi.token,
+    currentUser: state.okapi.currentUser,
+    currentPerms: state.okapi.currentPerms,
+  };
 }
 
 export default connect(mapStateToProps)(Root);
