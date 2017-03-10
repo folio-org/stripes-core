@@ -1,5 +1,10 @@
 # Change history for stripes-core
 
+## FORTHCOMING
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v0.0.12...master)
+
+* The "FOLIO" button at top left now returns to the home page of the SPA. Fixes STRIPES-250.
+
 ## [0.0.12](https://github.com/folio-org/stripes-core/tree/v0.0.11) (Fri 10 Mar 11:46:53 GMT 2017)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v0.0.11...v0.0.12)
 
