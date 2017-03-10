@@ -72,7 +72,7 @@ Root.propTypes = {
   }),
   token: PropTypes.string,
   disableAuth: PropTypes.bool.isRequired,
-  logger: PropTypes.func.isRequired,
+  logger: PropTypes.object.isRequired,
 };
 
 function mapStateToProps(state) {
