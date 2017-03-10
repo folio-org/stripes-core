@@ -12,11 +12,11 @@ function getModuleRoutes(logger) {
     const connect = connectFor(module.module);
     const Current = connect(module.getModule());
     return (
-        <Match
-      pattern={module.route}
-      key={module.route}
-      render={props => <Current {...props} logger={logger} connect={connect} />}
-        />
+      <Match
+        pattern={module.route}
+        key={module.route}
+        render={props => <Current {...props} logger={logger} connect={connect} />}
+      />
     );
   });
 }
