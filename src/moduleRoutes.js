@@ -15,7 +15,7 @@ function getModuleRoutes(logger, currentPerms) {
       <Match
         pattern={module.route}
         key={module.route}
-        render={props => <Current {...props} connect={connect} logger={logger} currentPerms={currentPerms}/>}
+        render={props => <Current {...props} connect={connect} logger={logger} currentPerms={currentPerms} />}
       />
     );
   });
