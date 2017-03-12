@@ -2,7 +2,10 @@
 
 const commander = require('commander');
 const webpack = require('webpack');
+const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 const path = require('path');
+
+const devConfig = require('./webpack.config.cli.dev');
 
 const cwd = path.resolve();
 const cwdModules = path.join(cwd, 'node_modules');
@@ -10,27 +13,42 @@ const cwdModules = path.join(cwd, 'node_modules');
 const packageJSON = require ('./package.json');
 commander.version(packageJSON.version);
 
+const cachePlugin = new HardSourceWebpackPlugin({
+  cacheDirectory: path.join(cwd, 'webpackcache'),
+  recordsPath: path.join(cwd, 'webpackcache/records.json'),
+  configHash: function(webpackConfig) {
+    // Build a string value used by HardSource to determine which cache to
+    // use if [confighash] is in cacheDirectory or if the cache should be
+    // replaced if [confighash] does not appear in cacheDirectory.
+    return require('node-object-hash')().hash(devConfig);
+  },
+});
+
 commander
   .command('dev')
-  .arguments('<config>')
   .option('--port [port]', 'Port')
   .option('--host [host]', 'Host')
+  .option('--cache', 'Use HardSourceWebpackPlugin cache')
+  .option('--devtool [devtool]', 'Use another value for devtool instead of "inline-source-map"')
+  .arguments('<config>')
   .description('Launch a webpack-dev-server')
-  .action(function (loaderConfigFile) {
+  .action(function (loaderConfigFile, options) {
     const express = require('express');
     const app = express();
 
-    const config = require('./webpack.config.cli.dev');
+    const config = Object.assign({}, devConfig);
     const stripesLoaderConfig = require(path.resolve(loaderConfigFile));
     config.resolve.modules = ['node_modules', cwdModules];
     config.resolveLoader = { modules: ['node_modules', cwdModules] };
     config.plugins.push(new webpack.LoaderOptionsPlugin({
       options: { stripesLoader: stripesLoaderConfig },
     }));
+    if (options.cache) config.plugins.push(cachePlugin);
+    if (options.devtool) config.devtool = options.devtool;
     const compiler = webpack(config);
 
-    const port = commander.port || process.env.STRIPES_PORT || 3000;
-    const host = commander.host || process.env.STRIPES_HOST || 'localhost';
+    const port = options.port || process.env.STRIPES_PORT || 3000;
+    const host = options.host || process.env.STRIPES_HOST || 'localhost';
 
     app.use(express.static(__dirname + '/public'));
 
