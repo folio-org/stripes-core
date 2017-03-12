@@ -73,6 +73,7 @@ Root.propTypes = {
   token: PropTypes.string,
   disableAuth: PropTypes.bool.isRequired,
   logger: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
+  currentPerms: PropTypes.object, // eslint-disable-line react/forbid-prop-types
 };
 
 function mapStateToProps(state) {
