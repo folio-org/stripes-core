@@ -9,7 +9,7 @@ if (!Array.isArray(modules.app) && modules.length < 0) {
 
 function getModuleRoutes(logger, currentPerms) {
   return modules.app.map((module) => {
-    const connect = connectFor(module.module);
+    const connect = connectFor(module.module, logger);
     const Current = connect(module.getModule());
     return (
       <Match
