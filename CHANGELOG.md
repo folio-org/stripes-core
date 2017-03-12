@@ -1,5 +1,10 @@
 # Change history for stripes-core
 
+## [0.2.0](https://github.com/folio-org/stripes-core/tree/v0.2.0) (Sun Mar 12 23:34:18 GMT 2017)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v0.1.0...v0.2.0)
+
+* One trivial change: the logger object is passed into [stripes-connect](https://github.com/folio-org/stripes-connect/). Requires stripes-connect v0.1 or better.
+
 ## [0.1.0](https://github.com/folio-org/stripes-core/tree/v0.1.0) (Fri Mar 10 23:07:14 GMT 2017)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v0.0.12...v0.1.0)
 
