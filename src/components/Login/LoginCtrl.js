@@ -52,7 +52,9 @@ class LoginCtrl extends Component {
           this.store.dispatch(clearCurrentUser());
         } else {
           response.json().then((json) => {
-            this.store.dispatch(setCurrentPerms(json));
+            // You are not expected to understand this
+            const map = Object.assign({}, ...json.permissionNames.map(p => ({ [p.permissionName]: p.displayName })));
+            this.store.dispatch(setCurrentPerms(map));
           });
         }
       });

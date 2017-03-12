@@ -32,7 +32,7 @@ class MainNav extends Component {
     currentUser: PropTypes.shape({
       username: PropTypes.string,
     }),
-    currentPerms: PropTypes.any, // ### make this more specific
+    currentPerms: PropTypes.object, // eslint-disable-line react/forbid-prop-types
   }
 
   constructor(props, context) {
@@ -75,6 +75,8 @@ class MainNav extends Component {
       <ul>
         <li className={`${css.nowrap} ${css.ddTextItem}`}>Logged in as <strong>{ currentUser != null ? `${currentUser.first_name} ${currentUser.last_name}` : null }</strong></li>
         <li className={css.ddDivider} aria-hidden="true" />
+        <li className={css.ddTextItem}>Perms: {Object.keys(currentPerms || {}).sort().join(', ')}</li>
+        <li className={css.ddDivider} aria-hidden="true" />
         <li><button className={css.ddButton} type="button" onClick={this.logout}><span>Log out</span></button></li>
       </ul>
     );
@@ -116,7 +118,6 @@ class MainNav extends Component {
       );
     }
 
-    console.log('currentPerms =', currentPerms);
     return (
       <nav role="navigation" className={css.navRoot}>
         {firstNav}

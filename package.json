@@ -1,6 +1,6 @@
 {
   "name": "@folio/stripes-core",
-  "version": "0.0.12",
+  "version": "0.2.0",
   "description": "The starting point for Stripes applications",
   "license": "Apache-2.0",
   "repository": "folio-org/stripes-core",
@@ -35,7 +35,7 @@
   },
   "dependencies": {
     "@folio/stripes-components": "^0.0.2",
-    "@folio/stripes-connect": "^0.0.9",
+    "@folio/stripes-connect": "^0.1.0",
     "@folio/stripes-loader": "^0.0.2-test",
     "@folio/stripes-logger": "^0.0.2",
     "babel-core": "^6.23.1",

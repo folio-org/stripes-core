@@ -43,7 +43,7 @@ class Root extends Component {
             <ModuleContainer id="content">
               <Match pattern="/" exactly component={Front} key="root" />
               {/* <Match pattern="/settings" exactly component={Settings} /> */}
-              {getModuleRoutes(logger)}
+              {getModuleRoutes(logger, this.props.currentPerms)}
               <Miss
                 component={() => <div>
                   <h2>Uh-oh!</h2>
@@ -72,11 +72,16 @@ Root.propTypes = {
   }),
   token: PropTypes.string,
   disableAuth: PropTypes.bool.isRequired,
-  logger: PropTypes.object.isRequired,
+  logger: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
+  currentPerms: PropTypes.object, // eslint-disable-line react/forbid-prop-types
 };
 
 function mapStateToProps(state) {
-  return { token: state.okapi.token };
+  return {
+    token: state.okapi.token,
+    currentUser: state.okapi.currentUser,
+    currentPerms: state.okapi.currentPerms,
+  };
 }
 
 export default connect(mapStateToProps)(Root);
