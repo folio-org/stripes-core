@@ -1,6 +1,6 @@
 {
   "name": "@folio/stripes-core",
-  "version": "0.0.11",
+  "version": "0.2.0",
   "description": "The starting point for Stripes applications",
   "license": "Apache-2.0",
   "repository": "folio-org/stripes-core",
@@ -35,7 +35,7 @@
   },
   "dependencies": {
     "@folio/stripes-components": "^0.0.2",
-    "@folio/stripes-connect": "^0.0.9",
+    "@folio/stripes-connect": "^0.1.0",
     "@folio/stripes-loader": "^0.0.2-test",
     "@folio/stripes-logger": "^0.0.2",
     "babel-core": "^6.23.1",
@@ -54,9 +54,11 @@
     "eslint-import-resolver-webpack": "^0.8.1",
     "express": "^4.14.0",
     "extract-text-webpack-plugin": "^2.0.0",
+    "hard-source-webpack-plugin": "^0.3.11",
     "json-loader": "^0.5.4",
     "loader-utils": "^0.2.16",
     "lodash": "^4.16.4",
+    "node-object-hash": "^1.2.0",
     "postcss": "^5.2.13",
     "postcss-cssnext": "^2.9.0",
     "postcss-import": "^9.1.0",

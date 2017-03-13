@@ -1,5 +1,24 @@
 # Change history for stripes-core
 
+## [0.2.0](https://github.com/folio-org/stripes-core/tree/v0.2.0) (Sun Mar 12 23:34:18 GMT 2017)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v0.1.0...v0.2.0)
+
+* One trivial change: the logger object is passed into [stripes-connect](https://github.com/folio-org/stripes-connect/). Requires stripes-connect v0.1 or better.
+
+## [0.1.0](https://github.com/folio-org/stripes-core/tree/v0.1.0) (Fri Mar 10 23:07:14 GMT 2017)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v0.0.12...v0.1.0)
+
+* The "FOLIO" button at top left now returns to the home page of the SPA. Fixes STRIPES-250.
+* When logging in as a user, the permissions of that user are now loaded, and are made available to the top-level component of loaded modules as a new `currentPerms` property. Its value is an object whose keys are machine-readable permission names and whose values are the corresponding human-readable names (for use in error messages). Fixes STRIPES-248.
+* For time being, permissions are also listed in the pop-down user menu at top right; this will be removed at some point, but is handy in the short term.
+
+## [0.0.12](https://github.com/folio-org/stripes-core/tree/v0.0.11) (Fri 10 Mar 11:46:53 GMT 2017)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v0.0.11...v0.0.12)
+
+* New dependency on `@foliostripes-logger`. This is used lightly within stripes-core itself, and more importantly a configured logger object is passed as the `logger` property to the top-level component of all loaded modules. Part of STRIPES-226.
+* Change to internal API of moduleRoutes: instead of exporting the list of routes, now exports a function that returns them. That function takes a logger object as a parameter, and passes it as a prop to the modules.
+* Use a specific copy of react when stripes-core is linked. Fixes STRIPES-220.
+
 ## [0.0.11](https://github.com/folio-org/stripes-core/tree/v0.0.11) (2017-03-01)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v0.0.10...v0.0.11)
 

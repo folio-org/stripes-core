@@ -29,7 +29,10 @@ class MainNav extends Component {
   }
 
   static propTypes = {
-    currentUser: PropTypes.shape({ username: PropTypes.string }),
+    currentUser: PropTypes.shape({
+      username: PropTypes.string,
+    }),
+    currentPerms: PropTypes.object, // eslint-disable-line react/forbid-prop-types
   }
 
   constructor(props, context) {
@@ -54,10 +57,11 @@ class MainNav extends Component {
     this.store.dispatch(clearCurrentUser());
     this.toggleUserMenu();
     this.context.router.transitionTo('/');
+    window.location.reload();
   }
 
   render() {
-    const { currentUser } = this.props;
+    const { currentUser, currentPerms } = this.props;
     const userIcon = (
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 26 26">
         <rect width="26" height="26" style={{ fill: '#3D9964' }} />
@@ -70,6 +74,8 @@ class MainNav extends Component {
     const userDD = (
       <ul>
         <li className={`${css.nowrap} ${css.ddTextItem}`}>Logged in as <strong>{ currentUser != null ? `${currentUser.first_name} ${currentUser.last_name}` : null }</strong></li>
+        <li className={css.ddDivider} aria-hidden="true" />
+        <li className={css.ddTextItem}>Perms: {Object.keys(currentPerms || {}).sort().join(', ')}</li>
         <li className={css.ddDivider} aria-hidden="true" />
         <li><button className={css.ddButton} type="button" onClick={this.logout}><span>Log out</span></button></li>
       </ul>
@@ -95,7 +101,7 @@ class MainNav extends Component {
     if (breadcrumbArray.length === 0) {
       firstNav = (
         <NavGroup md="hide">
-          <NavButton href="#">
+          <NavButton href="/">
             <NavIcon color="#fdae35" />
             <span className={css.brandingLabel} style={{ fontSize: '22px' }}>FOLIO</span>
           </NavButton>
@@ -139,7 +145,10 @@ class MainNav extends Component {
 }
 
 function mapStateToProps(state) {
-  return { currentUser: state.okapi.currentUser };
+  return {
+    currentUser: state.okapi.currentUser,
+    currentPerms: state.okapi.currentPerms,
+  };
 }
 
 export default connect(mapStateToProps)(MainNav);
