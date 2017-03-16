@@ -22,4 +22,4 @@ Stripes is a toolkit for building single-page web applications that FOLIO UI mod
 * [The release procedure](doc/release-procedure.md) for the packages that make up Stripes.
 * [An example component: the **PatronEdit** component](doc/component-example.md) walks through a simple example of a component that is connected to the back-end service using Stripes Connect. **NOTE that this is somewhat out of date**, but still helpfully illustrative.
 * [A component hierarchy example: the "Patrons" module](doc/component-hierarchy.md) shows by example how a set of components -- some connected, some not -- can work together to implement part of an application. **NOTE that this is somewhat out of date**, but still helpfully illustrative.
-
+* Other FOLIO Developer documentation is at [dev.folio.org](http://dev.folio.org/)
