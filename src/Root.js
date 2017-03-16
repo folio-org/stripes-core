@@ -1,9 +1,9 @@
 import React, { Component, PropTypes } from 'react';
 import { combineReducers } from 'redux';
 import { Provider, connect } from 'react-redux';
-import Router from 'react-router/BrowserRouter';
-import Match from 'react-router/Match';
-import Miss from 'react-router/Miss';
+import Router from 'react-router-dom/BrowserRouter';
+import Route from 'react-router-dom/Route';
+import Switch from 'react-router-dom/Switch';
 
 import MainContainer from './components/MainContainer';
 import MainNav from './components/MainNav';
@@ -41,15 +41,17 @@ class Root extends Component {
           <MainContainer>
             <MainNav />
             <ModuleContainer id="content">
-              <Match pattern="/" exactly component={Front} key="root" />
-              {/* <Match pattern="/settings" exactly component={Settings} /> */}
-              {getModuleRoutes(logger, this.props.currentPerms)}
-              <Miss
-                component={() => <div>
-                  <h2>Uh-oh!</h2>
-                  <p>This route does not exist.</p>
-                </div>}
-              />
+              <Switch>
+                <Route exact path="/" component={Front} key="root" />
+                {/* <Route pattern="/settings" exactly component={Settings} /> */}
+                {getModuleRoutes(logger, this.props.currentPerms)}
+                <Route
+                  component={() => <div>
+                    <h2>Uh-oh!</h2>
+                    <p>This route does not exist.</p>
+                  </div>}
+                />
+              </Switch>
             </ModuleContainer>
           </MainContainer>
         : <LoginCtrl /> }
