@@ -39,7 +39,9 @@ for i in `echo '
 		    if [ $build = y ]; then
 			case $i in
 			    ui-*) echo "No need to build UI module";;
-			    *)    npm install;;
+			    *)    npm install
+			    	  test $i = stripes-core || rm -r node_modules/react
+				  ;;
 			esac
 		    fi
 		fi
