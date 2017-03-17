@@ -1,5 +1,5 @@
 import React from 'react';
-import Match from 'react-router/Match';
+import Route from 'react-router-dom/Route';
 import { connectFor } from '@folio/stripes-connect';
 import { modules } from 'stripes-loader'; // eslint-disable-line
 
@@ -12,8 +12,8 @@ function getModuleRoutes(logger, currentPerms) {
     const connect = connectFor(module.module, logger);
     const Current = connect(module.getModule());
     return (
-      <Match
-        pattern={module.route}
+      <Route
+        path={module.route}
         key={module.route}
         render={props => <Current {...props} connect={connect} logger={logger} currentPerms={currentPerms} />}
       />

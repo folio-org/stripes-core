@@ -1,5 +1,5 @@
 import React from 'react';
-import Link from 'react-router/Link';
+import Link from 'react-router-dom/Link';
 import css from './NavButton.css';
 
 const propTypes = {

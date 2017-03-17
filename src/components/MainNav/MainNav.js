@@ -1,10 +1,8 @@
 import React, { Component, PropTypes } from 'react';
-import Link from 'react-router/Link';
 import { connect } from 'react-redux';
+import { Dropdown } from 'react-bootstrap';
 
 import { modules } from 'stripes-loader'; // eslint-disable-line
-
-import { Dropdown } from 'react-bootstrap';
 
 import { clearOkapiToken, clearCurrentUser } from '../../okapiActions';
 
@@ -82,17 +80,12 @@ class MainNav extends Component {
     );
 
     const menuLinks = modules.app.map(entry =>
-      <Link to={entry.home || entry.route} key={entry.route}>
-        {
-          ({ href, onClick }) =>
-            <NavButton onClick={onClick} href={href} title={entry.displayName}>
-              <NavIcon color="#61f160" />
-              <span className={css.linkLabel}>
-                {entry.displayName}
-              </span>
-            </NavButton>
-        }
-      </Link>,
+      <NavButton href={entry.home || entry.route} title={entry.displayName} key={entry.route}>
+        <NavIcon color="#61f160" />
+        <span className={css.linkLabel}>
+          {entry.displayName}
+        </span>
+      </NavButton>,
     );
 
     let firstNav;
