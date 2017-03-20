@@ -51,9 +51,9 @@ class MainNav extends Component {
   }
 
   logout() {
-    //this.store.dispatch(clearOkapiToken());
-    //this.store.dispatch(clearCurrentUser());
-    window.location.assign('/');
+    this.store.dispatch(clearOkapiToken());
+    this.store.dispatch(clearCurrentUser());
+    this.context.router.history.push('/');
   }
 
   render() {
