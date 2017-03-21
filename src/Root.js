@@ -34,28 +34,30 @@ class Root extends Component {
   }
 
   render() {
-    const { logger, store, token, disableAuth } = this.props;
+    const { logger, store, token, disableAuth, currentPerms } = this.props;
     return (
-      <Provider store={store}><Router>
-        { token != null || disableAuth ?
-          <MainContainer>
-            <MainNav />
-            <ModuleContainer id="content">
-              <Switch>
-                <Route exact path="/" component={Front} key="root" />
-                {/* <Route pattern="/settings" exactly component={Settings} /> */}
-                {getModuleRoutes(logger, this.props.currentPerms)}
-                <Route
-                  component={() => <div>
-                    <h2>Uh-oh!</h2>
-                    <p>This route does not exist.</p>
-                  </div>}
-                />
-              </Switch>
-            </ModuleContainer>
-          </MainContainer>
-        : <LoginCtrl /> }
-      </Router></Provider>
+      <Provider store={store}>
+        <Router>
+          { token != null || disableAuth ?
+            <MainContainer>
+              <MainNav />
+              <ModuleContainer id="content">
+                <Switch>
+                  <Route exact path="/" component={Front} key="root" />
+                  {/* <Route pattern="/settings" exactly component={Settings} /> */}
+                  {getModuleRoutes(logger, currentPerms)}
+                  <Route
+                    component={() => <div>
+                      <h2>Uh-oh!</h2>
+                      <p>This route does not exist.</p>
+                    </div>}
+                  />
+                </Switch>
+              </ModuleContainer>
+            </MainContainer>
+          : <LoginCtrl /> }
+        </Router>
+      </Provider>
     );
   }
 
