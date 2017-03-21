@@ -1,9 +1,10 @@
 # Change history for stripes-core
 
-## [0.3.0](https://github.com/folio-org/stripes-core/tree/v0.3.0) (2017-03-??)
+## [0.3.0](https://github.com/folio-org/stripes-core/tree/v0.3.0) (2017-03-21)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v0.2.0...v0.3.0)
 
 * Switch to using the new release of [React Router](https://reacttraining.com/react-router/). This significantly changes the API for URL-derived props and for changing the URL. In addition to their detailed documentation you may also find [this commit](https://github.com/folio-org/ui-items/commit/adf24349efef3bf2dc5928c8a76a5991369577b9) illustrative.
+* Switch to new way of providing logger and permissions to modules, as part of a single `stripes` object that is passed as a prop to the top-level component of each module. Note that **this is a breaking change** so this release should really get a new major version number.
 
 ## [0.2.0](https://github.com/folio-org/stripes-core/tree/v0.2.0) (2017-03-12)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v0.1.0...v0.2.0)
