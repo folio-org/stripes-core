@@ -54,8 +54,9 @@ class Root extends Component {
                   />
                 </Switch>
               </ModuleContainer>
-            </MainContainer>
-          : <LoginCtrl /> }
+            </MainContainer> :
+            <LoginCtrl />
+          }
         </Router>
       </Provider>
     );
