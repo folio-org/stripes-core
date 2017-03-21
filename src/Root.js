@@ -34,7 +34,26 @@ class Root extends Component {
   }
 
   render() {
-    const { logger, store, token, disableAuth, currentPerms } = this.props;
+    const { logger, store, okapi, token, disableAuth, currentUser, currentPerms } = this.props;
+
+    function Stripes(x) {
+      Object.assign(this, x);
+      this.hasPerm = (perm) => {
+        logger.log('perm', `checking perm '${perm}': `, !!this.user.perms[perm]);
+        return this.user.perms[perm];
+      };
+    }
+
+    const stripes = new Stripes({
+      logger,
+      store,
+      okapi,
+      user: {
+        user: currentUser,
+        perms: currentPerms,
+      },
+    });
+
     return (
       <Provider store={store}>
         <Router>
@@ -45,7 +64,7 @@ class Root extends Component {
                 <Switch>
                   <Route exact path="/" component={Front} key="root" />
                   {/* <Route pattern="/settings" exactly component={Settings} /> */}
-                  {getModuleRoutes(logger, currentPerms)}
+                  {getModuleRoutes(stripes)}
                   <Route
                     component={() => <div>
                       <h2>Uh-oh!</h2>
@@ -61,7 +80,6 @@ class Root extends Component {
       </Provider>
     );
   }
-
 }
 
 Root.childContextTypes = {
