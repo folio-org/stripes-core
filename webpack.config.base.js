@@ -54,7 +54,7 @@ module.exports = {
         // "stripes-" (which is fine) or "ui-" (which is probably
         // not). We will want to fix this eventually, but it will all
         // change when we move to WebPack 2 so we'll wait till then.
-        include:  [path.join(__dirname, 'src'), /@folio/, path.join(__dirname, '../dev'), /\/(stripes|ui)-(?!.*\/node_modules\/)/, /\/@folio-sample-modules/]
+        include:  [path.join(__dirname, 'src'), /@folio/, path.join(__dirname, '../dev'), /[\/\\](stripes|ui)-(?!.*[\/\\]node_modules[\/\\])/, /\/@folio-sample-modules/]
                                                                                           
         //exclude: [/node_modules/]
       },
