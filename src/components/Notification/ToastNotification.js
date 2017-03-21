@@ -2,8 +2,8 @@ import React from 'react';
 import Button from '@folio/stripes-components/lib/Button';
 import Icon from '@folio/stripes-components/lib/Icon';
 import Layout from '@folio/stripes-components/lib/Layout';
-import classNames from 'classnames';
-import { Transition } from 'react-overlays';
+import classNames from 'classnames'; // eslint-disable-line
+import { Transition } from 'react-overlays'; // eslint-disable-line
 import css from './Toast.css';
 
 const propTypes = {
@@ -32,105 +32,112 @@ const propTypes = {
    * Unique identifier
    */
   id: React.PropTypes.string.isRequired,
-}
+  /*
+   * Handler for hiding the Toast
+   */
+  onHide: React.PropTypes.func,
+};
 
 const defaultProps = {
-  position: "end bottom",
-  transition: "slide",
-  toastStyle: "info",
+  position: 'end bottom',
+  transition: 'slide',
+  toastStyle: 'info',
   timeout: 6000,
-}
+};
 
-class ToastNotification extends React.Component{
-  constructor(props){
+class ToastNotification extends React.Component {
+  constructor(props) {
     super(props);
-    
+
     this.state = {
-      show: true
-    }
-    
+      show: true,
+    };
+
     this.timeout = null;
-    
+
     this.handleHide = this.handleHide.bind(this);
     this.onExited = this.onExited.bind(this);
   }
-  
-  componentDidMount(){
-    if(this.props.timeout != 0){
-      this.timeout = window.setTimeout( () => {this.handleHide()}, this.props.timeout );
+
+  componentDidMount() {
+    if (this.props.timeout !== 0) {
+      this.timeout = window.setTimeout(() => { this.handleHide(); }, this.props.timeout);
     }
   }
-  
-  handleHide(){
-    this.setState({show: false});
-    if(this.timeout){
-      window.clearTimeout(this.timeout);
-    }
-  }
-  
-  onExited(){
+
+  onExited() {
     this.props.onHide(this.props.id);
   }
-  
-  getDisplayClass(){
+
+  getDisplayClass() {
     const { type } = this.props;
     return classNames(
       css.base,
-      {[`${css.error}`]: type === "error"},
-      {[`${css.success}`]: type === "success"}
+      { [`${css.error}`]: type === 'error' },
+      { [`${css.success}`]: type === 'success' },
     );
   }
-  
-  getTransitionClass(){
+
+  getTransitionClass() {
     const { position, transition } = this.props;
     return classNames(
-      {[`${css.startOutside}`]: 
-        /start\b/.test(position) && transition === 'slide' 
+      { [`${css.startOutside}`]:
+        /start\b/.test(position) && transition === 'slide',
       },
-      {[`${css.endOutside}`]: 
-        /end\b/.test(position) && transition === 'slide' || 
-        ((position === 'top' || position === 'bottom') && transition === "slide")
+      { [`${css.endOutside}`]:
+        /end\b/.test(position) && transition === 'slide' || // eslint-disable-line
+        ((position === 'top' || position === 'bottom') && transition === 'slide'),
       },
-      {[`${css.fade}`]: transition === 'fade'}
+      { [`${css.fade}`]: transition === 'fade' },
     );
   }
-  
-  getRootClass(){
+
+  getRootClass() {
     const { position } = this.props;
     return classNames(
       css.toastNotificationRoot,
-      {[`${css.alignStart}`]: /start\b/.test(position)},
+      { [`${css.alignStart}`]: /start\b/.test(position) },
     );
   }
-  
-  
-  render(){
-    
-    const message = typeof(this.props.message) === 'string' ? (
+
+  handleHide() {
+    this.setState({ show: false });
+    if (this.timeout) {
+      window.clearTimeout(this.timeout);
+    }
+  }
+
+  render() {
+    const message = typeof (this.props.message) === 'string' ? (
       <Layout className="flex full justified centerItems">
         {this.props.message}
-        <Button 
-          buttonStyle="transparent" 
-          title="Dismiss this message" 
-          onClick={this.handleHide}>
-            <Icon icon="closeX" />
+        <Button
+          buttonStyle="transparent"
+          title="Dismiss this message"
+          onClick={this.handleHide}
+        >
+          <Icon icon="closeX" />
         </Button>
       </Layout>
-    ) : (<Layout className="flex full justified centerItems">{this.props.message}<Button 
-          buttonStyle="transparent" 
-          title="Dismiss this message" 
-          onClick={this.handleHide}>
-            <Icon icon="closeX" />
-            </Button>
-        </Layout>);
-    
-    return(
-   
+    ) : (
+      <Layout className="flex full justified centerItems">
+        {this.props.message}
+        <Button
+          buttonStyle="transparent"
+          title="Dismiss this message"
+          onClick={this.handleHide}
+        >
+          <Icon icon="closeX" />
+        </Button>
+      </Layout>
+    );
+
+    return (
       <div className={this.getRootClass()}>
-        <Transition 
+        <Transition
           in={this.state.show}
-          className = {this.getTransitionClass()}
-          timeout= {400}
+          className={this.getTransitionClass()}
+          timeout={400}
           enteredClassName={css.open}
           onExited={this.onExited}
           transitionAppear
@@ -140,7 +147,7 @@ class ToastNotification extends React.Component{
           </div>
         </Transition>
       </div>
-    )
+    );
   }
 }
 
