@@ -1,9 +1,7 @@
 import React from 'react';
-import { Portal, Transition } from 'react-overlays';
+import { Portal } from 'react-overlays'; // eslint-disable-line
 import ToastNotification from './ToastNotification';
 import css from './Toast.css';
-import classNames from 'classnames';
-import _ from 'lodash';
 
 const propTypes = {
   /*
@@ -11,31 +9,35 @@ const propTypes = {
    * message and id are required.
    */
   notifications: React.PropTypes.array,
-}
+  /*
+   * Hide handler for dismissing toasts.
+   */
+  onHide: React.PropTypes.func,
+};
 
-class Toast extends React.Component{
-  constructor(props){
+class Toast extends React.Component {
+  constructor(props) {
     super(props);
     this.toastbody = null;
     this.toastRoot = null;
   }
-  
+
   render() {
-    let bottomMessages = [];
-    let topMessages = [];
+    const bottomMessages = [];
+    const topMessages = [];
     this.props.notifications.forEach((toast) => {
-      const {id, ...toastProps} = toast;
-      if(!toast.position || !/top\b/.test(toast.position)){
+      const { id, ...toastProps } = toast;
+      if (!toast.position || !/top\b/.test(toast.position)) {
         bottomMessages.unshift(
-          <ToastNotification key={id} {...toastProps} onHide={this.props.onHide} id={id} />
+          <ToastNotification key={id} {...toastProps} onHide={this.props.onHide} id={id} />,
         );
-      }else{
+      } else {
         topMessages.unshift(
-          <ToastNotification key={id} {...toastProps} onHide={this.props.onHide} id={id} />
-        )
+          <ToastNotification key={id} {...toastProps} onHide={this.props.onHide} id={id} />,
+        );
       }
     });
-    
+
     return (
       <Portal container={document.body}>
         <div>
@@ -47,9 +49,9 @@ class Toast extends React.Component{
           </div>
         </div>
       </Portal>
-    )
+    );
   }
-};
+}
 
 Toast.propTypes = propTypes;
 
