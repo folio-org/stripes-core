@@ -1,0 +1,120 @@
+@import '../variables.css';
+
+.toastContainerRoot{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  pointer-events: none;
+  flex-direction: column-reverse;
+  flex-wrap: wrap-reverse;
+  justify-content: flex-start;
+  padding: 1rem;
+  &.top{
+    padding-top: 44px;
+    flex-direction: column;
+    flex-wrap: wrap;
+  }
+}
+
+.toastNotificationRoot{
+  width: 100%;
+  display: flex;
+  flex-direction: row-reverse;
+  padding: .5rem 1rem;
+  transition: all .3s ease;
+  &.alignStart{
+    flex-direction: row;
+  }
+}
+
+.base{
+  padding: 1rem;
+  border-radius: 4px;
+  background-color: #fff;
+  width: 35%;
+  pointer-events: all;
+  position: relative;
+  transition: all .2s ease;
+  display: flex;
+  box-shadow: 0px 4px 19px 0px rgba(0,0,0,0.39);
+  &.error{
+    background-color: color(var(--error, #900) tint(25%));
+    border-color: var(--error);
+    color: #fff;
+    box-shadow: 0px 4px 19px 0px rgba(153,0,0,0.39);
+    & :global .stripes__icon{
+            fill: #fff;
+      }
+  }
+  &.success{
+    background-color: color(var(--success, #060) tint(25%));
+    border-color: var(--success);
+    color: #fff;
+    box-shadow: 0px 4px 19px 0px rgba(0,112,0,0.39);
+    & :global .stripes__icon{
+            fill: #fff;
+      }
+  }
+}
+
+.endOutside{
+  right: -40%;
+  &.open{
+    right: 0;
+  }
+}
+
+.startOutside{
+  left: -40%;
+  &.open{
+    left: 0;
+  }
+}
+
+.fade{
+  opacity: 0;
+  &.open{
+    opacity: 1;
+  }
+}
+
+[dir="rtl"]{
+  & .endOutside{
+    left: -40%;
+    right: auto;
+    &.open{
+      left: 0;
+      right: auto;
+    }
+  }
+  & .startOutside{
+    right: -40%;
+    left: auto;
+    &.open{
+      right: 0;
+      left: auto;
+    }
+  }
+}
+
+@media(--small){
+  .base{
+    width: 100%;
+    border-radius: 0;
+  }
+  .toastNotificationRoot{
+    padding: 0;
+  }
+  .endOutside{
+    right: -105%;
+  }
+  .startOutside{
+    left: -105%;
+  }
+  .toastContainerRoot{
+    padding: 0;
+  }
+}
