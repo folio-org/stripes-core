@@ -63,7 +63,7 @@ class Root extends Component {
               <ModuleContainer id="content">
                 <Switch>
                   <Route exact path="/" component={Front} key="root" />
-                  <Route pattern="/settings" exactly component={Settings} />
+                  <Route exact path="/settings" component={Settings} />
                   {getModuleRoutes(stripes)}
                   <Route
                     component={() => <div>
