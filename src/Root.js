@@ -10,7 +10,7 @@ import MainNav from './components/MainNav';
 import ModuleContainer from './components/ModuleContainer';
 import { Front } from './components/Front';
 import LoginCtrl from './components/Login';
-// import Settings from './components/Settings/Settings';
+import Settings from './components/Settings/Settings';
 
 import getModuleRoutes from './moduleRoutes';
 import initialReducers from './initialReducers';
@@ -63,7 +63,7 @@ class Root extends Component {
               <ModuleContainer id="content">
                 <Switch>
                   <Route exact path="/" component={Front} key="root" />
-                  {/* <Route pattern="/settings" exactly component={Settings} /> */}
+                  <Route pattern="/settings" exactly component={Settings} />
                   {getModuleRoutes(stripes)}
                   <Route
                     component={() => <div>
