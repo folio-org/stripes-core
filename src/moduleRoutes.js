@@ -15,7 +15,7 @@ function getModuleRoutes(stripes) {
       <Route
         path={module.route}
         key={module.route}
-        render={props => <Current {...props} connect={connect} stripes={stripes} />}
+        render={props => <Current {...props} connect={connect} stripes={Object.assign({}, stripes, { connect })} />}
       />
     );
   });
