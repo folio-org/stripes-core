@@ -1,5 +1,10 @@
 # Change history for stripes-core
 
+## [0.4.0](https://github.com/folio-org/stripes-core/tree/v0.4.0) (2017-03-22)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v0.3.0...v0.4.0)
+
+* Each module now gets its curried `connect` function in the `stripes` object. For now, that curried `connect` is still also passed as its own prop to the top-level component of the module, but **this is deprecated and will be removed in the next release**.
+
 ## [0.3.0](https://github.com/folio-org/stripes-core/tree/v0.3.0) (2017-03-21)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v0.2.0...v0.3.0)
 
