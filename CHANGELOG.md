@@ -4,6 +4,7 @@
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v0.4.0...v0.5.0)
 
 * Add a "Settings" text-link at top left, next to the FOLIO branding, that transitions to /settings. It is _not_ based on UX designs, it's just a placeholder so we can run the patron-group CRUDding. See LIBAPP-76.
+* Pass the Stripes object down into settings components as well as regular components.
 
 ## [0.4.0](https://github.com/folio-org/stripes-core/tree/v0.4.0) (2017-03-22)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v0.3.0...v0.4.0)
