@@ -97,6 +97,11 @@ Root.propTypes = {
   disableAuth: PropTypes.bool.isRequired,
   logger: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
   currentPerms: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+  currentUser: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+  okapi: PropTypes.shape({
+    url: PropTypes.string.isRequired,
+    tenant: PropTypes.string.isRequired,
+  }).isRequired,
 };
 
 function mapStateToProps(state) {
