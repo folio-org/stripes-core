@@ -96,6 +96,10 @@ class MainNav extends Component {
             <NavIcon color="#fdae35" />
             <span className={css.brandingLabel} style={{ fontSize: '22px' }}>FOLIO</span>
           </NavButton>
+          <NavButton href="/settings">
+            <NavIcon color="#7d3fb3" />
+            <span>Settings</span>
+          </NavButton>
         </NavGroup>
       );
     } else {

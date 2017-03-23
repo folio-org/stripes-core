@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 
 import NavList from './NavList';
 import NavListSection from './NavListSection';
@@ -12,6 +12,14 @@ const SettingsConfig = [
 ];
 
 class Settings extends React.Component {
+  static propTypes = {
+    stripes: PropTypes.shape({
+      logger: PropTypes.shape({
+        log: PropTypes.func.isRequired,
+      }).isRequired,
+    }).isRequired,
+  };
+
   constructor(props) {
     super(props);
 
@@ -34,7 +42,8 @@ class Settings extends React.Component {
     const result = this.state.settingsPaths.filter(
       obj => obj.component.name === this.state.settingsPage,
     );
-    return React.createElement(result[0].component);
+    const Component = result[0].component;
+    return <Component stripes={this.props.stripes} />;
   }
 
   render() {
