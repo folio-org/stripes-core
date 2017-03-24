@@ -53,9 +53,7 @@ class MainNav extends Component {
   logout() {
     this.store.dispatch(clearOkapiToken());
     this.store.dispatch(clearCurrentUser());
-    this.toggleUserMenu();
-    this.context.router.transitionTo('/');
-    window.location.reload();
+    this.context.router.history.push('/');
   }
 
   render() {
@@ -97,6 +95,10 @@ class MainNav extends Component {
           <NavButton href="/">
             <NavIcon color="#fdae35" />
             <span className={css.brandingLabel} style={{ fontSize: '22px' }}>FOLIO</span>
+          </NavButton>
+          <NavButton href="/settings">
+            <NavIcon color="#7d3fb3" />
+            <span>Settings</span>
           </NavButton>
         </NavGroup>
       );

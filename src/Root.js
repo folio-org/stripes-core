@@ -10,7 +10,7 @@ import MainNav from './components/MainNav';
 import ModuleContainer from './components/ModuleContainer';
 import { Front } from './components/Front';
 import LoginCtrl from './components/Login';
-// import Settings from './components/Settings/Settings';
+import Settings from './components/Settings/Settings';
 
 import getModuleRoutes from './moduleRoutes';
 import initialReducers from './initialReducers';
@@ -34,31 +34,52 @@ class Root extends Component {
   }
 
   render() {
-    const { logger, store, token, disableAuth } = this.props;
+    const { logger, store, okapi, token, disableAuth, currentUser, currentPerms } = this.props;
+
+    function Stripes(x) {
+      Object.assign(this, x);
+      this.hasPerm = (perm) => {
+        logger.log('perm', `checking perm '${perm}': `, !!this.user.perms[perm]);
+        return this.user.perms[perm];
+      };
+    }
+
+    const stripes = new Stripes({
+      logger,
+      store,
+      okapi,
+      user: {
+        user: currentUser,
+        perms: currentPerms,
+      },
+    });
+
     return (
-      <Provider store={store}><Router>
-        { token != null || disableAuth ?
-          <MainContainer>
-            <MainNav />
-            <ModuleContainer id="content">
-              <Switch>
-                <Route exact path="/" component={Front} key="root" />
-                {/* <Route pattern="/settings" exactly component={Settings} /> */}
-                {getModuleRoutes(logger, this.props.currentPerms)}
-                <Route
-                  component={() => <div>
-                    <h2>Uh-oh!</h2>
-                    <p>This route does not exist.</p>
-                  </div>}
-                />
-              </Switch>
-            </ModuleContainer>
-          </MainContainer>
-        : <LoginCtrl /> }
-      </Router></Provider>
+      <Provider store={store}>
+        <Router>
+          { token != null || disableAuth ?
+            <MainContainer>
+              <MainNav />
+              <ModuleContainer id="content">
+                <Switch>
+                  <Route exact path="/" component={Front} key="root" />
+                  <Route exact path="/settings" render={() => <Settings stripes={stripes} />} />
+                  {getModuleRoutes(stripes)}
+                  <Route
+                    component={() => <div>
+                      <h2>Uh-oh!</h2>
+                      <p>This route does not exist.</p>
+                    </div>}
+                  />
+                </Switch>
+              </ModuleContainer>
+            </MainContainer> :
+            <LoginCtrl />
+          }
+        </Router>
+      </Provider>
     );
   }
-
 }
 
 Root.childContextTypes = {
@@ -76,6 +97,11 @@ Root.propTypes = {
   disableAuth: PropTypes.bool.isRequired,
   logger: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
   currentPerms: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+  currentUser: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+  okapi: PropTypes.shape({
+    url: PropTypes.string.isRequired,
+    tenant: PropTypes.string.isRequired,
+  }).isRequired,
 };
 
 function mapStateToProps(state) {

@@ -4,6 +4,7 @@
 * [Status and Scope](#status-and-scope)
 * [Code quality](#code-quality)
 * [Specifying dependencies](#specifying-dependencies)
+* [The Stripes object](#the-stripes-object)
 * [Enforcing permissions](#enforcing-permissions)
     * [The permissions structure](#the-permissions-structure)
     * [Testing for permission](#testing-for-permission)
@@ -40,6 +41,35 @@ Specifically:
 * When `stripes-connect` is used -- even when it's not imported, but the curried `connect` function from the props of the top-level component is used -- it should be declared as a peer-dependency. (This is essentially specifying what version of the stripes-connect API we are relying on).
 
 
+## The Stripes object
+
+Programming in Stripes is essentially [programming in React](https://facebook.github.io/react/docs/thinking-in-react.html), with one big difference: the provision of the Stripes object. As with regular React, data flows down through components (as props) and actions flow up.
+
+The Stripes object is provided as the `stripes` property to the top-level component of each module (and to its settings component, if it has one). It is the responsibility of that component to make it available as required elsewhere in the module -- by passing the prop down to its children, by installing it in the React context, or by some other means.
+
+The Stripes object contains the following elements:
+
+* `connect` -- a function that can be used to connect subcomponents to [stripes-connect](https://github.com/folio-org/stripes-connect), enabling that module to use [the Stripes Connect API](https://github.com/folio-org/stripes-connect/blob/master/doc/api.md) to communicate with WSAPIs such as those provided by Okapi.
+
+* `hasPerm` -- a function that can be used for [checking whether the presently logged-in user has a specified permission](#testing-for-permission).
+
+* `logger` -- a [stripes-logger](https://github.com/folio-org/stripes-logger) object that has been configured for Stripes and can be used in the usual way: see [Logging](#logging).
+
+* `store` -- the application's [Redux](https://github.com/reactjs/redux) store. **In general, you should not use this**, relying instead on the Stripes Connect facilities; but it is provided as a backdoor which developers can use with discretion.
+
+* `okapi` -- a structure containing configuration information about the connection of Okapi:
+
+  * `url` -- the base URL used in communication with Okapi. **In general, you should not use this** but there may be times when it is necessary to make an out-of-band call using [`fetch`](https://github.com/matthew-andrews/isomorphic-fetch) rather then have Stripes Connect handle communication.
+
+  * `tenant` -- the unique ID of the FOLIO tenant that is being accessed.
+
+* `user` -- a structure containing configuration information about the presently logged-in user:
+
+  * `perms` -- the set of permissions associated with the logged-in user, as described [below](#the-permissions-structure).
+
+  * `user` --- an object containing metadata about the logged-in user, with felds such as `email`, `first_name`, and `last_name`.
+
+
 ## Enforcing permissions
 
 Users in the FOLIO system have a set of permissions assigned to them. These are named by short strings such as `users.read`, `users.edit`, `perms.permissions.create`, etc. Operations are allowed or prohibited by server-side modules according as the logged-in user does or does not have the corresponding permissions.
@@ -48,19 +78,19 @@ However, in order to prevent misleading the user, or provoking inevitable author
 
 ### The permissions structure
 
-The permissions are provided to the top-level component of each module as the `currentPerms` property; it is the responsibility of that component to make it available to other components -- either by passing it as a property (`<SubComponent ... currentPerms={this.props.currentPerms}>` or by installing it in the React context.
+The permissions are provided to the top-level component of each module as the `users.perms` element of the `stripes` property; it is the responsibility of that component to make the `stripes` object available to other components -- either by passing it as a property (`<SubComponent ... stripes={this.props.stripes}>` or by installing it in the React context.
 
-The `currentPerms` structure is a JavaScript object whose keys are the names of the permissions that the user has, and whose keys are the corresponding human-readable descriptions. For example, the `users.read` permission might have the descriptions "Can search users and view brief profiles".
+The `perms` structure is a JavaScript object whose keys are the names of the permissions that the user has, and whose keys are the corresponding human-readable descriptions. For example, the `users.read` permission might have the descriptions "Can search users and view brief profiles".
 
 ### Testing for permission
 
-Generally, code should not assume that the `currentPerms` property exists, since the initial render of some components may happen before a user has logged in. So a permission such as `this.props.currentPerms['users.read']` should be checked only after the existence of the permissionss strucure has been verified. One easy way to do this us using [Lodash](https://lodash.com/)'s `get` function:
+Generally, code should not assume that the `user.perms` element of the `stripes` component exists, since the initial render of some components may happen before a user has logged in. So a permission such as `this.props.stripes.user.perms['users.read']` should be checked only after the existence of the permissions structure has been verified. The easiest way to do this is using the `stripes` object's `hasPerm` method:
 
 ```
-if (_.get(this.props, ['currentPerms', 'users.read])) ...
+if (this.props.stripes.hasPerm('users.read')) ...
 ```
 
-When guarding small element, such as an "New user" button that should appear only when when the `users.create` permission is present, the helper component [`<IfPermission>`](https://github.com/folio-org/stripes-components/blob/master/lib/IfPermission/readme.md) can be used:
+When guarding small elements, such as an "New user" button that should appear only when when the `users.create` permission is present, the helper component [`<IfPermission>`](https://github.com/folio-org/stripes-components/blob/master/lib/IfPermission/readme.md) can be used:
 
 ```
 <IfPermission {...this.props} perm="users.create">
@@ -88,11 +118,12 @@ The stripes-core library lets you make up categories on the fly -- so, for examp
 * `path` -- messages generated by stripes-connect describing how paths are generated by string substitution and fallback.
 * `mpath` -- conventionally used by application modules to log path generations by path functions.
 * `action` -- conventionally used by application modules to log user actions such as searching, sorting and editing.
+* `perm` -- emits a message whenever a permission is checked, whether successfully or not.
 * `xhr` -- conventionally used by application modules if for some reason they have to execute their own XML HTTP Request (or more often, these days, JSON HTTP Request). Note that in general, **modules should not do this** but should use the facilities provided by stripes-core.
 
 ### Using the logger
 
-The configured logger object is furnished as the `logger` property to the top-level component of each UI module. It is the responsibility of that component to ensure it is passed down to any subcomponents that need to use it. Logging can therefore be invoked using `this.props.logger.log('cat', args)`.
+The configured logger object is furnished as the `logger` element of the `stripes` property to the top-level component of each UI module. It is the responsibility of that component to ensure it is passed down to any subcomponents that need to use it. Logging can therefore be invoked using `this.props.stripes.logger.log('cat', args)`.
 
 In addition, the logger is passed as the fourth argument into stripes-connect path functions.
 

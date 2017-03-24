@@ -1,9 +1,22 @@
 # Change history for stripes-core
 
-## [0.3.0](https://github.com/folio-org/stripes-core/tree/v0.3.0) (2017-03-??)
+## [0.5.0](https://github.com/folio-org/stripes-core/tree/v0.5.0) (IN PROGRESS)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v0.4.0...v0.5.0)
+
+* Add a "Settings" text-link at top left, next to the FOLIO branding, that transitions to /settings. It is _not_ based on UX designs, it's just a placeholder so we can run the patron-group CRUDding. See LIBAPP-76.
+* Pass the Stripes object down into settings components as well as regular components.
+* Add a new section to [The Stripes Module Developer's Guide](doc/dev-guide.md) on the Stripes object. Finishes STRIPES-259.
+
+## [0.4.0](https://github.com/folio-org/stripes-core/tree/v0.4.0) (2017-03-22)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v0.3.0...v0.4.0)
+
+* Each module now gets its curried `connect` function in the `stripes` object. For now, that curried `connect` is still also passed as its own prop to the top-level component of the module, but **this is deprecated and will be removed in the next release**.
+
+## [0.3.0](https://github.com/folio-org/stripes-core/tree/v0.3.0) (2017-03-21)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v0.2.0...v0.3.0)
 
 * Switch to using the new release of [React Router](https://reacttraining.com/react-router/). This significantly changes the API for URL-derived props and for changing the URL. In addition to their detailed documentation you may also find [this commit](https://github.com/folio-org/ui-items/commit/adf24349efef3bf2dc5928c8a76a5991369577b9) illustrative.
+* Switch to new way of providing logger and permissions to modules, as part of a single `stripes` object that is passed as a prop to the top-level component of each module. Note that **this is a breaking change** so this release should really get a new major version number.
 
 ## [0.2.0](https://github.com/folio-org/stripes-core/tree/v0.2.0) (2017-03-12)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v0.1.0...v0.2.0)
