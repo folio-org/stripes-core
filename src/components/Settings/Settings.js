@@ -7,7 +7,10 @@ import css from './Settings.css';
 
 // Should be replaced with something dynamically generated....
 import UsersSettings from '@folio/users/settings'; // eslint-disable-line
+import ItemsSettings from '@folio/items/settings'; // eslint-disable-line
+
 const SettingsConfig = [
+  { name: 'Items', settingsPath: '@folio/items/settings', component: ItemsSettings },
   { name: 'Users', settingsPath: '@folio/users/settings', component: UsersSettings },
 ];
 
