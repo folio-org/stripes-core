@@ -21,7 +21,6 @@ if (!Array.isArray(modules.app) || modules.app.length < 1) {
 class MainNav extends Component {
 
   static contextTypes = {
-    store: PropTypes.object,
     router: PropTypes.object.isRequired,
   }
 
@@ -30,15 +29,18 @@ class MainNav extends Component {
       config: PropTypes.shape({
         showPerms: PropTypes.bool,
       }),
+      store: PropTypes.shape({
+        dispatch: PropTypes.func.isRequired,
+      }),
     }),
-  }
+  };
 
-  constructor(props, context) {
+  constructor(props) {
     super(props);
     this.state = {
       userMenuOpen: false,
     };
-    this.store = context.store;
+    this.store = props.stripes.store;
     this.toggleUserMenu = this.toggleUserMenu.bind(this);
     this.logout = this.logout.bind(this);
   }
