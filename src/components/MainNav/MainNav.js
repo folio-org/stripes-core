@@ -31,6 +31,11 @@ class MainNav extends Component {
       username: PropTypes.string,
     }),
     currentPerms: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+    stripes: PropTypes.shape({
+      config: PropTypes.shape({
+        showPerms: PropTypes.bool,
+      }),
+    }),
   }
 
   constructor(props, context) {
@@ -67,11 +72,19 @@ class MainNav extends Component {
       </svg>
     );
 
+    let maybePerms;
+    const config = this.props.stripes.config;
+    if (config && config.showPerms) {
+      maybePerms = (<span>
+        <li className={css.ddDivider} aria-hidden="true" />
+        <li className={css.ddTextItem}>Perms: {Object.keys(currentPerms || {}).sort().join(', ')}</li>
+      </span>);
+    }
+
     const userDD = (
       <ul>
         <li className={`${css.nowrap} ${css.ddTextItem}`}>Logged in as <strong>{ currentUser != null ? `${currentUser.first_name} ${currentUser.last_name}` : null }</strong></li>
-        <li className={css.ddDivider} aria-hidden="true" />
-        <li className={css.ddTextItem}>Perms: {Object.keys(currentPerms || {}).sort().join(', ')}</li>
+        {maybePerms}
         <li className={css.ddDivider} aria-hidden="true" />
         <li><button className={css.ddButton} type="button" onClick={this.logout}><span>Log out</span></button></li>
       </ul>
