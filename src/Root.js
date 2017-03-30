@@ -34,7 +34,7 @@ class Root extends Component {
   }
 
   render() {
-    const { logger, store, okapi, token, disableAuth, currentUser, currentPerms } = this.props;
+    const { logger, store, config, okapi, token, disableAuth, currentUser, currentPerms } = this.props;
 
     function Stripes(x) {
       Object.assign(this, x);
@@ -51,6 +51,7 @@ class Root extends Component {
     const stripes = new Stripes({
       logger,
       store,
+      config,
       okapi,
       user: {
         user: currentUser,
@@ -63,7 +64,7 @@ class Root extends Component {
         <Router>
           { token != null || disableAuth ?
             <MainContainer>
-              <MainNav />
+              <MainNav stripes={stripes} />
               <ModuleContainer id="content">
                 <Switch>
                   <Route exact path="/" component={Front} key="root" />
@@ -102,6 +103,7 @@ Root.propTypes = {
   logger: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
   currentPerms: PropTypes.object, // eslint-disable-line react/forbid-prop-types
   currentUser: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+  config: PropTypes.object, // eslint-disable-line react/forbid-prop-types
   okapi: PropTypes.shape({
     url: PropTypes.string.isRequired,
     tenant: PropTypes.string.isRequired,
