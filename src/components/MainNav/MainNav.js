@@ -1,5 +1,4 @@
 import React, { Component, PropTypes } from 'react';
-import { connect } from 'react-redux';
 import { Dropdown } from 'react-bootstrap';
 
 import { modules } from 'stripes-loader'; // eslint-disable-line
@@ -27,10 +26,6 @@ class MainNav extends Component {
   }
 
   static propTypes = {
-    currentUser: PropTypes.shape({
-      username: PropTypes.string,
-    }),
-    currentPerms: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     stripes: PropTypes.shape({
       config: PropTypes.shape({
         showPerms: PropTypes.bool,
@@ -62,7 +57,10 @@ class MainNav extends Component {
   }
 
   render() {
-    const { currentUser, currentPerms } = this.props;
+    const { stripes } = this.props;
+    const currentUser = stripes.user ? stripes.user.user : undefined;
+    const currentPerms = stripes.user ? stripes.user.perms : undefined;
+
     const userIcon = (
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 26 26">
         <rect width="26" height="26" style={{ fill: '#3D9964' }} />
@@ -73,7 +71,7 @@ class MainNav extends Component {
     );
 
     let maybePerms;
-    const config = this.props.stripes.config;
+    const config = stripes.config;
     if (config && config.showPerms) {
       maybePerms = (<span>
         <li className={css.ddDivider} aria-hidden="true" />
@@ -152,11 +150,4 @@ class MainNav extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    currentUser: state.okapi.currentUser,
-    currentPerms: state.okapi.currentPerms,
-  };
-}
-
-export default connect(mapStateToProps)(MainNav);
+export default MainNav;
