@@ -90,14 +90,19 @@ class MainNav extends Component {
       </ul>
     );
 
-    const menuLinks = modules.app.map(entry =>
-      <NavButton href={entry.home || entry.route} title={entry.displayName} key={entry.route}>
+    const menuLinks = modules.app.map((entry) => {
+      const name = entry.module.replace(/^@folio\//, '');
+      const perm = `module.${name}.enabled`;
+      stripes.logger.log('core', `name='${name}', perm='${perm}':`, stripes.hasPerm(perm));
+      // if (!stripes.hasPerm(perm)) return null; // Not until we have the permissions in the auth-blackbox
+
+      return (<NavButton href={entry.home || entry.route} title={entry.displayName} key={entry.route}>
         <NavIcon color="#61f160" />
         <span className={css.linkLabel}>
           {entry.displayName}
         </span>
-      </NavButton>,
-    );
+      </NavButton>);
+    });
 
     let firstNav;
     let breadcrumbArray = []; // eslint-disable-line
