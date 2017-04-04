@@ -53,7 +53,7 @@ class LoginCtrl extends Component {
         } else {
           response.json().then((json) => {
             // You are not expected to understand this
-            const map = Object.assign({}, ...json.permissionNames.map(p => ({ [p.permissionName]: p.displayName })));
+            const map = Object.assign({}, ...json.permissionNames.map(p => ({ [p.permissionName]: true })));
             this.store.dispatch(setCurrentPerms(map));
           });
         }
