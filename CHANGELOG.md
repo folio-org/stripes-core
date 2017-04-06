@@ -7,6 +7,7 @@
 * Pull in settings from ui-items as well as ui-users.
 * Pass the Stripes object down into settings components as well as regular components.
 * Add a new section to [The Stripes Module Developer's Guide](doc/dev-guide.md) on the Stripes object. Finishes STRIPES-259.
+* Remove support for, and documentation of, the `disableAuth` setting. Fixes STRIPES-298.
 
 ## [0.4.0](https://github.com/folio-org/stripes-core/tree/v0.4.0) (2017-03-22)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v0.3.0...v0.4.0)
