@@ -5,7 +5,7 @@
 
 * Add a "Settings" text-link at top left, next to the FOLIO branding, that transitions to /settings. It is _not_ based on UX designs, it's just a placeholder so we can run the patron-group and material-type CRUDding. See LIBAPP-76, LIBAPP-139.
 * Pull in settings from ui-items as well as ui-users.
-* Pass the Stripes object down into settings components as well as regular components.
+* Pass the Stripes object down into settings components as well as regular components. Fixes STRIPES-268.
 * Add a new section to [The Stripes Module Developer's Guide](doc/dev-guide.md) on the Stripes object. Finishes STRIPES-259.
 * Remove support for, and documentation of, the `disableAuth` setting. Fixes STRIPES-298.
 
