@@ -1,5 +1,10 @@
 # Change history for stripes-core
 
+## [0.7.0](https://github.com/folio-org/stripes-core/tree/v0.7.0) (IN PROGRESS)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v0.6.0...v0.7.0)
+
+* In [the release procedure documentation](doc/release-procedure.md), add more on tagging releases, change-logging and working towards the next release.
+
 ## [0.6.0](https://github.com/folio-org/stripes-core/tree/v0.6.0) (2017-04-11)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v0.5.0...v0.6.0)
 
