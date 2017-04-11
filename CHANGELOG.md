@@ -1,6 +1,6 @@
 # Change history for stripes-core
 
-## [0.5.0](https://github.com/folio-org/stripes-core/tree/v0.5.0) (IN PROGRESS)
+## [0.5.0](https://github.com/folio-org/stripes-core/tree/v0.5.0) (2017-04-11)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v0.4.0...v0.5.0)
 
 * Add a "Settings" text-link at top left, next to the FOLIO branding, that transitions to /settings. It is _not_ based on UX designs, it's just a placeholder so we can run the patron-group and material-type CRUDding. See LIBAPP-76, LIBAPP-139.
