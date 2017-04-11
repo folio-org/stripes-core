@@ -1,5 +1,11 @@
 # Change history for stripes-core
 
+## [0.6.0](https://github.com/folio-org/stripes-core/tree/v0.6.0) (2017-04-11)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v0.5.0...v0.6.0)
+
+* Upgrade stripes-connect dependency to 0.3.0.
+* Brief discussion of dependencies in [doc/overview.md].
+
 ## [0.5.0](https://github.com/folio-org/stripes-core/tree/v0.5.0) (2017-04-11)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v0.4.0...v0.5.0)
 
