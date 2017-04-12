@@ -93,7 +93,6 @@ class MainNav extends Component {
     const menuLinks = modules.app.map((entry) => {
       const name = entry.module.replace(/^@folio\//, '');
       const perm = `module.${name}.enabled`;
-      stripes.logger.log('core', `name='${name}', perm='${perm}':`, stripes.hasPerm(perm));
       if (!stripes.hasPerm(perm)) return null;
 
       return (<NavButton href={entry.home || entry.route} title={entry.displayName} key={entry.route}>
