@@ -41,10 +41,10 @@ class Root extends Component {
       this.hasPerm = (perm) => {
         if (!this.user.perms) {
           logger.log('perm', `not checking perm '${perm}': no user permissions yet`);
-          return false;
+          return undefined;
         }
         logger.log('perm', `checking perm '${perm}': `, !!this.user.perms[perm]);
-        return this.user.perms[perm];
+        return this.user.perms[perm] || false;
       };
     }
 
