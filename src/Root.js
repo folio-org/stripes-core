@@ -55,7 +55,8 @@ class Root extends Component {
       okapi,
       user: {
         user: currentUser,
-        perms: currentPerms,
+        // ### Remove the special-case below when possible: see STRIPES-322
+        perms: Object.assign({}, currentPerms, { 'module.organization.enabled': true })
       },
     });
 
