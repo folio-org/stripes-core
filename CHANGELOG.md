@@ -1,10 +1,16 @@
 # Change history for stripes-core
 
-## [0.7.0](https://github.com/folio-org/stripes-core/tree/v0.7.0) (IN PROGRESS)
+## [0.8.0](https://github.com/folio-org/stripes-core/tree/v0.8.0) (IN PROGRESS)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v0.7.0...v0.8.0)
+
+* Disallow access to modules that the user does not have permission to use, as specified by a `module.NAME.enabled` permission bit. Fixes STRIPES-273.
+
+## [0.7.0](https://github.com/folio-org/stripes-core/tree/v0.7.0) (2017-04-12)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v0.6.0...v0.7.0)
 
 * In [the release procedure documentation](doc/release-procedure.md), add more on tagging releases, change-logging and working towards the next release.
 * Added id "ModuleContainer" to module container `<div>`
+* Increased stripes-components dependency to v0.6.0.
 
 ## [0.6.0](https://github.com/folio-org/stripes-core/tree/v0.6.0) (2017-04-11)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v0.5.0...v0.6.0)
