@@ -31,7 +31,7 @@ a.navButton{
   display: flex;
   align-items: center;
   color: #555;
-  padding: 0 5px;
+  padding: 9px 5px;
   & img, & div, & svg{
     margin: 0 4px;
   }
