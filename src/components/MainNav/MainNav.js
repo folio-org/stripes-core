@@ -109,9 +109,15 @@ class MainNav extends Component {
     if (breadcrumbArray.length === 0) {
       firstNav = (
         <NavGroup md="hide">
-          <NavButton href="/">
+          <a className={css.skipLink} href="#ModuleContainer" aria-label="Skip Main Navigation" title="Skip Main Navigation">
+            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 26 26">
+              <polygon style={{fill: "#999"}} points="13 16.5 1.2 5.3 3.2 3.1 13 12.4 22.8 3.1 24.8 5.3 " />
+              <polygon style={{fill: "#999"}} points="13 24.8 1.2 13.5 3.2 11.3 13 20.6 22.8 11.3 24.8 13.5 " />
+            </svg>
+          </a>
+          <NavButton href="/">  
             <NavIcon color="#fdae35" />
-            <span className={css.brandingLabel} style={{ fontSize: '22px' }}>FOLIO</span>
+            <span className={css.brandingLabel} style={{ fontSize: '22px', lineHeight: '1rem' }}>FOLIO</span>
           </NavButton>
           <NavButton href="/settings">
             <NavIcon color="#7d3fb3" />

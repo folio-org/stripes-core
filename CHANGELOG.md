@@ -4,6 +4,9 @@
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v0.7.0...v0.8.0)
 
 * Disallow access to modules that the user does not have permission to use, as specified by a `module.NAME.enabled` permission bit. Fixes STRIPES-273.
+* Added Screen-reader-only 'Skip Navigation' link to Main Navigation.
+* Main Navigation adjusted to keep its height at smaller resolutions.
+* Set font stack. Switched from a single font to a font-stack based on system fonts.
 
 ## [0.7.0](https://github.com/folio-org/stripes-core/tree/v0.7.0) (2017-04-12)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v0.6.0...v0.7.0)

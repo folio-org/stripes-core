@@ -44,6 +44,18 @@
   margin-bottom: 4px;
 }
 
+.skipLink{
+  position: absolute;
+  display: block;
+  padding: 6px 4px 0 4px;
+  top: -100px;
+  transition: top .15s linear;
+  &:focus{
+    position: relative;
+    top: 0;
+  }
+}
+
 @media (--large){
   .linkLabel{
     /*display: none;*/
@@ -69,3 +81,4 @@
     align-items: center;
   }
 }
+
