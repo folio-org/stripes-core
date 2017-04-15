@@ -39,6 +39,10 @@ class Root extends Component {
     function Stripes(x) {
       Object.assign(this, x);
       this.hasPerm = (perm) => {
+        if (this.config && this.config.hasAllPerms) {
+          logger.log('perm', `assuming perm '${perm}': hasAllPerms is true`);
+          return true;
+        }
         if (!this.user.perms) {
           logger.log('perm', `not checking perm '${perm}': no user permissions yet`);
           return undefined;
