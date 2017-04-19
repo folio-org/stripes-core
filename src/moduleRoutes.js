@@ -11,7 +11,6 @@ function getModuleRoutes(stripes) {
   return modules.app.map((module) => {
     const name = module.module.replace(/^@folio\//, '');
     const perm = `module.${name}.enabled`;
-    stripes.logger.log('core', `routing name='${name}', perm='${perm}':`, stripes.hasPerm(perm));
     if (!stripes.hasPerm(perm)) return null;
 
     const connect = connectFor(module.module, stripes.logger);
