@@ -1,87 +1,71 @@
 import React, { PropTypes } from 'react';
+import Switch from 'react-router-dom/Switch';
+import Route from 'react-router-dom/Route';
+import Link from 'react-router-dom/Link';
+import { connectFor } from '@folio/stripes-connect';
+import { modules } from 'stripes-loader'; // eslint-disable-line
 
 import NavList from './NavList';
 import NavListSection from './NavListSection';
 
 import css from './Settings.css';
 
-// Should be replaced with something dynamically generated....
-import UsersSettings from '@folio/users/settings'; // eslint-disable-line
-import ItemsSettings from '@folio/items/settings'; // eslint-disable-line
+const settingsModules = [].concat(
+  (modules.app || []).filter(m => m.hasSettings),
+  (modules.settings || []),
+);
 
-const SettingsConfig = [
-  { name: 'Items', settingsPath: '@folio/items/settings', component: ItemsSettings },
-  { name: 'Users', settingsPath: '@folio/users/settings', component: UsersSettings },
-];
+const Settings = (props) => {
+  const stripes = props.stripes;
+  const navLinks = settingsModules.map(m => (
+    <Link
+      key={m.route}
+      to={`/settings${m.route}`}
+    >
+      {m.displayName}
+    </Link>
+  ));
 
-class Settings extends React.Component {
-  static propTypes = {
-    stripes: PropTypes.shape({
-      logger: PropTypes.shape({
-        log: PropTypes.func.isRequired,
-      }).isRequired,
-    }).isRequired,
-  };
+  const routes = settingsModules.map((m) => {
+    const connect = connectFor(m.module, stripes.logger);
+    const Current = connect(m.getModule());
 
-  constructor(props) {
-    super(props);
+    return (<Route
+      path={`/settings${m.route}`}
+      key={m.route}
+      render={props2 => <Current {...props2} stripes={Object.assign({}, stripes, { connect })} showSettings />}
+    />);
+  });
 
-    this.state = {
-      settingsPage: 'UsersSettings',
-      settingsPaths: SettingsConfig,
-    };
-
-    this.onNavClick = this.onNavClick.bind(this);
-  }
-
-  onNavClick(e) {
-    e.preventDefault();
-    const href = e.target.href;
-    const page = href.substring(href.indexOf('#') + 1);
-    this.setState({ settingsPage: page });
-  }
-
-  getPage() {
-    const result = this.state.settingsPaths.filter(
-      obj => obj.component.name === this.state.settingsPage,
-    );
-    const Component = result[0].component;
-    return <Component stripes={this.props.stripes} />;
-  }
-
-  render() {
-    const navLinks = this.state.settingsPaths.map(
-      page => (
-        <a
-          key={`${page.component.name}-Link`}
-          href={`#${page.component.name}`}
-          onClick={this.onNavClick}
-        >
-          {page.name}
-        </a>
-      ),
-    );
-
-    return (
-      <div className={css.paneset}>
-        <div className={css.navPane} style={{ width: '20%' }}>
-          <div className={css.header}>
-            <span>Settings</span>
-          </div>
-          <div className={css.content}>
-            <NavList>
-              <NavListSection label="App Settings" activeLink={`#${this.state.settingsPage}`}>
-                {navLinks}
-              </NavListSection>
-            </NavList>
-          </div>
+  return (
+    <div className={css.paneset}>
+      <div className={css.navPane} style={{ width: '20%' }}>
+        <div className={css.header}>
+          <span>Settings</span>
         </div>
-
-        {this.getPage()}
-
+        <div className={css.content}>
+          <NavList>
+            <NavListSection label="App Settings" activeLink="">
+              {navLinks}
+            </NavListSection>
+          </NavList>
+        </div>
       </div>
-    );
-  }
-}
+
+      <Switch>
+        {routes}
+        <Route component={() => <div>Choose settings</div>} />
+      </Switch>
+    </div>
+  );
+};
+
+Settings.propTypes = {
+  stripes: PropTypes.shape({
+    logger: PropTypes.shape({
+      log: PropTypes.func.isRequired,
+    }).isRequired,
+  }).isRequired,
+};
 
 export default Settings;
