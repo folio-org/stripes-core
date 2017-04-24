@@ -77,16 +77,16 @@ class MainNav extends Component {
     if (config && config.showPerms) {
       maybePerms = (<span>
         <li className={css.ddDivider} aria-hidden="true" />
-        <li className={css.ddTextItem}>Perms: {Object.keys(currentPerms || {}).sort().join(', ')}</li>
+        <li className={css.ddTextItem}><strong>Perms:</strong> {Object.keys(currentPerms || {}).sort().join(', ')}</li>
       </span>);
     }
 
     const userDD = (
       <ul>
         <li className={`${css.nowrap} ${css.ddTextItem}`}>Logged in as <strong>{ currentUser != null ? `${currentUser.first_name} ${currentUser.last_name}` : null }</strong></li>
-        {maybePerms}
         <li className={css.ddDivider} aria-hidden="true" />
         <li><button id="button-logout" className={css.ddButton} type="button" onClick={this.logout}><span>Log out</span></button></li>
+        {maybePerms}
       </ul>
     );
 
