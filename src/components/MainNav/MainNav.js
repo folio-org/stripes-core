@@ -53,9 +53,7 @@ class MainNav extends Component {
   }
 
   logout() {
-    this.store.dispatch(clearOkapiToken());
-    this.store.dispatch(clearCurrentUser());
-    this.context.router.history.push('/');
+    window.location.assign('/');
   }
 
   render() {
@@ -71,7 +69,7 @@ class MainNav extends Component {
         <path d="M13 19.5c-3.4 0-6.1-3.6-6.1-8.1 0-3.5 0.6-8.1 6.1-8.1 5.5 0 6.1 4.6 6.1 8.1C19.1 15.9 16.4 19.5 13 19.5zM13 4.3c-3.6 0-5.1 2.1-5.1 7.1 0 3.9 2.3 7.1 5.1 7.1 2.8 0 5.1-3.2 5.1-7.1C18.1 6.5 16.6 4.3 13 4.3z" style={{ fill: '#3D9964' }} />
       </svg>
     );
-
+window.location.assign('/');
     let maybePerms;
     const config = stripes.config;
     if (config && config.showPerms) {
