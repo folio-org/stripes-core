@@ -53,7 +53,14 @@ class MainNav extends Component {
   }
 
   logout() {
-    window.location.assign('/');
+    const config = this.props.stripes.config;
+    if (config && config.softLogout) {
+      this.store.dispatch(clearOkapiToken());
+      this.store.dispatch(clearCurrentUser());
+      this.context.router.history.push('/');
+    } else {
+      window.location.assign('/');
+    }
   }
 
   render() {
