@@ -1,14 +1,17 @@
 # Change history for stripes-core
 
-## [0.8.0](https://github.com/folio-org/stripes-core/tree/v0.8.0) (IN PROGRESS)
-[Full Changelog](https://github.com/folio-org/stripes-core/compare/v0.7.0...v0.8.0)
+## [1.0.0](https://github.com/folio-org/stripes-core/tree/v0.8.0) (2017-04-26)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v0.7.0...v1.0.0)
 
 * Disallow access to modules that the user does not have permission to use, as specified by a `module.NAME.enabled` permission bit. Fixes STRIPES-273.
 * Added Screen-reader-only 'Skip Navigation' link to Main Navigation.
 * Main Navigation adjusted to keep its height at smaller resolutions.
 * Set font stack. Switched from a single font to a font-stack based on system fonts.
-* Add support for the `hasAllPerms` configuration item. Fixes STRIPES-325.
+* Add support for the `hasAllPerms` configuration item. Fixes STRIPES-325. **Note that the name of this item is subject to change**.
 * Add new utility script, `perm-tree.js`.
+* New module type `settings`. These modules provide a component to be included in the settings are rather than a full application. Settings links are automatically included for each such module.
+* Modules of type `app` that have the `stripes.hasSettings` configuration item set true in their `package.json` are also included in the settings menu. For these modules, the special property `showSettings` is passed into the top-level component when they are invoked in this context. **Note that this is a backwards-incompatible change**, hence the new major version number.
+* Note that there is nothing special about this release being a "1.0". The number does not denote a level of code maturity or feature-completeness, only that the delta since the last release include a backwards-incompatible change.
 
 ## [0.7.0](https://github.com/folio-org/stripes-core/tree/v0.7.0) (2017-04-12)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v0.6.0...v0.7.0)
