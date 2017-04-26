@@ -1,6 +1,6 @@
 # Change history for stripes-core
 
-## [1.0.0](https://github.com/folio-org/stripes-core/tree/v0.8.0) (2017-04-26)
+## [1.0.0](https://github.com/folio-org/stripes-core/tree/v1.0.0) (2017-04-26)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v0.7.0...v1.0.0)
 
 * Disallow access to modules that the user does not have permission to use, as specified by a `module.NAME.enabled` permission bit. Fixes STRIPES-273.
