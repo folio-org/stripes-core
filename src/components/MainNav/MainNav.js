@@ -81,6 +81,8 @@ class MainNav extends Component {
     if (config && config.showPerms) {
       maybePerms = (<span>
         <li className={css.ddDivider} aria-hidden="true" />
+        <li className={css.ddTextItem}><strong>Locale:</strong> {stripes.locale}</li>
+        <li className={css.ddDivider} aria-hidden="true" />
         <li className={css.ddTextItem}><strong>Perms:</strong> {Object.keys(currentPerms || {}).sort().join(', ')}</li>
       </span>);
     }

@@ -4,7 +4,7 @@ import { connect as reduxConnect } from 'react-redux'; // eslint-disable-line
 
 import { reset } from 'redux-form';
 
-import { setCurrentUser, setCurrentPerms, clearCurrentUser, setOkapiToken, clearOkapiToken, authFailure, clearAuthFailure } from '../../okapiActions';
+import { setCurrentUser, setCurrentPerms, clearCurrentUser, setLocale, setOkapiToken, clearOkapiToken, authFailure, clearAuthFailure } from '../../okapiActions';
 import Login from './Login';
 
 class LoginCtrl extends Component {
@@ -60,6 +60,23 @@ class LoginCtrl extends Component {
       });
   }
 
+  getLocale() {
+    fetch(`${this.okapiUrl}/configurations/entries?query=(module=ORG and config_name=locale)`,
+          { headers: Object.assign({}, { 'X-Okapi-Tenant': this.tenant, 'X-Okapi-Token': this.store.getState().okapi.token }) })
+      .then((response) => {
+        let locale = 'en-US';
+        if (response.status >= 400) {
+          this.store.dispatch(setLocale(locale));
+        } else {
+          response.json().then((json) => {
+            const configs = json.configs;
+            if (configs.length > 0) locale = configs[0].value;
+            this.store.dispatch(setLocale(locale));
+          });
+        }
+      });
+  }
+
   requestLogin(data) {
     fetch(`${this.okapiUrl}/authn/login`, {
       method: 'POST',
@@ -77,6 +94,7 @@ class LoginCtrl extends Component {
         this.store.dispatch(clearAuthFailure());
         this.getUser(data.username);
         this.getPerms(data.username);
+        this.getLocale();
       }
     });
   }

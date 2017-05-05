@@ -20,6 +20,13 @@ function clearCurrentUser() {
   };
 }
 
+function setLocale(locale) {
+  return {
+    type: 'SET_LOCALE',
+    locale,
+  };
+}
+
 function setOkapiToken(token) {
   return {
     type: 'SET_OKAPI_TOKEN',
@@ -47,6 +54,7 @@ function clearAuthFailure() {
 
 export { setCurrentUser,
          setCurrentPerms,
+         setLocale,
          clearCurrentUser,
          setOkapiToken,
          clearOkapiToken,
