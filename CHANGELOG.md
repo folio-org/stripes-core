@@ -1,5 +1,10 @@
 # Change history for stripes-core
 
+## [1.1.0](https://github.com/folio-org/stripes-core/tree/v1.1.0) (2017-05-05)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v1.0.0...v1.1.0)
+
+* Loads the prevailing locale from mod-config and stores it in the Stripes object as `stripes.locale`. If something goes wrong -- most likely, because mod-config is not running -- it defaults to `en-US`.
+
 ## [1.0.0](https://github.com/folio-org/stripes-core/tree/v1.0.0) (2017-04-26)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v0.7.0...v1.0.0)
 
