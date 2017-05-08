@@ -15,7 +15,7 @@ const About = () => {
         <h4>{n} {caption} module{n === 1 ? '' : 's'}</h4>
         <ul>
           {
-            list.map(m => <li>{m.module} {m.version}</li>)
+            list.map(m => <li key={m.module}>{m.module} {m.version}</li>)
           }
         </ul>
       </div>
@@ -27,11 +27,11 @@ const About = () => {
       <h3>About Stripes</h3>
       <h4>Foundation</h4>
       <ul>
-        <li>stripes-core {stripesCore.version}</li>
-        <li>stripes-loader {stripesLoader.version}</li>
-        <li>stripes-connect {stripesConnect.version}</li>
-        <li>stripes-components {stripesComponents.version}</li>
-        <li>stripes-logger {stripesLogger.version}</li>
+        <li key="stripes-core">stripes-core {stripesCore.version}</li>
+        <li key="stripes-loader">stripes-loader {stripesLoader.version}</li>
+        <li key="stripes-connect">stripes-connect {stripesConnect.version}</li>
+        <li key="stripes-components">stripes-components {stripesComponents.version}</li>
+        <li key="stripes-logger">stripes-logger {stripesLogger.version}</li>
       </ul>
       {listModules('application', modules.app)}
       {listModules('settings', modules.settings)}
