@@ -9,6 +9,7 @@ import MainContainer from './components/MainContainer';
 import MainNav from './components/MainNav';
 import ModuleContainer from './components/ModuleContainer';
 import { Front } from './components/Front';
+import About from './components/About';
 import LoginCtrl from './components/Login';
 import Settings from './components/Settings/Settings';
 
@@ -73,6 +74,7 @@ class Root extends Component {
               <ModuleContainer id="content">
                 <Switch>
                   <Route exact path="/" component={Front} key="root" />
+                  <Route path="/about" component={About} key="about" />
                   <Route path="/settings" render={() => <Settings stripes={stripes} />} />
                   {getModuleRoutes(stripes)}
                   <Route
