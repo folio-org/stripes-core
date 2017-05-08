@@ -19,6 +19,7 @@ for i in `echo '
 	stripes-logger
 	stripes-core
 	stripes-sample-platform
+	stripes-demo-platform
 	ui-okapi-console
 	ui-users
 	ui-items
