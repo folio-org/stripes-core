@@ -1,5 +1,10 @@
 # Change history for stripes-core
 
+## [1.3.0](https://github.com/folio-org/stripes-core/tree/v1.3.0) (IN PROGRESS)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v1.2.0...v1.3.0)
+
+* Add large new section _Thinking in Stripes_ to [the _Module Developer's Guide_](doc/dev-guide.md). This is pulled in from what used to be a separate document in the stripes-connect repository. See STRIPES-103.
+
 ## [1.2.0](https://github.com/folio-org/stripes-core/tree/v1.2.0) (2017-05-08)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v1.1.0...v1.2.0)
 
