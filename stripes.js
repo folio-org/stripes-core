@@ -9,6 +9,7 @@ const devConfig = require('./webpack.config.cli.dev');
 
 const cwd = path.resolve();
 const cwdModules = path.join(cwd, 'node_modules');
+const coreModules = path.join(__dirname, 'node_modules');
 
 const packageJSON = require ('./package.json');
 commander.version(packageJSON.version);
@@ -38,8 +39,9 @@ commander
 
     const config = Object.assign({}, devConfig);
     const stripesLoaderConfig = require(path.resolve(loaderConfigFile));
-    config.resolve.modules = ['node_modules', cwdModules];
-    config.resolveLoader = { modules: ['node_modules', cwdModules] };
+    // Look for modules in node_modules, then the platform, then stripes-core
+    config.resolve.modules = ['node_modules', cwdModules, coreModules];
+    config.resolveLoader = { modules: ['node_modules', cwdModules, coreModules] };
     config.plugins.push(new webpack.LoaderOptionsPlugin({
       options: { stripesLoader: stripesLoaderConfig },
     }));

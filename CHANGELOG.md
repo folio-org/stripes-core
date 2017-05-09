@@ -3,7 +3,7 @@
 ## [1.2.0](https://github.com/folio-org/stripes-core/tree/v1.2.0) (2017-05-08)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v1.1.0...v1.2.0)
 
-* New About page (on `/about`) displays the version of each of the Stripes platform libraries and UI modules. This is linked from the font page.
+* New About page (on `/about`) displays the version of each of the Stripes platform libraries and UI modules. This is linked from the front page.
 
 ## [1.1.0](https://github.com/folio-org/stripes-core/tree/v1.1.0) (2017-05-05)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v1.0.0...v1.1.0)
