@@ -16,8 +16,7 @@ export default function configureStore(initialState, config, stripesLogger) {
   )(createStore);
 
   const reducer = combineReducers(initialReducers);
-  const enhancedReducer = enhanceReducer(reducer);
-  const store = finalCreateStore(enhancedReducer, initialState);
+  const store = finalCreateStore(enhanceReducer(reducer), initialState);
 
   return store;
 }
