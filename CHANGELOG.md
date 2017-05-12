@@ -1,5 +1,9 @@
 # Change history for stripes-core
 
+## IN PROGRESS
+
+* Perform "soft logout" that does not require a reload. Fixes STRIPES-333.
+
 ## [1.3.0](https://github.com/folio-org/stripes-core/tree/v1.3.0) (2017-05-09)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v1.2.0...v1.3.0)
 
