@@ -55,14 +55,10 @@ class MainNav extends Component {
 
   logout() {
     const config = this.props.stripes.config;
-    if (config && config.softLogout) {
-      this.store.dispatch(clearOkapiToken());
-      this.store.dispatch(clearCurrentUser());
-      this.store.dispatch(resetStore());
-      this.context.router.history.push('/');
-    } else {
-      window.location.assign('/');
-    }
+    this.store.dispatch(clearOkapiToken());
+    this.store.dispatch(clearCurrentUser());
+    this.store.dispatch(resetStore());
+    this.context.router.history.push('/');
   }
 
   render() {
