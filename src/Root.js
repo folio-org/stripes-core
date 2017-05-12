@@ -15,6 +15,7 @@ import Settings from './components/Settings/Settings';
 
 import getModuleRoutes from './moduleRoutes';
 import initialReducers from './initialReducers';
+import enhanceReducer from './enhanceReducer';
 
 
 const reducers = { ...initialReducers };
@@ -28,7 +29,7 @@ class Root extends Component {
   addReducer = (key, reducer) => {
     if (reducers[key] === undefined) {
       reducers[key] = reducer;
-      this.props.store.replaceReducer(combineReducers({ ...reducers }));
+      this.props.store.replaceReducer(enhanceReducer(combineReducers({ ...reducers })));
       return true;
     }
     return false;
