@@ -15,7 +15,15 @@ export default function configureStore(initialState, config, stripesLogger) {
   )(createStore);
 
   const reducer = combineReducers(initialReducers);
-  const store = finalCreateStore(reducer, initialState);
+  const enhancedReducer = (state, action) => {
+    if (action.type === 'RESET_STORE') {
+      console.log('interpreting RESET_STORE');
+      return { okapi: state.okapi };
+    } else {
+      return reducer(state, action);
+    }
+  };
+  const store = finalCreateStore(enhancedReducer, initialState);
 
   return store;
 }
