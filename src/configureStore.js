@@ -2,6 +2,7 @@ import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
 import createLogger from 'redux-logger';
 import initialReducers from './initialReducers';
+import enhanceReducer from './enhanceReducer';
 
 export default function configureStore(initialState, config, stripesLogger) {
   const logger = createLogger({
@@ -15,14 +16,7 @@ export default function configureStore(initialState, config, stripesLogger) {
   )(createStore);
 
   const reducer = combineReducers(initialReducers);
-  const enhancedReducer = (state, action) => {
-    if (action.type === 'RESET_STORE') {
-      console.log('interpreting RESET_STORE');
-      return { okapi: state.okapi };
-    } else {
-      return reducer(state, action);
-    }
-  };
+  const enhancedReducer = enhanceReducer(reducer);
   const store = finalCreateStore(enhancedReducer, initialState);
 
   return store;
