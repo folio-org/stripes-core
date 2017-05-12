@@ -5,7 +5,6 @@
 function enhanceReducer(reducer) {
   return (state, action) => {
     if (action.type === 'RESET_STORE') {
-      console.log('interpreting RESET_STORE');
       return { okapi: state.okapi };
     } else {
       return reducer(state, action);
