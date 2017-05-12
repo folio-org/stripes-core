@@ -52,6 +52,12 @@ function clearAuthFailure() {
   };
 }
 
+function resetStore() {
+  return {
+    type: 'RESET_STORE',
+  };
+}
+
 export { setCurrentUser,
          setCurrentPerms,
          setLocale,
@@ -59,4 +65,5 @@ export { setCurrentUser,
          setOkapiToken,
          clearOkapiToken,
          authFailure,
-         clearAuthFailure };
+         clearAuthFailure,
+         resetStore };
