@@ -3,7 +3,7 @@ import { Dropdown } from 'react-bootstrap';
 
 import { modules } from 'stripes-loader'; // eslint-disable-line
 
-import { resetStore } from '../../okapiActions';
+import { clearOkapiToken, clearCurrentUser } from '../../okapiActions';
 
 import css from './MainNav.css';
 import NavButton from './NavButton';
@@ -54,8 +54,13 @@ class MainNav extends Component {
 
   logout() {
     const config = this.props.stripes.config;
-    this.store.dispatch(resetStore());
-    this.context.router.history.push('/');
+    if (config && config.softLogout) {
+      this.store.dispatch(clearOkapiToken());
+      this.store.dispatch(clearCurrentUser());
+      this.context.router.history.push('/');
+    } else {
+      window.location.assign('/');
+    }
   }
 
   render() {
