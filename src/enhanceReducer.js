@@ -3,13 +3,8 @@
 // removes everything except the Okapi object from the store.
 
 function enhanceReducer(reducer) {
-  return (state, action) => {
-    if (action.type === 'RESET_STORE') {
-      return { okapi: state.okapi };
-    } else {
-      return reducer(state, action);
-    }
-  };
+  return (state, action) =>
+    ((action.type === 'RESET_STORE') ? { okapi: state.okapi } : reducer(state, action));
 }
 
 export default enhanceReducer;
