@@ -54,7 +54,6 @@ class MainNav extends Component {
   }
 
   logout() {
-    const config = this.props.stripes.config;
     this.store.dispatch(clearOkapiToken());
     this.store.dispatch(clearCurrentUser());
     this.store.dispatch(resetStore());
