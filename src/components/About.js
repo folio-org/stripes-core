@@ -11,7 +11,7 @@ const About = () => {
   function listModules(caption, list) {
     const n = list.length;
     return (
-      <div>
+      <div key={caption}>
         <h4>{n} {caption} module{n === 1 ? '' : 's'}</h4>
         <ul>
           {
