@@ -33,8 +33,7 @@ const About = () => {
         <li key="stripes-components">stripes-components {stripesComponents.version}</li>
         <li key="stripes-logger">stripes-logger {stripesLogger.version}</li>
       </ul>
-      {listModules('application', modules.app)}
-      {listModules('settings', modules.settings)}
+      {Object.keys(modules).map(key => listModules(key, modules[key]))}
     </div>
   );
 };
