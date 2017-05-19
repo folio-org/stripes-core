@@ -4,6 +4,7 @@
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v1.4.0...v1.5.0)
 
 * About page lists modules of all types, not just applications and settings.
+* Bump stripes-components dependency to v0.8.0, to provide `<Pluggable>`.
 * Add [documentation](doc/plugins.md) of the model for plugins.
 
 ## [1.4.0](https://github.com/folio-org/stripes-core/tree/v1.4.0) (2017-05-12)
