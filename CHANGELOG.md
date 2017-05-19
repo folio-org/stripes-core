@@ -1,6 +1,6 @@
 # Change history for stripes-core
 
-## [1.5.0](https://github.com/folio-org/stripes-core/tree/v1.5.0) (IN PROGRESS)
+## [1.5.0](https://github.com/folio-org/stripes-core/tree/v1.5.0) (2017-05-19)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v1.4.0...v1.5.0)
 
 * About page lists modules of all types, not just applications and settings.
