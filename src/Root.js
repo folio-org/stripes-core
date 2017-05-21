@@ -36,7 +36,7 @@ class Root extends Component {
   }
 
   render() {
-    const { logger, store, config, okapi, token, currentUser, currentPerms, locale } = this.props;
+    const { logger, store, config, okapi, token, currentUser, currentPerms, locale, plugins } = this.props;
 
     function Stripes(x) {
       Object.assign(this, x);
@@ -60,6 +60,7 @@ class Root extends Component {
       config,
       okapi,
       locale,
+      plugins: plugins || {},
       user: {
         user: currentUser,
         perms: currentPerms,
@@ -111,6 +112,7 @@ Root.propTypes = {
   currentPerms: PropTypes.object, // eslint-disable-line react/forbid-prop-types
   currentUser: PropTypes.object, // eslint-disable-line react/forbid-prop-types
   locale: PropTypes.string,
+  plugins: PropTypes.object, // eslint-disable-line react/forbid-prop-types
   config: PropTypes.object, // eslint-disable-line react/forbid-prop-types
   okapi: PropTypes.shape({
     url: PropTypes.string.isRequired,
@@ -124,6 +126,7 @@ function mapStateToProps(state) {
     currentUser: state.okapi.currentUser,
     currentPerms: state.okapi.currentPerms,
     locale: state.okapi.locale,
+    plugins: state.okapi.plugins,
   };
 }
 

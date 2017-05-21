@@ -25,6 +25,13 @@ function setLocale(locale) {
   };
 }
 
+function setPlugins(plugins) {
+  return {
+    type: 'SET_PLUGINS',
+    plugins,
+  };
+}
+
 function setOkapiToken(token) {
   return {
     type: 'SET_OKAPI_TOKEN',
@@ -54,6 +61,7 @@ export { setCurrentUser,
          clearCurrentUser,
          setCurrentPerms,
          setLocale,
+         setPlugins,
          setOkapiToken,
          clearOkapiToken,
          authFailure,
