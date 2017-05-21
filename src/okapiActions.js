@@ -1,5 +1,3 @@
-
-
 function setCurrentUser(currentUser) {
   return {
     type: 'SET_CURRENT_USER',
@@ -7,16 +5,16 @@ function setCurrentUser(currentUser) {
   };
 }
 
+function clearCurrentUser() {
+  return {
+    type: 'CLEAR_CURRENT_USER',
+  };
+}
+
 function setCurrentPerms(currentPerms) {
   return {
     type: 'SET_CURRENT_PERMS',
     currentPerms,
-  };
-}
-
-function clearCurrentUser() {
-  return {
-    type: 'CLEAR_CURRENT_USER',
   };
 }
 
@@ -53,9 +51,9 @@ function clearAuthFailure() {
 }
 
 export { setCurrentUser,
+         clearCurrentUser,
          setCurrentPerms,
          setLocale,
-         clearCurrentUser,
          setOkapiToken,
          clearOkapiToken,
          authFailure,
