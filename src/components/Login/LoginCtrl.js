@@ -4,7 +4,7 @@ import { connect as reduxConnect } from 'react-redux'; // eslint-disable-line
 
 import { reset } from 'redux-form';
 
-import { setCurrentUser, setCurrentPerms, clearCurrentUser, setLocale, setOkapiToken, clearOkapiToken, authFailure, clearAuthFailure } from '../../okapiActions';
+import { setCurrentUser, clearCurrentUser, setCurrentPerms, setLocale, setOkapiToken, clearOkapiToken, authFailure, clearAuthFailure } from '../../okapiActions';
 import Login from './Login';
 
 class LoginCtrl extends Component {
