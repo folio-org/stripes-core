@@ -87,7 +87,6 @@ class LoginCtrl extends Component {
               acc[val.config_name] = val.value;
               return acc;
             }, {});
-            console.log('configs:', configs);
             this.store.dispatch(setPlugins(configs));
           });
         }
