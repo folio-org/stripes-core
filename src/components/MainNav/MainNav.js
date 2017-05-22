@@ -86,7 +86,7 @@ class MainNav extends Component {
 
     const userDD = (
       <ul>
-        <li className={`${css.nowrap} ${css.ddTextItem}`}>Logged in as <strong>{ currentUser != null ? `${currentUser.first_name} ${currentUser.last_name}` : null }</strong></li>
+        <li className={`${css.nowrap} ${css.ddTextItem}`}>Logged in as <strong>{ currentUser != null ? `${currentUser.firstName} ${currentUser.lastName}` : null }</strong></li>
         <li className={css.ddDivider} aria-hidden="true" />
         <li><button id="button-logout" className={css.ddButton} type="button" onClick={this.logout}><span>Log out</span></button></li>
         {maybePerms}
