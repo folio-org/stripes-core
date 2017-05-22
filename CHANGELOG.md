@@ -1,9 +1,11 @@
 # Change history for stripes-core
 
-## IN PROGRESS
+## [1.6.0](https://github.com/folio-org/stripes-core/tree/v1.6.0) (2017-05-22)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v1.5.0...v1.6.0)
 
 * Loads the set of plugin preferences from mod-config and stores it in the Stripes object as `stripes.plugins`, a map from plugin-type to preferred implementation. If something goes wrong -- most likely, because mod-config is not running -- it defaults to an empty map.
 * Render logged-in user-name correctly after field-name change in back-end users module. Fixes STRIPES-381.
+* Upgrade dependencies to stripes-components v0.9.0 and stripes-connect v2.1.0.
 
 ## [1.5.0](https://github.com/folio-org/stripes-core/tree/v1.5.0) (2017-05-19)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v1.4.0...v1.5.0)
