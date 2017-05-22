@@ -3,6 +3,7 @@
 ## IN PROGRESS
 
 * Loads the set of plugin preferences from mod-config and stores it in the Stripes object as `stripes.plugins`, a map from plugin-type to preferred implementation. If something goes wrong -- most likely, because mod-config is not running -- it defaults to an empty map.
+* Render logged-in user-name correctly after field-name change in back-end users module. Fixes STRIPES-381.
 
 ## [1.5.0](https://github.com/folio-org/stripes-core/tree/v1.5.0) (2017-05-19)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v1.4.0...v1.5.0)
