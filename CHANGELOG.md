@@ -3,7 +3,7 @@
 ## [1.6.0](https://github.com/folio-org/stripes-core/tree/v1.6.0) (2017-05-22)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v1.5.0...v1.6.0)
 
-* Loads the set of plugin preferences from mod-config and stores it in the Stripes object as `stripes.plugins`, a map from plugin-type to preferred implementation. If something goes wrong -- most likely, because mod-config is not running -- it defaults to an empty map.
+* Loads the set of plugin preferences from mod-configuration and stores it in the Stripes object as `stripes.plugins`, a map from plugin-type to preferred implementation. If something goes wrong -- most likely, because mod-configuration is not running -- it defaults to an empty map.
 * Render logged-in user-name correctly after field-name change in back-end users module. Fixes STRIPES-381.
 * Upgrade dependencies to stripes-components v0.9.0 and stripes-connect v2.1.0.
 
@@ -34,7 +34,7 @@
 ## [1.1.0](https://github.com/folio-org/stripes-core/tree/v1.1.0) (2017-05-05)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v1.0.0...v1.1.0)
 
-* Loads the prevailing locale from mod-config and stores it in the Stripes object as `stripes.locale`. If something goes wrong -- most likely, because mod-config is not running -- it defaults to `en-US`.
+* Loads the prevailing locale from mod-configuration and stores it in the Stripes object as `stripes.locale`. If something goes wrong -- most likely, because mod-configuration is not running -- it defaults to `en-US`.
 
 ## [1.0.0](https://github.com/folio-org/stripes-core/tree/v1.0.0) (2017-04-26)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v0.7.0...v1.0.0)
