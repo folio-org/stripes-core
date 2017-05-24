@@ -70,7 +70,8 @@ class Root extends Component {
     return (
       <Provider store={store}>
         <Router>
-          { token != null || disableAuth ?
+          { token == null && !disableAuth ?
+            <LoginCtrl autoLogin={config.autoLogin} /> :
             <MainContainer>
               <MainNav stripes={stripes} />
               <ModuleContainer id="content">
@@ -87,8 +88,7 @@ class Root extends Component {
                   />
                 </Switch>
               </ModuleContainer>
-            </MainContainer> :
-            <LoginCtrl />
+            </MainContainer>
           }
         </Router>
       </Provider>
