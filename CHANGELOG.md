@@ -1,5 +1,11 @@
 # Change history for stripes-core
 
+## [1.7.0](https://github.com/folio-org/stripes-core/tree/v1.7.0) (2017-05-23)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v1.6.0...v1.7.0)
+
+* Provides the Stripes object as `stripes` on the React context (as well as continuing to provide it as the `stripes` property) for all application and settings modules. Fixes STRIPES-388.
+* Adds new speculative design document [_Implementing configurable hot-keys in Stripes_](doc/hotkeys.md)
+
 ## [1.6.0](https://github.com/folio-org/stripes-core/tree/v1.6.0) (2017-05-22)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v1.5.0...v1.6.0)
 
