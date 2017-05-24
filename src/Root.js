@@ -36,7 +36,7 @@ class Root extends Component {
   }
 
   render() {
-    const { logger, store, config, okapi, token, currentUser, currentPerms, locale, plugins } = this.props;
+    const { logger, store, config, okapi, token, disableAuth, currentUser, currentPerms, locale, plugins } = this.props;
 
     function Stripes(x) {
       Object.assign(this, x);
@@ -70,7 +70,7 @@ class Root extends Component {
     return (
       <Provider store={store}>
         <Router>
-          { token != null ?
+          { token != null || disableAuth ?
             <MainContainer>
               <MainNav stripes={stripes} />
               <ModuleContainer id="content">
@@ -108,6 +108,7 @@ Root.propTypes = {
     replaceReducer: PropTypes.func.isRequired,
   }),
   token: PropTypes.string,
+  disableAuth: PropTypes.bool.isRequired,
   logger: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
   currentPerms: PropTypes.object, // eslint-disable-line react/forbid-prop-types
   currentUser: PropTypes.object, // eslint-disable-line react/forbid-prop-types
