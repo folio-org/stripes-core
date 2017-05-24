@@ -1,5 +1,10 @@
 # Change history for stripes-core
 
+## [1.8.0](https://github.com/folio-org/stripes-core/tree/v1.8.0) (2017-05-24)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v1.7.0...v1.8.0)
+
+* Reinstate the `disableAuth` configuration setting. Fixes STRIPES-390.
+
 ## [1.7.0](https://github.com/folio-org/stripes-core/tree/v1.7.0) (2017-05-23)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v1.6.0...v1.7.0)
 
