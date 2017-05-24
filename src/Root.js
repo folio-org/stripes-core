@@ -36,7 +36,7 @@ class Root extends Component {
   }
 
   render() {
-    const { logger, store, config, okapi, token, currentUser, currentPerms, locale } = this.props;
+    const { logger, store, config, okapi, token, disableAuth, currentUser, currentPerms, locale, plugins } = this.props;
 
     function Stripes(x) {
       Object.assign(this, x);
@@ -60,6 +60,7 @@ class Root extends Component {
       config,
       okapi,
       locale,
+      plugins: plugins || {},
       user: {
         user: currentUser,
         perms: currentPerms,
@@ -69,7 +70,8 @@ class Root extends Component {
     return (
       <Provider store={store}>
         <Router>
-          { token != null ?
+          { token == null && !disableAuth ?
+            <LoginCtrl autoLogin={config.autoLogin} /> :
             <MainContainer>
               <MainNav stripes={stripes} />
               <ModuleContainer id="content">
@@ -86,8 +88,7 @@ class Root extends Component {
                   />
                 </Switch>
               </ModuleContainer>
-            </MainContainer> :
-            <LoginCtrl />
+            </MainContainer>
           }
         </Router>
       </Provider>
@@ -107,10 +108,12 @@ Root.propTypes = {
     replaceReducer: PropTypes.func.isRequired,
   }),
   token: PropTypes.string,
+  disableAuth: PropTypes.bool.isRequired,
   logger: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
   currentPerms: PropTypes.object, // eslint-disable-line react/forbid-prop-types
   currentUser: PropTypes.object, // eslint-disable-line react/forbid-prop-types
   locale: PropTypes.string,
+  plugins: PropTypes.object, // eslint-disable-line react/forbid-prop-types
   config: PropTypes.object, // eslint-disable-line react/forbid-prop-types
   okapi: PropTypes.shape({
     url: PropTypes.string.isRequired,
@@ -124,6 +127,7 @@ function mapStateToProps(state) {
     currentUser: state.okapi.currentUser,
     currentPerms: state.okapi.currentPerms,
     locale: state.okapi.locale,
+    plugins: state.okapi.plugins,
   };
 }
 

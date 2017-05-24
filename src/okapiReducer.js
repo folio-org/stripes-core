@@ -10,6 +10,8 @@ export default function okapiReducer(state = {}, action) {
       return Object.assign({}, state, { currentUser: action.currentUser });
     case 'SET_LOCALE':
       return Object.assign({}, state, { locale: action.locale });
+    case 'SET_PLUGINS':
+      return Object.assign({}, state, { plugins: action.plugins });
     case 'SET_CURRENT_PERMS':
       return Object.assign({}, state, { currentPerms: action.currentPerms });
     case 'CLEAR_CURRENT_USER':

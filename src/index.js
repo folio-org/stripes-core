@@ -12,6 +12,6 @@ logger.log('core', 'Starting Stripes ...');
 const store = configureStore(initialState, config, logger);
 
 render(
-  <Root store={store} logger={logger} config={config} okapi={okapi} />,
+  <Root store={store} logger={logger} config={config} okapi={okapi} disableAuth={(config && config.disableAuth) || false} />,
   document.getElementById('root'),
 );

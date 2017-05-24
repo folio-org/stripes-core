@@ -4,6 +4,7 @@ import Route from 'react-router-dom/Route';
 import Link from 'react-router-dom/Link';
 import { connectFor } from '@folio/stripes-connect';
 import { modules } from 'stripes-loader'; // eslint-disable-line
+import AddContext from '../../AddContext';
 
 import NavList from './NavList';
 import NavListSection from './NavListSection';
@@ -29,11 +30,16 @@ const Settings = (props) => {
   const routes = settingsModules.map((m) => {
     const connect = connectFor(m.module, stripes.logger);
     const Current = connect(m.getModule());
+    const moduleStripes = Object.assign({}, stripes, { connect });
 
     return (<Route
       path={`/settings${m.route}`}
       key={m.route}
-      render={props2 => <Current {...props2} stripes={Object.assign({}, stripes, { connect })} showSettings />}
+      render={props2 =>
+        <AddContext context={{ stripes: moduleStripes }}>
+          <Current {...props2} stripes={moduleStripes} showSettings />
+        </AddContext>
+      }
     />);
   });
 

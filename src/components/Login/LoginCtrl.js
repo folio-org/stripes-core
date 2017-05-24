@@ -4,7 +4,7 @@ import { connect as reduxConnect } from 'react-redux'; // eslint-disable-line
 
 import { reset } from 'redux-form';
 
-import { setCurrentUser, setCurrentPerms, clearCurrentUser, setLocale, setOkapiToken, clearOkapiToken, authFailure, clearAuthFailure } from '../../okapiActions';
+import { setCurrentUser, clearCurrentUser, setCurrentPerms, setLocale, setPlugins, setOkapiToken, clearOkapiToken, authFailure, clearAuthFailure } from '../../okapiActions';
 import Login from './Login';
 
 class LoginCtrl extends Component {
@@ -16,6 +16,10 @@ class LoginCtrl extends Component {
 
   static propTypes = {
     authFail: PropTypes.bool,
+    autoLogin: PropTypes.shape({
+      username: PropTypes.string.isRequired,
+      password: PropTypes.string.isRequired,
+    }),
   }
 
   constructor(props, context) {
@@ -28,6 +32,9 @@ class LoginCtrl extends Component {
     this.tenant = this.sys.okapi.tenant;
     this.store.dispatch(clearAuthFailure());
     this.initialValues = { username: '', password: '' };
+    if (props.autoLogin) {
+      this.requestLogin(props.autoLogin);
+    }
   }
 
 
@@ -77,6 +84,22 @@ class LoginCtrl extends Component {
       });
   }
 
+  getPlugins() {
+    fetch(`${this.okapiUrl}/configurations/entries?query=(module=PLUGINS)`,
+          { headers: Object.assign({}, { 'X-Okapi-Tenant': this.tenant, 'X-Okapi-Token': this.store.getState().okapi.token }) })
+      .then((response) => {
+        if (response.status < 400) {
+          response.json().then((json) => {
+            const configs = json.configs.reduce((acc, val) => {
+              acc[val.config_name] = val.value;
+              return acc;
+            }, {});
+            this.store.dispatch(setPlugins(configs));
+          });
+        }
+      });
+  }
+
   requestLogin(data) {
     fetch(`${this.okapiUrl}/authn/login`, {
       method: 'POST',
@@ -95,6 +118,7 @@ class LoginCtrl extends Component {
         this.getUser(data.username);
         this.getPerms(data.username);
         this.getLocale();
+        this.getPlugins();
       }
     });
   }

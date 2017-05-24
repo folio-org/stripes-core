@@ -1,5 +1,34 @@
 # Change history for stripes-core
 
+## IN PROGRESS
+
+* Support the `autoLogin` configuration item. See [the Developer's Guide](doc/dev-guide.md#the-stripes-object). Fixes STRIPES-391.
+
+## [1.8.0](https://github.com/folio-org/stripes-core/tree/v1.8.0) (2017-05-24)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v1.7.0...v1.8.0)
+
+* Reinstate the `disableAuth` configuration setting. Fixes STRIPES-390.
+
+## [1.7.0](https://github.com/folio-org/stripes-core/tree/v1.7.0) (2017-05-23)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v1.6.0...v1.7.0)
+
+* Provides the Stripes object as `stripes` on the React context (as well as continuing to provide it as the `stripes` property) for all application and settings modules. Fixes STRIPES-388.
+* Adds new speculative design document [_Implementing configurable hot-keys in Stripes_](doc/hotkeys.md)
+
+## [1.6.0](https://github.com/folio-org/stripes-core/tree/v1.6.0) (2017-05-22)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v1.5.0...v1.6.0)
+
+* Loads the set of plugin preferences from mod-configuration and stores it in the Stripes object as `stripes.plugins`, a map from plugin-type to preferred implementation. If something goes wrong -- most likely, because mod-configuration is not running -- it defaults to an empty map.
+* Render logged-in user-name correctly after field-name change in back-end users module. Fixes STRIPES-381.
+* Upgrade dependencies to stripes-components v0.9.0 and stripes-connect v2.1.0.
+
+## [1.5.0](https://github.com/folio-org/stripes-core/tree/v1.5.0) (2017-05-19)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v1.4.0...v1.5.0)
+
+* About page lists modules of all types, not just applications and settings.
+* Bump stripes-components dependency to v0.8.0, to provide `<Pluggable>`.
+* Add [documentation](doc/plugins.md) of the model for plugins.
+
 ## [1.4.0](https://github.com/folio-org/stripes-core/tree/v1.4.0) (2017-05-12)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v1.3.0...v1.4.0)
 
@@ -20,7 +49,7 @@
 ## [1.1.0](https://github.com/folio-org/stripes-core/tree/v1.1.0) (2017-05-05)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v1.0.0...v1.1.0)
 
-* Loads the prevailing locale from mod-config and stores it in the Stripes object as `stripes.locale`. If something goes wrong -- most likely, because mod-config is not running -- it defaults to `en-US`.
+* Loads the prevailing locale from mod-configuration and stores it in the Stripes object as `stripes.locale`. If something goes wrong -- most likely, because mod-configuration is not running -- it defaults to `en-US`.
 
 ## [1.0.0](https://github.com/folio-org/stripes-core/tree/v1.0.0) (2017-04-26)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v0.7.0...v1.0.0)

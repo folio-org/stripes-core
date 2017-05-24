@@ -22,6 +22,7 @@
     * [Logging](#logging)
         * [Configuring the logger](#configuring-the-logger)
         * [Using the logger](#using-the-logger)
+    * [Plugins](#plugins)
     * [Styling HTML](#styling-html)
 * [Thinking in Stripes](#thinking-in-stripes)
     * [Principles of stripes-connect](#principles-of-stripes-connect)
@@ -90,6 +91,9 @@ A module is presented as an [NPM package](https://en.wikipedia.org/wiki/Npm_(sof
 * `type` -- a short string indicating what the type of the module is, and how it therefore behaves within the Stripes application. Acceptable values are:
   * `app` -- a regular application, which is listed among those available and which when activated uses essentially the whole screen.
   * `settings` -- a settings pane that is listed in the settings menu but does not present a full-page application.
+  * `plugin` -- a plugin module that can be included by a component any other module, whether app, settings or another plugin. See [below](#plugins).
+
+* `pluginType` (only for modules of type `plugin`) -- an indication of which pluggable surface the module can be mounted on. See [below](#plugins).
 
 * `displayName` -- the name of the module as it should be viewed by human users -- e.g. "Okapi Console".
 
@@ -155,11 +159,13 @@ Specifically:
 
 Programming in Stripes is essentially [programming in React](https://facebook.github.io/react/docs/thinking-in-react.html), with one big difference: the provision of the Stripes object. As with regular React, data flows down through components (as props) and actions flow up.
 
-The Stripes object is provided as the `stripes` property to the top-level component of each module. It is the responsibility of that component to make it available as required elsewhere in the module -- by passing the prop down to its children, by installing it in the React context, or by some other means.
+The Stripes object is provided as the `stripes` property to the top-level component of each module. For convenience, it is also placed in the React context. It is up to each component to choose whether to get it from the property or the context; and, if necessary, to pass the prop down to its children.
 
 The Stripes object contains the following elements:
 
 * `locale` -- a short string specifying the prevailing locale, e.g. `en-US`. This should be consulted when rendering dates with `toLocaleDateString`, etc.
+
+* `plugins` -- an indication of which plugins are preferred for each plugin type. Represented as a map from plugin-type to the module name of the preferred implementation. **Application code should not need to consult this: it is used by the `<Pluggable>` component.**
 
 * `connect` -- a function that can be used to connect subcomponents to [stripes-connect](https://github.com/folio-org/stripes-connect), enabling that module to use [the Stripes Connect API](https://github.com/folio-org/stripes-connect/blob/master/doc/api.md) to communicate with WSAPIs such as those provided by Okapi.
 
@@ -182,6 +188,10 @@ The Stripes object contains the following elements:
   * `user` -- an object containing metadata about the logged-in user, with fields such as `email`, `first_name`, and `last_name`.
 
 * `config` -- a structure containing misleading configuration information, including:
+
+  * `disableAuth` -- whether authentication is disabled. **NOTE.** This is deprecated. Support for it will probably be removed, since an unauthenticated session is increasingly useless.
+
+  * `autoLogin` -- if provided, an object containing `username` and `password` members which are used to automatically log the user in when Stripes starts up. **Think carefully before using this**. It is a boon during rapid development when many reloads are needed, but has the obvious security implication of storing a server-side password in clear text on the client side.
 
   * `logCategories`, `logPrefix`, `logTimestamp` -- see [Configuring the logger](#configuring-the-logger) below.
 
@@ -283,6 +293,26 @@ The stripes-core library lets you make up categories on the fly -- so, for examp
 The configured logger object is furnished as the `logger` element of the `stripes` property to the top-level component of each UI module. It is the responsibility of that component to ensure it is passed down to any subcomponents that need to use it. Logging can therefore be invoked using `this.props.stripes.logger.log('cat', args)`.
 
 In addition, the logger is passed as the fourth argument into stripes-connect path functions.
+
+
+
+### Plugins
+
+Any component may be substituted by a plugin. This is simply a module whose type is `plugin`. Plugin modules have a lower-level type, represented by a `pluginType` field in the `package.json`. Plugin types might be "markdownEditor", "MARCViewer", etc.
+
+Other kinds of module have hardwired locations: `app` modules get rendered into the main area; `settings` modules get rendered into the settings area. But `plugin` modules don't get rendered at all by default -- only when called on by a pluggable surface in another module.
+
+This is done by means of the `<Pluggable>` component. It must be passed two props: the Stripes object, and a `type` -- a short string which is matched against the `pluginType` of the available plugins. It contains as children a default set of components to be rendered if no plugin is available:
+
+```
+<Pluggable stripes={this.props.stripes} type="markdown-editor">
+  <div style={{ background: 'red' }}>Markdown editor goes here</div>
+</Pluggable>
+```
+
+This renders the red "Markdown editor goes here" message by default; but if there is an available plugin module whose plugin-type is `markdown-Editor` then its top-level component is rendered instead.
+
+There may be multiple plugins of the same plugin type; in this case, a setting in the database indicates which of the extant plugins is to be used. (The Preferred Plugins section of the Organization settings allows this to be configured.)
 
 
 

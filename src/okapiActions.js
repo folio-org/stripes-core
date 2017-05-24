@@ -1,9 +1,13 @@
-
-
 function setCurrentUser(currentUser) {
   return {
     type: 'SET_CURRENT_USER',
     currentUser,
+  };
+}
+
+function clearCurrentUser() {
+  return {
+    type: 'CLEAR_CURRENT_USER',
   };
 }
 
@@ -14,16 +18,17 @@ function setCurrentPerms(currentPerms) {
   };
 }
 
-function clearCurrentUser() {
-  return {
-    type: 'CLEAR_CURRENT_USER',
-  };
-}
-
 function setLocale(locale) {
   return {
     type: 'SET_LOCALE',
     locale,
+  };
+}
+
+function setPlugins(plugins) {
+  return {
+    type: 'SET_PLUGINS',
+    plugins,
   };
 }
 
@@ -53,9 +58,10 @@ function clearAuthFailure() {
 }
 
 export { setCurrentUser,
+         clearCurrentUser,
          setCurrentPerms,
          setLocale,
-         clearCurrentUser,
+         setPlugins,
          setOkapiToken,
          clearOkapiToken,
          authFailure,

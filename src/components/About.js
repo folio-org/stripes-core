@@ -11,7 +11,7 @@ const About = () => {
   function listModules(caption, list) {
     const n = list.length;
     return (
-      <div>
+      <div key={caption}>
         <h4>{n} {caption} module{n === 1 ? '' : 's'}</h4>
         <ul>
           {
@@ -33,8 +33,7 @@ const About = () => {
         <li key="stripes-components">stripes-components {stripesComponents.version}</li>
         <li key="stripes-logger">stripes-logger {stripesLogger.version}</li>
       </ul>
-      {listModules('application', modules.app)}
-      {listModules('settings', modules.settings)}
+      {Object.keys(modules).map(key => listModules(key, modules[key]))}
     </div>
   );
 };

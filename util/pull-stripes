@@ -25,6 +25,8 @@ for i in `echo '
 	ui-items
 	ui-scan
 	ui-organization
+	ui-developer
+	ui-plugin-example
 '`; do
     echo === $i ===
     (
