@@ -16,6 +16,10 @@ class LoginCtrl extends Component {
 
   static propTypes = {
     authFail: PropTypes.bool,
+    autoLogin: PropTypes.shape({
+      username: PropTypes.string.isRequired,
+      password: PropTypes.string.isRequired,
+    }),
   }
 
   constructor(props, context) {
@@ -28,6 +32,9 @@ class LoginCtrl extends Component {
     this.tenant = this.sys.okapi.tenant;
     this.store.dispatch(clearAuthFailure());
     this.initialValues = { username: '', password: '' };
+    if (props.autoLogin) {
+      this.requestLogin(props.autoLogin);
+    }
   }
 
 
