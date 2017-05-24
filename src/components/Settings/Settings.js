@@ -18,7 +18,7 @@ const settingsModules = [].concat(
 
 const Settings = (props) => {
   const stripes = props.stripes;
-  const navLinks = settingsModules.map(m => (
+  const navLinks = _.sortBy(settingsModules, ['displayName']).map(m => (
     <Link
       key={m.route}
       to={`/settings${m.route}`}
