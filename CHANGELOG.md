@@ -1,5 +1,9 @@
 # Change history for stripes-core
 
+## IN PROGRESS
+
+* Support the `autoLogin` configuration item. See [the Developer's Guide](doc/dev-guide.md#the-stripes-object). Fixes STRIPES-391.
+
 ## [1.8.0](https://github.com/folio-org/stripes-core/tree/v1.8.0) (2017-05-24)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v1.7.0...v1.8.0)
 
