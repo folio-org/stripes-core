@@ -19,7 +19,7 @@ Stripes is a toolkit for building single-page web applications that FOLIO UI mod
 * [The stripes-connect API](https://github.com/folio-org/stripes-connect/blob/master/doc/api.md) describes how to use [Stripes Connect](https://github.com/folio-org/stripes-connect), the part of the Stripes toolkit that allows you to declaratively express what data you want to share with back-end services.
 * [An evolving troubleshooting guide](doc/troubleshooting.md).
 * [The release procedure](doc/release-procedure.md) for the packages that make up Stripes.
-* [An example component: the **PatronEdit** component](doc/component-example.md) walks through a simple example of a component that is connected to the back-end service using Stripes Connect. **NOTE that this is somewhat out of date**, but still helpfully illustrative.
+* [An example component: the **PluginType** component](doc/component-example.md) walks through a simple example of a component that is connected to the back-end service using Stripes Connect.
 * [A component hierarchy example: the "Patrons" module](doc/component-hierarchy.md) shows by example how a set of components -- some connected, some not -- can work together to implement part of an application. **NOTE that this is somewhat out of date**, but still helpfully illustrative.
 
 ## Additional information
