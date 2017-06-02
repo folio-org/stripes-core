@@ -48,10 +48,15 @@ class MainNav extends Component {
     this.store = props.stripes.store;
     this.toggleUserMenu = this.toggleUserMenu.bind(this);
     this.logout = this.logout.bind(this);
+    this.lastVisited = {};
 
     props.history.listen((hist, op) => {
-      // eslint-disable-next-line no-console
-      console.log('MainNav history changed: hist =', hist, 'op =', op);
+      for (const entry of modules.app) {
+        if (hist.pathname === entry.route || hist.pathname.startsWith(`${entry.route}/`)) {
+          const name = entry.module.replace(/^@folio\//, '');
+          this.lastVisited[name] = `${hist.pathname}${hist.search}`;
+        }
+      }
     });
   }
 
@@ -107,7 +112,7 @@ class MainNav extends Component {
       const perm = `module.${name}.enabled`;
       if (!stripes.hasPerm(perm)) return null;
 
-      return (<NavButton href={entry.home || entry.route} title={entry.displayName} key={entry.route}>
+      return (<NavButton href={this.lastVisited[name] || entry.home || entry.route} title={entry.displayName} key={entry.route}>
         <NavIcon color="#61f160" />
         <span className={css.linkLabel}>
           {entry.displayName}
