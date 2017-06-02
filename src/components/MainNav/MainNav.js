@@ -50,7 +50,7 @@ class MainNav extends Component {
     this.logout = this.logout.bind(this);
     this.lastVisited = {};
 
-    props.history.listen((hist, op) => {
+    props.history.listen((hist) => {
       for (const entry of modules.app) {
         if (hist.pathname === entry.route || hist.pathname.startsWith(`${entry.route}/`)) {
           const name = entry.module.replace(/^@folio\//, '');
