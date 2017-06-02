@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { Dropdown } from 'react-bootstrap';
+import { withRouter } from 'react-router';
 
 import { modules } from 'stripes-loader'; // eslint-disable-line
 
@@ -34,6 +35,9 @@ class MainNav extends Component {
         dispatch: PropTypes.func.isRequired,
       }),
     }),
+    history: React.PropTypes.shape({
+      listen: React.PropTypes.func.isRequired,
+    }).isRequired,
   };
 
   constructor(props) {
@@ -44,6 +48,11 @@ class MainNav extends Component {
     this.store = props.stripes.store;
     this.toggleUserMenu = this.toggleUserMenu.bind(this);
     this.logout = this.logout.bind(this);
+
+    props.history.listen((hist, op) => {
+      // eslint-disable-next-line no-console
+      console.log('MainNav history changed: hist =', hist, 'op =', op);
+    });
   }
 
   toggleUserMenu() {
@@ -165,4 +174,4 @@ class MainNav extends Component {
   }
 }
 
-export default MainNav;
+export default withRouter(MainNav);
