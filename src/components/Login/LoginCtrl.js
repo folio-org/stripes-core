@@ -90,10 +90,10 @@ class LoginCtrl extends Component {
       .then((response) => {
         if (response.status < 400) {
           response.json().then((json) => {
-            const configs = json.configs.reduce((acc, val) => {
-              acc[val.config_name] = val.value;
-              return acc;
-            }, {});
+            const configs = json.configs.reduce((acc, val) => ({
+              ...acc,
+              [val.config_name]: val.value,
+            }), {});
             this.store.dispatch(setPlugins(configs));
           });
         }
