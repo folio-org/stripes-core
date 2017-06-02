@@ -1,4 +1,4 @@
-Nbuild=n
+build=n
 dir=.
 
 if [ "x$1" = x-b ]; then
