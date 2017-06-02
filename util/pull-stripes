@@ -1,4 +1,4 @@
-build=n
+Nbuild=n
 dir=.
 
 if [ "x$1" = x-b ]; then
@@ -17,6 +17,7 @@ for i in `echo '
 	stripes-connect
 	stripes-components
 	stripes-logger
+	stripes-form
 	stripes-core
 	stripes-sample-platform
 	stripes-demo-platform
