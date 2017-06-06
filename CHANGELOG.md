@@ -4,7 +4,7 @@
 
 * Support the `autoLogin` configuration item. See [the Developer's Guide](doc/dev-guide.md#the-stripes-object). Fixes STRIPES-391.
 * In settings pane, list apps with settings in alphabetical order. Fixes the stripes-core part of STRIPES-358.
-* Navigating to any app now continues from the last URL visited within that app, providing app-level persistence and bringing us closer to something that we might call task-switching. Fixes the URL part of STRIPES-362.
+* Navigating to any app now continues from the last URL visited within that app, providing app-level persistence and bringing us closer to something that we might call task-switching. Fixes STRIPES-403.
 
 ## [1.8.0](https://github.com/folio-org/stripes-core/tree/v1.8.0) (2017-05-24)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v1.7.0...v1.8.0)
