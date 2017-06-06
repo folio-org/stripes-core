@@ -50,8 +50,13 @@ class MainNav extends Component {
     this.logout = this.logout.bind(this);
     this.lastVisited = {};
 
+    const moduleList = modules.app.concat({
+      route: '/settings',
+      module: '@folio/_settings'
+    });
+
     props.history.listen((hist) => {
-      for (const entry of modules.app) {
+      for (const entry of moduleList) {
         if (hist.pathname === entry.route || hist.pathname.startsWith(`${entry.route}/`)) {
           const name = entry.module.replace(/^@folio\//, '');
           this.lastVisited[name] = `${hist.pathname}${hist.search}`;
@@ -136,7 +141,7 @@ class MainNav extends Component {
             <NavIcon color="#fdae35" />
             <span className={css.brandingLabel} style={{ fontSize: '22px', lineHeight: '1rem' }}>FOLIO</span>
           </NavButton>
-          <NavButton href="/settings">
+          <NavButton href={this.lastVisited._settings || '/settings'}>
             <NavIcon color="#7d3fb3" />
             <span>Settings</span>
           </NavButton>
