@@ -52,7 +52,7 @@ class MainNav extends Component {
 
     const moduleList = modules.app.concat({
       route: '/settings',
-      module: '@folio/_settings'
+      module: '@folio/x_settings',
     });
 
     props.history.listen((hist) => {
@@ -141,7 +141,7 @@ class MainNav extends Component {
             <NavIcon color="#fdae35" />
             <span className={css.brandingLabel} style={{ fontSize: '22px', lineHeight: '1rem' }}>FOLIO</span>
           </NavButton>
-          <NavButton href={this.lastVisited._settings || '/settings'}>
+          <NavButton href={this.lastVisited.x_settings || '/settings'}>
             <NavIcon color="#7d3fb3" />
             <span>Settings</span>
           </NavButton>
