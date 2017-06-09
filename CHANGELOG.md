@@ -1,5 +1,9 @@
 # Change history for stripes-core
 
+## 1.10.0 IN PROGRESS
+
+* Implemented service discovery. The Stripes object now contains a `discovery` element whose `modules` and `interfaces` elements contain data obtained by probing Okapi. Fixes STRIPES-399.
+
 ## [1.9.0](https://github.com/folio-org/stripes-core/tree/v1.9.0) (2017-06-06)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v1.8.0...v1.9.0)
 
