@@ -1,0 +1,66 @@
+/*
+ * This function probes Okapi to discover what versions of what
+ * interfaces are supported by the services that it is proxying
+ * for. This information can be used to configure the UI at run-time
+ * (e.g. not attempting to fetch loan information for a
+ * non-circulating library that doesn't provide the circ interface)
+ */
+import 'isomorphic-fetch';
+
+export function discoverServices(okapiUrl, store) {
+  fetch(`${okapiUrl}/_/proxy/modules`)
+    .then((response) => {
+      if (response.status >= 400) {
+        store.dispatch({ type: 'DISCOVERY_FAILURE', code: response.status });
+      } else {
+        response.json().then((json) => {
+          store.dispatch({ type: 'DISCOVERY_SUCCESS', data: json });
+          for (const entry of json) {
+            discoverInterfaces(okapiUrl, store, entry);
+          }
+        });
+      }
+    })
+    .catch((reason) => {
+      store.dispatch({ type: 'DISCOVERY_FAILURE', message: reason });
+    });
+}
+
+function discoverInterfaces(okapiUrl, store, entry) {
+  fetch(`${okapiUrl}/_/proxy/modules/${entry.id}`)
+    .then((response) => {
+      if (response.status >= 400) {
+        store.dispatch({ type: 'DISCOVERY_FAILURE', code: response.status });
+      } else {
+        response.json().then((json) => {
+          store.dispatch({ type: 'DISCOVERY_INTERFACES', data: json });
+        });
+      }
+    })
+    .catch((reason) => {
+      store.dispatch({ type: 'DISCOVERY_FAILURE', message: reason });
+    });
+}
+
+export function discoveryReducer(state = {}, action) {
+  switch (action.type) {
+  case 'DISCOVERY_FAILURE':
+    return Object.assign({}, state, { failure: action });
+  case 'DISCOVERY_SUCCESS':
+    const modules = {};
+    for (const entry of action.data) {
+      modules[entry.id] = entry.name;
+    }
+    return Object.assign({}, state, { modules });
+  case 'DISCOVERY_INTERFACES':
+    const interfaces = {};
+    for (const entry of action.data.provides) {
+      interfaces[entry.id] = entry.version;
+    }
+    return Object.assign({}, state, {
+      interfaces: Object.assign(state.interfaces || {}, interfaces)
+    });
+  default:
+    return state;
+  }
+}
