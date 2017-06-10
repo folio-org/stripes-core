@@ -64,3 +64,9 @@ export function discoveryReducer(state = {}, action) {
     return state;
   }
 }
+
+export function isVersionCompatible(got, wanted) {
+  const [ gmajor, gminor ] = got.split('.');
+  const [ wmajor, wminor ] = wanted.split('.');
+  return wmajor === gmajor && parseInt(wminor, 10) >= parseInt(gminor, 10);
+}

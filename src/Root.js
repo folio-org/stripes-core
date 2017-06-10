@@ -16,6 +16,7 @@ import Settings from './components/Settings/Settings';
 import getModuleRoutes from './moduleRoutes';
 import initialReducers from './initialReducers';
 import enhanceReducer from './enhanceReducer';
+import { isVersionCompatible } from './discoverServices.js'
 
 
 const reducers = { ...initialReducers };
@@ -51,6 +52,21 @@ class Root extends Component {
         }
         logger.log('perm', `checking perm '${perm}': `, !!this.user.perms[perm]);
         return this.user.perms[perm] || false;
+      };
+      this.hasInterface = (name, versionWanted) => {
+        if (!this.discovery || !this.discovery.interfaces) {
+          logger.log('interface', `not checking interface '${name}': no discovery yet`);
+          return undefined;
+        }
+        const version = this.discovery.interfaces[name];
+        if (!version) {
+          logger.log('interface', `interface '${name}' is missing`);
+          return undefined;
+        }
+        const ok = isVersionCompatible(version, versionWanted);
+        const cond = ok ? 'is' : 'is not';
+        logger.log('interface', `interface '${name}' v${versionWanted} ${cond} compatible with available v${version}`);
+        return ok ? version : 0;
       };
     }
 
