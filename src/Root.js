@@ -63,6 +63,10 @@ class Root extends Component {
           logger.log('interface', `interface '${name}' is missing`);
           return undefined;
         }
+        if (!versionWanted) {
+          logger.log('interface', `interface '${name}' exists`);
+          return true;
+        }
         const ok = isVersionCompatible(version, versionWanted);
         const cond = ok ? 'is' : 'is not';
         logger.log('interface', `interface '${name}' v${versionWanted} ${cond} compatible with available v${version}`);
