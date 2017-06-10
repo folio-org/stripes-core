@@ -4,6 +4,7 @@
 
 * Implemented service discovery. The Stripes object now contains a `discovery` element whose `modules` and `interfaces` elements contain data obtained by probing Okapi. Fixes STRIPES-399.
 * The Stripes object provides a new `hasInterface` method: see the _Developer's Guide_ for details. Fixes STRIPES-401.
+* Added [documentation](doc/dev-guide.md#checking-interfaces).
 
 ## [1.9.0](https://github.com/folio-org/stripes-core/tree/v1.9.0) (2017-06-06)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v1.8.0...v1.9.0)
