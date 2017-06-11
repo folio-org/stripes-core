@@ -7,6 +7,22 @@
  */
 import 'isomorphic-fetch';
 
+function discoverInterfaces(okapiUrl, store, entry) {
+  fetch(`${okapiUrl}/_/proxy/modules/${entry.id}`)
+    .then((response) => {
+      if (response.status >= 400) {
+        store.dispatch({ type: 'DISCOVERY_FAILURE', code: response.status });
+      } else {
+        response.json().then((json) => {
+          store.dispatch({ type: 'DISCOVERY_INTERFACES', data: json });
+        });
+      }
+    })
+    .catch((reason) => {
+      store.dispatch({ type: 'DISCOVERY_FAILURE', message: reason });
+    });
+}
+
 export function discoverServices(okapiUrl, store) {
   fetch(`${okapiUrl}/_/proxy/modules`)
     .then((response) => {
@@ -26,47 +42,33 @@ export function discoverServices(okapiUrl, store) {
     });
 }
 
-function discoverInterfaces(okapiUrl, store, entry) {
-  fetch(`${okapiUrl}/_/proxy/modules/${entry.id}`)
-    .then((response) => {
-      if (response.status >= 400) {
-        store.dispatch({ type: 'DISCOVERY_FAILURE', code: response.status });
-      } else {
-        response.json().then((json) => {
-          store.dispatch({ type: 'DISCOVERY_INTERFACES', data: json });
-        });
-      }
-    })
-    .catch((reason) => {
-      store.dispatch({ type: 'DISCOVERY_FAILURE', message: reason });
-    });
-}
-
 export function discoveryReducer(state = {}, action) {
   switch (action.type) {
-  case 'DISCOVERY_FAILURE':
-    return Object.assign({}, state, { failure: action });
-  case 'DISCOVERY_SUCCESS':
-    const modules = {};
-    for (const entry of action.data) {
-      modules[entry.id] = entry.name;
+    case 'DISCOVERY_FAILURE':
+      return Object.assign({}, state, { failure: action });
+    case 'DISCOVERY_SUCCESS': {
+      const modules = {};
+      for (const entry of action.data) {
+        modules[entry.id] = entry.name;
+      }
+      return Object.assign({}, state, { modules });
     }
-    return Object.assign({}, state, { modules });
-  case 'DISCOVERY_INTERFACES':
-    const interfaces = {};
-    for (const entry of action.data.provides) {
-      interfaces[entry.id] = entry.version;
+    case 'DISCOVERY_INTERFACES': {
+      const interfaces = {};
+      for (const entry of action.data.provides) {
+        interfaces[entry.id] = entry.version;
+      }
+      return Object.assign({}, state, {
+        interfaces: Object.assign(state.interfaces || {}, interfaces),
+      });
     }
-    return Object.assign({}, state, {
-      interfaces: Object.assign(state.interfaces || {}, interfaces)
-    });
-  default:
-    return state;
+    default:
+      return state;
   }
 }
 
 export function isVersionCompatible(got, wanted) {
-  const [ gmajor, gminor ] = got.split('.');
-  const [ wmajor, wminor ] = wanted.split('.');
+  const [gmajor, gminor] = got.split('.');
+  const [wmajor, wminor] = wanted.split('.');
   return wmajor === gmajor && parseInt(wminor, 10) >= parseInt(gminor, 10);
 }
