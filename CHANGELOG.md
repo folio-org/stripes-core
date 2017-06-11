@@ -1,6 +1,7 @@
 # Change history for stripes-core
 
-## 1.11.0 IN PROGRESS
+## [1.11.0](https://github.com/folio-org/stripes-core/tree/v1.11.0) (2017-06-11)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v1.10.0...v1.11.0)
 
 * About page shows back-end modules and interfaces. Fixes STRIPES-410.
 
