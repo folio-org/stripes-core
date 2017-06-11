@@ -16,7 +16,7 @@ import Settings from './components/Settings/Settings';
 import getModuleRoutes from './moduleRoutes';
 import initialReducers from './initialReducers';
 import enhanceReducer from './enhanceReducer';
-import { isVersionCompatible } from './discoverServices.js'
+import { isVersionCompatible } from './discoverServices';
 
 
 const reducers = { ...initialReducers };
