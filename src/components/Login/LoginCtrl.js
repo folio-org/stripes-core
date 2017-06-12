@@ -38,35 +38,6 @@ class LoginCtrl extends Component {
   }
 
 
-  getUser(username) {
-    fetch(`${this.okapiUrl}/users?query=(username="${username}")`, { headers: Object.assign({}, { 'X-Okapi-Tenant': this.tenant, 'X-Okapi-Token': this.store.getState().okapi.token }) })
-      .then((response) => {
-        if (response.status >= 400) {
-          this.store.dispatch(clearCurrentUser());
-        } else {
-          response.json().then((json) => {
-            this.store.dispatch(setCurrentUser(json.users[0].personal));
-          });
-        }
-      });
-  }
-
-  getPerms(username) {
-    fetch(`${this.okapiUrl}/perms/users/${username}/permissions?expanded=true&full=true`,
-          { headers: Object.assign({}, { 'X-Okapi-Tenant': this.tenant, 'X-Okapi-Token': this.store.getState().okapi.token }) })
-      .then((response) => {
-        if (response.status >= 400) {
-          this.store.dispatch(clearCurrentUser());
-        } else {
-          response.json().then((json) => {
-            // You are not expected to understand this
-            const map = Object.assign({}, ...json.permissionNames.map(p => ({ [p.permissionName]: true })));
-            this.store.dispatch(setCurrentPerms(map));
-          });
-        }
-      });
-  }
-
   getLocale() {
     fetch(`${this.okapiUrl}/configurations/entries?query=(module=ORG and config_name=locale)`,
           { headers: Object.assign({}, { 'X-Okapi-Tenant': this.tenant, 'X-Okapi-Token': this.store.getState().okapi.token }) })
@@ -101,12 +72,13 @@ class LoginCtrl extends Component {
   }
 
   requestLogin(data) {
-    fetch(`${this.okapiUrl}/authn/login`, {
+    fetch(`${this.okapiUrl}/bl-users/login?expandPermissions=true&fullPermissions=true`, {
       method: 'POST',
       headers: Object.assign({}, { 'X-Okapi-Tenant': this.tenant, 'Content-Type': 'application/json' }),
       body: JSON.stringify(data),
     }).then((response) => {
       if (response.status >= 400) {
+        this.store.dispatch(clearCurrentUser());
         this.store.dispatch(clearOkapiToken());
         this.store.dispatch(reset('login'));
         this.initialValues.username = data.username;
@@ -115,8 +87,12 @@ class LoginCtrl extends Component {
         const token = response.headers.get('X-Okapi-Token');
         this.store.dispatch(setOkapiToken(token));
         this.store.dispatch(clearAuthFailure());
-        this.getUser(data.username);
-        this.getPerms(data.username);
+        response.json().then((json) => {
+          this.store.dispatch(setCurrentUser(json.user.personal));
+          // You are not expected to understand this
+          const map = Object.assign({}, ...json.permissions.permissions.map(p => ({ [p.permissionName]: true })));
+          this.store.dispatch(setCurrentPerms(map));
+        });
         this.getLocale();
         this.getPlugins();
       }
