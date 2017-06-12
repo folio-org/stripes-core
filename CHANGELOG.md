@@ -1,6 +1,7 @@
 # Change history for stripes-core
 
-## 1.12.0 IN PROGRESS
+## [1.12.0](https://github.com/folio-org/stripes-core/tree/v1.12.0) (2017-06-12)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v1.11.0...v1.12.0)
 
 * Show ui-module-to-backend-interface dependencies in About page. Fixes STRIPES-414.
 * Warn in the About page if required back-end interfaces are absent. Fixes STRIPES-400.
