@@ -1,6 +1,7 @@
 # Change history for stripes-core
 
-## 1.13.0 IN PROGRESS
+## [1.13.0](https://github.com/folio-org/stripes-core/tree/v1.13.0) (2017-06-12)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v1.12.0...v1.13.0)
 
 * Discover Okapi's own version number; document its availability in the Stripes object; display it in the About page. Fixes STRIPES-416.
 * Use compound `/bl-users/login` request. As a result we no longer need to make separate requests in `getUser` or `getPerms`. Fixes TRIPES-417.
