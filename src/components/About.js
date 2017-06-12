@@ -11,19 +11,35 @@ import stripesLogger from '@folio/stripes-logger/package.json';
 import Pane from '@folio/stripes-components/lib/Pane';
 import Paneset from '@folio/stripes-components/lib/Paneset';
 
+import { isVersionCompatible } from '../discoverServices';
+
 const About = (props) => {
   function renderDependencies(m, interfaces) {
     const base = `${m.module} ${m.version}`;
     if (!interfaces)
       return base;
-    const oi = m.okapiInterfaces;
-    if (!oi)
+    const okapiInterfaces = m.okapiInterfaces;
+    if (!okapiInterfaces)
       return `${base} has no dependencies`;
 
     return (<span>
       {m.module} {m.version} depends on:
       <ul>
-        {Object.keys(oi).map(key => <li key={key}>{key} v{oi[key]}</li>)}
+        {
+          Object.keys(okapiInterfaces).map((key) => {
+            const required = okapiInterfaces[key];
+            const available = interfaces[key];
+
+            let style = {};
+            if (!available) {
+              style = { color: 'red', fontWeight: 'bold' };
+            } else if (!isVersionCompatible(available, required)) {
+              style = { color: 'orange' };
+            }
+
+            return <li key={key} style={style}>{key} v{required}</li>;
+          })
+        }
       </ul>
     </span>);
   }
@@ -71,6 +87,17 @@ const About = (props) => {
       </Pane>
       <Pane defaultWidth="40%" paneTitle="UI/service dependencies">
         {Object.keys(uiModules).map(key => listModules(key, uiModules[key], interfaces))}
+        <p>
+          <b>Key.</b>
+          <br />
+          Interfaces that are required but absent are highlighted
+          in <span style={{ color: 'red', fontWeight: 'bold' }}>bold red</span>.
+          <br />
+          Interfaces that are required but present only in an incompatible version are highlighted
+          in <span style={{ color: 'orange' }}>orange</span>.
+          <br />
+          Interfaces that are present in a compatible version are shown in regular font.
+        </p>
       </Pane>
     </Paneset>
   );
