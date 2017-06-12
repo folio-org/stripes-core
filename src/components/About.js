@@ -12,15 +12,29 @@ import Pane from '@folio/stripes-components/lib/Pane';
 import Paneset from '@folio/stripes-components/lib/Paneset';
 
 const About = (props) => {
-  function listModules(caption, list) {
+  function renderDependencies(m, interfaces) {
+    const base = `${m.module} ${m.version}`;
+    if (!interfaces)
+      return base;
+    const oi = m.okapiInterfaces;
+    if (!oi)
+      return `${base} has no dependencies`;
+
+    return (<span>
+      {m.module} {m.version} depends on:
+      <ul>
+        {Object.keys(oi).map(key => <li key={key}>{key} v{oi[key]}</li>)}
+      </ul>
+    </span>);
+  }
+
+  function listModules(caption, list, interfaces) {
     const n = list.length;
     return (
       <div key={caption}>
         <h4>{n} {caption} module{n === 1 ? '' : 's'}</h4>
         <ul>
-          {
-            list.map(m => <li key={m.module}>{m.module} {m.version}</li>)
-          }
+          {list.map(m => <li key={m.module}>{renderDependencies(m, interfaces)}</li>)}
         </ul>
       </div>
     );
@@ -33,7 +47,7 @@ const About = (props) => {
 
   return (
     <Paneset>
-      <Pane defaultWidth="50%" paneTitle="User interface">
+      <Pane defaultWidth="30%" paneTitle="User interface">
         <h4>Foundation</h4>
         <ul>
           <li key="stripes-core">stripes-core {stripesCore.version}</li>
@@ -44,7 +58,7 @@ const About = (props) => {
         </ul>
         {Object.keys(uiModules).map(key => listModules(key, uiModules[key]))}
       </Pane>
-      <Pane defaultWidth="50%" paneTitle="Okapi services">
+      <Pane defaultWidth="30%" paneTitle="Okapi services">
         <h4>{nm} module{nm === 1 ? '' : 's'}</h4>
         <ul>
           {Object.keys(modules).sort().map(key => <li key={key}>{modules[key]} (<tt>{key}</tt>)</li>)}
@@ -54,6 +68,9 @@ const About = (props) => {
         <ul>
           {Object.keys(interfaces).sort().map(key => <li key={key}>{key} v{interfaces[key]}</li>)}
         </ul>
+      </Pane>
+      <Pane defaultWidth="40%" paneTitle="UI/service dependencies">
+        {Object.keys(uiModules).map(key => listModules(key, uiModules[key], interfaces))}
       </Pane>
     </Paneset>
   );
