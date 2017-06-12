@@ -29,15 +29,17 @@ const About = (props) => {
           Object.keys(okapiInterfaces).map((key) => {
             const required = okapiInterfaces[key];
             const available = interfaces[key];
-
             let style = {};
+            let text = required;
+
             if (!available) {
               style = { color: 'red', fontWeight: 'bold' };
             } else if (!isVersionCompatible(available, required)) {
               style = { color: 'orange' };
+              text = `${required} (${available} available)`
             }
 
-            return <li key={key} style={style}>{key} v{required}</li>;
+            return <li key={key} style={style}>{key} {text}</li>;
           })
         }
       </ul>
@@ -82,7 +84,7 @@ const About = (props) => {
 
         <h4>{ni} interface{ni === 1 ? '' : 's'}</h4>
         <ul>
-          {Object.keys(interfaces).sort().map(key => <li key={key}>{key} v{interfaces[key]}</li>)}
+          {Object.keys(interfaces).sort().map(key => <li key={key}>{key} {interfaces[key]}</li>)}
         </ul>
       </Pane>
       <Pane defaultWidth="40%" paneTitle="UI/service dependencies">
