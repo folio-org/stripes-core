@@ -1,5 +1,9 @@
 # Change history for stripes-core
 
+## 1.13.0 IN PROGRESS
+
+* Discover Okapi's own version number; document its availability in the Stripes object; display it in the About page. Fixes STRIPES-416.
+
 ## [1.12.0](https://github.com/folio-org/stripes-core/tree/v1.12.0) (2017-06-12)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v1.11.0...v1.12.0)
 
