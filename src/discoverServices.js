@@ -9,7 +9,9 @@ import 'isomorphic-fetch';
 
 function discoverInterfaces(okapiUrl, store, entry) {
   fetch(`${okapiUrl}/_/proxy/modules/${entry.id}`)
-    .then((response) => {
+    .catch((reason) => {
+      store.dispatch({ type: 'DISCOVERY_FAILURE', message: reason });
+    }).then((response) => {
       if (response.status >= 400) {
         store.dispatch({ type: 'DISCOVERY_FAILURE', code: response.status });
       } else {
@@ -17,15 +19,14 @@ function discoverInterfaces(okapiUrl, store, entry) {
           store.dispatch({ type: 'DISCOVERY_INTERFACES', data: json });
         });
       }
-    })
-    .catch((reason) => {
-      store.dispatch({ type: 'DISCOVERY_FAILURE', message: reason });
     });
 }
 
 export function discoverServices(okapiUrl, store) {
   fetch(`${okapiUrl}/_/proxy/modules`)
-    .then((response) => {
+    .catch((reason) => {
+      store.dispatch({ type: 'DISCOVERY_FAILURE', message: reason });
+    }).then((response) => {
       if (response.status >= 400) {
         store.dispatch({ type: 'DISCOVERY_FAILURE', code: response.status });
       } else {
@@ -36,9 +37,6 @@ export function discoverServices(okapiUrl, store) {
           }
         });
       }
-    })
-    .catch((reason) => {
-      store.dispatch({ type: 'DISCOVERY_FAILURE', message: reason });
     });
 }
 
