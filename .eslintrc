@@ -9,6 +9,7 @@
     "react/require-default-props": "off",
     "max-len": "off",
     "no-restricted-syntax": ["error", "LabeledStatement", "WithStatement"],
-    "no-unused-vars": [ 1, { argsIgnorePattern: "^_" } ]
+    "no-unused-vars": [ 1, { argsIgnorePattern: "^_" } ],
+    "curly": "off",
   }
 }
