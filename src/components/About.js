@@ -36,7 +36,7 @@ const About = (props) => {
               style = { color: 'red', fontWeight: 'bold' };
             } else if (!isVersionCompatible(available, required)) {
               style = { color: 'orange' };
-              text = `${required} (${available} available)`
+              text = `${required} (${available} available)`;
             }
 
             return <li key={key} style={style}>{key} {text}</li>;
@@ -77,6 +77,10 @@ const About = (props) => {
         {Object.keys(uiModules).map(key => listModules(key, uiModules[key]))}
       </Pane>
       <Pane defaultWidth="30%" paneTitle="Okapi services">
+        <h4>Okapi version</h4>
+        <ul>
+          <li>{_.get(props.stripes, ['discovery', 'okapi']) || 'unknown'}</li>
+        </ul>
         <h4>{nm} module{nm === 1 ? '' : 's'}</h4>
         <ul>
           {Object.keys(modules).sort().map(key => <li key={key}>{modules[key]} (<tt>{key}</tt>)</li>)}

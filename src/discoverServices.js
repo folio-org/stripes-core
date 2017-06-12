@@ -23,6 +23,19 @@ function discoverInterfaces(okapiUrl, store, entry) {
 }
 
 export function discoverServices(okapiUrl, store) {
+  fetch(`${okapiUrl}/_/version`)
+    .catch((reason) => {
+      store.dispatch({ type: 'DISCOVERY_FAILURE', message: reason });
+    }).then((response) => {
+      if (response.status >= 400) {
+        store.dispatch({ type: 'DISCOVERY_FAILURE', code: response.status });
+      } else {
+        response.text().then((text) => {
+          store.dispatch({ type: 'DISCOVERY_OKAPI', version: text });
+        });
+      }
+    });
+
   fetch(`${okapiUrl}/_/proxy/modules`)
     .catch((reason) => {
       store.dispatch({ type: 'DISCOVERY_FAILURE', message: reason });
@@ -42,6 +55,8 @@ export function discoverServices(okapiUrl, store) {
 
 export function discoveryReducer(state = {}, action) {
   switch (action.type) {
+    case 'DISCOVERY_OKAPI':
+      return Object.assign({}, state, { okapi: action.version });
     case 'DISCOVERY_FAILURE':
       return Object.assign({}, state, { failure: action });
     case 'DISCOVERY_SUCCESS': {
