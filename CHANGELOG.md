@@ -3,6 +3,7 @@
 ## 1.12.0 IN PROGRESS
 
 * Show ui-module-to-backend-interface dependencies in About page. Fixes STRIPES-414.
+* Warn in the About page if required back-end interfaces are absent. Fixes STRIPES-400.
 
 ## [1.11.0](https://github.com/folio-org/stripes-core/tree/v1.11.0) (2017-06-11)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v1.10.0...v1.11.0)
