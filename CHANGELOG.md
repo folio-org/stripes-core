@@ -3,6 +3,7 @@
 ## 1.14.0 IN PROGRESS
 
 * New script `util/package2md.js` converts UI-module package.json into module descriptor. Fixes STRIPES-418.
+* About page shows stripes-core's own back-end dependencies. Fixes STRIPES-421.
 
 ## [1.13.0](https://github.com/folio-org/stripes-core/tree/v1.13.0) (2017-06-12)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v1.12.0...v1.13.0)
