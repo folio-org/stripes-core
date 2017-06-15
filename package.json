@@ -61,7 +61,6 @@
     "hard-source-webpack-plugin": "^0.3.11",
     "isomorphic-fetch": "^2.2.1",
     "json-loader": "^0.5.4",
-    "loader-utils": "^0.2.16",
     "lodash": "^4.16.4",
     "node-object-hash": "^1.2.0",
     "postcss": "^6.0.2",
