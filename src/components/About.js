@@ -92,6 +92,12 @@ const About = (props) => {
         </ul>
       </Pane>
       <Pane defaultWidth="40%" paneTitle="UI/service dependencies">
+        <h4>Foundation</h4>
+        <ul>
+          <li>
+            {renderDependencies(Object.assign({}, stripesCore, { module: 'stripes-core' }), interfaces)}
+          </li>
+        </ul>
         {Object.keys(uiModules).map(key => listModules(key, uiModules[key], interfaces))}
         <p>
           <b>Key.</b>
