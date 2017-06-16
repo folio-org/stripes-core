@@ -37,7 +37,7 @@ class Root extends Component {
   }
 
   render() {
-    const { logger, store, config, okapi, actionNames, token, disableAuth, currentUser, currentPerms, locale, plugins, discovery } = this.props;
+    const { logger, store, config, okapi, actionNames, token, disableAuth, currentUser, currentPerms, locale, plugins, discovery, keyBindings } = this.props;
 
     function Stripes(x) {
       Object.assign(this, x);
@@ -83,6 +83,7 @@ class Root extends Component {
       locale,
       plugins: plugins || {},
       discovery,
+      keyBindings,
       user: {
         user: currentUser,
         perms: currentPerms,
@@ -148,6 +149,7 @@ Root.propTypes = {
     modules: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     interfaces: PropTypes.object, // eslint-disable-line react/forbid-prop-types
   }),
+  keyBindings: PropTypes.object, // eslint-disable-line react/forbid-prop-types
 };
 
 function mapStateToProps(state) {
@@ -158,6 +160,7 @@ function mapStateToProps(state) {
     locale: state.okapi.locale,
     plugins: state.okapi.plugins,
     discovery: state.discovery,
+    keyBindings: state.bindings.bindings,
   };
 }
 
