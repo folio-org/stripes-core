@@ -4,6 +4,7 @@ import { Provider, connect } from 'react-redux';
 import Router from 'react-router-dom/BrowserRouter';
 import Route from 'react-router-dom/Route';
 import Switch from 'react-router-dom/Switch';
+import { HotKeys } from '@folio/stripes-components/lib/HotKeys';
 
 import MainContainer from './components/MainContainer';
 import MainNav from './components/MainNav';
@@ -91,6 +92,7 @@ class Root extends Component {
     });
 
     return (
+     <HotKeys keyMap={keyBindings} noWrapper>
       <Provider store={store}>
         <Router>
           { token == null && !disableAuth ?
@@ -115,6 +117,7 @@ class Root extends Component {
           }
         </Router>
       </Provider>
+     </HotKeys>
     );
   }
 }
