@@ -5,6 +5,7 @@ import { okapi, config } from 'stripes-loader'; // eslint-disable-line
 import configureLogger from './configureLogger';
 import configureStore from './configureStore';
 import { discoverServices } from './discoverServices';
+import { discoverKeyBindings } from './discoverKeyBindings';
 import gatherActions from './gatherActions';
 
 import Root from './Root';
@@ -13,6 +14,7 @@ const initialState = { okapi };
 const logger = configureLogger(config);
 logger.log('core', 'Starting Stripes ...');
 const store = configureStore(initialState, config, logger);
+discoverKeyBindings(okapi.url, store);
 discoverServices(okapi.url, store);
 const actionNames = gatherActions();
 
