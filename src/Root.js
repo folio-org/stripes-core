@@ -38,7 +38,7 @@ class Root extends Component {
   }
 
   render() {
-    const { logger, store, config, okapi, actionNames, token, disableAuth, currentUser, currentPerms, locale, plugins, discovery, keyBindings } = this.props;
+    const { logger, store, config, okapi, actionNames, token, disableAuth, currentUser, currentPerms, locale, plugins, bindings, discovery } = this.props;
 
     function Stripes(x) {
       Object.assign(this, x);
@@ -83,8 +83,8 @@ class Root extends Component {
       actionNames,
       locale,
       plugins: plugins || {},
+      bindings,
       discovery,
-      keyBindings,
       user: {
         user: currentUser,
         perms: currentPerms,
@@ -92,32 +92,32 @@ class Root extends Component {
     });
 
     return (
-     <HotKeys keyMap={keyBindings} noWrapper>
-      <Provider store={store}>
-        <Router>
-          { token == null && !disableAuth ?
-            <LoginCtrl autoLogin={config.autoLogin} /> :
-            <MainContainer>
-              <MainNav stripes={stripes} />
-              <ModuleContainer id="content">
-                <Switch>
-                  <Route exact path="/" component={Front} key="root" />
-                  <Route path="/about" component={() => <About stripes={stripes} />} key="about" />
-                  <Route path="/settings" render={() => <Settings stripes={stripes} />} />
-                  {getModuleRoutes(stripes)}
-                  <Route
-                    component={() => <div>
-                      <h2>Uh-oh!</h2>
-                      <p>This route does not exist.</p>
-                    </div>}
-                  />
-                </Switch>
-              </ModuleContainer>
-            </MainContainer>
-          }
-        </Router>
-      </Provider>
-     </HotKeys>
+      <HotKeys keyMap={bindings} noWrapper>
+        <Provider store={store}>
+          <Router>
+            { token == null && !disableAuth ?
+              <LoginCtrl autoLogin={config.autoLogin} /> :
+              <MainContainer>
+                <MainNav stripes={stripes} />
+                <ModuleContainer id="content">
+                  <Switch>
+                    <Route exact path="/" component={Front} key="root" />
+                    <Route path="/about" component={() => <About stripes={stripes} />} key="about" />
+                    <Route path="/settings" render={() => <Settings stripes={stripes} />} />
+                    {getModuleRoutes(stripes)}
+                    <Route
+                      component={() => <div>
+                        <h2>Uh-oh!</h2>
+                        <p>This route does not exist.</p>
+                      </div>}
+                    />
+                  </Switch>
+                </ModuleContainer>
+              </MainContainer>
+            }
+          </Router>
+        </Provider>
+      </HotKeys>
     );
   }
 }
@@ -140,6 +140,7 @@ Root.propTypes = {
   currentUser: PropTypes.object, // eslint-disable-line react/forbid-prop-types
   locale: PropTypes.string,
   plugins: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+  bindings: PropTypes.object, // eslint-disable-line react/forbid-prop-types
   config: PropTypes.object, // eslint-disable-line react/forbid-prop-types
   okapi: PropTypes.shape({
     url: PropTypes.string.isRequired,
@@ -152,7 +153,6 @@ Root.propTypes = {
     modules: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     interfaces: PropTypes.object, // eslint-disable-line react/forbid-prop-types
   }),
-  keyBindings: PropTypes.object, // eslint-disable-line react/forbid-prop-types
 };
 
 function mapStateToProps(state) {
@@ -162,8 +162,8 @@ function mapStateToProps(state) {
     currentPerms: state.okapi.currentPerms,
     locale: state.okapi.locale,
     plugins: state.okapi.plugins,
+    bindings: state.okapi.bindings,
     discovery: state.discovery,
-    keyBindings: state.bindings.bindings,
   };
 }
 

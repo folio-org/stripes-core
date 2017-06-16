@@ -32,6 +32,13 @@ function setPlugins(plugins) {
   };
 }
 
+function setBindings(bindings) {
+  return {
+    type: 'SET_BINDINGS',
+    bindings,
+  };
+}
+
 function setOkapiToken(token) {
   return {
     type: 'SET_OKAPI_TOKEN',
@@ -62,6 +69,7 @@ export { setCurrentUser,
          setCurrentPerms,
          setLocale,
          setPlugins,
+         setBindings,
          setOkapiToken,
          clearOkapiToken,
          authFailure,
