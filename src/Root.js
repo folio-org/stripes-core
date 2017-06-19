@@ -82,10 +82,10 @@ class Root extends Component {
       okapi,
       actionNames,
       locale,
-      setLocale: (val) => { store.dispatch(setLocale(val)) },
+      setLocale: (val) => { store.dispatch(setLocale(val)); },
       plugins: plugins || {},
       bindings,
-      setBindings: (val) => { store.dispatch(setBindings(val)) },
+      setBindings: (val) => { store.dispatch(setBindings(val)); },
       discovery,
       user: {
         user: currentUser,
