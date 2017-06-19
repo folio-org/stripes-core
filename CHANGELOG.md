@@ -2,8 +2,8 @@
 
 ## 1.14.0 IN PROGRESS
 
-* New script `util/package2md.js` converts UI-module package.json into module descriptor. Fixes STRIPES-418.
-* About page shows stripes-core's own back-end dependencies. Fixes STRIPES-421.
+* New script `util/package2md.js` converts UI-module package.json into module descriptor. Fixes STRPCORE-5.
+* About page shows stripes-core's own back-end dependencies. Fixes STRPCORE-6.
 * Declared action-names are gathered from all registered modules and provided as the `actionNames` property of the Stripes objecty. Part of STRPCORE-2.
 * Key bindings are loaded as the `bindings` property of the Stripes object. Part of STRPCORE-2.
 * "Soft logout" retains discovery information across logins. Fixes STRPCORE-4.
