@@ -18,7 +18,7 @@ import getModuleRoutes from './moduleRoutes';
 import initialReducers from './initialReducers';
 import enhanceReducer from './enhanceReducer';
 import { isVersionCompatible } from './discoverServices';
-
+import { setLocale, setBindings } from './okapiActions';
 
 const reducers = { ...initialReducers };
 
@@ -82,8 +82,10 @@ class Root extends Component {
       okapi,
       actionNames,
       locale,
+      setLocale: (val) => { store.dispatch(setLocale(val)) },
       plugins: plugins || {},
       bindings,
+      setBindings: (val) => { store.dispatch(setBindings(val)) },
       discovery,
       user: {
         user: currentUser,
