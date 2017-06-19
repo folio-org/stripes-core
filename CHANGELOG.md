@@ -7,6 +7,7 @@
 * Declared action-names are gathered from all registered modules and provided as the `actionNames` property of the Stripes objecty. Part of STRPCORE-2.
 * Key bindings are loaded as the `bindings` property of the Stripes object. Part of STRPCORE-2.
 * "Soft logout" retains discovery information across logins. Fixes STRPCORE-4.
+* Provide `setLocale` and `setBindings` functions on the Stripes object. Fixes STRPCORE-3.
 
 ## [1.13.0](https://github.com/folio-org/stripes-core/tree/v1.13.0) (2017-06-12)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v1.12.0...v1.13.0)
