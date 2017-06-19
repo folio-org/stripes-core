@@ -30,7 +30,6 @@ class LoginCtrl extends Component {
     this.sys = require('stripes-loader'); // eslint-disable-line
     this.okapiUrl = this.sys.okapi.url;
     this.tenant = this.sys.okapi.tenant;
-    this.store.dispatch(clearAuthFailure());
     this.initialValues = { username: '', password: '' };
     if (props.autoLogin && props.autoLogin.username) {
       this.requestLogin(props.autoLogin);
