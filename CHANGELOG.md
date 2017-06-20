@@ -1,5 +1,9 @@
 # Change history for stripes-core
 
+## 1.15.0 IN PROGRESS
+
+* Add hot-keys documentation to the Module Developer's Guide. Fixes STRPCORE-7.
+
 ## [1.14.0](https://github.com/folio-org/stripes-core/tree/v1.14.0) (2017-06-19)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v1.13.0...v1.14.0)
 
