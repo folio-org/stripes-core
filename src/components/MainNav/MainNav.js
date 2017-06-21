@@ -113,7 +113,7 @@ class MainNav extends Component {
     );
 
     const menuLinks = modules.app.map((entry) => {
-      const name = entry.module.replace(/^@folio\//, '');
+      const name = entry.module.replace(/^@[a-z0-9_]+\//, '');
       const perm = `module.${name}.enabled`;
       if (!stripes.hasPerm(perm)) return null;
 
