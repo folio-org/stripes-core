@@ -24,7 +24,7 @@ fs.readFile(filename, 'utf8', (err, data) => {
     id: `${json.name}-${json.version}`,
     name: json.description,
     requires: Object.keys(interfaces).map(key => ({ id: key, version: interfaces[key] })),
-    permissionSets: json.stripes.permissionsets || [],
+    permissionSets: json.stripes.permissionSets || [],
   };
 
   console.log(JSON.stringify(md, undefined, 2));
