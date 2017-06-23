@@ -20,7 +20,7 @@ const About = (props) => {
       return base;
     const okapiInterfaces = m.okapiInterfaces;
     if (!okapiInterfaces)
-      return `${base} has no dependencies`;
+      return `${base} declares no dependencies`;
 
     return (<span>
       {m.module} {m.version} depends on:
