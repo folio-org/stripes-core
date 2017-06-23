@@ -14,6 +14,14 @@
   "stripes": {
     "type": "app",
     "displayName": "Trivial",
-    "route":"/trivial"
+    "route": "/trivial",
+    "okapiInterfaces": {
+    },
+    "permissionSets": [
+      {
+        "permissionName": "module.trivial.enabled",
+        "displayName": "UI: Trivial module is enabled"
+      }
+    ]
   }
 }
