@@ -1,0 +1,46 @@
+#!/usr/bin/perl -w
+
+# After cloning the modules of a Stripes development environment --
+# consisting of one or more of the stripes-* and ui-* git modules from
+# https://github.com/folio-org/ -- run this script in the directory
+# that contains them to set up yarn linking. The first time you run
+# it, use the "-i" option to initialise the low-level repositories as
+# yarn-link destinations. Thereafter it can be omitted.
+
+use strict;
+use warnings;
+
+my $initialise = 0;
+if (@ARGV && $ARGV[0] eq '-i') {
+    $initialise = 1;
+    shift @ARGV;
+    print "Initialising\n";
+}
+
+if (@ARGV == 1) {
+    chdir $ARGV[0];
+    print "Running in directory $ARGV[0]\n";
+} elsif (@ARGV != 0) {
+    print STDERR "Usage: $0 [-i] [<directory>]\n";
+    exit 1;
+}
+
+if ($initialise) {
+    foreach my $dir (<stripes-*>) {
+	print "* Initialising linkability for '$dir'\n";
+	system "cd $dir && yarn link"
+    }
+}
+
+foreach my $dir (<stripes-* ui-*>) {
+    if (! -f "$dir/package.json") {
+	print "* Skipping '$dir' -- no package.json\n";
+	next;
+    }
+    print "* Linking for for '$dir'\n";
+    my $deps = `grep '^ *"\@folio/' $dir/package.json`;
+    foreach my $line (split /\n/, $deps) {
+	my($name) = ($line =~ /.*"(\@folio\/.*?)"/);
+	system "cd $dir && yarn link \"$name\"";
+    }
+}
