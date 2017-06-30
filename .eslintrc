@@ -11,5 +11,7 @@
     "no-restricted-syntax": ["error", "LabeledStatement", "WithStatement"],
     "no-unused-vars": [ 1, { argsIgnorePattern: "^_" } ],
     "curly": "off",
+    "no-plusplus": "off",
+    "no-continue": "off"
   }
 }

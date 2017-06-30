@@ -21,7 +21,7 @@ fs.readFile(filename, 'utf8', (err, data) => {
   const json = JSON.parse(data);
   const interfaces = json.stripes.okapiInterfaces || [];
   const md = {
-    id: `${json.name.replace(/^@/, '').replace('/', '_')}-${json.version.replace(/-.*/, '')}`,
+    id: `${json.name.replace(/^@/, '').replace('/', '_')}-${json.version}`,
     name: json.description,
     requires: Object.keys(interfaces).map(key => ({ id: key, version: interfaces[key] })),
     permissionSets: json.stripes.permissionSets || [],
