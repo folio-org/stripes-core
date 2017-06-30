@@ -2,7 +2,7 @@ import React from 'react';
 import css from './NavDivider.css';
 
 const propTypes = {
-  md: React.PropTypes.string, //temporary as we work out the responsiveness of the header.
+  md: React.PropTypes.string, // Temporary as we work out the responsiveness of the header.
 };
 
 function NavDivider(props) {
