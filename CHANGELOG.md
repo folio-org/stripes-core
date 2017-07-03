@@ -1,5 +1,9 @@
 # Change history for stripes-core
 
+## 2.1.0 (IN PROGRESS)
+
+* New `setPluginPref` function, analogous to setLocale and setBindings. Fixes STRPCORE-16.
+
 ## [2.0.0](https://github.com/folio-org/stripes-core/tree/v2.0.0) (2017-07-03)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v1.14.0...v2.0.0)
 

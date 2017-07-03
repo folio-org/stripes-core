@@ -12,6 +12,8 @@ export default function okapiReducer(state = {}, action) {
       return Object.assign({}, state, { locale: action.locale });
     case 'SET_PLUGINS':
       return Object.assign({}, state, { plugins: action.plugins });
+    case 'SET_SINGLE_PLUGIN':
+      return Object.assign({}, state, { plugins: Object.assign({}, state.plugins, { [action.name]: action.value }) });
     case 'SET_BINDINGS':
       return Object.assign({}, state, { bindings: action.bindings });
     case 'SET_CURRENT_PERMS':
