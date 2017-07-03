@@ -1,5 +1,6 @@
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
+import orchestrate from 'redux-orchestrate';
 import { createLogger } from 'redux-logger';
 import initialReducers from './initialReducers';
 import enhanceReducer from './enhanceReducer';
@@ -10,13 +11,9 @@ export default function configureStore(initialState, config, stripesLogger) {
     predicate: () => stripesLogger.hasCategory('redux'),
   });
 
-  const finalCreateStore = compose(
-    applyMiddleware(thunk),
-    applyMiddleware(logger),
-  )(createStore);
-
-  const reducer = combineReducers(initialReducers);
-  const store = finalCreateStore(enhanceReducer(reducer), initialState);
+  const reducer = enhanceReducer(combineReducers(initialReducers));
+  const middleware = applyMiddleware(thunk, logger, orchestrate([]));
+  const store = createStore(reducer, initialState, middleware);
 
   return store;
 }
