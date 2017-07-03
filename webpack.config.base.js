@@ -83,7 +83,13 @@ module.exports = {
                 return [
                   require('postcss-import'),
                   require('postcss-url'),
-                  require('postcss-cssnext')
+                  require("autoprefixer"),
+                  require("postcss-custom-properties"),
+                  require("postcss-calc"),
+                  require("postcss-nesting"),
+                  require("postcss-custom-media"),
+                  require("postcss-media-minmax"),
+                  require("postcss-color-function")
                 ];
               }
             }
