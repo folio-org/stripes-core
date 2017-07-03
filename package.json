@@ -21,7 +21,7 @@
   },
   "okapiInterfaces": {
     "users-bl": "1.0",
-    "configuration": "0.0.9"
+    "configuration": "1.0"
   },
   "devDependencies": {
     "babel-register": "^6.16.3",

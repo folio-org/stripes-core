@@ -38,7 +38,7 @@ class LoginCtrl extends Component {
 
 
   getLocale() {
-    fetch(`${this.okapiUrl}/configurations/entries?query=(module=ORG and config_name=locale)`,
+    fetch(`${this.okapiUrl}/configurations/entries?query=(module=ORG and configName=locale)`,
           { headers: Object.assign({}, { 'X-Okapi-Tenant': this.tenant, 'X-Okapi-Token': this.store.getState().okapi.token }) })
       .then((response) => {
         let locale = 'en-US';
@@ -62,7 +62,7 @@ class LoginCtrl extends Component {
           response.json().then((json) => {
             const configs = json.configs.reduce((acc, val) => ({
               ...acc,
-              [val.config_name]: val.value,
+              [val.configName]: val.value,
             }), {});
             this.store.dispatch(setPlugins(configs));
           });
@@ -71,7 +71,7 @@ class LoginCtrl extends Component {
   }
 
   getBindings() {
-    fetch(`${this.okapiUrl}/configurations/entries?query=(module=ORG and config_name=bindings)`,
+    fetch(`${this.okapiUrl}/configurations/entries?query=(module=ORG and configName=bindings)`,
           { headers: Object.assign({}, { 'X-Okapi-Tenant': this.tenant, 'X-Okapi-Token': this.store.getState().okapi.token }) })
       .then((response) => {
         let bindings = {};
