@@ -1,11 +1,13 @@
 # Change history for stripes-core
 
-## 1.15.0 IN PROGRESS
+## [2.0.0](https://github.com/folio-org/stripes-core/tree/v2.0.0) (2017-07-03)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v1.14.0...v2.0.0)
 
 * Add hot-keys documentation to the Module Developer's Guide. Fixes STRPCORE-7.
 * Icon permissions work for UI modules in any namespace. Fixes STRPCORE-9.
-* Add okapiInterfaces (empty) and permissionSets to `examples/trivial/package.json`.
-* `util/package2md` generates IDs that should be palatable to Okapi. Fixes STRPCORE-12.
+* Add okapiInterfaces (empty) and permissionSets to `examples/trivial/package.json`. Fixes STRPCORE-10.
+* `util/package2md` modified to generate IDs that are palatable to Okapi. Fixes STRPCORE-12.
+* Changes to CSS toolchain, making nested classes work again. Fixes STRPCORE-13.
 * New script, `util/link-stripes`, to yarn-link the various parts of a Stripes development environment. Fixes STRPCORE-14.
 
 ## [1.14.0](https://github.com/folio-org/stripes-core/tree/v1.14.0) (2017-06-19)
