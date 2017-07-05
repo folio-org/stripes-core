@@ -83,7 +83,6 @@
     "redux": "^3.6.0",
     "redux-form": "^6.1.1",
     "redux-logger": "^3.0.6",
-    "redux-orchestrate": "^1.1.0",
     "redux-thunk": "^2.1.0",
     "rimraf": "^2.5.4",
     "style-loader": "^0.18.2",

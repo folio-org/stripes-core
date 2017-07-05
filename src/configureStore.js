@@ -1,7 +1,8 @@
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
-import orchestrate from 'redux-orchestrate';
 import { createLogger } from 'redux-logger';
+import sideEffects from '@folio/stripes-connect/sideEffects';
+
 import initialReducers from './initialReducers';
 import enhanceReducer from './enhanceReducer';
 
@@ -12,8 +13,6 @@ export default function configureStore(initialState, config, stripesLogger) {
   });
 
   const reducer = enhanceReducer(combineReducers(initialReducers));
-  const middleware = applyMiddleware(thunk, logger, orchestrate([]));
-  const store = createStore(reducer, initialState, middleware);
-
-  return store;
+  const middleware = applyMiddleware(thunk, logger, sideEffects.middleware);
+  return createStore(reducer, initialState, middleware);
 }
