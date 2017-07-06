@@ -1,6 +1,6 @@
 {
   "name": "@folio/trivial",
-  "version": "0.0.2-test",
+  "version": "1.0.0",
   "description": "A trivial Stripes module.",
   "repository": "folio-org/stripes-experiments",
   "publishConfig" : {
@@ -23,5 +23,9 @@
         "displayName": "UI: Trivial module is enabled"
       }
     ]
+  },
+  "dependencies": {
+    "react": "^15.6.1",
+    "react-router-dom": "^4.1.1"
   }
 }
