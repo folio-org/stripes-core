@@ -1,9 +1,15 @@
 import React from 'react';
+import PropTypes from 'proptypes';
 import About from './About';
 
 class Multi extends React.Component {
+  static propTypes = {
+    stripes: PropTypes.shape({
+      connect: PropTypes.func.isRequired,
+    }).isRequired,
+  };
+
   constructor(props) {
-    console.log('constructing Multi, props =', props);
     super(props);
     this.connectedAbout = props.stripes.connect(About);
   }
@@ -16,6 +22,6 @@ class Multi extends React.Component {
       </div>
     );
   }
-};
+}
 
 export default Multi;
