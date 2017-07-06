@@ -4,11 +4,13 @@ import css from './trivial.css';
 class About extends Component {
   handleSubmit(e) {
     e.preventDefault();
+    const dk = this.props.dataKey || '';
     this.props.mutator.greetingParams.replace({
-      greeting: document.getElementById('g').value,
-      name: document.getElementById('n').value });
+      greeting: document.getElementById(`g${dk}`).value,
+      name: document.getElementById(`n${dk}`).value });
   }
   render() {
+    const dk = this.props.dataKey || '';
     let greeting;
     if (this.props.data.greetingParams ) {
       greeting = <h3>{this.props.data.greetingParams.greeting} {this.props.data.greetingParams.name}</h3>
@@ -18,8 +20,8 @@ class About extends Component {
     return <div className={css.root}>
         {greeting}
         <form ref='form' onSubmit={this.handleSubmit.bind(this)}>
-        <label className={css.label}>Greeting:</label> <input className={css.textInput} id='g' type='text' />
-          <label className={css.label}>Person:</label> <input className={css.textInput} id='n' type='text' />
+        <label className={css.label}>Greeting:</label> <input className={css.textInput} id={`g${dk}`} type='text' />
+        <label className={css.label}>Person:</label> <input className={css.textInput} id={`n${dk}`} type='text' />
           <button className={css.button} type="submit">Greet</button>
         </form>
       </div>
