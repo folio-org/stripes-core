@@ -2,6 +2,7 @@
 
 ## 2.1.0 (IN PROGRESS)
 
+* Dependency on stripes-components raised to 1.3.0.
 * New `setSinglePlugin` function, analogous to `setLocale` and `setBindings`. Fixes STRPCORE-16.
 * Add `setToken` function to the Stripes object, to support SSO. Fixes STRPCORE-17.
 * In `examples/trivial/About.js`, eliminate use of `componentWillMount` to provide initial values to resources. Part of STRIPES-433.
