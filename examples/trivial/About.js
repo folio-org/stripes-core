@@ -1,28 +1,49 @@
-import React, { Component } from 'react';
+import React from 'react';
+import PropTypes from 'proptypes';
 import css from './trivial.css';
 
-class About extends Component {
-  handleSubmit(e) {
+class About extends React.Component {
+  static propTypes = {
+    dataKey: PropTypes.string,
+    data: PropTypes.shape({
+      greetingParams: PropTypes.shape({
+        greeting: PropTypes.string,
+        name: PropTypes.string,
+      }),
+    }),
+    mutator: PropTypes.shape({
+      greetingParams: PropTypes.shape({
+        replace: PropTypes.func.isRequired,
+      }),
+    }),
+  };
+
+  handleSubmit = (e) => {
     e.preventDefault();
+    const dk = this.props.dataKey || '';
     this.props.mutator.greetingParams.replace({
-      greeting: document.getElementById('g').value,
-      name: document.getElementById('n').value });
-  }
+      greeting: document.getElementById(`g${dk}`).value,
+      name: document.getElementById(`n${dk}`).value });
+  };
+
   render() {
+    const dk = this.props.dataKey || '';
     let greeting;
-    if (this.props.data.greetingParams ) {
-      greeting = <h3>{this.props.data.greetingParams.greeting} {this.props.data.greetingParams.name}</h3>
+    if (this.props.data.greetingParams) {
+      greeting = <h3>{this.props.data.greetingParams.greeting} {this.props.data.greetingParams.name}</h3>;
     } else {
-      greeting = <h3>No one here :(</h3>
+      greeting = <h3>No one here :(</h3>;
     }
-    return <div className={css.root}>
+    return (
+      <div className={css.root}>
         {greeting}
-        <form ref='form' onSubmit={this.handleSubmit.bind(this)}>
-        <label className={css.label}>Greeting:</label> <input className={css.textInput} id='g' type='text' />
-          <label className={css.label}>Person:</label> <input className={css.textInput} id='n' type='text' />
+        <form onSubmit={this.handleSubmit}>
+          <label className={css.label} htmlFor={`g${dk}`}>Greeting:</label> <input className={css.textInput} id={`g${dk}`} type="text" />
+          <label className={css.label} htmlFor={`n${dk}`}>Person:</label> <input className={css.textInput} id={`n${dk}`} type="text" />
           <button className={css.button} type="submit">Greet</button>
         </form>
       </div>
+    );
   }
 }
 

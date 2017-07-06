@@ -1,12 +1,15 @@
 {
   "name": "@folio/trivial",
-  "version": "0.0.2-test",
+  "version": "1.0.0",
   "description": "A trivial Stripes module.",
   "repository": "folio-org/stripes-experiments",
   "publishConfig" : {
     "registry" : "https://repository.folio.org/repository/npm-folio/"
   },
   "license": "Apache-2.0",
+  "scripts": {
+    "lint": "eslint *.js || true"
+  },
   "engines": {
     "node": ">=6.0.0"
   },
@@ -23,5 +26,25 @@
         "displayName": "UI: Trivial module is enabled"
       }
     ]
+  },
+  "devDependencies": {
+    "babel-core": "^6.17.0",
+    "babel-eslint": "^7.0.0",
+    "babel-preset-es2015": "^6.18.0",
+    "babel-preset-react": "^6.16.0",
+    "babel-preset-stage-0": "^6.16.0",
+    "babel-register": "^6.18.0",
+    "eslint": "^3.8.0",
+    "eslint-config-airbnb": "^13.0.0",
+    "eslint-import-resolver-webpack": "^0.8.1",
+    "eslint-plugin-babel": "^3.3.0",
+    "eslint-plugin-import": "^2.0.1",
+    "eslint-plugin-jsx-a11y": "^2.2.3",
+    "eslint-plugin-react": "^6.4.1"
+  },
+  "dependencies": {
+    "proptypes": "^1.1.0",
+    "react": "^15.6.1",
+    "react-router-dom": "^4.1.1"
   }
 }
