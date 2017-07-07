@@ -1,5 +1,5 @@
 import React from 'react';
-import PropTypes from 'proptypes';
+import PropTypes from 'prop-types';
 import Link from 'react-router-dom/Link';
 import Switch from 'react-router-dom/Switch';
 import Route from 'react-router-dom/Route';
