@@ -8,6 +8,7 @@
 * In `examples/trivial/About.js`, eliminate use of `componentWillMount` to provide initial values to resources. Part of STRIPES-433.
 * Enhancements to the "Trivial" module to demonstrate use of `dataKey`. Fixes STRPCORE-18.
 * Bump `configuration` interface dependency to v2.0.
+* Update Stripes release-procedure document to describe Jira procedure. Fixes STRPCORE-19.
 
 ## [2.0.0](https://github.com/folio-org/stripes-core/tree/v2.0.0) (2017-07-03)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v1.14.0...v2.0.0)
