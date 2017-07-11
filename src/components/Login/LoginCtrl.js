@@ -1,8 +1,7 @@
 import React, { Component, PropTypes } from 'react'; // eslint-disable-line
-
 import { connect as reduxConnect } from 'react-redux'; // eslint-disable-line
-
 import { reset } from 'redux-form';
+import localforage from 'localforage';
 
 import { setCurrentUser, clearCurrentUser, setCurrentPerms, setLocale, setPlugins, setBindings, setOkapiToken, clearOkapiToken, authFailure, clearAuthFailure } from '../../okapiActions';
 import Login from './Login';
@@ -105,6 +104,7 @@ class LoginCtrl extends Component {
       if (response.status >= 400) {
         this.store.dispatch(clearCurrentUser());
         this.store.dispatch(clearOkapiToken());
+        localforage.removeItem('okapiSess');
         this.store.dispatch(reset('login'));
         this.initialValues.username = data.username;
         this.store.dispatch(authFailure());
@@ -117,6 +117,12 @@ class LoginCtrl extends Component {
           // You are not expected to understand this
           const map = Object.assign({}, ...json.permissions.permissions.map(p => ({ [p.permissionName]: true })));
           this.store.dispatch(setCurrentPerms(map));
+          const okapiSess = {
+            token,
+            user: json.user.personal,
+            perms: map,
+          };
+          localforage.setItem('okapiSess', okapiSess);
         });
         this.getLocale();
         this.getPlugins();
@@ -127,6 +133,16 @@ class LoginCtrl extends Component {
 
   render() {
     const authFail = this.props.authFail;
+    localforage.getItem('okapiSess').then((sess) => {
+      if (sess !== null) {
+        this.store.dispatch(setOkapiToken(sess.token));
+        this.store.dispatch(setCurrentUser(sess.user));
+        this.store.dispatch(setCurrentPerms(sess.perms));
+        this.getLocale();
+        this.getPlugins();
+        this.getBindings();
+      }
+    });
     return (
       <Login
         onSubmit={this.requestLogin}

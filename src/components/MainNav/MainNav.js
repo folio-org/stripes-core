@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { Dropdown } from 'react-bootstrap';
 import { withRouter } from 'react-router';
+import localforage from 'localforage';
 
 import { modules } from 'stripes-loader'; // eslint-disable-line
 
@@ -76,6 +77,7 @@ class MainNav extends Component {
     this.store.dispatch(clearOkapiToken());
     this.store.dispatch(clearCurrentUser());
     this.store.dispatch(resetStore());
+    localforage.removeItem('okapiSess');
     this.context.router.history.push('/');
   }
 
