@@ -1,6 +1,6 @@
 {
   "name": "@folio/stripes-core",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "The starting point for Stripes applications",
   "license": "Apache-2.0",
   "repository": "folio-org/stripes-core",
@@ -20,7 +20,7 @@
     "node": ">=6.0.0"
   },
   "okapiInterfaces": {
-    "users-bl": "1.0",
+    "users-bl": "2.0",
     "configuration": "2.0"
   },
   "devDependencies": {
@@ -39,7 +39,7 @@
   },
   "dependencies": {
     "@folio/stripes-components": "^1.3.0",
-    "@folio/stripes-connect": "^2.2.1",
+    "@folio/stripes-connect": "^2.3.0",
     "@folio/stripes-loader": "^0.0.2",
     "@folio/stripes-logger": "^0.0.2",
     "autoprefixer": "^7.1.1",
