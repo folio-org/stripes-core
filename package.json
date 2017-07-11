@@ -39,7 +39,7 @@
   },
   "dependencies": {
     "@folio/stripes-components": "^1.3.0",
-    "@folio/stripes-connect": "^2.2.1",
+    "@folio/stripes-connect": "^2.3.0",
     "@folio/stripes-loader": "^0.0.2",
     "@folio/stripes-logger": "^0.0.2",
     "autoprefixer": "^7.1.1",
