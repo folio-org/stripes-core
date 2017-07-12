@@ -32,6 +32,14 @@ function setPlugins(plugins) {
   };
 }
 
+function setSinglePlugin(name, value) {
+  return {
+    type: 'SET_SINGLE_PLUGIN',
+    name,
+    value,
+  };
+}
+
 function setBindings(bindings) {
   return {
     type: 'SET_BINDINGS',
@@ -69,6 +77,7 @@ export { setCurrentUser,
          setCurrentPerms,
          setLocale,
          setPlugins,
+         setSinglePlugin,
          setBindings,
          setOkapiToken,
          clearOkapiToken,

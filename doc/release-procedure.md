@@ -1,23 +1,15 @@
 # Stripes release procedure
 
 <!-- ../../okapi/doc/md2toc -l 2 release-procedure.md -->
-* [Before you release](#before-you-release)
 * [Version numbers, branches and tags](#version-numbers-branches-and-tags)
+* [Before you release](#before-you-release)
 * [Release procedure](#release-procedure)
+* [Working towards the next release](#working-towards-the-next-release)
 * [Notes on dependencies](#notes-on-dependencies)
 * [Notes on testing](#notes-on-testing)
-* [While working towards the next release](#while-working-towards-the-next-release)
 * [Note on access to the NPM repository](#note-on-access-to-the-npm-repository)
 
 NOTE. This document is subject to revision.
-
-
-## Before you release
-
-Please make sure that your code runs clean. Specifically:
-
-* It should pass `yarn lint` with no errors.
-* It should not emit any warnings on the JavaScript console.
 
 
 ## Version numbers, branches and tags
@@ -30,15 +22,41 @@ Each release is tagged with a name beginning with `v` and followed by the versio
 Patch releases can be done on a branch whose name begins with `b` and is followed by the major and minor version -- for example, `b2.3`. From this branch, we will make some number of tagged releases, each with a different trivial version number (one for each patch release: bug-fixes and security patch, for example, `v2.3.1`). If no such branch exists for the minor version you're seeking to patch and `master` has since moved on with commits you prefer not to include, please create a branch from the tag.
 
 
+## Before you release
+
+Please make sure that your code runs clean. Specifically:
+
+* It should pass `yarn lint` with no errors.
+* It should not emit any warnings on the JavaScript console.
+
+Make sure that your repository's `CHANGELOG.md` is up to date:
+
+* Bullet point for each bug fixed/new feature added/etc.
+* Each bullet point ends by stating the ID of the Jira issue, when there is one. If there is not, consider creating one and referencing it, but there is no need to make a religion out of this.
+
+You may need to check the git history to ensure that all major changes are covered by the change-log entries.
+
+Ensure that each of the Jira issues listed in the change-log is tagged to the number of the release that it's going to be a part of. Issues are generally tagged to the minor release following the most recently released versions, but will need to be re-targeted to the next _major_ release if a backwards-incompatible change is to be included.
+
 ## Release procedure
 
 * Increment the version number in `package.json`, if this has not already been done -- bumping the major version if there are backwards-incompatible changes, and the minor version if all changes are backwards-compatible.
-* Add an entry to the project's `CHANGELOG.md` describing how the new release differs from the previous one. The purpose of the change-log is to allow a module developer to answer the question "Do I need to upgrade to the new version of this package?", so aim for a high-level overview rather than enumerating every change, and concentrate on API-visible rather then internal changes.
-* Commit the `package.json` and `CHANGELOG.md` changes with the message "Release v2.3.0".
-* Create a tag for the specific version to be released -- for example, `v2.3.0`.
+* Make any necessary additions to the project's `CHANGELOG.md` describing how the new release differs from the previous one. The purpose of the change-log is to allow a module developer to answer the question "Do I need to upgrade to the new version of this package?", so aim for a high-level overview rather than enumerating every change, and concentrate on API-visible rather than internal changes.
+* Set the date of the release in the change-log, adding a link to the tag and another to the full set of differences from the previous release as tracked on GitHub: follow the formatting of earlier change-log entries.
+* Commit the `package.json` and `CHANGELOG.md` changes with the message "Release vVERSION". For example, `git commit -m "Release v2.3.0" .`
+* Create a tag for the specific version to be released (`git tag v2.3.0`).
 * Publish the package to the npm repository using `npm publish`. (You will need credentials to do this: see note below.)
 * Push the changed module back to git (`git push`).
 * Push the new release tag back to git (`git push origin tag v2.3.0`).
+
+
+## Working towards the next release
+
+Decide what the version number of the next release is likely to be -- almost always a minor-version bump from the release that has just been made.
+
+In the Jira project, create a new version with this number, so that issues can be associated with it.
+
+Create a new entry at the top of the change-log for the forthcoming version, so there is somewhere to add entries. But do not include a date for the entry: instead, mark it as "IN PROGRESS", as in [the in-progress `stripes-core` change-log from before v0.5.0](https://github.com/folio-org/stripes-core/blob/e058702cb19b32f607f7fb40b15ddf00cd6b45ad/CHANGELOG.md).
 
 
 ## Notes on dependencies
@@ -54,12 +72,6 @@ Patch releases can be done on a branch whose name begins with `b` and is followe
 XXX to be done. See http://dev.folio.org/doc/automation
 
 
-## While working towards the next release
-
-After making a release, the version number in the `master` branch's `package.json` should be incremented ready for the next version. Initially, the minor version should be bumped. At this point, any number of non-breaking changes may be made before the next release. If in this process a breaking change is made, the major version should be bumped; thereafter, any number of breaking changes may be made before the next release.
-
-As soon as you make API-visible changes, start adding them to a new entry in the change-log. But do not include a date for the entry: instead, mark it as "IN PROGRESS", as in [the in-progress `stripes-core` change-log from before v0.5.0](https://github.com/folio-org/stripes-core/blob/e058702cb19b32f607f7fb40b15ddf00cd6b45ad/CHANGELOG.md).
-
 ## Note on access to the NPM repository
 
 Before you can do `yarn publish`, you will need access to the Index Data/FOLIO NPM repository at `repository.folio.org`. Get these credentials from an administrator. Once you have them, login as follows:
@@ -70,11 +82,11 @@ Username: mike
 Password: ********
 Email: (this IS public) mike@indexdata.com
 Logged in as mike on https://repository.folio.org/repository/npm-folio/.
-$ 
+$
 ```
 You will then be able to release packages in the relevant repository:
 ```
 $ npm publish
 + @folio/stripes-components@0.0.2
-$ 
+$
 ```

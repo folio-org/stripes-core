@@ -7,6 +7,13 @@
 const fs = require('fs');
 
 const argv1 = process.argv[1].replace(/.*\//, '');
+
+let strict = false;
+if (process.argv[2] === '--strict') {
+  process.argv.shift();
+  strict = true;
+}
+
 const filename = process.argv[2];
 if (!filename) {
   console.log(`Usage: ${argv1} <package-file>`);
@@ -23,9 +30,9 @@ fs.readFile(filename, 'utf8', (err, data) => {
   const md = {
     id: `${json.name.replace(/^@/, '').replace('/', '_')}-${json.version}`,
     name: json.description,
-    requires: Object.keys(interfaces).map(key => ({ id: key, version: interfaces[key] })),
     permissionSets: json.stripes.permissionSets || [],
   };
+  if (strict) md.requires = Object.keys(interfaces).map(key => ({ id: key, version: interfaces[key] }));
 
   console.log(JSON.stringify(md, undefined, 2));
 });

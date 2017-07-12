@@ -65,10 +65,10 @@ Stripes consists of several separate JavaScript libraries that work together. Th
 * [**stripes-connect**](https://github.com/folio-org/stripes-connect) -- provides the connection to FOLIO's services.
 * [**stripes-components**](https://github.com/folio-org/stripes-components) -- provides re-usable UI components such as checkboxes, search forms and multi-pane layouts.
 * [**stripes-loader**](https://github.com/folio-org/stripes-loader) -- low-level machinery that pulls a set of Stripes Modules into a web application.
-* [**stripes-logger**](https://github.com/folio-org/stripes-logger) -- simple facilities logging. 
+* [**stripes-logger**](https://github.com/folio-org/stripes-logger) -- simple facilities logging.
 * [**stripes-core**](https://github.com/folio-org/stripes-core) -- a web application that controls a set of UI modules and helps them to work together.
 
-In general, stripes-core is configured by a list of UI modules to include, and it uses stripes-loader to pull them all into a 
+In general, stripes-core is configured by a list of UI modules to include, and it uses stripes-loader to pull them all into a
 bundle of HTML/CSS/JS resources. Each of those modules composes UI elements from stripes-components (and other sources as needed), and these use stripes-connect to search, view, edit and manage data maintained by the FOLIO web-services, logging information with stripes-logger as desired.
 
 
@@ -180,7 +180,11 @@ The Stripes object contains the following elements:
 
 * `setLocale` -- a function by which client code can change the prevailing locale: `stripes.setLocale('en-US')`. (Simply assigning to `stripes.locale` will not work.)
 
+* `setSinglePlugin` -- a function by which client code can change the preferred module used to satisfy a specified plugin type: `stripes.setSinglePlugin('markdown-editor', '@folio/plugin-markdown-better')`.
+
 * `setBindings` -- a function by which client code can change the prevailing key bindings: `stripes.setLocale(someObject)`. This is provided for the use of key-bindings editors such as the one provided in the **Key bindings** settings of the `ui-organization` module.
+
+* `setToken` -- a function by which client code can change the authentication token used in communication with Okapi. This can be used to implement single-sign-on (SSO).
 
 * <a name="actionNames">`actionNames`</a> -- an aggregated list of all the action names declared by the loaded modules. This is of use to key-bindings editors which need to know what actions to define key-combinations for.
 
