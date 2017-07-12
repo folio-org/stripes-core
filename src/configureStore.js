@@ -1,7 +1,7 @@
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
 import { createLogger } from 'redux-logger';
-import sideEffects from '@folio/stripes-connect/sideEffects';
+import sideEffects from '@folio/stripes-connect';
 
 import initialReducers from './initialReducers';
 import enhanceReducer from './enhanceReducer';
