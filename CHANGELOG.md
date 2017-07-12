@@ -1,5 +1,9 @@
 # Change history for stripes-core
 
+## ongoing
+
+* The JWT for authentication is now persisted to IndexDB, allowing you to stay logged in across tabs until the token expires.
+
 ## [2.1.0](https://github.com/folio-org/stripes-core/tree/v2.1.0) (2017-07-11)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.0.0...v2.1.0)
 
