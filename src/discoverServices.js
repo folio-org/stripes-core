@@ -68,7 +68,7 @@ export function discoveryReducer(state = {}, action) {
     }
     case 'DISCOVERY_INTERFACES': {
       const interfaces = {};
-      for (const entry of action.data.provides) {
+      for (const entry of action.data.provides || []) {
         interfaces[entry.id] = entry.version;
       }
       return Object.assign({}, state, {
