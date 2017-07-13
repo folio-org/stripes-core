@@ -26,11 +26,12 @@ fs.readFile(filename, 'utf8', (err, data) => {
   }
 
   const json = JSON.parse(data);
-  const interfaces = json.stripes.okapiInterfaces || [];
+  const stripes = json.stripes || {};
+  const interfaces = stripes.okapiInterfaces || [];
   const md = {
     id: `${json.name.replace(/^@/, '').replace('/', '_')}-${json.version}`,
     name: json.description,
-    permissionSets: json.stripes.permissionSets || [],
+    permissionSets: stripes.permissionSets || [],
   };
   if (strict) md.requires = Object.keys(interfaces).map(key => ({ id: key, version: interfaces[key] }));
 
