@@ -2,7 +2,7 @@
 
 ## 2.2.0 (IN PROGRESS)
 
-* The JWT for authentication is now persisted to IndexDB, allowing you to stay logged in across tabs until the token expires. Fixes STRIPES-419.
+* The JWT for authentication is now persisted to IndexDB, allowing you to stay logged in across tabs until the token expires. Fixes STCOR-22
 * The About page's foundation dependencies are now taken from `stripes.okapiInterfaces` in stripes-core's `package.json`, rather than from `okapiInterfaces` at the top level. Makes this consistent with how dependencies are expressed in modules.
 * Add `settings.enabled` permission. Fixes STCOR-30.
 
