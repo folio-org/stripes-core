@@ -1,6 +1,8 @@
-import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
+import { createStore, combineReducers, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import { createLogger } from 'redux-logger';
+import sideEffects from '@folio/stripes-connect';
+
 import initialReducers from './initialReducers';
 import enhanceReducer from './enhanceReducer';
 
@@ -10,13 +12,7 @@ export default function configureStore(initialState, config, stripesLogger) {
     predicate: () => stripesLogger.hasCategory('redux'),
   });
 
-  const finalCreateStore = compose(
-    applyMiddleware(thunk),
-    applyMiddleware(logger),
-  )(createStore);
-
-  const reducer = combineReducers(initialReducers);
-  const store = finalCreateStore(enhanceReducer(reducer), initialState);
-
-  return store;
+  const reducer = enhanceReducer(combineReducers(initialReducers));
+  const middleware = applyMiddleware(thunk, logger, sideEffects.middleware);
+  return createStore(reducer, initialState, middleware);
 }
