@@ -19,9 +19,11 @@
   "engines": {
     "node": ">=6.0.0"
   },
-  "okapiInterfaces": {
-    "users-bl": "2.0",
-    "configuration": "2.0"
+  "stripes": {
+    "okapiInterfaces": {
+      "users-bl": "2.0",
+      "configuration": "2.0"
+    }
   },
   "devDependencies": {
     "babel-register": "^6.16.3",

@@ -95,7 +95,7 @@ const About = (props) => {
         <h4>Foundation</h4>
         <ul>
           <li>
-            {renderDependencies(Object.assign({}, stripesCore, { module: 'stripes-core' }), interfaces)}
+            {renderDependencies(Object.assign({}, stripesCore.stripes || {}, { module: 'stripes-core' }), interfaces)}
           </li>
         </ul>
         {Object.keys(uiModules).map(key => listModules(key, uiModules[key], interfaces))}
