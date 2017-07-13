@@ -23,7 +23,13 @@
     "okapiInterfaces": {
       "users-bl": "2.0",
       "configuration": "2.0"
-    }
+    },
+    "permissionSets": [
+      {
+        "permissionName": "settings.enabled",
+        "displayName": "UI: settings area is enabled"
+      }
+    ]
   },
   "devDependencies": {
     "babel-register": "^6.16.3",
