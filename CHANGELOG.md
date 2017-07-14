@@ -3,7 +3,7 @@
 ## 2.3.0 (IN PROGRESS)
 
 * Implement the `settings.enabled` permission. Fixes STCOR-31.
-* Add middleware for side effects. Fixes STRIPES-394.
+* Add middleware for side effects. Fixes STCON-16.
 * New dependency: stripes-redux.
 
 ## [2.2.0](https://github.com/folio-org/stripes-core/tree/v2.2.0) (2017-07-13)
