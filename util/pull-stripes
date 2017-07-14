@@ -17,6 +17,7 @@ for i in `echo '
 	stripes-connect
 	stripes-components
 	stripes-logger
+	stripes-redux
 	stripes-form
 	stripes-core
 	stripes-sample-platform
