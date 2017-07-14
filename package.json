@@ -50,6 +50,7 @@
     "@folio/stripes-connect": "^2.3.0",
     "@folio/stripes-loader": "^0.0.2",
     "@folio/stripes-logger": "^0.0.2",
+    "@folio/stripes-redux": "^1.0.0",
     "autoprefixer": "^7.1.1",
     "babel-core": "^6.23.1",
     "babel-eslint": "^7.0.0",
