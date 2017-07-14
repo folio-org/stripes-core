@@ -144,7 +144,7 @@ class MainNav extends Component {
             <span className={css.brandingLabel} style={{ fontSize: '22px', lineHeight: '1rem' }}>FOLIO</span>
           </NavButton>
           {
-            !stripes.hasPerm('settings.enabled') ? 'noperm' : (
+            !stripes.hasPerm('settings.enabled') ? '' : (
               <NavButton href={this.lastVisited.x_settings || '/settings'}>
                 <NavIcon color="#7d3fb3" />
                 <span>Settings</span>
