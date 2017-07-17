@@ -135,12 +135,28 @@ class LoginCtrl extends Component {
     const authFail = this.props.authFail;
     localforage.getItem('okapiSess').then((sess) => {
       if (sess !== null) {
-        this.store.dispatch(setOkapiToken(sess.token));
-        this.store.dispatch(setCurrentUser(sess.user));
-        this.store.dispatch(setCurrentPerms(sess.perms));
-        this.getLocale();
-        this.getPlugins();
-        this.getBindings();
+        // Validate stored token by attempting to fetch /users
+        fetch(`${this.okapiUrl}/users`, {
+          method: 'GET',
+          headers: {
+            'X-Okapi-Tenant': this.tenant,
+            'X-Okapi-Token': sess.token,
+            'Content-Type': 'application/json'
+          }
+        }).then((response) => {
+          if (response.status >= 400) {
+            this.store.dispatch(clearCurrentUser());
+            this.store.dispatch(clearOkapiToken());
+            localforage.removeItem('okapiSess');
+          } else {
+            this.store.dispatch(setOkapiToken(sess.token));
+            this.store.dispatch(setCurrentUser(sess.user));
+            this.store.dispatch(setCurrentPerms(sess.perms));
+            this.getLocale();
+            this.getPlugins();
+            this.getBindings();
+          }
+        });
       }
     });
     return (
