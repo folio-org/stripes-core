@@ -6,6 +6,7 @@ import stripesComponents from '@folio/stripes-components/package.json';
 function addKeys(moduleName, register, list) {
   if (list) {
     for (const actionName of list) {
+      // eslint-disable-next-line no-param-reassign
       if (!register[actionName]) register[actionName] = [];
       register[actionName].push(moduleName);
     }
