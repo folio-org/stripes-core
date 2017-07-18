@@ -1,5 +1,10 @@
 # Change history for stripes-core
 
+## [2.3.1](https://github.com/folio-org/stripes-core/tree/v2.3.1) (2017-07-18)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.3.0...v2.3.1)
+
+* Guard against stripes-components not having a "stripes" section in package file.
+
 ## [2.3.0](https://github.com/folio-org/stripes-core/tree/v2.3.0) (2017-07-18)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.2.0...v2.3.0)
 
