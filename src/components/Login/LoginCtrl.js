@@ -141,8 +141,8 @@ class LoginCtrl extends Component {
           headers: {
             'X-Okapi-Tenant': this.tenant,
             'X-Okapi-Token': sess.token,
-            'Content-Type': 'application/json'
-          }
+            'Content-Type': 'application/json',
+          },
         }).then((response) => {
           if (response.status >= 400) {
             this.store.dispatch(clearCurrentUser());
