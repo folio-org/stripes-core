@@ -23,7 +23,7 @@ export default function gatherActions() {
     }
   }
 
-  addKeys('stripes-components', allActions, stripesComponents.stripes.actionNames);
+  addKeys('stripes-components', allActions, (stripesComponents.stripes || {}).actionNames);
 
   return Object.keys(allActions);
 }
