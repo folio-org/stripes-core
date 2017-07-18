@@ -1,6 +1,7 @@
 # Change history for stripes-core
 
-## 2.3.0 (IN PROGRESS)
+## [2.3.0](https://github.com/folio-org/stripes-core/tree/v2.3.0) (2017-07-18)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.2.0...v2.3.0)
 
 * Implement the `settings.enabled` permission. Fixes STCOR-31.
 * Add middleware for side effects. Fixes STCON-16.
