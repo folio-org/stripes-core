@@ -9,7 +9,7 @@ export default function gatherActions() {
     const set = modules[key];
     for (const key2 of Object.keys(set)) {
       const module = set[key2];
-      const keymap = module.getModule().actionNames;
+      const keymap = module.actionNames;
       if (keymap) {
         for (const actionName of keymap) {
           allActions[actionName] = true;
