@@ -5,6 +5,7 @@
 * Implement the `settings.enabled` permission. Fixes STCOR-31.
 * Add middleware for side effects. Fixes STCON-16.
 * New dependency: stripes-redux.
+* Add landing page for Single Sign-On, `/sso-landing`. Fixes STCOR-20.
 
 ## [2.2.0](https://github.com/folio-org/stripes-core/tree/v2.2.0) (2017-07-13)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.1.0...v2.2.0)
