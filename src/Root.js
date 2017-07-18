@@ -11,6 +11,7 @@ import MainNav from './components/MainNav';
 import ModuleContainer from './components/ModuleContainer';
 import { Front } from './components/Front';
 import About from './components/About';
+import SSOLanding from './components/SSOLanding';
 import LoginCtrl from './components/Login';
 import Settings from './components/Settings/Settings';
 
@@ -107,6 +108,7 @@ class Root extends Component {
                   <Switch>
                     <Route exact path="/" component={Front} key="root" />
                     <Route path="/about" component={() => <About stripes={stripes} />} key="about" />
+                    <Route path="/sso-landing" component={() => <SSOLanding stripes={stripes} />} key="sso-landing" />
                     <Route path="/settings" render={() => <Settings stripes={stripes} />} />
                     {getModuleRoutes(stripes)}
                     <Route

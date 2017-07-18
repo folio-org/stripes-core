@@ -84,6 +84,8 @@
     "postcss-media-minmax": "^3.0.0",
     "postcss-nesting": "^4.0.1",
     "postcss-url": "^7.0.0",
+    "prop-types": "^15.5.10",
+    "query-string": "^4.3.4",
     "react": "^15.6.1",
     "react-bootstrap": "^0.31.0",
     "react-dom": "^15.3.2",
