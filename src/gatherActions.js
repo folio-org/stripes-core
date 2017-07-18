@@ -3,10 +3,11 @@
 import { modules } from 'stripes-loader'; // eslint-disable-line
 import stripesComponents from '@folio/stripes-components/package.json';
 
-function addKeys(register, list) {
+function addKeys(moduleName, register, list) {
   if (list) {
     for (const actionName of list) {
-      register[actionName] = true;
+      if (!register[actionName]) register[actionName] = [];
+      register[actionName].push(moduleName);
     }
   }
 }
@@ -18,11 +19,11 @@ export default function gatherActions() {
     const set = modules[key];
     for (const key2 of Object.keys(set)) {
       const module = set[key2];
-      addKeys(allActions, module.actionNames);
+      addKeys(module.module, allActions, module.actionNames);
     }
   }
 
-  addKeys(allActions, stripesComponents.stripes.actionNames);
+  addKeys('stripes-components', allActions, stripesComponents.stripes.actionNames);
 
   return Object.keys(allActions);
 }
