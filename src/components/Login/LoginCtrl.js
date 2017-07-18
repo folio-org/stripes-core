@@ -38,7 +38,7 @@ class LoginCtrl extends Component {
 
   getLocale() {
     fetch(`${this.okapiUrl}/configurations/entries?query=(module=ORG and configName=locale)`,
-          { headers: Object.assign({}, { 'X-Okapi-Tenant': this.tenant, 'X-Okapi-Token': this.store.getState().okapi.token }) })
+          { headers: { 'X-Okapi-Tenant': this.tenant, 'X-Okapi-Token': this.store.getState().okapi.token } })
       .then((response) => {
         let locale = 'en-US';
         if (response.status >= 400) {
@@ -55,7 +55,7 @@ class LoginCtrl extends Component {
 
   getPlugins() {
     fetch(`${this.okapiUrl}/configurations/entries?query=(module=PLUGINS)`,
-          { headers: Object.assign({}, { 'X-Okapi-Tenant': this.tenant, 'X-Okapi-Token': this.store.getState().okapi.token }) })
+          { headers: { 'X-Okapi-Tenant': this.tenant, 'X-Okapi-Token': this.store.getState().okapi.token } })
       .then((response) => {
         if (response.status < 400) {
           response.json().then((json) => {
@@ -71,7 +71,7 @@ class LoginCtrl extends Component {
 
   getBindings() {
     fetch(`${this.okapiUrl}/configurations/entries?query=(module=ORG and configName=bindings)`,
-          { headers: Object.assign({}, { 'X-Okapi-Tenant': this.tenant, 'X-Okapi-Token': this.store.getState().okapi.token }) })
+          { headers: { 'X-Okapi-Tenant': this.tenant, 'X-Okapi-Token': this.store.getState().okapi.token } })
       .then((response) => {
         let bindings = {};
         if (response.status >= 400) {
@@ -98,7 +98,7 @@ class LoginCtrl extends Component {
   requestLogin(data) {
     fetch(`${this.okapiUrl}/bl-users/login?expandPermissions=true&fullPermissions=true`, {
       method: 'POST',
-      headers: Object.assign({}, { 'X-Okapi-Tenant': this.tenant, 'Content-Type': 'application/json' }),
+      headers: { 'X-Okapi-Tenant': this.tenant, 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     }).then((response) => {
       if (response.status >= 400) {
