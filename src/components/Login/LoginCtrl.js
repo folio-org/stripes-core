@@ -115,6 +115,7 @@ class LoginCtrl extends Component {
         response.json().then((json) => {
           this.store.dispatch(setCurrentUser(json.user.personal));
           // You are not expected to understand this
+          // ...then aren't you expected to explain it?
           const map = Object.assign({}, ...json.permissions.permissions.map(p => ({ [p.permissionName]: true })));
           this.store.dispatch(setCurrentPerms(map));
           const okapiSess = {
