@@ -77,9 +77,11 @@ const About = (props) => {
         {Object.keys(uiModules).map(key => listModules(key, uiModules[key]))}
       </Pane>
       <Pane defaultWidth="30%" paneTitle="Okapi services">
-        <h4>Okapi version</h4>
+        <h4>Okapi</h4>
         <ul>
-          <li>{_.get(props.stripes, ['discovery', 'okapi']) || 'unknown'}</li>
+          <li>Version {_.get(props.stripes, ['discovery', 'okapi']) || 'unknown'}</li>
+          <li>For tenant {_.get(props.stripes, ['okapi', 'tenant']) || 'unknown'}</li>
+          <li>On URL {_.get(props.stripes, ['okapi', 'url']) || 'unknown'}</li>
         </ul>
         <h4>{nm} module{nm === 1 ? '' : 's'}</h4>
         <ul>
