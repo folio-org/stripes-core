@@ -109,7 +109,7 @@ class MainNav extends Component {
       <ul>
         <li className={`${css.nowrap} ${css.ddTextItem}`}>Logged in as <strong>{ currentUser != null ? `${currentUser.firstName} ${currentUser.lastName}` : null }</strong></li>
         <li className={css.ddDivider} aria-hidden="true" />
-        <li><button id="button-logout" className={css.ddButton} type="button" onClick={this.logout}><span>Log out</span></button></li>
+        <li><button id="clickable-logout" className={css.ddButton} type="button" onClick={this.logout}><span>Log out</span></button></li>
         {maybePerms}
       </ul>
     );
