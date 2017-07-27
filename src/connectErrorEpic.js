@@ -1,7 +1,5 @@
 const connectErrorEpic = action$ => action$
-  .filter(action =>
-    action.type === '@@stripes-connect/FETCH_ERROR'
-    || action.type === '@@stripes-connect/MUTATION_ERROR')
+  .ofType('@@stripes-connect/FETCH_ERROR', '@@stripes-connect/MUTATION_ERROR')
   .map((action) => {
     const { meta, payload: e } = action;
     const op = action.type === '@@stripes-connect/FETCH_ERROR' ? 'GET' : e.type;
