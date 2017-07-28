@@ -10,9 +10,9 @@ const SSOLanding = (props) => {
     return <div>No search string</div>;
   }
   const query = queryString.parse(search);
-  const token = query['sso-token'];
+  const token = query['ssoToken'];
   if (!token) {
-    return <div>No <tt>sso-token</tt> query parameter</div>;
+    return <div>No <tt>ssoToken</tt> query parameter</div>;
   }
 
   props.stripes.setToken(token);
