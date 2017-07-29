@@ -4,6 +4,7 @@ import { Provider, connect } from 'react-redux';
 import Router from 'react-router-dom/BrowserRouter';
 import Route from 'react-router-dom/Route';
 import Switch from 'react-router-dom/Switch';
+import { CookiesProvider } from 'react-cookie';
 import { HotKeys } from '@folio/stripes-components/lib/HotKeys';
 
 import MainContainer from './components/MainContainer';
@@ -108,7 +109,13 @@ class Root extends Component {
                   <Switch>
                     <Route exact path="/" component={Front} key="root" />
                     <Route path="/about" component={() => <About stripes={stripes} />} key="about" />
-                    <Route path="/sso-landing" component={() => <SSOLanding stripes={stripes} />} key="sso-landing" />
+                    <Route
+                      path="/sso-landing"
+                      component={() => <CookiesProvider>
+                        <SSOLanding stripes={stripes} />
+                      </CookiesProvider>}
+                      key="sso-landing"
+                    />
                     <Route path="/settings" render={() => <Settings stripes={stripes} />} />
                     {getModuleRoutes(stripes)}
                     <Route
