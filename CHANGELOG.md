@@ -7,6 +7,7 @@
 * Alert on stripes-connect errors. STCON-25.
 * `/sso-landing` query-parameter name changed from `sso-token` to `ssoToken`. Changes outcome of STCOR-20.
 * `/sso-landing` accepts `ssoToken` cookie as well as query parameter. Fixes STCOR-38.
+* Add indicator of selected app. Fixes STCOR-40.
 
 ## [2.3.1](https://github.com/folio-org/stripes-core/tree/v2.3.1) (2017-07-18)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.3.0...v2.3.1)
