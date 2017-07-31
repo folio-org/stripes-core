@@ -9,6 +9,7 @@ const propTypes = {
   onKeyDown: React.PropTypes.func,
   children: React.PropTypes.node.isRequired,
   md: React.PropTypes.string, // eslint-disable-line
+  selected: React.PropTypes.bool,
 };
 
 function NavButton(props) {
@@ -27,6 +28,7 @@ function NavButton(props) {
         to={href}
         {...buttonProps}
       >
+        {props.selected && <div className={css.selected} />}
         {props.children}
       </Link>
     );
@@ -39,6 +41,7 @@ function NavButton(props) {
       {...buttonProps}
     >
       <span>
+        {props.selected && <div className={css.selected} />}
         {children}
       </span>
     </button>

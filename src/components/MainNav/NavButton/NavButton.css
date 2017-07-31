@@ -20,9 +20,9 @@ button.navButton{
     &:hover{
       & img, & div, & svg{
         box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.2);
-        
+
       }
-       
+
       transform: scale(1.1);
     }
 }
@@ -37,6 +37,18 @@ a.navButton{
   }
   &:hover, &:visited, &:focus{
     text-decoration: none;
+  }
+}
+
+.navButton{
+  & .selected{
+    position: absolute;
+    top: 0px;
+    width: 22px;
+    height: 4px;
+    background-color: #3d75b5;
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
   }
 }
 

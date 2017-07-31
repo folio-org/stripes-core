@@ -82,7 +82,7 @@ class MainNav extends Component {
   }
 
   render() {
-    const { stripes } = this.props;
+    const { stripes, location: { pathname } } = this.props;
     const currentUser = stripes.user ? stripes.user.user : undefined;
     const currentPerms = stripes.user ? stripes.user.perms : undefined;
 
@@ -119,7 +119,7 @@ class MainNav extends Component {
       const perm = `module.${name}.enabled`;
       if (!stripes.hasPerm(perm)) return null;
 
-      return (<NavButton href={this.lastVisited[name] || entry.home || entry.route} title={entry.displayName} key={entry.route}>
+      return (<NavButton selected={pathname.startsWith(entry.route)} href={this.lastVisited[name] || entry.home || entry.route} title={entry.displayName} key={entry.route}>
         <NavIcon color="#61f160" />
         <span className={css.linkLabel}>
           {entry.displayName}
@@ -145,7 +145,7 @@ class MainNav extends Component {
           </NavButton>
           {
             !stripes.hasPerm('settings.enabled') ? '' : (
-              <NavButton href={this.lastVisited.x_settings || '/settings'}>
+              <NavButton selected={pathname.startsWith('/settings')} href={this.lastVisited.x_settings || '/settings'}>
                 <NavIcon color="#7d3fb3" />
                 <span>Settings</span>
               </NavButton>
