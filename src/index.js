@@ -12,7 +12,7 @@ import Root from './Root';
 const initialState = { okapi };
 const logger = configureLogger(config);
 logger.log('core', 'Starting Stripes ...');
-const store = configureStore(initialState, config, logger);
+const store = configureStore(initialState);
 discoverServices(okapi.url, store);
 const actionNames = gatherActions();
 
