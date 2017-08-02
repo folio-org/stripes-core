@@ -36,28 +36,26 @@ module.exports = {
         }]
       },
       {
-        test: /\.js$/,
+        test: function (fn) {
+          // We want to transpile files inside node_modules/@folio or outside
+          // any node_modules directory. And definitely not files in
+          // node_modules outside the @folio namespace even if some parent
+          // directory happens to be in @folio.
+          //
+          // fn is the path after all symlinks are resolved so we need to be
+          // wary of all the edge cases yarn link will find for us.
+          const nmidx = fn.lastIndexOf('node_modules')
+          if (fn.endsWith('.js') && (nmidx === -1 || fn.lastIndexOf('node_modules/@folio') === nmidx)) return true 
+        },
         loader: 'babel-loader',
         options: {
           cacheDirectory: true,
           presets: [
-              require.resolve("babel-preset-es2015"),
-              require.resolve("babel-preset-stage-2"),
-              require.resolve("babel-preset-react")
+            [require.resolve("babel-preset-es2015"), { modules: false }],
+            [require.resolve("babel-preset-stage-2")],
+            [require.resolve("babel-preset-react")]
           ]
         },
-        // We use ES6 for Stripes and rather than have every project include NPM
-        // scripts to transpile into ES5, we include them here along with any
-        // namespace prefixed @folio which presumably will contain Stripes
-        // modules. XXX Note that, since WebPack doesn't see the names
-        // of symbolic links, only the paths they resolve to, we
-        // presently also transpile all modules whose names begin with
-        // "stripes-" (which is fine) or "ui-" (which is probably
-        // not). We will want to fix this eventually, but it will all
-        // change when we move to WebPack 2 so we'll wait till then.
-        include:  [path.join(__dirname, 'src'), /@folio/, path.join(__dirname, '../dev'), /[\/\\](stripes|ui)-(?!.*[\/\\]node_modules[\/\\])/, /\/@folio-sample-modules/]
-                                                                                          
-        //exclude: [/node_modules/]
       },
       {
         test: /\.json$/,
