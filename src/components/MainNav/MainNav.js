@@ -39,6 +39,9 @@ class MainNav extends Component {
     history: React.PropTypes.shape({
       listen: React.PropTypes.func.isRequired,
     }).isRequired,
+    location: PropTypes.shape({
+      pathname: PropTypes.string,
+    }).isRequired,
   };
 
   constructor(props) {
