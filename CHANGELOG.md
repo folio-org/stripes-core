@@ -9,6 +9,7 @@
 * `/sso-landing` accepts `ssoToken` cookie as well as query parameter. Fixes STCOR-38.
 * Add indicator of selected app. Fixes STCOR-40.
 * Update stripes-components to 1.4.0.
+* Fix navigation highlighting in settings. Fixes STRIPES-438.
 
 ## [2.3.1](https://github.com/folio-org/stripes-core/tree/v2.3.1) (2017-07-18)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.3.0...v2.3.1)
