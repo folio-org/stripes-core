@@ -5,6 +5,8 @@ import Route from 'react-router-dom/Route';
 import Link from 'react-router-dom/Link';
 import { connectFor } from '@folio/stripes-connect';
 import { modules } from 'stripes-loader'; // eslint-disable-line
+import { withRouter } from 'react-router';
+
 import AddContext from '../../AddContext';
 
 import NavList from './NavList';
@@ -52,7 +54,7 @@ const Settings = (props) => {
         </div>
         <div className={css.content}>
           <NavList>
-            <NavListSection label="App Settings" activeLink="">
+            <NavListSection label="App Settings" activeLink={props.location.pathname}>
               {navLinks}
             </NavListSection>
           </NavList>
@@ -73,6 +75,9 @@ Settings.propTypes = {
       log: PropTypes.func.isRequired,
     }).isRequired,
   }).isRequired,
+  location: PropTypes.shape({
+    pathname: PropTypes.string,
+  }).isRequired,
 };
 
-export default Settings;
+export default withRouter(Settings);

@@ -13,7 +13,8 @@ const propTypes = {
 function NavListSection(props) {
   function cloneChild(child) {
     const newProps = {};
-    if (props.activeLink === child.props.href) {
+
+    if (props.activeLink.startsWith(child.props.to)) {
       newProps.className = css.active;
     }
     const elemProps = Object.assign({}, newProps, child.props);
