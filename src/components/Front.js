@@ -3,7 +3,7 @@ import Link from 'react-router-dom/Link';
 
 export const Front = () => (
   <div>
-    <h3>Welcome to whatever this is!</h3>
+    <h3>Welcome, the Future Of Libraries Is OPEN!</h3>
     <p><Link to="/about">About</Link></p>
   </div>
 );
