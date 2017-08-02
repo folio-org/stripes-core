@@ -6,7 +6,7 @@ import initialReducers from './initialReducers';
 import enhanceReducer from './enhanceReducer';
 import connectErrorEpic from './connectErrorEpic';
 
-export default function configureStore(initialState, config, stripesLogger) {
+export default function configureStore(initialState) {
   const reducer = enhanceReducer(combineReducers(initialReducers));
   const middleware = applyMiddleware(thunk, epicMiddleware);
  /* eslint-disable no-underscore-dangle */

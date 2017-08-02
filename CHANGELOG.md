@@ -9,6 +9,7 @@
 * `/sso-landing` accepts `ssoToken` cookie as well as query parameter. Fixes STCOR-38.
 * Add indicator of selected app. Fixes STCOR-40.
 * Update stripes-components to 1.4.0.
+* Switch from redux-logger to the redux-devtools-extension. You'll need to install that in your browser but then will have convenient access to the redux state and actions without the endless console messages.
 * Fix navigation highlighting in settings. Fixes STRIPES-438.
 
 ## [2.3.1](https://github.com/folio-org/stripes-core/tree/v2.3.1) (2017-07-18)
