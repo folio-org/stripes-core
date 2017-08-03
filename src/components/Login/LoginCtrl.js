@@ -5,6 +5,8 @@ import localforage from 'localforage';
 
 import { setCurrentUser, clearCurrentUser, setCurrentPerms, setLocale, setPlugins, setBindings, setOkapiToken, clearOkapiToken, authFailure, clearAuthFailure } from '../../okapiActions';
 import Login from './Login';
+import SSOLogin from '../SSOLogin';
+import css from './Login.css';
 
 class LoginCtrl extends Component {
   static contextTypes = {
@@ -30,11 +32,25 @@ class LoginCtrl extends Component {
     this.okapiUrl = this.sys.okapi.url;
     this.tenant = this.sys.okapi.tenant;
     this.initialValues = { username: '', password: '' };
+    this.ssoUrl = `${this.okapiUrl}/saml/login`;
+    this.state = {};
+    this.handleSSOLogin = this.handleSSOLogin.bind(this);
     if (props.autoLogin && props.autoLogin.username) {
       this.requestLogin(props.autoLogin);
     }
   }
 
+  componentDidMount() {
+    fetch(`${this.okapiUrl}/saml/check`,
+          { headers: Object.assign({}, { 'X-Okapi-Tenant': this.tenant }) })
+      .then((response) => {
+        if (response.status < 400) {
+          this.setState({ssoActive: true });
+        } else {
+          this.setState({ssoActive: false });
+        }
+      });
+  }
 
   getLocale() {
     fetch(`${this.okapiUrl}/configurations/entries?query=(module=ORG and configName=locale)`,
@@ -132,6 +148,10 @@ class LoginCtrl extends Component {
     });
   }
 
+  handleSSOLogin(e) {
+    window.open(`${this.okapiUrl}/_/invoke/tenant/diku/saml/login`, '_self');
+  }
+
   render() {
     const authFail = this.props.authFail;
     localforage.getItem('okapiSess').then((sess) => {
@@ -161,11 +181,17 @@ class LoginCtrl extends Component {
       }
     });
     return (
-      <Login
-        onSubmit={this.requestLogin}
-        authFail={authFail}
-        initialValues={this.initialValues}
-      />
+      <div className={css.loginOverlay}>
+        <Login
+          onSubmit={this.requestLogin}
+          authFail={authFail}
+          initialValues={this.initialValues}
+        />
+        { this.state.ssoActive ?      
+          <SSOLogin
+            handleSSOLogin={this.handleSSOLogin} /> : null
+        }
+      </div>
     );
   }
 }
