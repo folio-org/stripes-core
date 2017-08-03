@@ -5,12 +5,6 @@ import { withCookies, Cookies } from 'react-cookie';
 import queryString from 'query-string';
 import { findUserById } from '../loginServices';
 
-function getParams(props) {
-  const search = props.location.search;
-  if (!search) return undefined;
-  return queryString.parse(search) || {};
-}
-
 class SSOLanding extends Component {
 
   constructor(props, context) {
@@ -22,20 +16,43 @@ class SSOLanding extends Component {
     this.tenant = this.sys.okapi.tenant;
   }
 
-  render() {
-    const cookies = this.props.cookies;
-    const params = getParams(this.props);
+  componentWillMount() {
+    const token = this.getToken();
+    const userId = this.getUserId();
 
-    const token = cookies.get('ssoToken') || params.ssoToken;
-    const userId = cookies.get('userId') || params.userId;
+    if (token && userId) {
+      findUserById(this.okapiUrl, this.store, this.tenant, token, userId);
+    }
+  }
+
+  getParams() {
+    const search = this.props.location.search;
+    if (!search) return undefined;
+    return queryString.parse(search) || {};
+  }
+
+  getToken() {
+    const params = this.getParams();
+    const cookies = this.props.cookies;
+    return cookies.get('ssoToken') || params.ssoToken;
+  }
+
+  getUserId() {
+    const params = this.getParams();
+    const cookies = this.props.cookies;
+    return cookies.get('userId') || params.userId;
+  }
+
+  render() {
+    const params = this.getParams();
+    const token = this.getToken();
+    const userId = this.getUserId();
 
     if (!token) {
       return <div>No <tt>ssoToken</tt> cookie or query parameter</div>;
     } else if (!userId) {
       return <div>No <tt>UserId</tt> cookie or query parameter</div>;
     }
-
-    findUserById(this.okapiUrl, this.store, this.tenant, token, userId);
 
     return (
       <div>

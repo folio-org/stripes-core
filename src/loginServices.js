@@ -90,11 +90,11 @@ function clearOkapiSession(store) {
   store.dispatch(authFailure());
 }
 
-function createOkapiSession(okapiUrl, store, tenant, response) {
-  const token = response.headers.get('X-Okapi-Token');
+function createOkapiSession(okapiUrl, store, tenant, resp) {
+  const token = resp.headers.get('X-Okapi-Token');
   store.dispatch(setOkapiToken(token));
   store.dispatch(clearAuthFailure());
-  response.json().then((json) => {
+  resp.json().then((json) => {
     store.dispatch(setCurrentUser(json.user.personal));
     // You are not expected to understand this
     // ...then aren't you expected to explain it?
@@ -114,8 +114,8 @@ function createOkapiSession(okapiUrl, store, tenant, response) {
 
 // Validate stored token by attempting to fetch /users
 export function validateUser(okapiUrl, store, tenant, session) {
-  fetch(`${okapiUrl}/users`, { headers: getHeaders(store, tenant, session.token) }).then((response) => {
-    if (response.status >= 400) {
+  fetch(`${okapiUrl}/users`, { headers: getHeaders(store, tenant, session.token) }).then((resp) => {
+    if (resp.status >= 400) {
       store.dispatch(clearCurrentUser());
       store.dispatch(clearOkapiToken());
       localforage.removeItem('okapiSess');
@@ -138,30 +138,30 @@ export function checkUser(okapiUrl, store, tenant) {
   });
 }
 
-export function requestLogin(okapiUrl, store, tenant, data, initialValues) {
-  fetch(`${okapiUrl}/bl-users/login?expandPermissions=true&fullPermissions=true`, {
+export function requestLogin(okapiUrl, store, tenant, data) {
+  return fetch(`${okapiUrl}/bl-users/login?expandPermissions=true&fullPermissions=true`, {
     method: 'POST',
     headers: { 'X-Okapi-Tenant': tenant, 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
-  }).then((response) => {
-    if (response.status >= 400) {
+  }).then((resp) => {
+    if (resp.status >= 400) {
       clearOkapiSession(store);
-      // eslint-disable-next-line no-param-reassign
-      initialValues.username = data.username;
     } else {
-      createOkapiSession(okapiUrl, store, tenant, response);
+      createOkapiSession(okapiUrl, store, tenant, resp);
     }
+
+    return resp;
   });
 }
 
 export function findUserById(okapiUrl, store, tenant, token, userId) {
   fetch(`${okapiUrl}/bl-users/by-id/${userId}`,
     { headers: getHeaders(store, tenant, token) })
-  .then((response) => {
-    if (response.status >= 400) {
+  .then((resp) => {
+    if (resp.status >= 400) {
       clearOkapiSession(store);
     } else {
-      createOkapiSession(okapiUrl, store, tenant, response);
+      createOkapiSession(okapiUrl, store, tenant, resp);
     }
   });
 }
