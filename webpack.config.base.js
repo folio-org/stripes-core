@@ -45,7 +45,7 @@ module.exports = {
           // fn is the path after all symlinks are resolved so we need to be
           // wary of all the edge cases yarn link will find for us.
           const nmidx = fn.lastIndexOf('node_modules')
-          if (fn.endsWith('.js') && (nmidx === -1 || fn.lastIndexOf('node_modules/@folio') === nmidx)) return true 
+          if (fn.endsWith('.js') && (nmidx === -1 || fn.lastIndexOf('@folio') > nmidx)) return true 
         },
         loader: 'babel-loader',
         options: {
