@@ -1,40 +1,53 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
 import { withCookies, Cookies } from 'react-cookie';
 import queryString from 'query-string';
-import Link from 'react-router-dom/Link';
+import { findUserById } from '../loginServices';
 
-function getCookie(props) {
-  const cookies = props.cookies;
-  const cookie = cookies.get('ssoToken');
-  return cookie;
-}
-
-function getParam(props) {
+function getParams(props) {
   const search = props.location.search;
   if (!search) return undefined;
-  const query = queryString.parse(search);
-  return query.ssoToken;
+  return queryString.parse(search) || {};
 }
 
-const SSOLanding = (props) => {
-  const cookie = getCookie(props);
-  const param = getParam(props);
+class SSOLanding extends Component {
 
-  if (!cookie && !param) {
-    return <div>No <tt>ssoToken</tt> cookie or query parameter</div>;
-  } else if (cookie && param) {
-    return <div>Both <tt>ssoToken</tt> cookie and query parameters provided</div>;
+  constructor(props, context) {
+    super(props, context);
+
+    this.store = context.store;
+    this.sys = require('stripes-loader'); // eslint-disable-line
+    this.okapiUrl = this.sys.okapi.url;
+    this.tenant = this.sys.okapi.tenant;
   }
 
-  props.stripes.setToken(cookie || param);
-  return (
-    <div>
-      <p>Logged in with token <tt>{cookie || param}</tt> from {cookie ? 'cookie' : 'param'}</p>
-      <p><Link to="/">continue</Link></p>
-    </div>
-  );
+  render() {
+    const cookies = this.props.cookies;
+    const params = getParams(this.props);
+
+    const token = cookies.get('ssoToken') || params.ssoToken;
+    const userId = cookies.get('userId') || params.userId;
+
+    if (!token) {
+      return <div>No <tt>ssoToken</tt> cookie or query parameter</div>;
+    } else if (!userId) {
+      return <div>No <tt>UserId</tt> cookie or query parameter</div>;
+    }
+
+    findUserById(this.okapiUrl, this.store, this.tenant, token, userId);
+
+    return (
+      <div>
+        <p>Logged in with token <tt>{token}</tt> from {params.ssoToken ? 'param' : 'cookie'}</p>
+        <p>Logged in with user id <tt>{userId}</tt> from {params.userId ? 'param' : 'cookie'}</p>
+      </div>
+    );
+  }
+}
+
+SSOLanding.contextTypes = {
+  store: PropTypes.object,
 };
 
 SSOLanding.propTypes = {
@@ -44,9 +57,6 @@ SSOLanding.propTypes = {
   }).isRequired,
   // eslint-disable-next-line react/no-unused-prop-types
   cookies: PropTypes.instanceOf(Cookies).isRequired,
-  stripes: PropTypes.shape({
-    setToken: PropTypes.func.isRequired,
-  }).isRequired,
 };
 
 export default withCookies(withRouter(SSOLanding));
