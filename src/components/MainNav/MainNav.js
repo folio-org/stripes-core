@@ -174,12 +174,6 @@ class MainNav extends Component {
           <NavGroup>
             {menuLinks}
             <NavDivider md="hide" />
-            <NavButton md="hide" ><NavIcon color="#7eb970" /></NavButton>
-            <NavButton md="hide"><NavIcon color="#b33f3f" /></NavButton>
-            <NavButton md="hide"><NavIcon color="#3fb38e" /></NavButton>
-            <NavButton md="hide"><NavIcon color="#3f6cb3" /></NavButton>
-            <NavDivider md="hide" />
-            <NavButton md="hide"><NavIcon color="#7d3fb3" /></NavButton>
           </NavGroup>
           <NavGroup className={css.smallAlignRight}>
             <Dropdown open={this.state.userMenuOpen} id="UserMenuDropDown" onToggle={this.toggleUserMenu} pullRight >
