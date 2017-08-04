@@ -154,8 +154,8 @@ export function requestLogin(okapiUrl, store, tenant, data) {
   });
 }
 
-export function findUserById(okapiUrl, store, tenant, token, userId) {
-  fetch(`${okapiUrl}/bl-users/by-id/${userId}`,
+export function requestUserWithPerms(okapiUrl, store, tenant, token, userId) {
+  fetch(`${okapiUrl}/bl-users/by-id/${userId}?expandPermissions=true&fullPermissions=true`,
     { headers: getHeaders(store, tenant, token) })
   .then((resp) => {
     if (resp.status >= 400) {

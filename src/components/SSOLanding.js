@@ -1,9 +1,12 @@
+import _ from 'lodash';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
 import { withCookies, Cookies } from 'react-cookie';
 import queryString from 'query-string';
-import { findUserById } from '../loginServices';
+import { requestUserWithPerms } from '../loginServices';
+
+const requestUserWithPermsDeb = _.debounce(requestUserWithPerms, 50000, { leading: true });
 
 class SSOLanding extends Component {
 
@@ -21,7 +24,7 @@ class SSOLanding extends Component {
     const userId = this.getUserId();
 
     if (token && userId) {
-      findUserById(this.okapiUrl, this.store, this.tenant, token, userId);
+      requestUserWithPermsDeb(this.okapiUrl, this.store, this.tenant, token, userId);
     }
   }
 
