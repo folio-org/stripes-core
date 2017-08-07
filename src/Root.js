@@ -101,21 +101,14 @@ class Root extends Component {
       <HotKeys keyMap={bindings} noWrapper>
         <Provider store={store}>
           <Router>
-            { token == null && !disableAuth ?
-              <LoginCtrl autoLogin={config.autoLogin} /> :
+            { token || disableAuth ?
               <MainContainer>
                 <MainNav stripes={stripes} />
                 <ModuleContainer id="content">
                   <Switch>
                     <Route exact path="/" component={Front} key="root" />
+                    <Route path="/sso-landing" component={Front} key="sso-landing" />
                     <Route path="/about" component={() => <About stripes={stripes} />} key="about" />
-                    <Route
-                      path="/sso-landing"
-                      component={() => <CookiesProvider>
-                        <SSOLanding stripes={stripes} />
-                      </CookiesProvider>}
-                      key="sso-landing"
-                    />
                     <Route path="/settings" render={() => <Settings stripes={stripes} />} />
                     {getModuleRoutes(stripes)}
                     <Route
@@ -126,7 +119,11 @@ class Root extends Component {
                     />
                   </Switch>
                 </ModuleContainer>
-              </MainContainer>
+              </MainContainer> :
+              <Switch>
+                <Route exact path="/sso-landing" component={() => <CookiesProvider><SSOLanding stripes={stripes} /></CookiesProvider>} key="sso-landing" />
+                <Route component={() => <LoginCtrl autoLogin={config.autoLogin} />} />
+              </Switch>
             }
           </Router>
         </Provider>
