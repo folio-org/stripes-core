@@ -1,17 +1,18 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 class AddContext extends React.Component {
   static propTypes = {
-    context: React.PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
-    children: React.PropTypes.oneOfType([
-      React.PropTypes.object,
-      React.PropTypes.array,
+    context: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
+    children: PropTypes.oneOfType([
+      PropTypes.object,
+      PropTypes.array,
     ]),
   };
 
   static childContextTypes = {
     // It seems wrong that we have to tell this generic component what specific properties to put in the context
-    stripes: React.PropTypes.object,
+    stripes: PropTypes.object,
   };
 
   getChildContext() {

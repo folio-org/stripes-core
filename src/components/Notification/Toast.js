@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Portal } from 'react-overlays'; // eslint-disable-line
 import ToastNotification from './ToastNotification';
 import css from './Toast.css';
@@ -8,11 +9,11 @@ const propTypes = {
    * Array of message objects with properties {message, type, timeout, id, position, transition}
    * message and id are required.
    */
-  notifications: React.PropTypes.array,
+  notifications: PropTypes.array,
   /*
    * Hide handler for dismissing toasts.
    */
-  onHide: React.PropTypes.func,
+  onHide: PropTypes.func,
 };
 
 class Toast extends React.Component {

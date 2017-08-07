@@ -1,8 +1,9 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 const propTypes = {
-  color: React.PropTypes.string,
-  icon: React.PropTypes.element,
+  color: PropTypes.string,
+  icon: PropTypes.element,
 };
 
 const defaultProps = {

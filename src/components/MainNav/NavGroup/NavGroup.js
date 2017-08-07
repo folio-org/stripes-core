@@ -1,9 +1,10 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import css from './NavGroup.css';
 
 const propTypes = {
-  children: React.PropTypes.node.isRequired,
-  className: React.PropTypes.string, // eslint-disable-line
+  children: PropTypes.node.isRequired,
+  className: PropTypes.string, // eslint-disable-line
 };
 
 function NavGroup(props) {
