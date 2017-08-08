@@ -1,6 +1,7 @@
 # Change history for stripes-core
 
-## 2.4.0 (IN PROGRESS)
+## [2.4.0](https://github.com/folio-org/stripes-core/tree/v2.4.0) (2017-08-04)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.3.1...v2.4.0)
 
 * About page shows Okapi tenant and URL. Fixes STCOR-39.
 * Invert minor-version comparison in `isVersionCompatible`. Fixes STCOR-41.
