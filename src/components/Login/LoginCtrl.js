@@ -3,8 +3,6 @@ import { connect as reduxConnect } from 'react-redux'; // eslint-disable-line
 
 import { requestLogin, checkUser } from '../../loginServices';
 import Login from './Login';
-import SSOLogin from '../SSOLogin';
-import css from './Login.css';
 
 class LoginCtrl extends Component {
   static contextTypes = {
@@ -30,7 +28,6 @@ class LoginCtrl extends Component {
     this.okapiUrl = this.sys.okapi.url;
     this.tenant = this.sys.okapi.tenant;
     this.initialValues = { username: '', password: '' };
-    this.ssoUrl = `${this.okapiUrl}/saml/login`;
     this.state = {};
     this.handleSSOLogin = this.handleSSOLogin.bind(this);
     if (props.autoLogin && props.autoLogin.username) {
@@ -71,17 +68,13 @@ class LoginCtrl extends Component {
     const authFail = this.props.authFail;
 
     return (
-      <div className={css.loginOverlay}>
         <Login
           onSubmit={this.handleSubmit}
           authFail={authFail}
           initialValues={this.initialValues}
+          handleSSOLogin={this.handleSSOLogin}
+          ssoActive={this.state.ssoActive}
         />
-        { this.state.ssoActive ?      
-          <SSOLogin
-            handleSSOLogin={this.handleSSOLogin} /> : null
-        }
-      </div>
     );
   }
 }
