@@ -64,7 +64,7 @@ class LoginCtrl extends Component {
   }
 
   handleSSOLogin(e) {
-    window.open(`${this.okapiUrl}/_/invoke/tenant/diku/saml/login`, '_self');
+    window.open(`${this.okapiUrl}/_/invoke/tenant/${this.tenant}/saml/login`, '_self');
   }
 
   render() {
