@@ -33,6 +33,10 @@ class LoginCtrl extends Component {
     }
   }
 
+  componentWillMount() {
+    checkUser(this.okapiUrl, this.store, this.tenant);
+  }
+
   handleSubmit(data) {
     requestLogin(this.okapiUrl, this.store, this.tenant, data).then((response) => {
       if (response.status >= 400) {
@@ -44,7 +48,7 @@ class LoginCtrl extends Component {
 
   render() {
     const authFail = this.props.authFail;
-    checkUser(this.okapiUrl, this.store, this.tenant);
+
     return (
       <Login
         onSubmit={this.handleSubmit}

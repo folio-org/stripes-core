@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import 'isomorphic-fetch';
 import localforage from 'localforage';
 import { reset } from 'redux-form';
@@ -113,7 +114,7 @@ function createOkapiSession(okapiUrl, store, tenant, resp) {
 }
 
 // Validate stored token by attempting to fetch /users
-export function validateUser(okapiUrl, store, tenant, session) {
+function validateUser(okapiUrl, store, tenant, session) {
   fetch(`${okapiUrl}/users`, { headers: getHeaders(store, tenant, session.token) }).then((resp) => {
     if (resp.status >= 400) {
       store.dispatch(clearCurrentUser());
@@ -130,10 +131,12 @@ export function validateUser(okapiUrl, store, tenant, session) {
   });
 }
 
+const validateUserDep = _.debounce(validateUser, 5000, { leading: true, trailing: false });
+
 export function checkUser(okapiUrl, store, tenant) {
   localforage.getItem('okapiSess').then((sess) => {
     if (sess !== null) {
-      validateUser(okapiUrl, store, tenant, sess);
+      validateUserDep(okapiUrl, store, tenant, sess);
     }
   });
 }
