@@ -35,20 +35,22 @@ class LoginCtrl extends Component {
     }
   }
 
+  componentWillMount() {
+    checkUser(this.okapiUrl, this.store, this.tenant);
+  }
+
   componentDidMount() {
     fetch(`${this.okapiUrl}/saml/check`,
           { headers: Object.assign({}, { 'X-Okapi-Tenant': this.tenant }) })
       .then((response) => {
-        if (response.status < 400) {
-          this.setState({ssoActive: true });
-        } else {
+        if (response.status >= 400) {
           this.setState({ssoActive: false });
+        } else {
+          response.json().then((json) => {
+            this.setState({ssoActive: json });
+          });   
         }
       });
-  }
-
-  componentWillMount() {
-    checkUser(this.okapiUrl, this.store, this.tenant);
   }
 
   handleSubmit(data) {
