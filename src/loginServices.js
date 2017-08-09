@@ -34,58 +34,16 @@ function clearOkapiSession(store) {
   store.dispatch(authFailure());
 }
 
-function createOkapiSession(okapiUrl, store, tenant, resp) {
-  const token = resp.headers.get('X-Okapi-Token');
-  store.dispatch(setOkapiToken(token));
-  store.dispatch(clearAuthFailure());
-  resp.json().then((json) => {
-    store.dispatch(setCurrentUser(json.user.personal));
-    // You are not expected to understand this
-    // ...then aren't you expected to explain it?
-    const perms = Object.assign({}, ...json.permissions.permissions.map(p => ({ [p.permissionName]: true })));
-    store.dispatch(setCurrentPerms(perms));
-    const okapiSess = {
-      token,
-      user: json.user.personal,
-      perms,
-    };
-    localforage.setItem('okapiSess', okapiSess);
-  });
-  getLocale(okapiUrl, store, tenant);
-  getPlugins(okapiUrl, store, tenant);
-  getBindings(okapiUrl, store, tenant);
-}
-
-// Validate stored token by attempting to fetch /users
-function validateUser(okapiUrl, store, tenant, session) {
-  fetch(`${okapiUrl}/users`, { headers: getHeaders(store, tenant, session.token) }).then((resp) => {
-    if (resp.status >= 400) {
-      store.dispatch(clearCurrentUser());
-      store.dispatch(clearOkapiToken());
-      localforage.removeItem('okapiSess');
-    } else {
-      store.dispatch(setOkapiToken(session.token));
-      store.dispatch(setCurrentUser(session.user));
-      store.dispatch(setCurrentPerms(session.perms));
-      getLocale(okapiUrl, store, tenant);
-      getPlugins(okapiUrl, store, tenant);
-      getBindings(okapiUrl, store, tenant);
-    }
-  });
-}
-
 function loadLocaleData(store, locale) {
   const parentLocale = locale.split('-')[0];
   return System.import(`react-intl/locale-data/${parentLocale}`)
-    .then(intlData => {
+    .then((intlData) => {
       addLocaleData(intlData);
       const translations = require('../translations')[parentLocale]; // eslint-disable-line
       store.dispatch(setTranslations(translations));
       store.dispatch(setLocale(locale));
     });
 }
-
-const validateUserDep = _.debounce(validateUser, 5000, { leading: true, trailing: false });
 
 export function getLocale(okapiUrl, store, tenant) {
   fetch(`${okapiUrl}/configurations/entries?query=(module=ORG and configName=locale)`,
@@ -145,6 +103,48 @@ export function getBindings(okapiUrl, store, tenant) {
     }
   });
 }
+
+function createOkapiSession(okapiUrl, store, tenant, resp) {
+  const token = resp.headers.get('X-Okapi-Token');
+  store.dispatch(setOkapiToken(token));
+  store.dispatch(clearAuthFailure());
+  resp.json().then((json) => {
+    store.dispatch(setCurrentUser(json.user.personal));
+    // You are not expected to understand this
+    // ...then aren't you expected to explain it?
+    const perms = Object.assign({}, ...json.permissions.permissions.map(p => ({ [p.permissionName]: true })));
+    store.dispatch(setCurrentPerms(perms));
+    const okapiSess = {
+      token,
+      user: json.user.personal,
+      perms,
+    };
+    localforage.setItem('okapiSess', okapiSess);
+  });
+  getLocale(okapiUrl, store, tenant);
+  getPlugins(okapiUrl, store, tenant);
+  getBindings(okapiUrl, store, tenant);
+}
+
+// Validate stored token by attempting to fetch /users
+function validateUser(okapiUrl, store, tenant, session) {
+  fetch(`${okapiUrl}/users`, { headers: getHeaders(store, tenant, session.token) }).then((resp) => {
+    if (resp.status >= 400) {
+      store.dispatch(clearCurrentUser());
+      store.dispatch(clearOkapiToken());
+      localforage.removeItem('okapiSess');
+    } else {
+      store.dispatch(setOkapiToken(session.token));
+      store.dispatch(setCurrentUser(session.user));
+      store.dispatch(setCurrentPerms(session.perms));
+      getLocale(okapiUrl, store, tenant);
+      getPlugins(okapiUrl, store, tenant);
+      getBindings(okapiUrl, store, tenant);
+    }
+  });
+}
+
+const validateUserDep = _.debounce(validateUser, 5000, { leading: true, trailing: false });
 
 export function checkUser(okapiUrl, store, tenant) {
   localforage.getItem('okapiSess').then((sess) => {

@@ -75,7 +75,7 @@ function clearAuthFailure() {
 function setTranslations(translations) {
   return {
     type: 'SET_TRANSLATIONS',
-    translations
+    translations,
   };
 }
 

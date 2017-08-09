@@ -152,6 +152,7 @@ Root.propTypes = {
   currentPerms: PropTypes.object, // eslint-disable-line react/forbid-prop-types
   currentUser: PropTypes.object, // eslint-disable-line react/forbid-prop-types
   locale: PropTypes.string,
+  translations: PropTypes.object, // eslint-disable-line react/forbid-prop-types
   plugins: PropTypes.object, // eslint-disable-line react/forbid-prop-types
   bindings: PropTypes.object, // eslint-disable-line react/forbid-prop-types
   config: PropTypes.object, // eslint-disable-line react/forbid-prop-types
@@ -170,8 +171,8 @@ Root.propTypes = {
 
 // TODO: remove after locale is accessible from a global config
 Root.defaultProps = {
-  locale: "en-US",
-  translations: require('../translations').en,
+  locale: 'en-US',
+  translations: require('../translations').en, // eslint-disable-line
 };
 
 function mapStateToProps(state) {
