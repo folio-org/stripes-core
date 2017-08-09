@@ -26,14 +26,6 @@ function getHeaders(store, tenant, token) {
   };
 }
 
-function clearOkapiSession(store) {
-  store.dispatch(clearCurrentUser());
-  store.dispatch(clearOkapiToken());
-  localforage.removeItem('okapiSess');
-  store.dispatch(reset('login'));
-  store.dispatch(authFailure());
-}
-
 function loadLocaleData(store, locale) {
   const parentLocale = locale.split('-')[0];
   return System.import(`react-intl/locale-data/${parentLocale}`)
@@ -102,6 +94,14 @@ export function getBindings(okapiUrl, store, tenant) {
       });
     }
   });
+}
+
+function clearOkapiSession(store) {
+  store.dispatch(clearCurrentUser());
+  store.dispatch(clearOkapiToken());
+  localforage.removeItem('okapiSess');
+  store.dispatch(reset('login'));
+  store.dispatch(authFailure());
 }
 
 function createOkapiSession(okapiUrl, store, tenant, resp) {
