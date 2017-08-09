@@ -2,6 +2,7 @@ import _ from 'lodash';
 import 'isomorphic-fetch';
 import localforage from 'localforage';
 import { reset } from 'redux-form';
+import { addLocaleData } from 'react-intl';
 
 import {
   setCurrentUser,
@@ -11,6 +12,7 @@ import {
   setPlugins,
   setBindings,
   setOkapiToken,
+  setTranslations,
   clearOkapiToken,
   authFailure,
   clearAuthFailure,
@@ -22,65 +24,6 @@ function getHeaders(store, tenant, token) {
     'X-Okapi-Token': token,
     'Content-Type': 'application/json',
   };
-}
-
-export function getLocale(okapiUrl, store, tenant) {
-  fetch(`${okapiUrl}/configurations/entries?query=(module=ORG and configName=locale)`,
-    { headers: getHeaders(store, tenant, store.getState().okapi.token) })
-  .then((response) => {
-    let locale = 'en-US';
-    if (response.status >= 400) {
-      store.dispatch(setLocale(locale));
-    } else {
-      response.json().then((json) => {
-        const configs = json.configs;
-        if (configs.length > 0) locale = configs[0].value;
-        store.dispatch(setLocale(locale));
-      });
-    }
-  });
-}
-
-export function getPlugins(okapiUrl, store, tenant) {
-  fetch(`${okapiUrl}/configurations/entries?query=(module=PLUGINS)`,
-    { headers: getHeaders(store, tenant, store.getState().okapi.token) })
-  .then((response) => {
-    if (response.status < 400) {
-      response.json().then((json) => {
-        const configs = json.configs.reduce((acc, val) => ({
-          ...acc,
-          [val.configName]: val.value,
-        }), {});
-        store.dispatch(setPlugins(configs));
-      });
-    }
-  });
-}
-
-export function getBindings(okapiUrl, store, tenant) {
-  fetch(`${okapiUrl}/configurations/entries?query=(module=ORG and configName=bindings)`,
-    { headers: getHeaders(store, tenant, store.getState().okapi.token) })
-  .then((response) => {
-    let bindings = {};
-    if (response.status >= 400) {
-      store.dispatch(setBindings(bindings));
-    } else {
-      response.json().then((json) => {
-        const configs = json.configs;
-        if (configs.length > 0) {
-          const string = configs[0].value;
-          try {
-            const tmp = JSON.parse(string);
-            bindings = tmp; // only if no exception is thrown
-          } catch (err) {
-            // eslint-disable-next-line no-console
-            console.log(`getBindings cannot parse key bindings '${string}':`, err);
-          }
-        }
-        store.dispatch(setBindings(bindings));
-      });
-    }
-  });
 }
 
 function clearOkapiSession(store) {
@@ -131,7 +74,77 @@ function validateUser(okapiUrl, store, tenant, session) {
   });
 }
 
+function loadLocaleData(store, locale) {
+  const parentLocale = locale.split('-')[0];
+  return System.import(`react-intl/locale-data/${parentLocale}`)
+    .then(intlData => {
+      addLocaleData(intlData);
+      const translations = require('../translations')[parentLocale]; // eslint-disable-line
+      store.dispatch(setTranslations(translations));
+      store.dispatch(setLocale(locale));
+    });
+}
+
 const validateUserDep = _.debounce(validateUser, 5000, { leading: true, trailing: false });
+
+export function getLocale(okapiUrl, store, tenant) {
+  fetch(`${okapiUrl}/configurations/entries?query=(module=ORG and configName=locale)`,
+    { headers: getHeaders(store, tenant, store.getState().okapi.token) })
+  .then((response) => {
+    let locale = 'fr';
+    if (response.status >= 400) {
+      loadLocaleData(store, locale);
+    } else {
+      response.json().then((json) => {
+        const configs = json.configs;
+        if (configs.length > 0) locale = configs[0].value;
+        loadLocaleData(store, locale);
+      });
+    }
+  });
+}
+
+export function getPlugins(okapiUrl, store, tenant) {
+  fetch(`${okapiUrl}/configurations/entries?query=(module=PLUGINS)`,
+    { headers: getHeaders(store, tenant, store.getState().okapi.token) })
+  .then((response) => {
+    if (response.status < 400) {
+      response.json().then((json) => {
+        const configs = json.configs.reduce((acc, val) => ({
+          ...acc,
+          [val.configName]: val.value,
+        }), {});
+        store.dispatch(setPlugins(configs));
+      });
+    }
+  });
+}
+
+export function getBindings(okapiUrl, store, tenant) {
+  fetch(`${okapiUrl}/configurations/entries?query=(module=ORG and configName=bindings)`,
+    { headers: getHeaders(store, tenant, store.getState().okapi.token) })
+  .then((response) => {
+    let bindings = {};
+    if (response.status >= 400) {
+      store.dispatch(setBindings(bindings));
+    } else {
+      response.json().then((json) => {
+        const configs = json.configs;
+        if (configs.length > 0) {
+          const string = configs[0].value;
+          try {
+            const tmp = JSON.parse(string);
+            bindings = tmp; // only if no exception is thrown
+          } catch (err) {
+            // eslint-disable-next-line no-console
+            console.log(`getBindings cannot parse key bindings '${string}':`, err);
+          }
+        }
+        store.dispatch(setBindings(bindings));
+      });
+    }
+  });
+}
 
 export function checkUser(okapiUrl, store, tenant) {
   localforage.getItem('okapiSess').then((sess) => {

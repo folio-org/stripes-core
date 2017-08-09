@@ -72,6 +72,13 @@ function clearAuthFailure() {
   };
 }
 
+function setTranslations(translations) {
+  return {
+    type: 'SET_TRANSLATIONS',
+    translations
+  };
+}
+
 export { setCurrentUser,
          clearCurrentUser,
          setCurrentPerms,
@@ -82,4 +89,5 @@ export { setCurrentUser,
          setOkapiToken,
          clearOkapiToken,
          authFailure,
-         clearAuthFailure };
+         clearAuthFailure,
+         setTranslations };

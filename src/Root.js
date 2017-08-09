@@ -6,6 +6,7 @@ import Route from 'react-router-dom/Route';
 import Switch from 'react-router-dom/Switch';
 import { CookiesProvider } from 'react-cookie';
 import { HotKeys } from '@folio/stripes-components/lib/HotKeys';
+import { IntlProvider } from 'react-intl';
 
 import MainContainer from './components/MainContainer';
 import MainNav from './components/MainNav';
@@ -40,7 +41,7 @@ class Root extends Component {
   }
 
   render() {
-    const { logger, store, config, okapi, actionNames, token, disableAuth, currentUser, currentPerms, locale, plugins, bindings, discovery } = this.props;
+    const { logger, store, config, okapi, actionNames, token, disableAuth, currentUser, currentPerms, locale, plugins, bindings, discovery, translations } = this.props;
 
     function Stripes(x) {
       Object.assign(this, x);
@@ -98,36 +99,38 @@ class Root extends Component {
     });
 
     return (
-      <HotKeys keyMap={bindings} noWrapper>
-        <Provider store={store}>
-          <Router>
-            { token || disableAuth ?
-              <MainContainer>
-                <MainNav stripes={stripes} />
-                <ModuleContainer id="content">
-                  <Switch>
-                    <Route exact path="/" component={Front} key="root" />
-                    <Route path="/sso-landing" component={Front} key="sso-landing" />
-                    <Route path="/about" component={() => <About stripes={stripes} />} key="about" />
-                    <Route path="/settings" render={() => <Settings stripes={stripes} />} />
-                    {getModuleRoutes(stripes)}
-                    <Route
-                      component={() => <div>
-                        <h2>Uh-oh!</h2>
-                        <p>This route does not exist.</p>
-                      </div>}
-                    />
-                  </Switch>
-                </ModuleContainer>
-              </MainContainer> :
-              <Switch>
-                <Route exact path="/sso-landing" component={() => <CookiesProvider><SSOLanding stripes={stripes} /></CookiesProvider>} key="sso-landing" />
-                <Route component={() => <LoginCtrl autoLogin={config.autoLogin} />} />
-              </Switch>
-            }
-          </Router>
-        </Provider>
-      </HotKeys>
+      <IntlProvider locale={locale} key={locale} messages={translations}>
+        <HotKeys keyMap={bindings} noWrapper>
+          <Provider store={store}>
+            <Router>
+              { token || disableAuth ?
+                <MainContainer>
+                  <MainNav stripes={stripes} />
+                  <ModuleContainer id="content">
+                    <Switch>
+                      <Route exact path="/" component={Front} key="root" />
+                      <Route path="/sso-landing" component={Front} key="sso-landing" />
+                      <Route path="/about" component={() => <About stripes={stripes} />} key="about" />
+                      <Route path="/settings" render={() => <Settings stripes={stripes} />} />
+                      {getModuleRoutes(stripes)}
+                      <Route
+                        component={() => <div>
+                          <h2>Uh-oh!</h2>
+                          <p>This route does not exist.</p>
+                        </div>}
+                      />
+                    </Switch>
+                  </ModuleContainer>
+                </MainContainer> :
+                <Switch>
+                  <Route exact path="/sso-landing" component={() => <CookiesProvider><SSOLanding stripes={stripes} /></CookiesProvider>} key="sso-landing" />
+                  <Route component={() => <LoginCtrl autoLogin={config.autoLogin} />} />
+                </Switch>
+              }
+            </Router>
+          </Provider>
+        </HotKeys>
+      </IntlProvider>
     );
   }
 }
@@ -165,12 +168,19 @@ Root.propTypes = {
   }),
 };
 
+// TODO: remove after locale is accessible from a global config
+Root.defaultProps = {
+  locale: "en-US",
+  translations: require('../translations').en,
+};
+
 function mapStateToProps(state) {
   return {
     token: state.okapi.token,
     currentUser: state.okapi.currentUser,
     currentPerms: state.okapi.currentPerms,
     locale: state.okapi.locale,
+    translations: state.okapi.translations,
     plugins: state.okapi.plugins,
     bindings: state.okapi.bindings,
     discovery: state.discovery,

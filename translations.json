@@ -1,0 +1,10 @@
+{
+  "en": {
+    "stripes-core.front.welcome": "Welcome, the Future Of Libraries Is OPEN!",
+    "stripes-core.front.about": "About"
+  },
+  "fr": {
+    "stripes-core.front.welcome": "Bienvenue, l'avenir des bibliothèques est OUVERT!",
+    "stripes-core.front.about": "Sur"
+  }
+}
