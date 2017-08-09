@@ -17,7 +17,6 @@ function SSOLogin(props) {
       </div>
     </form>
   );
-  
 }
 
 SSOLogin.propTypes = propTypes;
