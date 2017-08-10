@@ -95,6 +95,7 @@ class Root extends Component {
         user: currentUser,
         perms: currentPerms,
       },
+      connect(X) { return X; }
     });
 
     return (
@@ -106,8 +107,8 @@ class Root extends Component {
                 <MainNav stripes={stripes} />
                 <ModuleContainer id="content">
                   <Switch>
-                    <Route exact path="/" component={Front} key="root" />
-                    <Route path="/sso-landing" component={Front} key="sso-landing" />
+                    <Route exact path="/" component={()=> <Front stripes={stripes}/>} key="root" />
+                    <Route path="/sso-landing" component={()=> <Front stripes={stripes}/>} key="sso-landing" />
                     <Route path="/about" component={() => <About stripes={stripes} />} key="about" />
                     <Route path="/settings" render={() => <Settings stripes={stripes} />} />
                     {getModuleRoutes(stripes)}
