@@ -15,7 +15,7 @@ export const Front = ({ stripes }) => (
   <AddContext context={{ stripes }}>
     <Pluggable type="frontpage">
       <div>
-        <h3><FormattedMessage id="stripes-core.front.about" /></h3>
+        <h3><FormattedMessage id="stripes-core.front.welcome" /></h3>
         <p><Link to="/about"><FormattedMessage id="stripes-core.front.about" /></Link></p>
       </div>
     </Pluggable>

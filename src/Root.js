@@ -179,7 +179,7 @@ Root.propTypes = {
 
 // TODO: remove after locale is accessible from a global config
 Root.defaultProps = {
-  locale: 'en',
+  locale: 'en-US',
 };
 
 function mapStateToProps(state) {
