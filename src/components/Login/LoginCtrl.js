@@ -29,7 +29,6 @@ class LoginCtrl extends Component {
     this.okapiUrl = this.sys.okapi.url;
     this.tenant = this.sys.okapi.tenant;
     this.initialValues = { username: '', password: '' };
-    this.state = { ssoActive: false };
     this.handleSSOLogin = this.handleSSOLogin.bind(this);
     if (props.autoLogin && props.autoLogin.username) {
       this.handleSubmit(props.autoLogin);
