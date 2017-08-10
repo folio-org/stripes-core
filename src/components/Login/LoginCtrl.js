@@ -40,16 +40,6 @@ class LoginCtrl extends Component {
     checkUser(this.okapiUrl, this.store, this.tenant);
     isSSOEnabled(this.okapiUrl, this.store, this.tenant);
   }
-  /*
-  componentDidMount() {
-    isSSOEnabled(this.okapiUrl, this.tenant).then(ssoActive => {
-      if (ssoActive && !this.state.ssoActive) {
-        console.log('activate ', ssoActive, this.state.ssoActive);
-        this.setState({ ssoActive });
-      }
-    });
-  }
-  */
 
   handleSubmit(data) {
     requestLogin(this.okapiUrl, this.store, this.tenant, data).then((response) => {
