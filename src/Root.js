@@ -22,13 +22,17 @@ import initialReducers from './initialReducers';
 import enhanceReducer from './enhanceReducer';
 import { isVersionCompatible } from './discoverServices';
 import { setLocale, setSinglePlugin, setBindings, setOkapiToken } from './okapiActions';
+import { loadTranslations } from './loginServices';
 
 const reducers = { ...initialReducers };
 
 class Root extends Component {
-
   getChildContext() {
     return { addReducer: this.addReducer.bind(this) };
+  }
+
+  componentWillMount() {
+    loadTranslations(this.props.store, this.props.locale);
   }
 
   addReducer = (key, reducer) => {
@@ -42,6 +46,8 @@ class Root extends Component {
 
   render() {
     const { logger, store, config, okapi, actionNames, token, disableAuth, currentUser, currentPerms, locale, plugins, bindings, discovery, translations } = this.props;
+
+    if (!translations) return (<div />);
 
     function Stripes(x) {
       Object.assign(this, x);
@@ -100,36 +106,36 @@ class Root extends Component {
 
     return (
       <IntlProvider locale={locale} key={locale} messages={translations}>
-      <HotKeys keyMap={bindings} noWrapper>
-        <Provider store={store}>
-          <Router>
-            { token || disableAuth ?
-              <MainContainer>
-                <MainNav stripes={stripes} />
-                <ModuleContainer id="content">
-                  <Switch>
-                    <Route exact path="/" component={Front} key="root" />
-                    <Route path="/sso-landing" component={Front} key="sso-landing" />
-                    <Route path="/about" component={() => <About stripes={stripes} />} key="about" />
-                    <Route path="/settings" render={() => <Settings stripes={stripes} />} />
-                    {getModuleRoutes(stripes)}
-                    <Route
-                      component={() => <div>
-                        <h2>Uh-oh!</h2>
-                        <p>This route does not exist.</p>
-                      </div>}
-                    />
-                  </Switch>
-                </ModuleContainer>
-              </MainContainer> :
-              <Switch>
-                <Route exact path="/sso-landing" component={() => <CookiesProvider><SSOLanding stripes={stripes} /></CookiesProvider>} key="sso-landing" />
-                <Route component={() => <LoginCtrl autoLogin={config.autoLogin} />} />
-              </Switch>
-            }
-          </Router>
-        </Provider>
-      </HotKeys>
+        <HotKeys keyMap={bindings} noWrapper>
+          <Provider store={store}>
+            <Router>
+              { token || disableAuth ?
+                <MainContainer>
+                  <MainNav stripes={stripes} />
+                  <ModuleContainer id="content">
+                    <Switch>
+                      <Route exact path="/" component={Front} key="root" />
+                      <Route path="/sso-landing" component={Front} key="sso-landing" />
+                      <Route path="/about" component={() => <About stripes={stripes} />} key="about" />
+                      <Route path="/settings" render={() => <Settings stripes={stripes} />} />
+                      {getModuleRoutes(stripes)}
+                      <Route
+                        component={() => <div>
+                          <h2>Uh-oh!</h2>
+                          <p>This route does not exist.</p>
+                        </div>}
+                      />
+                    </Switch>
+                  </ModuleContainer>
+                </MainContainer> :
+                <Switch>
+                  <Route exact path="/sso-landing" component={() => <CookiesProvider><SSOLanding stripes={stripes} /></CookiesProvider>} key="sso-landing" />
+                  <Route component={() => <LoginCtrl autoLogin={config.autoLogin} />} />
+                </Switch>
+              }
+            </Router>
+          </Provider>
+        </HotKeys>
       </IntlProvider>
     );
   }
@@ -171,8 +177,7 @@ Root.propTypes = {
 
 // TODO: remove after locale is accessible from a global config
 Root.defaultProps = {
-  locale: 'en-US',
-  translations: require('../translations').en, // eslint-disable-line
+  locale: 'en',
 };
 
 function mapStateToProps(state) {
