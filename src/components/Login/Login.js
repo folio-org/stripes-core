@@ -1,12 +1,15 @@
 import React, { PropTypes } from 'react';
 import { reduxForm, Field } from 'redux-form';
 import css from './Login.css';
+import SSOLogin from '../SSOLogin';
 
 const propTypes = {
   handleSubmit: PropTypes.func.isRequired,
   pristine: PropTypes.bool,
   submitting: PropTypes.bool,
   authFail: PropTypes.bool,
+  handleSSOLogin: PropTypes.func,
+  ssoActive: PropTypes.any,
 };
 
 function Login(props) {
@@ -15,6 +18,8 @@ function Login(props) {
     pristine,
     submitting,
     authFail,
+    handleSSOLogin,
+    ssoActive,
   } = props;
 
   const loadingCN = `${css.loading} ${css.blue}`;
@@ -42,6 +47,10 @@ function Login(props) {
               </div> : null }
           </div>
         </form>
+        { ssoActive ?
+          <SSOLogin handleSSOLogin={handleSSOLogin} /> :
+          null
+        }
       </div>
     </div>
   );

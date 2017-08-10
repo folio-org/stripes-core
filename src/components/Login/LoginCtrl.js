@@ -28,6 +28,8 @@ class LoginCtrl extends Component {
     this.okapiUrl = this.sys.okapi.url;
     this.tenant = this.sys.okapi.tenant;
     this.initialValues = { username: '', password: '' };
+    this.state = {};
+    this.handleSSOLogin = this.handleSSOLogin.bind(this);
     if (props.autoLogin && props.autoLogin.username) {
       this.handleSubmit(props.autoLogin);
     }
@@ -35,6 +37,20 @@ class LoginCtrl extends Component {
 
   componentWillMount() {
     checkUser(this.okapiUrl, this.store, this.tenant);
+  }
+
+  componentDidMount() {
+    fetch(`${this.okapiUrl}/saml/check`,
+          { headers: Object.assign({}, { 'X-Okapi-Tenant': this.tenant }) })
+      .then((response) => {
+        if (response.status >= 400) {
+          this.setState({ssoActive: false });
+        } else {
+          response.json().then((json) => {
+            this.setState({ssoActive: json });
+          });   
+        }
+      });
   }
 
   handleSubmit(data) {
@@ -46,15 +62,21 @@ class LoginCtrl extends Component {
     });
   }
 
+  handleSSOLogin(e) {
+    window.open(`${this.okapiUrl}/_/invoke/tenant/${this.tenant}/saml/login`, '_self');
+  }
+
   render() {
     const authFail = this.props.authFail;
 
     return (
-      <Login
-        onSubmit={this.handleSubmit}
-        authFail={authFail}
-        initialValues={this.initialValues}
-      />
+        <Login
+          onSubmit={this.handleSubmit}
+          authFail={authFail}
+          initialValues={this.initialValues}
+          handleSSOLogin={this.handleSSOLogin}
+          ssoActive={this.state.ssoActive}
+        />
     );
   }
 }
