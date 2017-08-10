@@ -44,11 +44,11 @@ class LoginCtrl extends Component {
           { headers: Object.assign({}, { 'X-Okapi-Tenant': this.tenant }) })
       .then((response) => {
         if (response.status >= 400) {
-          this.setState({ssoActive: false });
+          this.setState({ ssoActive: false });
         } else {
           response.json().then((json) => {
-            this.setState({ssoActive: json });
-          });   
+            this.setState({ ssoActive: json });
+          });
         }
       });
   }
@@ -62,7 +62,7 @@ class LoginCtrl extends Component {
     });
   }
 
-  handleSSOLogin(e) {
+  handleSSOLogin() {
     window.open(`${this.okapiUrl}/_/invoke/tenant/${this.tenant}/saml/login`, '_self');
   }
 
@@ -70,13 +70,13 @@ class LoginCtrl extends Component {
     const authFail = this.props.authFail;
 
     return (
-        <Login
-          onSubmit={this.handleSubmit}
-          authFail={authFail}
-          initialValues={this.initialValues}
-          handleSSOLogin={this.handleSSOLogin}
-          ssoActive={this.state.ssoActive}
-        />
+      <Login
+        onSubmit={this.handleSubmit}
+        authFail={authFail}
+        initialValues={this.initialValues}
+        handleSSOLogin={this.handleSSOLogin}
+        ssoActive={this.state.ssoActive}
+      />
     );
   }
 }
