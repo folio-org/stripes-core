@@ -47,10 +47,7 @@ function Login(props) {
               </div> : null }
           </div>
         </form>
-        { ssoActive ?
-          <SSOLogin handleSSOLogin={handleSSOLogin} /> :
-          null
-        }
+        { ssoActive && <SSOLogin handleSSOLogin={handleSSOLogin} /> }
       </div>
     </div>
   );

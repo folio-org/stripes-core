@@ -72,6 +72,13 @@ function clearAuthFailure() {
   };
 }
 
+function checkSSO(ssoEnabled) {
+  return {
+    type: 'CHECK_SSO',
+    ssoEnabled,
+  };
+}
+
 export { setCurrentUser,
          clearCurrentUser,
          setCurrentPerms,
@@ -82,4 +89,5 @@ export { setCurrentUser,
          setOkapiToken,
          clearOkapiToken,
          authFailure,
-         clearAuthFailure };
+         clearAuthFailure,
+         checkSSO };

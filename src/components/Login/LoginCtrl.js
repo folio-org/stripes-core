@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react'; // eslint-disable-line
 import { connect as reduxConnect } from 'react-redux'; // eslint-disable-line
 
-import { requestLogin, checkUser } from '../../loginServices';
+import { requestLogin, checkUser, isSSOEnabled } from '../../loginServices';
 import Login from './Login';
 
 class LoginCtrl extends Component {
@@ -13,6 +13,7 @@ class LoginCtrl extends Component {
 
   static propTypes = {
     authFail: PropTypes.bool,
+    ssoEnabled: PropTypes.bool,
     autoLogin: PropTypes.shape({
       username: PropTypes.string.isRequired,
       password: PropTypes.string.isRequired,
@@ -28,7 +29,7 @@ class LoginCtrl extends Component {
     this.okapiUrl = this.sys.okapi.url;
     this.tenant = this.sys.okapi.tenant;
     this.initialValues = { username: '', password: '' };
-    this.state = {};
+    this.state = { ssoActive: false };
     this.handleSSOLogin = this.handleSSOLogin.bind(this);
     if (props.autoLogin && props.autoLogin.username) {
       this.handleSubmit(props.autoLogin);
@@ -37,21 +38,18 @@ class LoginCtrl extends Component {
 
   componentWillMount() {
     checkUser(this.okapiUrl, this.store, this.tenant);
+    isSSOEnabled(this.okapiUrl, this.store, this.tenant);
   }
-
+  /*
   componentDidMount() {
-    fetch(`${this.okapiUrl}/saml/check`,
-          { headers: Object.assign({}, { 'X-Okapi-Tenant': this.tenant }) })
-      .then((response) => {
-        if (response.status >= 400) {
-          this.setState({ ssoActive: false });
-        } else {
-          response.json().then((json) => {
-            this.setState({ ssoActive: json });
-          });
-        }
-      });
+    isSSOEnabled(this.okapiUrl, this.tenant).then(ssoActive => {
+      if (ssoActive && !this.state.ssoActive) {
+        console.log('activate ', ssoActive, this.state.ssoActive);
+        this.setState({ ssoActive });
+      }
+    });
   }
+  */
 
   handleSubmit(data) {
     requestLogin(this.okapiUrl, this.store, this.tenant, data).then((response) => {
@@ -67,7 +65,7 @@ class LoginCtrl extends Component {
   }
 
   render() {
-    const authFail = this.props.authFail;
+    const { authFail, ssoEnabled } = this.props;
 
     return (
       <Login
@@ -75,14 +73,17 @@ class LoginCtrl extends Component {
         authFail={authFail}
         initialValues={this.initialValues}
         handleSSOLogin={this.handleSSOLogin}
-        ssoActive={this.state.ssoActive}
+        ssoActive={ssoEnabled}
       />
     );
   }
 }
 
 function mapStateToProps(state) {
-  return { authFail: state.okapi.authFailure };
+  return {
+    authFail: state.okapi.authFailure,
+    ssoEnabled: state.okapi.ssoEnabled,
+  };
 }
 
 export default reduxConnect(mapStateToProps)(LoginCtrl);
