@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import Button from '@folio/stripes-components/lib/Button';
 import Icon from '@folio/stripes-components/lib/Icon';
 import Layout from '@folio/stripes-components/lib/Layout';
@@ -10,32 +11,32 @@ const propTypes = {
   /*
    * String to be printed on the notification
    */
-  message: React.PropTypes.string.isRequired,
+  message: PropTypes.string.isRequired,
   /*
    * Screen positioning of notification: e.g "start" or "end top". Defaults to "end bottom".
    */
-  position: React.PropTypes.string,
+  position: PropTypes.string,
   /*
    * How the notification animates into the page. Possible values are "slide" and "fade". Defaults to "slide".
    */
-  transition: React.PropTypes.string,
+  transition: PropTypes.string,
   /*
    * Determines the styling of the notification. Possible values are "success" and "error". Defaults to "info".
    */
-  type: React.PropTypes.string,
+  type: PropTypes.string,
   /*
    * Determines how long the Notification stays before it disappears. a value of 0 will stay until the user dismisses it
    * by clicking the "X." Defaults to 6000 (6 seconds.)
    */
-  timeout: React.PropTypes.number,
+  timeout: PropTypes.number,
   /*
    * Unique identifier
    */
-  id: React.PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired,
   /*
    * Handler for hiding the Toast
    */
-  onHide: React.PropTypes.func,
+  onHide: PropTypes.func,
 };
 
 const defaultProps = {

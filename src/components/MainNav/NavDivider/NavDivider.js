@@ -1,8 +1,9 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import css from './NavDivider.css';
 
 const propTypes = {
-  md: React.PropTypes.string, // Temporary as we work out the responsiveness of the header.
+  md: PropTypes.string, // Temporary as we work out the responsiveness of the header.
 };
 
 function NavDivider(props) {
@@ -18,4 +19,3 @@ function NavDivider(props) {
 NavDivider.propTypes = propTypes;
 
 export default NavDivider;
-

@@ -1,8 +1,9 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import css from './Breadcrumbs.css';
 
 const propTypes = {
-  links: React.PropTypes.array,
+  links: PropTypes.array,
 };
 
 function Breadcrumbs(props) {

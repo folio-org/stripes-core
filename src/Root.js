@@ -1,11 +1,14 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { combineReducers } from 'redux';
 import { Provider, connect } from 'react-redux';
-import Router from 'react-router-dom/BrowserRouter';
+import Router from 'react-router-dom/Router';
+import createBrowserHistory from 'history/createBrowserHistory';
 import Route from 'react-router-dom/Route';
 import Switch from 'react-router-dom/Switch';
 import { CookiesProvider } from 'react-cookie';
 import { HotKeys } from '@folio/stripes-components/lib/HotKeys';
+import { IntlProvider } from 'react-intl';
 
 import MainContainer from './components/MainContainer';
 import MainNav from './components/MainNav';
@@ -21,6 +24,7 @@ import initialReducers from './initialReducers';
 import enhanceReducer from './enhanceReducer';
 import { isVersionCompatible } from './discoverServices';
 import { setLocale, setSinglePlugin, setBindings, setOkapiToken } from './okapiActions';
+import { loadTranslations } from './loginServices';
 
 const reducers = { ...initialReducers };
 
@@ -28,6 +32,10 @@ class Root extends Component {
 
   getChildContext() {
     return { addReducer: this.addReducer.bind(this) };
+  }
+
+  componentWillMount() {
+    loadTranslations(this.props.store, this.props.locale);
   }
 
   addReducer = (key, reducer) => {
@@ -40,7 +48,9 @@ class Root extends Component {
   }
 
   render() {
-    const { logger, store, config, okapi, actionNames, token, disableAuth, currentUser, currentPerms, locale, plugins, bindings, discovery } = this.props;
+    const { logger, store, config, okapi, actionNames, token, disableAuth, currentUser, currentPerms, locale, plugins, bindings, discovery, translations, history } = this.props;
+
+    if (!translations) return (<div />);
 
     function Stripes(x) {
       Object.assign(this, x);
@@ -99,36 +109,38 @@ class Root extends Component {
     });
 
     return (
-      <HotKeys keyMap={bindings} noWrapper>
-        <Provider store={store}>
-          <Router>
-            { token || disableAuth ?
-              <MainContainer>
-                <MainNav stripes={stripes} />
-                <ModuleContainer id="content">
-                  <Switch>
-                    <Route exact path="/" component={() => <Front stripes={stripes} />} key="root" />
-                    <Route path="/sso-landing" component={() => <Front stripes={stripes} />} key="sso-landing" />
-                    <Route path="/about" component={() => <About stripes={stripes} />} key="about" />
-                    <Route path="/settings" render={() => <Settings stripes={stripes} />} />
-                    {getModuleRoutes(stripes)}
-                    <Route
-                      component={() => <div>
-                        <h2>Uh-oh!</h2>
-                        <p>This route does not exist.</p>
-                      </div>}
-                    />
-                  </Switch>
-                </ModuleContainer>
-              </MainContainer> :
-              <Switch>
-                <Route exact path="/sso-landing" component={() => <CookiesProvider><SSOLanding stripes={stripes} /></CookiesProvider>} key="sso-landing" />
-                <Route component={() => <LoginCtrl autoLogin={config.autoLogin} />} />
-              </Switch>
-            }
-          </Router>
-        </Provider>
-      </HotKeys>
+      <IntlProvider locale={locale} key={locale} messages={translations}>
+        <HotKeys keyMap={bindings} noWrapper>
+          <Provider store={store}>
+            <Router history={history}>
+              { token || disableAuth ?
+                <MainContainer>
+                  <MainNav stripes={stripes} />
+                  <ModuleContainer id="content">
+                    <Switch>
+                      <Route exact path="/" component={() => <Front stripes={stripes} />} key="root" />
+                      <Route path="/sso-landing" component={() => <Front stripes={stripes} />} key="sso-landing" />
+                      <Route path="/about" component={() => <About stripes={stripes} />} key="about" />
+                      <Route path="/settings" render={() => <Settings stripes={stripes} />} />
+                      {getModuleRoutes(stripes)}
+                      <Route
+                        component={() => <div>
+                          <h2>Uh-oh!</h2>
+                          <p>This route does not exist.</p>
+                        </div>}
+                      />
+                    </Switch>
+                  </ModuleContainer>
+                </MainContainer> :
+                <Switch>
+                  <Route exact path="/sso-landing" component={() => <CookiesProvider><SSOLanding stripes={stripes} /></CookiesProvider>} key="sso-landing" />
+                  <Route component={() => <LoginCtrl autoLogin={config.autoLogin} />} />
+                </Switch>
+              }
+            </Router>
+          </Provider>
+        </HotKeys>
+      </IntlProvider>
     );
   }
 }
@@ -150,6 +162,7 @@ Root.propTypes = {
   currentPerms: PropTypes.object, // eslint-disable-line react/forbid-prop-types
   currentUser: PropTypes.object, // eslint-disable-line react/forbid-prop-types
   locale: PropTypes.string,
+  translations: PropTypes.object, // eslint-disable-line react/forbid-prop-types
   plugins: PropTypes.object, // eslint-disable-line react/forbid-prop-types
   bindings: PropTypes.object, // eslint-disable-line react/forbid-prop-types
   config: PropTypes.object, // eslint-disable-line react/forbid-prop-types
@@ -164,6 +177,18 @@ Root.propTypes = {
     modules: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     interfaces: PropTypes.object, // eslint-disable-line react/forbid-prop-types
   }),
+  history: PropTypes.shape({
+    length: PropTypes.number.isRequired,
+    action: PropTypes.string.isRequired,
+    push: PropTypes.func.isRequired,
+    replace: PropTypes.func.isRequired
+  }),
+};
+
+Root.defaultProps = {
+  history: createBrowserHistory(),
+  // TODO: remove after locale is accessible from a global config
+  locale: 'en-US'
 };
 
 function mapStateToProps(state) {
@@ -172,6 +197,7 @@ function mapStateToProps(state) {
     currentUser: state.okapi.currentUser,
     currentPerms: state.okapi.currentPerms,
     locale: state.okapi.locale,
+    translations: state.okapi.translations,
     plugins: state.okapi.plugins,
     bindings: state.okapi.bindings,
     discovery: state.discovery,

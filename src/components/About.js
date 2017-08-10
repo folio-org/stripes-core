@@ -1,5 +1,6 @@
 import _ from 'lodash';
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { modules as uiModules } from 'stripes-loader'; // eslint-disable-line
 
 import stripesCore from '@folio/stripes-core/package.json'; // eslint-disable-line

@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react'; // eslint-disable-line
+import React, { Component } from 'react'; // eslint-disable-line
+import PropTypes from 'prop-types';
 import { connect as reduxConnect } from 'react-redux'; // eslint-disable-line
 
 import { requestLogin, checkUser, isSSOEnabled } from '../../loginServices';
@@ -29,7 +30,6 @@ class LoginCtrl extends Component {
     this.okapiUrl = this.sys.okapi.url;
     this.tenant = this.sys.okapi.tenant;
     this.initialValues = { username: '', password: '' };
-    this.state = { ssoActive: false };
     this.handleSSOLogin = this.handleSSOLogin.bind(this);
     if (props.autoLogin && props.autoLogin.username) {
       this.handleSubmit(props.autoLogin);

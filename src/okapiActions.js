@@ -72,6 +72,13 @@ function clearAuthFailure() {
   };
 }
 
+function setTranslations(translations) {
+  return {
+    type: 'SET_TRANSLATIONS',
+    translations,
+  };
+}
+
 function checkSSO(ssoEnabled) {
   return {
     type: 'CHECK_SSO',
@@ -90,4 +97,5 @@ export { setCurrentUser,
          clearOkapiToken,
          authFailure,
          clearAuthFailure,
+         setTranslations,
          checkSSO };

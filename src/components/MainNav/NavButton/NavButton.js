@@ -1,15 +1,16 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import Link from 'react-router-dom/Link';
 import css from './NavButton.css';
 
 const propTypes = {
-  href: React.PropTypes.string,
-  title: React.PropTypes.string,
-  onClick: React.PropTypes.func,
-  onKeyDown: React.PropTypes.func,
-  children: React.PropTypes.node.isRequired,
-  md: React.PropTypes.string, // eslint-disable-line
-  selected: React.PropTypes.bool,
+  href: PropTypes.string,
+  title: PropTypes.string,
+  onClick: PropTypes.func,
+  onKeyDown: PropTypes.func,
+  children: PropTypes.node.isRequired,
+  md: PropTypes.string, // eslint-disable-line
+  selected: PropTypes.bool,
 };
 
 function NavButton(props) {
