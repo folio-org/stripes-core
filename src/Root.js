@@ -108,36 +108,36 @@ class Root extends Component {
 
     return (
       <IntlProvider locale={locale} key={locale} messages={translations}>
-      <HotKeys keyMap={bindings} noWrapper>
-        <Provider store={store}>
-          <Router>
-            { token || disableAuth ?
-              <MainContainer>
-                <MainNav stripes={stripes} />
-                <ModuleContainer id="content">
-                  <Switch>
-                    <Route exact path="/" component={()=> <Front stripes={stripes}/>} key="root" />
-                    <Route path="/sso-landing" component={()=> <Front stripes={stripes}/>} key="sso-landing" />
-                    <Route path="/about" component={() => <About stripes={stripes} />} key="about" />
-                    <Route path="/settings" render={() => <Settings stripes={stripes} />} />
-                    {getModuleRoutes(stripes)}
-                    <Route
-                      component={() => <div>
-                        <h2>Uh-oh!</h2>
-                        <p>This route does not exist.</p>
-                      </div>}
-                    />
-                  </Switch>
-                </ModuleContainer>
-              </MainContainer> :
-              <Switch>
-                <Route exact path="/sso-landing" component={() => <CookiesProvider><SSOLanding stripes={stripes} /></CookiesProvider>} key="sso-landing" />
-                <Route component={() => <LoginCtrl autoLogin={config.autoLogin} />} />
-              </Switch>
-            }
-          </Router>
-        </Provider>
-      </HotKeys>
+        <HotKeys keyMap={bindings} noWrapper>
+          <Provider store={store}>
+            <Router>
+              { token || disableAuth ?
+                <MainContainer>
+                  <MainNav stripes={stripes} />
+                  <ModuleContainer id="content">
+                    <Switch>
+                      <Route exact path="/" component={()=> <Front stripes={stripes}/>} key="root" />
+                      <Route path="/sso-landing" component={()=> <Front stripes={stripes}/>} key="sso-landing" />
+                      <Route path="/about" component={() => <About stripes={stripes} />} key="about" />
+                      <Route path="/settings" render={() => <Settings stripes={stripes} />} />
+                      {getModuleRoutes(stripes)}
+                      <Route
+                        component={() => <div>
+                          <h2>Uh-oh!</h2>
+                          <p>This route does not exist.</p>
+                        </div>}
+                      />
+                    </Switch>
+                  </ModuleContainer>
+                </MainContainer> :
+                <Switch>
+                  <Route exact path="/sso-landing" component={() => <CookiesProvider><SSOLanding stripes={stripes} /></CookiesProvider>} key="sso-landing" />
+                  <Route component={() => <LoginCtrl autoLogin={config.autoLogin} />} />
+                </Switch>
+              }
+            </Router>
+          </Provider>
+        </HotKeys>
       </IntlProvider>
     );
   }
