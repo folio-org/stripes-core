@@ -186,12 +186,9 @@ Root.propTypes = {
 };
 
 Root.defaultProps = {
-  history: createBrowserHistory()
-};
-
-// TODO: remove after locale is accessible from a global config
-Root.defaultProps = {
-  locale: 'en-US',
+  history: createBrowserHistory(),
+  // TODO: remove after locale is accessible from a global config
+  locale: 'en-US'
 };
 
 function mapStateToProps(state) {
