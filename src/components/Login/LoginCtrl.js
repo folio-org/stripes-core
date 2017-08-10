@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react'; // eslint-disable-line
+import React, { Component } from 'react'; // eslint-disable-line
+import PropTypes from 'prop-types';
 import { connect as reduxConnect } from 'react-redux'; // eslint-disable-line
 
 import { requestLogin, checkUser, isSSOEnabled } from '../../loginServices';

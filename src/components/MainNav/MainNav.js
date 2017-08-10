@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { Dropdown } from 'react-bootstrap';
 import { withRouter } from 'react-router';
 import localforage from 'localforage';
@@ -36,8 +37,8 @@ class MainNav extends Component {
         dispatch: PropTypes.func.isRequired,
       }),
     }),
-    history: React.PropTypes.shape({
-      listen: React.PropTypes.func.isRequired,
+    history: PropTypes.shape({
+      listen: PropTypes.func.isRequired,
     }).isRequired,
     location: PropTypes.shape({
       pathname: PropTypes.string,

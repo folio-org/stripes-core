@@ -1,13 +1,14 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 // import ReactDOM from 'react-dom';
 import RootCloseWrapper from 'react-overlays/lib/RootCloseWrapper'; // eslint-disable-line
 import css from './NavDropdownMenu.css';
 
 const propTypes = {
-  pullRight: React.PropTypes.bool,
-  size: React.PropTypes.string,
-  open: React.PropTypes.bool,
-  children: React.PropTypes.element.isRequired,
+  pullRight: PropTypes.bool,
+  size: PropTypes.string,
+  open: PropTypes.bool,
+  children: PropTypes.element.isRequired,
 };
 
 class NavDropdownMenu extends React.Component {

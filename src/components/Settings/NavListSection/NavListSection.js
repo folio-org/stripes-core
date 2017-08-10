@@ -1,12 +1,13 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import css from './NavListSection.css';
 
 const propTypes = {
-  label: React.PropTypes.string,
-  activeLink: React.PropTypes.string,
-  children: React.PropTypes.oneOfType([
-    React.PropTypes.arrayOf(React.PropTypes.node),
-    React.PropTypes.node,
+  label: PropTypes.string,
+  activeLink: PropTypes.string,
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node,
   ]),
 };
 

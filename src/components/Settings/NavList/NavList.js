@@ -1,10 +1,11 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import css from '../NavListSection/NavListSection.css';
 
 const propTypes = {
-  children: React.PropTypes.oneOfType([
-    React.PropTypes.arrayOf(React.PropTypes.node),
-    React.PropTypes.node,
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node,
   ]),
 };
 
@@ -22,7 +23,7 @@ class NavList extends React.Component {
     e.target.classList.add(css.active);
   }
 
-/* eslint-disable */   
+/* eslint-disable */
   render() {
     return (
       <nav ref={(ref) => { this.nav = ref; }} onClick={this.handleNavigationClick} >
