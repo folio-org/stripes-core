@@ -181,14 +181,14 @@ Root.propTypes = {
     length: PropTypes.number.isRequired,
     action: PropTypes.string.isRequired,
     push: PropTypes.func.isRequired,
-    replace: PropTypes.func.isRequired
+    replace: PropTypes.func.isRequired,
   }),
 };
 
 Root.defaultProps = {
   history: createBrowserHistory(),
   // TODO: remove after locale is accessible from a global config
-  locale: 'en-US'
+  locale: 'en-US',
 };
 
 function mapStateToProps(state) {
