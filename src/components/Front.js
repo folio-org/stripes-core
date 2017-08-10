@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Link from 'react-router-dom/Link';
 import { FormattedMessage } from 'react-intl';
-import AddContext from '../AddContext';
 
 // TODO: release version of @folio/stripes-components has a broken index.js
 // TODO: so just reach in and grab it from lib.
@@ -10,11 +9,13 @@ import AddContext from '../AddContext';
 // import { Pluggable } from '@folio/stripes-components';
 import Pluggable from '@folio/stripes-components/lib/Pluggable';
 
+import AddContext from '../AddContext';
+
 export const Front = ({ stripes }) => (
   <AddContext context={{ stripes }}>
     <Pluggable type="frontpage">
       <div>
-        <h3>Welcome, the Future Of Libraries Is OPEN!<FormattedMessage id="stripes-core.front.about" /></h3>
+        <h3><FormattedMessage id="stripes-core.front.about" /></h3>
         <p><Link to="/about"><FormattedMessage id="stripes-core.front.about" /></Link></p>
       </div>
     </Pluggable>
@@ -22,7 +23,7 @@ export const Front = ({ stripes }) => (
 );
 
 Front.propTypes = {
-  stripes: PropTypes.object.isRequired
+  stripes: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
 };
 
 export default Front;

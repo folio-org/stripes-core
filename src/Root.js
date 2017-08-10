@@ -103,7 +103,7 @@ class Root extends Component {
         user: currentUser,
         perms: currentPerms,
       },
-      connect(X) { return X; }
+      connect(X) { return X; },
     });
 
     return (

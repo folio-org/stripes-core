@@ -79,6 +79,13 @@ function setTranslations(translations) {
   };
 }
 
+function checkSSO(ssoEnabled) {
+  return {
+    type: 'CHECK_SSO',
+    ssoEnabled,
+  };
+}
+
 export { setCurrentUser,
          clearCurrentUser,
          setCurrentPerms,
@@ -90,4 +97,5 @@ export { setCurrentUser,
          clearOkapiToken,
          authFailure,
          clearAuthFailure,
-         setTranslations };
+         setTranslations,
+         checkSSO };

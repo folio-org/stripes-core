@@ -16,6 +16,7 @@ import {
   clearOkapiToken,
   authFailure,
   clearAuthFailure,
+  checkSSO,
 } from './okapiActions';
 
 function getHeaders(tenant, token) {
@@ -158,6 +159,23 @@ export function checkUser(okapiUrl, store, tenant) {
       validateUserDep(okapiUrl, store, tenant, sess);
     }
   });
+}
+
+function isSSO(okapiUrl, store, tenant) {
+  fetch(`${okapiUrl}/saml/check`, { headers: { 'X-Okapi-Tenant': tenant } })
+  .then((response) => {
+    if (response.status >= 400) {
+      store.dispatch(checkSSO(false));
+    } else {
+      response.json(json => store.dispatch(checkSSO(json)));
+    }
+  });
+}
+
+const isSSODep = _.debounce(isSSO, 5000, { leading: true, trailing: false });
+
+export function isSSOEnabled(okapiUrl, store, tenant) {
+  return isSSODep(okapiUrl, store, tenant);
 }
 
 export function requestLogin(okapiUrl, store, tenant, data) {
