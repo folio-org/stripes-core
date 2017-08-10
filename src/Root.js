@@ -1,7 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import { combineReducers } from 'redux';
 import { Provider, connect } from 'react-redux';
-import Router from 'react-router-dom/BrowserRouter';
+import Router from 'react-router-dom/Router';
+import createBrowserHistory from 'history/createBrowserHistory';
 import Route from 'react-router-dom/Route';
 import Switch from 'react-router-dom/Switch';
 import { CookiesProvider } from 'react-cookie';
@@ -46,7 +47,7 @@ class Root extends Component {
   }
 
   render() {
-    const { logger, store, config, okapi, actionNames, token, disableAuth, currentUser, currentPerms, locale, plugins, bindings, discovery, translations } = this.props;
+    const { logger, store, config, okapi, actionNames, token, disableAuth, currentUser, currentPerms, locale, plugins, bindings, discovery, translations, history } = this.props;
 
     if (!translations) return (<div />);
 
@@ -110,7 +111,7 @@ class Root extends Component {
       <IntlProvider locale={locale} key={locale} messages={translations}>
         <HotKeys keyMap={bindings} noWrapper>
           <Provider store={store}>
-            <Router>
+            <Router history={history}>
               { token || disableAuth ?
                 <MainContainer>
                   <MainNav stripes={stripes} />
@@ -175,6 +176,16 @@ Root.propTypes = {
     modules: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     interfaces: PropTypes.object, // eslint-disable-line react/forbid-prop-types
   }),
+  history: PropTypes.shape({
+    length: PropTypes.number.isRequired,
+    action: PropTypes.string.isRequired,
+    push: PropTypes.func.isRequired,
+    replace: PropTypes.func.isRequired
+  }),
+};
+
+Root.defaultProps = {
+  history: createBrowserHistory()
 };
 
 // TODO: remove after locale is accessible from a global config
