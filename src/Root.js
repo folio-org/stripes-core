@@ -35,6 +35,7 @@ class Root extends Component {
   }
 
   componentWillMount() {
+    // TODO: remove this after we load locale and translations at start from a public endpoint
     loadTranslations(this.props.store, this.props.locale);
   }
 
@@ -187,7 +188,7 @@ Root.propTypes = {
 
 Root.defaultProps = {
   history: createBrowserHistory(),
-  // TODO: remove after locale is accessible from a global config
+  // TODO: remove after locale is accessible from a global config / public url
   locale: 'en-US',
 };
 
