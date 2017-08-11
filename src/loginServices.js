@@ -117,7 +117,7 @@ function createOkapiSession(okapiUrl, store, tenant, token, data) {
     perms,
   };
   localforage.setItem('okapiSess', okapiSess);
-  // getLocale(okapiUrl, store, tenant);
+  getLocale(okapiUrl, store, tenant);
   getPlugins(okapiUrl, store, tenant);
   getBindings(okapiUrl, store, tenant);
 }
@@ -133,7 +133,7 @@ function validateUser(okapiUrl, store, tenant, session) {
       store.dispatch(setOkapiToken(session.token));
       store.dispatch(setCurrentUser(session.user));
       store.dispatch(setCurrentPerms(session.perms));
-      // getLocale(okapiUrl, store, tenant);
+      getLocale(okapiUrl, store, tenant);
       getPlugins(okapiUrl, store, tenant);
       getBindings(okapiUrl, store, tenant);
     }
