@@ -2,61 +2,62 @@ build=n
 dir=.
 
 if [ "x$1" = x-b ]; then
-   build=y
-   shift
+    build=y
+    shift
 fi
 
 if [ $# != 0 ]; then
-   echo Running in directory $1
-   cd $1
+    echo Running in directory $1
+    cd $1
 fi
 
 cd $dir
 for i in `echo '
-	stripes-loader
-	stripes-connect
-	stripes-components
-	stripes-react-hotkeys
-	stripes-logger
-	stripes-redux
-	stripes-form
-	stripes-core
-	stripes-sample-platform
-	stripes-demo-platform
-	ui-okapi-console
-	ui-users
-	ui-items
-	ui-scan
-	ui-organization
-	ui-developer
-	ui-plugin-example
-	ui-plugin-find-user
-	ui-testing
+    stripes-loader
+    stripes-connect
+    stripes-components
+    stripes-react-hotkeys
+    stripes-logger
+    stripes-redux
+    stripes-form
+    stripes-core
+    stripes-sample-platform
+    stripes-demo-platform
+    ui-okapi-console
+    ui-users
+    ui-items
+    ui-checkin
+    ui-checkout
+    ui-organization
+    ui-developer
+    ui-plugin-example
+    ui-plugin-find-user
+    ui-testing
 '`; do
     echo === $i ===
     (
-	cd $i
-	branch=`git branch | sed -n 's/^\* //p'`
-	if [ "x$branch" != xmaster ]; then
-	    echo "*** on branch '$branch': doing nothing"
-	else
-	    if git status | grep 'nothing to commit' > /dev/null; then
-		if git status | grep 'Your branch is ahead' > /dev/null; then
-		    echo "*** some committed changes to push: doing nothing"
-		else
-		    git pull
-		    if [ $build = y ]; then
-			case $i in
-			    ui-*) echo "No need to build UI module";;
-			    *)    yarn install
-			    	  test $i = stripes-core || rm -rf node_modules/react
-				  ;;
-			esac
-		    fi
-		fi
-	    else
-		echo "*** some changes to commit: doing nothing"
-	    fi
-	fi
+        cd $i
+        branch=`git branch | sed -n 's/^\* //p'`
+        if [ "x$branch" != xmaster ]; then
+            echo "*** on branch '$branch': doing nothing"
+        else
+            if git status | grep 'nothing to commit' > /dev/null; then
+                if git status | grep 'Your branch is ahead' > /dev/null; then
+                    echo "*** some committed changes to push: doing nothing"
+                else
+                    git pull
+                    if [ $build = y ]; then
+                        case $i in
+                            ui-*) echo "No need to build UI module";;
+                            *)    yarn install
+                                  test $i = stripes-core || rm -rf node_modules/react
+                                  ;;
+                        esac
+                    fi
+                fi
+            else
+                echo "*** some changes to commit: doing nothing"
+            fi
+        fi
     )
 done
