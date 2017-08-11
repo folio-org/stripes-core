@@ -2,7 +2,7 @@ import React, { Component } from 'react'; // eslint-disable-line
 import PropTypes from 'prop-types';
 import { connect as reduxConnect } from 'react-redux'; // eslint-disable-line
 
-import { requestLogin, checkUser, isSSOEnabled } from '../../loginServices';
+import { requestLogin, checkOkapiSession } from '../../loginServices';
 import Login from './Login';
 
 class LoginCtrl extends Component {
@@ -37,8 +37,7 @@ class LoginCtrl extends Component {
   }
 
   componentWillMount() {
-    checkUser(this.okapiUrl, this.store, this.tenant);
-    isSSOEnabled(this.okapiUrl, this.store, this.tenant);
+    checkOkapiSession(this.okapiUrl, this.store, this.tenant);
   }
 
   handleSubmit(data) {

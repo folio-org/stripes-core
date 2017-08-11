@@ -142,6 +142,19 @@ function validateUser(okapiUrl, store, tenant, session) {
 
 const validateUserDep = _.debounce(validateUser, 5000, { leading: true, trailing: false });
 
+function isSSOEnabled(okapiUrl, store, tenant) {
+  fetch(`${okapiUrl}/saml/check`, { headers: { 'X-Okapi-Tenant': tenant } })
+  .then((response) => {
+    if (response.status >= 400) {
+      store.dispatch(checkSSO(false));
+    } else {
+      response.json(json => store.dispatch(checkSSO(json)));
+    }
+  });
+}
+
+const isSSOEnabledDep = _.debounce(isSSOEnabled, 5000, { leading: true, trailing: false });
+
 function processOkapiSession(okapiUrl, store, tenant, resp) {
   const token = resp.headers.get('X-Okapi-Token');
   if (resp.status >= 400) {
@@ -153,29 +166,14 @@ function processOkapiSession(okapiUrl, store, tenant, resp) {
   return resp;
 }
 
-export function checkUser(okapiUrl, store, tenant) {
+export function checkOkapiSession(okapiUrl, store, tenant) {
   localforage.getItem('okapiSess').then((sess) => {
     if (sess !== null) {
       validateUserDep(okapiUrl, store, tenant, sess);
-    }
-  });
-}
-
-function isSSO(okapiUrl, store, tenant) {
-  fetch(`${okapiUrl}/saml/check`, { headers: { 'X-Okapi-Tenant': tenant } })
-  .then((response) => {
-    if (response.status >= 400) {
-      store.dispatch(checkSSO(false));
     } else {
-      response.json(json => store.dispatch(checkSSO(json)));
+      isSSOEnabledDep(okapiUrl, store, tenant);
     }
   });
-}
-
-const isSSODep = _.debounce(isSSO, 5000, { leading: true, trailing: false });
-
-export function isSSOEnabled(okapiUrl, store, tenant) {
-  return isSSODep(okapiUrl, store, tenant);
 }
 
 export function requestLogin(okapiUrl, store, tenant, data) {
