@@ -49,7 +49,7 @@ class Root extends Component {
   }
 
   render() {
-    const { logger, store, config, okapi, actionNames, token, disableAuth, currentUser, currentPerms, locale, plugins, bindings, discovery, translations, history } = this.props;
+    const { logger, store, epics, config, okapi, actionNames, token, disableAuth, currentUser, currentPerms, locale, plugins, bindings, discovery, translations, history } = this.props;
 
     if (!translations) return (<div />);
 
@@ -91,6 +91,7 @@ class Root extends Component {
     const stripes = new Stripes({
       logger,
       store,
+      epics,
       config,
       okapi,
       setToken: (val) => { store.dispatch(setOkapiToken(val)); },
@@ -162,6 +163,7 @@ Root.propTypes = {
   logger: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
   currentPerms: PropTypes.object, // eslint-disable-line react/forbid-prop-types
   currentUser: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+  epics: PropTypes.object, // eslint-disable-line react/forbid-prop-types
   locale: PropTypes.string,
   translations: PropTypes.object, // eslint-disable-line react/forbid-prop-types
   plugins: PropTypes.object, // eslint-disable-line react/forbid-prop-types

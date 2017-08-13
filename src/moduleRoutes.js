@@ -14,7 +14,7 @@ function getModuleRoutes(stripes) {
     const perm = `module.${name}.enabled`;
     if (!stripes.hasPerm(perm)) return null;
 
-    const connect = connectFor(module.module, stripes.logger);
+    const connect = connectFor(module.module, stripes.epics, stripes.logger);
     const Current = connect(module.getModule());
     const moduleStripes = Object.assign({}, stripes, { connect });
 

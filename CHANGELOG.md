@@ -3,6 +3,7 @@
 ## 2.5.0 (IN PROGRESS)
 
 * Setup react-intl for internationalisation. Fixes STRIPES-447.
+* Update stripes-redux dependency. SRDX-1 and SRDX-2.
 
 ## [2.4.0](https://github.com/folio-org/stripes-core/tree/v2.4.0) (2017-08-04)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.3.1...v2.4.0)
