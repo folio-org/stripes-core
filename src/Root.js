@@ -26,9 +26,11 @@ import { isVersionCompatible } from './discoverServices';
 import { setLocale, setSinglePlugin, setBindings, setOkapiToken } from './okapiActions';
 import { loadTranslations } from './loginServices';
 
-const reducers = { ...initialReducers };
-
 class Root extends Component {
+  constructor() {
+    super(...arguments);
+    this.reducers = { ...initialReducers };
+  }
 
   getChildContext() {
     return { addReducer: this.addReducer.bind(this) };
@@ -40,9 +42,9 @@ class Root extends Component {
   }
 
   addReducer = (key, reducer) => {
-    if (reducers[key] === undefined) {
-      reducers[key] = reducer;
-      this.props.store.replaceReducer(enhanceReducer(combineReducers({ ...reducers })));
+    if (this.reducers[key] === undefined) {
+      this.reducers[key] = reducer;
+      this.props.store.replaceReducer(enhanceReducer(combineReducers({ ...this.reducers })));
       return true;
     }
     return false;
