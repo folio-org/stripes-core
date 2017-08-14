@@ -32,7 +32,7 @@ export function loadTranslations(store, locale) {
   return System.import(`react-intl/locale-data/${parentLocale}`)
     .then((intlData) => {
       addLocaleData(intlData);
-      const translations = require(`../translations/${parentLocale}`); // eslint-disable-line
+      const translations = require(`../translations/${parentLocale}`); // eslint-disable-line global-require, import/no-dynamic-require
       store.dispatch(setTranslations(translations));
       store.dispatch(setLocale(locale));
     });
