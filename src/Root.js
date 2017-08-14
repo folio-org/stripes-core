@@ -97,6 +97,7 @@ class Root extends Component {
       setToken: (val) => { store.dispatch(setOkapiToken(val)); },
       actionNames,
       locale,
+      // At some point, setLocale will also need to update the translations
       setLocale: (val) => { store.dispatch(setLocale(val)); },
       plugins: plugins || {},
       setSinglePlugin: (key, value) => { store.dispatch(setSinglePlugin(key, value)); },
