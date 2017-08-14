@@ -32,7 +32,7 @@ const Settings = (props) => {
   ));
 
   const routes = settingsModules.map((m) => {
-    const connect = connectFor(m.module, stripes.logger);
+    const connect = connectFor(m.module, stripes.epics, stripes.logger);
     const Current = connect(m.getModule());
     const moduleStripes = Object.assign({}, stripes, { connect });
 
