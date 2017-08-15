@@ -58,7 +58,6 @@ export function loadTranslations(store, locale) {
         }
       }
 
-      console.log('translations:', translations);
       store.dispatch(setTranslations(translations));
       store.dispatch(setLocale(locale));
     });
