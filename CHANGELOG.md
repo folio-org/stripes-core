@@ -1,9 +1,12 @@
 # Change history for stripes-core
 
-## 2.5.0 (IN PROGRESS)
+## [2.5.0](https://github.com/folio-org/stripes-core/tree/v2.5.0) (2017-08-15)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.4.0...v2.5.0)
 
-* Setup react-intl for internationalisation. Fixes STRIPES-447.
+* Work towards supporting single sign-on. Fixes STCOR-44.
+* Setup react-intl for internationalisation. Fixes STCOR-51.
 * Update stripes-redux dependency. SRDX-1 and SRDX-2.
+* Combine all translations from currently active stripes modules. Fixes STCOR-48.
 
 ## [2.4.0](https://github.com/folio-org/stripes-core/tree/v2.4.0) (2017-08-04)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.3.1...v2.4.0)
