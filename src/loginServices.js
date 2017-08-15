@@ -4,8 +4,6 @@ import localforage from 'localforage';
 import { reset } from 'redux-form';
 import { addLocaleData } from 'react-intl';
 import { modules } from 'stripes-loader'; // eslint-disable-line
-import uiUsersTranslations from '@folio/users/translations/en';
-
 
 import {
   setCurrentUser,
@@ -38,14 +36,6 @@ function prefixKeys(obj, prefix) {
   return res;
 }
 
-function getTranslations(moduleName, parentLocale) {
-  const path = `${moduleName}/translations/${parentLocale}`;
-  console.log(`'${parentLocale}' translations for '${moduleName}': path = ${path}`);
-  const translations = require(path);
-  console.log(`ok`);
-  return translations;
-}
-
 export function loadTranslations(store, locale) {
   const parentLocale = locale.split('-')[0];
   return System.import(`react-intl/locale-data/${parentLocale}`)
@@ -60,22 +50,15 @@ export function loadTranslations(store, locale) {
 
       for (const moduleType of Object.keys(modules)) {
         for (const module of modules[moduleType]) {
-          const name = module.moduleRoot.replace(/.*\//, '');
-          console.log(`reading '${parentLocale}' translations for module '${name}'`);
-          if (name === 'ui-users') {
-            console.log('1');
-            const spare1 = require('@folio/stripes-core/translations/en');
-            console.log('2');
-            const spare2 = getTranslations('@folio/stripes-core', parentLocale);
-            console.log('3');
-            const moduleTranslations = getTranslations(module.module, parentLocale);
-            console.log('4');
+          const moduleTranslations = _.get(module, ['translations', parentLocale]);
+          if (moduleTranslations) {
+            const name = module.moduleRoot.replace(/.*\//, '');
             Object.assign(translations, prefixKeys(moduleTranslations, `${name}.`));
           }
         }
       }
 
-      console.log(translations);
+      console.log('translations:', translations);
       store.dispatch(setTranslations(translations));
       store.dispatch(setLocale(locale));
     });
