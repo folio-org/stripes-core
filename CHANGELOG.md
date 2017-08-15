@@ -1,5 +1,10 @@
 # Change history for stripes-core
 
+## [2.5.1](https://github.com/folio-org/stripes-core/tree/v2.5.1) (2017-08-15)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.5.0...v2.5.1)
+
+* Update stripes-redux to v2.0.0
+
 ## [2.5.0](https://github.com/folio-org/stripes-core/tree/v2.5.0) (2017-08-15)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.4.0...v2.5.0)
 
