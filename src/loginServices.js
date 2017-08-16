@@ -173,7 +173,9 @@ function isSSOEnabled(okapiUrl, store, tenant) {
     if (response.status >= 400) {
       store.dispatch(checkSSO(false));
     } else {
-      response.json(json => store.dispatch(checkSSO(json)));
+      response.json().then((json) => {
+        store.dispatch(checkSSO(json.active));
+      });
     }
   });
 }
