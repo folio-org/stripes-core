@@ -1,5 +1,9 @@
 # Change history for stripes-core
 
+## 2.6.0 (IN PROGRESS)
+
+* `ui-` prefix for module-specific translation strings is hardwired. Fixes STCOR-55.
+
 ## [2.5.1](https://github.com/folio-org/stripes-core/tree/v2.5.1) (2017-08-15)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.5.0...v2.5.1)
 

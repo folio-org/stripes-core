@@ -52,8 +52,8 @@ export function loadTranslations(store, locale) {
         for (const module of modules[moduleType]) {
           const moduleTranslations = _.get(module, ['translations', parentLocale]);
           if (moduleTranslations) {
-            const name = module.moduleRoot.replace(/.*\//, '');
-            Object.assign(translations, prefixKeys(moduleTranslations, `${name}.`));
+            const name = module.module.replace(/.*\//, '');
+            Object.assign(translations, prefixKeys(moduleTranslations, `ui-${name}.`));
           }
         }
       }
