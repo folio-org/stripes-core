@@ -1,9 +1,9 @@
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
+import { createLogger } from 'redux-logger';
 import initialReducers from './initialReducers';
 import enhanceReducer from './enhanceReducer';
 import epics from './epics';
-import { createLogger } from 'redux-logger';
 
 export default function configureStore(initialState, stripesLogger) {
   const logger = createLogger({
