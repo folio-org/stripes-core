@@ -121,9 +121,10 @@ class MainNav extends Component {
     const menuLinks = modules.app.map((entry) => {
       const name = entry.module.replace(/^@[a-z0-9_]+\//, '');
       const perm = `module.${name}.enabled`;
+      const navId = `clickable-${name}-module`;
       if (!stripes.hasPerm(perm)) return null;
 
-      return (<NavButton selected={pathname.startsWith(entry.route)} href={this.lastVisited[name] || entry.home || entry.route} title={entry.displayName} key={entry.route}>
+      return (<NavButton id={navId} selected={pathname.startsWith(entry.route)} href={this.lastVisited[name] || entry.home || entry.route} title={entry.displayName} key={entry.route}>
         <NavIcon color="#61f160" />
         <span className={css.linkLabel}>
           {entry.displayName}
