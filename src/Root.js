@@ -22,9 +22,9 @@ import Settings from './components/Settings/Settings';
 import getModuleRoutes from './moduleRoutes';
 import initialReducers from './initialReducers';
 import enhanceReducer from './enhanceReducer';
-import { isVersionCompatible } from './discoverServices';
 import { setLocale, setSinglePlugin, setBindings, setOkapiToken } from './okapiActions';
 import { loadTranslations } from './loginServices';
+import Stripes from './Stripes';
 
 const reducers = { ...initialReducers };
 
@@ -37,7 +37,7 @@ class SetIntlIntoStripesObject extends Component {
   };
   render() {
     this.props.stripes.intl = this.context.intl;
-    // console.log('set stripes.intl to', this.props.stripes.intl);
+    console.log('set stripes.intl to', this.props.stripes.intl);
     return this.props.children;
   }
 }
@@ -67,41 +67,6 @@ class Root extends Component {
     const { logger, store, epics, config, okapi, actionNames, token, disableAuth, currentUser, currentPerms, locale, plugins, bindings, discovery, translations, history } = this.props;
 
     if (!translations) return (<div />);
-
-    function Stripes(x) {
-      Object.assign(this, x);
-      this.hasPerm = (perm) => {
-        if (this.config && this.config.hasAllPerms) {
-          logger.log('perm', `assuming perm '${perm}': hasAllPerms is true`);
-          return true;
-        }
-        if (!this.user.perms) {
-          logger.log('perm', `not checking perm '${perm}': no user permissions yet`);
-          return undefined;
-        }
-        logger.log('perm', `checking perm '${perm}': `, !!this.user.perms[perm]);
-        return this.user.perms[perm] || false;
-      };
-      this.hasInterface = (name, versionWanted) => {
-        if (!this.discovery || !this.discovery.interfaces) {
-          logger.log('interface', `not checking interface '${name}': no discovery yet`);
-          return undefined;
-        }
-        const version = this.discovery.interfaces[name];
-        if (!version) {
-          logger.log('interface', `interface '${name}' is missing`);
-          return undefined;
-        }
-        if (!versionWanted) {
-          logger.log('interface', `interface '${name}' exists`);
-          return true;
-        }
-        const ok = isVersionCompatible(version, versionWanted);
-        const cond = ok ? 'is' : 'is not';
-        logger.log('interface', `interface '${name}' v${versionWanted} ${cond} compatible with available v${version}`);
-        return ok ? version : 0;
-      };
-    }
 
     const stripes = new Stripes({
       logger,
