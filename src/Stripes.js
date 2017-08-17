@@ -1,4 +1,16 @@
+import PropTypes from 'prop-types';
 import { isVersionCompatible } from './discoverServices';
+
+
+export const stripesShape = PropTypes.shape({
+  logger: PropTypes.shape({
+    log: PropTypes.func.isRequired,
+  }).isRequired,
+  connect: PropTypes.func.isRequired,
+  hasPerm: PropTypes.func.isRequired,
+  // XXX more
+});
+
 
 class Stripes {
   constructor(properties) {
