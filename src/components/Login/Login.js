@@ -36,7 +36,7 @@ function Login(props) {
             <div className={css.minorSlab}>
               <Field className={css.loginInput} name="password" type="password" component="input" placeholder="Password" />
             </div>
-            <button type="submit" className={css.slabButton} onClick={handleSubmit} disabled={submitting || pristine}>
+            <button id="clickable-login" type="submit" className={css.slabButton} onClick={handleSubmit} disabled={submitting || pristine}>
             Log in
             </button>
             { submitting ? <div><div className={loadingCN} /></div> : null }
