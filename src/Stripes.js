@@ -2,7 +2,6 @@ import { isVersionCompatible } from './discoverServices';
 
 class Stripes {
   constructor(properties) {
-    console.log('new stripes');
     Object.assign(this, properties);
   }
 
