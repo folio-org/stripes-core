@@ -1,6 +1,7 @@
 # Change history for stripes-core
 
-## 2.6.0 (IN PROGRESS)
+## [2.6.0](https://github.com/folio-org/stripes-core/tree/v2.6.0) (2017-08-17)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.5.1...v2.6.0)
 
 * `ui-` prefix for module-specific translation strings is hardwired. Fixes STCOR-55.
 * Support for the `redux` logging category reinstated.
