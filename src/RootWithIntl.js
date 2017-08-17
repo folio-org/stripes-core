@@ -17,16 +17,17 @@ import SSOLanding from './components/SSOLanding';
 import Settings from './components/Settings/Settings';
 import LoginCtrl from './components/Login';
 import getModuleRoutes from './moduleRoutes';
+import { stripesShape } from './Stripes';
 
 class RootWithIntl extends Component {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
   static propTypes = {
-    stripes: PropTypes.object.isRequired,
+    stripes: stripesShape.isRequired,
     token: PropTypes.string,
     disableAuth: PropTypes.bool.isRequired,
-    history: PropTypes.object.isRequired,
+    history: PropTypes.shape({}),
   };
 
   render() {
