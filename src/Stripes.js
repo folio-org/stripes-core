@@ -1,40 +1,42 @@
 import { isVersionCompatible } from './discoverServices';
 
-function Stripes(properties) {
-  const logger = properties.logger;
+class Stripes {
+  constructor(properties) {
+    const logger = properties.logger;
 
-  Object.assign(this, properties);
-  this.hasPerm = (perm) => {
-    if (this.config && this.config.hasAllPerms) {
-      logger.log('perm', `assuming perm '${perm}': hasAllPerms is true`);
-      return true;
-    }
-    if (!this.user.perms) {
-      logger.log('perm', `not checking perm '${perm}': no user permissions yet`);
-      return undefined;
-    }
-    logger.log('perm', `checking perm '${perm}': `, !!this.user.perms[perm]);
-    return this.user.perms[perm] || false;
-  };
-  this.hasInterface = (name, versionWanted) => {
-    if (!this.discovery || !this.discovery.interfaces) {
-      logger.log('interface', `not checking interface '${name}': no discovery yet`);
-      return undefined;
-    }
-    const version = this.discovery.interfaces[name];
-    if (!version) {
-      logger.log('interface', `interface '${name}' is missing`);
-      return undefined;
-    }
-    if (!versionWanted) {
-      logger.log('interface', `interface '${name}' exists`);
-      return true;
-    }
-    const ok = isVersionCompatible(version, versionWanted);
-    const cond = ok ? 'is' : 'is not';
-    logger.log('interface', `interface '${name}' v${versionWanted} ${cond} compatible with available v${version}`);
-    return ok ? version : 0;
-  };
+    Object.assign(this, properties);
+    this.hasPerm = (perm) => {
+      if (this.config && this.config.hasAllPerms) {
+        logger.log('perm', `assuming perm '${perm}': hasAllPerms is true`);
+        return true;
+      }
+      if (!this.user.perms) {
+        logger.log('perm', `not checking perm '${perm}': no user permissions yet`);
+        return undefined;
+      }
+      logger.log('perm', `checking perm '${perm}': `, !!this.user.perms[perm]);
+      return this.user.perms[perm] || false;
+    };
+    this.hasInterface = (name, versionWanted) => {
+      if (!this.discovery || !this.discovery.interfaces) {
+        logger.log('interface', `not checking interface '${name}': no discovery yet`);
+        return undefined;
+      }
+      const version = this.discovery.interfaces[name];
+      if (!version) {
+        logger.log('interface', `interface '${name}' is missing`);
+        return undefined;
+      }
+      if (!versionWanted) {
+        logger.log('interface', `interface '${name}' exists`);
+        return true;
+      }
+      const ok = isVersionCompatible(version, versionWanted);
+      const cond = ok ? 'is' : 'is not';
+      logger.log('interface', `interface '${name}' v${versionWanted} ${cond} compatible with available v${version}`);
+      return ok ? version : 0;
+    };
+  }
 }
 
 export default Stripes;
