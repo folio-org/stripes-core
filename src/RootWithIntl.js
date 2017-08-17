@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Provider } from 'react-redux';
 import Router from 'react-router-dom/Router';
 import Route from 'react-router-dom/Route';
 import Switch from 'react-router-dom/Switch';
+import { Provider } from 'react-redux';
 import { CookiesProvider } from 'react-cookie';
 import { HotKeys } from '@folio/stripes-components/lib/HotKeys';
 import { intlShape } from 'react-intl';
@@ -11,12 +11,11 @@ import { intlShape } from 'react-intl';
 import MainContainer from './components/MainContainer';
 import MainNav from './components/MainNav';
 import ModuleContainer from './components/ModuleContainer';
-import { Front } from './components/Front';
+import Front from './components/Front';
 import About from './components/About';
 import SSOLanding from './components/SSOLanding';
-import LoginCtrl from './components/Login';
 import Settings from './components/Settings/Settings';
-
+import LoginCtrl from './components/Login';
 import getModuleRoutes from './moduleRoutes';
 
 class RootWithIntl extends Component {
