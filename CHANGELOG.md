@@ -4,6 +4,8 @@
 
 * `ui-` prefix for module-specific translation strings is hardwired. Fixes STCOR-55.
 * Support for the `redux` logging category reinstated.
+* Furnish the `intl` object as part of the Stripes object. Fixes STCOR-52.
+* Provide `stripesShape` for use in propTypes/contextTypes. Fixes STCOR-32.
 
 ## [2.5.1](https://github.com/folio-org/stripes-core/tree/v2.5.1) (2017-08-15)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.5.0...v2.5.1)
