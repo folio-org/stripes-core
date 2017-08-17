@@ -39,6 +39,10 @@ class Stripes {
     logger.log('interface', `interface '${name}' v${versionWanted} ${cond} compatible with available v${version}`);
     return ok ? version : 0;
   }
+
+  clone(extraProps) {
+    return new Stripes(Object.assign({}, this, extraProps));
+  }
 }
 
 export default Stripes;
