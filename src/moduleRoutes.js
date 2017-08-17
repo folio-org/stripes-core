@@ -16,7 +16,7 @@ function getModuleRoutes(stripes) {
 
     const connect = connectFor(module.module, stripes.epics, stripes.logger);
     const Current = connect(module.getModule());
-    const moduleStripes = Object.assign({}, stripes, { connect });
+    const moduleStripes = stripes.clone({ connect });
 
     return (
       <Route
