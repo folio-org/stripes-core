@@ -34,7 +34,7 @@ const Settings = (props) => {
   const routes = settingsModules.map((m) => {
     const connect = connectFor(m.module, stripes.epics, stripes.logger);
     const Current = connect(m.getModule());
-    const moduleStripes = Object.assign({}, stripes, { connect });
+    const moduleStripes = stripes.clone({ connect });
 
     return (<Route
       path={`/settings${m.route}`}
