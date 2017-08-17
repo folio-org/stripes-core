@@ -28,6 +28,8 @@ export default function okapiReducer(state = {}, action) {
       return Object.assign({}, state, { translations: action.translations });
     case 'CHECK_SSO':
       return Object.assign({}, state, { ssoEnabled: action.ssoEnabled });
+    case 'OKAPI_READY':
+      return Object.assign({}, state, { okapiReady: true });
     default:
       return state;
   }
