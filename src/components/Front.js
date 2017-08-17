@@ -11,7 +11,7 @@ import Pluggable from '@folio/stripes-components/lib/Pluggable';
 
 import AddContext from '../AddContext';
 
-export const Front = ({ stripes }) => (
+const Front = ({ stripes }) => (
   <AddContext context={{ stripes }}>
     <Pluggable type="frontpage">
       <div>
