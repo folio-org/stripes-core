@@ -8,7 +8,7 @@ import Route from 'react-router-dom/Route';
 import Switch from 'react-router-dom/Switch';
 import { CookiesProvider } from 'react-cookie';
 import { HotKeys } from '@folio/stripes-components/lib/HotKeys';
-import { IntlProvider } from 'react-intl';
+import { IntlProvider, intlShape } from 'react-intl';
 
 import MainContainer from './components/MainContainer';
 import MainNav from './components/MainNav';
@@ -27,6 +27,21 @@ import { setLocale, setSinglePlugin, setBindings, setOkapiToken } from './okapiA
 import { loadTranslations } from './loginServices';
 
 const reducers = { ...initialReducers };
+
+class SetIntlIntoStripesObject extends Component {
+  static propTypes = {
+    stripes: PropTypes.object.isRequired,
+  };
+  static contextTypes = {
+    intl: intlShape.isRequired,
+  };
+  render() {
+    this.props.stripes.intl = this.context.intl;
+    // console.log('set stripes.intl to', this.props.stripes.intl);
+    return this.props.children;
+  }
+}
+
 
 class Root extends Component {
 
@@ -113,6 +128,7 @@ class Root extends Component {
 
     return (
       <IntlProvider locale={locale} key={locale} messages={translations}>
+       <SetIntlIntoStripesObject stripes={stripes}>
         <HotKeys keyMap={bindings} noWrapper>
           <Provider store={store}>
             <Router history={history}>
@@ -143,6 +159,7 @@ class Root extends Component {
             </Router>
           </Provider>
         </HotKeys>
+       </SetIntlIntoStripesObject>
       </IntlProvider>
     );
   }
