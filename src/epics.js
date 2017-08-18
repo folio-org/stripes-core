@@ -6,5 +6,6 @@ import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/take';
 
 import connectErrorEpic from './connectErrorEpic';
+import okapiReadyEpic from './okapiReadyEpic';
 
-export default configureEpics(connectErrorEpic);
+export default configureEpics(connectErrorEpic, okapiReadyEpic);

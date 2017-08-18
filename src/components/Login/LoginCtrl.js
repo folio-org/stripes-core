@@ -2,7 +2,7 @@ import React, { Component } from 'react'; // eslint-disable-line
 import PropTypes from 'prop-types';
 import { connect as reduxConnect } from 'react-redux'; // eslint-disable-line
 
-import { requestLogin, checkOkapiSession } from '../../loginServices';
+import { requestLogin } from '../../loginServices';
 import Login from './Login';
 
 class LoginCtrl extends Component {
@@ -34,10 +34,6 @@ class LoginCtrl extends Component {
     if (props.autoLogin && props.autoLogin.username) {
       this.handleSubmit(props.autoLogin);
     }
-  }
-
-  componentWillMount() {
-    checkOkapiSession(this.okapiUrl, this.store, this.tenant);
   }
 
   handleSubmit(data) {
