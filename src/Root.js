@@ -7,14 +7,14 @@ import { IntlProvider } from 'react-intl';
 
 import initialReducers from './initialReducers';
 import enhanceReducer from './enhanceReducer';
-import { setLocale, setSinglePlugin, setBindings, setOkapiToken } from './okapiActions';
+import { setSinglePlugin, setBindings, setOkapiToken } from './okapiActions';
 import { loadTranslations, checkOkapiSession } from './loginServices';
 import Stripes from './Stripes';
 import RootWithIntl from './RootWithIntl';
 
 class Root extends Component {
-  constructor() {
-    super(...arguments);
+  constructor(...args) {
+    super(...args);
     this.reducers = { ...initialReducers };
   }
 

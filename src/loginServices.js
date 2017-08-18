@@ -184,10 +184,9 @@ const isSSOEnabledDep = _.debounce(isSSOEnabled, 5000, { leading: true, trailing
 
 function processSSOLoginResponse(resp) {
   if (resp.status < 400) {
-
     resp.json().then((json) => {
       const form = document.getElementById('ssoForm');
-      if (json.bindingMethod == 'POST') {
+      if (json.bindingMethod === 'POST') {
         form.setAttribute('action', json.location);
         form.setAttribute('method', json.bindingMethod);
 
@@ -204,11 +203,9 @@ function processSSOLoginResponse(resp) {
         form.appendChild(relayState);
 
         form.submit();
-
       } else {
         window.open(json.location, '_self');
       }
-
     });
   }
 }
@@ -250,15 +247,15 @@ export function requestUserWithPerms(okapiUrl, store, tenant, token, userId) {
 }
 
 export function requestSSOLogin(okapiUrl, tenant) {
-  var stripesUrl = window.location.origin;
+  let stripesUrl = window.location.origin;
   if (!stripesUrl) {
-    stripesUrl = window.location.protocol + '//' + window.location.host;
+    stripesUrl = `${window.location.protocol}//${window.location.host}`;
   }
 
   fetch(`${okapiUrl}/saml/login`, {
     method: 'POST',
     headers: { 'X-Okapi-tenant': tenant, 'Content-Type': 'application/json' },
-    body: JSON.stringify({stripesUrl: stripesUrl}),
+    body: JSON.stringify({ stripesUrl }),
   })
   .then(resp => processSSOLoginResponse(resp));
 }
