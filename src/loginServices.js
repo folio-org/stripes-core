@@ -168,7 +168,7 @@ function validateUser(okapiUrl, store, tenant, session) {
 const validateUserDep = _.debounce(validateUser, 5000, { leading: true, trailing: false });
 
 function isSSOEnabled(okapiUrl, store, tenant) {
-  fetch(`${okapiUrl}/saml/check`, { headers: { 'X-Okapi-Tenant': tenant } })
+  fetch(`${okapiUrl}/saml/check`, { headers: { 'X-Okapi-Tenant': tenant, Accept: 'application/json' } })
   .then((response) => {
     if (response.status >= 400) {
       store.dispatch(checkSSO(false));
@@ -181,6 +181,37 @@ function isSSOEnabled(okapiUrl, store, tenant) {
 }
 
 const isSSOEnabledDep = _.debounce(isSSOEnabled, 5000, { leading: true, trailing: false });
+
+function processSSOLoginResponse(resp) {
+  if (resp.status < 400) {
+
+    resp.json().then((json) => {
+      const form = document.getElementById('ssoForm');
+      if (json.bindingMethod == 'POST') {
+        form.setAttribute('action', json.location);
+        form.setAttribute('method', json.bindingMethod);
+
+        const samlRequest = document.createElement('input');
+        samlRequest.setAttribute('type', 'hidden');
+        samlRequest.setAttribute('name', 'SAMLRequest');
+        samlRequest.setAttribute('value', json.samlRequest);
+        form.appendChild(samlRequest);
+
+        const relayState = document.createElement('input');
+        relayState.setAttribute('type', 'hidden');
+        relayState.setAttribute('name', 'RelayState');
+        relayState.setAttribute('value', json.relayState);
+        form.appendChild(relayState);
+
+        form.submit();
+
+      } else {
+        window.open(json.location, '_self');
+      }
+
+    });
+  }
+}
 
 function processOkapiSession(okapiUrl, store, tenant, resp) {
   const token = resp.headers.get('X-Okapi-Token');
@@ -216,4 +247,18 @@ export function requestUserWithPerms(okapiUrl, store, tenant, token, userId) {
   fetch(`${okapiUrl}/bl-users/by-id/${userId}?expandPermissions=true&fullPermissions=true`,
     { headers: getHeaders(tenant, token) })
   .then(resp => processOkapiSession(okapiUrl, store, tenant, resp));
+}
+
+export function requestSSOLogin(okapiUrl, tenant) {
+  var stripesUrl = window.location.origin;
+  if (!stripesUrl) {
+    stripesUrl = window.location.protocol + '//' + window.location.host;
+  }
+
+  fetch(`${okapiUrl}/saml/login`, {
+    method: 'POST',
+    headers: { 'X-Okapi-tenant': tenant, 'Content-Type': 'application/json' },
+    body: JSON.stringify({stripesUrl: stripesUrl}),
+  })
+  .then(resp => processSSOLoginResponse(resp));
 }
