@@ -2,7 +2,7 @@ import React, { Component } from 'react'; // eslint-disable-line
 import PropTypes from 'prop-types';
 import { connect as reduxConnect } from 'react-redux'; // eslint-disable-line
 
-import { requestLogin, checkOkapiSession } from '../../loginServices';
+import { requestLogin, requestSSOLogin } from '../../loginServices';
 import Login from './Login';
 
 class LoginCtrl extends Component {
@@ -36,10 +36,6 @@ class LoginCtrl extends Component {
     }
   }
 
-  componentWillMount() {
-    checkOkapiSession(this.okapiUrl, this.store, this.tenant);
-  }
-
   handleSubmit(data) {
     requestLogin(this.okapiUrl, this.store, this.tenant, data).then((response) => {
       if (response.status >= 400) {
@@ -50,7 +46,7 @@ class LoginCtrl extends Component {
   }
 
   handleSSOLogin() {
-    window.open(`${this.okapiUrl}/_/invoke/tenant/${this.tenant}/saml/login`, '_self');
+    requestSSOLogin(this.okapiUrl, this.tenant);
   }
 
   render() {

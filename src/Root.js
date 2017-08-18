@@ -8,27 +8,35 @@ import { IntlProvider } from 'react-intl';
 import initialReducers from './initialReducers';
 import enhanceReducer from './enhanceReducer';
 import { setLocale, setSinglePlugin, setBindings, setOkapiToken } from './okapiActions';
-import { loadTranslations } from './loginServices';
+import { loadTranslations, checkOkapiSession } from './loginServices';
 import Stripes from './Stripes';
 import RootWithIntl from './RootWithIntl';
 
-const reducers = { ...initialReducers };
-
 class Root extends Component {
+  constructor() {
+    super(...arguments);
+    this.reducers = { ...initialReducers };
+  }
 
   getChildContext() {
     return { addReducer: this.addReducer.bind(this) };
   }
 
   componentWillMount() {
+    const { okapi, store } = this.props;
+    checkOkapiSession(okapi.url, store, okapi.tenant);
     // TODO: remove this after we load locale and translations at start from a public endpoint
     loadTranslations(this.props.store, this.props.locale);
   }
 
+  shouldComponentUpdate(nextProps) {
+    return nextProps.okapiReady;
+  }
+
   addReducer = (key, reducer) => {
-    if (reducers[key] === undefined) {
-      reducers[key] = reducer;
-      this.props.store.replaceReducer(enhanceReducer(combineReducers({ ...reducers })));
+    if (this.reducers[key] === undefined) {
+      this.reducers[key] = reducer;
+      this.props.store.replaceReducer(enhanceReducer(combineReducers({ ...this.reducers })));
       return true;
     }
     return false;
@@ -114,6 +122,7 @@ Root.defaultProps = {
   history: createBrowserHistory(),
   // TODO: remove after locale is accessible from a global config / public url
   locale: 'en-US',
+  okapiReady: false,
 };
 
 function mapStateToProps(state) {
@@ -126,6 +135,7 @@ function mapStateToProps(state) {
     plugins: state.okapi.plugins,
     bindings: state.okapi.bindings,
     discovery: state.discovery,
+    okapiReady: state.okapi.okapiReady,
   };
 }
 
