@@ -23,10 +23,10 @@ class Root extends Component {
   }
 
   componentWillMount() {
-    const { okapi, store } = this.props;
+    const { okapi, store, locale } = this.props;
     checkOkapiSession(okapi.url, store, okapi.tenant);
     // TODO: remove this after we load locale and translations at start from a public endpoint
-    loadTranslations(this.props.store, this.props.locale);
+    loadTranslations(store, locale);
   }
 
   shouldComponentUpdate(nextProps) {
