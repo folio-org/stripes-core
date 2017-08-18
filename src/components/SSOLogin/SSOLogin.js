@@ -11,11 +11,11 @@ function SSOLogin(props) {
   } = props;
 
   return (
-    <form>
-      <div className={css.slabStack}>
-        <button type="button" className={css.slabButton} onClick={handleSSOLogin}>Login via SSO</button>
-      </div>
-    </form>
+    <div className={css.slabStack}>
+      <button type="button" className={css.slabButton} onClick={handleSSOLogin}>Login via SSO</button>
+      <form id="ssoForm">
+      </form>
+    </div>
   );
 }
 
