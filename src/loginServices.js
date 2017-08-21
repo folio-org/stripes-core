@@ -240,8 +240,8 @@ export function requestLogin(okapiUrl, store, tenant, data) {
   .then(resp => processOkapiSession(okapiUrl, store, tenant, resp));
 }
 
-export function requestUserWithPerms(okapiUrl, store, tenant, token, userId) {
-  fetch(`${okapiUrl}/bl-users/by-id/${userId}?expandPermissions=true&fullPermissions=true`,
+export function requestUserWithPerms(okapiUrl, store, tenant, token) {
+  fetch(`${okapiUrl}/bl-users/_self?expandPermissions=true&fullPermissions=true`,
     { headers: getHeaders(tenant, token) })
   .then(resp => processOkapiSession(okapiUrl, store, tenant, resp));
 }
