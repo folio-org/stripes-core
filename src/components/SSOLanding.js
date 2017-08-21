@@ -21,10 +21,9 @@ class SSOLanding extends Component {
 
   componentWillMount() {
     const token = this.getToken();
-    const userId = this.getUserId();
 
-    if (token && userId) {
-      requestUserWithPermsDeb(this.okapiUrl, this.store, this.tenant, token, userId);
+    if (token) {
+      requestUserWithPermsDeb(this.okapiUrl, this.store, this.tenant, token);
     }
   }
 
@@ -40,27 +39,17 @@ class SSOLanding extends Component {
     return cookies.get('ssoToken') || params.ssoToken;
   }
 
-  getUserId() {
-    const params = this.getParams();
-    const cookies = this.props.cookies;
-    return cookies.get('userId') || params.userId;
-  }
-
   render() {
     const params = this.getParams();
     const token = this.getToken();
-    const userId = this.getUserId();
 
     if (!token) {
       return <div>No <tt>ssoToken</tt> cookie or query parameter</div>;
-    } else if (!userId) {
-      return <div>No <tt>UserId</tt> cookie or query parameter</div>;
     }
 
     return (
       <div>
         <p>Logged in with token <tt>{token}</tt> from {params.ssoToken ? 'param' : 'cookie'}</p>
-        <p>Logged in with user id <tt>{userId}</tt> from {params.userId ? 'param' : 'cookie'}</p>
       </div>
     );
   }
