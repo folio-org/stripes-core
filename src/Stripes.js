@@ -55,6 +55,13 @@ class Stripes {
   clone(extraProps) {
     return new Stripes(Object.assign({}, this, extraProps));
   }
+
+  runModule(module, embeded) {
+    //Now a module knows if it is running as an embeded module
+    this.embeded = embeded ? embeded : false;
+    return this.connect(module);
+  }
+
 }
 
 export default Stripes;
