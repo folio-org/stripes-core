@@ -2,6 +2,8 @@
 
 ## 2.7.0 (IN PROGRESS)
 
+* `stripes.runModule` simple implmentation wraps stripes connect and takes embeded flag. (STRIPES-464).
+
 * `stripes.setLocale` function re-loads translations. Fixes STCOR-53.
 * Optimize `<Root>` render. Fixes STCORE-58.
 
