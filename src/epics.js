@@ -9,8 +9,6 @@ import connectErrorEpic from './connectErrorEpic';
 import okapiReadyEpic from './okapiReadyEpic';
 
 const epics = configureEpics();
-
 epics.add(connectErrorEpic);
-epics.add(okapiReadyEpic);
 
 export default epics;

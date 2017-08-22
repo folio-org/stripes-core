@@ -18,6 +18,7 @@ import {
   authFailure,
   clearAuthFailure,
   checkSSO,
+  setOkapiReady,
 } from './okapiActions';
 
 function getHeaders(tenant, token) {
@@ -116,6 +117,7 @@ export function getBindings(okapiUrl, store, tenant) {
         store.dispatch(setBindings(bindings));
       });
     }
+    store.dispatch(setOkapiReady());
   });
 }
 
@@ -125,6 +127,7 @@ function clearOkapiSession(store) {
   localforage.removeItem('okapiSess');
   store.dispatch(reset('login'));
   store.dispatch(authFailure());
+  store.dispatch(setOkapiReady());
 }
 
 function createOkapiSession(okapiUrl, store, tenant, token, data) {
@@ -177,6 +180,7 @@ function isSSOEnabled(okapiUrl, store, tenant) {
         store.dispatch(checkSSO(json.active));
       });
     }
+    store.dispatch(setOkapiReady());
   });
 }
 

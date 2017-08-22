@@ -86,6 +86,12 @@ function checkSSO(ssoEnabled) {
   };
 }
 
+function setOkapiReady() {
+  return {
+    type: 'OKAPI_READY',
+  };
+}
+
 export { setCurrentUser,
          clearCurrentUser,
          setCurrentPerms,
@@ -98,4 +104,5 @@ export { setCurrentUser,
          authFailure,
          clearAuthFailure,
          setTranslations,
-         checkSSO };
+         checkSSO,
+         setOkapiReady };
