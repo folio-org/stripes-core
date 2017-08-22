@@ -184,10 +184,9 @@ const isSSOEnabledDep = _.debounce(isSSOEnabled, 5000, { leading: true, trailing
 
 function processSSOLoginResponse(resp) {
   if (resp.status < 400) {
-
     resp.json().then((json) => {
       const form = document.getElementById('ssoForm');
-      if (json.bindingMethod == 'POST') {
+      if (json.bindingMethod === 'POST') {
         form.setAttribute('action', json.location);
         form.setAttribute('method', json.bindingMethod);
 
@@ -204,11 +203,9 @@ function processSSOLoginResponse(resp) {
         form.appendChild(relayState);
 
         form.submit();
-
       } else {
         window.open(json.location, '_self');
       }
-
     });
   }
 }
@@ -243,22 +240,22 @@ export function requestLogin(okapiUrl, store, tenant, data) {
   .then(resp => processOkapiSession(okapiUrl, store, tenant, resp));
 }
 
-export function requestUserWithPerms(okapiUrl, store, tenant, token, userId) {
-  fetch(`${okapiUrl}/bl-users/by-id/${userId}?expandPermissions=true&fullPermissions=true`,
+export function requestUserWithPerms(okapiUrl, store, tenant, token) {
+  fetch(`${okapiUrl}/bl-users/_self?expandPermissions=true&fullPermissions=true`,
     { headers: getHeaders(tenant, token) })
   .then(resp => processOkapiSession(okapiUrl, store, tenant, resp));
 }
 
 export function requestSSOLogin(okapiUrl, tenant) {
-  var stripesUrl = window.location.origin;
+  let stripesUrl = window.location.origin;
   if (!stripesUrl) {
-    stripesUrl = window.location.protocol + '//' + window.location.host;
+    stripesUrl = `${window.location.protocol}//${window.location.host}`;
   }
 
   fetch(`${okapiUrl}/saml/login`, {
     method: 'POST',
     headers: { 'X-Okapi-tenant': tenant, 'Content-Type': 'application/json' },
-    body: JSON.stringify({stripesUrl: stripesUrl}),
+    body: JSON.stringify({ stripesUrl }),
   })
   .then(resp => processSSOLoginResponse(resp));
 }
