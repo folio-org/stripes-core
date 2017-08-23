@@ -256,6 +256,8 @@ export function requestSSOLogin(okapiUrl, tenant) {
     stripesUrl = `${window.location.protocol}//${window.location.host}`;
   }
 
+  stripesUrl += window.location.pathname;
+
   fetch(`${okapiUrl}/saml/login`, {
     method: 'POST',
     headers: { 'X-Okapi-tenant': tenant, 'Content-Type': 'application/json' },
