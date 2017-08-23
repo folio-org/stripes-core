@@ -251,12 +251,7 @@ export function requestUserWithPerms(okapiUrl, store, tenant, token) {
 }
 
 export function requestSSOLogin(okapiUrl, tenant) {
-  let stripesUrl = window.location.origin;
-  if (!stripesUrl) {
-    stripesUrl = `${window.location.protocol}//${window.location.host}`;
-  }
-
-  stripesUrl += window.location.pathname;
+  const stripesUrl = (window.location.origin || `${window.location.protocol}//${window.location.host}`) + window.location.pathname;
 
   fetch(`${okapiUrl}/saml/login`, {
     method: 'POST',
