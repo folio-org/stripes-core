@@ -156,6 +156,7 @@ function validateUser(okapiUrl, store, tenant, session) {
     if (resp.status >= 400) {
       store.dispatch(clearCurrentUser());
       store.dispatch(clearOkapiToken());
+      store.dispatch(setOkapiReady());
       localforage.removeItem('okapiSess');
     } else {
       store.dispatch(setOkapiToken(session.token));
