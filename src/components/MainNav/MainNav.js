@@ -122,6 +122,7 @@ class MainNav extends Component {
       const name = entry.module.replace(/^@[a-z0-9_]+\//, '');
       const perm = `module.${name}.enabled`;
       const navId = `clickable-${name}-module`;
+
       if (!stripes.hasPerm(perm)) return null;
 
       return (<NavButton id={navId} selected={pathname.startsWith(entry.route)} href={this.lastVisited[name] || entry.home || entry.route} title={entry.displayName} key={entry.route}>
@@ -144,13 +145,13 @@ class MainNav extends Component {
               <polygon style={{ fill: '#999' }} points="13 24.8 1.2 13.5 3.2 11.3 13 20.6 22.8 11.3 24.8 13.5 " />
             </svg>
           </a>
-          <NavButton href="/">
+          <NavButton id="clickable-home" href="/">
             <NavIcon color="#fdae35" />
             <span className={css.brandingLabel} style={{ fontSize: '22px', lineHeight: '1rem' }}>FOLIO</span>
           </NavButton>
           {
             !stripes.hasPerm('settings.enabled') ? '' : (
-              <NavButton selected={pathname.startsWith('/settings')} href={this.lastVisited.x_settings || '/settings'}>
+              <NavButton id="clickable-settings" selected={pathname.startsWith('/settings')} href={this.lastVisited.x_settings || '/settings'}>
                 <NavIcon color="#7d3fb3" />
                 <span>Settings</span>
               </NavButton>
