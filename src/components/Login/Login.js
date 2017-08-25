@@ -31,10 +31,10 @@ function Login(props) {
         <form>
           <div className={css.slabStack}>
             <div className={css.majorSlab}>
-              <Field className={css.loginInput} name="username" type="text" component="input" placeholder="Username" />
+              <Field id="input-username" className={css.loginInput} name="username" type="text" component="input" placeholder="Username" />
             </div>
             <div className={css.minorSlab}>
-              <Field className={css.loginInput} name="password" type="password" component="input" placeholder="Password" />
+              <Field id="input-password" className={css.loginInput} name="password" type="password" component="input" placeholder="Password" />
             </div>
             <button id="clickable-login" type="submit" className={css.slabButton} onClick={handleSubmit} disabled={submitting || pristine}>
             Log in
