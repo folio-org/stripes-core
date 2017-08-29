@@ -28,6 +28,7 @@ for i in `echo '
     ui-items
     ui-checkin
     ui-checkout
+    ui-circulation
     ui-organization
     ui-developer
     ui-plugin-example
