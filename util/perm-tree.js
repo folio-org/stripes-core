@@ -6,7 +6,7 @@
 // parent.)
 //
 // Must be invoked as
-//      $ perm-tree.js available-permissions.json
+//      $ node perm-tree.js available-permissions.json
 // Where available-permissions.json is a file containing the result of
 // a WSAPI call such as URL:http://localhost:9130/perms/permissions?length=1000
 
