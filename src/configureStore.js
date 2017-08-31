@@ -3,9 +3,8 @@ import thunk from 'redux-thunk';
 import { createLogger } from 'redux-logger';
 import initialReducers from './initialReducers';
 import enhanceReducer from './enhanceReducer';
-import epics from './epics';
 
-export default function configureStore(initialState, stripesLogger) {
+export default function configureStore(initialState, stripesLogger, epics) {
   const logger = createLogger({
     // Show logging unless explicitly set false
     predicate: () => stripesLogger.hasCategory('redux'),

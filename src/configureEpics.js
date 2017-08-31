@@ -1,4 +1,4 @@
-import { configureEpics } from '@folio/stripes-redux';
+import { configureEpics as _configureEpics } from '@folio/stripes-redux';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/throttleTime';
@@ -7,7 +7,6 @@ import 'rxjs/add/operator/take';
 
 import connectErrorEpic from './connectErrorEpic';
 
-const epics = configureEpics();
-epics.add(connectErrorEpic);
-
-export default epics;
+export default function configureEpics() {
+  return _configureEpics(connectErrorEpic);
+}
