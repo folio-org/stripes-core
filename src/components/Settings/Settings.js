@@ -9,6 +9,7 @@ import { modules } from 'stripes-loader'; // eslint-disable-line
 import { withRouter } from 'react-router';
 
 import AddContext from '../../AddContext';
+import { stripesShape } from '../../Stripes';
 
 import NavList from './NavList';
 import NavListSection from './NavListSection';
@@ -22,7 +23,9 @@ const settingsModules = [].concat(
 
 const Settings = (props) => {
   const stripes = props.stripes;
-  const navLinks = _.sortBy(settingsModules, ['displayName']).map(m => (
+  const navLinks = settingsModules.sort(
+    (a, b) => a.displayName > b.displayName
+  ).map(m => (
     <Link
       key={m.route}
       to={`/settings${m.route}`}
@@ -71,11 +74,7 @@ const Settings = (props) => {
 };
 
 Settings.propTypes = {
-  stripes: PropTypes.shape({
-    logger: PropTypes.shape({
-      log: PropTypes.func.isRequired,
-    }).isRequired,
-  }).isRequired,
+  stripes: stripesShape.isRequired,
   location: PropTypes.shape({
     pathname: PropTypes.string,
   }).isRequired,
