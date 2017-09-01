@@ -23,7 +23,7 @@ const settingsModules = [].concat(
 const Settings = (props) => {
   const stripes = props.stripes;
   const navLinks = settingsModules.sort(
-    (x, y) => x.displayName > y.displayName
+    (x, y) => x.displayName > y.displayName,
   ).map(m => (
     <Link
       key={m.route}
