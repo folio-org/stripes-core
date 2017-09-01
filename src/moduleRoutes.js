@@ -24,7 +24,7 @@ function getModuleRoutes(stripes) {
         key={module.route}
         render={props =>
           <AddContext context={{ stripes: moduleStripes }}>
-            <span id={name+'-module-display'} data-module={module.module} data-version={module.version} >
+            <span id={`${name}-module-display`} data-module={module.module} data-version={module.version} >
               <Current {...props} connect={connect} stripes={moduleStripes} />
             </span>
           </AddContext>
