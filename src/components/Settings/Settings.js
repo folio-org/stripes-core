@@ -24,6 +24,8 @@ const Settings = (props) => {
   const stripes = props.stripes;
   const navLinks = settingsModules.sort(
     (x, y) => x.displayName > y.displayName,
+  ).filter(
+    x => stripes.hasPerm(`settings.${x.module.replace(/^@folio\//, '')}.enabled`),
   ).map(m => (
     <Link
       key={m.route}
@@ -33,7 +35,9 @@ const Settings = (props) => {
     </Link>
   ));
 
-  const routes = settingsModules.map((m) => {
+  const routes = settingsModules.filter(
+    x => stripes.hasPerm(`settings.${x.module.replace(/^@folio\//, '')}.enabled`),
+  ).map((m) => {
     const connect = connectFor(m.module, stripes.epics, stripes.logger);
     const Current = connect(m.getModule());
     const moduleStripes = stripes.clone({ connect });

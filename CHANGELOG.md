@@ -6,6 +6,7 @@
 * Optimize `<Root>` render. Fixes STCORE-58.
 * Avoid use of epics in detecting Okapi readiness. Fixes STCOR-63.
 * Change default logging categories to `core,action,xhr`. Fixes STCOR-71.
+* Settings menu only displays a module's entry if tge relevant permission exists. Fixes STCOR-72.
 
 ## [2.6.1](https://github.com/folio-org/stripes-core/tree/v2.6.1) (2017-08-17)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.6.0...v2.6.1)
