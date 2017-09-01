@@ -1,12 +1,14 @@
 # Change history for stripes-core
 
-## 2.7.0 (IN PROGRESS)
+## [2.7.0](https://github.com/folio-org/stripes-core/tree/v2.7.0) (2017-09-01)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.6.1...v2.7.0)
 
 * `stripes.setLocale` function re-loads translations. Fixes STCOR-53.
 * Optimize `<Root>` render. Fixes STCORE-58.
 * Avoid use of epics in detecting Okapi readiness. Fixes STCOR-63.
 * Change default logging categories to `core,action,xhr`. Fixes STCOR-71.
 * Settings menu only displays a module's entry if the relevant permission exists. Fixes STCOR-72.
+* Upgrade dependencies: stripes-components 1.7.0 and stripes-connect 2.7.0.
 
 ## [2.6.1](https://github.com/folio-org/stripes-core/tree/v2.6.1) (2017-08-17)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.6.0...v2.6.1)
