@@ -25,6 +25,17 @@ const cachePlugin = new HardSourceWebpackPlugin({
   },
 });
 
+// Display webpack output to the console
+function processStats(err, stats) {
+  if (err) {
+    console.error(err);
+  }
+  console.log(stats.toString({
+    chunks: false,
+    colors: true
+  }));
+}
+
 commander
   .command('dev')
   .option('--port [port]', 'Port')
@@ -93,7 +104,9 @@ commander
     }));
     config.output.path = path.resolve(outputPath);
     const compiler = webpack(config);
-    compiler.run(function (err, stats) { });
+    compiler.run(function (err, stats) { 
+      processStats(err, stats);
+    });
   });
 
 commander.parse(process.argv);
