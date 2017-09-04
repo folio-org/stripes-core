@@ -1,3 +1,7 @@
+## 2.8.0 (IN PROGRESS)
+
+* Add developer's-guide section on t18n functionality. Fixes STCOR-56
+
 # Change history for stripes-core
 
 ## [2.7.0](https://github.com/folio-org/stripes-core/tree/v2.7.0) (2017-09-01)
