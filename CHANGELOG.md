@@ -1,6 +1,7 @@
 ## 2.8.0 (IN PROGRESS)
 
 * Add developer's-guide section on t18n functionality. Fixes STCOR-56
+* Add tag with version info for integration test reports. STCOR-74.
 
 # Change history for stripes-core
 
