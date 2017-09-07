@@ -4,6 +4,14 @@
   "env": {
     "browser": true
   },
+  "parserOptions": {
+    "ecmaVersion": "2017",
+  },
+  "settings": {
+    "react": {
+      "version": "15.6.1"
+    },
+  },
   "rules": {
     "react/jsx-filename-extension": "off",
     "react/require-default-props": "off",
@@ -12,6 +20,7 @@
     "no-unused-vars": [ 1, { argsIgnorePattern: "^_" } ],
     "curly": "off",
     "no-plusplus": "off",
-    "no-continue": "off"
+    "no-continue": "off",
+    "jsx-a11y/href-no-hash": "off"
   }
 }
