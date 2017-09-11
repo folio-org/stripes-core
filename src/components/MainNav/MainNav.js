@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Dropdown } from 'react-bootstrap';
+import { Dropdown } from '@folio/stripes-components/lib/Dropdown';
 import { withRouter } from 'react-router';
 import localforage from 'localforage';
 
@@ -179,9 +179,9 @@ class MainNav extends Component {
             <NavDivider md="hide" />
           </NavGroup>
           <NavGroup className={css.smallAlignRight}>
-            <Dropdown open={this.state.userMenuOpen} id="UserMenuDropDown" onToggle={this.toggleUserMenu} pullRight >
-              <NavButton bsRole="toggle" title="User Menu" aria-haspopup="true" aria-expanded={this.state.userMenuOpen}><NavIcon icon={userIcon} /></NavButton>
-              <NavDropdownMenu bsRole="menu" onToggle={this.toggleUserMenu} aria-label="User Menu">{userDD}</NavDropdownMenu>
+            <Dropdown open={this.state ? this.state.userMenuOpen : false} id="UserMenuDropDown" onToggle={this.toggleUserMenu} pullRight >
+              <NavButton data-role="toggle" title="User Menu" aria-haspopup="true" aria-expanded={this.state.userMenuOpen}><NavIcon icon={userIcon} /></NavButton>
+              <NavDropdownMenu data-role="menu" onToggle={this.toggleUserMenu} aria-label="User Menu">{userDD}</NavDropdownMenu>
             </Dropdown>
           </NavGroup>
         </NavGroup>
