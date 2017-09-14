@@ -20,6 +20,7 @@ module.exports = {
   ],
   resolve: {
     alias: {
+      'stripes-loader': 'stripes-config',
       'react': specificReact,
     }
   },
