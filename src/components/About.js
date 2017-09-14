@@ -1,10 +1,10 @@
 import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
-import { modules as uiModules } from 'stripes-loader'; // eslint-disable-line
+import { modules as uiModules } from 'stripes-config'; // eslint-disable-line
 
 import stripesCore from '@folio/stripes-core/package.json'; // eslint-disable-line
-import stripesLoader from '@folio/stripes-loader/package.json';
+import stripesWebpackPlugin from '@folio/stripes-webpack-plugin/package.json';
 import stripesConnect from '@folio/stripes-connect/package.json';
 import stripesComponents from '@folio/stripes-components/package.json';
 import stripesLogger from '@folio/stripes-logger/package.json';
@@ -70,14 +70,14 @@ const About = (props) => {
         <h4>Foundation</h4>
         <span id="platform-versions"
            data-stripes-core={stripesCore.version}
-           data-stripes-loader={stripesLoader.version}
+           data-stripes-webpack-plugin={stripesWebpackPlugin.version}
            data-stripes-connect={stripesConnect.version}
            data-stripes-components={stripesComponents.version}
            data-okapi-version={_.get(props.stripes, ['discovery', 'okapi']) || 'unknown'}
            data-okapi-url={_.get(props.stripes, ['okapi', 'url']) || 'unknown'} />
         <ul>
           <li key="stripes-core">stripes-core {stripesCore.version}</li>
-          <li key="stripes-loader">stripes-loader {stripesLoader.version}</li>
+          <li key="stripes-webpack-plugin">stripes-webpack-plugin {stripesWebpackPlugin.version}</li>
           <li key="stripes-connect">stripes-connect {stripesConnect.version}</li>
           <li key="stripes-components">stripes-components {stripesComponents.version}</li>
           <li key="stripes-logger">stripes-logger {stripesLogger.version}</li>

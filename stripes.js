@@ -4,7 +4,7 @@ const commander = require('commander');
 const webpack = require('webpack');
 const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 const path = require('path');
-
+const StripesPlugin = require('@folio/stripes-webpack-plugin').StripesPlugin;
 const devConfig = require('./webpack.config.cli.dev');
 
 const cwd = path.resolve();
@@ -50,12 +50,10 @@ commander
 
     const config = Object.assign({}, devConfig);
     const stripesLoaderConfig = require(path.resolve(loaderConfigFile));
+    config.plugins.push(new StripesPlugin(stripesLoaderConfig));
     // Look for modules in node_modules, then the platform, then stripes-core
     config.resolve.modules = ['node_modules', cwdModules, coreModules];
     config.resolveLoader = { modules: ['node_modules', cwdModules, coreModules] };
-    config.plugins.push(new webpack.LoaderOptionsPlugin({
-      options: { stripesLoader: stripesLoaderConfig },
-    }));
     if (options.cache) config.plugins.push(cachePlugin);
     if (options.devtool) config.devtool = options.devtool;
     const compiler = webpack(config);
@@ -97,11 +95,9 @@ commander
   .action(function (loaderConfigFile, outputPath) {
     const config = require('./webpack.config.cli.prod');
     const stripesLoaderConfig = require(path.resolve(loaderConfigFile));
+    config.plugins.push(new StripesPlugin(stripesLoaderConfig));
     config.resolve.modules = ['node_modules', cwdModules];
     config.resolveLoader = { modules: ['node_modules', cwdModules] };
-    config.plugins.push(new webpack.LoaderOptionsPlugin({
-      options: { stripesLoader: stripesLoaderConfig },
-    }));
     config.output.path = path.resolve(outputPath);
     const compiler = webpack(config);
     compiler.run(function (err, stats) { 

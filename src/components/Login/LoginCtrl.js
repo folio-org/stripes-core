@@ -26,7 +26,7 @@ class LoginCtrl extends Component {
     this.store = context.store;
     this.router = context.router;
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.sys = require('stripes-loader'); // eslint-disable-line
+    this.sys = require('stripes-config'); // eslint-disable-line
     this.okapiUrl = this.sys.okapi.url;
     this.tenant = this.sys.okapi.tenant;
     this.initialValues = { username: '', password: '' };

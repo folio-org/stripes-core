@@ -14,7 +14,7 @@ class SSOLanding extends Component {
     super(props, context);
 
     this.store = context.store;
-    this.sys = require('stripes-loader'); // eslint-disable-line
+    this.sys = require('stripes-config'); // eslint-disable-line
     this.okapiUrl = this.sys.okapi.url;
     this.tenant = this.sys.okapi.tenant;
   }

@@ -4,7 +4,7 @@ import { Dropdown } from 'react-bootstrap';
 import { withRouter } from 'react-router';
 import localforage from 'localforage';
 
-import { modules } from 'stripes-loader'; // eslint-disable-line
+import { modules } from 'stripes-config'; // eslint-disable-line
 
 import { clearOkapiToken, clearCurrentUser } from '../../okapiActions';
 import { resetStore } from '../../mainActions';

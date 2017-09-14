@@ -48,9 +48,9 @@
   "dependencies": {
     "@folio/stripes-components": "^1.6.0",
     "@folio/stripes-connect": "^2.7.0",
-    "@folio/stripes-loader": "^0.0.2",
     "@folio/stripes-logger": "^0.0.2",
     "@folio/stripes-redux": "^2.0.0",
+    "@folio/stripes-webpack-plugin": "link:../stripes-webpack-plugin",
     "autoprefixer": "^7.1.1",
     "babel-core": "^6.23.1",
     "babel-eslint": "^7.0.0",

@@ -1,7 +1,7 @@
 import React from 'react';
 import Route from 'react-router-dom/Route';
 import { connectFor } from '@folio/stripes-connect';
-import { modules } from 'stripes-loader'; // eslint-disable-line
+import { modules } from 'stripes-config'; // eslint-disable-line
 import AddContext from './AddContext';
 
 if (!Array.isArray(modules.app) && modules.length < 0) {

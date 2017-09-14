@@ -3,7 +3,7 @@ import 'isomorphic-fetch';
 import localforage from 'localforage';
 import { reset } from 'redux-form';
 import { addLocaleData } from 'react-intl';
-import { modules } from 'stripes-loader'; // eslint-disable-line
+import { modules } from 'stripes-config'; // eslint-disable-line
 
 import {
   setCurrentUser,
