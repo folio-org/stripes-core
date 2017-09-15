@@ -5,6 +5,7 @@ import css from './NavGroup.css';
 const propTypes = {
   children: PropTypes.node.isRequired,
   className: PropTypes.string, // eslint-disable-line
+  md: PropTypes.string,
 };
 
 function NavGroup(props) {

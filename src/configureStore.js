@@ -4,7 +4,7 @@ import { createLogger } from 'redux-logger';
 import initialReducers from './initialReducers';
 import enhanceReducer from './enhanceReducer';
 
-const enhanceMiddleware = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const enhanceMiddleware = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose; // eslint-disable-line no-underscore-dangle
 
 export default function configureStore(initialState, stripesLogger, epics) {
   const logger = createLogger({

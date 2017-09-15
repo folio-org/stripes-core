@@ -68,13 +68,15 @@ const About = (props) => {
     <Paneset>
       <Pane defaultWidth="30%" paneTitle="User interface">
         <h4>Foundation</h4>
-        <span id="platform-versions"
-           data-stripes-core={stripesCore.version}
-           data-stripes-loader={stripesLoader.version}
-           data-stripes-connect={stripesConnect.version}
-           data-stripes-components={stripesComponents.version}
-           data-okapi-version={_.get(props.stripes, ['discovery', 'okapi']) || 'unknown'}
-           data-okapi-url={_.get(props.stripes, ['okapi', 'url']) || 'unknown'} />
+        <span
+          id="platform-versions"
+          data-stripes-core={stripesCore.version}
+          data-stripes-loader={stripesLoader.version}
+          data-stripes-connect={stripesConnect.version}
+          data-stripes-components={stripesComponents.version}
+          data-okapi-version={_.get(props.stripes, ['discovery', 'okapi']) || 'unknown'}
+          data-okapi-url={_.get(props.stripes, ['okapi', 'url']) || 'unknown'}
+        />
         <ul>
           <li key="stripes-core">stripes-core {stripesCore.version}</li>
           <li key="stripes-loader">stripes-loader {stripesLoader.version}</li>
