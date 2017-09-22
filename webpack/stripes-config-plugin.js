@@ -5,6 +5,9 @@ const _ = require('lodash');
 const VirtualModulesPlugin = require('webpack-virtual-modules');
 const serialize = require('serialize-javascript');
 
+// This webpack plugin generates a virtual module containing the stripes configuration
+// To access this configuration simply import 'stripes-config' within your JavaScript:
+//   import { okapi, config, modules } from 'stripes-config';
 module.exports = class StripesConfigPlugin {
   constructor(options) {
     assert(_.isObject(options.modules), 'stripes-config-plugin was not provided a "modules" object for enabling stripes modules');
