@@ -41,10 +41,10 @@
     "eslint-plugin-import": "^2.0.1",
     "eslint-plugin-jsx-a11y": "^4.0.0",
     "eslint-plugin-react": "^6.4.1",
-    "exval": "^0.2.0",
     "mocha": "^3.1.2",
     "mock-require": "^2.0.1",
     "react-addons-test-utils": "^15.3.2",
+    "serialize-javascript": "^1.4.0",
     "webpack-virtual-modules": "^0.1.8"
   },
   "dependencies": {

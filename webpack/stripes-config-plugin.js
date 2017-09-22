@@ -3,12 +3,7 @@ const path = require('path');
 const assert = require('assert');
 const _ = require('lodash');
 const VirtualModulesPlugin = require('webpack-virtual-modules');
-
-// TODO find a simpler/more robust serialisation tool to do "JSON.stringify()
-// that leaves functions bare so eval() can regurgitate them eg. when used as
-// a Webpack loader"
-const Exval = require('exval');
-const exval = new Exval();
+const serialize = require('serialize-javascript');
 
 module.exports = class StripesConfigPlugin {
   constructor(options) {
@@ -23,7 +18,7 @@ module.exports = class StripesConfigPlugin {
 
     // Create a virtual module for Webpack to include in the build
     compiler.apply(new VirtualModulesPlugin({
-      'node_modules/stripes-config.js': `module.exports = ${exval.stringify(mergedConfig)}`
+      'node_modules/stripes-config.js': `module.exports = ${serialize(mergedConfig, {space: 2})}`
     }));
   }
 }
