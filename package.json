@@ -41,16 +41,17 @@
     "eslint-plugin-import": "^2.0.1",
     "eslint-plugin-jsx-a11y": "^4.0.0",
     "eslint-plugin-react": "^6.4.1",
+    "exval": "^0.2.0",
     "mocha": "^3.1.2",
     "mock-require": "^2.0.1",
-    "react-addons-test-utils": "^15.3.2"
+    "react-addons-test-utils": "^15.3.2",
+    "webpack-virtual-modules": "^0.1.8"
   },
   "dependencies": {
     "@folio/stripes-components": "^1.6.0",
     "@folio/stripes-connect": "^2.7.0",
     "@folio/stripes-logger": "^0.0.2",
     "@folio/stripes-redux": "^2.0.0",
-    "@folio/stripes-webpack-plugin": "link:../stripes-webpack-plugin",
     "autoprefixer": "^7.1.1",
     "babel-core": "^6.23.1",
     "babel-eslint": "^7.0.0",

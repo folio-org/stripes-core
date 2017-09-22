@@ -4,7 +4,7 @@ const commander = require('commander');
 const webpack = require('webpack');
 const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 const path = require('path');
-const StripesPlugin = require('@folio/stripes-webpack-plugin').StripesPlugin;
+const StripesPlugin = require('./webpack/stripes-config-plugin');
 const devConfig = require('./webpack.config.cli.dev');
 
 const cwd = path.resolve();
