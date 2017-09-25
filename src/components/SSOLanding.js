@@ -9,7 +9,6 @@ import { requestUserWithPerms } from '../loginServices';
 const requestUserWithPermsDeb = _.debounce(requestUserWithPerms, 5000, { leading: true, trailing: false });
 
 class SSOLanding extends Component {
-
   constructor(props, context) {
     super(props, context);
 

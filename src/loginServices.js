@@ -67,58 +67,58 @@ export function loadTranslations(store, locale) {
 export function getLocale(okapiUrl, store, tenant) {
   fetch(`${okapiUrl}/configurations/entries?query=(module=ORG and configName=locale)`,
     { headers: getHeaders(tenant, store.getState().okapi.token) })
-  .then((response) => {
-    if (response.status === 200) {
-      response.json().then((json) => {
-        if (json.configs.length) {
-          loadTranslations(store, json.configs[0].value);
-        }
-      });
-    }
-  });
+    .then((response) => {
+      if (response.status === 200) {
+        response.json().then((json) => {
+          if (json.configs.length) {
+            loadTranslations(store, json.configs[0].value);
+          }
+        });
+      }
+    });
 }
 
 export function getPlugins(okapiUrl, store, tenant) {
   fetch(`${okapiUrl}/configurations/entries?query=(module=PLUGINS)`,
     { headers: getHeaders(tenant, store.getState().okapi.token) })
-  .then((response) => {
-    if (response.status < 400) {
-      response.json().then((json) => {
-        const configs = json.configs.reduce((acc, val) => ({
-          ...acc,
-          [val.configName]: val.value,
-        }), {});
-        store.dispatch(setPlugins(configs));
-      });
-    }
-  });
+    .then((response) => {
+      if (response.status < 400) {
+        response.json().then((json) => {
+          const configs = json.configs.reduce((acc, val) => ({
+            ...acc,
+            [val.configName]: val.value,
+          }), {});
+          store.dispatch(setPlugins(configs));
+        });
+      }
+    });
 }
 
 export function getBindings(okapiUrl, store, tenant) {
   fetch(`${okapiUrl}/configurations/entries?query=(module=ORG and configName=bindings)`,
     { headers: getHeaders(tenant, store.getState().okapi.token) })
-  .then((response) => {
-    let bindings = {};
-    if (response.status >= 400) {
-      store.dispatch(setBindings(bindings));
-    } else {
-      response.json().then((json) => {
-        const configs = json.configs;
-        if (configs.length > 0) {
-          const string = configs[0].value;
-          try {
-            const tmp = JSON.parse(string);
-            bindings = tmp; // only if no exception is thrown
-          } catch (err) {
-            // eslint-disable-next-line no-console
-            console.log(`getBindings cannot parse key bindings '${string}':`, err);
-          }
-        }
+    .then((response) => {
+      let bindings = {};
+      if (response.status >= 400) {
         store.dispatch(setBindings(bindings));
-      });
-    }
-    store.dispatch(setOkapiReady());
-  });
+      } else {
+        response.json().then((json) => {
+          const configs = json.configs;
+          if (configs.length > 0) {
+            const string = configs[0].value;
+            try {
+              const tmp = JSON.parse(string);
+              bindings = tmp; // only if no exception is thrown
+            } catch (err) {
+              // eslint-disable-next-line no-console
+              console.log(`getBindings cannot parse key bindings '${string}':`, err);
+            }
+          }
+          store.dispatch(setBindings(bindings));
+        });
+      }
+      store.dispatch(setOkapiReady());
+    });
 }
 
 function clearOkapiSession(store) {
@@ -173,16 +173,16 @@ const validateUserDep = _.debounce(validateUser, 5000, { leading: true, trailing
 
 function isSSOEnabled(okapiUrl, store, tenant) {
   fetch(`${okapiUrl}/saml/check`, { headers: { 'X-Okapi-Tenant': tenant, Accept: 'application/json' } })
-  .then((response) => {
-    if (response.status >= 400) {
-      store.dispatch(checkSSO(false));
-    } else {
-      response.json().then((json) => {
-        store.dispatch(checkSSO(json.active));
-      });
-    }
-    store.dispatch(setOkapiReady());
-  });
+    .then((response) => {
+      if (response.status >= 400) {
+        store.dispatch(checkSSO(false));
+      } else {
+        response.json().then((json) => {
+          store.dispatch(checkSSO(json.active));
+        });
+      }
+      store.dispatch(setOkapiReady());
+    });
 }
 
 const isSSOEnabledDep = _.debounce(isSSOEnabled, 5000, { leading: true, trailing: false });
@@ -242,13 +242,13 @@ export function requestLogin(okapiUrl, store, tenant, data) {
     headers: { 'X-Okapi-Tenant': tenant, 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
   })
-  .then(resp => processOkapiSession(okapiUrl, store, tenant, resp));
+    .then(resp => processOkapiSession(okapiUrl, store, tenant, resp));
 }
 
 export function requestUserWithPerms(okapiUrl, store, tenant, token) {
   fetch(`${okapiUrl}/bl-users/_self?expandPermissions=true&fullPermissions=true`,
     { headers: getHeaders(tenant, token) })
-  .then(resp => processOkapiSession(okapiUrl, store, tenant, resp));
+    .then(resp => processOkapiSession(okapiUrl, store, tenant, resp));
 }
 
 export function requestSSOLogin(okapiUrl, tenant) {
@@ -259,5 +259,5 @@ export function requestSSOLogin(okapiUrl, tenant) {
     headers: { 'X-Okapi-tenant': tenant, 'Content-Type': 'application/json' },
     body: JSON.stringify({ stripesUrl }),
   })
-  .then(resp => processSSOLoginResponse(resp));
+    .then(resp => processSSOLoginResponse(resp));
 }

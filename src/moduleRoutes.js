@@ -22,13 +22,13 @@ function getModuleRoutes(stripes) {
       <Route
         path={module.route}
         key={module.route}
-        render={props =>
+        render={props => (
           <AddContext context={{ stripes: moduleStripes }}>
             <span id={`${name}-module-display`} data-module={module.module} data-version={module.version} >
               <Current {...props} connect={connect} stripes={moduleStripes} />
             </span>
           </AddContext>
-        }
+        )}
       />
     );
   }).filter(x => x);

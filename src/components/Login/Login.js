@@ -10,7 +10,7 @@ const propTypes = {
   submitting: PropTypes.bool,
   authFail: PropTypes.bool,
   handleSSOLogin: PropTypes.func,
-  ssoActive: PropTypes.any,
+  ssoActive: PropTypes.any, // eslint-disable-line react/forbid-prop-types
 };
 
 function Login(props) {

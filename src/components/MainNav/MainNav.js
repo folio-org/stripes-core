@@ -23,7 +23,6 @@ if (!Array.isArray(modules.app) || modules.app.length < 1) {
 }
 
 class MainNav extends Component {
-
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
@@ -171,7 +170,7 @@ class MainNav extends Component {
     }
 
     return (
-      <nav role="navigation" className={css.navRoot}>
+      <nav className={css.navRoot}>
         {firstNav}
         <NavGroup>
           <NavGroup>
