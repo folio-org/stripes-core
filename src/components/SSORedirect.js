@@ -4,7 +4,6 @@ import { withRouter, Redirect } from 'react-router';
 import queryString from 'query-string';
 
 class SSORedirect extends Component {
-
   getParams() {
     const search = this.props.location.search;
     if (!search) return undefined;

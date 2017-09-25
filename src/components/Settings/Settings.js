@@ -45,11 +45,11 @@ const Settings = (props) => {
     return (<Route
       path={`/settings${m.route}`}
       key={m.route}
-      render={props2 =>
+      render={props2 => (
         <AddContext context={{ stripes: moduleStripes }}>
           <Current {...props2} stripes={moduleStripes} showSettings />
         </AddContext>
-      }
+      )}
     />);
   });
 
