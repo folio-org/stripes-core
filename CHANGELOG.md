@@ -2,6 +2,7 @@
 
 * Add developer's-guide section on t18n functionality. Fixes STCOR-56
 * Add tag with version info for integration test reports. STCOR-74.
+* Add dependency on okapiInterface "authtoken" 1.0. Fixes STCOR-76.
 
 # Change history for stripes-core
 
