@@ -28,11 +28,13 @@ for i in `echo '
     ui-items
     ui-checkin
     ui-checkout
+    ui-circulation
     ui-organization
     ui-developer
     ui-plugin-example
     ui-plugin-find-user
     ui-testing
+    eslint-config-stripes
 '`; do
     echo === $i ===
     (

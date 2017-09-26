@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import Switch from 'react-router-dom/Switch';
@@ -9,6 +8,7 @@ import { modules } from 'stripes-loader'; // eslint-disable-line
 import { withRouter } from 'react-router';
 
 import AddContext from '../../AddContext';
+import { stripesShape } from '../../Stripes';
 
 import NavList from './NavList';
 import NavListSection from './NavListSection';
@@ -22,7 +22,11 @@ const settingsModules = [].concat(
 
 const Settings = (props) => {
   const stripes = props.stripes;
-  const navLinks = _.sortBy(settingsModules, ['displayName']).map(m => (
+  const navLinks = settingsModules.sort(
+    (x, y) => x.displayName > y.displayName,
+  ).filter(
+    x => stripes.hasPerm(`settings.${x.module.replace(/^@folio\//, '')}.enabled`),
+  ).map(m => (
     <Link
       key={m.route}
       to={`/settings${m.route}`}
@@ -31,7 +35,9 @@ const Settings = (props) => {
     </Link>
   ));
 
-  const routes = settingsModules.map((m) => {
+  const routes = settingsModules.filter(
+    x => stripes.hasPerm(`settings.${x.module.replace(/^@folio\//, '')}.enabled`),
+  ).map((m) => {
     const connect = connectFor(m.module, stripes.epics, stripes.logger);
     const Current = connect(m.getModule());
     const moduleStripes = stripes.clone({ connect });
@@ -39,11 +45,11 @@ const Settings = (props) => {
     return (<Route
       path={`/settings${m.route}`}
       key={m.route}
-      render={props2 =>
+      render={props2 => (
         <AddContext context={{ stripes: moduleStripes }}>
           <Current {...props2} stripes={moduleStripes} showSettings />
         </AddContext>
-      }
+      )}
     />);
   });
 
@@ -71,11 +77,7 @@ const Settings = (props) => {
 };
 
 Settings.propTypes = {
-  stripes: PropTypes.shape({
-    logger: PropTypes.shape({
-      log: PropTypes.func.isRequired,
-    }).isRequired,
-  }).isRequired,
+  stripes: stripesShape.isRequired,
   location: PropTypes.shape({
     pathname: PropTypes.string,
   }).isRequired,

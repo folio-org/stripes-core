@@ -16,10 +16,11 @@ class Root extends Component {
   constructor(...args) {
     super(...args);
     this.reducers = { ...initialReducers };
+    this.epics = {};
   }
 
   getChildContext() {
-    return { addReducer: this.addReducer.bind(this) };
+    return { addReducer: this.addReducer, addEpic: this.addEpic };
   }
 
   componentWillMount() {
@@ -37,6 +38,15 @@ class Root extends Component {
     if (this.reducers[key] === undefined) {
       this.reducers[key] = reducer;
       this.props.store.replaceReducer(enhanceReducer(combineReducers({ ...this.reducers })));
+      return true;
+    }
+    return false;
+  }
+
+  addEpic = (key, epic) => {
+    if (this.epics[key] === undefined) {
+      this.epics[key] = epic;
+      this.props.epics.add(epic);
       return true;
     }
     return false;
@@ -79,6 +89,7 @@ class Root extends Component {
 
 Root.childContextTypes = {
   addReducer: PropTypes.func,
+  addEpic: PropTypes.func,
 };
 
 Root.propTypes = {

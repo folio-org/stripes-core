@@ -14,6 +14,7 @@ import ModuleContainer from './components/ModuleContainer';
 import Front from './components/Front';
 import About from './components/About';
 import SSOLanding from './components/SSOLanding';
+import SSORedirect from './components/SSORedirect';
 import Settings from './components/Settings/Settings';
 import LoginCtrl from './components/Login';
 import getModuleRoutes from './moduleRoutes';
@@ -34,14 +35,15 @@ const RootWithIntl = (props, context) => {
               <ModuleContainer id="content">
                 <Switch>
                   <Route exact path="/" component={() => <Front stripes={stripes} />} key="root" />
+                  <Route path="/sso-landing" component={() => <SSORedirect stripes={stripes} />} key="sso-landing" />
                   <Route path="/about" component={() => <About stripes={stripes} />} key="about" />
                   <Route path="/settings" render={() => <Settings stripes={stripes} />} />
                   {getModuleRoutes(stripes)}
                   <Route
-                    component={() => <div>
+                    component={() => (<div>
                       <h2>Uh-oh!</h2>
                       <p>This route does not exist.</p>
-                    </div>}
+                    </div>)}
                   />
                 </Switch>
               </ModuleContainer>
