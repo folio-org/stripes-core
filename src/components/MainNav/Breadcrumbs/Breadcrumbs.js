@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import css from './Breadcrumbs.css';
 
 const propTypes = {
-  links: PropTypes.array,
+  links: PropTypes.array, // eslint-disable-line react/forbid-prop-types
 };
 
 function Breadcrumbs(props) {
