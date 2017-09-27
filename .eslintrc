@@ -1,17 +1,4 @@
 {
-  "parser": "babel-eslint",
-  "extends": "airbnb",
-  "env": {
-    "browser": true
-  },
-  "rules": {
-    "react/jsx-filename-extension": "off",
-    "react/require-default-props": "off",
-    "max-len": "off",
-    "no-restricted-syntax": ["error", "LabeledStatement", "WithStatement"],
-    "no-unused-vars": [ 1, { argsIgnorePattern: "^_" } ],
-    "curly": "off",
-    "no-plusplus": "off",
-    "no-continue": "off"
-  }
+  "extends": "stripes",
+  "parser": "babel-eslint"
 }
