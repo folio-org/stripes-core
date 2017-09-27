@@ -45,9 +45,9 @@
   },
   "dependencies": {
     "@folio/stripes-components": "^1.6.0",
-    "@folio/stripes-connect": "^2.7.0",
+    "@folio/stripes-connect": "folio-org/stripes-connect#3c2714a189c2296f389fc6ee4e79a7ee7c962949",
     "@folio/stripes-logger": "^0.0.2",
-    "@folio/stripes-redux": "^2.0.0",
+    "@folio/stripes-redux": "folio-org/stripes-redux#138803e34c8472b657ef62df76316d941177f75f",
     "autoprefixer": "^7.1.1",
     "babel-core": "^6.23.1",
     "babel-eslint": "^7.2.3",
