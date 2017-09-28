@@ -57,9 +57,8 @@ class Stripes {
     return new Stripes(Object.assign({}, this, extraProps));
   }
 
-  configureModule(Module, config = {}) {
-    const moduleConfig = Object.assign({}, this.config, config);
-    return props => <Module {...props} stripes={this.clone({ config: moduleConfig })} />;
+  extendStripesProps(Module, extraProps = {}) {
+    return props => <Module {...props} stripes={this.clone(extraProps)} />;
   }
 
 }
