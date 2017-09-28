@@ -44,7 +44,7 @@
   "dependencies": {
     "@folio/stripes-components": "^1.6.0",
     "@folio/stripes-connect": "folio-org/stripes-connect#3c2714a189c2296f389fc6ee4e79a7ee7c962949",
-    "@folio/stripes-loader": "folio-org/stripes-loader#a0929462a687c37281e79693352117265a9cfeac",
+    "@folio/stripes-loader": "^0.1.0",
     "@folio/stripes-logger": "^0.0.2",
     "@folio/stripes-redux": "folio-org/stripes-redux#138803e34c8472b657ef62df76316d941177f75f",
     "autoprefixer": "^7.1.1",
