@@ -8,6 +8,8 @@
 ## [2.7.0](https://github.com/folio-org/stripes-core/tree/v2.7.0) (2017-09-01)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.6.1...v2.7.0)
 
+* `stripes.configureModule` simple implmentation adds module configuration to the stripes object (STRIPES-464).
+
 * `stripes.setLocale` function re-loads translations. Fixes STCOR-53.
 * Optimize `<Root>` render. Fixes STCORE-58.
 * Avoid use of epics in detecting Okapi readiness. Fixes STCOR-63.
