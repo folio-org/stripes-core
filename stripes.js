@@ -4,6 +4,7 @@ const commander = require('commander');
 const webpack = require('webpack');
 const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 const path = require('path');
+const fs = require('fs');
 
 const devConfig = require('./webpack.config.cli.dev');
 
@@ -81,9 +82,9 @@ commander
 
 commander
   .command('build')
-  .arguments('<config> <output>')
+  .arguments('<config> <output> [publicPath]')
   .description('Build a tenant bundle')
-  .action(function (loaderConfigFile, outputPath) {
+  .action(function (loaderConfigFile, outputPath, publicPath) {
     const config = require('./webpack.config.cli.prod');
     const stripesLoaderConfig = require(path.resolve(loaderConfigFile));
     config.resolve.modules = ['node_modules', cwdModules];
@@ -92,8 +93,19 @@ commander
       options: { stripesLoader: stripesLoaderConfig },
     }));
     config.output.path = path.resolve(outputPath);
+    if (publicPath) {
+      config.output.publicPath = publicPath;
+    }
     const compiler = webpack(config);
-    compiler.run(function (err, stats) { });
+    compiler.run(function (err, stats) {
+      // reason: index.html is not generated 
+      if (publicPath) {
+        var fcontent = fs.readFileSync(path.resolve(outputPath + "/index.html"), 'utf8');
+        fcontent = fcontent.replace(/href="\//g, 'href="' + publicPath);
+        fcontent = fcontent.replace(/src="\//g, 'src="' + publicPath);
+        fs.writeFileSync(outputPath + '/../index.html', fcontent, 'utf8');
+      }
+     });
   });
 
 commander.parse(process.argv);
