@@ -22,6 +22,7 @@
   "stripes": {
     "okapiInterfaces": {
       "users-bl": "2.0",
+      "authtoken": "1.0",
       "configuration": "2.0"
     },
     "permissionSets": [

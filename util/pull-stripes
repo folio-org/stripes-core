@@ -38,7 +38,7 @@ for i in `echo '
     (
         cd $i
         branch=`git branch | sed -n 's/^\* //p'`
-        if [ "x$branch" != xmaster ]; then
+        if [ "x$branch" != xmaster -a "x$branch" != x`whoami` ]; then
             echo "*** on branch '$branch': doing nothing"
         else
             if git status | grep 'nothing to commit' > /dev/null; then

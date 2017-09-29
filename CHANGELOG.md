@@ -1,11 +1,12 @@
+# Change history for stripes-core
+
 ## 2.8.0 (IN PROGRESS)
 
 * Add developer's-guide section on t18n functionality. Fixes STCOR-56
 * Add tag with version info for integration test reports. STCOR-74.
+* Add dependency on okapiInterface "authtoken" 1.0. Fixes STCOR-76.
 * Move epics to core. STCOR-82.
-* Move stripes-loader logic into stripes-core as a webpack plugin. STCOR-25. 
-
-# Change history for stripes-core
+* Move stripes-loader logic into stripes-core as a webpack plugin. STCOR-25.
 
 ## [2.7.0](https://github.com/folio-org/stripes-core/tree/v2.7.0) (2017-09-01)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.6.1...v2.7.0)
