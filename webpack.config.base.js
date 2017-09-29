@@ -20,21 +20,12 @@ module.exports = {
   ],
   resolve: {
     alias: {
-      'stripes-loader': '@folio/stripes-loader',
+      'stripes-loader': 'stripes-config',  // TODO: Remove this alias after UI module references have been updated
       'react': specificReact,
     }
   },
   module: {
     rules: [
-      {
-        test: function (inp) {
-          if (inp.includes('stripes-loader')) return true;
-        },
-        use: [{
-          loader: '@folio/stripes-loader',
-          options: { shenanigans: 'TODO: why doesn\'t this work?' }
-        }]
-      },
       {
         test: function (fn) {
           // We want to transpile files inside node_modules/@folio or outside

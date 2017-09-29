@@ -44,10 +44,8 @@
   },
   "dependencies": {
     "@folio/stripes-components": "^1.6.0",
-    "@folio/stripes-connect": "^2.7.0",
-    "@folio/stripes-loader": "^0.0.2",
+    "@folio/stripes-connect": "folio-org/stripes-connect#3c2714a189c2296f389fc6ee4e79a7ee7c962949",
     "@folio/stripes-logger": "^0.0.2",
-    "@folio/stripes-redux": "^2.0.0",
     "autoprefixer": "^7.1.1",
     "babel-core": "^6.23.1",
     "babel-eslint": "^7.2.3",
@@ -96,12 +94,15 @@
     "redux-form": "^7.0.3",
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.1.0",
+    "redux-observable": "^0.15.0",
     "rimraf": "^2.5.4",
-    "rxjs": "^5.4.2",
+    "rxjs": "^5.4.3",
+    "serialize-javascript": "^1.4.0",
     "style-loader": "^0.18.2",
     "uuid": "^3.0.0",
     "webpack": "^3.4.1",
     "webpack-dev-middleware": "^1.10.0",
-    "webpack-hot-middleware": "^2.16.1"
+    "webpack-hot-middleware": "^2.16.1",
+    "webpack-virtual-modules": "^0.1.8"
   }
 }

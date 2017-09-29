@@ -9,7 +9,7 @@ chai.should();
 
 const routerContext = {};
 
-mockReq('stripes-loader', { modules: {
+mockReq('stripes-config', { modules: {
   app: [ {
     displayName: 'someApp',
     module: 'some-app',
