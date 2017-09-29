@@ -39,9 +39,7 @@
     "eslint-config-stripes": "^0.0.1",
     "mocha": "^3.1.2",
     "mock-require": "^2.0.1",
-    "react-addons-test-utils": "^15.3.2",
-    "serialize-javascript": "^1.4.0",
-    "webpack-virtual-modules": "^0.1.8"
+    "react-addons-test-utils": "^15.3.2"
   },
   "dependencies": {
     "@folio/stripes-components": "^1.6.0",
@@ -98,10 +96,12 @@
     "redux-observable": "^0.15.0",
     "rimraf": "^2.5.4",
     "rxjs": "^5.4.3",
+    "serialize-javascript": "^1.4.0",
     "style-loader": "^0.18.2",
     "uuid": "^3.0.0",
     "webpack": "^3.4.1",
     "webpack-dev-middleware": "^1.10.0",
-    "webpack-hot-middleware": "^2.16.1"
+    "webpack-hot-middleware": "^2.16.1",
+    "webpack-virtual-modules": "^0.1.8"
   }
 }
