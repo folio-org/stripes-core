@@ -4,7 +4,7 @@ const commander = require('commander');
 const webpack = require('webpack');
 const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 const path = require('path');
-const StripesPlugin = require('./webpack/stripes-config-plugin');
+const StripesConfigPlugin = require('./webpack/stripes-config-plugin');
 const devConfig = require('./webpack.config.cli.dev');
 
 const cwd = path.resolve();
@@ -44,13 +44,13 @@ commander
   .option('--devtool [devtool]', 'Use another value for devtool instead of "inline-source-map"')
   .arguments('<config>')
   .description('Launch a webpack-dev-server')
-  .action(function (loaderConfigFile, options) {
+  .action(function (stripesConfigFile, options) {
     const express = require('express');
     const app = express();
 
     const config = Object.assign({}, devConfig);
-    const stripesLoaderConfig = require(path.resolve(loaderConfigFile));
-    config.plugins.push(new StripesPlugin(stripesLoaderConfig));
+    const stripesConfig = require(path.resolve(stripesConfigFile));
+    config.plugins.push(new StripesConfigPlugin(stripesConfig));
     // Look for modules in node_modules, then the platform, then stripes-core
     config.resolve.modules = ['node_modules', cwdModules, coreModules];
     config.resolveLoader = { modules: ['node_modules', cwdModules, coreModules] };
@@ -92,10 +92,10 @@ commander
   .command('build')
   .arguments('<config> <output>')
   .description('Build a tenant bundle')
-  .action(function (loaderConfigFile, outputPath) {
+  .action(function (stripesConfigFile, outputPath) {
     const config = require('./webpack.config.cli.prod');
-    const stripesLoaderConfig = require(path.resolve(loaderConfigFile));
-    config.plugins.push(new StripesPlugin(stripesLoaderConfig));
+    const stripesConfig = require(path.resolve(stripesConfigFile));
+    config.plugins.push(new StripesConfigPlugin(stripesConfig));
     config.resolve.modules = ['node_modules', cwdModules];
     config.resolveLoader = { modules: ['node_modules', cwdModules] };
     config.output.path = path.resolve(outputPath);
