@@ -5,9 +5,13 @@
 * Add developer's-guide section on t18n functionality. Fixes STCOR-56
 * Add tag with version info for integration test reports. STCOR-74.
 * Add dependency on okapiInterface "authtoken" 1.0. Fixes STCOR-76.
+* Move epics to core. STCOR-82.
+* Move stripes-loader logic into stripes-core as a webpack plugin. STCOR-25.
 
 ## [2.7.0](https://github.com/folio-org/stripes-core/tree/v2.7.0) (2017-09-01)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.6.1...v2.7.0)
+
+* `stripes.configureModule` simple implmentation adds module configuration to the stripes object (STRIPES-464).
 
 * `stripes.setLocale` function re-loads translations. Fixes STCOR-53.
 * Optimize `<Root>` render. Fixes STCORE-58.
