@@ -1,7 +1,7 @@
 import 'babel-polyfill';
 import React from 'react';
 import { render } from 'react-dom';
-import { okapi, config } from 'stripes-loader'; // eslint-disable-line
+import { okapi, config } from 'stripes-config'; // eslint-disable-line
 
 import connectErrorEpic from './connectErrorEpic';
 import configureEpics from './configureEpics';

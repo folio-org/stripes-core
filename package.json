@@ -39,12 +39,13 @@
     "eslint-config-stripes": "^0.0.1",
     "mocha": "^3.1.2",
     "mock-require": "^2.0.1",
-    "react-addons-test-utils": "^15.3.2"
+    "react-addons-test-utils": "^15.3.2",
+    "serialize-javascript": "^1.4.0",
+    "webpack-virtual-modules": "^0.1.8"
   },
   "dependencies": {
     "@folio/stripes-components": "^1.6.0",
     "@folio/stripes-connect": "folio-org/stripes-connect#3c2714a189c2296f389fc6ee4e79a7ee7c962949",
-    "@folio/stripes-loader": "^0.1.0",
     "@folio/stripes-logger": "^0.0.2",
     "autoprefixer": "^7.1.1",
     "babel-core": "^6.23.1",

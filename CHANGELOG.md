@@ -3,6 +3,7 @@
 * Add developer's-guide section on t18n functionality. Fixes STCOR-56
 * Add tag with version info for integration test reports. STCOR-74.
 * Move epics to core. STCOR-82.
+* Move stripes-loader logic into stripes-core as a webpack plugin. STCOR-25. 
 
 # Change history for stripes-core
 
