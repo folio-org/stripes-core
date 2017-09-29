@@ -17,7 +17,6 @@ for i in `echo '
     stripes-components
     stripes-react-hotkeys
     stripes-logger
-    stripes-redux
     stripes-form
     stripes-core
     stripes-sample-platform
