@@ -91,6 +91,7 @@ commander
 commander
   .command('build')
   .option('--publicPath [publicPath]', 'publicPath')
+  .arguments('<config> <output>')
   .description('Build a tenant bundle')
   .action(function (stripesConfigFile, outputPath, options) {
     const config = require('./webpack.config.cli.prod');
