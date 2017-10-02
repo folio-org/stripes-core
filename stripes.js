@@ -90,15 +90,18 @@ commander
 
 commander
   .command('build')
-  .arguments('<config> <output>')
+  .option('--publicPath [publicPath]', 'publicPath')
   .description('Build a tenant bundle')
-  .action(function (stripesConfigFile, outputPath) {
+  .action(function (stripesConfigFile, outputPath, options) {
     const config = require('./webpack.config.cli.prod');
     const stripesConfig = require(path.resolve(stripesConfigFile));
     config.plugins.push(new StripesConfigPlugin(stripesConfig));
     config.resolve.modules = ['node_modules', cwdModules];
     config.resolveLoader = { modules: ['node_modules', cwdModules] };
     config.output.path = path.resolve(outputPath);
+    if (options.publicPath) {
+      config.output.publicPath = options.publicPath;
+    }
     const compiler = webpack(config);
     compiler.run(function (err, stats) { 
       processStats(err, stats);
