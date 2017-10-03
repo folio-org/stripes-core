@@ -34,6 +34,7 @@ function processStats(err, stats) {
     chunks: false,
     colors: true
   }));
+  // Check for webpack compile errors and exit
   if(err || stats.hasErrors()){
     process.exit(1);
   }
