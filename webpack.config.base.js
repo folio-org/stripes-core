@@ -1,11 +1,8 @@
 // Common Webpack configuration for building Stripes
 
 const path = require('path');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const generateStripesAlias = require('./webpack/generate-stripes-alias');
-
-const bootstrapDist = require.resolve('bootstrap/package.json').replace('package.json', 'dist');
 
 // React doesn't like being included multiple times as can happen when using
 // yarn link. Here we find a more specific path to it by first looking in
@@ -23,9 +20,6 @@ module.exports = {
     },
   },
   plugins: [
-    new CopyWebpackPlugin([
-      { from: bootstrapDist, to: 'bootstrap' },
-    ]),
     new HtmlWebpackPlugin({
       template: `${__dirname}/index.html`,
     }),
