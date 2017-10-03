@@ -34,6 +34,9 @@ function processStats(err, stats) {
     chunks: false,
     colors: true
   }));
+  if(err || stats.hasErrors()){
+    process.exit(1);
+  }
 }
 
 commander
