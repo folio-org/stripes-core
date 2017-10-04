@@ -7,12 +7,28 @@ const ExtractTextPlugin = require("extract-text-webpack-plugin");
 // React doesn't like being included multiple times as can happen when using
 // yarn link. Here we find a more specific path to it by first looking in
 // stripes-core (__dirname) before falling back to the platform or simply react
-let specificReact = path.join(__dirname, 'node_modules', 'react');
-try {
-  require.resolve(specificReact);
-} catch (e) {
-  specificReact = 'react';
+let specificReact;
+const platformReact = path.join(path.resolve(), 'node_modules', 'react');
+const coreReact = path.join(__dirname, 'node_modules', 'react');
+const fallbackReact = 'react';
+
+if ( tryResolve(coreReact)) {
+  specificReact = coreReact;
+} else if ( tryResolve(platformReact)) {
+  specificReact = platformReact;
+} else {
+  specificReact = fallbackReact;
 }
+
+function tryResolve(path){
+  try {
+    require.resolve(path);
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
 
 module.exports = {
   entry: [
