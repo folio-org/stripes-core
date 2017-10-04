@@ -1,32 +1,37 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { Link } from 'react-router';
 
 class TenantList extends Component {
   static handler(e) {
-    console.log("TenantList ERROR: in module '" + e.module + "', " +
-                " operation '" + e.op + "' on " +
-                " resource '" + e.resource + "' failed, saying: " + e.error);
+    console.log(`TenantList ERROR: in module '${e.module}', ` +
+                ` operation '${e.op}' on ` +
+                ` resource '${e.resource}' failed, saying: ${e.error}`);
   }
+
+  static propTypes = {
+    data: PropTypes.obj.isRequired,
+    mutator: PropTypes.func.isRequired,
+    pathname: PropTypes.string.isRequired,
+  };
 
   static manifest = {
     '@errorHandler': TenantList.handler,
-    'tenants': {
+    tenants: {
       path: '_/proxy/tenants',
-      type: 'okapi'
-    }
+      type: 'okapi',
+    },
   };
 
   render() {
     const { data, mutator, pathname } = this.props;
     if (!data.tenants) return null;
-    var tenantNodes = data.tenants.map((tenant) => {
-      return (
-        <li key={tenant.id}>
-          {tenant.name} [<a onClick={() => mutator.tenants.DELETE(tenant)}>delete</a>]
-          [<Link to={`${pathname}/edit/${tenant.id}`}>Edit</Link>] 
-        </li>
-      );
-    });
+    const tenantNodes = data.tenants.map(tenant => (
+      <li key={tenant.id}>
+        {tenant.name} [<a role="button" tabIndex={0} onClick={() => mutator.tenants.DELETE(tenant)}>delete</a>]
+          [<Link to={`${pathname}/edit/${tenant.id}`}>Edit</Link>]
+      </li>
+    ));
     return (
       <div>
         <h3>Tenant list:</h3>

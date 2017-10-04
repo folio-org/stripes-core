@@ -17,7 +17,7 @@ function showtree(register, level, key) {
 
   const perm = register[key];
   if (!perm) {
-    console.log(`${'  '.repeat(level+1)}# ERROR: no definition for '${key}'`);
+    console.log(`${'  '.repeat(level + 1)}# ERROR: no definition for '${key}'`);
     return;
   }
   if (perm.subPermissions) {

@@ -1,16 +1,19 @@
-import React, { Component } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 
-class TenantEdit extends Component {
-  render() { 
-    return <div>Tenant Edit ID: {this.props.params.id}</div>
-  }
+export default function TenantEdit(props) {
+  return (
+    <div>Tenant Edit ID: {props.params.id}</div>
+  );
 }
 
 TenantEdit.manifest = {
-  'tenants': {
+  tenants: {
     type: 'okapi',
-    path: '_proxy/tenants/:tenantid'
-  }
+    path: '_proxy/tenants/:tenantid',
+  },
 };
 
-export default TenantEdit;
+TenantEdit.propTypes = {
+  params: PropTypes.obj,
+};
