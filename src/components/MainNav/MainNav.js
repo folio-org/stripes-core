@@ -178,7 +178,7 @@ class MainNav extends Component {
             <NavDivider md="hide" />
           </NavGroup>
           <NavGroup className={css.smallAlignRight}>
-            <Dropdown open={this.state ? this.state.userMenuOpen : false} id="UserMenuDropDown" onToggle={this.toggleUserMenu} pullRight >
+            <Dropdown open={this.state.userMenuOpen} id="UserMenuDropDown" onToggle={this.toggleUserMenu} pullRight >
               <NavButton data-role="toggle" title="User Menu" aria-haspopup="true" aria-expanded={this.state.userMenuOpen}><NavIcon icon={userIcon} /></NavButton>
               <NavDropdownMenu data-role="menu" onToggle={this.toggleUserMenu} aria-label="User Menu">{userDD}</NavDropdownMenu>
             </Dropdown>
