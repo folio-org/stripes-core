@@ -1,7 +1,6 @@
 let tests = [
   // what result to expect, string to match against
   [ true, '/home/mike/git/work/stripes-experiments/stripes-connect' ],
-  [ true, '/home/mike/git/work/stripes-loader/' ],
   [ true, '/home/mike/git/work/stripes-experiments/okapi-console/' ],
   [ true, '/home/mike/git/work/stripes-experiments/stripes-core/src/' ],
   [ false, '/home/mike/git/work/stripes-experiments/stripes-core/node_modules/camelcase' ],

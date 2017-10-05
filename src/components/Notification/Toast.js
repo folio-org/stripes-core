@@ -9,7 +9,7 @@ const propTypes = {
    * Array of message objects with properties {message, type, timeout, id, position, transition}
    * message and id are required.
    */
-  notifications: PropTypes.array,
+  notifications: PropTypes.array, // eslint-disable-line react/forbid-prop-types
   /*
    * Hide handler for dismissing toasts.
    */

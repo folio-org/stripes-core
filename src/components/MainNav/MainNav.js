@@ -4,7 +4,7 @@ import { Dropdown } from '@folio/stripes-components/lib/Dropdown';
 import { withRouter } from 'react-router';
 import localforage from 'localforage';
 
-import { modules } from 'stripes-loader'; // eslint-disable-line
+import { modules } from 'stripes-config'; // eslint-disable-line
 
 import { clearOkapiToken, clearCurrentUser } from '../../okapiActions';
 import { resetStore } from '../../mainActions';
@@ -23,7 +23,6 @@ if (!Array.isArray(modules.app) || modules.app.length < 1) {
 }
 
 class MainNav extends Component {
-
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
@@ -171,7 +170,7 @@ class MainNav extends Component {
     }
 
     return (
-      <nav role="navigation" className={css.navRoot}>
+      <nav className={css.navRoot}>
         {firstNav}
         <NavGroup>
           <NavGroup>

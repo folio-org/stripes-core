@@ -20,21 +20,12 @@ module.exports = {
   ],
   resolve: {
     alias: {
-      'stripes-loader': '@folio/stripes-loader',
+      'stripes-loader': 'stripes-config',  // TODO: Remove this alias after UI module references have been updated
       'react': specificReact,
     }
   },
   module: {
     rules: [
-      {
-        test: function (inp) {
-          if (inp.includes('stripes-loader')) return true;
-        },
-        use: [{
-          loader: '@folio/stripes-loader',
-          options: { shenanigans: 'TODO: why doesn\'t this work?' }
-        }]
-      },
       {
         test: function (fn) {
           // We want to transpile files inside node_modules/@folio or outside
@@ -45,13 +36,13 @@ module.exports = {
           // fn is the path after all symlinks are resolved so we need to be
           // wary of all the edge cases yarn link will find for us.
           const nmidx = fn.lastIndexOf('node_modules')
-          if (fn.endsWith('.js') && (nmidx === -1 || fn.lastIndexOf('@folio') > nmidx)) return true 
+          if (fn.endsWith('.js') && (nmidx === -1 || fn.lastIndexOf('@folio') > nmidx)) return true
         },
         loader: 'babel-loader',
         options: {
           cacheDirectory: true,
           presets: [
-            [require.resolve("babel-preset-es2015"), { modules: false }],
+            [require.resolve("babel-preset-env"), { modules: false }],
             [require.resolve("babel-preset-stage-2")],
             [require.resolve("babel-preset-react")]
           ]

@@ -9,12 +9,11 @@ import { requestUserWithPerms } from '../loginServices';
 const requestUserWithPermsDeb = _.debounce(requestUserWithPerms, 5000, { leading: true, trailing: false });
 
 class SSOLanding extends Component {
-
   constructor(props, context) {
     super(props, context);
 
     this.store = context.store;
-    this.sys = require('stripes-loader'); // eslint-disable-line
+    this.sys = require('stripes-config'); // eslint-disable-line
     this.okapiUrl = this.sys.okapi.url;
     this.tenant = this.sys.okapi.tenant;
   }

@@ -4,7 +4,7 @@ const commander = require('commander');
 const webpack = require('webpack');
 const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 const path = require('path');
-
+const StripesConfigPlugin = require('./webpack/stripes-config-plugin');
 const devConfig = require('./webpack.config.cli.dev');
 
 const cwd = path.resolve();
@@ -25,6 +25,21 @@ const cachePlugin = new HardSourceWebpackPlugin({
   },
 });
 
+// Display webpack output to the console
+function processStats(err, stats) {
+  if (err) {
+    console.error(err);
+  }
+  console.log(stats.toString({
+    chunks: false,
+    colors: true
+  }));
+  // Check for webpack compile errors and exit
+  if(err || stats.hasErrors()){
+    process.exit(1);
+  }
+}
+
 commander
   .command('dev')
   .option('--port [port]', 'Port')
@@ -33,18 +48,16 @@ commander
   .option('--devtool [devtool]', 'Use another value for devtool instead of "inline-source-map"')
   .arguments('<config>')
   .description('Launch a webpack-dev-server')
-  .action(function (loaderConfigFile, options) {
+  .action(function (stripesConfigFile, options) {
     const express = require('express');
     const app = express();
 
     const config = Object.assign({}, devConfig);
-    const stripesLoaderConfig = require(path.resolve(loaderConfigFile));
+    const stripesConfig = require(path.resolve(stripesConfigFile));
+    config.plugins.push(new StripesConfigPlugin(stripesConfig));
     // Look for modules in node_modules, then the platform, then stripes-core
     config.resolve.modules = ['node_modules', cwdModules, coreModules];
     config.resolveLoader = { modules: ['node_modules', cwdModules, coreModules] };
-    config.plugins.push(new webpack.LoaderOptionsPlugin({
-      options: { stripesLoader: stripesLoaderConfig },
-    }));
     if (options.cache) config.plugins.push(cachePlugin);
     if (options.devtool) config.devtool = options.devtool;
     const compiler = webpack(config);
@@ -81,19 +94,23 @@ commander
 
 commander
   .command('build')
+  .option('--publicPath [publicPath]', 'publicPath')
   .arguments('<config> <output>')
   .description('Build a tenant bundle')
-  .action(function (loaderConfigFile, outputPath) {
+  .action(function (stripesConfigFile, outputPath, options) {
     const config = require('./webpack.config.cli.prod');
-    const stripesLoaderConfig = require(path.resolve(loaderConfigFile));
+    const stripesConfig = require(path.resolve(stripesConfigFile));
+    config.plugins.push(new StripesConfigPlugin(stripesConfig));
     config.resolve.modules = ['node_modules', cwdModules];
     config.resolveLoader = { modules: ['node_modules', cwdModules] };
-    config.plugins.push(new webpack.LoaderOptionsPlugin({
-      options: { stripesLoader: stripesLoaderConfig },
-    }));
     config.output.path = path.resolve(outputPath);
+    if (options.publicPath) {
+      config.output.publicPath = options.publicPath;
+    }
     const compiler = webpack(config);
-    compiler.run(function (err, stats) { });
+    compiler.run(function (err, stats) { 
+      processStats(err, stats);
+    });
   });
 
 commander.parse(process.argv);

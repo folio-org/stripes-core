@@ -4,7 +4,7 @@ import Switch from 'react-router-dom/Switch';
 import Route from 'react-router-dom/Route';
 import Link from 'react-router-dom/Link';
 import { connectFor } from '@folio/stripes-connect';
-import { modules } from 'stripes-loader'; // eslint-disable-line
+import { modules } from 'stripes-config'; // eslint-disable-line
 import { withRouter } from 'react-router';
 
 import AddContext from '../../AddContext';
@@ -45,11 +45,11 @@ const Settings = (props) => {
     return (<Route
       path={`/settings${m.route}`}
       key={m.route}
-      render={props2 =>
+      render={props2 => (
         <AddContext context={{ stripes: moduleStripes }}>
           <Current {...props2} stripes={moduleStripes} showSettings />
         </AddContext>
-      }
+      )}
     />);
   });
 

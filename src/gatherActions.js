@@ -1,7 +1,7 @@
 // Gather actionNames from all registered modules for hot-key mapping
 
-import { modules } from 'stripes-loader'; // eslint-disable-line
-import stripesComponents from '@folio/stripes-components/package.json';
+import { modules } from 'stripes-config'; // eslint-disable-line
+import stripesComponents from '@folio/stripes-components/package.json'; // eslint-disable-line
 
 function addKeys(moduleName, register, list) {
   if (list) {

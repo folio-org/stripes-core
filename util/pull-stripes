@@ -13,12 +13,10 @@ fi
 
 cd $dir
 for i in `echo '
-    stripes-loader
     stripes-connect
     stripes-components
     stripes-react-hotkeys
     stripes-logger
-    stripes-redux
     stripes-form
     stripes-core
     stripes-sample-platform
@@ -40,7 +38,7 @@ for i in `echo '
     (
         cd $i
         branch=`git branch | sed -n 's/^\* //p'`
-        if [ "x$branch" != xmaster ]; then
+        if [ "x$branch" != xmaster -a "x$branch" != xdev -a "x$branch" != x`whoami` ]; then
             echo "*** on branch '$branch': doing nothing"
         else
             if git status | grep 'nothing to commit' > /dev/null; then
