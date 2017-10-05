@@ -9,6 +9,6 @@ module.exports = {
     path: path.join(__dirname, 'dist'),
     filename: 'bundle.[hash].js',
     chunkFilename: 'chunk.[chunkhash].js',
-    publicPath: ''
+    publicPath: '/'
   },
 };
