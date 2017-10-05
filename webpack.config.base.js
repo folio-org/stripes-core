@@ -3,12 +3,12 @@
 const path = require('path');
 const webpack = require('webpack');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
-const generateReactAlias = require('./webpack/generate-alias');
+const generateStripesAlias = require('./webpack/generate-stripes-alias');
 
 // React doesn't like being included multiple times as can happen when using
 // yarn link. Here we find a more specific path to it by first looking in
 // stripes-core (__dirname) before falling back to the platform or simply react
-let specificReact = generateReactAlias();
+let specificReact = generateStripesAlias('react');
 
 module.exports = {
   entry: [
