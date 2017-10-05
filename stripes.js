@@ -67,6 +67,10 @@ commander
 
     app.use(express.static(__dirname + '/public'));
 
+    // Process index rewrite before webpack-dev-middleware
+    // to respond with webpack's dist copy of index.html
+    app.use(require('connect-history-api-fallback')({}));
+
     app.use(require('webpack-dev-middleware')(compiler, {
       noInfo: true,
       publicPath: config.output.publicPath
@@ -76,10 +80,6 @@ commander
 
     app.get('/favicon.ico', function(req, res) {
       res.sendFile(path.join(__dirname, 'favicon.ico'));
-    });
-
-    app.get('*', function(req, res) {
-      res.sendFile(path.join(__dirname, 'index.html'));
     });
 
     app.listen(port, host, function(err) {
