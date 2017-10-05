@@ -60,7 +60,6 @@ class Stripes {
   extendStripesProps(Module, extraProps = {}) {
     return props => <Module {...props} stripes={this.clone(extraProps)} />;
   }
-
 }
 
 export default Stripes;
