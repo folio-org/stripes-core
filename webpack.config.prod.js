@@ -5,6 +5,7 @@ const path = require('path');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const StripesDuplicatePlugin = require('./webpack/stripes-duplicate-plugin');
 
 const bootstrapDist = require.resolve('bootstrap/package.json').replace('package.json', 'dist');
 
@@ -22,6 +23,7 @@ module.exports = {
     ]),
     new HtmlWebpackPlugin({
       template: __dirname + '/index.html',
-    })
+    }),
+    new StripesDuplicatePlugin(),
   ]
 };
