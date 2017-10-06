@@ -1,11 +1,9 @@
 // Common Webpack configuration for building Stripes for production
 
-const webpack = require('webpack');
-const path = require('path');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const StripesDuplicatePlugin = require('./webpack/stripes-duplicate-plugin');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const StripesDuplicatesPlugin = require('./webpack/stripes-duplicate-plugin');
 
 const bootstrapDist = require.resolve('bootstrap/package.json').replace('package.json', 'dist');
 
@@ -17,13 +15,13 @@ module.exports = {
     //     warnings: false
     //   }
     // }),
-    new ExtractTextPlugin({filename: 'global.css', allChunks: true }),
+    new ExtractTextPlugin({ filename: 'global.css', allChunks: true }),
     new CopyWebpackPlugin([
-      { from:bootstrapDist, to:'bootstrap'},
+      { from: bootstrapDist, to: 'bootstrap' },
     ]),
     new HtmlWebpackPlugin({
-      template: __dirname + '/index.html',
+      template: `${__dirname}/index.html`,
     }),
-    new StripesDuplicatePlugin(),
-  ]
+    new StripesDuplicatesPlugin(),
+  ],
 };

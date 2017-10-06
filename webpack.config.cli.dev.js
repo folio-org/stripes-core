@@ -7,7 +7,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const base = require('./webpack.config.base');
 const cli = require('./webpack.config.cli');
-const HtmlWebpackPlugin = require("html-webpack-plugin");
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const bootstrapDist = require.resolve('bootstrap/package.json').replace('package.json', 'dist');
 
@@ -15,16 +15,16 @@ module.exports = Object.assign({}, base, cli, {
   devtool: 'inline-source-map',
   entry: [
     'webpack-hot-middleware/client',
-    path.join(__dirname, 'src', 'index')
+    path.join(__dirname, 'src', 'index'),
   ],
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
-    new ExtractTextPlugin({filename: 'global.css', allChunks: true }),
+    new ExtractTextPlugin({ filename: 'global.css', allChunks: true }),
     new CopyWebpackPlugin([
-      { from:bootstrapDist, to:'bootstrap'},
+      { from: bootstrapDist, to: 'bootstrap' },
     ]),
     new HtmlWebpackPlugin({
-      template: __dirname + '/index.html',
-    })
-  ]
+      template: `${__dirname}/index.html`,
+    }),
+  ],
 });

@@ -20,7 +20,7 @@ if (!filename) {
   process.exit(1);
 }
 
-fs.readFile(filename, 'utf8', (err, data) => {
+fs.readFile(filename, 'utf8', (err, data) => { // eslint-disable-line consistent-return
   if (err) {
     return console.log(`${argv1}: cannot read file '${filename}': ${err}`);
   }
