@@ -10,16 +10,12 @@ const postCssNesting = require('postcss-nesting');
 const postCssCustomMedia = require('postcss-custom-media');
 const postCssMediaMinMax = require('postcss-media-minmax');
 const postCssColorFunction = require('postcss-color-function');
+const generateStripesAlias = require('./webpack/generate-stripes-alias');
 
 // React doesn't like being included multiple times as can happen when using
 // yarn link. Here we find a more specific path to it by first looking in
 // stripes-core (__dirname) before falling back to the platform or simply react
-let specificReact = path.join(__dirname, 'node_modules', 'react');
-try {
-  require.resolve(specificReact);
-} catch (e) {
-  specificReact = 'react';
-}
+const specificReact = generateStripesAlias('react');
 
 module.exports = {
   entry: [
