@@ -1,3 +1,6 @@
+// Generates a resolvable alias for a module with preference given to the
+// stripes-core version followed by the platform's, if available
+
 const path = require('path');
 
 function tryResolve(modulePath) {
