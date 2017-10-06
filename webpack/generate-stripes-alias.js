@@ -1,11 +1,11 @@
 const path = require('path');
 
-function tryResolve(path){
+function tryResolve(modulePath) {
   try {
-      require.resolve(path);
-      return true;
+    require.resolve(modulePath);
+    return true;
   } catch (e) {
-      return false;
+    return false;
   }
 }
 
@@ -14,13 +14,13 @@ module.exports = function generateStripesAlias(moduleName) {
   const platformModule = path.join(path.resolve(), 'node_modules', moduleName);
   const coreModule = path.join(__dirname, '..', 'node_modules', moduleName);
   const fallbackModule = moduleName;
-  
-  if ( tryResolve(coreModule)) {
+
+  if (tryResolve(coreModule)) {
     alias = coreModule;
-  } else if ( tryResolve(platformModule)) {
+  } else if (tryResolve(platformModule)) {
     alias = platformModule;
   } else {
     alias = fallbackModule;
   }
   return alias;
-}
+};
