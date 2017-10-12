@@ -13,8 +13,10 @@ fi
 
 cd $dir
 for i in `echo '
+    stripes-loader
     stripes-connect
     stripes-components
+    stripes-smart-components
     stripes-react-hotkeys
     stripes-logger
     stripes-form
@@ -24,6 +26,7 @@ for i in `echo '
     ui-okapi-console
     ui-users
     ui-items
+    ui-instances
     ui-checkin
     ui-checkout
     ui-circulation
@@ -31,6 +34,7 @@ for i in `echo '
     ui-developer
     ui-plugin-example
     ui-plugin-find-user
+    ui-requests
     ui-testing
     eslint-config-stripes
 '`; do
