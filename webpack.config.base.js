@@ -1,16 +1,11 @@
 // Common Webpack configuration for building Stripes
 
 const path = require('path');
-const postCssImport = require('postcss-import');
-const postCssUrl = require('postcss-url');
-const autoprefixer = require('autoprefixer');
-const postCssCustomProperties = require('postcss-custom-properties');
-const postCssCalc = require('postcss-calc');
-const postCssNesting = require('postcss-nesting');
-const postCssCustomMedia = require('postcss-custom-media');
-const postCssMediaMinMax = require('postcss-media-minmax');
-const postCssColorFunction = require('postcss-color-function');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const generateStripesAlias = require('./webpack/generate-stripes-alias');
+
+const bootstrapDist = require.resolve('bootstrap/package.json').replace('package.json', 'dist');
 
 // React doesn't like being included multiple times as can happen when using
 // yarn link. Here we find a more specific path to it by first looking in
@@ -27,6 +22,14 @@ module.exports = {
       react: specificReact,
     },
   },
+  plugins: [
+    new CopyWebpackPlugin([
+      { from: bootstrapDist, to: 'bootstrap' },
+    ]),
+    new HtmlWebpackPlugin({
+      template: `${__dirname}/index.html`,
+    }),
+  ],
   module: {
     rules: [
       {
@@ -59,35 +62,6 @@ module.exports = {
       {
         test: /\.(jpg|jpeg|gif|png|ico)$/,
         loader: 'file-loader?name=img/[path][name].[ext]',
-      },
-      {
-        test: /\.css$/,
-        use: [
-          {
-            loader: 'style-loader',
-          },
-          {
-            loader: 'css-loader?modules&localIdentName=[local]---[hash:base64:5]',
-          },
-          {
-            loader: 'postcss-loader',
-            options: {
-              plugins() {
-                return [
-                  postCssImport,
-                  postCssUrl,
-                  autoprefixer,
-                  postCssCustomProperties,
-                  postCssCalc,
-                  postCssNesting,
-                  postCssCustomMedia,
-                  postCssMediaMinMax,
-                  postCssColorFunction,
-                ];
-              },
-            },
-          },
-        ],
       },
     ],
   },
