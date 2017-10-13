@@ -12,7 +12,6 @@ const connectHistoryApiFallback = require('connect-history-api-fallback');
 
 const StripesConfigPlugin = require('./webpack/stripes-config-plugin');
 const devConfig = require('./webpack.config.cli.dev');
-const prodConfig = require('./webpack.config.cli.prod');
 
 const cwd = path.resolve();
 const cwdModules = path.join(cwd, 'node_modules');
@@ -105,6 +104,7 @@ commander
   .arguments('<config> <output>')
   .description('Build a tenant bundle')
   .action((stripesConfigFile, outputPath, options) => {
+    const prodConfig = require('./webpack.config.cli.prod'); // eslint-disable-line
     const config = Object.assign({}, prodConfig);
     const stripesConfig = require(path.resolve(stripesConfigFile)); // eslint-disable-line
     config.plugins.push(new StripesConfigPlugin(stripesConfig));
