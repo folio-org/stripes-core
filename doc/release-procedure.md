@@ -5,6 +5,7 @@
 * [Before you release](#before-you-release)
 * [Release procedure](#release-procedure)
 * [Working towards the next release](#working-towards-the-next-release)
+* [Notes on breaking changes](#notes-on-breaking-changes)
 * [Notes on dependencies](#notes-on-dependencies)
 * [Notes on testing](#notes-on-testing)
 * [Note on access to the NPM repository](#note-on-access-to-the-npm-repository)
@@ -58,6 +59,16 @@ Decide what the version number of the next release is likely to be -- almost alw
 In the Jira project, create a new version with this number, so that issues can be associated with it.
 
 Create a new entry at the top of the change-log for the forthcoming version, so there is somewhere to add entries. But do not include a date for the entry: instead, mark it as "IN PROGRESS", as in [the in-progress `stripes-core` change-log from before v0.5.0](https://github.com/folio-org/stripes-core/blob/e058702cb19b32f607f7fb40b15ddf00cd6b45ad/CHANGELOG.md).
+
+
+## Notes on breaking changes
+
+When breaking changes have been introduced, but are not stable enough to officially release, follow Semantic Versioning's pre-release nomenclature prior to the official release. Do this with a `-pre.n` suffix where `n` represents the n-th pre-release leading up to the release. 
+
+For example, given a current release of `1.2.3` in which breaking changes must be introduced, release these changes as `2.0.0-pre.1`.  If necessary, repeat with `2.0.0-pre.2` and so on until code is deemed stable enough to release `2.0.0`.
+
+Update dependant packages when needed to allow CI to pick up the pre-release version for integration testing.  A pre-release should be used in place of alternative references such as `latest` or a specific commit hash.  Once the final version has been released, any packages depending on the pre-release version should be updated.
+
 
 
 ## Notes on dependencies
