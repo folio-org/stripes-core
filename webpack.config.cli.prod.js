@@ -1,8 +1,58 @@
 // Top level Webpack configuration for building static files for
 // production deployment from the command line
 
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const postCssImport = require('postcss-import');
+const postCssUrl = require('postcss-url');
+const autoprefixer = require('autoprefixer');
+const postCssCustomProperties = require('postcss-custom-properties');
+const postCssCalc = require('postcss-calc');
+const postCssNesting = require('postcss-nesting');
+const postCssCustomMedia = require('postcss-custom-media');
+const postCssMediaMinMax = require('postcss-media-minmax');
+const postCssColorFunction = require('postcss-color-function');
+
+const StripesDuplicatesPlugin = require('./webpack/stripes-duplicate-plugin');
+
 const base = require('./webpack.config.base');
-const prod = require('./webpack.config.prod');
 const cli = require('./webpack.config.cli');
 
-module.exports = Object.assign({}, base, prod, cli);
+const prodConfig = Object.assign({}, base, cli);
+
+prodConfig.plugins = prodConfig.plugins.concat([
+  new ExtractTextPlugin({ filename: 'style.[contenthash].css', allChunks: true }),
+  new OptimizeCssAssetsPlugin(),
+  new StripesDuplicatesPlugin(),
+]);
+
+prodConfig.module.rules.push({
+  test: /\.css$/,
+  use: ExtractTextPlugin.extract({
+    fallback: 'style-loader',
+    use: [
+      {
+        loader: 'css-loader?modules&localIdentName=[local]---[hash:base64:5]',
+      },
+      {
+        loader: 'postcss-loader',
+        options: {
+          ident: 'postcss',
+          plugins: () => [
+            postCssImport(),
+            postCssUrl(),
+            autoprefixer(),
+            postCssCustomProperties(),
+            postCssCalc(),
+            postCssNesting(),
+            postCssCustomMedia(),
+            postCssMediaMinMax(),
+            postCssColorFunction(),
+          ],
+        },
+      },
+    ],
+  }),
+});
+
+module.exports = prodConfig;
