@@ -11,7 +11,6 @@ const webpackHotMiddleware = require('webpack-hot-middleware');
 const connectHistoryApiFallback = require('connect-history-api-fallback');
 
 const StripesConfigPlugin = require('./webpack/stripes-config-plugin');
-const devConfig = require('./webpack.config.cli.dev');
 
 const cwd = path.resolve();
 const cwdModules = path.join(cwd, 'node_modules');
@@ -24,11 +23,11 @@ commander.version(packageJSON.version);
 const cachePlugin = new HardSourceWebpackPlugin({
   cacheDirectory: path.join(cwd, 'webpackcache'),
   recordsPath: path.join(cwd, 'webpackcache/records.json'),
-  configHash() {
+  configHash(webpackConfig) {
     // Build a string value used by HardSource to determine which cache to
     // use if [confighash] is in cacheDirectory or if the cache should be
     // replaced if [confighash] does not appear in cacheDirectory.
-    return nodeObjectHash().hash(devConfig);
+    return nodeObjectHash().hash(webpackConfig);
   },
 });
 
@@ -57,7 +56,7 @@ commander
   .description('Launch a webpack-dev-server')
   .action((stripesConfigFile, options) => {
     const app = express();
-
+    const devConfig = require('./webpack.config.cli.dev'); // eslint-disable-line
     const config = Object.assign({}, devConfig);
     const stripesConfig = require(path.resolve(stripesConfigFile)); // eslint-disable-line
     config.plugins.push(new StripesConfigPlugin(stripesConfig));
