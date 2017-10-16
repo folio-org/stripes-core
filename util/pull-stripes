@@ -38,10 +38,10 @@ for i in `echo '
     ui-testing
     eslint-config-stripes
 '`; do
-    echo === $i ===
     (
         cd $i
         branch=`git branch | sed -n 's/^\* //p'`
+	echo "=== $i ($branch) ==="
         if [ "x$branch" != xmaster -a "x$branch" != xdev -a "x$branch" != x`whoami` ]; then
             echo "*** on branch '$branch': doing nothing"
         else
