@@ -14,7 +14,7 @@
     "clean": "rimraf static",
     "test": "mocha --compilers js:babel-core/register",
     "test-watch": "mocha --compilers js:babel-core/register -w --watch-extensions json",
-    "lint": "eslint ./"
+    "lint": "eslint --ignore-pattern node_modules ./"
   },
   "engines": {
     "node": ">=6.0.0"
