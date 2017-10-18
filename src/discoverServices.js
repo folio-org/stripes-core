@@ -8,14 +8,14 @@
 import 'isomorphic-fetch';
 
 function discoverInterfaces(okapiUrl, store, entry) {
-  fetch(`${okapiUrl}/_/proxy/modules/${entry.id}`)
+  return fetch(`${okapiUrl}/_/proxy/modules/${entry.id}`)
     .catch((reason) => {
       store.dispatch({ type: 'DISCOVERY_FAILURE', message: reason });
-    }).then((response) => {
+    }).then((response) => { // eslint-disable-line consistent-return
       if (response.status >= 400) {
         store.dispatch({ type: 'DISCOVERY_FAILURE', code: response.status });
       } else {
-        response.json().then((json) => {
+        return response.json().then((json) => {
           store.dispatch({ type: 'DISCOVERY_INTERFACES', data: json });
         });
       }
@@ -23,34 +23,35 @@ function discoverInterfaces(okapiUrl, store, entry) {
 }
 
 export function discoverServices(okapiUrl, store) {
-  fetch(`${okapiUrl}/_/version`)
-    .catch((reason) => {
-      store.dispatch({ type: 'DISCOVERY_FAILURE', message: reason });
-    }).then((response) => {
-      if (response.status >= 400) {
-        store.dispatch({ type: 'DISCOVERY_FAILURE', code: response.status });
-      } else {
-        response.text().then((text) => {
-          store.dispatch({ type: 'DISCOVERY_OKAPI', version: text });
-        });
-      }
-    });
-
-  fetch(`${okapiUrl}/_/proxy/modules`)
-    .catch((reason) => {
-      store.dispatch({ type: 'DISCOVERY_FAILURE', message: reason });
-    }).then((response) => {
-      if (response.status >= 400) {
-        store.dispatch({ type: 'DISCOVERY_FAILURE', code: response.status });
-      } else {
-        response.json().then((json) => {
-          store.dispatch({ type: 'DISCOVERY_SUCCESS', data: json });
-          for (const entry of json) {
-            discoverInterfaces(okapiUrl, store, entry);
-          }
-        });
-      }
-    });
+  return Promise.all([
+    fetch(`${okapiUrl}/_/version`)
+      .catch((reason) => {
+        store.dispatch({ type: 'DISCOVERY_FAILURE', message: reason });
+      }).then((response) => { // eslint-disable-line consistent-return
+        if (response.status >= 400) {
+          store.dispatch({ type: 'DISCOVERY_FAILURE', code: response.status });
+        } else {
+          return response.text().then((text) => {
+            store.dispatch({ type: 'DISCOVERY_OKAPI', version: text });
+          });
+        }
+      }),
+    fetch(`${okapiUrl}/_/proxy/modules`)
+      .catch((reason) => {
+        store.dispatch({ type: 'DISCOVERY_FAILURE', message: reason });
+      }).then((response) => { // eslint-disable-line consistent-return
+        if (response.status >= 400) {
+          store.dispatch({ type: 'DISCOVERY_FAILURE', code: response.status });
+        } else {
+          return response.json().then((json) => {
+            store.dispatch({ type: 'DISCOVERY_SUCCESS', data: json });
+            return Promise.all(json.map(entry => discoverInterfaces(okapiUrl, store, entry)));
+          });
+        }
+      }),
+  ]).then(() => {
+    store.dispatch({ type: 'DISCOVERY_FINISHED' });
+  });
 }
 
 export function discoveryReducer(state = {}, action) {
@@ -74,6 +75,9 @@ export function discoveryReducer(state = {}, action) {
       return Object.assign({}, state, {
         interfaces: Object.assign(state.interfaces || {}, interfaces),
       });
+    }
+    case 'DISCOVERY_FINISHED': {
+      return Object.assign({}, state, { isFinished: true });
     }
     default:
       return state;

@@ -120,6 +120,7 @@ Root.propTypes = {
   discovery: PropTypes.shape({
     modules: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     interfaces: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+    isFinished: PropTypes.boolean,
   }),
   history: PropTypes.shape({
     length: PropTypes.number.isRequired,
