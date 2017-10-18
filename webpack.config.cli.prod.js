@@ -32,7 +32,11 @@ prodConfig.module.rules.push({
     fallback: 'style-loader',
     use: [
       {
-        loader: 'css-loader?modules&localIdentName=[local]---[hash:base64:5]',
+        loader: 'css-loader',
+        options: {
+          localIdentName: '[local]---[hash:base64:5]',
+          modules: true,
+        },
       },
       {
         loader: 'postcss-loader',

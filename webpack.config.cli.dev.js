@@ -33,9 +33,17 @@ devConfig.module.rules.push({
   use: [
     {
       loader: 'style-loader',
+      options: {
+        sourceMap: true,
+      },
     },
     {
-      loader: 'css-loader?modules&localIdentName=[local]---[hash:base64:5]',
+      loader: 'css-loader',
+      options: {
+        localIdentName: '[local]---[hash:base64:5]',
+        modules: true,
+        sourceMap: true,
+      },
     },
     {
       loader: 'postcss-loader',
@@ -51,6 +59,7 @@ devConfig.module.rules.push({
           postCssMediaMinMax(),
           postCssColorFunction(),
         ],
+        sourceMap: true,
       },
     },
   ],
