@@ -48,9 +48,8 @@ class Root extends Component {
       this.epics[key] = epic;
       this.props.epics.add(epic);
       return true;
-    } else {
-      return false;
     }
+    return false;
   }
 
   render() {
@@ -90,7 +89,7 @@ class Root extends Component {
 
 Root.childContextTypes = {
   addReducer: PropTypes.func,
-  addEpic: PropTypes.func
+  addEpic: PropTypes.func,
 };
 
 Root.propTypes = {
@@ -121,6 +120,7 @@ Root.propTypes = {
   discovery: PropTypes.shape({
     modules: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     interfaces: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+    isFinished: PropTypes.boolean,
   }),
   history: PropTypes.shape({
     length: PropTypes.number.isRequired,

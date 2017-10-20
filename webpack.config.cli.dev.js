@@ -3,25 +3,66 @@
 
 const webpack = require('webpack');
 const path = require('path');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const postCssImport = require('postcss-import');
+const postCssUrl = require('postcss-url');
+const autoprefixer = require('autoprefixer');
+const postCssCustomProperties = require('postcss-custom-properties');
+const postCssCalc = require('postcss-calc');
+const postCssNesting = require('postcss-nesting');
+const postCssCustomMedia = require('postcss-custom-media');
+const postCssMediaMinMax = require('postcss-media-minmax');
+const postCssColorFunction = require('postcss-color-function');
+
 const base = require('./webpack.config.base');
 const cli = require('./webpack.config.cli');
 
-const bootstrapDist = require.resolve('bootstrap/package.json').replace('package.json', 'dist');
-
-module.exports = Object.assign({}, base, cli, {
+const devConfig = Object.assign({}, base, cli, {
   devtool: 'inline-source-map',
   entry: [
     'webpack-hot-middleware/client',
-    path.join(__dirname, 'src', 'index')
+    path.join(__dirname, 'src', 'index'),
   ],
-  plugins: [
-    new webpack.HotModuleReplacementPlugin(),
-    new ExtractTextPlugin({filename: 'global.css', allChunks: true }),
-    new CopyWebpackPlugin([
-      { from:bootstrapDist, to:'bootstrap'},
-      { from: path.join(__dirname, 'index.html'), to:'index.html'},
-    ])
-  ]
 });
+
+devConfig.plugins = devConfig.plugins.concat([
+  new webpack.HotModuleReplacementPlugin(),
+]);
+
+devConfig.module.rules.push({
+  test: /\.css$/,
+  use: [
+    {
+      loader: 'style-loader',
+      options: {
+        sourceMap: true,
+      },
+    },
+    {
+      loader: 'css-loader',
+      options: {
+        localIdentName: '[local]---[hash:base64:5]',
+        modules: true,
+        sourceMap: true,
+      },
+    },
+    {
+      loader: 'postcss-loader',
+      options: {
+        plugins: () => [
+          postCssImport(),
+          postCssUrl(),
+          autoprefixer(),
+          postCssCustomProperties(),
+          postCssCalc(),
+          postCssNesting(),
+          postCssCustomMedia(),
+          postCssMediaMinMax(),
+          postCssColorFunction(),
+        ],
+        sourceMap: true,
+      },
+    },
+  ],
+});
+
+module.exports = devConfig;

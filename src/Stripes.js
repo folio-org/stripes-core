@@ -1,3 +1,4 @@
+import React from 'react';
 import PropTypes from 'prop-types';
 import { isVersionCompatible } from './discoverServices';
 
@@ -54,6 +55,10 @@ class Stripes {
 
   clone(extraProps) {
     return new Stripes(Object.assign({}, this, extraProps));
+  }
+
+  extendStripesProps(Module, extraProps = {}) {
+    return props => <Module {...props} stripes={this.clone(extraProps)} />;
   }
 }
 

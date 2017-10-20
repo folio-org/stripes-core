@@ -5,7 +5,7 @@ import css from './trivial.css';
 class About extends React.Component {
   static propTypes = {
     dataKey: PropTypes.string,
-    data: PropTypes.shape({
+    resources: PropTypes.shape({
       greetingParams: PropTypes.shape({
         greeting: PropTypes.string,
         name: PropTypes.string,
@@ -29,8 +29,8 @@ class About extends React.Component {
   render() {
     const dk = this.props.dataKey || '';
     let greeting;
-    if (this.props.data.greetingParams) {
-      greeting = <h3>{this.props.data.greetingParams.greeting} {this.props.data.greetingParams.name}</h3>;
+    if (this.props.resources.greetingParams) {
+      greeting = <h3>{this.props.resources.greetingParams.greeting} {this.props.resources.greetingParams.name}</h3>;
     } else {
       greeting = <h3>No one here :(</h3>;
     }

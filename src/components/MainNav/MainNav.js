@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Dropdown } from 'react-bootstrap';
+import { Dropdown } from '@folio/stripes-components/lib/Dropdown'; // eslint-disable-line
 import { withRouter } from 'react-router';
 import localforage from 'localforage';
 
-import { modules } from 'stripes-loader'; // eslint-disable-line
+import { modules } from 'stripes-config'; // eslint-disable-line
 
 import { clearOkapiToken, clearCurrentUser } from '../../okapiActions';
 import { resetStore } from '../../mainActions';
@@ -24,7 +24,6 @@ if (!Array.isArray(modules.app) || modules.app.length < 1) {
 }
 
 class MainNav extends Component {
-
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
@@ -172,7 +171,7 @@ class MainNav extends Component {
     }
 
     return (
-      <nav role="navigation" className={css.navRoot}>
+      <nav className={css.navRoot}>
         {firstNav}
         <NavGroup>
           <NavGroup>
@@ -182,8 +181,8 @@ class MainNav extends Component {
           </NavGroup>
           <NavGroup className={css.smallAlignRight}>
             <Dropdown open={this.state.userMenuOpen} id="UserMenuDropDown" onToggle={this.toggleUserMenu} pullRight >
-              <NavButton bsRole="toggle" title="User Menu" aria-haspopup="true" aria-expanded={this.state.userMenuOpen}><NavIcon icon={userIcon} /></NavButton>
-              <NavDropdownMenu bsRole="menu" onToggle={this.toggleUserMenu} aria-label="User Menu">{userDD}</NavDropdownMenu>
+              <NavButton data-role="toggle" title="User Menu" aria-haspopup="true" aria-expanded={this.state.userMenuOpen}><NavIcon icon={userIcon} /></NavButton>
+              <NavDropdownMenu data-role="menu" onToggle={this.toggleUserMenu} aria-label="User Menu">{userDD}</NavDropdownMenu>
             </Dropdown>
           </NavGroup>
         </NavGroup>

@@ -16,9 +16,9 @@ for i in `echo '
     stripes-loader
     stripes-connect
     stripes-components
+    stripes-smart-components
     stripes-react-hotkeys
     stripes-logger
-    stripes-redux
     stripes-form
     stripes-core
     stripes-sample-platform
@@ -26,6 +26,7 @@ for i in `echo '
     ui-okapi-console
     ui-users
     ui-items
+    ui-instances
     ui-checkin
     ui-checkout
     ui-circulation
@@ -33,14 +34,15 @@ for i in `echo '
     ui-developer
     ui-plugin-example
     ui-plugin-find-user
+    ui-requests
     ui-testing
     eslint-config-stripes
 '`; do
-    echo === $i ===
     (
         cd $i
         branch=`git branch | sed -n 's/^\* //p'`
-        if [ "x$branch" != xmaster ]; then
+	echo "=== $i ($branch) ==="
+        if [ "x$branch" != xmaster -a "x$branch" != xdev -a "x$branch" != x`whoami` ]; then
             echo "*** on branch '$branch': doing nothing"
         else
             if git status | grep 'nothing to commit' > /dev/null; then
