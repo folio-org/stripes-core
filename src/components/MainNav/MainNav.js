@@ -15,7 +15,7 @@ import NavDivider from './NavDivider';
 import NavGroup from './NavGroup';
 import Breadcrumbs from './Breadcrumbs';
 import NavIcon from './NavIcon';
-import NotificationsDropdown from './Notifications/NotificationsDropdown';
+import NotificationsDropdown from '@folio/stripes-smart-components/lib/Notifications/NotificationsDropdown';
 
 import NavDropdownMenu from './NavDropdownMenu';
 
@@ -177,7 +177,7 @@ class MainNav extends Component {
           <NavGroup>
             {menuLinks}
             <NavDivider md="hide" />
-            <NotificationsDropdown />
+            <NotificationsDropdown stripes={stripes} {...this.props} />
           </NavGroup>
           <NavGroup className={css.smallAlignRight}>
             <Dropdown open={this.state.userMenuOpen} id="UserMenuDropDown" onToggle={this.toggleUserMenu} pullRight >
