@@ -102,9 +102,9 @@ const About = (props) => {
           <b>Key.</b>
           <br />
           Installed modules that are not enabled for this tenant are
-           displayed <span style={{ textDecoration: 'line-through' }}>struck
-           through</span>.
-         </p>
+          displayed <span style={{ textDecoration: 'line-through' }}>struck
+          through</span>.
+        </p>
 
         <h4>{ni} interface{ni === 1 ? '' : 's'}</h4>
         <ul>
@@ -141,6 +141,7 @@ About.propTypes = {
       modules: PropTypes.object,
       interfaces: PropTypes.object,
     }),
+    connect: PropTypes.func,
   }).isRequired,
 };
 

@@ -23,7 +23,7 @@ import { stripesShape } from './Stripes';
 
 const RootWithIntl = (props, context) => {
   const intl = context.intl;
-  const connect = connectFor('@folio/core', props.stripes.epics, props.stripes.logger)
+  const connect = connectFor('@folio/core', props.stripes.epics, props.stripes.logger);
   const stripes = props.stripes.clone({ intl, connect });
   const { token, disableAuth, history } = props;
 
