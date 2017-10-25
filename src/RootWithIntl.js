@@ -6,6 +6,7 @@ import Switch from 'react-router-dom/Switch';
 import { Provider } from 'react-redux';
 import { CookiesProvider } from 'react-cookie';
 import { HotKeys } from '@folio/stripes-components/lib/HotKeys';
+import { connectFor } from '@folio/stripes-connect';
 import { intlShape } from 'react-intl';
 
 import MainContainer from './components/MainContainer';
@@ -22,7 +23,8 @@ import { stripesShape } from './Stripes';
 
 const RootWithIntl = (props, context) => {
   const intl = context.intl;
-  const stripes = props.stripes.clone({ intl });
+  const connect = connectFor('@folio/core', props.stripes.epics, props.stripes.logger)
+  const stripes = props.stripes.clone({ intl, connect });
   const { token, disableAuth, history } = props;
 
   return (

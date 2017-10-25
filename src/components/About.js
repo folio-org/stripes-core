@@ -12,8 +12,8 @@ import stripesLogger from '@folio/stripes-logger/package.json';
 
 import Pane from '@folio/stripes-components/lib/Pane';
 import Paneset from '@folio/stripes-components/lib/Paneset';
-
 import { isVersionCompatible } from '../discoverServices';
+import AboutEnabledModules from './AboutEnabledModules';
 
 const About = (props) => {
   function renderDependencies(m, interfaces) {
@@ -67,6 +67,7 @@ const About = (props) => {
   const interfaces = _.get(props.stripes, ['discovery', 'interfaces']) || {};
   const nm = Object.keys(modules).length;
   const ni = Object.keys(interfaces).length;
+  const ConnectedAboutEnabledModules = props.stripes.connect(AboutEnabledModules);
 
   return (
     <Paneset>
@@ -96,9 +97,14 @@ const About = (props) => {
           <li>On URL {_.get(props.stripes, ['okapi', 'url']) || 'unknown'}</li>
         </ul>
         <h4>{nm} module{nm === 1 ? '' : 's'}</h4>
-        <ul>
-          {Object.keys(modules).sort().map(key => <li key={key}>{modules[key]} (<tt>{key}</tt>)</li>)}
-        </ul>
+        <ConnectedAboutEnabledModules tenantid={_.get(props.stripes, ['okapi', 'tenant']) || 'unknown'} availableModules={modules} />
+        <p>
+          <b>Key.</b>
+          <br />
+          Installed modules that are not enabled for this tenant are
+           displayed <span style={{ textDecoration: 'line-through' }}>struck
+           through</span>.
+         </p>
 
         <h4>{ni} interface{ni === 1 ? '' : 's'}</h4>
         <ul>
