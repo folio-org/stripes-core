@@ -9,6 +9,7 @@
 * Move stripes-loader logic into stripes-core as a webpack plugin. STCOR-25.
 * Trivial app uses props.resources, not props.data. Fixes STCOR-92.
 * Label a tenant's disabled modules on `/about`. Fixes STCOR-69.
+* Removing `examples/trivial`; it's now a separate module. Fixes STCOR-94.
 
 ## [2.7.0](https://github.com/folio-org/stripes-core/tree/v2.7.0) (2017-09-01)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.6.1...v2.7.0)
