@@ -30,7 +30,7 @@ class AboutEnabledModules extends React.Component {
           Object.keys(this.props.availableModules).sort().map((key) => {
             let style = {};
             if (!em[key]) {
-              style = { textDecoration: 'line-through' };
+              style = { color: '#ccc' };
             }
 
             return <li key={key} style={style}>{this.props.availableModules[key]} (<tt>{key}</tt>)</li>;
