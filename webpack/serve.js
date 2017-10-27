@@ -39,6 +39,10 @@ module.exports = function serve(stripesConfig, options) {
   if (options.devtool) {
     config.devtool = options.devtool;
   }
+  // Give the caller a chance to apply their own webpack overrides
+  if (options.webpackOverrides && typeof options.webpackOverrides === 'function') {
+    options.webpackOverrides(config);
+  }
 
   const compiler = webpack(config);
 

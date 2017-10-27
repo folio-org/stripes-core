@@ -16,6 +16,10 @@ module.exports = function build(stripesConfig, options, callback) {
   if (options.publicPath) {
     config.output.publicPath = options.publicPath;
   }
+  // Give the caller a chance to apply their own webpack overrides
+  if (options.webpackOverrides && typeof options.webpackOverrides === 'function') {
+    options.webpackOverrides(config);
+  }
 
   const compiler = webpack(config);
   compiler.run(callback);
