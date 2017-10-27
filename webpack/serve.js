@@ -26,7 +26,7 @@ const cachePlugin = new HardSourceWebpackPlugin({
 
 module.exports = function serve(stripesConfig, options) {
   const app = express();
-  const config = require('../webpack.config.cli.dev'); // eslint-disable-line
+  let config = require('../webpack.config.cli.dev'); // eslint-disable-line
 
   config.plugins.push(new StripesConfigPlugin(stripesConfig));
 
@@ -41,7 +41,7 @@ module.exports = function serve(stripesConfig, options) {
   }
   // Give the caller a chance to apply their own webpack overrides
   if (options.webpackOverrides && typeof options.webpackOverrides === 'function') {
-    options.webpackOverrides(config);
+    config = options.webpackOverrides(config);
   }
 
   const compiler = webpack(config);

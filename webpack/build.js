@@ -5,7 +5,7 @@ const StripesConfigPlugin = require('./stripes-config-plugin');
 const platformModulePath = path.join(path.resolve(), 'node_modules');
 
 module.exports = function build(stripesConfig, options, callback) {
-  const config = require('../webpack.config.cli.prod'); // eslint-disable-line
+  let config = require('../webpack.config.cli.prod'); // eslint-disable-line
 
   config.plugins.push(new StripesConfigPlugin(stripesConfig));
   config.resolve.modules = ['node_modules', platformModulePath];
@@ -18,7 +18,7 @@ module.exports = function build(stripesConfig, options, callback) {
   }
   // Give the caller a chance to apply their own webpack overrides
   if (options.webpackOverrides && typeof options.webpackOverrides === 'function') {
-    options.webpackOverrides(config);
+    config = options.webpackOverrides(config);
   }
 
   const compiler = webpack(config);
