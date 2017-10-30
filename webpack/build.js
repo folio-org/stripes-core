@@ -9,6 +9,7 @@ module.exports = function build(stripesConfig, options, callback) {
 
   config.plugins.push(new StripesConfigPlugin(stripesConfig));
   config.resolve.modules = ['node_modules', platformModulePath];
+  config.resolveLoader = { modules: ['node_modules', platformModulePath] };
 
   if (options.outputPath) {
     config.output.path = path.resolve(options.outputPath);

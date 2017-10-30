@@ -32,6 +32,7 @@ module.exports = function serve(stripesConfig, options) {
 
   // Look for modules in node_modules, then the platform, then stripes-core
   config.resolve.modules = ['node_modules', platformModulePath, coreModulePath];
+  config.resolveLoader = { modules: ['node_modules', platformModulePath, coreModulePath] };
 
   if (options.cache) {
     config.plugins.push(cachePlugin);
