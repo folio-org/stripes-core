@@ -36,6 +36,7 @@ for i in `echo '
     ui-plugin-find-user
     ui-requests
     ui-testing
+    ui-trivial
     eslint-config-stripes
 '`; do
     (
