@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { isVersionCompatible } from './discoverServices';
@@ -28,8 +29,10 @@ class Stripes {
       logger.log('perm', `not checking perm '${perm}': no user permissions yet`);
       return undefined;
     }
-    logger.log('perm', `checking perm '${perm}': `, !!this.user.perms[perm]);
-    return this.user.perms[perm] || false;
+
+    const ok = _.every(perm.split(','), p => !!this.user.perms[p]);
+    logger.log('perm', `checking perm '${perm}': `, ok);
+    return ok;
   }
 
   hasInterface(name, versionWanted) {
