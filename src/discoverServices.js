@@ -9,9 +9,7 @@ import 'isomorphic-fetch';
 
 function discoverInterfaces(okapiUrl, store, entry) {
   return fetch(`${okapiUrl}/_/proxy/modules/${entry.id}`)
-    .catch((reason) => {
-      store.dispatch({ type: 'DISCOVERY_FAILURE', message: reason });
-    }).then((response) => { // eslint-disable-line consistent-return
+    .then((response) => { // eslint-disable-line consistent-return
       if (response.status >= 400) {
         store.dispatch({ type: 'DISCOVERY_FAILURE', code: response.status });
       } else {
@@ -19,15 +17,15 @@ function discoverInterfaces(okapiUrl, store, entry) {
           store.dispatch({ type: 'DISCOVERY_INTERFACES', data: json });
         });
       }
+    }).catch((reason) => {
+      store.dispatch({ type: 'DISCOVERY_FAILURE', message: reason });
     });
 }
 
 export function discoverServices(okapiUrl, store) {
   return Promise.all([
     fetch(`${okapiUrl}/_/version`)
-      .catch((reason) => {
-        store.dispatch({ type: 'DISCOVERY_FAILURE', message: reason });
-      }).then((response) => { // eslint-disable-line consistent-return
+      .then((response) => { // eslint-disable-line consistent-return
         if (response.status >= 400) {
           store.dispatch({ type: 'DISCOVERY_FAILURE', code: response.status });
         } else {
@@ -35,11 +33,11 @@ export function discoverServices(okapiUrl, store) {
             store.dispatch({ type: 'DISCOVERY_OKAPI', version: text });
           });
         }
+      }).catch((reason) => {
+        store.dispatch({ type: 'DISCOVERY_FAILURE', message: reason });
       }),
     fetch(`${okapiUrl}/_/proxy/modules`)
-      .catch((reason) => {
-        store.dispatch({ type: 'DISCOVERY_FAILURE', message: reason });
-      }).then((response) => { // eslint-disable-line consistent-return
+      .then((response) => { // eslint-disable-line consistent-return
         if (response.status >= 400) {
           store.dispatch({ type: 'DISCOVERY_FAILURE', code: response.status });
         } else {
@@ -48,6 +46,8 @@ export function discoverServices(okapiUrl, store) {
             return Promise.all(json.map(entry => discoverInterfaces(okapiUrl, store, entry)));
           });
         }
+      }).catch((reason) => {
+        store.dispatch({ type: 'DISCOVERY_FAILURE', message: reason });
       }),
   ]).then(() => {
     store.dispatch({ type: 'DISCOVERY_FINISHED' });
