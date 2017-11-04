@@ -6,6 +6,7 @@ import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/throttleTime';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/take';
+import 'rxjs/add/operator/switchMap';
 
 export default function configureEpics(...initialEpics) {
   const epic$ = new BehaviorSubject(combineEpics(...initialEpics));
