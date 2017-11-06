@@ -1,11 +1,12 @@
 @import '../variables.css';
 
 .navRoot{
-    display: flex;
-    justify-content: space-between;
-    align-content: stretch;
-    width: 100%;
-    border-bottom: 2px solid #ccc;
+  display: flex;
+  justify-content: space-between;
+  align-content: stretch;
+  width: 100%;
+  border-bottom: 2px solid #ccc;
+  flex: 0 0 auto;
 }
 
 .nowrap{
@@ -74,11 +75,10 @@
   .ddButton{
     height: var(--controlHeightSmall);
   }
-  
+
   .ddLink{
     height: var(--controlHeightSmall);
     display: flex;
     align-items: center;
   }
 }
-

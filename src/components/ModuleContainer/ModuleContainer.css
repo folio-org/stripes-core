@@ -1,5 +1,7 @@
 .moduleContainer{
-    flex-grow: 2;
-    position: relative;
-    outline: none;
+  flex-grow: 2;
+  position: relative;
+  outline: none;
+  flex: 1 1 auto;
+  overflow-y: auto;
 }
