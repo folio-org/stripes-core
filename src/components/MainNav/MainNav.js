@@ -8,6 +8,7 @@ import { modules } from 'stripes-config'; // eslint-disable-line
 
 import { clearOkapiToken, clearCurrentUser } from '../../okapiActions';
 import { resetStore } from '../../mainActions';
+import queryString from 'query-string';
 
 import css from './MainNav.css';
 import NavButton from './NavButton';
@@ -117,14 +118,52 @@ class MainNav extends Component {
       </ul>
     );
 
+    let unsub;
+    let queryValues;
+    const subscribeToQueryChanges = moduleInfo => {
+      if(unsub) unsub();
+      unsub = this.store.subscribe(()=>{
+        const storeKey = moduleInfo.module.replace("@", "").replace("/", "_") + "_" + moduleInfo.queryResource; 
+        let previousQueryValues = queryValues
+        queryValues = this.store.getState()[storeKey];
+        if (previousQueryValues !== queryValues) {
+          const location = this.props.location;
+          let query = location.query;
+          if (query === undefined)
+            query = queryString.parse(location.search);
+        
+          const allParams = Object.assign({}, query, queryValues);
+          const keys = Object.keys(allParams);
+        
+          let url = location.pathname;
+          if (keys.length) {
+            url += `?${queryString.stringify(allParams)}`;
+          }
+        
+          this.props.history.replace(url);
+        }
+      });
+    }
+
+    const handleNavigation = entry => e => {
+      subscribeToQueryChanges(entry);
+      this.props.history.push(this.lastVisited[name] || entry.home || entry.route);
+    }
+
     const menuLinks = modules.app.map((entry) => {
       const name = entry.module.replace(/^@[a-z0-9_]+\//, '');
       const perm = `module.${name}.enabled`;
       const navId = `clickable-${name}-module`;
 
       if (!stripes.hasPerm(perm)) return null;
+      
+      const selected = pathname.startsWith(entry.route);
 
-      return (<NavButton id={navId} selected={pathname.startsWith(entry.route)} href={this.lastVisited[name] || entry.home || entry.route} title={entry.displayName} key={entry.route}>
+      if(selected) {
+        subscribeToQueryChanges(entry)
+      }
+
+      return (<NavButton id={navId} selected={selected} onClick={handleNavigation(entry)} title={entry.displayName} key={entry.route}>
         <NavIcon color="#61f160" />
         <span className={css.linkLabel}>
           {entry.displayName}
