@@ -60,9 +60,6 @@ class Stripes {
     return new Stripes(Object.assign({}, this, extraProps));
   }
 
-  extendStripesProps(Module, extraProps = {}) {
-    return props => <Module {...props} stripes={this.clone(extraProps)} />;
-  }
 }
 
 export default Stripes;

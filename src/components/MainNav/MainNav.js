@@ -54,11 +54,20 @@ class MainNav extends Component {
     this.toggleUserMenu = this.toggleUserMenu.bind(this);
     this.logout = this.logout.bind(this);
     this.lastVisited = {};
+    this.unsub;
+    this.queryValues;
 
     const moduleList = modules.app.concat({
       route: '/settings',
       module: '@folio/x_settings',
     });
+
+    for (const entry of moduleList) {
+      if(props.location.pathname.startsWith(entry.route)) {
+        this.populateQueryResource(entry);
+        this.subscribeToQueryChanges(entry);
+      }  
+    }
 
     props.history.listen((hist) => {
       for (const entry of moduleList) {
@@ -83,6 +92,51 @@ class MainNav extends Component {
     this.store.dispatch(resetStore());
     localforage.removeItem('okapiSess');
     this.context.router.history.push('/');
+  }
+
+  populateQueryResource(moduleInfo) {
+    console.log("populating value", queryString.parse(location.search));
+    this.store.dispatch({
+      type: '@@stripes-connect/LOCAL_REPLACE',
+      payload: queryString.parse(location.search),
+      meta: {
+        module: moduleInfo.module,
+        resource: moduleInfo.queryResource,
+        dataKey: moduleInfo.dataKey,
+      },
+    });
+  }
+
+  subscribeToQueryChanges(moduleInfo) {
+    if(this.unsub) this.unsub();
+    if(!moduleInfo.queryResource) return;
+    this.unsub = this.store.subscribe(()=>{
+      const storeKey = moduleInfo.module.replace("@", "").replace("/", "_") + "_" + moduleInfo.queryResource; 
+      let previousQueryValues = this.queryValues
+      this.queryValues = this.store.getState()[storeKey];
+      if (previousQueryValues !== this.queryValues) {
+        const location = this.props.location;
+        let query = location.query;
+        if (query === undefined)
+          query = queryString.parse(location.search);
+      
+        const allParams = Object.assign({}, query, this.queryValues);
+        const keys = Object.keys(allParams);
+      
+        let url = location.pathname;
+        if (keys.length) {
+          url += `?${queryString.stringify(allParams)}`;
+        }
+        this.props.history.replace(url);
+      }
+    });
+  }
+
+  handleNavigation(entry) {
+    return e => {
+      this.subscribeToQueryChanges(entry);
+      this.props.history.push(this.lastVisited[name] || entry.home || entry.route);
+    }
   }
 
   render() {
@@ -118,38 +172,6 @@ class MainNav extends Component {
       </ul>
     );
 
-    let unsub;
-    let queryValues;
-    const subscribeToQueryChanges = moduleInfo => {
-      if(unsub) unsub();
-      unsub = this.store.subscribe(()=>{
-        const storeKey = moduleInfo.module.replace("@", "").replace("/", "_") + "_" + moduleInfo.queryResource; 
-        let previousQueryValues = queryValues
-        queryValues = this.store.getState()[storeKey];
-        if (previousQueryValues !== queryValues) {
-          const location = this.props.location;
-          let query = location.query;
-          if (query === undefined)
-            query = queryString.parse(location.search);
-        
-          const allParams = Object.assign({}, query, queryValues);
-          const keys = Object.keys(allParams);
-        
-          let url = location.pathname;
-          if (keys.length) {
-            url += `?${queryString.stringify(allParams)}`;
-          }
-        
-          this.props.history.replace(url);
-        }
-      });
-    }
-
-    const handleNavigation = entry => e => {
-      subscribeToQueryChanges(entry);
-      this.props.history.push(this.lastVisited[name] || entry.home || entry.route);
-    }
-
     const menuLinks = modules.app.map((entry) => {
       const name = entry.module.replace(/^@[a-z0-9_]+\//, '');
       const perm = `module.${name}.enabled`;
@@ -159,11 +181,7 @@ class MainNav extends Component {
       
       const selected = pathname.startsWith(entry.route);
 
-      if(selected) {
-        subscribeToQueryChanges(entry)
-      }
-
-      return (<NavButton id={navId} selected={selected} onClick={handleNavigation(entry)} title={entry.displayName} key={entry.route}>
+      return (<NavButton id={navId} selected={pathname.startsWith(entry.route)} onClick={this.handleNavigation(entry)} title={entry.displayName} key={entry.route}>
         <NavIcon color="#61f160" />
         <span className={css.linkLabel}>
           {entry.displayName}
