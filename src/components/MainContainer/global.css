@@ -69,6 +69,14 @@ hr{border: 1px solid #cdcdcd;
 .marginTopHalf{margin-top: .5rem !important;}
 .floatEnd{float: right !important;}
 
+.sr-only{
+    position: absolute;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    clip-path: inset(50%);
+    border: 0;
+}
+
 body[dir="rtl"] .floatEnd, html[dir="rtl"] .floatEnd{
 
     float: left !important;
