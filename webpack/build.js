@@ -17,6 +17,9 @@ module.exports = function build(stripesConfig, options, callback) {
   if (options.publicPath) {
     config.output.publicPath = options.publicPath;
   }
+  if (options.sourcemap) {
+    config.devtool = 'source-map';
+  }
   // Give the caller a chance to apply their own webpack overrides
   if (options.webpackOverrides && typeof options.webpackOverrides === 'function') {
     config = options.webpackOverrides(config);
