@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import moment from 'moment'; // eslint-disable-line import/no-extraneous-dependencies
 import { Dropdown } from '@folio/stripes-components/lib/Dropdown';
 import DropdownMenu from '@folio/stripes-components/lib/DropdownMenu';
@@ -6,6 +7,12 @@ import NotificationsButton from './NotificationsButton';
 import NotificationsMenu from './NotificationsMenu';
 
 class NotificationsDropdown extends React.Component {
+  static propTypes = {
+    stripes: PropTypes.shape({
+      connect: PropTypes.func.isRequired,
+    }).isRequired,
+  };
+
   constructor(props) {
     super(props);
 
@@ -15,6 +22,7 @@ class NotificationsDropdown extends React.Component {
     };
 
     this.handleToggle = this.handleToggle.bind(this);
+    this.connectedNotificationsMenu = props.stripes.connect(NotificationsMenu);
   }
 
   handleToggle() {
@@ -33,7 +41,10 @@ class NotificationsDropdown extends React.Component {
       <Dropdown onToggle={this.handleToggle} open={this.state.dropdownOpen}>
         <NotificationsButton data-role="toggle" title="Notifications" />
         <DropdownMenu data-role="menu" onToggle={this.handleToggle}>
-          <NotificationsMenu lastOpen={this.state.lastOpen} />
+          <this.connectedNotificationsMenu
+            lastOpen={this.state.lastOpen}
+            {...this.props}
+          />
         </DropdownMenu>
       </Dropdown>
     );

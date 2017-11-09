@@ -15,7 +15,7 @@ import NavDivider from './NavDivider';
 import NavGroup from './NavGroup';
 import Breadcrumbs from './Breadcrumbs';
 import NavIcon from './NavIcon';
-import NotificationsDropdown from '@folio/stripes-smart-components/lib/Notifications/NotificationsDropdown';
+import NotificationsDropdown from './Notifications/NotificationsDropdown';
 
 import NavDropdownMenu from './NavDropdownMenu';
 
