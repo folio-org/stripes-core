@@ -11,6 +11,7 @@ const specificReact = generateStripesAlias('react');
 
 module.exports = {
   entry: [
+    'typeface-source-sans-pro',
     path.join(__dirname, 'src', 'index'),
   ],
   resolve: {
@@ -55,7 +56,11 @@ module.exports = {
       },
       {
         test: /\.(jpg|jpeg|gif|png|ico)$/,
-        loader: 'file-loader?name=img/[path][name].[ext]',
+        loader: 'file-loader?name=img/[path][name].[hash].[ext]',
+      },
+      {
+        test: /\.(woff2?)$/,
+        loader: 'file-loader?name=fonts/[name].[hash].[ext]',
       },
     ],
   },
