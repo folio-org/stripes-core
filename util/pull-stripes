@@ -13,7 +13,6 @@ fi
 
 cd $dir
 for i in `echo '
-    stripes-loader
     stripes-connect
     stripes-components
     stripes-smart-components
