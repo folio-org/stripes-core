@@ -1,6 +1,7 @@
 // Top level Webpack configuration for building static files for
 // production deployment from the command line
 
+const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const postCssImport = require('postcss-import');
@@ -24,6 +25,7 @@ prodConfig.plugins = prodConfig.plugins.concat([
   new ExtractTextPlugin({ filename: 'style.[contenthash].css', allChunks: true }),
   new OptimizeCssAssetsPlugin(),
   new StripesDuplicatesPlugin(),
+  new webpack.EnvironmentPlugin(['NODE_ENV']),
 ]);
 
 prodConfig.module.rules.push({
