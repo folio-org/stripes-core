@@ -7,6 +7,7 @@ const webpackDevMiddleware = require('webpack-dev-middleware');
 const webpackHotMiddleware = require('webpack-hot-middleware');
 const connectHistoryApiFallback = require('connect-history-api-fallback');
 const StripesConfigPlugin = require('./stripes-config-plugin');
+const applyWebpackOverrides = require('./apply-webpack-overrides');
 
 const cwd = path.resolve();
 const platformModulePath = path.join(cwd, 'node_modules');
@@ -41,9 +42,7 @@ module.exports = function serve(stripesConfig, options) {
     config.devtool = options.devtool;
   }
   // Give the caller a chance to apply their own webpack overrides
-  if (options.webpackOverrides && typeof options.webpackOverrides === 'function') {
-    config = options.webpackOverrides(config);
-  }
+  config = applyWebpackOverrides(options.webpackOverrides, config);
 
   const compiler = webpack(config);
 
