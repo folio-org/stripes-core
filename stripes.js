@@ -43,6 +43,7 @@ commander
 commander
   .command('build')
   .option('--publicPath [publicPath]', 'publicPath')
+  .option('--sourcemap', 'include sourcemaps in build')
   .arguments('<config> <output>')
   .description('Build a tenant bundle')
   .action((stripesConfigFile, outputPath, options) => {

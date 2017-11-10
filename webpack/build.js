@@ -1,6 +1,7 @@
 const webpack = require('webpack');
 const path = require('path');
 const StripesConfigPlugin = require('./stripes-config-plugin');
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 const platformModulePath = path.join(path.resolve(), 'node_modules');
 
@@ -18,6 +19,13 @@ module.exports = function build(stripesConfig, options) {
     if (options.publicPath) {
       config.output.publicPath = options.publicPath;
     }
+    if (options.sourcemap) {
+      config.devtool = 'source-map';
+    }
+    config.plugins.push(new UglifyJSPlugin({
+      sourceMap: config.devtool && config.devtool === 'source-map',
+    }));
+
     // Give the caller a chance to apply their own webpack overrides
     if (options.webpackOverrides && typeof options.webpackOverrides === 'function') {
       config = options.webpackOverrides(config);
