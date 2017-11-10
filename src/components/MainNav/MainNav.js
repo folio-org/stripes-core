@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import queryString from 'query-string';
+import _ from 'lodash';
+
 import { Dropdown } from '@folio/stripes-components/lib/Dropdown'; // eslint-disable-line
 import { withRouter } from 'react-router';
 import localforage from 'localforage';
@@ -8,7 +11,6 @@ import { modules } from 'stripes-config'; // eslint-disable-line
 
 import { clearOkapiToken, clearCurrentUser } from '../../okapiActions';
 import { resetStore } from '../../mainActions';
-import queryString from 'query-string';
 
 import css from './MainNav.css';
 import NavButton from './NavButton';
@@ -39,6 +41,8 @@ class MainNav extends Component {
     }),
     history: PropTypes.shape({
       listen: PropTypes.func.isRequired,
+      replace: PropTypes.func.isRequired,
+      push: PropTypes.func.isRequired,
     }).isRequired,
     location: PropTypes.shape({
       pathname: PropTypes.string,
@@ -54,8 +58,8 @@ class MainNav extends Component {
     this.toggleUserMenu = this.toggleUserMenu.bind(this);
     this.logout = this.logout.bind(this);
     this.lastVisited = {};
-    this.unsub;
-    this.queryValues;
+    this.unsub = null;
+    this.queryValues = null;
 
     const moduleList = modules.app.concat({
       route: '/settings',
@@ -63,10 +67,9 @@ class MainNav extends Component {
     });
 
     for (const entry of moduleList) {
-      if(props.location.pathname.startsWith(entry.route)) {
-        this.populateQueryResource(entry);
+      if (props.location.pathname.startsWith(entry.route)) {
         this.subscribeToQueryChanges(entry);
-      }  
+      }
     }
 
     props.history.listen((hist) => {
@@ -94,36 +97,22 @@ class MainNav extends Component {
     this.context.router.history.push('/');
   }
 
-  populateQueryResource(moduleInfo) {
-    console.log("populating value", queryString.parse(location.search));
-    this.store.dispatch({
-      type: '@@stripes-connect/LOCAL_REPLACE',
-      payload: queryString.parse(location.search),
-      meta: {
-        module: moduleInfo.module,
-        resource: moduleInfo.queryResource,
-        dataKey: moduleInfo.dataKey,
-      },
-    });
-  }
-
   subscribeToQueryChanges(moduleInfo) {
-    if(this.unsub) this.unsub();
-    if(!moduleInfo.queryResource) return;
-    this.unsub = this.store.subscribe(()=>{
-      const storeKey = moduleInfo.module.replace("@", "").replace("/", "_") + "_" + moduleInfo.queryResource; 
-      let previousQueryValues = this.queryValues
-      this.queryValues = this.store.getState()[storeKey];
+    if (this.unsub) this.unsub();
+    if (!moduleInfo.queryResource) return;
+    this.unsub = this.store.subscribe(() => {
+      const previousQueryValues = this.queryValues;
+      // This is not DRY, as it was expressed already in LocalResource is stripes-connect,
+      // And in Root.js in stripes-core. Both State Keys should be derived from a common mechanism.
+      this.queryValues = this.store.getState()[`${moduleInfo.dataKey ? `${moduleInfo.dataKey}#` : ''}${_.snakeCase(moduleInfo.module)}_${moduleInfo.queryResource}`];
       if (previousQueryValues !== this.queryValues) {
         const location = this.props.location;
-        let query = location.query;
-        if (query === undefined)
-          query = queryString.parse(location.search);
-      
+        const query = location.query ? location.query : queryString.parse(location.search);
         const allParams = Object.assign({}, query, this.queryValues);
         const keys = Object.keys(allParams);
-      
+
         let url = location.pathname;
+
         if (keys.length) {
           url += `?${queryString.stringify(allParams)}`;
         }
@@ -133,10 +122,10 @@ class MainNav extends Component {
   }
 
   handleNavigation(entry) {
-    return e => {
+    return () => {
       this.subscribeToQueryChanges(entry);
       this.props.history.push(this.lastVisited[name] || entry.home || entry.route);
-    }
+    };
   }
 
   render() {
@@ -178,8 +167,6 @@ class MainNav extends Component {
       const navId = `clickable-${name}-module`;
 
       if (!stripes.hasPerm(perm)) return null;
-      
-      const selected = pathname.startsWith(entry.route);
 
       return (<NavButton id={navId} selected={pathname.startsWith(entry.route)} onClick={this.handleNavigation(entry)} title={entry.displayName} key={entry.route}>
         <NavIcon color="#61f160" />

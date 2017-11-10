@@ -4,6 +4,8 @@ import { combineReducers } from 'redux';
 import { connect } from 'react-redux';
 import createBrowserHistory from 'history/createBrowserHistory';
 import { IntlProvider } from 'react-intl';
+import queryString from 'query-string';
+import _ from 'lodash';
 
 import initialReducers from './initialReducers';
 import enhanceReducer from './enhanceReducer';
@@ -12,11 +14,24 @@ import { loadTranslations, checkOkapiSession } from './loginServices';
 import Stripes from './Stripes';
 import RootWithIntl from './RootWithIntl';
 
+import { modules } from 'stripes-config'; // eslint-disable-line
+
 class Root extends Component {
   constructor(...args) {
     super(...args);
     this.reducers = { ...initialReducers };
     this.epics = {};
+
+    for (const app of modules.app) {
+      if (window.location.pathname.startsWith(app.route) && app.queryResource) {
+        // This is not DRY, as it was expressed already in LocalResource is stripes-connect,
+        // And in MainNav.js in stripes-core. Both State Keys should be derived from a common mechanism.
+        if (app.queryResource) {
+          this.queryResourceStateKey = `${app.dataKey ? `${app.dataKey}#` : ''}${_.snakeCase(app.module)}_${app.queryResource}`;
+        }
+        break;
+      }
+    }
   }
 
   getChildContext() {
@@ -35,6 +50,13 @@ class Root extends Component {
   }
 
   addReducer = (key, reducer) => {
+    if (this.queryResourceStateKey === key) {
+      const originalReducer = reducer;
+      const initialQueryObject = queryString.parse(window.location.search);
+      // eslint-disable-next-line no-param-reassign
+      reducer = (state = Object.values(initialQueryObject).length ? initialQueryObject : undefined, action) => originalReducer(state, action);
+    }
+
     if (this.reducers[key] === undefined) {
       this.reducers[key] = reducer;
       this.props.store.replaceReducer(enhanceReducer(combineReducers({ ...this.reducers })));
