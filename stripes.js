@@ -7,18 +7,23 @@ const packageJSON = require('./package.json');
 
 commander.version(packageJSON.version);
 
-// Display webpack output to the console
-function processStats(err, stats) {
+// Display error to the console and exit
+function processError(err) {
   if (err) {
     console.error(err);
   }
+  process.exit(1);
+}
+
+// Display webpack output to the console
+function processStats(stats) {
   console.log(stats.toString({
     chunks: false,
     colors: true,
   }));
   // Check for webpack compile errors and exit
-  if (err || stats.hasErrors()) {
-    process.exit(1);
+  if (stats.hasErrors()) {
+    processError();
   }
 }
 
@@ -44,7 +49,9 @@ commander
   .action((stripesConfigFile, outputPath, options) => {
     const stripesConfig = require(path.resolve(stripesConfigFile)); // eslint-disable-line
     options.outputPath = outputPath;
-    stripes.build(stripesConfig, options, processStats);
+    stripes.build(stripesConfig, options)
+      .then(stats => processStats(stats))
+      .catch(err => processError(err));
   });
 
 commander.parse(process.argv);
