@@ -108,6 +108,8 @@ class MainNav extends Component {
       // And in Root.js in stripes-core. Both State Keys should be derived from a common mechanism.
       this.queryValues = this.store.getState()[`${moduleInfo.dataKey ? `${moduleInfo.dataKey}#` : ''}${_.snakeCase(moduleInfo.module)}_${moduleInfo.queryResource}`];
       if (previousQueryValues !== this.queryValues) {
+        // This is not DRY, as it was expressed already in utils/transitionToParams is stripes-connect,
+        // It is changed slightly, but I did not want to make changes to a method that is being used elswhere.
         const location = this.props.location;
         const query = location.query ? location.query : queryString.parse(location.search);
         const allParams = Object.assign({}, query, this.queryValues);
