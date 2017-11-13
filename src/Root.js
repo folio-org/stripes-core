@@ -26,9 +26,7 @@ class Root extends Component {
       if (window.location.pathname.startsWith(app.route) && app.queryResource) {
         // This is not DRY, as it was expressed already in LocalResource is stripes-connect,
         // And in MainNav.js in stripes-core. Both State Keys should be derived from a common mechanism.
-        if (app.queryResource) {
-          this.queryResourceStateKey = `${app.dataKey ? `${app.dataKey}#` : ''}${_.snakeCase(app.module)}_${app.queryResource}`;
-        }
+        this.queryResourceStateKey = `${app.dataKey ? `${app.dataKey}#` : ''}${_.snakeCase(app.module)}_${app.queryResource}`;
         break;
       }
     }
