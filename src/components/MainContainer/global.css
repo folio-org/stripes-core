@@ -1,76 +1,101 @@
-/*@import 'https://fonts.googleapis.com/css?family=Open+Sans:400,700&subset=cyrillic,cyrillic-ext,greek,greek-ext,latin-ext,vietnamese';
-*/
-*{
-    box-sizing: border-box;
+* {
+  box-sizing: border-box;
 }
 
-body, html{
-    height: 100%;
-    margin: 0;
-    /*font-family: 'Open Sans', sans-serif;*/
-    font-family: -apple-system,  BlinkMacSystemFont, "Segoe UI", Noto, DroidSans, Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", /*specific Arabic fonts */ "Adobe Arabic", "Myriad Arabic", /*specific other fonts */ "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", メイリオ, Meiryo, "ＭＳ Ｐゴシック", sans-serif;
-    font-size: 14px;
-    color: #444;
-    -webkit-font-smoothing: antialiased; 
+body, html {
+  height: 100%;
+  margin: 0;
+  font-family: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, "Segoe UI", Noto, DroidSans, Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", /*specific Arabic fonts */
+  "Adobe Arabic", "Myriad Arabic", /*specific other fonts */
+  "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", メイリオ, Meiryo, "ＭＳ Ｐゴシック", sans-serif;
+  font-size: 14px;
+  color: #444;
+  letter-spacing: 0.04em;
+  -webkit-font-smoothing: antialiased;
 }
 
-#root{
-    height: 100%;
+:global(#root) {
+  height: 100%;
 }
 
-a{
-    text-decoration: none;
+a {
+  text-decoration: none;
 }
 
-fieldset{
-    border: none;
+fieldset {
+  border: none;
 }
 
-legend{
-    font-size: 1.3em;
-    font-weight: bold;
+legend {
+  font-size: 1.3em;
+  font-weight: bold;
 }
 
-h1{
-    font-size: 1.9rem;
-}
-h2{
-    font-size: 1.7rem;
-}
-h3{
-    font-size: 1.5rem;
-}
-h4{
-    font-size: 1.3rem;
-}
-h5{
-    font-size: 1.1rem;
-}
-h6{
-    font-size: 1rem;
+h1 {
+  font-size: 1.9rem;
 }
 
-#root{
-    height: 100%;
+h2 {
+  font-size: 1.7rem;
 }
 
-ul{
-    margin: 0 0 14px 0;
+h3 {
+  font-size: 1.5rem;
 }
 
-hr{border: 1px solid #cdcdcd;
-   border-width: 0 0 1px 0;
+h4 {
+  font-size: 1.3rem;
 }
 
-.fullWidth{width: 100% !important;}
-.marginTop0{ margin-top: 0 !important}
-.marginBottom0{margin-bottom : 0 !important;}
-.marginBottomHalf{margin-bottom: .5rem !important;}
-.marginTopHalf{margin-top: .5rem !important;}
-.floatEnd{float: right !important;}
+h5 {
+  font-size: 1.1rem;
+}
 
-body[dir="rtl"] .floatEnd, html[dir="rtl"] .floatEnd{
+h6 {
+  font-size: 1rem;
+}
 
-    float: left !important;
+ul {
+  margin: 0 0 14px 0;
+}
 
+hr {
+  border: 1px solid #cdcdcd;
+  border-width: 0 0 1px 0;
+}
+
+:global(.fullWidth) {
+  width: 100% !important;
+}
+
+:global(.marginTop0) {
+  margin-top: 0 !important
+}
+
+:global(.marginBottom0) {
+  margin-bottom: 0 !important;
+}
+
+:global(.marginBottomHalf) {
+  margin-bottom: .5rem !important;
+}
+
+:global(.marginTopHalf) {
+  margin-top: .5rem !important;
+}
+
+:global(.floatEnd) {
+  float: right !important;
+}
+
+:global(.sr-only) {
+  position: absolute;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  clip-path: inset(50%);
+  border: 0;
+}
+
+:global(body[dir="rtl"] .floatEnd), :global(html[dir="rtl"] .floatEnd) {
+  float: left !important;
 }

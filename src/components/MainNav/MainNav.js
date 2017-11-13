@@ -18,6 +18,7 @@ import NavDivider from './NavDivider';
 import NavGroup from './NavGroup';
 import Breadcrumbs from './Breadcrumbs';
 import NavIcon from './NavIcon';
+import NotificationsDropdown from './Notifications/NotificationsDropdown';
 
 import NavDropdownMenu from './NavDropdownMenu';
 
@@ -38,6 +39,7 @@ class MainNav extends Component {
       store: PropTypes.shape({
         dispatch: PropTypes.func.isRequired,
       }),
+      hasPerm: PropTypes.func.isRequired,
     }),
     history: PropTypes.shape({
       listen: PropTypes.func.isRequired,
@@ -220,6 +222,7 @@ class MainNav extends Component {
           <NavGroup>
             {menuLinks}
             <NavDivider md="hide" />
+            { this.props.stripes.hasPerm('notify.item.get,notify.item.put,notify.collection.get') && <NotificationsDropdown stripes={stripes} {...this.props} /> }
           </NavGroup>
           <NavGroup className={css.smallAlignRight}>
             <Dropdown open={this.state.userMenuOpen} id="UserMenuDropDown" onToggle={this.toggleUserMenu} pullRight >

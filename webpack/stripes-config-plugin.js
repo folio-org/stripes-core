@@ -9,8 +9,14 @@ const VirtualModulesPlugin = require('webpack-virtual-modules');
 const serialize = require('serialize-javascript');
 
 // Loads description, version, and stripes configuration from a module's package.json
-function loadDefaults(context, moduleName) {
-  const aPath = require.resolve(path.join(context, 'node_modules', moduleName, '/package.json'));
+function loadDefaults(context, moduleName, alias) {
+  let aPath;
+  if (alias[moduleName]) {
+    aPath = require.resolve(path.join(alias[moduleName], 'package.json'));
+  } else {
+    aPath = require.resolve(path.join(context, 'node_modules', moduleName, '/package.json'));
+  }
+
   const { stripes, description, version } = require(aPath); // eslint-disable-line
   assert(_.isObject(stripes, `included module ${moduleName} does not have a "stripes" key in package.json`));
   assert(_.isString(stripes.type, `included module ${moduleName} does not specify stripes.type in package.json`));
@@ -24,10 +30,10 @@ function appendOrSingleton(maybeArray, newValue) {
 }
 
 // Generates stripes configuration for the tenant's enabled modules
-function parseStripesModules(enabledModules, context) {
+function parseStripesModules(enabledModules, context, alias) {
   const moduleConfigs = {};
   _.forOwn(enabledModules, (moduleConfig, moduleName) => {
-    const { stripes, description, version } = loadDefaults(context, moduleName);
+    const { stripes, description, version } = loadDefaults(context, moduleName, alias);
     const stripeConfig = Object.assign({}, stripes, moduleConfig, {
       module: moduleName,
       getModule: eval(`() => require('${moduleName}').default`), // eslint-disable-line no-eval
@@ -48,7 +54,7 @@ module.exports = class StripesConfigPlugin {
 
   apply(compiler) {
     const enabledModules = this.options.modules;
-    const moduleConfigs = parseStripesModules(enabledModules, compiler.context);
+    const moduleConfigs = parseStripesModules(enabledModules, compiler.context, compiler.options.resolve.alias);
     const mergedConfig = Object.assign({}, this.options, { modules: moduleConfigs });
 
     // Create a virtual module for Webpack to include in the build

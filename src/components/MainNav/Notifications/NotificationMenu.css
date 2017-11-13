@@ -1,0 +1,29 @@
+@import '@folio/stripes-components/lib/variables.css';
+
+.notificationMenu{
+  height: 250px;
+  min-width: 440px;
+  & a{
+    color: #444;
+    &:hover{
+      background-color: color(var(--bgHover) tint(20%));
+      text-decoration: none;
+    }
+  }
+}
+
+.notification{
+  border: 1px solid rgba(255, 255, 255, .5);
+  
+  background-color: var(--bgHover);
+  transition: background-color .2s ease;
+  &:hover{
+    background-color: color(var(--bgHover) tint(20%));
+  }
+  &.new{
+    background-color: color(var(--bg) shade(5%));
+    &:hover{
+      background-color: color(var(--bgHover) tint(20%));
+    }
+  }
+}
