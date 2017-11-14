@@ -2,6 +2,7 @@ const webpack = require('webpack');
 const path = require('path');
 const StripesConfigPlugin = require('./stripes-config-plugin');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+const applyWebpackOverrides = require('./apply-webpack-overrides');
 
 const platformModulePath = path.join(path.resolve(), 'node_modules');
 
@@ -27,9 +28,7 @@ module.exports = function build(stripesConfig, options) {
     }));
 
     // Give the caller a chance to apply their own webpack overrides
-    if (options.webpackOverrides && typeof options.webpackOverrides === 'function') {
-      config = options.webpackOverrides(config);
-    }
+    config = applyWebpackOverrides(options.webpackOverrides, config);
 
     const compiler = webpack(config);
     compiler.run((err, stats) => {
