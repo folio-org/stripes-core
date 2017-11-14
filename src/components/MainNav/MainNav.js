@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import queryString from 'query-string';
+import _ from 'lodash';
+
 import { Dropdown } from '@folio/stripes-components/lib/Dropdown'; // eslint-disable-line
 import { withRouter } from 'react-router';
 import localforage from 'localforage';
@@ -40,6 +43,8 @@ class MainNav extends Component {
     }),
     history: PropTypes.shape({
       listen: PropTypes.func.isRequired,
+      replace: PropTypes.func.isRequired,
+      push: PropTypes.func.isRequired,
     }).isRequired,
     location: PropTypes.shape({
       pathname: PropTypes.string,
@@ -55,11 +60,19 @@ class MainNav extends Component {
     this.toggleUserMenu = this.toggleUserMenu.bind(this);
     this.logout = this.logout.bind(this);
     this.lastVisited = {};
+    this.unsub = null;
+    this.queryValues = null;
 
     const moduleList = modules.app.concat({
       route: '/settings',
       module: '@folio/x_settings',
     });
+
+    for (const entry of moduleList) {
+      if (props.location.pathname.startsWith(entry.route)) {
+        this.subscribeToQueryChanges(entry);
+      }
+    }
 
     props.history.listen((hist) => {
       for (const entry of moduleList) {
@@ -84,6 +97,39 @@ class MainNav extends Component {
     this.store.dispatch(resetStore());
     localforage.removeItem('okapiSess');
     this.context.router.history.push('/');
+  }
+
+  subscribeToQueryChanges(moduleInfo) {
+    if (this.unsub) this.unsub();
+    if (!moduleInfo.queryResource) return;
+    this.unsub = this.store.subscribe(() => {
+      const previousQueryValues = this.queryValues;
+      // This is not DRY, as it was expressed already in LocalResource is stripes-connect,
+      // And in Root.js in stripes-core. Both State Keys should be derived from a common mechanism.
+      this.queryValues = this.store.getState()[`${moduleInfo.dataKey ? `${moduleInfo.dataKey}#` : ''}${_.snakeCase(moduleInfo.module)}_${moduleInfo.queryResource}`];
+      if (previousQueryValues !== this.queryValues) {
+        // This is not DRY, as it was expressed already in utils/transitionToParams is stripes-connect,
+        // It is changed slightly, but I did not want to make changes to a method that is being used elswhere.
+        const location = this.props.location;
+        const query = location.query ? location.query : queryString.parse(location.search);
+        const allParams = Object.assign({}, query, this.queryValues);
+        const keys = Object.keys(allParams);
+
+        let url = location.pathname;
+
+        if (keys.length) {
+          url += `?${queryString.stringify(allParams)}`;
+        }
+        this.props.history.replace(url);
+      }
+    });
+  }
+
+  handleNavigation(entry) {
+    return () => {
+      this.subscribeToQueryChanges(entry);
+      this.props.history.push(this.lastVisited[name] || entry.home || entry.route);
+    };
   }
 
   render() {
@@ -126,7 +172,7 @@ class MainNav extends Component {
 
       if (!stripes.hasPerm(perm)) return null;
 
-      return (<NavButton id={navId} selected={pathname.startsWith(entry.route)} href={this.lastVisited[name] || entry.home || entry.route} title={entry.displayName} key={entry.route}>
+      return (<NavButton id={navId} selected={pathname.startsWith(entry.route)} onClick={this.handleNavigation(entry)} title={entry.displayName} key={entry.route}>
         <NavIcon color="#61f160" />
         <span className={css.linkLabel}>
           {entry.displayName}
