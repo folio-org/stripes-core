@@ -5,7 +5,6 @@ const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const postCssImport = require('postcss-import');
-const postCssUrl = require('postcss-url');
 const autoprefixer = require('autoprefixer');
 const postCssCustomProperties = require('postcss-custom-properties');
 const postCssCalc = require('postcss-calc');
@@ -46,7 +45,6 @@ prodConfig.module.rules.push({
           ident: 'postcss',
           plugins: () => [
             postCssImport(),
-            postCssUrl(),
             autoprefixer(),
             postCssCustomProperties(),
             postCssCalc(),
