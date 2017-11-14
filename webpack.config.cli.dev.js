@@ -20,6 +20,7 @@ const devConfig = Object.assign({}, base, cli, {
   entry: [
     'webpack-hot-middleware/client',
     'typeface-source-sans-pro',
+    '@folio/stripes-components/lib/global.css',
     path.join(__dirname, 'src', 'index'),
   ],
 });

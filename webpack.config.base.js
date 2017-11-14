@@ -12,6 +12,7 @@ const specificReact = generateStripesAlias('react');
 module.exports = {
   entry: [
     'typeface-source-sans-pro',
+    '@folio/stripes-components/lib/global.css',
     path.join(__dirname, 'src', 'index'),
   ],
   resolve: {

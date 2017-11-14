@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import './global.css';
 import css from './MainContainer.css';
 
 const propTypes = {
