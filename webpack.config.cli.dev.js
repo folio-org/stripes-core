@@ -17,13 +17,9 @@ const cli = require('./webpack.config.cli');
 
 const devConfig = Object.assign({}, base, cli, {
   devtool: 'inline-source-map',
-  entry: [
-    'webpack-hot-middleware/client',
-    'typeface-source-sans-pro',
-    '@folio/stripes-components/lib/global.css',
-    path.join(__dirname, 'src', 'index'),
-  ],
 });
+
+devConfig.entry.unshift('webpack-hot-middleware/client');
 
 devConfig.plugins = devConfig.plugins.concat([
   new webpack.HotModuleReplacementPlugin(),
