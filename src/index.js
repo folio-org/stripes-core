@@ -10,7 +10,7 @@ import configureStore from './configureStore';
 import { discoverServices } from './discoverServices';
 import gatherActions from './gatherActions';
 
-import Root from './Root';
+import Root from './components/Root';
 
 const initialState = { okapi };
 const epics = configureEpics(connectErrorEpic);
