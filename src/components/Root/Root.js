@@ -7,12 +7,14 @@ import { IntlProvider } from 'react-intl';
 import queryString from 'query-string';
 import _ from 'lodash';
 
-import initialReducers from './initialReducers';
-import enhanceReducer from './enhanceReducer';
-import { setSinglePlugin, setBindings, setOkapiToken } from './okapiActions';
-import { loadTranslations, checkOkapiSession } from './loginServices';
-import Stripes from './Stripes';
-import RootWithIntl from './RootWithIntl';
+import initialReducers from '../../initialReducers';
+import enhanceReducer from '../../enhanceReducer';
+import { setSinglePlugin, setBindings, setOkapiToken } from '../../okapiActions';
+import { loadTranslations, checkOkapiSession } from '../../loginServices';
+import Stripes from '../../Stripes';
+import RootWithIntl from '../../RootWithIntl';
+
+import './Root.css';
 
 import { modules } from 'stripes-config'; // eslint-disable-line
 
