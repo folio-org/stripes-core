@@ -14,7 +14,7 @@
 
 .notification{
   border: 1px solid rgba(255, 255, 255, .5);
-  
+
   background-color: var(--bgHover);
   transition: background-color .2s ease;
   &:hover{
@@ -26,4 +26,16 @@
       background-color: color(var(--bgHover) tint(20%));
     }
   }
+}
+
+.notificationsBadgeWrapper{
+  position: relative;
+}
+.notificationsBadge{
+  position: absolute;
+  right: 0px;
+  background: #666;
+  padding: 3px;
+  border-radius: 4px;
+  color: #fff;
 }

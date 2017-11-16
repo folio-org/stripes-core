@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import classNames from 'classnames';
+import Link from 'react-router-dom/Link';
 
 import NavList from '@folio/stripes-components/lib/NavList';
 import NavListSection from '@folio/stripes-components/lib/NavListSection';
@@ -23,6 +24,11 @@ class NotificationsMenu extends React.Component {
         records: PropTypes.arrayOf(PropTypes.object),
       }),
     }),
+    mutator: PropTypes.shape({
+      seenNotifications: PropTypes.shape({
+        PUT: PropTypes.func,
+      }),
+    }),
   };
 
   static defaultProps = {
@@ -32,7 +38,12 @@ class NotificationsMenu extends React.Component {
   static manifest = Object.freeze({
     notifications: {
       type: 'okapi',
-      path: 'notify/_self',
+      path: 'notify/_self?query=seen=false',
+      records: 'notifications',
+    },
+    seenNotifications: {
+      type: 'okapi',
+      path: 'notify',
       records: 'notifications',
     },
   });
@@ -47,6 +58,7 @@ class NotificationsMenu extends React.Component {
     this.getNotificationClass = this.getNotificationClass.bind(this);
     this.notificationListFormatter = this.notificationListFormatter.bind(this);
     this.onClickFilter = this.onClickFilter.bind(this);
+    this.onClickNotification = this.onClickNotification.bind(this);
 
     moment.locale(props.stripes.locale);
   }
@@ -66,18 +78,28 @@ class NotificationsMenu extends React.Component {
     }
   }
 
+  onClickNotification(notification) {
+    const seenNotification = Object.assign({}, notification, { seen: true });
+    this.props.mutator.seenNotifications.PUT(seenNotification);
+  }
+
   notificationListFormatter(notification) {
     const formattedDate = moment(notification.metadata.createdDate).format(this.props.dateFormat);
 
+    const [domain, id] = notification.link.split('/');
+    const link = <Link to={`/${domain}/view/${id}`}>link</Link>;
+
+    const re = new RegExp(` about ${domain}/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}`);
+    const text = notification.text.replace(/ [0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12} /g, '')
+      .replace(re, '');
+
     return (
-      <a key={notification.id} href={notification.url} style={{ display: 'block' }}>
-        <Row className={this.getNotificationClass(notification.date)}>
-          <Col xs>
-            <div><strong>{notification.source} {formattedDate}</strong></div>
-            <p>{notification.text}</p>
-          </Col>
-        </Row>
-      </a>
+      <Row key={notification.id} onClick={() => { this.onClickNotification(notification); }} className={this.getNotificationClass(notification.date)}>
+        <Col xs>
+          <div><strong>{notification.source} {formattedDate}</strong></div>
+          <p>{text} ({link})</p>
+        </Col>
+      </Row>
     );
   }
 
