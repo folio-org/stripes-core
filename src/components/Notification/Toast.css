@@ -8,15 +8,13 @@
   height: 100vh;
   display: flex;
   pointer-events: none;
-  flex-direction: column-reverse;
-  flex-wrap: wrap-reverse;
+  flex-flow: column-reverse wrap-reverse;
   justify-content: flex-start;
   padding: 1rem;
 
   &.top {
     padding-top: 44px;
-    flex-direction: column;
-    flex-wrap: wrap;
+    flex-flow: column wrap;
   }
 }
 
