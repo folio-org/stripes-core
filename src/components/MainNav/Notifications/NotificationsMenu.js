@@ -86,8 +86,9 @@ class NotificationsMenu extends React.Component {
   notificationListFormatter(notification) {
     const formattedDate = moment(notification.metadata.createdDate).format(this.props.dateFormat);
 
+    const noteId = notification.text.match(/ ([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}) /);
     const [domain, id] = notification.link.split('/');
-    const link = <Link to={`/${domain}/view/${id}`}>link</Link>;
+    const link = <Link to={`/${domain}/view/${id}?notes=${noteId.length === 2 ? noteId[1] : ''}`}>link</Link>;
 
     const re = new RegExp(` about ${domain}/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}`);
     const text = notification.text.replace(/ [0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12} /g, '')
