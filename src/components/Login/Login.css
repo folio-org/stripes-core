@@ -91,12 +91,12 @@
 }
 
 .majorSlab {
-  composes: slab;
+  composes: slab; /* stylelint-disable-line property-no-unknown */
   background-color: #dcdcdc;
 }
 
 .minorSlab {
-  composes: slab;
+  composes: slab; /* stylelint-disable-line property-no-unknown */
   background-color: #ebebeb;
 }
 
@@ -121,7 +121,7 @@
 }
 
 .loginError {
-  composes: slab;
+  composes: slab; /* stylelint-disable-line property-no-unknown */
   color: #900;
 }
 

@@ -49,9 +49,11 @@
     color: #fff;
     box-shadow: 0 4px 19px 0 rgba(153, 0, 0, 0.39);
 
+    /* stylelint-disable */
     & :global .stripes__icon {
       fill: #fff;
     }
+    /* stylelint-enable */
   }
 
   &.success {
@@ -60,9 +62,11 @@
     color: #fff;
     box-shadow: 0 4px 19px 0 rgba(0, 112, 0, 0.39);
 
+    /* stylelint-disable */
     & :global .stripes__icon {
       fill: #fff;
     }
+    /* stylelint-enable */
   }
 }
 
