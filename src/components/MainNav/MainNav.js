@@ -115,7 +115,8 @@ class MainNav extends Component {
         const allParams = Object.assign({}, query, this.queryValues);
         const keys = Object.keys(allParams);
 
-        let url = location.pathname;
+        let url = allParams._path || location.pathname;
+        delete allParams._path
 
         if (keys.length) {
           url += `?${queryString.stringify(allParams)}`;
