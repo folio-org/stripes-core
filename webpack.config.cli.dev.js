@@ -2,7 +2,6 @@
 // from the command line via devServer.js
 
 const webpack = require('webpack');
-const path = require('path');
 const postCssImport = require('postcss-import');
 const autoprefixer = require('autoprefixer');
 const postCssCustomProperties = require('postcss-custom-properties');
