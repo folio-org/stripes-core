@@ -113,13 +113,14 @@ class MainNav extends Component {
         const location = this.props.location;
         const query = location.query ? location.query : queryString.parse(location.search);
         const allParams = Object.assign({}, query, this.queryValues);
-        const keys = Object.keys(allParams);
-
         let url = allParams._path || location.pathname;
         delete allParams._path;
 
-        if (keys.length) {
-          url += `?${queryString.stringify(allParams)}`;
+        const nonNull = Object.keys(allParams)
+          .filter(k => allParams[k] != null)
+          .reduce((r, k) => Object.assign(r, { [k]: allParams[k] }), {});
+        if (Object.keys(nonNull).length) {
+          url += `?${queryString.stringify(nonNull)}`;
         }
         this.props.history.replace(url);
       }
