@@ -1,6 +1,6 @@
 @import '../variables.css';
 
-.toastContainerRoot{
+.toastContainerRoot {
   position: fixed;
   top: 0;
   left: 0;
@@ -12,109 +12,125 @@
   flex-wrap: wrap-reverse;
   justify-content: flex-start;
   padding: 1rem;
-  &.top{
+
+  &.top {
     padding-top: 44px;
     flex-direction: column;
     flex-wrap: wrap;
   }
 }
 
-.toastNotificationRoot{
+.toastNotificationRoot {
   width: 100%;
   display: flex;
   flex-direction: row-reverse;
-  padding: .5rem 1rem;
-  transition: all .3s ease;
-  &.alignStart{
+  padding: 0.5rem 1rem;
+  transition: all 0.3s ease;
+
+  &.alignStart {
     flex-direction: row;
   }
 }
 
-.base{
+.base {
   padding: 1rem;
   border-radius: 4px;
   background-color: #fff;
   width: 35%;
   pointer-events: all;
   position: relative;
-  transition: all .2s ease;
+  transition: all 0.2s ease;
   display: flex;
-  box-shadow: 0px 4px 19px 0px rgba(0,0,0,0.39);
-  &.error{
+  box-shadow: 0 4px 19px 0 rgba(0, 0, 0, 0.39);
+
+  &.error {
     background-color: color(var(--error, #900) tint(25%));
     border-color: var(--error);
     color: #fff;
-    box-shadow: 0px 4px 19px 0px rgba(153,0,0,0.39);
-    & :global .stripes__icon{
-            fill: #fff;
-      }
+    box-shadow: 0 4px 19px 0 rgba(153, 0, 0, 0.39);
+
+    & :global .stripes__icon {
+      fill: #fff;
+    }
   }
-  &.success{
+
+  &.success {
     background-color: color(var(--success, #060) tint(25%));
     border-color: var(--success);
     color: #fff;
-    box-shadow: 0px 4px 19px 0px rgba(0,112,0,0.39);
-    & :global .stripes__icon{
-            fill: #fff;
-      }
+    box-shadow: 0 4px 19px 0 rgba(0, 112, 0, 0.39);
+
+    & :global .stripes__icon {
+      fill: #fff;
+    }
   }
 }
 
-.endOutside{
+.endOutside {
   right: -40%;
-  &.open{
+
+  &.open {
     right: 0;
   }
 }
 
-.startOutside{
+.startOutside {
   left: -40%;
-  &.open{
+
+  &.open {
     left: 0;
   }
 }
 
-.fade{
+.fade {
   opacity: 0;
-  &.open{
+
+  &.open {
     opacity: 1;
   }
 }
 
-[dir="rtl"]{
-  & .endOutside{
+[dir="rtl"] {
+  & .endOutside {
     left: -40%;
     right: auto;
-    &.open{
+
+    &.open {
       left: 0;
       right: auto;
     }
   }
-  & .startOutside{
+
+  & .startOutside {
     right: -40%;
     left: auto;
-    &.open{
+
+    &.open {
       right: 0;
       left: auto;
     }
   }
 }
 
-@media(--small){
-  .base{
+@media (--small) {
+  .base {
     width: 100%;
     border-radius: 0;
   }
-  .toastNotificationRoot{
+
+  .toastNotificationRoot {
     padding: 0;
   }
-  .endOutside{
+
+  .endOutside {
     right: -105%;
   }
-  .startOutside{
+
+  .startOutside {
     left: -105%;
   }
-  .toastContainerRoot{
+
+  .toastContainerRoot {
     padding: 0;
   }
 }

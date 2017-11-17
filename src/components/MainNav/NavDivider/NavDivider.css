@@ -1,12 +1,12 @@
 @import '../../variables.css';
 
-.navDivider{
+.navDivider {
   border-left: 1px solid #bbb;
   height: 28px;
 }
 
-@media(--mediumDown){
-  .hideMed{
+@media (--mediumDown) {
+  .hideMed {
     display: none;
   }
 }

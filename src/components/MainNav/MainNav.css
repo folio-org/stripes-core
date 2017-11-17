@@ -1,6 +1,6 @@
 @import '../variables.css';
 
-.navRoot{
+.navRoot {
   display: flex;
   justify-content: space-between;
   align-content: stretch;
@@ -9,11 +9,12 @@
   flex: 0 0 auto;
 }
 
-.nowrap{
+.nowrap {
   white-space: nowrap;
 }
 
-.ddButton, .ddLink{
+.ddButton,
+.ddLink {
   width: 100%;
   display: block;
   text-align: left;
@@ -26,7 +27,10 @@
   text-decoration: none;
   color: #333;
   cursor: pointer;
-  &:hover, &:focus, &:active{
+
+  &:hover,
+  &:focus,
+  &:active {
     background-color: #efefef;
     outline: none;
     color: #333;
@@ -34,49 +38,46 @@
   }
 }
 
-.ddTextItem{
+.ddTextItem {
   padding: 4px;
   display: block;
 }
 
-.ddDivider{
+.ddDivider {
   border-bottom: 1px solid #cdcdcd;
   padding: 4px;
   margin-bottom: 4px;
 }
 
-.skipLink{
+.skipLink {
   position: absolute;
   display: block;
-  padding: 6px 4px 0 4px;
+  padding: 6px 4px 0;
   top: -100px;
-  transition: top .15s linear;
-  &:focus{
+  transition: top 0.15s linear;
+
+  &:focus {
     position: relative;
     top: 0;
   }
 }
 
-@media (--large){
-  .linkLabel{
-    /*display: none;*/
+@media (--mediumDown) {
+  .brandingLabel {
+    display: none;
   }
-}
 
-@media (--mediumDown){
-  .brandingLabel{
-    display:none;
-  }
-  .smallAlignRight{
+  .smallAlignRight {
     position: absolute;
     top: 0;
     right: 0;
   }
-  .ddButton{
+
+  .ddButton {
     height: var(--controlHeightSmall);
   }
 
-  .ddLink{
+  .ddLink {
     height: var(--controlHeightSmall);
     display: flex;
     align-items: center;

@@ -1,6 +1,6 @@
 @import '../../variables.css';
 
-.DropdownMenu{
+.DropdownMenu {
   position: absolute;
   top: 105%;
   right: 0;
@@ -15,15 +15,16 @@
   background-color: #fff;
   background-clip: padding-box;
   border: 1px solid #ccc;
-  box-shadow: 0 6px 12px rgba(0,0,0,.175);
-  & ul{
-    list-style:none;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+
+  & ul {
+    list-style: none;
     padding: 0;
   }
 }
 
-@media (--mediumDown){
-  .DropdownMenu{
+@media (--mediumDown) {
+  .DropdownMenu {
     min-width: 29.5rem;
   }
 }
