@@ -1,20 +1,39 @@
 # Change history for stripes-core
 
-## 2.8.0 (IN PROGRESS)
+## [2.8.0](https://github.com/folio-org/stripes-core/tree/v2.8.0) (2017-11-20)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.7.0..v2.8.0)
 
-* Add developer's-guide section on t18n functionality. Fixes STCOR-56
-* Add tag with version info for integration test reports. STCOR-74.
-* Add dependency on okapiInterface "authtoken" 1.0. Fixes STCOR-76.
-* Move epics to core. STCOR-82.
-* Move stripes-loader logic into stripes-core as a webpack plugin. STCOR-25.
-* Trivial app uses props.resources, not props.data. Fixes STCOR-92.
-* Label a tenant's disabled modules on `/about`. Fixes STCOR-69.
-* Removing `examples/trivial`; it's now a separate module. Fixes STCOR-94.
-* Extend hasPermission to accept a list of permissions, update documentation. Fixes STCOR-98.
-* Show a user's Notifications. Fixes STSMACOM-11; refs STCOM-48.
-* Assignment to special parameter `_path` within the anointed stripes-connect resource will change the URL path. Fixes STCOR-105.
-* Setting a special query parameter to null removes it from the URL. Fixes STCOR-106.
-* Add new document, [Adding new permissions to FOLIO UI modules](doc/adding-permissions.md). Fixes STCOR-107.
+* Improved navigation facilities for modules:
+  * Changes to URL parameters can now be made by assigning to an anointed stirpes-connect resource. Fixes STRIPES-452, though docuumentation is still needed.
+  * Assignment to special parameter `_path` within the anointed stripes-connect resource will change the URL path. Fixes STCOR-105.
+  * Setting a query parameter in the anointed stripes-connect resource to null removes it from the URL. Fixes STCOR-106.
+* Improvements to WebPack interactions:
+  * Move stripes-loader logic into stripes-core as a webpack plugin. Fixes STCOR-25.
+  * Correct new dependencies for the WebPack plugin. Fixes STCOR-83.
+  * WebPack build failures now cause a non-zero exit status. Fixes STCOR-85.
+  * Development server once more falls back to `index.html` when addressed at a directory. Fixes STCOR-86.
+  * Source map option for static builds: `stripes build stripes.config.js --sourcemap`. Fixes STCOR-64.
+* Infrastructure improvements:
+  * Move epics to core. Fixes STCOR-82.
+  * Add dependency on okapiInterface "authtoken" 1.0. Fixes STCOR-76.
+  * Extend hasPermission to accept a list of permissions, update documentation. Fixes STCOR-98.
+  * Add tag with version info for integration test reports. Fixes STCOR-74.
+* Notifications:
+  * Show a user's Notifications. Fixes STSMACOM-11; refs STCOM-48.
+  * Notification center implements permission checking. Fixes STCOR-102.
+  * Notifications are dismissible. Fixes STCOR-103.
+* "Trivial" module:
+  * Update the "Trivial" module to uses `props.resources`, not `props.data`. Fixes STCOR-92.
+  * Determine why "Trivial" module is not getting updated on folio-testing. Fixes STCOR-93.
+  * Removing `examples/trivial`; it's now a separate module. Fixes STCOR-94 (and the old duplicate STCOR-33).
+* Documentation:
+  * Add developer's-guide [section on i18n functionality](doc/dev-guide.md#internationalization). Fixes STCOR-56
+  * The [release-procedure documentation](doc/release-procedure.md) now says to run `npm publish` after the release-branch merge, fitting in with the PR-based code contribution workflow. Fixes STCOR-89.
+  * Add new document, [Adding new permissions to FOLIO UI modules](doc/adding-permissions.md). Fixes STCOR-107.
+* Miscellaneous:
+  * Label a tenant's disabled modules on `/about`. Fixes STCOR-69.
+  * ESLint no longer runs on nested `node_modules` directory. Fixes STCOR-91.
+  * Bump stripes-components dependency from ancient v1.6.0 to v1.9.0
 
 ## [2.7.0](https://github.com/folio-org/stripes-core/tree/v2.7.0) (2017-09-01)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.6.1...v2.7.0)
