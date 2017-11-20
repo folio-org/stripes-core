@@ -1,4 +1,4 @@
-@import '../../variables.css';
+@import '@folio/stripes-components/lib/variables.css';
 
 .navDivider {
   border-left: 1px solid #bbb;
