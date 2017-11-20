@@ -1,39 +1,44 @@
 @import '@folio/stripes-components/lib/variables.css';
 
-.notificationMenu{
+.notificationMenu {
   height: 250px;
   min-width: 440px;
-  & a{
+
+  & a {
     color: #444;
-    &:hover{
+
+    &:hover {
       background-color: color(var(--bgHover) tint(20%));
       text-decoration: none;
     }
   }
 }
 
-.notification{
-  border: 1px solid rgba(255, 255, 255, .5);
-
+.notification {
+  border: 1px solid rgba(255, 255, 255, 0.5);
   background-color: var(--bgHover);
-  transition: background-color .2s ease;
-  &:hover{
+  transition: background-color 0.2s ease;
+
+  &:hover {
     background-color: color(var(--bgHover) tint(20%));
   }
-  &.new{
+
+  &.new {
     background-color: color(var(--bg) shade(5%));
-    &:hover{
+
+    &:hover {
       background-color: color(var(--bgHover) tint(20%));
     }
   }
 }
 
-.notificationsBadgeWrapper{
+.notificationsBadgeWrapper {
   position: relative;
 }
-.notificationsBadge{
+
+.notificationsBadge {
   position: absolute;
-  right: 0px;
+  right: 0;
   background: #666;
   padding: 3px;
   border-radius: 4px;

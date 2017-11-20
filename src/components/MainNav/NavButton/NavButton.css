@@ -1,49 +1,62 @@
 @import '../../variables.css';
 
-button.navButton{
-    background-color: transparent;
-    border-width: 0;
-    height: 42px;
-    cursor: pointer;
-    padding: 9px 5px;
-    transition: transform .2s ease;
-    & img, & div, & svg{
-      margin: 0 4px;
-      &+span{
-        align-self: center;
-        display: inline-block;
-      }
-    }
-    & > span{
-      display: flex;
-    }
-    &:hover{
-      & img, & div, & svg{
-        box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.2);
+button.navButton {
+  background-color: transparent;
+  border-width: 0;
+  height: 42px;
+  cursor: pointer;
+  padding: 9px 5px;
+  transition: transform 0.2s ease;
 
-      }
+  & img,
+  & div,
+  & svg {
+    margin: 0 4px;
 
-      transform: scale(1.1);
+    & + span {
+      align-self: center;
+      display: inline-block;
     }
+  }
+
+  & > span {
+    display: flex;
+  }
+
+  &:hover {
+    & img,
+    & div,
+    & svg {
+      box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+    }
+
+    transform: scale(1.1);
+  }
 }
 
-a.navButton{
+a.navButton {
   display: flex;
   align-items: center;
   color: #555;
   padding: 9px 5px;
-  & img, & div, & svg{
+
+  & img,
+  & div,
+  & svg {
     margin: 0 4px;
   }
-  &:hover, &:visited, &:focus{
+
+  &:hover,
+  &:visited,
+  &:focus {
     text-decoration: none;
   }
 }
 
-.navButton{
-  & .selected{
+.navButton {
+  & .selected {
     position: absolute;
-    top: 0px;
+    top: 0;
     width: 22px;
     height: 4px;
     background-color: #3d75b5;
@@ -52,11 +65,9 @@ a.navButton{
   }
 }
 
-@media(--mediumDown){
-  .navButton.hideMed, a.navButton.hideMed{
+@media (--mediumDown) {
+  .navButton.hideMed,
+  a.navButton.hideMed {
     display: none;
   }
 }
-
-
-

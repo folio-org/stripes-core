@@ -1,4 +1,4 @@
-:root{
+:root {
   --bg: #fff;
   --primary: #106c9e;
   --secondary: #999;
@@ -7,10 +7,8 @@
   --controlHeight: 28px;
   --br: 6px;
   --inputBorderColor: #acacac;
-  
   --controlHeightSmall: 44px;
 }
-
 
 @custom-media --small (max-width: 640px);
 @custom-media --mediumDown (max-width: 1024px);
@@ -20,5 +18,3 @@
 @custom-media --largeUp (min-width:1025px);
 @custom-media --xlarge (min-width: 1441px) and (max-width: 1920px);
 @custom-media --xxlarge (min-width: 1921px);
-
-
