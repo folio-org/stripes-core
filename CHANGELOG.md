@@ -32,6 +32,7 @@
 * Miscellaneous:
   * Label a tenant's disabled modules on `/about`. Fixes STCOR-69.
   * ESLint no longer runs on nested `node_modules` directory. Fixes STCOR-91.
+  * Bump stripes-components dependency from ancient v1.6.0 to v1.9.0
 
 ## [2.7.0](https://github.com/folio-org/stripes-core/tree/v2.7.0) (2017-09-01)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.6.1...v2.7.0)
