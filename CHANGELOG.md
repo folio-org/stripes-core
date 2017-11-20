@@ -14,6 +14,7 @@
 * Show a user's Notifications. Fixes STSMACOM-11; refs STCOM-48.
 * Assignment to special parameter `_path` within the anointed stripes-connect resource will change the URL path. Fixes STCOR-105.
 * Setting a special query parameter to null removes it from the URL. Fixes STCOR-106.
+* Add new document, [Adding new permissions to FOLIO UI modules](doc/adding-permissions.md). Fixes STCOR-107.
 
 ## [2.7.0](https://github.com/folio-org/stripes-core/tree/v2.7.0) (2017-09-01)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.6.1...v2.7.0)
