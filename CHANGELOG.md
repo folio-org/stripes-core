@@ -1,7 +1,7 @@
 # Change history for stripes-core
 
 ## [2.8.0](https://github.com/folio-org/stripes-core/tree/v2.8.0) (2017-11-20)
-[Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.7.0..v2.8.0)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.7.0...v2.8.0)
 
 * Improved navigation facilities for modules:
   * Changes to URL parameters can now be made by assigning to an anointed stirpes-connect resource. Fixes STRIPES-452, though docuumentation is still needed.
