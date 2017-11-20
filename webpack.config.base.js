@@ -1,5 +1,5 @@
 // Common Webpack configuration for building Stripes
-
+const webpack = require('webpack');
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const generateStripesAlias = require('./webpack/generate-stripes-alias');
@@ -25,6 +25,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: `${__dirname}/index.html`,
     }),
+    new webpack.EnvironmentPlugin(['NODE_ENV']),
   ],
   module: {
     rules: [
