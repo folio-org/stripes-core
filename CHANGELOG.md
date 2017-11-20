@@ -3,10 +3,10 @@
 ## 2.8.0 (IN PROGRESS)
 
 * Add developer's-guide section on t18n functionality. Fixes STCOR-56
-* Add tag with version info for integration test reports. STCOR-74.
+* Add tag with version info for integration test reports. Fixes STCOR-74.
 * Add dependency on okapiInterface "authtoken" 1.0. Fixes STCOR-76.
-* Move epics to core. STCOR-82.
-* Move stripes-loader logic into stripes-core as a webpack plugin. STCOR-25.
+* Move epics to core. Fixes STCOR-82.
+* Move stripes-loader logic into stripes-core as a webpack plugin. Fixes STCOR-25.
 * Trivial app uses props.resources, not props.data. Fixes STCOR-92.
 * Label a tenant's disabled modules on `/about`. Fixes STCOR-69.
 * Removing `examples/trivial`; it's now a separate module. Fixes STCOR-94.
