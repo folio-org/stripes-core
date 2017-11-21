@@ -26,7 +26,7 @@ for i in `echo '
     ui-okapi-console
     ui-users
     ui-items
-    ui-instances
+    ui-inventory
     ui-checkin
     ui-checkout
     ui-circulation
