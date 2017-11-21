@@ -25,7 +25,6 @@ for i in `echo '
     stripes-demo-platform
     ui-okapi-console
     ui-users
-    ui-items
     ui-inventory
     ui-checkin
     ui-checkout
