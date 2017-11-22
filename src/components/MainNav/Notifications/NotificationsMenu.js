@@ -11,6 +11,8 @@ import { Row, Col } from '@folio/stripes-components/lib/LayoutGrid';
 import Button from '@folio/stripes-components/lib/Button';
 import css from '@folio/stripes-components/lib/DropdownMenu/DropdownLayout.css';
 import menuStyles from './NotificationMenu.css';
+import mapDomainToPath from '../../../mapDomains';
+import uuidRe from '../../../uuidRe';
 
 class NotificationsMenu extends React.Component {
   static propTypes = {
@@ -86,13 +88,16 @@ class NotificationsMenu extends React.Component {
   notificationListFormatter(notification) {
     const formattedDate = moment(notification.metadata.createdDate).format(this.props.dateFormat);
 
-    const noteId = notification.text.match(/ ([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}) /);
+    const noteId = notification.text.match(new RegExp(` (${uuidRe}) `, 'i'));
     const [domain, id] = notification.link.split('/');
-    const link = <Link to={`/${domain}/view/${id}?notes=${noteId.length === 2 ? noteId[1] : ''}`}>link</Link>;
+    const uiPath = mapDomainToPath(domain);
+    const link = <Link to={`/${uiPath}/view/${id}?notes=${noteId && noteId.length === 2 ? noteId[1] : ''}`}>link</Link>;
 
-    const re = new RegExp(` about ${domain}/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}`);
-    const text = notification.text.replace(/ [0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12} /g, '')
-      .replace(re, '');
+    // pull the UUIDs out of the text. they're ugly and not meant for
+    // human consumption.
+    const text = notification.text
+      .replace(new RegExp(` ${uuidRe} `, 'ig'), '')
+      .replace(new RegExp(` about ${domain}/${uuidRe}`, 'i'), '');
 
     return (
       <Row key={notification.id} onClick={() => { this.onClickNotification(notification); }} className={this.getNotificationClass(notification.date)}>
