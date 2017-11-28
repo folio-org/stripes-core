@@ -174,7 +174,7 @@ class MainNav extends Component {
 
       if (!stripes.hasPerm(perm)) return null;
 
-      return (<NavButton id={navId} selected={pathname.startsWith(entry.route)} onClick={this.handleNavigation(entry)} title={entry.displayName} key={entry.route}>
+      return (<NavButton id={navId} selected={pathname.startsWith(entry.route)} onClick={this.handleNavigation(entry)} href={this.lastVisited[name] || entry.home || entry.route} title={entry.displayName} key={entry.route}>
         <NavIcon color="#61f160" />
         <span className={css.linkLabel}>
           {entry.displayName}
