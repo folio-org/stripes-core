@@ -39,7 +39,7 @@ function prefixKeys(obj, prefix) {
 
 export function loadTranslations(store, locale) {
   const parentLocale = locale.split('-')[0];
-  return System.import(`react-intl/locale-data/${parentLocale}`)
+  return import(`react-intl/locale-data/${parentLocale}`)
     .then((intlData) => {
       addLocaleData(intlData);
       const translations = {};
