@@ -36,7 +36,7 @@ function parseStripesModules(enabledModules, context, alias) {
     const { stripes, description, version } = loadDefaults(context, moduleName, alias);
     const stripeConfig = Object.assign({}, stripes, moduleConfig, {
       module: moduleName,
-      getModule: eval(`() => require('${moduleName}').default`), // eslint-disable-line no-eval
+      getModule: eval(`new Function([], "return require('${moduleName}').default;")`), // eslint-disable-line no-eval
       description,
       version,
     });
