@@ -25,7 +25,10 @@ while (<>) {
     }
 }
 
+my $x = 0;
 foreach my $k (sort @deps) {
     my $cruft = system("grep -rqi $k . --exclude-dir node_modules --exclude-dir .git --exclude yarn.lock --exclude package.json");
-    $cruft && print "    $k\n";
+    $cruft && ($x = $cruft) && print "    $k\n";
 }
+
+exit($x >> 8);
