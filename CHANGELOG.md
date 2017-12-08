@@ -6,6 +6,7 @@
 * Restore open-in-new-tab to primary navigation. Fixes STCOR-113.
 * Fix Webpack lint errors. Fixes STCOR-115.
 * `util/cruft.pl` checks for unused packages. Fixes STRIPES-490.
+* Write [documentation for URL navigation by anointed resource](doc/dev-guide.md#url-navigation). Fixes STCOR-118.
 
 ## [2.8.0](https://github.com/folio-org/stripes-core/tree/v2.8.0) (2017-11-20)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.7.0...v2.8.0)
