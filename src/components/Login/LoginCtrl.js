@@ -8,12 +8,10 @@ import Login from './Login';
 class LoginCtrl extends Component {
   static contextTypes = {
     store: PropTypes.object,
-    router: PropTypes.object,
-    authFail: PropTypes.bool,
   }
 
   static propTypes = {
-    authFail: PropTypes.bool,
+    authFailure: PropTypes.string,
     ssoEnabled: PropTypes.bool,
     autoLogin: PropTypes.shape({
       username: PropTypes.string.isRequired,
@@ -24,7 +22,6 @@ class LoginCtrl extends Component {
   constructor(props, context) {
     super(props);
     this.store = context.store;
-    this.router = context.router;
     this.handleSubmit = this.handleSubmit.bind(this);
     this.sys = require('stripes-config'); // eslint-disable-line
     this.okapiUrl = this.sys.okapi.url;
@@ -50,12 +47,12 @@ class LoginCtrl extends Component {
   }
 
   render() {
-    const { authFail, ssoEnabled } = this.props;
+    const { authFailure, ssoEnabled } = this.props;
 
     return (
       <Login
         onSubmit={this.handleSubmit}
-        authFail={authFail}
+        authError={authFailure}
         initialValues={this.initialValues}
         handleSSOLogin={this.handleSSOLogin}
         ssoActive={ssoEnabled}
@@ -66,7 +63,7 @@ class LoginCtrl extends Component {
 
 function mapStateToProps(state) {
   return {
-    authFail: state.okapi.authFailure,
+    authFailure: state.okapi.authFailure,
     ssoEnabled: state.okapi.ssoEnabled,
   };
 }

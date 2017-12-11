@@ -15,8 +15,7 @@ import {
   setOkapiToken,
   setTranslations,
   clearOkapiToken,
-  authFailure,
-  clearAuthFailure,
+  setAuthError,
   checkSSO,
   setOkapiReady,
 } from './okapiActions';
@@ -121,18 +120,25 @@ export function getBindings(okapiUrl, store, tenant) {
     });
 }
 
-function clearOkapiSession(store) {
-  store.dispatch(clearCurrentUser());
-  store.dispatch(clearOkapiToken());
-  localforage.removeItem('okapiSess');
-  store.dispatch(reset('login'));
-  store.dispatch(authFailure());
-  store.dispatch(setOkapiReady());
+function clearOkapiSession(store, resp) {
+  resp.json().then((json) => {
+    store.dispatch(clearCurrentUser());
+    store.dispatch(clearOkapiToken());
+    localforage.removeItem('okapiSess');
+    store.dispatch(reset('login'));
+    // This is a lame way to detect the nature of the error. In future, the response status will be a 4xx
+    if (resp.status === 500 && json.errorMessage.startsWith('Error verifying user existence')) {
+      store.dispatch(setAuthError('Sorry, the information entered does not match our records.'));
+    } else {
+      store.dispatch(setAuthError(`Error ${resp.status} ${resp.statusText}: ${json.errorMessage}`));
+    }
+    store.dispatch(setOkapiReady());
+  });
 }
 
 function createOkapiSession(okapiUrl, store, tenant, token, data) {
   store.dispatch(setOkapiToken(token));
-  store.dispatch(clearAuthFailure());
+  store.dispatch(setAuthError(null));
   store.dispatch(setCurrentUser(data.user.personal));
 
   // You are not expected to understand this
@@ -218,7 +224,7 @@ function processSSOLoginResponse(resp) {
 function processOkapiSession(okapiUrl, store, tenant, resp) {
   const token = resp.headers.get('X-Okapi-Token');
   if (resp.status >= 400) {
-    clearOkapiSession(store);
+    clearOkapiSession(store, resp);
   } else {
     resp.json().then(json =>
       createOkapiSession(okapiUrl, store, tenant, token, json));
