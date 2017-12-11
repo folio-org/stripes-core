@@ -40,10 +40,7 @@ function Login(props) {
             Log in
             </button>
             { submitting ? <div><div className={loadingCN} /></div> : null }
-            { authError ?
-              <div>
-                <span className={css.loginError}>{authError}</span>
-              </div> : null }
+            { authError ? <div className={css.loginError}>{authError}</div> : null }
           </div>
         </form>
         { ssoActive && <SSOLogin handleSSOLogin={handleSSOLogin} /> }
