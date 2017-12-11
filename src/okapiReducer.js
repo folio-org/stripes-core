@@ -21,7 +21,7 @@ export default function okapiReducer(state = {}, action) {
     case 'CLEAR_CURRENT_USER':
       return Object.assign({}, state, { currentUser: {}, currentPerms: {} });
     case 'AUTH_FAILURE':
-      return Object.assign({}, state, { authFailure: true });
+      return Object.assign({}, state, { authFailure: action.message });
     case 'CLEAR_AUTH_FAILURE':
       return Object.assign({}, state, { authFailure: false });
     case 'SET_TRANSLATIONS':

@@ -15,7 +15,7 @@ import {
   setOkapiToken,
   setTranslations,
   clearOkapiToken,
-  authFailure,
+  setAuthError,
   clearAuthFailure,
   checkSSO,
   setOkapiReady,
@@ -126,7 +126,7 @@ function clearOkapiSession(store) {
   store.dispatch(clearOkapiToken());
   localforage.removeItem('okapiSess');
   store.dispatch(reset('login'));
-  store.dispatch(authFailure());
+  store.dispatch(setAuthError(true));
   store.dispatch(setOkapiReady());
 }
 

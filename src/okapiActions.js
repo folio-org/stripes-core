@@ -60,9 +60,10 @@ function clearOkapiToken() {
   };
 }
 
-function authFailure() {
+function setAuthError(message) {
   return {
     type: 'AUTH_FAILURE',
+    message,
   };
 }
 
@@ -101,7 +102,7 @@ export { setCurrentUser,
   setBindings,
   setOkapiToken,
   clearOkapiToken,
-  authFailure,
+  setAuthError,
   clearAuthFailure,
   setTranslations,
   checkSSO,
