@@ -9,7 +9,6 @@ class LoginCtrl extends Component {
   static contextTypes = {
     store: PropTypes.object,
     router: PropTypes.object,
-    authFail: PropTypes.bool,
   }
 
   static propTypes = {
