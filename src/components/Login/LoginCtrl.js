@@ -8,7 +8,6 @@ import Login from './Login';
 class LoginCtrl extends Component {
   static contextTypes = {
     store: PropTypes.object,
-    router: PropTypes.object,
   }
 
   static propTypes = {
@@ -23,7 +22,6 @@ class LoginCtrl extends Component {
   constructor(props, context) {
     super(props);
     this.store = context.store;
-    this.router = context.router;
     this.handleSubmit = this.handleSubmit.bind(this);
     this.sys = require('stripes-config'); // eslint-disable-line
     this.okapiUrl = this.sys.okapi.url;
