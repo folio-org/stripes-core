@@ -11,7 +11,7 @@ class LoginCtrl extends Component {
   }
 
   static propTypes = {
-    authFail: PropTypes.string,
+    authFailure: PropTypes.string,
     ssoEnabled: PropTypes.bool,
     autoLogin: PropTypes.shape({
       username: PropTypes.string.isRequired,
@@ -47,12 +47,12 @@ class LoginCtrl extends Component {
   }
 
   render() {
-    const { authFail, ssoEnabled } = this.props;
+    const { authFailure, ssoEnabled } = this.props;
 
     return (
       <Login
         onSubmit={this.handleSubmit}
-        authError={authFail}
+        authError={authFailure}
         initialValues={this.initialValues}
         handleSSOLogin={this.handleSSOLogin}
         ssoActive={ssoEnabled}
@@ -63,7 +63,7 @@ class LoginCtrl extends Component {
 
 function mapStateToProps(state) {
   return {
-    authFail: state.okapi.authFailure,
+    authFailure: state.okapi.authFailure,
     ssoEnabled: state.okapi.ssoEnabled,
   };
 }
