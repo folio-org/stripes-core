@@ -62,7 +62,7 @@ function clearOkapiToken() {
 
 function setAuthError(message) {
   return {
-    type: 'AUTH_FAILURE',
+    type: 'SET_AUTH_FAILURE',
     message,
   };
 }
