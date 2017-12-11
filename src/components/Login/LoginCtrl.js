@@ -11,7 +11,7 @@ class LoginCtrl extends Component {
   }
 
   static propTypes = {
-    authFail: PropTypes.bool,
+    authFail: PropTypes.string,
     ssoEnabled: PropTypes.bool,
     autoLogin: PropTypes.shape({
       username: PropTypes.string.isRequired,
@@ -52,7 +52,7 @@ class LoginCtrl extends Component {
     return (
       <Login
         onSubmit={this.handleSubmit}
-        authError={authFail ? 'Sorry, the information entered does not match our records.' : null}
+        authError={authFail}
         initialValues={this.initialValues}
         handleSSOLogin={this.handleSSOLogin}
         ssoActive={ssoEnabled}
