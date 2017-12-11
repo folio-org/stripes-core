@@ -8,7 +8,7 @@ const propTypes = {
   handleSubmit: PropTypes.func.isRequired,
   pristine: PropTypes.bool,
   submitting: PropTypes.bool,
-  authFail: PropTypes.bool,
+  authError: PropTypes.string,
   handleSSOLogin: PropTypes.func,
   ssoActive: PropTypes.any, // eslint-disable-line react/forbid-prop-types
 };
@@ -18,7 +18,7 @@ function Login(props) {
     handleSubmit,
     pristine,
     submitting,
-    authFail,
+    authError,
     handleSSOLogin,
     ssoActive,
   } = props;
@@ -40,11 +40,9 @@ function Login(props) {
             Log in
             </button>
             { submitting ? <div><div className={loadingCN} /></div> : null }
-            { authFail ?
+            { authError ?
               <div>
-                <span className={css.loginError} >
-                  Sorry, the information entered does not match our records.
-                </span>
+                <span className={css.loginError}>{authError}</span>
               </div> : null }
           </div>
         </form>

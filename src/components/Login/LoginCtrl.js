@@ -55,7 +55,7 @@ class LoginCtrl extends Component {
     return (
       <Login
         onSubmit={this.handleSubmit}
-        authFail={authFail}
+        authError={authFail ? 'Sorry, the information entered does not match our records.' : null}
         initialValues={this.initialValues}
         handleSSOLogin={this.handleSSOLogin}
         ssoActive={ssoEnabled}
