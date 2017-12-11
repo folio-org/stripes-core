@@ -16,7 +16,6 @@ import {
   setTranslations,
   clearOkapiToken,
   setAuthError,
-  clearAuthFailure,
   checkSSO,
   setOkapiReady,
 } from './okapiActions';
@@ -126,13 +125,13 @@ function clearOkapiSession(store) {
   store.dispatch(clearOkapiToken());
   localforage.removeItem('okapiSess');
   store.dispatch(reset('login'));
-  store.dispatch(setAuthError(true));
+  store.dispatch(setAuthError('Sorry, the information entered does not match our records.'));
   store.dispatch(setOkapiReady());
 }
 
 function createOkapiSession(okapiUrl, store, tenant, token, data) {
   store.dispatch(setOkapiToken(token));
-  store.dispatch(clearAuthFailure());
+  store.dispatch(setAuthError(null));
   store.dispatch(setCurrentUser(data.user.personal));
 
   // You are not expected to understand this
