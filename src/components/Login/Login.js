@@ -43,7 +43,7 @@ function Login(props) {
             { authFail ?
               <div>
                 <span className={css.loginError} >
-                  Sorry, the information entered does not match our records!
+                  Sorry, the information entered does not match our records.
                 </span>
               </div> : null }
           </div>
