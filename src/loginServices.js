@@ -121,13 +121,13 @@ export function getBindings(okapiUrl, store, tenant) {
 }
 
 function clearOkapiSession(store, resp) {
-  resp.json().then(json => {
+  resp.json().then((json) => {
     store.dispatch(clearCurrentUser());
     store.dispatch(clearOkapiToken());
     localforage.removeItem('okapiSess');
     store.dispatch(reset('login'));
     // This is a lame way to detect the nature of the error. In future, the response status will be a 4xx
-    if (resp.status == 500 && json.errorMessage.startsWith('Error verifying user existence')) {
+    if (resp.status === 500 && json.errorMessage.startsWith('Error verifying user existence')) {
       store.dispatch(setAuthError('Sorry, the information entered does not match our records.'));
     } else {
       store.dispatch(setAuthError(`Error ${resp.status} ${resp.statusText}: ${json.errorMessage}`));
