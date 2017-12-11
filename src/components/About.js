@@ -11,6 +11,8 @@ import stripesLogger from '@folio/stripes-logger/package.json';
 /* eslint-enable */
 
 import Pane from '@folio/stripes-components/lib/Pane';
+import Headline from '@folio/stripes-components/lib/Headline';
+import List from '@folio/stripes-components/lib/List';
 import Paneset from '@folio/stripes-components/lib/Paneset';
 import { isVersionCompatible } from '../discoverServices';
 import AboutEnabledModules from './AboutEnabledModules';
@@ -27,38 +29,44 @@ const About = (props) => {
       return `${base} declares no dependencies`;
     }
 
+    const itemFormatter = (key) => {
+      const required = okapiInterfaces[key];
+      const available = interfaces[key];
+      let style = {};
+      let text = required;
+
+      if (!available) {
+        style = { color: 'red', fontWeight: 'bold' };
+      } else if (!isVersionCompatible(available, required)) {
+        style = { color: 'orange' };
+        text = `${required} (${available} available)`;
+      }
+
+      return <li key={key} style={style}>{key} {text}</li>;
+    };
+
     return (<span>
-      {m.module} {m.version} depends on:
-      <ul>
-        {
-          Object.keys(okapiInterfaces).map((key) => {
-            const required = okapiInterfaces[key];
-            const available = interfaces[key];
-            let style = {};
-            let text = required;
-
-            if (!available) {
-              style = { color: 'red', fontWeight: 'bold' };
-            } else if (!isVersionCompatible(available, required)) {
-              style = { color: 'orange' };
-              text = `${required} (${available} available)`;
-            }
-
-            return <li key={key} style={style}>{key} {text}</li>;
-          })
-        }
-      </ul>
+      <Headline size="small" faded>{m.module} {m.version} depends on:</Headline>
+      <List
+        items={Object.keys(okapiInterfaces)}
+        itemFormatter={itemFormatter}
+        listStyle="bullets"
+      />
     </span>);
   }
 
   function listModules(caption, list, interfaces) {
     const n = list.length;
+    const itemFormatter = m => (<li key={m.module}>{renderDependencies(m, interfaces)}</li>);
     return (
       <div key={caption}>
-        <h4>{n} {caption} module{n === 1 ? '' : 's'}</h4>
-        <ul>
-          {list.map(m => <li key={m.module}>{renderDependencies(m, interfaces)}</li>)}
-        </ul>
+        <Headline>{n} {caption} module{n === 1 ? '' : 's'}</Headline>
+        <List
+          listStyle="bullets"
+          items={list}
+          itemFormatter={itemFormatter}
+        />
+        <br />
       </div>
     );
   }
@@ -72,7 +80,7 @@ const About = (props) => {
   return (
     <Paneset>
       <Pane defaultWidth="30%" paneTitle="User interface">
-        <h4>Foundation</h4>
+        <Headline>Foundation</Headline>
         <span
           id="platform-versions"
           data-stripes-core={stripesCore.version}
@@ -81,22 +89,44 @@ const About = (props) => {
           data-okapi-version={_.get(props.stripes, ['discovery', 'okapi']) || 'unknown'}
           data-okapi-url={_.get(props.stripes, ['okapi', 'url']) || 'unknown'}
         />
-        <ul>
-          <li key="stripes-core">stripes-core {stripesCore.version}</li>
-          <li key="stripes-connect">stripes-connect {stripesConnect.version}</li>
-          <li key="stripes-components">stripes-components {stripesComponents.version}</li>
-          <li key="stripes-logger">stripes-logger {stripesLogger.version}</li>
-        </ul>
+        <List
+          listStyle="bullets"
+          items={[
+            {
+              key: 'stripes-core',
+              value: `stripes-core ${stripesCore.version}`,
+            },
+            {
+              key: 'stripes-connect',
+              value: `stripes-connect ${stripesConnect.version}`,
+            },
+            {
+              key: 'stripes-components',
+              value: `stripes-components ${stripesComponents.version}`,
+            },
+            {
+              key: 'stripes-logger',
+              value: `stripes-logger ${stripesLogger.version}`,
+            },
+          ]}
+          itemFormatter={item => (<li key={item.key}>{item.value}</li>)}
+        />
+        <br />
         {Object.keys(uiModules).map(key => listModules(key, uiModules[key]))}
       </Pane>
       <Pane defaultWidth="30%" paneTitle="Okapi services">
-        <h4>Okapi</h4>
-        <ul>
-          <li>Version {_.get(props.stripes, ['discovery', 'okapi']) || 'unknown'}</li>
-          <li>For tenant {_.get(props.stripes, ['okapi', 'tenant']) || 'unknown'}</li>
-          <li>On URL {_.get(props.stripes, ['okapi', 'url']) || 'unknown'}</li>
-        </ul>
-        <h4>{nm} module{nm === 1 ? '' : 's'}</h4>
+        <Headline>Okapi</Headline>
+        <List
+          listStyle="bullets"
+          itemFormatter={(item, i) => (<li key={i}>{item}</li>)}
+          items={[
+            `Version ${_.get(props.stripes, ['discovery', 'okapi']) || 'unknown'}`,
+            `For tenant ${_.get(props.stripes, ['okapi', 'tenant']) || 'unknown'}`,
+            `On URL ${_.get(props.stripes, ['okapi', 'url']) || 'unknown'}`,
+          ]}
+        />
+        <br />
+        <Headline>{nm} module{nm === 1 ? '' : 's'}</Headline>
         <ConnectedAboutEnabledModules tenantid={_.get(props.stripes, ['okapi', 'tenant']) || 'unknown'} availableModules={modules} />
         <p>
           <b>Key.</b>
@@ -104,19 +134,18 @@ const About = (props) => {
           Installed modules that are not enabled for this tenant are
           displayed <span style={{ color: '#ccc' }}>in gray</span>.
         </p>
-
-        <h4>{ni} interface{ni === 1 ? '' : 's'}</h4>
-        <ul>
-          {Object.keys(interfaces).sort().map(key => <li key={key}>{key} {interfaces[key]}</li>)}
-        </ul>
+        <br /><br />
+        <Headline>{ni} interface{ni === 1 ? '' : 's'}</Headline>
+        <List
+          listStyle="bullets"
+          items={Object.keys(interfaces).sort()}
+          itemFormatter={key => (<li key={key}>{key} {interfaces[key]}</li>)}
+        />
       </Pane>
       <Pane defaultWidth="40%" paneTitle="UI/service dependencies">
-        <h4>Foundation</h4>
-        <ul>
-          <li>
-            {renderDependencies(Object.assign({}, stripesCore.stripes || {}, { module: 'stripes-core' }), interfaces)}
-          </li>
-        </ul>
+        <Headline>Foundation</Headline>
+        {renderDependencies(Object.assign({}, stripesCore.stripes || {}, { module: 'stripes-core' }), interfaces)}
+        <br />
         {Object.keys(uiModules).map(key => listModules(key, uiModules[key], interfaces))}
         <p>
           <b>Key.</b>
