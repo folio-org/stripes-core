@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
+import List from '@folio/stripes-components/lib/List';
 
 class AboutEnabledModules extends React.Component {
   static propTypes = {
@@ -23,20 +24,26 @@ class AboutEnabledModules extends React.Component {
   render() {
     const em = {};
     _.each((this.props.resources.enabledModules || {}).records || [], (m) => { em[m.id] = true; });
+    const items = Object.keys(this.props.availableModules).sort();
+    const itemFormatter = (key) => {
+      let style = {};
+      if (!em[key]) {
+        style = { color: '#ccc' };
+      }
+
+      return (
+        <li key={key} style={style}>
+          {this.props.availableModules[key]} (<tt>{key}</tt>)
+        </li>
+      );
+    };
 
     return (
-      <ul>
-        {
-          Object.keys(this.props.availableModules).sort().map((key) => {
-            let style = {};
-            if (!em[key]) {
-              style = { color: '#ccc' };
-            }
-
-            return <li key={key} style={style}>{this.props.availableModules[key]} (<tt>{key}</tt>)</li>;
-          })
-        }
-      </ul>
+      <List
+        listStyle="bullets"
+        items={items}
+        itemFormatter={itemFormatter}
+      />
     );
   }
 }
