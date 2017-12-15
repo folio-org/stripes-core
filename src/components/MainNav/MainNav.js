@@ -138,6 +138,7 @@ class MainNav extends Component {
     const { stripes, location: { pathname } } = this.props;
     const currentUser = stripes.user ? stripes.user.user : undefined;
     const currentPerms = stripes.user ? stripes.user.perms : undefined;
+    const selectedApp = modules.app.find(entry => pathname.startsWith(entry.route));
 
     const userIcon = (
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 26 26">
@@ -198,13 +199,20 @@ class MainNav extends Component {
             <NavIcon color="#fdae35" />
             <span className={css.brandingLabel} style={{ fontSize: '22px', lineHeight: '1rem' }}>FOLIO</span>
           </NavButton>
+          {selectedApp &&
+            <NavButton onClick={this.handleNavigation(selectedApp)} href={selectedApp.home} title={selectedApp.displayName} key="selected-app">
+              <NavIcon color="#61f160" />
+              <span className={css.linkLabel}>
+                {selectedApp.displayName}
+              </span>
+            </NavButton>
+          }
           {
-            !stripes.hasPerm('settings.enabled') ? '' : (
-              <NavButton id="clickable-settings" selected={pathname.startsWith('/settings')} href={this.lastVisited.x_settings || '/settings'}>
+            stripes.hasPerm('settings.enabled') && pathname.startsWith('/settings') &&
+              <NavButton id="clickable-settings" href={this.lastVisited.x_settings || '/settings'}>
                 <NavIcon color="#7d3fb3" />
                 <span>Settings</span>
               </NavButton>
-            )
           }
         </NavGroup>
       );
@@ -225,6 +233,14 @@ class MainNav extends Component {
         <NavGroup>
           <NavGroup>
             {menuLinks}
+            {
+              !stripes.hasPerm('settings.enabled') ? '' : (
+                <NavButton id="clickable-settings" selected={pathname.startsWith('/settings')} href={this.lastVisited.x_settings || '/settings'}>
+                  <NavIcon color="#7d3fb3" />
+                  <span>Settings</span>
+                </NavButton>
+              )
+            }
             <NavDivider md="hide" />
             { this.props.stripes.hasPerm('notify.item.get,notify.item.put,notify.collection.get') && <NotificationsDropdown stripes={stripes} {...this.props} /> }
           </NavGroup>
