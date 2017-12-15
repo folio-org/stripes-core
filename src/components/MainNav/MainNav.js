@@ -200,7 +200,7 @@ class MainNav extends Component {
             <span className={css.brandingLabel} style={{ fontSize: '22px', lineHeight: '1rem' }}>FOLIO</span>
           </NavButton>
           {selectedApp &&
-            <NavButton onClick={this.handleNavigation(selectedApp)} href={selectedApp.home} title={selectedApp.displayName} key="selected-app">
+            <NavButton onClick={this.handleNavigation(selectedApp)} href={this.lastVisited[name] || selectedApp.home} title={selectedApp.displayName} key="selected-app">
               <NavIcon color="#61f160" />
               <span className={css.linkLabel}>
                 {selectedApp.displayName}
