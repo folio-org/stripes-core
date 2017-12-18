@@ -10,6 +10,7 @@
 * When login fails in a way other than user/password mismatch, report that error to the user. Fixes STCOR-119.
 * Change app indicator. Fixes STCOR-121.
 * Move about under settings. Fixes STCOR-123.
+* Support loading SVG images via WebPack. Fixes STCOR-124.
 
 ## [2.8.0](https://github.com/folio-org/stripes-core/tree/v2.8.0) (2017-11-20)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.7.0...v2.8.0)
