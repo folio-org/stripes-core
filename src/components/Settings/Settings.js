@@ -6,12 +6,14 @@ import Link from 'react-router-dom/Link';
 import { connectFor } from '@folio/stripes-connect';
 import { modules } from 'stripes-config'; // eslint-disable-line
 import { withRouter } from 'react-router';
+import { FormattedMessage } from 'react-intl';
 
 import AddContext from '../../AddContext';
 import { stripesShape } from '../../Stripes';
 
 import NavList from './NavList';
 import NavListSection from './NavListSection';
+import About from '../About';
 
 import css from './Settings.css';
 
@@ -64,12 +66,17 @@ const Settings = (props) => {
             <NavListSection label="App Settings" activeLink={props.location.pathname}>
               {navLinks}
             </NavListSection>
+            <br /><br />
+            <NavListSection label="System Information" activeLink={props.location.pathname}>
+              <Link to="/settings/about"><FormattedMessage id="stripes-core.front.about" /></Link>
+            </NavListSection>
           </NavList>
         </div>
       </div>
 
       <Switch>
         {routes}
+        <Route path="/settings/about" component={() => <About stripes={stripes} />} key="about" />
         <Route component={() => <div>Choose settings</div>} />
       </Switch>
     </div>

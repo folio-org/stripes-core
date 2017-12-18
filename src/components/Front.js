@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Link from 'react-router-dom/Link';
 import { FormattedMessage } from 'react-intl';
 
 // TODO: release version of @folio/stripes-components has a broken index.js
@@ -16,7 +15,6 @@ const Front = ({ stripes }) => (
     <Pluggable type="frontpage">
       <div>
         <h3><FormattedMessage id="stripes-core.front.welcome" /></h3>
-        <p><Link to="/about"><FormattedMessage id="stripes-core.front.about" /></Link></p>
       </div>
     </Pluggable>
   </AddContext>
