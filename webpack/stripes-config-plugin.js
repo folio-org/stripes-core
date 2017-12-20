@@ -7,8 +7,6 @@ const assert = require('assert');
 const _ = require('lodash');
 const VirtualModulesPlugin = require('webpack-virtual-modules');
 const serialize = require('serialize-javascript');
-const TenantBranding = require('./tenant-branding');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 // Loads description, version, and stripes configuration from a module's package.json
 function loadDefaults(context, moduleName, alias) {
@@ -51,9 +49,6 @@ function parseStripesModules(enabledModules, context, alias) {
 module.exports = class StripesConfigPlugin {
   constructor(options) {
     assert(_.isObject(options.modules), 'stripes-config-plugin was not provided a "modules" object for enabling stripes modules');
-
-    // Branding is handled separately in tenant-branding
-    this.branding = new TenantBranding(options.branding);
     this.options = _.omit(options, 'branding');
   }
 
@@ -64,17 +59,13 @@ module.exports = class StripesConfigPlugin {
 
     // Create a virtual module for Webpack to include in the build
     const stripesVirtualModule = `
-      module.exports = ${serialize(mergedConfig, { space: 2 })};
-      module.exports.branding = ${this.branding.virtualModuleString()};
+      import branding from 'stripes-branding';
+      const { okapi, config, modules } = ${serialize(mergedConfig, { space: 2 })};
+      export { okapi, config, modules, branding };
     `;
+
     compiler.apply(new VirtualModulesPlugin({
       'node_modules/stripes-config.js': stripesVirtualModule,
     }));
-
-    // Locate the HtmlWebpackPlugin and apply the favicon.
-    compiler.plugin('after-plugins', (theCompiler) => {
-      const index = theCompiler.options.plugins.findIndex(plugin => plugin instanceof HtmlWebpackPlugin);
-      theCompiler.options.plugins[index].options.favicon = this.branding.getFavicon();
-    });
   }
 };
