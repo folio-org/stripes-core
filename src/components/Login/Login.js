@@ -29,7 +29,7 @@ function Login(props) {
   return (
     <div className={css.loginOverlay}>
       <div className={css.loginContainer}>
-        <img src={branding.logo} alt={branding.name} />
+        <img src={branding.logo.src} alt={branding.logo.alt} />
         <h1>Sign In</h1>
         <form>
           <div className={css.slabStack}>

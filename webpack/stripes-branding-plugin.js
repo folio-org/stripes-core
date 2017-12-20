@@ -7,16 +7,14 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 // Default branding values
 const defaultBranding = {
-  logo: '@folio/stripes-core/default-tenant-assets/folio-logo.png',
-  favicon: '@folio/stripes-core/default-tenant-assets/favicon.ico',
-  name: 'FOLIO University',
+  logo: {
+    src: '@folio/stripes-core/default-tenant-assets/folio-logo.png',
+    alt: 'FOLIO University',
+  },
+  favicon: {
+    src: '@folio/stripes-core/default-tenant-assets/favicon.ico',
+  },
 };
-
-// Array of above properties whose values will receive the require treatment for webpack
-// TODO: Perhaps replace this with a naming convention once branding properties are formalized
-const requireMe = [
-  'logo', 'favicon',
-];
 
 // Serialize the branding config.
 function serializeBranding(branding) {
@@ -31,7 +29,7 @@ function serializeBranding(branding) {
   // Wraps image paths with require()'s for webpack to process via its file loaders
   // The require()'s are just strings here so we don't attempt to invoke them right now
   const injectRequire = (key, value) => {
-    if (requireMe.includes(key)) {
+    if (key === 'src') {
       return `require('${assetPath(value)}')`;
     } else {
       return value;
@@ -68,7 +66,7 @@ module.exports = class StripesBrandingPlugin {
     // Locate the HtmlWebpackPlugin and apply the favicon.
     compiler.plugin('after-plugins', (theCompiler) => {
       const index = theCompiler.options.plugins.findIndex(plugin => plugin instanceof HtmlWebpackPlugin);
-      theCompiler.options.plugins[index].options.favicon = initFavicon(this.branding.favicon);
+      theCompiler.options.plugins[index].options.favicon = initFavicon(this.branding.favicon.src);
     });
   }
 };
