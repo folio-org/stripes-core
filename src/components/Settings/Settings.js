@@ -6,12 +6,11 @@ import Link from 'react-router-dom/Link';
 import { connectFor } from '@folio/stripes-connect';
 import { modules } from 'stripes-config'; // eslint-disable-line
 import { withRouter } from 'react-router';
+import NavList from '@folio/stripes-components/lib/NavList';
+import NavListSection from '@folio/stripes-components/lib/NavListSection';
 
 import AddContext from '../../AddContext';
 import { stripesShape } from '../../Stripes';
-
-import NavList from './NavList';
-import NavListSection from './NavListSection';
 
 import css from './Settings.css';
 
@@ -61,7 +60,7 @@ const Settings = (props) => {
         </div>
         <div className={css.content}>
           <NavList>
-            <NavListSection label="App Settings" activeLink={props.location.pathname}>
+            <NavListSection activeLink={props.location.pathname}>
               {navLinks}
             </NavListSection>
           </NavList>
