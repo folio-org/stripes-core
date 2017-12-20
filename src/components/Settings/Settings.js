@@ -8,11 +8,11 @@ import { modules } from 'stripes-config'; // eslint-disable-line
 import { withRouter } from 'react-router';
 import NavList from '@folio/stripes-components/lib/NavList';
 import NavListSection from '@folio/stripes-components/lib/NavListSection';
+import Paneset from '@folio/stripes-components/lib/Paneset';
+import Pane from '@folio/stripes-components/lib/Pane';
 
 import AddContext from '../../AddContext';
 import { stripesShape } from '../../Stripes';
-
-import css from './Settings.css';
 
 const settingsModules = [].concat(
   (modules.app || []).filter(m => m.hasSettings),
@@ -53,25 +53,19 @@ const Settings = (props) => {
   });
 
   return (
-    <div className={css.paneset}>
-      <div className={css.navPane} style={{ width: '20%' }}>
-        <div className={css.header}>
-          <span>Settings</span>
-        </div>
-        <div className={css.content}>
-          <NavList>
-            <NavListSection activeLink={props.location.pathname}>
-              {navLinks}
-            </NavListSection>
-          </NavList>
-        </div>
-      </div>
-
+    <Paneset>
+      <Pane defaultWidth="20%" paneTitle="Settings">
+        <NavList>
+          <NavListSection activeLink={props.location.pathname}>
+            {navLinks}
+          </NavListSection>
+        </NavList>
+      </Pane>
       <Switch>
         {routes}
-        <Route component={() => <div>Choose settings</div>} />
+        <Route component={() => <div style={{ padding: '15px' }}>Choose settings</div>} />
       </Switch>
-    </div>
+    </Paneset>
   );
 };
 
