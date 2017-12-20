@@ -56,7 +56,7 @@ const Settings = (props) => {
     <Paneset>
       <Pane defaultWidth="20%" paneTitle="Settings">
         <NavList>
-          <NavListSection activeLink={props.location.pathname}>
+          <NavListSection activeLink={props.location.pathname} label="App Settings">
             {navLinks}
           </NavListSection>
         </NavList>
