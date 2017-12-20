@@ -78,7 +78,7 @@ const About = (props) => {
   const ConnectedAboutEnabledModules = props.stripes.connect(AboutEnabledModules);
 
   return (
-    <Paneset>
+    <Paneset nested defaultWidth="80%">
       <Pane defaultWidth="30%" paneTitle="User interface">
         <Headline>Foundation</Headline>
         <span

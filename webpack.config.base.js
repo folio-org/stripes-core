@@ -57,7 +57,7 @@ module.exports = {
         loader: 'json-loader',
       },
       {
-        test: /\.(jpg|jpeg|gif|png|ico)$/,
+        test: /\.(jpg|jpeg|gif|png|ico|svg)$/,
         loader: 'file-loader?name=img/[path][name].[hash].[ext]',
       },
       {

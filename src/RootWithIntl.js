@@ -13,7 +13,6 @@ import MainContainer from './components/MainContainer';
 import MainNav from './components/MainNav';
 import ModuleContainer from './components/ModuleContainer';
 import Front from './components/Front';
-import About from './components/About';
 import SSOLanding from './components/SSOLanding';
 import SSORedirect from './components/SSORedirect';
 import Settings from './components/Settings/Settings';
@@ -39,7 +38,6 @@ const RootWithIntl = (props, context) => {
                   <Switch>
                     <Route exact path="/" component={() => <Front stripes={stripes} />} key="root" />
                     <Route path="/sso-landing" component={() => <SSORedirect stripes={stripes} />} key="sso-landing" />
-                    <Route path="/about" component={() => <About stripes={stripes} />} key="about" />
                     <Route path="/settings" render={() => <Settings stripes={stripes} />} />
                     {getModuleRoutes(stripes)}
                     <Route
