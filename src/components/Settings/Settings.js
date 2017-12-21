@@ -10,7 +10,9 @@ import NavList from '@folio/stripes-components/lib/NavList';
 import NavListSection from '@folio/stripes-components/lib/NavListSection';
 import Paneset from '@folio/stripes-components/lib/Paneset';
 import Pane from '@folio/stripes-components/lib/Pane';
+import { FormattedMessage } from 'react-intl';
 
+import About from '../About';
 import AddContext from '../../AddContext';
 import { stripesShape } from '../../Stripes';
 
@@ -60,9 +62,14 @@ const Settings = (props) => {
             {navLinks}
           </NavListSection>
         </NavList>
+        <br /><br />
+        <NavListSection label="System Information" activeLink={props.location.pathname}>
+          <Link to="/settings/about"><FormattedMessage id="stripes-core.front.about" /></Link>
+        </NavListSection>
       </Pane>
       <Switch>
         {routes}
+        <Route path="/settings/about" component={() => <About stripes={stripes} />} key="about" />
         <Route component={() => <div style={{ padding: '15px' }}>Choose settings</div>} />
       </Switch>
     </Paneset>
