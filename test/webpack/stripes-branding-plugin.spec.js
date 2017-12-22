@@ -2,7 +2,7 @@ const expect = require('chai').expect;
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const VirtualModulesPlugin = require('webpack-virtual-modules');
-const defaultBranding = require('../../default-tenant-assets/branding-defaults');
+const defaultBranding = require('../../default-assets/branding');
 const StripesBrandingPlugin = require('../../webpack/stripes-branding-plugin');
 
 // Sample data for test

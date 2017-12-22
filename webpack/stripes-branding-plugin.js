@@ -1,21 +1,22 @@
 // This webpack plugin generates a virtual module containing the stripes tenant branding configuration
-// The virtual module this will contain require()'s needed for webpack to pull images into the bundle.
+// The virtual module contains require()'s needed for webpack to pull images into the bundle.
 
 const path = require('path');
 const VirtualModulesPlugin = require('webpack-virtual-modules');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const defaultBranding = require('../default-tenant-assets/branding-defaults');
+const defaultBranding = require('../default-assets/branding');
 
 module.exports = class StripesBrandingPlugin {
   constructor(tenantBranding) {
+    // TODO: Validate incoming tenantBranding paths
     this.branding = Object.assign({}, defaultBranding, tenantBranding);
   }
 
   apply(compiler) {
-    const dynamicBrandingModule = `module.exports = ${StripesBrandingPlugin._serializeBranding(this.branding)};`;
+    const brandingVirtualModule = `module.exports = ${StripesBrandingPlugin._serializeBranding(this.branding)};`;
 
     compiler.apply(new VirtualModulesPlugin({
-      'node_modules/stripes-branding.js': dynamicBrandingModule,
+      'node_modules/stripes-branding.js': brandingVirtualModule,
     }));
 
     // Locate the HtmlWebpackPlugin and apply the favicon.
@@ -26,9 +27,9 @@ module.exports = class StripesBrandingPlugin {
   static _serializeBranding(branding) {
     const assetPath = (thePath) => {
       if (thePath.startsWith('@folio/stripes-core')) {
-        return thePath;
+        return thePath; // leave as-is and import defaults from stripes-core
       } else {
-        return path.join('..', thePath); // Currently depends on custom path being relative to stripes.config.js
+        return path.join('..', thePath); // Look outside the node_modules directory
       }
     };
 
@@ -52,6 +53,7 @@ module.exports = class StripesBrandingPlugin {
   // Prep favicon path for use with HtmlWebpackPlugin
   static _initFavicon(favicon) {
     if (favicon.startsWith('@folio/stripes-core')) {
+      // The plugin wants a file path for this
       return path.join(__dirname, '..', favicon.replace('@folio/stripes-core', ''));
     }
     return path.join(path.resolve(), favicon);
