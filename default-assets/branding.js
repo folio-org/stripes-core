@@ -4,7 +4,7 @@
 module.exports = {
   logo: {
     src: '@folio/stripes-core/default-assets/folio-logo.png',
-    alt: 'FOLIO University',
+    alt: 'Future Of Libraries Is Open',
   },
   favicon: {
     src: '@folio/stripes-core/default-assets/favicon.ico',
