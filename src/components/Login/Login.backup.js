@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { reduxForm, Field } from 'redux-form';
 import TextField from '@folio/stripes-components/lib/TextField';
 import css from './Login.css';
-import authFormStyles from './AuthForm.css';
 import SSOLogin from '../SSOLogin';
 
 const propTypes = {
