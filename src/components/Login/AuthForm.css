@@ -22,13 +22,13 @@
 }
 
 .centered {
-  opacity: 0;
   position: relative;
   max-width: 500px;
   width: 100%;
   padding: 15px;
-  transform: translateY(20px);
-  animation: fade-in-animation 0.2s 0.5s ease-out forwards;
+  /* opacity: 0; */
+  /* transform: translateY(20px); */
+  /* animation: fade-in-animation 0.2s 0.5s ease-out forwards; */
 }
 
 .logo {
