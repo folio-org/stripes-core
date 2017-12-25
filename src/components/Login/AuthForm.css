@@ -3,6 +3,16 @@
  */
 @import "@folio/stripes-components/lib/variables.css";
 
+@keyframes fade-in-animation {
+  0% {
+    opacity: 0.0;
+  }
+  100% {
+    opacity: 1.0;
+    transform: translateY(0px);
+  }
+}
+
 .wrap {
   display: flex;
   justify-content: center;
@@ -11,13 +21,17 @@
 }
 
 .centered {
-  max-width: 400px;
+  opacity: 0;
+  position: relative;
+  max-width: 500px;
   width: 100%;
   padding: 15px;
+  transform: translateY(20px);
+  animation: fade-in-animation 0.2s 0.5s ease-out forwards;
 }
 
 .logo {
-  width: 200px;
+  max-width: 200px;
   margin: 0 auto 45px;
 
   & img {
@@ -49,14 +63,15 @@ h1.formTitle {
 }
 
 input.input {
-  height: 50px;
+  height: 60px;
   font-size: 16px;
+  padding: 15px;
 }
 
 button.submitButton {
-  height: 60px;
+  height: 76px;
   max-height: 100%;
-  font-size: 18px;
+  font-size: 22px;
 }
 
 .formMessage {
@@ -67,5 +82,27 @@ button.submitButton {
   &.error {
     color: #fff;
     background-color: var(--error);
+  }
+}
+
+@media (max-width: 640px) {
+  button.submitButton {
+    height: 44px;
+    font-size: 16px;
+  }
+
+  input.input {
+    height: 44px;
+    font-size: 14px;
+    padding: 8px;
+  }
+
+  h1.formTitle {
+    font-size: 28px;
+    margin-bottom: 20px;
+  }
+
+  .logo {
+    margin-bottom: 30px;
   }
 }
