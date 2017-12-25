@@ -51,10 +51,10 @@ class Login extends Component {
           <Form className={authFormStyles.form} onSubmit={handleSubmit(onSubmit)}>
             <Headline className={authFormStyles.formTitle} tag="h1">Log in</Headline>
             <div className={authFormStyles.formGroup}>
-              <Field id="input-username" component={TextField} name="username" type="text" placeholder="Username" marginBottom0 fullWidth inputClass={authFormStyles.input} required />
+              <Field id="input-username" component={TextField} name="username" type="text" placeholder="Username" marginBottom0 fullWidth inputClass={authFormStyles.input} validationEnabled={false} />
             </div>
             <div className={authFormStyles.formGroup}>
-              <Field id="input-password" component={TextField} name="password" type="password" placeholder="Password" marginBottom0 fullWidth inputClass={authFormStyles.input} required />
+              <Field id="input-password" component={TextField} name="password" type="password" placeholder="Password" marginBottom0 fullWidth inputClass={authFormStyles.input} validationEnabled={false} />
             </div>
             <div className={authFormStyles.formGroup}>
               <Button id="clickable-login" type="submit" buttonClass={authFormStyles.submitButton} disabled={buttonDisabled} fullWidth>
