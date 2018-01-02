@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { reduxForm, Field } from 'redux-form';
 import css from './Login.css';
 import SSOLogin from '../SSOLogin';
+import { branding } from 'stripes-config'; //eslint-disable-line
+
 
 const propTypes = {
   handleSubmit: PropTypes.func.isRequired,
@@ -27,6 +29,7 @@ function Login(props) {
   return (
     <div className={css.loginOverlay}>
       <div className={css.loginContainer}>
+        <img src={branding.logo.src} alt={branding.logo.alt} />
         <h1>Sign In</h1>
         <form>
           <div className={css.slabStack}>
