@@ -58,12 +58,12 @@ const Settings = (props) => {
     <Paneset>
       <Pane defaultWidth="20%" paneTitle="Settings">
         <NavList>
-          <NavListSection activeLink={props.location.pathname} label="App Settings">
+          <NavListSection activeLink={props.location.pathname} label="Settings">
             {navLinks}
           </NavListSection>
         </NavList>
         <br /><br />
-        <NavListSection label="System Information" activeLink={props.location.pathname}>
+        <NavListSection label="System information" activeLink={props.location.pathname}>
           <Link to="/settings/about"><FormattedMessage id="stripes-core.front.about" /></Link>
         </NavListSection>
       </Pane>
