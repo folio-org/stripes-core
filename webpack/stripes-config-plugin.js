@@ -61,7 +61,7 @@ function parseStripesModules(enabledModules, context, alias) {
 module.exports = class StripesConfigPlugin {
   constructor(options) {
     assert(_.isObject(options.modules), 'stripes-config-plugin was not provided a "modules" object for enabling stripes modules');
-    this.options = options;
+    this.options = _.omit(options, 'branding');
   }
 
   apply(compiler) {
@@ -70,8 +70,14 @@ module.exports = class StripesConfigPlugin {
     const mergedConfig = Object.assign({}, this.options, { modules: moduleConfigs });
 
     // Create a virtual module for Webpack to include in the build
+    const stripesVirtualModule = `
+      import branding from 'stripes-branding';
+      const { okapi, config, modules } = ${serialize(mergedConfig, { space: 2 })};
+      export { okapi, config, modules, branding };
+    `;
+
     compiler.apply(new VirtualModulesPlugin({
-      'node_modules/stripes-config.js': `module.exports = ${serialize(mergedConfig, { space: 2 })}`,
+      'node_modules/stripes-config.js': stripesVirtualModule,
     }));
   }
 };
