@@ -8,6 +8,8 @@ import Headline from '@folio/stripes-components/lib/Headline';
 import Button from '@folio/stripes-components/lib/Button';
 import authFormStyles from './AuthForm.css';
 import SSOLogin from '../SSOLogin';
+import { branding } from 'stripes-config'; //eslint-disable-line
+
 
 class Login extends Component {
   static propTypes = {
@@ -15,7 +17,6 @@ class Login extends Component {
     onSubmit: PropTypes.func.isRequired,
     submitting: PropTypes.bool,
     authError: PropTypes.string,
-    logoUrl: PropTypes.string,
     formValues: PropTypes.object,
     handleSSOLogin: PropTypes.func,
     ssoActive: PropTypes.any, // eslint-disable-line react/forbid-prop-types
@@ -26,22 +27,20 @@ class Login extends Component {
     document.getElementById('input-username').focus();
   }
 
-  // Get organization logo
-  getOrganizationLogo() {
-    const { logoUrl } = this.props;
-
-    if (!logoUrl) {
-      return false;
-    }
-
-    return (
-      <div className={authFormStyles.logo}>
-        <img alt="" src={logoUrl} />
-      </div>
-    );
-  }
-
   render() {
+    // Get organization logo
+    const getOrganizationLogo = () => {
+      if (!branding) {
+        return false;
+      }
+
+      return (
+        <div className={authFormStyles.logo}>
+          <img alt={branding.logo.alt} src={branding.logo.src} />
+        </div>
+      );
+    };
+
     const {
       handleSubmit,
       submitting,
@@ -58,7 +57,7 @@ class Login extends Component {
     return (
       <div className={authFormStyles.wrap}>
         <div className={authFormStyles.centered}>
-          {this.getOrganizationLogo()}
+          {getOrganizationLogo()}
           <Form className={authFormStyles.form} onSubmit={handleSubmit(onSubmit)}>
             <Headline className={authFormStyles.formTitle} tag="h1">Log in</Headline>
             <div className={authFormStyles.formGroup}>
