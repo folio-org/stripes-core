@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import { modules as uiModules } from 'stripes-config'; // eslint-disable-line
 
 /* eslint-disable import/extensions */
-import stripesCore from '@folio/stripes-core/package.json'; // eslint-disable-line
 import stripesConnect from '@folio/stripes-connect/package.json';
 import stripesComponents from '@folio/stripes-components/package.json';
 import stripesLogger from '@folio/stripes-logger/package.json';
@@ -16,6 +15,8 @@ import List from '@folio/stripes-components/lib/List';
 import Paneset from '@folio/stripes-components/lib/Paneset';
 import { isVersionCompatible } from '../discoverServices';
 import AboutEnabledModules from './AboutEnabledModules';
+
+import stripesCore from '../../package.json'; // eslint-disable-line
 
 const About = (props) => {
   function renderDependencies(m, interfaces) {
