@@ -1,0 +1,109 @@
+/**
+ * Styling for login and sign up
+ */
+@import "@folio/stripes-components/lib/variables.css";
+
+@keyframes fade-in-animation {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.centered {
+  position: relative;
+  max-width: 500px;
+  width: 100%;
+  padding: 15px;
+
+  /* opacity: 0;
+  /* transform: translateY(20px);
+  /* animation: fade-in-animation 0.2s 0.5s ease-out forwards; */
+}
+
+.logo {
+  margin: 0 auto 45px;
+  text-align: center;
+
+  & img {
+    max-height: 100px;
+  }
+}
+
+/**
+ * Form
+ */
+
+h1.formTitle {
+  font-size: 38px;
+  margin-bottom: 25px;
+}
+
+.form {
+  outline: 0;
+  text-align: center;
+}
+
+.form .formGroup:last-child {
+  margin-bottom: 0;
+}
+
+.formGroup {
+  margin-bottom: 10px;
+}
+
+input.input {
+  height: 60px;
+  font-size: 16px;
+  padding: 15px;
+}
+
+button.submitButton {
+  height: 76px;
+  max-height: 100%;
+  font-size: 22px;
+}
+
+.formMessage {
+  line-height: 125%;
+  padding: 10px;
+  border-radius: var(--radius);
+
+  &.error {
+    color: #fff;
+    background-color: var(--error);
+  }
+}
+
+@media (max-width: 640px) {
+  button.submitButton {
+    height: 44px;
+    font-size: 16px;
+  }
+
+  input.input {
+    height: 44px;
+    font-size: 14px;
+    padding: 8px;
+  }
+
+  h1.formTitle {
+    font-size: 28px;
+    margin-bottom: 20px;
+  }
+
+  .logo {
+    margin-bottom: 30px;
+  }
+}

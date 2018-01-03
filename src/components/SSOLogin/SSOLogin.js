@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import css from '../Login/Login.css';
+import Button from '@folio/stripes-components/lib/Button';
+import authFormStyles from '../Login/AuthForm.css';
 
 const propTypes = {
   handleSSOLogin: PropTypes.func.isRequired,
@@ -12,8 +13,8 @@ function SSOLogin(props) {
   } = props;
 
   return (
-    <div className={css.slabStack}>
-      <button type="button" className={css.slabButton} onClick={handleSSOLogin}>Login via SSO</button>
+    <div className={authFormStyles.formGroup}>
+      <Button type="button" buttonClass={authFormStyles.submitButton} onClick={handleSSOLogin} fullWidth>Login via SSO</Button>
       <form id="ssoForm" />
     </div>
   );
