@@ -14,7 +14,19 @@ function loadDefaults(context, moduleName, alias) {
   if (alias[moduleName]) {
     aPath = require.resolve(path.join(alias[moduleName], 'package.json'));
   } else {
-    aPath = require.resolve(path.join(context, 'node_modules', moduleName, '/package.json'));
+    try {
+      aPath = require.resolve(path.join(context, 'node_modules', moduleName, '/package.json'));
+    } catch (e) {
+      try {
+        // The above resolution is overspecific and prevents some use cases eg. yarn workspaces
+        aPath = require.resolve(path.join(moduleName, '/package.json'));
+      } catch (e2) {
+        try {
+          // This better incorporates the context path but requires nodejs 9+
+          aPath = require.resolve(path.join(moduleName, '/package.json'), { paths: [context] });
+        } catch (e3) { throw e3; }
+      }
+    }
   }
 
   const { stripes, description, version } = require(aPath); // eslint-disable-line
