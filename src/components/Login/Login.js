@@ -4,7 +4,6 @@ import classNames from 'classnames';
 import { connect } from 'react-redux';
 import { reduxForm, Field, Form, formValueSelector } from 'redux-form';
 import TextField from '@folio/stripes-components/lib/TextField';
-import Headline from '@folio/stripes-components/lib/Headline';
 import Button from '@folio/stripes-components/lib/Button';
 import authFormStyles from './AuthForm.css';
 import SSOLogin from '../SSOLogin';
@@ -20,6 +19,7 @@ class Login extends Component {
     formValues: PropTypes.object,
     handleSSOLogin: PropTypes.func,
     ssoActive: PropTypes.any, // eslint-disable-line react/forbid-prop-types
+    submitSucceeded: PropTypes.bool,
   }
 
   componentDidMount() {
@@ -49,22 +49,46 @@ class Login extends Component {
       ssoActive,
       onSubmit,
       formValues,
+      submitSucceeded,
     } = this.props;
 
     const { username, password } = formValues;
-    const buttonDisabled = submitting || !(username && password);
-    const buttonLabel = submitting ? 'Please wait..' : 'Log in';
+    const buttonDisabled = submitting || submitSucceeded || !(username && password);
+    const buttonLabel = (submitting || submitSucceeded) ? 'Logging in...' : 'Log in';
     return (
       <div className={authFormStyles.wrap}>
         <div className={authFormStyles.centered}>
           {getOrganizationLogo()}
           <Form className={authFormStyles.form} onSubmit={handleSubmit(onSubmit)}>
-            <Headline className={authFormStyles.formTitle} tag="h1">Log in</Headline>
             <div className={authFormStyles.formGroup}>
-              <Field id="input-username" component={TextField} name="username" type="text" placeholder="Username" marginBottom0 fullWidth inputClass={authFormStyles.input} validationEnabled={false} hasClearIcon={false} />
+              <Field
+                id="input-username"
+                component={TextField}
+                name="username"
+                type="text"
+                placeholder="Username"
+                marginBottom0
+                fullWidth
+                inputClass={authFormStyles.input}
+                validationEnabled={false}
+                hasClearIcon={false}
+                autoComplete="username"
+              />
             </div>
             <div className={authFormStyles.formGroup}>
-              <Field id="input-password" component={TextField} name="password" type="password" placeholder="Password" marginBottom0 fullWidth inputClass={authFormStyles.input} validationEnabled={false} hasClearIcon={false} />
+              <Field
+                id="input-password"
+                component={TextField}
+                name="password"
+                type="password"
+                placeholder="Password"
+                marginBottom0
+                fullWidth
+                inputClass={authFormStyles.input}
+                validationEnabled={false}
+                hasClearIcon={false}
+                autoComplete="current-password"
+              />
             </div>
             <div className={authFormStyles.formGroup}>
               <Button id="clickable-login" type="submit" buttonClass={authFormStyles.submitButton} disabled={buttonDisabled} fullWidth>
