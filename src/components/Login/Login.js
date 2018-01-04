@@ -59,10 +59,34 @@ class Login extends Component {
           {getOrganizationLogo()}
           <Form className={authFormStyles.form} onSubmit={handleSubmit(onSubmit)}>
             <div className={authFormStyles.formGroup}>
-              <Field id="input-username" component={TextField} name="username" type="text" placeholder="Username" marginBottom0 fullWidth inputClass={authFormStyles.input} validationEnabled={false} hasClearIcon={false} />
+              <Field
+                id="input-username"
+                component={TextField}
+                name="username"
+                type="text"
+                placeholder="Username"
+                marginBottom0
+                fullWidth
+                inputClass={authFormStyles.input}
+                validationEnabled={false}
+                hasClearIcon={false}
+                autoComplete="username"
+              />
             </div>
             <div className={authFormStyles.formGroup}>
-              <Field id="input-password" component={TextField} name="password" type="password" placeholder="Password" marginBottom0 fullWidth inputClass={authFormStyles.input} validationEnabled={false} hasClearIcon={false} />
+              <Field
+                id="input-password"
+                component={TextField}
+                name="password"
+                type="password"
+                placeholder="Password"
+                marginBottom0
+                fullWidth
+                inputClass={authFormStyles.input}
+                validationEnabled={false}
+                hasClearIcon={false}
+                autoComplete="current-password"
+              />
             </div>
             <div className={authFormStyles.formGroup}>
               <Button id="clickable-login" type="submit" buttonClass={authFormStyles.submitButton} disabled={buttonDisabled} fullWidth>
