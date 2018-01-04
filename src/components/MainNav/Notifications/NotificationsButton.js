@@ -10,7 +10,12 @@ const NotificationsButton = (props) => {
   );
 
   return (
-    <NavButton {...inputProps} icon={icon} badge={notifications} noSelectedBar />
+    <NavButton
+      {...inputProps}
+      icon={icon}
+      badge={notifications}
+      noSelectedBar
+    />
   );
 };
 

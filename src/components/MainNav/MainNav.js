@@ -19,6 +19,7 @@ import NavGroup from './NavGroup';
 import Breadcrumbs from './Breadcrumbs';
 import NavIcon from './NavIcon';
 import CurrentApp from './CurrentApp';
+import MyProfile from './MyProfile';
 import NotificationsDropdown from './Notifications/NotificationsDropdown';
 
 import NavDropdownMenu from './NavDropdownMenu';
@@ -58,7 +59,6 @@ class MainNav extends Component {
       userMenuOpen: false,
     };
     this.store = props.stripes.store;
-    this.toggleUserMenu = this.toggleUserMenu.bind(this);
     this.logout = this.logout.bind(this);
     this.lastVisited = {};
     this.queryValues = null;
@@ -136,34 +136,7 @@ class MainNav extends Component {
 
   render() {
     const { stripes, location: { pathname } } = this.props;
-    const currentUser = stripes.user ? stripes.user.user : undefined;
-    const currentPerms = stripes.user ? stripes.user.perms : undefined;
     const selectedApp = modules.app.find(entry => pathname.startsWith(entry.route));
-
-    const profilePlaceholder = (
-      <div className={css.profilePlaceholder}>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8.2 19.4c-1.1.4-2.1.7-3.2 1.1-1.2.4-2.3.9-3.4 1.5-.2.1-.3.2-.5.3-.5.3-.7.8-.8 1.3v.3h23.2v-.4c0-.4-.2-.8-.5-1-.5-.4-1.1-.8-1.7-1.1-1.6-.8-3.2-1.3-4.9-1.9-.3-.1-.6-.2-.9-.4-.3-.2-.5-.4-.5-.8-.1-.5 0-1.1 0-1.6 0-.4.1-.8.4-1.1.6-.7.8-1.6 1-2.5.1-.4.2-.8.4-1.1.3-.6.5-1.3.5-1.9v-.5c-.3-.7-.1-1.2 0-1.9s.1-1.4-.2-2.1C16.3 4 14.9 3 12.9 2.7c-1.2-.2-2.4.1-2.7.2-1.9.6-3.1 1.8-3.5 3.7-.1.5 0 1 0 1.5 0 .3.1.6.1.8 0 .3 0 .6-.1.8-.1.2-.1.5-.1.7.1.7.3 1.3.6 1.9.2.4.2.8.3 1.2.2.8.4 1.7 1 2.3.4.4.5.7.5 1v1.5c0 .5-.2.9-.8 1.1z"/></svg>
-      </div>
-    );
-    let maybePerms;
-    const config = stripes.config;
-    if (config && config.showPerms) {
-      maybePerms = (<span>
-        <li className={css.ddDivider} aria-hidden="true" />
-        <li className={css.ddTextItem}><strong>Locale:</strong> {stripes.locale}</li>
-        <li className={css.ddDivider} aria-hidden="true" />
-        <li className={css.ddTextItem}><strong>Perms:</strong> {Object.keys(currentPerms || {}).sort().join(', ')}</li>
-      </span>);
-    }
-
-    const userDD = (
-      <ul>
-        <li className={`${css.nowrap} ${css.ddTextItem}`}>Logged in as <strong>{ currentUser != null ? `${currentUser.firstName} ${currentUser.lastName}` : null }</strong></li>
-        <li className={css.ddDivider} aria-hidden="true" />
-        <li><button id="clickable-logout" className={css.ddButton} type="button" onClick={this.logout}><span>Log out</span></button></li>
-        {maybePerms}
-      </ul>
-    );
 
     const menuLinks = modules.app.map((entry) => {
       const name = entry.module.replace(/^@[a-z0-9_]+\//, '');
@@ -172,7 +145,16 @@ class MainNav extends Component {
 
       if (!stripes.hasPerm(perm)) return null;
 
-      return (<NavButton label={entry.displayName} id={navId} selected={pathname.startsWith(entry.route)} onClick={this.handleNavigation(entry)} href={this.lastVisited[name] || entry.home || entry.route} title={entry.displayName} key={entry.route} />);
+      return (
+        <NavButton
+          label={entry.displayName}
+          id={navId}
+          selected={pathname.startsWith(entry.route)}
+          onClick={this.handleNavigation(entry)}
+          href={this.lastVisited[name] || entry.home || entry.route}
+          title={entry.displayName}
+          key={entry.route}
+        />);
     });
 
     let firstNav;
@@ -188,18 +170,13 @@ class MainNav extends Component {
             </svg>
           </a>
           {selectedApp &&
-            <NavButton
-              label={selectedApp.displayName}
-              title={selectedApp.displayName}
-              key="selected-app"
+            <CurrentApp
+              currentApp={selectedApp}
             />
           }
           {
             stripes.hasPerm('settings.enabled') && pathname.startsWith('/settings') &&
-              <NavButton href={this.lastVisited.x_settings || '/settings'}>
-                <NavIcon />
-                <span>Settings</span>
-              </NavButton>
+            <NavButton label="Settings" href={this.lastVisited.x_settings || '/settings'} />
           }
         </NavGroup>
       );
@@ -220,7 +197,12 @@ class MainNav extends Component {
             {menuLinks}
             {
               !stripes.hasPerm('settings.enabled') ? '' : (
-                <NavButton label="Settings" id="clickable-settings" selected={pathname.startsWith('/settings')} href={this.lastVisited.x_settings || '/settings'} />
+                <NavButton
+                  label="Settings"
+                  id="clickable-settings"
+                  selected={pathname.startsWith('/settings')}
+                  href={this.lastVisited.x_settings || '/settings'}
+                />
               )
             }
           </NavGroup>
@@ -229,10 +211,10 @@ class MainNav extends Component {
             { this.props.stripes.hasPerm('notify.item.get,notify.item.put,notify.collection.get') && (<NotificationsDropdown stripes={stripes} {...this.props} />) }
             { /* temporary divider solution.. */ }
             { this.props.stripes.hasPerm('notify.item.get,notify.item.put,notify.collection.get') && (<NavDivider md="hide" />) }
-            <Dropdown open={this.state.userMenuOpen} id="UserMenuDropDown" onToggle={this.toggleUserMenu} pullRight >
-              <NavButton data-role="toggle" title="User Menu" selected={this.state.userMenuOpen} icon={profilePlaceholder} noSelectedBar />
-              <NavDropdownMenu data-role="menu" onToggle={this.toggleUserMenu} aria-label="User Menu">{userDD}</NavDropdownMenu>
-            </Dropdown>
+            <MyProfile
+              onLogout={this.logout}
+              stripes={stripes}
+            />
           </NavGroup>
         </NavGroup>
       </nav>

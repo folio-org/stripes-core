@@ -40,6 +40,7 @@
 .icon {
   opacity: 0.75;
   height: 24px;
+  margin: 0 4px;
 
   & img,
   & svg {
@@ -66,19 +67,31 @@
 }
 
 .label {
-  margin-left: 6px;
+  margin: 0 4px;
   font-weight: 600;
 }
 
 .inner {
-  padding: 4px;
+  padding: 4px 0;
+  position: relative;
+}
+
+/**
+ * Badge
+ */
+.navButton .badge {
+  font-size: 10px;
+  position: absolute;
+  top: 0;
+  right: -1px;
+  z-index: 5;
 }
 
 /**
  * Interaction styles
  */
 
-.navButton .inner::before {
+button.navButton .inner::before {
   content: "";
   position: absolute;
   top: 0;
@@ -86,27 +99,27 @@
   left: 0;
   right: 0;
   background: transparent;
-  border-radius: 6px;
+  border-radius: calc(var(--radius) * 1.2);
   z-index: 1;
 }
 
-.navButton:hover .icon,
-.navButton:focus .icon {
+button.navButton:hover .icon,
+button.navButton:focus .icon {
   opacity: 1;
 }
 
-.navButton:hover .inner::before {
+button.navButton:hover .inner::before {
   background-color: rgba(37, 118, 195, 0.2);
 }
 
-.navButton:focus .inner::before {
+button.navButton:focus .inner::before {
   background: rgba(37, 118, 195, 0.3);
   border: 1px solid rgba(0, 0, 0, 0.2);
 
   /* box-shadow: 0 0 0 3px rgba(37, 118, 195, 0.3); */
 }
 
-.navButton:active .inner {
+button.navButton:active .inner {
   color: rgb(255, 255, 255);
 
   & svg {
@@ -114,7 +127,7 @@
   }
 }
 
-.navButton:active .inner::before {
+button.navButton:active .inner::before {
   background: rgb(37, 118, 195);
   border: 1px solid rgba(0, 0, 0, 0.2);
 }
