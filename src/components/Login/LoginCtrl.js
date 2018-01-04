@@ -34,7 +34,7 @@ class LoginCtrl extends Component {
   }
 
   handleSubmit(data) {
-    requestLogin(this.okapiUrl, this.store, this.tenant, data).then((response) => {
+    return requestLogin(this.okapiUrl, this.store, this.tenant, data).then((response) => {
       if (response.status >= 400) {
         // eslint-disable-next-line no-param-reassign
         this.initialValues.username = data.username;
