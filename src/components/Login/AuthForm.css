@@ -45,11 +45,6 @@
  * Form
  */
 
-h1.formTitle {
-  font-size: 38px;
-  margin-bottom: 25px;
-}
-
 .form {
   outline: 0;
   text-align: center;
@@ -96,11 +91,6 @@ button.submitButton {
     height: 44px;
     font-size: 14px;
     padding: 8px;
-  }
-
-  h1.formTitle {
-    font-size: 28px;
-    margin-bottom: 20px;
   }
 
   .logo {

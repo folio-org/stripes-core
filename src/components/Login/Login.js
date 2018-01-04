@@ -4,7 +4,6 @@ import classNames from 'classnames';
 import { connect } from 'react-redux';
 import { reduxForm, Field, Form, formValueSelector } from 'redux-form';
 import TextField from '@folio/stripes-components/lib/TextField';
-import Headline from '@folio/stripes-components/lib/Headline';
 import Button from '@folio/stripes-components/lib/Button';
 import authFormStyles from './AuthForm.css';
 import SSOLogin from '../SSOLogin';
@@ -53,13 +52,12 @@ class Login extends Component {
 
     const { username, password } = formValues;
     const buttonDisabled = submitting || !(username && password);
-    const buttonLabel = submitting ? 'Please wait..' : 'Log in';
+    const buttonLabel = submitting ? 'Logging in...' : 'Log in';
     return (
       <div className={authFormStyles.wrap}>
         <div className={authFormStyles.centered}>
           {getOrganizationLogo()}
           <Form className={authFormStyles.form} onSubmit={handleSubmit(onSubmit)}>
-            <Headline className={authFormStyles.formTitle} tag="h1">Log in</Headline>
             <div className={authFormStyles.formGroup}>
               <Field id="input-username" component={TextField} name="username" type="text" placeholder="Username" marginBottom0 fullWidth inputClass={authFormStyles.input} validationEnabled={false} hasClearIcon={false} />
             </div>
