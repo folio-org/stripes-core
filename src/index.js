@@ -17,7 +17,7 @@ const epics = configureEpics(connectErrorEpic);
 const logger = configureLogger(config);
 logger.log('core', 'Starting Stripes ...');
 const store = configureStore(initialState, logger, epics);
-discoverServices(okapi.url, store);
+discoverServices(store);
 const actionNames = gatherActions();
 
 render(
