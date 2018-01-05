@@ -35,6 +35,7 @@ class LoginCtrl extends Component {
 
   handleSubmit(data) {
     return requestLogin(this.okapiUrl, this.store, this.tenant, data).then((response) => {
+console.warn('response', response);
       if (response.status >= 400) {
         // eslint-disable-next-line no-param-reassign
         this.initialValues.username = data.username;
@@ -48,7 +49,7 @@ class LoginCtrl extends Component {
 
   render() {
     const { authFailure, ssoEnabled } = this.props;
-
+console.log('authControl props', this.props);
     return (
       <Login
         onSubmit={this.handleSubmit}
@@ -62,6 +63,7 @@ class LoginCtrl extends Component {
 }
 
 function mapStateToProps(state) {
+console.warn('mstp', state);
   return {
     authFailure: state.okapi.authFailure,
     ssoEnabled: state.okapi.ssoEnabled,
