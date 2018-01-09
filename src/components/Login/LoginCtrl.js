@@ -1,6 +1,7 @@
 import React, { Component } from 'react'; // eslint-disable-line
 import PropTypes from 'prop-types';
 import { connect as reduxConnect } from 'react-redux'; // eslint-disable-line
+import { SubmissionError } from 'redux-form';
 
 import { requestLogin, requestSSOLogin } from '../../loginServices';
 import Login from './Login';
@@ -26,7 +27,6 @@ class LoginCtrl extends Component {
     this.sys = require('stripes-config'); // eslint-disable-line
     this.okapiUrl = this.sys.okapi.url;
     this.tenant = this.sys.okapi.tenant;
-    this.initialValues = { username: '', password: '' };
     this.handleSSOLogin = this.handleSSOLogin.bind(this);
     if (props.autoLogin && props.autoLogin.username) {
       this.handleSubmit(props.autoLogin);
@@ -35,10 +35,10 @@ class LoginCtrl extends Component {
 
   handleSubmit(data) {
     return requestLogin(this.okapiUrl, this.store, this.tenant, data).then((response) => {
-console.warn('response', response);
       if (response.status >= 400) {
-        // eslint-disable-next-line no-param-reassign
-        this.initialValues.username = data.username;
+        // On login failure: Throw submission error
+        // which triggers redux-form submitFailed prop
+        throw new SubmissionError();
       }
     });
   }
@@ -49,12 +49,10 @@ console.warn('response', response);
 
   render() {
     const { authFailure, ssoEnabled } = this.props;
-console.log('authControl props', this.props);
     return (
       <Login
         onSubmit={this.handleSubmit}
         authError={authFailure}
-        initialValues={this.initialValues}
         handleSSOLogin={this.handleSSOLogin}
         ssoActive={ssoEnabled}
       />
@@ -63,7 +61,6 @@ console.log('authControl props', this.props);
 }
 
 function mapStateToProps(state) {
-console.warn('mstp', state);
   return {
     authFailure: state.okapi.authFailure,
     ssoEnabled: state.okapi.ssoEnabled,
