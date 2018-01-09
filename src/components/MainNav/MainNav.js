@@ -60,28 +60,36 @@ class MainNav extends Component {
     this.toggleUserMenu = this.toggleUserMenu.bind(this);
     this.logout = this.logout.bind(this);
     this.lastVisited = {};
-    this.unsub = null;
     this.queryValues = null;
+    this.unsubs = {};
 
-    const moduleList = modules.app.concat({
+    this.moduleList = modules.app.concat({
       route: '/settings',
       module: '@folio/x_settings',
     });
 
-    for (const entry of moduleList) {
-      if (props.location.pathname.startsWith(entry.route)) {
-        this.subscribeToQueryChanges(entry);
-      }
-    }
-
     props.history.listen((hist) => {
-      for (const entry of moduleList) {
+      for (const entry of this.moduleList) {
         if (hist.pathname === entry.route || hist.pathname.startsWith(`${entry.route}/`)) {
           const name = entry.module.replace(/^@folio\//, '');
           this.lastVisited[name] = `${hist.pathname}${hist.search}`;
         }
       }
     });
+  }
+
+  componentDidUpdate() {
+    for (const entry of this.moduleList) {
+      if (this.props.location.pathname.startsWith(entry.route)) {
+        const name = entry.module.replace(/^@folio\//, '');
+        if (entry.queryResource) {
+          if (this.unsubs[name]) {
+            this.unsubs[name]();
+          }
+          this.unsubs[name] = this.subscribeToQueryChanges(entry);
+        }
+      }
+    }
   }
 
   toggleUserMenu() {
@@ -100,9 +108,7 @@ class MainNav extends Component {
   }
 
   subscribeToQueryChanges(moduleInfo) {
-    if (this.unsub) this.unsub();
-    if (!moduleInfo.queryResource) return;
-    this.unsub = this.store.subscribe(() => {
+    return this.store.subscribe(() => {
       const previousQueryValues = this.queryValues;
       // This is not DRY, as it was expressed already in LocalResource is stripes-connect,
       // And in Root.js in stripes-core. Both State Keys should be derived from a common mechanism.
@@ -125,13 +131,6 @@ class MainNav extends Component {
         this.props.history.replace(url);
       }
     });
-  }
-
-  handleNavigation(entry) {
-    return () => {
-      this.subscribeToQueryChanges(entry);
-      this.props.history.push(this.lastVisited[name] || entry.home || entry.route);
-    };
   }
 
   render() {
@@ -175,7 +174,7 @@ class MainNav extends Component {
 
       if (!stripes.hasPerm(perm)) return null;
 
-      return (<NavButton id={navId} selected={pathname.startsWith(entry.route)} onClick={this.handleNavigation(entry)} href={this.lastVisited[name] || entry.home || entry.route} title={entry.displayName} key={entry.route}>
+      return (<NavButton id={navId} selected={pathname.startsWith(entry.route)} href={this.lastVisited[name] || entry.home || entry.route} title={entry.displayName} key={entry.route}>
         <NavIcon color="#61f160" />
         <span className={css.linkLabel}>
           {entry.displayName}
@@ -200,7 +199,7 @@ class MainNav extends Component {
             <span className={css.brandingLabel} style={{ fontSize: '22px', lineHeight: '1rem' }}>FOLIO</span>
           </NavButton>
           {selectedApp &&
-            <NavButton onClick={this.handleNavigation(selectedApp)} href={this.lastVisited[name] || selectedApp.home} title={selectedApp.displayName} key="selected-app">
+            <NavButton href={this.lastVisited[name] || selectedApp.home} title={selectedApp.displayName} key="selected-app">
               <NavIcon color="#61f160" />
               <span className={css.linkLabel}>
                 {selectedApp.displayName}
