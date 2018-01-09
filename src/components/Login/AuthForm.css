@@ -18,7 +18,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  min-height: 100vh;
 }
 
 .centered {
@@ -34,7 +34,7 @@
 
 .logo {
   max-width: 460px;
-  margin: 0 auto 45px;
+  margin: -10% auto 45px;
   text-align: center;
 
   & img {
@@ -84,6 +84,16 @@ button.submitButton {
   }
 }
 
+@media (max-height: 440px) {
+  .logo {
+    margin-top: 0;
+  }
+
+  .centered {
+    min-height: 330px;
+  }
+}
+
 @media (max-width: 640px) {
   .centered {
     min-height: 330px;
@@ -102,6 +112,7 @@ button.submitButton {
 
   .logo {
     margin-bottom: 30px;
+    margin-top: 0;
 
     & img {
       max-width: 160px;
