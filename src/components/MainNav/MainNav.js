@@ -61,7 +61,9 @@ class MainNav extends Component {
     this.logout = this.logout.bind(this);
     this.lastVisited = {};
     this.queryValues = null;
-    this.unsubs = {};
+
+    this.moduleName = undefined;
+    this.unsub = undefined;
 
     this.moduleList = modules.app.concat({
       route: '/settings',
@@ -83,10 +85,13 @@ class MainNav extends Component {
       if (this.props.location.pathname.startsWith(entry.route)) {
         if (entry.queryResource) {
           const name = entry.module.replace(/^@folio\//, '');
-          if (this.unsubs[name]) {
-            this.unsubs[name]();
+          if (this.moduleName !== name) {
+            if (this.unsub) {
+              this.unsub();
+            }
+            this.unsub = this.subscribeToQueryChanges(entry);
+            this.moduleName = name;
           }
-          this.unsubs[name] = this.subscribeToQueryChanges(entry);
         }
       }
     }
@@ -122,9 +127,7 @@ class MainNav extends Component {
         let url = allParams._path || location.pathname;
         delete allParams._path;
 
-        const nonNull = Object.keys(allParams)
-          .filter(k => allParams[k] != null)
-          .reduce((r, k) => Object.assign(r, { [k]: allParams[k] }), {});
+        const nonNull = Object.keys(allParams).filter(k => allParams[k] != null).reduce((r, k) => Object.assign(r, { [k]: allParams[k] }), {});
         if (Object.keys(nonNull).length) {
           url += `?${queryString.stringify(nonNull)}`;
         }
