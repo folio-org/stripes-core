@@ -87,7 +87,6 @@ class MainNav extends Component {
         if (this.moduleName !== name) {
           if (this.unsub) {
             this.unsub();
-            delete this.unsub;
           }
           if (entry.queryResource) {
             this.unsub = this.subscribeToQueryChanges(entry);
