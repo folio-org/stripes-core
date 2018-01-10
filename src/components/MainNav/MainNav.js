@@ -85,7 +85,7 @@ class MainNav extends Component {
       if (this.props.location.pathname.startsWith(entry.route)) {
         if (entry.queryResource) {
           const name = entry.module.replace(/^@folio\//, '');
-          if(this.moduleName !== name) {
+          if (this.moduleName !== name) {
             if (this.unsub) {
               this.unsub();
             }
