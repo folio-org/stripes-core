@@ -62,9 +62,6 @@ class MainNav extends Component {
     this.lastVisited = {};
     this.queryValues = null;
 
-    this.moduleName = undefined;
-    this.unsub = undefined;
-
     this.moduleList = modules.app.concat({
       route: '/settings',
       module: '@folio/x_settings',
@@ -85,11 +82,11 @@ class MainNav extends Component {
       if (this.props.location.pathname.startsWith(entry.route)) {
         const name = entry.module.replace(/^@folio\//, '');
         if (this.moduleName !== name) {
-          if (this.unsub) {
-            this.unsub();
+          if (this.unsubscribe) {
+            this.unsubscribe();
           }
           if (entry.queryResource) {
-            this.unsub = this.subscribeToQueryChanges(entry);
+            this.unsubscribe = this.subscribeToQueryChanges(entry);
           }
           this.moduleName = name;
         }
