@@ -40,6 +40,7 @@ class MainNav extends Component {
         dispatch: PropTypes.func.isRequired,
       }),
       hasPerm: PropTypes.func.isRequired,
+      withOkapi: PropTypes.bool,
     }),
     history: PropTypes.shape({
       listen: PropTypes.func.isRequired,
@@ -242,7 +243,7 @@ class MainNav extends Component {
               )
             }
             <NavDivider md="hide" />
-            { this.props.stripes.hasPerm('notify.item.get,notify.item.put,notify.collection.get') && <NotificationsDropdown stripes={stripes} {...this.props} /> }
+            { this.props.stripes.withOkapi && this.props.stripes.hasPerm('notify.item.get,notify.item.put,notify.collection.get') && <NotificationsDropdown stripes={stripes} {...this.props} /> }
           </NavGroup>
           <NavGroup className={css.smallAlignRight}>
             <Dropdown open={this.state.userMenuOpen} id="UserMenuDropDown" onToggle={this.toggleUserMenu} pullRight >
