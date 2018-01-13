@@ -120,7 +120,7 @@ export default class MyProfile extends Component {
   render() {
     const { dropdownOpen } = this.state;
     return (
-      <Dropdown open={dropdownOpen} id="profileDropdown" onToggle={this.toggleDropdown} pullRight >
+      <Dropdown open={dropdownOpen} id="profileDropdown" onToggle={this.toggleDropdown} pullRight hasPadding>
         <NavButton data-role="toggle" title="My Profile" selected={dropdownOpen} icon={this.getProfileImage()} noSelectedBar />
         <NavDropdownMenu data-role="menu" onToggle={this.toggleDropdown}>
           {this.getDropdownContent()}

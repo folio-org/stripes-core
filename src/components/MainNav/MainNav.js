@@ -150,7 +150,6 @@ class MainNav extends Component {
           label={entry.displayName}
           id={navId}
           selected={pathname.startsWith(entry.route)}
-          onClick={this.handleNavigation(entry)}
           href={this.lastVisited[name] || entry.home || entry.route}
           title={entry.displayName}
           key={entry.route}
