@@ -57,7 +57,7 @@ const NavButton = withRouter(({ history, label, title, selected, onClick, href, 
   const Element = typeof onClick === 'function' || href ? 'button' : 'span';
 
   return (
-    <Element title={title} className={rootClasses} onClick={clickEvent}>
+    <Element title={title} className={rootClasses} onClick={clickEvent} role="button">
       <div className={css.inner}>
         { badge && (<Badge color="red" className={css.badge}>{badge}</Badge>) }
         { displayIcon }
