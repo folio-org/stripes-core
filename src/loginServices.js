@@ -122,8 +122,6 @@ export function getBindings(okapiUrl, store, tenant) {
 
 function clearOkapiSession(store, resp) {
   resp.json().then((json) => {
-    // store.dispatch(clearCurrentUser());
-    // store.dispatch(clearOkapiToken());
     localforage.removeItem('okapiSess');
     store.dispatch(change('login', 'password', ''));
     // This is a lame way to detect the nature of the error. In future, the response status will be a 4xx
