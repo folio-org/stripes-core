@@ -1,7 +1,7 @@
 import 'babel-polyfill';
 import React from 'react';
 import { render } from 'react-dom';
-import { okapi, config } from 'stripes-config'; // eslint-disable-line
+import { okapi as okapiConfig, config } from 'stripes-config'; // eslint-disable-line
 
 import connectErrorEpic from './connectErrorEpic';
 import configureEpics from './configureEpics';
@@ -12,12 +12,13 @@ import gatherActions from './gatherActions';
 
 import Root from './components/Root';
 
+const okapi = (typeof okapiConfig === 'object') ? okapiConfig : { withoutOkapi: true };
 const initialState = { okapi };
 const epics = configureEpics(connectErrorEpic);
 const logger = configureLogger(config);
 logger.log('core', 'Starting Stripes ...');
 const store = configureStore(initialState, logger, epics);
-discoverServices(store);
+if (!okapi.withoutOkapi) discoverServices(store);
 const actionNames = gatherActions();
 
 render(
