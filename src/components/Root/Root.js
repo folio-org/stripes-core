@@ -78,7 +78,7 @@ class Root extends Component {
   render() {
     const { logger, store, epics, config, okapi, actionNames, token, disableAuth, currentUser, currentPerms, locale, plugins, bindings, discovery, translations, history } = this.props;
 
-    if (false && !translations) return (<div />);
+    if (!translations) return (<div />);
 
     const stripes = new Stripes({
       logger,
