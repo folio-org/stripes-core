@@ -12,11 +12,11 @@ import stripesLogger from '@folio/stripes-logger/package.json';
 import Pane from '@folio/stripes-components/lib/Pane';
 import Headline from '@folio/stripes-components/lib/Headline';
 import List from '@folio/stripes-components/lib/List';
-import Paneset from '@folio/stripes-components/lib/Paneset';
 import { isVersionCompatible } from '../../discoverServices';
 import AboutEnabledModules from './AboutEnabledModules';
 
 import stripesCore from '../../../package.json'; // eslint-disable-line
+import css from './About.css';
 
 const About = (props) => {
   function renderDependencies(m, interfaces) {
@@ -79,88 +79,95 @@ const About = (props) => {
   const ConnectedAboutEnabledModules = props.stripes.connect(AboutEnabledModules);
 
   return (
-    <Paneset nested defaultWidth="80%">
-      <Pane defaultWidth="30%" paneTitle="User interface">
-        <Headline>Foundation</Headline>
-        <span
-          id="platform-versions"
-          data-stripes-core={stripesCore.version}
-          data-stripes-connect={stripesConnect.version}
-          data-stripes-components={stripesComponents.version}
-          data-okapi-version={_.get(props.stripes, ['discovery', 'okapi']) || 'unknown'}
-          data-okapi-url={_.get(props.stripes, ['okapi', 'url']) || 'unknown'}
-        />
-        <List
-          listStyle="bullets"
-          items={[
-            {
-              key: 'stripes-core',
-              value: `stripes-core ${stripesCore.version}`,
-            },
-            {
-              key: 'stripes-connect',
-              value: `stripes-connect ${stripesConnect.version}`,
-            },
-            {
-              key: 'stripes-components',
-              value: `stripes-components ${stripesComponents.version}`,
-            },
-            {
-              key: 'stripes-logger',
-              value: `stripes-logger ${stripesLogger.version}`,
-            },
-          ]}
-          itemFormatter={item => (<li key={item.key}>{item.value}</li>)}
-        />
-        <br />
-        {Object.keys(uiModules).map(key => listModules(key, uiModules[key]))}
-      </Pane>
-      <Pane defaultWidth="30%" paneTitle="Okapi services">
-        <Headline>Okapi</Headline>
-        <List
-          listStyle="bullets"
-          itemFormatter={(item, i) => (<li key={i}>{item}</li>)}
-          items={[
-            `Version ${_.get(props.stripes, ['discovery', 'okapi']) || 'unknown'}`,
-            `For tenant ${_.get(props.stripes, ['okapi', 'tenant']) || 'unknown'}`,
-            `On URL ${_.get(props.stripes, ['okapi', 'url']) || 'unknown'}`,
-          ]}
-        />
-        <br />
-        <Headline>{nm} module{nm === 1 ? '' : 's'}</Headline>
-        <ConnectedAboutEnabledModules tenantid={_.get(props.stripes, ['okapi', 'tenant']) || 'unknown'} availableModules={modules} />
-        <p>
-          <b>Key.</b>
+    <Pane
+      defaultWidth="fill"
+      paneTitle="Software versions"
+
+    >
+      <div className={css.versionsContainer}>
+        <div className={css.versionsColumn}>
+          <Headline size="large">User interface</Headline>
+          <Headline>Foundation</Headline>
+          <span
+            id="platform-versions"
+            data-stripes-core={stripesCore.version}
+            data-stripes-connect={stripesConnect.version}
+            data-stripes-components={stripesComponents.version}
+            data-okapi-version={_.get(props.stripes, ['discovery', 'okapi']) || 'unknown'}
+            data-okapi-url={_.get(props.stripes, ['okapi', 'url']) || 'unknown'}
+          />
+          <List
+            listStyle="bullets"
+            items={[
+              {
+                key: 'stripes-core',
+                value: `stripes-core ${stripesCore.version}`,
+              },
+              {
+                key: 'stripes-connect',
+                value: `stripes-connect ${stripesConnect.version}`,
+              },
+              {
+                key: 'stripes-components',
+                value: `stripes-components ${stripesComponents.version}`,
+              },
+              {
+                key: 'stripes-logger',
+                value: `stripes-logger ${stripesLogger.version}`,
+              },
+            ]}
+            itemFormatter={item => (<li key={item.key}>{item.value}</li>)}
+          />
           <br />
-          Installed modules that are not enabled for this tenant are
-          displayed <span style={{ color: '#ccc' }}>in gray</span>.
-        </p>
-        <br /><br />
-        <Headline>{ni} interface{ni === 1 ? '' : 's'}</Headline>
-        <List
-          listStyle="bullets"
-          items={Object.keys(interfaces).sort()}
-          itemFormatter={key => (<li key={key}>{key} {interfaces[key]}</li>)}
-        />
-      </Pane>
-      <Pane defaultWidth="40%" paneTitle="UI/service dependencies">
-        <Headline>Foundation</Headline>
-        {renderDependencies(Object.assign({}, stripesCore.stripes || {}, { module: 'stripes-core' }), interfaces)}
-        <br />
-        {Object.keys(uiModules).map(key => listModules(key, uiModules[key], interfaces))}
-        <p>
-          <b>Key.</b>
+          {Object.keys(uiModules).map(key => listModules(key, uiModules[key]))}
+        </div>
+        <div className={css.versionsColumn}>
+          <Headline size="large">Okapi services</Headline>
+          <Headline>Okapi</Headline>
+          <List
+            listStyle="bullets"
+            itemFormatter={(item, i) => (<li key={i}>{item}</li>)}
+            items={[
+              `Version ${_.get(props.stripes, ['discovery', 'okapi']) || 'unknown'}`,
+              `For tenant ${_.get(props.stripes, ['okapi', 'tenant']) || 'unknown'}`,
+              `On URL ${_.get(props.stripes, ['okapi', 'url']) || 'unknown'}`,
+            ]}
+          />
           <br />
-          Interfaces that are required but absent are highlighted
-          in <span style={{ color: 'red', fontWeight: 'bold' }}>bold red</span>.
+          <Headline>{nm} module{nm === 1 ? '' : 's'}</Headline>
+          <ConnectedAboutEnabledModules tenantid={_.get(props.stripes, ['okapi', 'tenant']) || 'unknown'} availableModules={modules} />
+          <Headline size="small">Key</Headline>
+          <p>
+            Installed modules that are not enabled for this tenant are
+            displayed <span style={{ color: '#ccc' }}>in gray</span>.
+          </p>
           <br />
-          Interfaces that are required but present only in an incompatible version are highlighted
-          in <span style={{ color: 'orange' }}>orange</span>.
+          <Headline>{ni} interface{ni === 1 ? '' : 's'}</Headline>
+          <List
+            listStyle="bullets"
+            items={Object.keys(interfaces).sort()}
+            itemFormatter={key => (<li key={key}>{key} {interfaces[key]}</li>)}
+          />
+        </div>
+        <div className={css.versionsColumn}>
+          <Headline size="large">UI/service dependencies</Headline>
+          <Headline>Foundation</Headline>
+          {renderDependencies(Object.assign({}, stripesCore.stripes || {}, { module: 'stripes-core' }), interfaces)}
           <br />
-          Interfaces that are present in a compatible version are shown in regular font.
-        </p>
-      </Pane>
-    </Paneset>
+          {Object.keys(uiModules).map(key => listModules(key, uiModules[key], interfaces))}
+          <Headline size="small">Key</Headline>
+          <p>
+            Interfaces that are required but absent are highlighted
+            in <span style={{ color: 'red', fontWeight: 'bold' }}>bold red</span>.
+            <br />
+            Interfaces that are required but present only in an incompatible version are highlighted
+            in <span style={{ color: 'orange' }}>orange</span>.
+            <br />
+            Interfaces that are present in a compatible version are shown in regular font.
+          </p>
+        </div>
+      </div>
+    </Pane>
   );
 };
 
