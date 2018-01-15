@@ -1,0 +1,18 @@
+/**
+ * Current App
+ */
+
+/**
+ * Button
+ */
+button.currentAppButton {
+  margin: 0;
+  overflow: auto;
+  padding: 2px 2px 2px 4px;
+  height: auto;
+  max-height: none;
+}
+
+.currentAppButtonLabel {
+  margin: 0 6px;
+}

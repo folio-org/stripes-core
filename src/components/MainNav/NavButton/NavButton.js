@@ -1,54 +1,65 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Link from 'react-router-dom/Link';
+import classNames from 'classnames';
+import AppIcon from '@folio/stripes-components/lib/AppIcon';
+import { withRouter } from 'react-router-dom';
 import css from './NavButton.css';
 
 const propTypes = {
   href: PropTypes.string,
+  label: PropTypes.string,
   title: PropTypes.string,
+  className: PropTypes.string,
+  icon: PropTypes.oneOfType([
+    PropTypes.element,
+  ]),
   onClick: PropTypes.func,
-  onKeyDown: PropTypes.func,
-  children: PropTypes.node.isRequired,
-  md: PropTypes.string, // eslint-disable-line
   selected: PropTypes.bool,
+  noSelectedBar: PropTypes.bool,
 };
 
-function NavButton(props) {
-  function getClass() {
-    const base = css.navButton;
-    const hide = props.md === 'hide' ? css.hideMed : '';
-    return `${base} ${hide}`;
-  }
+const defaultProps = {
+  noSelectedBar: false,
+};
 
-  const { children, md, bsRole, bsClass, href, ...buttonProps } = props; // eslint-disable-line
+const NavButton = withRouter(({ history, label, title, selected, onClick, href, icon, noSelectedBar, className }) => {
+  /**
+   * Root classes
+   */
+  const rootClasses = classNames(
+    css.navButton,
+    { [css.selected]: selected },
+    { [css.noSelectedBar]: noSelectedBar },
+    className,
+  );
 
-  if (props.href) {
-    return (
-      <Link
-        className={getClass()}
-        to={href}
-        {...buttonProps}
-      >
-        {props.selected && <div className={css.selected} />}
-        {props.children}
-      </Link>
-    );
-  }
+  /**
+   * Icon
+   */
+  const displayIcon = (<span className={css.icon}>{icon || <AppIcon focusable={false} />}</span>);
+
+  /**
+   * On click
+   */
+  const clickEvent = () => {
+    if (onClick) {
+      onClick();
+    } else if (href) {
+      history.push(href);
+    }
+  };
 
   return (
-    <button
-      type="button"
-      className={getClass()}
-      {...buttonProps}
-    >
-      <span>
-        {props.selected && <div className={css.selected} />}
-        {children}
-      </span>
+    <button title={title} className={rootClasses} onClick={clickEvent}>
+      <div className={css.inner}>
+        { displayIcon }
+        { label && <span className={css.label}>{label}</span>}
+      </div>
     </button>
   );
-}
+});
 
 NavButton.propTypes = propTypes;
+NavButton.defaultProps = defaultProps;
 
 export default NavButton;

@@ -1,0 +1,81 @@
+@import '@folio/stripes-components/lib/variables.css';
+
+button.navButton {
+  background-color: transparent;
+  border-width: 0;
+  height: 44px;
+  cursor: pointer;
+  padding: 0 8px;
+  transition: transform 0.2s ease;
+  display: flex;
+  align-items: center;
+
+  & img,
+  & div,
+  & svg {
+    margin: 0 4px;
+
+    & + span {
+      align-self: center;
+      display: inline-block;
+    }
+  }
+
+  & > span {
+    display: flex;
+  }
+
+  &:hover {
+    & img,
+    & div,
+    & svg {
+      box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+    }
+
+    transform: scale(1.1);
+  }
+}
+
+.label {
+  margin-left: 6px;
+}
+
+a.navButton {
+  display: flex;
+  align-items: center;
+  color: #555;
+  padding: 9px 5px;
+
+  & img,
+  & div,
+  & svg {
+    margin: 0 4px;
+  }
+
+  &:hover,
+  &:visited,
+  &:focus {
+    text-decoration: none;
+    outline: 0;
+  }
+}
+
+.navButton {
+  & .selected {
+    position: absolute;
+    top: 0;
+    width: 24px;
+    height: 4px;
+    background-color: var(--primary);
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+    margin: 0;
+  }
+}
+
+@media (--mediumDown) {
+  .navButton.hideMed,
+  a.navButton.hideMed {
+    display: none;
+  }
+}

@@ -18,6 +18,7 @@ import NavDivider from './NavDivider';
 import NavGroup from './NavGroup';
 import Breadcrumbs from './Breadcrumbs';
 import NavIcon from './NavIcon';
+import CurrentApp from './CurrentApp';
 import NotificationsDropdown from './Notifications/NotificationsDropdown';
 
 import NavDropdownMenu from './NavDropdownMenu';
@@ -139,13 +140,10 @@ class MainNav extends Component {
     const currentPerms = stripes.user ? stripes.user.perms : undefined;
     const selectedApp = modules.app.find(entry => pathname.startsWith(entry.route));
 
-    const userIcon = (
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 26 26">
-        <rect width="26" height="26" style={{ fill: '#3D9964' }} />
-        <path d="M1.1 24.9c0 0 0-2.6 0.8-3.7 0.8-1 5.8-5.2 11.1-5.1s9.9 3.1 10.9 4.4 1.1 4.4 1.1 4.4L1.1 24.9z" style={{ fill: '#FFF' }} />
-        <path d="M18.6 11.4c0 4.2-2.5 7.6-5.6 7.6 -3.1 0-5.6-3.4-5.6-7.6S8.4 3.8 13 3.8 18.6 7.2 18.6 11.4z" style={{ fill: '#FFF' }} />
-        <path d="M13 19.5c-3.4 0-6.1-3.6-6.1-8.1 0-3.5 0.6-8.1 6.1-8.1 5.5 0 6.1 4.6 6.1 8.1C19.1 15.9 16.4 19.5 13 19.5zM13 4.3c-3.6 0-5.1 2.1-5.1 7.1 0 3.9 2.3 7.1 5.1 7.1 2.8 0 5.1-3.2 5.1-7.1C18.1 6.5 16.6 4.3 13 4.3z" style={{ fill: '#3D9964' }} />
-      </svg>
+    const profilePlaceholder = (
+      <div className={css.profilePlaceholder}>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8.2 19.4c-1.1.4-2.1.7-3.2 1.1-1.2.4-2.3.9-3.4 1.5-.2.1-.3.2-.5.3-.5.3-.7.8-.8 1.3v.3h23.2v-.4c0-.4-.2-.8-.5-1-.5-.4-1.1-.8-1.7-1.1-1.6-.8-3.2-1.3-4.9-1.9-.3-.1-.6-.2-.9-.4-.3-.2-.5-.4-.5-.8-.1-.5 0-1.1 0-1.6 0-.4.1-.8.4-1.1.6-.7.8-1.6 1-2.5.1-.4.2-.8.4-1.1.3-.6.5-1.3.5-1.9v-.5c-.3-.7-.1-1.2 0-1.9s.1-1.4-.2-2.1C16.3 4 14.9 3 12.9 2.7c-1.2-.2-2.4.1-2.7.2-1.9.6-3.1 1.8-3.5 3.7-.1.5 0 1 0 1.5 0 .3.1.6.1.8 0 .3 0 .6-.1.8-.1.2-.1.5-.1.7.1.7.3 1.3.6 1.9.2.4.2.8.3 1.2.2.8.4 1.7 1 2.3.4.4.5.7.5 1v1.5c0 .5-.2.9-.8 1.1z"/></svg>
+      </div>
     );
     let maybePerms;
     const config = stripes.config;
@@ -174,12 +172,7 @@ class MainNav extends Component {
 
       if (!stripes.hasPerm(perm)) return null;
 
-      return (<NavButton id={navId} selected={pathname.startsWith(entry.route)} href={this.lastVisited[name] || entry.home || entry.route} title={entry.displayName} key={entry.route}>
-        <NavIcon color="#61f160" />
-        <span className={css.linkLabel}>
-          {entry.displayName}
-        </span>
-      </NavButton>);
+      return (<NavButton label={entry.displayName} id={navId} selected={pathname.startsWith(entry.route)} onClick={this.handleNavigation(entry)} href={this.lastVisited[name] || entry.home || entry.route} title={entry.displayName} key={entry.route} />);
     });
 
     let firstNav;
@@ -194,22 +187,17 @@ class MainNav extends Component {
               <polygon style={{ fill: '#999' }} points="13 24.8 1.2 13.5 3.2 11.3 13 20.6 22.8 11.3 24.8 13.5 " />
             </svg>
           </a>
-          <NavButton id="clickable-home" href="/">
-            <NavIcon color="#fdae35" />
-            <span className={css.brandingLabel} style={{ fontSize: '22px', lineHeight: '1rem' }}>FOLIO</span>
-          </NavButton>
           {selectedApp &&
-            <NavButton href={this.lastVisited[name] || selectedApp.home} title={selectedApp.displayName} key="selected-app">
-              <NavIcon color="#61f160" />
-              <span className={css.linkLabel}>
-                {selectedApp.displayName}
-              </span>
-            </NavButton>
+            <NavButton
+              label={selectedApp.displayName}
+              title={selectedApp.displayName}
+              key="selected-app"
+            />
           }
           {
             stripes.hasPerm('settings.enabled') && pathname.startsWith('/settings') &&
               <NavButton href={this.lastVisited.x_settings || '/settings'}>
-                <NavIcon color="#7d3fb3" />
+                <NavIcon />
                 <span>Settings</span>
               </NavButton>
           }
@@ -218,9 +206,7 @@ class MainNav extends Component {
     } else {
       firstNav = (
         <NavGroup>
-          <NavButton md="hide">
-            <NavIcon color="#fdae35" />
-          </NavButton>
+          <NavButton md="hide" />
           <Breadcrumbs linkArray={breadcrumbArray} />
         </NavGroup>
       );
@@ -234,18 +220,17 @@ class MainNav extends Component {
             {menuLinks}
             {
               !stripes.hasPerm('settings.enabled') ? '' : (
-                <NavButton id="clickable-settings" selected={pathname.startsWith('/settings')} href={this.lastVisited.x_settings || '/settings'}>
-                  <NavIcon color="#7d3fb3" />
-                  <span>Settings</span>
-                </NavButton>
+                <NavButton label="Settings" id="clickable-settings" selected={pathname.startsWith('/settings')} href={this.lastVisited.x_settings || '/settings'} />
               )
             }
-            <NavDivider md="hide" />
-            { this.props.stripes.hasPerm('notify.item.get,notify.item.put,notify.collection.get') && <NotificationsDropdown stripes={stripes} {...this.props} /> }
           </NavGroup>
           <NavGroup className={css.smallAlignRight}>
+            <NavDivider md="hide" />
+            { this.props.stripes.hasPerm('notify.item.get,notify.item.put,notify.collection.get') && (<NotificationsDropdown stripes={stripes} {...this.props} />) }
+            { /* temporary divider solution.. */ }
+            { this.props.stripes.hasPerm('notify.item.get,notify.item.put,notify.collection.get') && (<NavDivider md="hide" />) }
             <Dropdown open={this.state.userMenuOpen} id="UserMenuDropDown" onToggle={this.toggleUserMenu} pullRight >
-              <NavButton data-role="toggle" title="User Menu" aria-haspopup="true" aria-expanded={this.state.userMenuOpen}><NavIcon icon={userIcon} /></NavButton>
+              <NavButton data-role="toggle" title="User Menu" selected={this.state.userMenuOpen} icon={profilePlaceholder} noSelectedBar />
               <NavDropdownMenu data-role="menu" onToggle={this.toggleUserMenu} aria-label="User Menu">{userDD}</NavDropdownMenu>
             </Dropdown>
           </NavGroup>

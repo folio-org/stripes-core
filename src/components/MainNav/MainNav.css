@@ -7,6 +7,8 @@
   width: 100%;
   border-bottom: 1px solid #ccc;
   flex: 0 0 auto;
+  padding: 0 5px;
+  background-color: #f7f7f7;
 }
 
 .nowrap {
@@ -59,6 +61,19 @@
   &:focus {
     position: relative;
     top: 0;
+  }
+}
+
+/**
+ * Profile placeholder
+ */
+.profilePlaceholder {
+  background-color: rgba(0, 0, 0, 0.05);
+  height: 24px;
+
+  & svg {
+    width: 24px;
+    height: 24px;
   }
 }
 
