@@ -137,6 +137,7 @@ Root.propTypes = {
   okapi: PropTypes.shape({
     url: PropTypes.string,
     tenant: PropTypes.string,
+    withoutOkapi: PropTypes.boolean,
   }),
   actionNames: PropTypes.arrayOf(
     PropTypes.string,
