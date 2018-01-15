@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import 'isomorphic-fetch';
 import localforage from 'localforage';
-import { reset } from 'redux-form';
+import { change } from 'redux-form';
 import { addLocaleData } from 'react-intl';
 import { modules } from 'stripes-config'; // eslint-disable-line
 
@@ -122,10 +122,8 @@ export function getBindings(okapiUrl, store, tenant) {
 
 function clearOkapiSession(store, resp) {
   resp.json().then((json) => {
-    store.dispatch(clearCurrentUser());
-    store.dispatch(clearOkapiToken());
     localforage.removeItem('okapiSess');
-    store.dispatch(reset('login'));
+    store.dispatch(change('login', 'password', ''));
     // This is a lame way to detect the nature of the error. In future, the response status will be a 4xx
     if (resp.status === 500 && json.errorMessage.startsWith('Error verifying user existence')) {
       store.dispatch(setAuthError('Sorry, the information entered does not match our records.'));
