@@ -13,10 +13,10 @@ import Pane from '@folio/stripes-components/lib/Pane';
 import Headline from '@folio/stripes-components/lib/Headline';
 import List from '@folio/stripes-components/lib/List';
 import Paneset from '@folio/stripes-components/lib/Paneset';
-import { isVersionCompatible } from '../discoverServices';
+import { isVersionCompatible } from '../../discoverServices';
 import AboutEnabledModules from './AboutEnabledModules';
 
-import stripesCore from '../../package.json'; // eslint-disable-line
+import stripesCore from '../../../package.json'; // eslint-disable-line
 
 const About = (props) => {
   function renderDependencies(m, interfaces) {
