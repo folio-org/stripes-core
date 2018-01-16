@@ -129,7 +129,7 @@ class MainNav extends Component {
         if (Object.keys(nonNull).length) {
           url += `?${queryString.stringify(nonNull)}`;
         }
-        this.props.history.replace(url);
+        this.props.history.push(url);
       }
     });
   }
