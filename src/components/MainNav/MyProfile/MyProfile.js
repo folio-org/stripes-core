@@ -26,6 +26,7 @@ export default class MyProfile extends Component {
       }),
       config: PropTypes.shape({
         showPerms: PropTypes.bool,
+        showHomeLink: PropTypes.bool,
       }),
     }).isRequired,
     onLogout: PropTypes.func.isRequired,
@@ -120,7 +121,13 @@ export default class MyProfile extends Component {
         <hr className={css.divider} />
         <NavList>
           <NavListSection activeLink="none">
-            <button id="clickable-home" type="button" onClick={this.onHome}><FormattedMessage id="stripes-core.front.home" /></button>
+            {
+              (!stripes.config || !stripes.config.showHomeLink) ?
+                null :
+                <button id="clickable-home" type="button" onClick={this.onHome}>
+                  <FormattedMessage id="stripes-core.front.home" />
+                </button>
+            }
             <button id="clickable-logout" type="button" onClick={onLogout}>Log out</button>
           </NavListSection>
         </NavList>
