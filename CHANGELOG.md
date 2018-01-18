@@ -14,7 +14,9 @@
 * Add support for basic tenant branding of logo and favicon via stripes config. FOLIO-988.
 * In discovery, retrieve modules installed per-tenant instead of globally. STCOR-114.
 * Push new URLs onto history instead of replacing old one. Fixes STCOR-128.
-* Add "Home" link to user menu. Fixes STCOR-130.
+* Add "Home" link to user menu, but only when "showHomeLink" developer option is on. Fixes STCOR-130 and STCOR-131.
+
+Fixes STCOR-131.
 
 ## [2.8.0](https://github.com/folio-org/stripes-core/tree/v2.8.0) (2017-11-20)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.7.0...v2.8.0)
