@@ -1,8 +1,9 @@
 @import '@folio/stripes-components/lib/variables.css';
 
 .navDivider {
-  border-left: 1px solid #bbb;
-  height: 28px;
+  border-left: 1px solid rgba(0, 0, 0, 0.1);
+  height: 24px;
+  margin: 0 5px;
 }
 
 @media (--mediumDown) {

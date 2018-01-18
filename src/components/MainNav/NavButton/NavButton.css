@@ -1,73 +1,137 @@
 @import '@folio/stripes-components/lib/variables.css';
 
-button.navButton {
-  background-color: transparent;
-  border-width: 0;
-  height: 42px;
-  cursor: pointer;
-  padding: 9px 5px;
-  transition: transform 0.2s ease;
+.navButton {
+  margin: 0 5px;
+  height: 44px;
+  color: rgba(0, 0, 0, 0.61);
+  outline: 0;
 
-  & img,
-  & div,
-  & svg {
-    margin: 0 4px;
-
-    & + span {
-      align-self: center;
-      display: inline-block;
-    }
+  &::-moz-focus-inner {
+    border: 0;
   }
 
-  & > span {
-    display: flex;
-  }
+  /* Is selected */
+  &.selected {
+    color: rgba(0, 0, 0, 1);
 
-  &:hover {
-    & img,
-    & div,
-    & svg {
-      box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      left: 0;
+      height: 4px;
+      background-color: var(--primary);
+      border-bottom-left-radius: 3px;
+      border-bottom-right-radius: 3px;
     }
 
-    transform: scale(1.1);
+    & .icon {
+      opacity: 1;
+
+      & svg {
+        fill: var(--primary);
+      }
+    }
   }
 }
 
-a.navButton {
+/* No active bar - primarily used for popover icons with no label */
+.navButton.noSelectedBar::before {
+  display: none;
+}
+
+.icon {
+  opacity: 0.75;
+  height: 24px;
+  margin: 0 4px;
+
+  & img,
+  & svg {
+    height: 24px;
+    width: 24px;
+  }
+
+  & svg {
+    fill: #999;
+  }
+}
+
+.icon,
+.label {
+  position: relative;
+  z-index: 2;
+}
+
+.navButton,
+.inner {
   display: flex;
   align-items: center;
-  color: #555;
-  padding: 9px 5px;
+  position: relative;
+}
 
-  & img,
-  & div,
+.label {
+  margin: 0 4px;
+  font-weight: 600;
+}
+
+.inner {
+  padding: 4px 0;
+  position: relative;
+}
+
+/**
+ * Badge
+ */
+.navButton .badge {
+  font-size: 10px;
+  position: absolute;
+  top: 0;
+  right: -1px;
+  z-index: 5;
+}
+
+/**
+ * Interaction styles
+ */
+
+button.navButton .inner::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: transparent;
+  border-radius: calc(var(--radius) * 1.2);
+  z-index: 1;
+}
+
+button.navButton:hover .icon,
+button.navButton:focus .icon {
+  opacity: 1;
+}
+
+button.navButton:hover .inner::before {
+  background-color: rgba(37, 118, 195, 0.2);
+}
+
+button.navButton:focus .inner::before {
+  background: rgba(37, 118, 195, 0.3);
+  border: 1px solid rgba(0, 0, 0, 0.2);
+
+  /* box-shadow: 0 0 0 3px rgba(37, 118, 195, 0.3); */
+}
+
+button.navButton:active .inner {
+  color: rgb(255, 255, 255);
+
   & svg {
-    margin: 0 4px;
-  }
-
-  &:hover,
-  &:visited,
-  &:focus {
-    text-decoration: none;
+    fill: #fff;
   }
 }
 
-.navButton {
-  & .selected {
-    position: absolute;
-    top: 0;
-    width: 22px;
-    height: 4px;
-    background-color: #3d75b5;
-    border-bottom-left-radius: 3px;
-    border-bottom-right-radius: 3px;
-  }
-}
-
-@media (--mediumDown) {
-  .navButton.hideMed,
-  a.navButton.hideMed {
-    display: none;
-  }
+button.navButton:active .inner::before {
+  background: rgb(37, 118, 195);
+  border: 1px solid rgba(0, 0, 0, 0.2);
 }
