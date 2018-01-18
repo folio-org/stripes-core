@@ -44,5 +44,11 @@ describe('The babel-loader-rule', function () {
       const result = this.sut(fileName);
       expect(result).to.equal(true);
     });
+
+    it('does not select excluded modules', function () {
+      const fileName = '/projects/folio/stripes-smart-components/node_modules/@folio/react-githubish-mentions/lib/MentionMenu.js';
+      const result = this.sut(fileName);
+      expect(result).to.equal(false);
+    });
   });
 });
