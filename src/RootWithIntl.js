@@ -33,7 +33,7 @@ const RootWithIntl = (props, context) => {
           { token || disableAuth ?
             <MainContainer>
               <MainNav stripes={stripes} />
-              { stripes.discovery.isFinished && (
+              { (stripes.okapi !== 'object' || stripes.discovery.isFinished) && (
                 <ModuleContainer id="content">
                   <Switch>
                     <Route exact path="/" component={() => <Front stripes={stripes} />} key="root" />

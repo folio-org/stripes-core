@@ -39,6 +39,7 @@ class MainNav extends Component {
         dispatch: PropTypes.func.isRequired,
       }),
       hasPerm: PropTypes.func.isRequired,
+      withOkapi: PropTypes.bool,
     }),
     history: PropTypes.shape({
       listen: PropTypes.func.isRequired,
@@ -126,7 +127,7 @@ class MainNav extends Component {
         if (Object.keys(nonNull).length) {
           url += `?${queryString.stringify(nonNull)}`;
         }
-        this.props.history.replace(url);
+        this.props.history.push(url);
       }
     });
   }
@@ -204,7 +205,7 @@ class MainNav extends Component {
           </NavGroup>
           <NavGroup className={css.smallAlignRight}>
             <NavDivider md="hide" />
-            { this.props.stripes.hasPerm('notify.item.get,notify.item.put,notify.collection.get') && (<NotificationsDropdown stripes={stripes} {...this.props} />) }
+            { this.props.stripes.withOkapi && this.props.stripes.hasPerm('notify.item.get,notify.item.put,notify.collection.get') && <NotificationsDropdown stripes={stripes} {...this.props} /> }
             { /* temporary divider solution.. */ }
             { this.props.stripes.hasPerm('notify.item.get,notify.item.put,notify.collection.get') && (<NavDivider md="hide" />) }
             <MyProfile

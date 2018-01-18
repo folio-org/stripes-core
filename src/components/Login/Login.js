@@ -52,9 +52,9 @@ class Login extends Component {
       submitSucceeded,
     } = this.props;
 
-    const { username, password } = formValues;
-    const buttonDisabled = submitting || submitSucceeded || !(username && password);
-    const buttonLabel = (submitting || submitSucceeded) ? 'Logging in...' : 'Log in';
+    const { username } = formValues;
+    const buttonDisabled = submitting || submitSucceeded || !(username);
+    const buttonLabel = (submitting || (submitSucceeded)) ? 'Logging in...' : 'Log in';
     return (
       <div className={authFormStyles.wrap}>
         <div className={authFormStyles.centered}>
