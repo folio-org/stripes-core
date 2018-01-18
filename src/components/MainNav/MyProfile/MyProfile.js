@@ -4,6 +4,7 @@
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
 import { Dropdown } from '@folio/stripes-components/lib/Dropdown';
 import NavList from '@folio/stripes-components/lib/NavList';
 import NavListSection from '@folio/stripes-components/lib/NavListSection';
@@ -13,6 +14,10 @@ import NavButton from '../NavButton';
 import css from './MyProfile.css';
 
 export default class MyProfile extends Component {
+  static contextTypes = {
+    router: PropTypes.object.isRequired,
+  }
+
   static propTypes = {
     stripes: PropTypes.shape({
       user: PropTypes.shape({
@@ -74,6 +79,12 @@ export default class MyProfile extends Component {
     );
   }
 
+  onHome = () => {
+    console.log('home');
+    this.toggleDropdown();
+    this.context.router.history.push('/');
+  }
+
   getDropdownContent() {
     const { stripes, onLogout } = this.props;
     const user = this.getUserData();
@@ -109,6 +120,7 @@ export default class MyProfile extends Component {
         <hr className={css.divider} />
         <NavList>
           <NavListSection activeLink="none">
+            <button id="clickable-home" type="button" onClick={this.onHome}><FormattedMessage id="stripes-core.front.home" /></button>
             <button id="clickable-logout" type="button" onClick={onLogout}>Log out</button>
           </NavListSection>
         </NavList>
