@@ -15,7 +15,7 @@
 * In discovery, retrieve modules installed per-tenant instead of globally. STCOR-114.
 * Push new URLs onto history instead of replacing old one. Fixes STCOR-128.
 * Add "Home" link to user menu, but only when "showHomeLink" developer option is on. Fixes STCOR-130 and STCOR-131.
-* Add new document, [Stripes application metadata bundles](doc/app-metadata.md). Fixes STCOR-117.
+* Add new document, [Stripes application metadata bundles](doc/app-metadata.md). Fixes STCOR-117 and STCOR-129.
 
 ## [2.8.0](https://github.com/folio-org/stripes-core/tree/v2.8.0) (2017-11-20)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.7.0...v2.8.0)
