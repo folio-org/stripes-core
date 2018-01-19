@@ -81,7 +81,6 @@ export default class MyProfile extends Component {
   }
 
   onHome = () => {
-    console.log('home');
     this.toggleDropdown();
     this.context.router.history.push('/');
   }
