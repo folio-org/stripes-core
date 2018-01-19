@@ -7,25 +7,13 @@ describe('The babel-loader-rule', function () {
       this.sut = babelLoaderRule.test;
     });
 
-    it('selects files for @folio scoped modules', function () {
+    it('selects files for @folio scoped node_modules', function () {
       const fileName = '/projects/folio/folio-testing-platform/node_modules/@folio/inventory/index.js';
       const result = this.sut(fileName);
       expect(result).to.equal(true);
     });
 
-    it('does not select node_modules files', function () {
-      const fileName = '/projects/folio/folio-testing-platform/node_modules/lodash/lodash.js';
-      const result = this.sut(fileName);
-      expect(result).to.equal(false);
-    });
-
-    it('select @folio scoped files within node_modules', function () {
-      const fileName = '/projects/folio/folio-testing-platform/node_modules/@folio/users/settings/index.js';
-      const result = this.sut(fileName);
-      expect(result).to.equal(true);
-    });
-
-    it('does not select node_modules files of @folio scoped modules', function () {
+    it('does not select node_modules files outside of @folio scope', function () {
       const fileName = '/projects/folio/folio-testing-platform/node_modules/lodash/lodash.js';
       const result = this.sut(fileName);
       expect(result).to.equal(false);
@@ -37,7 +25,7 @@ describe('The babel-loader-rule', function () {
       expect(result).to.equal(false);
     });
 
-    it('selects files outside of @folio scope and node_modules', function () {
+    it('selects files outside of both @folio scope and node_modules', function () {
       // This test case would hold true for yarn-linked modules, @folio scoped or otherwise
       // Therefore this implies that we are not yarn-linking any non-@folio scoped modules
       const fileName = '/projects/folio/stripes-core/src/configureLogger.js';
