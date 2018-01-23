@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import Link from 'react-router-dom/Link';
 import AppIcon from '@folio/stripes-components/lib/AppIcon';
 import Badge from '@folio/stripes-components/lib/Badge';
-import { withRouter } from 'react-router-dom';
 import css from './NavButton.css';
 
 const propTypes = {
@@ -28,7 +28,7 @@ const defaultProps = {
   noSelectedBar: false,
 };
 
-const NavButton = withRouter(({ history, label, title, selected, onClick, href, icon, noSelectedBar, className, badge, id }) => {
+const NavButton = ({ label, title, selected, onClick, href, icon, noSelectedBar, className, badge, id }) => {
   /**
    * Root classes
    */
@@ -44,21 +44,31 @@ const NavButton = withRouter(({ history, label, title, selected, onClick, href, 
    */
   const displayIcon = (<span className={css.icon}>{icon || <AppIcon focusable={false} />}</span>);
 
-  /**
-   * On click
-   */
-  const clickEvent = () => {
-    if (onClick) {
-      onClick();
-    } else if (href) {
-      history.push(href);
-    }
-  };
+  let Element = 'span';
+  let clickableProps = {};
 
-  const Element = typeof onClick === 'function' || href ? 'button' : 'span';
+  /**
+   * Is link (use react-router link)
+   */
+  if (href) {
+    Element = Link;
+    clickableProps = {
+      to: href,
+    };
+  }
+
+  /**
+   * Is button (with onClick handler)
+   */
+  if (typeof onClick === 'function') {
+    Element = 'button';
+    clickableProps = {
+      onClick,
+    };
+  }
 
   return (
-    <Element id={id} title={title} className={rootClasses} onClick={clickEvent} role="button">
+    <Element id={id} title={title} className={rootClasses} role="button" {...clickableProps}>
       <div className={css.inner}>
         { badge && (<Badge color="red" className={css.badge}>{badge}</Badge>) }
         { displayIcon }
@@ -66,7 +76,7 @@ const NavButton = withRouter(({ history, label, title, selected, onClick, href, 
       </div>
     </Element>
   );
-});
+};
 
 NavButton.propTypes = propTypes;
 NavButton.defaultProps = defaultProps;
