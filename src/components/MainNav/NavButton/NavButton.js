@@ -11,6 +11,7 @@ const propTypes = {
   label: PropTypes.string,
   title: PropTypes.string,
   className: PropTypes.string,
+  id: PropTypes.string,
   icon: PropTypes.oneOfType([
     PropTypes.element,
   ]),
@@ -27,7 +28,7 @@ const defaultProps = {
   noSelectedBar: false,
 };
 
-const NavButton = withRouter(({ history, label, title, selected, onClick, href, icon, noSelectedBar, className, badge }) => {
+const NavButton = withRouter(({ history, label, title, selected, onClick, href, icon, noSelectedBar, className, badge, id }) => {
   /**
    * Root classes
    */
@@ -57,7 +58,7 @@ const NavButton = withRouter(({ history, label, title, selected, onClick, href, 
   const Element = typeof onClick === 'function' || href ? 'button' : 'span';
 
   return (
-    <Element title={title} className={rootClasses} onClick={clickEvent} role="button">
+    <Element id={id} title={title} className={rootClasses} onClick={clickEvent} role="button">
       <div className={css.inner}>
         { badge && (<Badge color="red" className={css.badge}>{badge}</Badge>) }
         { displayIcon }
