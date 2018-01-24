@@ -25,6 +25,7 @@ class Root extends Component {
     super(...args);
     this.reducers = { ...initialReducers };
     this.epics = {};
+    this.withOkapi = this.props.okapi.withoutOkapi !== true;
 
     for (const app of modules.app) {
       if (window.location.pathname.startsWith(app.route) && app.queryResource) {
@@ -42,13 +43,13 @@ class Root extends Component {
 
   componentWillMount() {
     const { okapi, store, locale } = this.props;
-    checkOkapiSession(okapi.url, store, okapi.tenant);
+    if (this.withOkapi) checkOkapiSession(okapi.url, store, okapi.tenant);
     // TODO: remove this after we load locale and translations at start from a public endpoint
     loadTranslations(store, locale);
   }
 
   shouldComponentUpdate(nextProps) {
-    return nextProps.okapiReady;
+    return !this.withOkapi || nextProps.okapiReady;
   }
 
   addReducer = (key, reducer) => {
@@ -87,6 +88,7 @@ class Root extends Component {
       epics,
       config,
       okapi,
+      withOkapi: this.withOkapi,
       setToken: (val) => { store.dispatch(setOkapiToken(val)); },
       actionNames,
       locale,
@@ -137,9 +139,10 @@ Root.propTypes = {
   bindings: PropTypes.object, // eslint-disable-line react/forbid-prop-types
   config: PropTypes.object, // eslint-disable-line react/forbid-prop-types
   okapi: PropTypes.shape({
-    url: PropTypes.string.isRequired,
-    tenant: PropTypes.string.isRequired,
-  }).isRequired,
+    url: PropTypes.string,
+    tenant: PropTypes.string,
+    withoutOkapi: PropTypes.boolean,
+  }),
   actionNames: PropTypes.arrayOf(
     PropTypes.string,
   ).isRequired,

@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import 'isomorphic-fetch';
 import localforage from 'localforage';
-import { reset } from 'redux-form';
+import { change } from 'redux-form';
 import { addLocaleData } from 'react-intl';
 import { modules } from 'stripes-config'; // eslint-disable-line
 
@@ -15,8 +15,7 @@ import {
   setOkapiToken,
   setTranslations,
   clearOkapiToken,
-  authFailure,
-  clearAuthFailure,
+  setAuthError,
   checkSSO,
   setOkapiReady,
 } from './okapiActions';
@@ -39,7 +38,7 @@ function prefixKeys(obj, prefix) {
 
 export function loadTranslations(store, locale) {
   const parentLocale = locale.split('-')[0];
-  return System.import(`react-intl/locale-data/${parentLocale}`)
+  return import(`react-intl/locale-data/${parentLocale}`)
     .then((intlData) => {
       addLocaleData(intlData);
       const translations = {};
@@ -121,18 +120,23 @@ export function getBindings(okapiUrl, store, tenant) {
     });
 }
 
-function clearOkapiSession(store) {
-  store.dispatch(clearCurrentUser());
-  store.dispatch(clearOkapiToken());
-  localforage.removeItem('okapiSess');
-  store.dispatch(reset('login'));
-  store.dispatch(authFailure());
-  store.dispatch(setOkapiReady());
+function clearOkapiSession(store, resp) {
+  resp.json().then((json) => {
+    localforage.removeItem('okapiSess');
+    store.dispatch(change('login', 'password', ''));
+    // This is a lame way to detect the nature of the error. In future, the response status will be a 4xx
+    if (resp.status === 500 && json.errorMessage.startsWith('Error verifying user existence')) {
+      store.dispatch(setAuthError('Sorry, the information entered does not match our records.'));
+    } else {
+      store.dispatch(setAuthError(`Error ${resp.status} ${resp.statusText}: ${json.errorMessage}`));
+    }
+    store.dispatch(setOkapiReady());
+  });
 }
 
 function createOkapiSession(okapiUrl, store, tenant, token, data) {
   store.dispatch(setOkapiToken(token));
-  store.dispatch(clearAuthFailure());
+  store.dispatch(setAuthError(null));
   store.dispatch(setCurrentUser(data.user.personal));
 
   // You are not expected to understand this
@@ -218,7 +222,7 @@ function processSSOLoginResponse(resp) {
 function processOkapiSession(okapiUrl, store, tenant, resp) {
   const token = resp.headers.get('X-Okapi-Token');
   if (resp.status >= 400) {
-    clearOkapiSession(store);
+    clearOkapiSession(store, resp);
   } else {
     resp.json().then(json =>
       createOkapiSession(okapiUrl, store, tenant, token, json));

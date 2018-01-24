@@ -14,7 +14,19 @@ function loadDefaults(context, moduleName, alias) {
   if (alias[moduleName]) {
     aPath = require.resolve(path.join(alias[moduleName], 'package.json'));
   } else {
-    aPath = require.resolve(path.join(context, 'node_modules', moduleName, '/package.json'));
+    try {
+      aPath = require.resolve(path.join(context, 'node_modules', moduleName, '/package.json'));
+    } catch (e) {
+      try {
+        // The above resolution is overspecific and prevents some use cases eg. yarn workspaces
+        aPath = require.resolve(path.join(moduleName, '/package.json'));
+      } catch (e2) {
+        try {
+          // This better incorporates the context path but requires nodejs 9+
+          aPath = require.resolve(path.join(moduleName, '/package.json'), { paths: [context] });
+        } catch (e3) { throw e3; }
+      }
+    }
   }
 
   const { stripes, description, version } = require(aPath); // eslint-disable-line
@@ -36,7 +48,7 @@ function parseStripesModules(enabledModules, context, alias) {
     const { stripes, description, version } = loadDefaults(context, moduleName, alias);
     const stripeConfig = Object.assign({}, stripes, moduleConfig, {
       module: moduleName,
-      getModule: eval(`() => require('${moduleName}').default`), // eslint-disable-line no-eval
+      getModule: new Function([], `return require('${moduleName}').default;`), // eslint-disable-line no-new-func
       description,
       version,
     });
@@ -49,7 +61,7 @@ function parseStripesModules(enabledModules, context, alias) {
 module.exports = class StripesConfigPlugin {
   constructor(options) {
     assert(_.isObject(options.modules), 'stripes-config-plugin was not provided a "modules" object for enabling stripes modules');
-    this.options = options;
+    this.options = _.omit(options, 'branding');
   }
 
   apply(compiler) {
@@ -58,8 +70,14 @@ module.exports = class StripesConfigPlugin {
     const mergedConfig = Object.assign({}, this.options, { modules: moduleConfigs });
 
     // Create a virtual module for Webpack to include in the build
+    const stripesVirtualModule = `
+      import branding from 'stripes-branding';
+      const { okapi, config, modules } = ${serialize(mergedConfig, { space: 2 })};
+      export { okapi, config, modules, branding };
+    `;
+
     compiler.apply(new VirtualModulesPlugin({
-      'node_modules/stripes-config.js': `module.exports = ${serialize(mergedConfig, { space: 2 })}`,
+      'node_modules/stripes-config.js': stripesVirtualModule,
     }));
   }
 };

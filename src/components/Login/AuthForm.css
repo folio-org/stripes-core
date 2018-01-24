@@ -1,0 +1,122 @@
+/**
+ * Styling for login and sign up
+ */
+@import "@folio/stripes-components/lib/variables.css";
+
+@keyframes fade-in-animation {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.centered {
+  position: relative;
+  max-width: 500px;
+  width: 100%;
+  padding: 30px 15px;
+
+  /* opacity: 0;
+  /* transform: translateY(20px);
+  /* animation: fade-in-animation 0.2s 0.5s ease-out forwards; */
+}
+
+.logo {
+  max-width: 460px;
+  margin: -10% auto 45px;
+  text-align: center;
+
+  & img {
+    max-height: 210px;
+    max-width: 210px;
+  }
+}
+
+/**
+ * Form
+ */
+
+.form {
+  outline: 0;
+  text-align: center;
+}
+
+.form .formGroup:last-child {
+  margin-bottom: 0;
+}
+
+.formGroup {
+  margin-bottom: 10px;
+}
+
+input.input {
+  height: 60px;
+  font-size: 18px;
+  padding: 15px;
+}
+
+button.submitButton {
+  height: 60px;
+  max-height: 100%;
+  font-size: 22px;
+}
+
+.formMessage {
+  line-height: 125%;
+  padding: 10px;
+  border-radius: var(--radius);
+  font-size: 18px;
+
+  &.error {
+    color: #fff;
+    background-color: var(--error);
+  }
+}
+
+@media (max-height: 440px) {
+  .logo {
+    margin-top: 0;
+  }
+
+  .centered {
+    min-height: 330px;
+  }
+}
+
+@media (max-width: 640px) {
+  .centered {
+    min-height: 330px;
+  }
+
+  button.submitButton {
+    height: 44px;
+    font-size: 16px;
+  }
+
+  input.input {
+    height: 44px;
+    font-size: 14px;
+    padding: 8px;
+  }
+
+  .logo {
+    margin-bottom: 30px;
+    margin-top: 0;
+
+    & img {
+      max-width: 160px;
+      max-height: 160px;
+    }
+  }
+}

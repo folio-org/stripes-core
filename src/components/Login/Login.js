@@ -1,63 +1,113 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { reduxForm, Field } from 'redux-form';
-import css from './Login.css';
+import classNames from 'classnames';
+import { connect } from 'react-redux';
+import { reduxForm, Field, Form, formValueSelector } from 'redux-form';
+import TextField from '@folio/stripes-components/lib/TextField';
+import Button from '@folio/stripes-components/lib/Button';
+import authFormStyles from './AuthForm.css';
 import SSOLogin from '../SSOLogin';
+import { branding } from 'stripes-config'; //eslint-disable-line
 
-const propTypes = {
-  handleSubmit: PropTypes.func.isRequired,
-  pristine: PropTypes.bool,
-  submitting: PropTypes.bool,
-  authFail: PropTypes.bool,
-  handleSSOLogin: PropTypes.func,
-  ssoActive: PropTypes.any, // eslint-disable-line react/forbid-prop-types
-};
 
-function Login(props) {
-  const {
-    handleSubmit,
-    pristine,
-    submitting,
-    authFail,
-    handleSSOLogin,
-    ssoActive,
-  } = props;
+class Login extends Component {
+  static propTypes = {
+    handleSubmit: PropTypes.func.isRequired,
+    onSubmit: PropTypes.func.isRequired,
+    submitting: PropTypes.bool,
+    authError: PropTypes.string,
+    formValues: PropTypes.object,
+    handleSSOLogin: PropTypes.func,
+    ssoActive: PropTypes.any, // eslint-disable-line react/forbid-prop-types
+    submitSucceeded: PropTypes.bool,
+  }
 
-  const loadingCN = `${css.loading} ${css.blue}`;
-  return (
-    <div className={css.loginOverlay}>
-      <div className={css.loginContainer}>
-        <h1>Sign In</h1>
-        <form>
-          <div className={css.slabStack}>
-            <div className={css.majorSlab}>
-              <Field id="input-username" className={css.loginInput} name="username" type="text" component="input" placeholder="Username" />
+  componentDidMount() {
+    // Focus username input on mount
+    document.getElementById('input-username').focus();
+  }
+
+  render() {
+    // Get organization logo
+    const getOrganizationLogo = () => {
+      if (!branding) {
+        return false;
+      }
+
+      return (
+        <div className={authFormStyles.logo}>
+          <img alt={branding.logo.alt} src={branding.logo.src} />
+        </div>
+      );
+    };
+
+    const {
+      handleSubmit,
+      submitting,
+      authError,
+      handleSSOLogin,
+      ssoActive,
+      onSubmit,
+      formValues,
+      submitSucceeded,
+    } = this.props;
+
+    const { username } = formValues;
+    const buttonDisabled = submitting || submitSucceeded || !(username);
+    const buttonLabel = (submitting || (submitSucceeded)) ? 'Logging in...' : 'Log in';
+    return (
+      <div className={authFormStyles.wrap}>
+        <div className={authFormStyles.centered}>
+          {getOrganizationLogo()}
+          <Form className={authFormStyles.form} onSubmit={handleSubmit(onSubmit)}>
+            <div className={authFormStyles.formGroup}>
+              <Field
+                id="input-username"
+                component={TextField}
+                name="username"
+                type="text"
+                placeholder="Username"
+                marginBottom0
+                fullWidth
+                inputClass={authFormStyles.input}
+                validationEnabled={false}
+                hasClearIcon={false}
+                autoComplete="username"
+              />
             </div>
-            <div className={css.minorSlab}>
-              <Field id="input-password" className={css.loginInput} name="password" type="password" component="input" placeholder="Password" />
+            <div className={authFormStyles.formGroup}>
+              <Field
+                id="input-password"
+                component={TextField}
+                name="password"
+                type="password"
+                placeholder="Password"
+                marginBottom0
+                fullWidth
+                inputClass={authFormStyles.input}
+                validationEnabled={false}
+                hasClearIcon={false}
+                autoComplete="current-password"
+              />
             </div>
-            <button id="clickable-login" type="submit" className={css.slabButton} onClick={handleSubmit} disabled={submitting || pristine}>
-            Log in
-            </button>
-            { submitting ? <div><div className={loadingCN} /></div> : null }
-            { authFail ?
-              <div>
-                <span className={css.loginError} >
-                  Sorry, the information entered does not match our records!
-                </span>
-              </div> : null }
-          </div>
-        </form>
-        { ssoActive && <SSOLogin handleSSOLogin={handleSSOLogin} /> }
+            <div className={authFormStyles.formGroup}>
+              <Button id="clickable-login" type="submit" buttonClass={authFormStyles.submitButton} disabled={buttonDisabled} fullWidth>
+                {buttonLabel}
+              </Button>
+            </div>
+            <div className={authFormStyles.formGroup}>
+              { authError ? <div className={classNames(authFormStyles.formMessage, authFormStyles.error)}>{authError}</div> : null }
+            </div>
+            <div className={authFormStyles.formGroup}>
+              { ssoActive && <SSOLogin handleSSOLogin={handleSSOLogin} /> }
+            </div>
+          </Form>
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
 }
 
-Login.propTypes = propTypes;
-
-export default reduxForm(
-  {
-    form: 'login',
-  },
-)(Login);
+const LoginForm = reduxForm({ form: 'login' })(Login);
+const selector = formValueSelector('login');
+export default connect(state => ({ formValues: selector(state, 'username', 'password') }))(LoginForm);

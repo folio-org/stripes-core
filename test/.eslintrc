@@ -1,0 +1,12 @@
+// Disable some rules that encourage arrow functions because the 
+// lexically bound "this" prevents access to the Mocha test context.
+// See https://mochajs.org/#arrow-functions
+{
+  "env": {
+    "mocha": true
+  },
+  "rules": {
+    "func-names": 0,
+    "prefer-arrow-callback": 0
+  }
+}

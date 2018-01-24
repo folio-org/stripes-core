@@ -39,7 +39,7 @@ class NotificationsDropdown extends React.Component {
   render() {
     return (
       <Dropdown onToggle={this.handleToggle} open={this.state.dropdownOpen}>
-        <NotificationsButton data-role="toggle" title="Notifications" notificationCount={0} />
+        <NotificationsButton data-role="toggle" title="Notifications" notificationCount={0} selected={this.state.dropdownOpen} />
         <DropdownMenu data-role="menu" onToggle={this.handleToggle}>
           <this.connectedNotificationsMenu
             lastOpen={this.state.lastOpen}

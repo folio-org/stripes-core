@@ -6,14 +6,15 @@ import Link from 'react-router-dom/Link';
 import { connectFor } from '@folio/stripes-connect';
 import { modules } from 'stripes-config'; // eslint-disable-line
 import { withRouter } from 'react-router';
+import NavList from '@folio/stripes-components/lib/NavList';
+import NavListSection from '@folio/stripes-components/lib/NavListSection';
+import Paneset from '@folio/stripes-components/lib/Paneset';
+import Pane from '@folio/stripes-components/lib/Pane';
+import { FormattedMessage } from 'react-intl';
 
+import About from '../About';
 import AddContext from '../../AddContext';
 import { stripesShape } from '../../Stripes';
-
-import NavList from './NavList';
-import NavListSection from './NavListSection';
-
-import css from './Settings.css';
 
 const settingsModules = [].concat(
   (modules.app || []).filter(m => m.hasSettings),
@@ -54,25 +55,24 @@ const Settings = (props) => {
   });
 
   return (
-    <div className={css.paneset}>
-      <div className={css.navPane} style={{ width: '20%' }}>
-        <div className={css.header}>
-          <span>Settings</span>
-        </div>
-        <div className={css.content}>
-          <NavList>
-            <NavListSection label="App Settings" activeLink={props.location.pathname}>
-              {navLinks}
-            </NavListSection>
-          </NavList>
-        </div>
-      </div>
-
+    <Paneset>
+      <Pane defaultWidth="20%" paneTitle="Settings">
+        <NavList>
+          <NavListSection activeLink={props.location.pathname} label="Settings">
+            {navLinks}
+          </NavListSection>
+        </NavList>
+        <br /><br />
+        <NavListSection label="System information" activeLink={props.location.pathname}>
+          <Link to="/settings/about"><FormattedMessage id="stripes-core.front.about" /></Link>
+        </NavListSection>
+      </Pane>
       <Switch>
         {routes}
-        <Route component={() => <div>Choose settings</div>} />
+        <Route path="/settings/about" component={() => <About stripes={stripes} />} key="about" />
+        <Route component={() => <div style={{ padding: '15px' }}>Choose settings</div>} />
       </Switch>
-    </div>
+    </Paneset>
   );
 };
 

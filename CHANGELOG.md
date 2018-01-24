@@ -1,5 +1,23 @@
 # Change history for stripes-core
 
+## 2.9.0 (IN PROGRESS)
+
+* Add documentation on [how to add a permission to a user from the command-line](doc/adding-permissions.md#add-a-permission-to-a-user). Fixes STCOR-112.
+* Restore open-in-new-tab to primary navigation. Fixes STCOR-113.
+* Fix Webpack lint errors. Fixes STCOR-115.
+* `util/cruft.pl` checks for unused packages. Fixes STRIPES-490.
+* Write [documentation for URL navigation by anointed resource](doc/dev-guide.md#url-navigation). Fixes STCOR-118.
+* When login fails in a way other than user/password mismatch, report that error to the user. Fixes STCOR-119.
+* Change app indicator. Fixes STCOR-121.
+* Move about under settings. Fixes STCOR-123.
+* Support loading SVG images via WebPack. Fixes STCOR-124.
+* Add support for basic tenant branding of logo and favicon via stripes config. FOLIO-988.
+* In discovery, retrieve modules installed per-tenant instead of globally. STCOR-114.
+* Push new URLs onto history instead of replacing old one. Fixes STCOR-128.
+* Add "Home" link to user menu, but only when "showHomeLink" developer option is on. Fixes STCOR-130 and STCOR-131.
+* Add new document, [Stripes application metadata bundles](doc/app-metadata.md). Fixes STCOR-117 and STCOR-129.
+* Extend babel-loader test condition to exclude specific folio-scoped modules. Fixes STRIPES-499
+
 ## [2.8.0](https://github.com/folio-org/stripes-core/tree/v2.8.0) (2017-11-20)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.7.0...v2.8.0)
 
