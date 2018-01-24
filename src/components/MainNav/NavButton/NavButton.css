@@ -3,7 +3,6 @@
 .navButton {
   margin: 0 5px;
   height: 44px;
-  color: rgba(0, 0, 0, 0.61);
   outline: 0;
 
   &::-moz-focus-inner {
@@ -12,8 +11,6 @@
 
   /* Is selected */
   &.selected {
-    color: rgba(0, 0, 0, 1);
-
     &::before {
       content: '';
       position: absolute;
@@ -33,6 +30,16 @@
         fill: var(--primary);
       }
     }
+  }
+}
+
+/* To make sure we overwrite default link colors */
+a.navButton,
+button.navButton {
+  color: rgba(0, 0, 0, 0.61);
+
+  &.selected {
+    color: rgba(0, 0, 0, 1);
   }
 }
 
