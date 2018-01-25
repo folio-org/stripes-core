@@ -6,9 +6,11 @@ import createBrowserHistory from 'history/createBrowserHistory';
 import { IntlProvider } from 'react-intl';
 import queryString from 'query-string';
 import _ from 'lodash';
+import { ApolloProvider } from 'react-apollo';
 
 import initialReducers from '../../initialReducers';
 import enhanceReducer from '../../enhanceReducer';
+import createApolloClient from '../../createApolloClient';
 import { setSinglePlugin, setBindings, setOkapiToken } from '../../okapiActions';
 import { loadTranslations, checkOkapiSession } from '../../loginServices';
 import Stripes from '../../Stripes';
@@ -104,9 +106,11 @@ class Root extends Component {
     });
 
     return (
-      <IntlProvider locale={locale} key={locale} messages={translations}>
-        <RootWithIntl stripes={stripes} token={token} disableAuth={disableAuth} history={history} />
-      </IntlProvider>
+      <ApolloProvider client={createApolloClient(okapi)}>
+        <IntlProvider locale={locale} key={locale} messages={translations}>
+          <RootWithIntl stripes={stripes} token={token} disableAuth={disableAuth} history={history} />
+        </IntlProvider>
+      </ApolloProvider>
     );
   }
 }
@@ -173,6 +177,7 @@ function mapStateToProps(state) {
     bindings: state.okapi.bindings,
     discovery: state.discovery,
     okapiReady: state.okapi.okapiReady,
+    okapi: state.okapi,
   };
 }
 

@@ -22,6 +22,6 @@ if (!okapi.withoutOkapi) discoverServices(store);
 const actionNames = gatherActions();
 
 render(
-  <Root store={store} epics={epics} logger={logger} config={config} okapi={okapi} actionNames={actionNames} disableAuth={(config && config.disableAuth) || false} />,
+  <Root store={store} epics={epics} logger={logger} config={config} actionNames={actionNames} disableAuth={(config && config.disableAuth) || false} />,
   document.getElementById('root'),
 );
