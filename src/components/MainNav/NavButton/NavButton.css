@@ -102,7 +102,7 @@ button.navButton {
  * Interaction styles
  */
 
-button.navButton .inner::before {
+.navButton .inner::before {
   content: "";
   position: absolute;
   top: 0;
@@ -114,23 +114,23 @@ button.navButton .inner::before {
   z-index: 1;
 }
 
-button.navButton:hover .icon,
-button.navButton:focus .icon {
+.navButton:hover .icon,
+.navButton:focus .icon {
   opacity: 1;
 }
 
-button.navButton:hover .inner::before {
+.navButton:hover .inner::before {
   background-color: rgba(37, 118, 195, 0.2);
 }
 
-button.navButton:focus .inner::before {
+.navButton:focus .inner::before {
   background: rgba(37, 118, 195, 0.3);
   border: 1px solid rgba(0, 0, 0, 0.2);
 
   /* box-shadow: 0 0 0 3px rgba(37, 118, 195, 0.3); */
 }
 
-button.navButton:active .inner {
+.navButton:active .inner {
   color: rgb(255, 255, 255);
 
   & svg {
@@ -138,7 +138,7 @@ button.navButton:active .inner {
   }
 }
 
-button.navButton:active .inner::before {
+.navButton:active .inner::before {
   background: rgb(37, 118, 195);
   border: 1px solid rgba(0, 0, 0, 0.2);
 }
