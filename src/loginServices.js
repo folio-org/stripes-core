@@ -3,7 +3,7 @@ import 'isomorphic-fetch';
 import localforage from 'localforage';
 import { change } from 'redux-form';
 import { addLocaleData } from 'react-intl';
-import { modules } from 'stripes-config'; // eslint-disable-line
+import { modules, translations } from 'stripes-config'; // eslint-disable-line
 
 import {
   setCurrentUser,
@@ -28,38 +28,18 @@ function getHeaders(tenant, token) {
   };
 }
 
-function prefixKeys(obj, prefix) {
-  const res = {};
-  for (const key of Object.keys(obj)) {
-    res[`${prefix}${key}`] = obj[key];
-  }
-  return res;
-}
-
 export function loadTranslations(store, locale) {
   const parentLocale = locale.split('-')[0];
   return import(`react-intl/locale-data/${parentLocale}`)
-    .then((intlData) => {
-      addLocaleData(intlData);
-      const translations = {};
-
-      // eslint-disable-next-line global-require, import/no-dynamic-require
-      const coreTranslations = require(`../translations/${parentLocale}`);
-      Object.assign(translations, prefixKeys(coreTranslations, 'stripes-core.'));
-      // Possibly also get translations from stripes-connect, stripes-components, etc.
-
-      for (const moduleType of Object.keys(modules)) {
-        for (const module of modules[moduleType]) {
-          const moduleTranslations = _.get(module, ['translations', parentLocale]);
-          if (moduleTranslations) {
-            const name = module.module.replace(/.*\//, '');
-            Object.assign(translations, prefixKeys(moduleTranslations, `ui-${name}.`));
-          }
-        }
+    .then(intlData => addLocaleData(intlData))
+    .then(() => fetch(translations[parentLocale]))
+    .then((response) => {
+      if (response.ok) {
+        response.json().then((stripesTranslations) => {
+          store.dispatch(setTranslations(stripesTranslations));
+          store.dispatch(setLocale(locale));
+        });
       }
-
-      store.dispatch(setTranslations(translations));
-      store.dispatch(setLocale(locale));
     });
 }
 

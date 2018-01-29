@@ -6,6 +6,7 @@ const path = require('path');
 const assert = require('assert');
 const _ = require('lodash');
 const VirtualModulesPlugin = require('webpack-virtual-modules');
+const StripesTranslationPlugin = require('./stripes-translations-plugin');
 const serialize = require('serialize-javascript');
 
 // Loads description, version, and stripes configuration from a module's package.json
@@ -69,15 +70,22 @@ module.exports = class StripesConfigPlugin {
     const moduleConfigs = parseStripesModules(enabledModules, compiler.context, compiler.options.resolve.alias);
     const mergedConfig = Object.assign({}, this.options, { modules: moduleConfigs });
 
-    // Create a virtual module for Webpack to include in the build
-    const stripesVirtualModule = `
-      import branding from 'stripes-branding';
-      const { okapi, config, modules } = ${serialize(mergedConfig, { space: 2 })};
-      export { okapi, config, modules, branding };
-    `;
+    // Wait until after other plugins to generate virtual stripes-config
+    compiler.plugin('after-plugins', (theCompiler) => {
+      // Locate the StripesTranslationPlugin to grab its translation file list
+      const translationPlugin = theCompiler.options.plugins.find(plugin => plugin instanceof StripesTranslationPlugin);
 
-    compiler.apply(new VirtualModulesPlugin({
-      'node_modules/stripes-config.js': stripesVirtualModule,
-    }));
+      // Create a virtual module for Webpack to include in the build
+      const stripesVirtualModule = `
+        import branding from 'stripes-branding';
+        const { okapi, config, modules } = ${serialize(mergedConfig, { space: 2 })};
+        const translations = ${serialize(translationPlugin.allFiles, { space: 2 })};
+        export { okapi, config, modules, branding, translations };
+      `;
+
+      compiler.apply(new VirtualModulesPlugin({
+        'node_modules/stripes-config.js': stripesVirtualModule,
+      }));
+    });
   }
 };
