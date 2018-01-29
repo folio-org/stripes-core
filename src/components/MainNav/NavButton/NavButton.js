@@ -36,6 +36,7 @@ const NavButton = ({ label, title, selected, onClick, href, icon, noSelectedBar,
     css.navButton,
     { [css.selected]: selected },
     { [css.noSelectedBar]: noSelectedBar },
+    { [css.isInteractable]: href || onClick },
     className,
   );
 
