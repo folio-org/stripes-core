@@ -1,40 +1,7 @@
 const path = require('path');
 const fs = require('fs');
 const _ = require('lodash');
-
-function tryResolve(modulePath) {
-  try {
-    require.resolve(modulePath);
-    return true;
-  } catch (e) {
-    return false;
-  }
-}
-
-function locateStripesModule(context, moduleName, alias, ...segments) {
-  let foundPath = false;
-
-  const tryPaths = [
-    path.join(context, 'node_modules', moduleName, ...segments), // The place we normally expect to find this module
-    path.join(moduleName, ...segments), // The above resolution is overspecific and prevents some use cases eg. yarn workspaces
-    path.join(moduleName, ...segments), { paths: [context] }, // This better incorporates the context path but requires nodejs 9+
-  ];
-
-  // When available, ty for the alias first
-  if (alias[moduleName]) {
-    tryPaths.unshift(path.join(alias[moduleName], ...segments));
-  }
-
-  for (let i = 0; i < tryPaths.length; i++) {
-    const found = tryResolve(tryPaths[i]);
-    if (found) {
-      foundPath = tryPaths[i];
-      break;
-    }
-  }
-  return foundPath;
-}
-
+const { locateStripesModule } = require('./module-paths');
 
 function prefixKeys(obj, prefix) {
   const res = {};

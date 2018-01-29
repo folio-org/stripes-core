@@ -11,6 +11,7 @@ const serialize = require('serialize-javascript');
 
 // Loads description, version, and stripes configuration from a module's package.json
 function loadDefaults(context, moduleName, alias) {
+  // TODO: Replace with common locateStripesModule() logic
   let aPath;
   if (alias[moduleName]) {
     aPath = require.resolve(path.join(alias[moduleName], 'package.json'));

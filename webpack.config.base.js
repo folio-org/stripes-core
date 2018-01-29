@@ -2,7 +2,7 @@
 const webpack = require('webpack');
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const generateStripesAlias = require('./webpack/generate-stripes-alias');
+const { generateStripesAlias } = require('./webpack/module-paths');
 const babelLoaderRule = require('./webpack/babel-loader-rule');
 
 // React doesn't like being included multiple times as can happen when using
