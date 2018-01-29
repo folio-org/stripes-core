@@ -17,7 +17,8 @@ module.exports = class StripesTranslationPlugin {
     this.modules = {
       '@folio/stripes-core': {},
     };
-    Object.assign(this.modules, options); // options.modules
+    Object.assign(this.modules, options.modules);
+    this.languageFilter = options.filter || [];
   }
 
   apply(compiler) {
@@ -42,40 +43,43 @@ module.exports = class StripesTranslationPlugin {
     });
   }
 
+  // Locate each module's translations directory (current) or package.json data (fallback)
   gatherAllTranslations() {
     const allTranslations = {};
-    // Locate each module's translations directory (current) or package.json data (fallback)
     for (const mod of Object.keys(this.modules)) {
       const modPackageJsonPath = locateStripesModule(this.context, mod, this.aliases, 'package.json');
       const modTranslationDir = modPackageJsonPath.replace('package.json', 'translations');
 
       if (fs.existsSync(modTranslationDir)) {
-        _.merge(allTranslations, StripesTranslationPlugin.loadTranslationsDirectory(mod, modTranslationDir));
+        _.merge(allTranslations, this.loadTranslationsDirectory(mod, modTranslationDir));
       } else {
-        _.merge(allTranslations, StripesTranslationPlugin.loadTranslationsPackageJson(mod, modPackageJsonPath));
+        _.merge(allTranslations, this.loadTranslationsPackageJson(mod, modPackageJsonPath));
       }
     }
     return allTranslations;
   }
 
-  static loadTranslationsDirectory(moduleName, dir) {
+  loadTranslationsDirectory(moduleName, dir) {
     const moduleTranslations = {};
     for (const translationFile of fs.readdirSync(dir)) {
       const language = translationFile.replace('.json', '');
-      const translations = require(path.join(dir, translationFile)); // eslint-disable-line global-require, import/no-dynamic-require, because we're building something here
-      moduleTranslations[language] = StripesTranslationPlugin.prefixModuleKeys(moduleName, translations);
+      if (!this.languageFilter.length || this.languageFilter.includes(language)) {
+        const translations = require(path.join(dir, translationFile)); // eslint-disable-line global-require, import/no-dynamic-require, because we're building something here
+        moduleTranslations[language] = StripesTranslationPlugin.prefixModuleKeys(moduleName, translations);
+      }
     }
     return moduleTranslations;
   }
 
   // Maintains backwards-compatibility with existing apps
-  static loadTranslationsPackageJson(moduleName, packageJsonPath) {
+  loadTranslationsPackageJson(moduleName, packageJsonPath) {
     const moduleTranslations = {};
     const packageJson = require(packageJsonPath); // eslint-disable-line global-require, import/no-dynamic-require, because we're building something here
     if (packageJson.stripes && packageJson.stripes.translations) {
-      // TODO: Map?
       for (const language of Object.keys(packageJson.stripes.translations)) {
-        moduleTranslations[language] = StripesTranslationPlugin.prefixModuleKeys(moduleName, packageJson.stripes.translations[language]);
+        if (!this.languageFilter.length || this.languageFilter.includes(language)) {
+          moduleTranslations[language] = StripesTranslationPlugin.prefixModuleKeys(moduleName, packageJson.stripes.translations[language]);
+        }
       }
     }
     return moduleTranslations;
