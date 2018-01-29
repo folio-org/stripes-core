@@ -113,7 +113,7 @@
     "serialize-javascript": "^1.4.0",
     "style-loader": "^0.18.2",
     "typeface-source-sans-pro": "0.0.43",
-    "uglifyjs-webpack-plugin": "^1.0.1",
+    "uglifyjs-webpack-plugin": "1.1.6",
     "uuid": "^3.0.0",
     "webpack": "^3.4.1",
     "webpack-dev-middleware": "^1.10.0",
