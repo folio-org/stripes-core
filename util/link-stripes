@@ -26,8 +26,10 @@ if (@ARGV == 1) {
 }
 
 if ($initialise) {
-    foreach my $dir (<stripes-*>) {
+    foreach my $dir (<stripes-* ui-* ui-plugin-example/plugin-*>) {
 	if ($dir =~ /-platform$/) {
+	    print "* Skipping linkability for platform '$dir'\n";
+	} elsif ($dir eq 'ui-plugin-example') {
 	    print "* Skipping linkability for platform '$dir'\n";
 	} else {
 	    print "* Initialising linkability for '$dir'\n";
