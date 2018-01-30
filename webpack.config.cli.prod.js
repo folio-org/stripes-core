@@ -12,8 +12,6 @@ const postCssCustomMedia = require('postcss-custom-media');
 const postCssMediaMinMax = require('postcss-media-minmax');
 const postCssColorFunction = require('postcss-color-function');
 
-const StripesDuplicatesPlugin = require('./webpack/stripes-duplicate-plugin');
-
 const base = require('./webpack.config.base');
 const cli = require('./webpack.config.cli');
 
@@ -22,7 +20,6 @@ const prodConfig = Object.assign({}, base, cli);
 prodConfig.plugins = prodConfig.plugins.concat([
   new ExtractTextPlugin({ filename: 'style.[contenthash].css', allChunks: true }),
   new OptimizeCssAssetsPlugin(),
-  new StripesDuplicatesPlugin(),
 ]);
 
 prodConfig.module.rules.push({
