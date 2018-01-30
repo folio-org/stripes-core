@@ -49,7 +49,7 @@ if [ $clone = y ]; then
     echo "$0: cloning"
     for i in $dirs; do
         if [ -d $i ]; then
-	    echo "skipping '$i': aleady exists"
+	    echo "*** skipping '$i': aleady exists"
 	else 
 	    git clone git@github.com:folio-org/$i.git
 	fi
