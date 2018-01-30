@@ -1,5 +1,11 @@
+clone=n
 build=n
 dir=.
+
+if [ "x$1" = x-c ]; then
+    clone=y
+    shift
+fi
 
 if [ "x$1" = x-b ]; then
     build=y
@@ -12,7 +18,7 @@ if [ $# != 0 ]; then
 fi
 
 cd $dir
-for i in `echo '
+dirs=`echo '
     stripes-connect
     stripes-components
     stripes-smart-components
@@ -37,7 +43,21 @@ for i in `echo '
     ui-testing
     ui-trivial
     eslint-config-stripes
-'`; do
+'`
+
+if [ $clone = y ]; then
+    echo "$0: cloning"
+    for i in $dirs; do
+        if [ -d $i ]; then
+	    echo "*** skipping '$i': aleady exists"
+	else 
+	    git clone git@github.com:folio-org/$i.git
+	fi
+    done
+    exit
+fi
+
+for i in $dirs; do
     (
         cd $i
         branch=`git branch | sed -n 's/^\* //p'`
