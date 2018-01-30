@@ -2,7 +2,7 @@ const path = require('path');
 const fs = require('fs');
 const _ = require('lodash');
 const webpack = require('webpack');
-const { locateStripesModule } = require('./module-paths');
+const modulePaths = require('./module-paths');
 
 function prefixKeys(obj, prefix) {
   const res = {};
@@ -57,7 +57,7 @@ module.exports = class StripesTranslationPlugin {
   gatherAllTranslations() {
     const allTranslations = {};
     for (const mod of Object.keys(this.modules)) {
-      const modPackageJsonPath = locateStripesModule(this.context, mod, this.aliases, 'package.json');
+      const modPackageJsonPath = modulePaths.locateStripesModule(this.context, mod, this.aliases, 'package.json');
       const modTranslationDir = modPackageJsonPath.replace('package.json', 'translations');
 
       if (fs.existsSync(modTranslationDir)) {
@@ -74,7 +74,7 @@ module.exports = class StripesTranslationPlugin {
     for (const translationFile of fs.readdirSync(dir)) {
       const language = translationFile.replace('.json', '');
       if (!this.languageFilter.length || this.languageFilter.includes(language)) {
-        const translations = require(path.join(dir, translationFile)); // eslint-disable-line global-require, import/no-dynamic-require, because we're building something here
+        const translations = StripesTranslationPlugin.loadFile(path.join(dir, translationFile));
         moduleTranslations[language] = StripesTranslationPlugin.prefixModuleKeys(moduleName, translations);
       }
     }
@@ -84,7 +84,7 @@ module.exports = class StripesTranslationPlugin {
   // Maintains backwards-compatibility with existing apps
   loadTranslationsPackageJson(moduleName, packageJsonPath) {
     const moduleTranslations = {};
-    const packageJson = require(packageJsonPath); // eslint-disable-line global-require, import/no-dynamic-require, because we're building something here
+    const packageJson = StripesTranslationPlugin.loadFile(packageJsonPath);
     if (packageJson.stripes && packageJson.stripes.translations) {
       for (const language of Object.keys(packageJson.stripes.translations)) {
         if (!this.languageFilter.length || this.languageFilter.includes(language)) {
@@ -93,6 +93,12 @@ module.exports = class StripesTranslationPlugin {
       }
     }
     return moduleTranslations;
+  }
+
+  static loadFile(filePath) {
+    // console.log(filePath);
+    return JSON.parse(fs.readFileSync(filePath, 'utf8'));
+    // return require(filePath); // eslint-disable-line global-require, import/no-dynamic-require
   }
 
   static prefixModuleKeys(moduleName, translations) {
