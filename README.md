@@ -15,6 +15,7 @@ Stripes is a toolkit for building single-page web applications that FOLIO UI mod
 * [Quick start guide](doc/quick-start.md) will allow you get Stripes up and running with a couple of sample modules downloaded using NPM, and to run locally a developed module.
 * [Overview of the Stripes architecture](doc/overview.md) explains the concepts that guided the design of Stripes.
 * [Stripes entities: packages, modules, apps and more](doc/modules-apps-etc.md)
+* [Creating a new development setup for Stripes](doc/new-development-setup.md)
 * [Running a complete FOLIO system](https://github.com/folio-org/ui-okapi-console/blob/master/doc/running-a-complete-system.md) goes further into explaining how you can also run your own instances of FOLIO's API gateway Okapi and application service modules, and how you can use the Okapi Console (running as part of Stripes) to manage modules and tenants.
 * [The Stripes Module Developer's Guide](doc/dev-guide.md)
 * [Permissions in Stripes and FOLIO](doc/permissions.md)
