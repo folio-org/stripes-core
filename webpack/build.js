@@ -14,7 +14,7 @@ module.exports = function build(stripesConfig, options) {
 
     config.plugins.push(new StripesConfigPlugin(stripesConfig));
     config.plugins.push(new StripesBrandingPlugin(stripesConfig.branding));
-    config.plugins.push(new StripesTranslationsPlugin({ modules: stripesConfig.modules }));
+    config.plugins.push(new StripesTranslationsPlugin(stripesConfig));
 
     config.resolve.modules = ['node_modules', platformModulePath];
     config.resolveLoader = { modules: ['node_modules', platformModulePath] };

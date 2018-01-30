@@ -1,6 +1,7 @@
 const path = require('path');
 const fs = require('fs');
 const _ = require('lodash');
+const webpack = require('webpack');
 const { locateStripesModule } = require('./module-paths');
 
 function prefixKeys(obj, prefix) {
@@ -18,23 +19,32 @@ module.exports = class StripesTranslationPlugin {
       '@folio/stripes-core': {},
     };
     Object.assign(this.modules, options.modules);
-    this.languageFilter = options.filter || [];
+    this.languageFilter = options.config.languages || [];
   }
 
   apply(compiler) {
     // Used to help locate modules
     this.context = compiler.context;
+    this.publicPath = compiler.options.output.publicPath;
     this.aliases = compiler.options.resolve.alias;
+
+    // Limit the number of languages processed during build
+    if (this.languageFilter.length) {
+      const filterRegex = new RegExp(`(${this.languageFilter.join('|')})`);
+      compiler.apply(new webpack.ContextReplacementPlugin(/react-intl[/\\]locale-data/, filterRegex));
+      compiler.apply(new webpack.ContextReplacementPlugin(/moment[/\\]locale/, filterRegex));
+    }
 
     // Gather all translations available in each module
     const allTranslations = this.gatherAllTranslations();
-    this.allFiles = StripesTranslationPlugin.generateFileNames(allTranslations);
+    const fileData = this.generateFileNames(allTranslations);
+    this.allFiles = _.mapValues(fileData, data => data.browserPath);
 
     // Emit merged translations to the output directory
     compiler.plugin('emit', (compilation, callback) => {
       Object.keys(allTranslations).forEach((language) => {
         const content = JSON.stringify(allTranslations[language]);
-        compilation.assets[this.allFiles[language]] = {
+        compilation.assets[fileData[language].emitPath] = {
           source: () => content,
           size: () => content.length,
         };
@@ -92,11 +102,15 @@ module.exports = class StripesTranslationPlugin {
   }
 
   // Assign output path names for each to be accessed later by stripes-config-plugin
-  static generateFileNames(allTranslations) {
+  generateFileNames(allTranslations) {
     const files = {};
     const timestamp = Date.now(); // To facilitate cache busting, could also generate a hash
     Object.keys(allTranslations).forEach((language) => {
-      files[language] = `translations/${language}-${timestamp}.json`;
+      files[language] = {
+        // Fetching from the browser must take into account public path. The replace regex removes double slashes
+        browserPath: `${this.publicPath}/translations/${language}-${timestamp}.json`.replace(/\/\//, '/'),
+        emitPath: `translations/${language}-${timestamp}.json`,
+      };
     });
     return files;
   }

@@ -34,7 +34,7 @@ module.exports = function serve(stripesConfig, options) {
 
     config.plugins.push(new StripesConfigPlugin(stripesConfig));
     config.plugins.push(new StripesBrandingPlugin(stripesConfig.branding));
-    config.plugins.push(new StripesTranslationsPlugin({ modules: stripesConfig.modules }));
+    config.plugins.push(new StripesTranslationsPlugin(stripesConfig));
 
     // Look for modules in node_modules, then the platform, then stripes-core
     config.resolve.modules = ['node_modules', platformModulePath, coreModulePath];
