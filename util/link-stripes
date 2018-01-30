@@ -27,9 +27,18 @@ if (@ARGV == 1) {
 
 if ($initialise) {
     foreach my $dir (<stripes-*>) {
-	print "* Initialising linkability for '$dir'\n";
-	system "cd $dir && yarn link"
+	if ($dir =~ /-platform$/) {
+	    print "* Skipping linkability for platform '$dir'\n";
+	} else {
+	    print "* Initialising linkability for '$dir'\n";
+	    # Stupidly, there is no way to ask yarn whether there is
+	    # already a link in place, so the best we can do is try to
+	    # unlink and discard whatever error it emits.
+	    system "cd $dir && yarn unlink > /dev/null 2>&1 || true";
+	    system "cd $dir && yarn link"
+	}
     }
+    exit;
 }
 
 foreach my $dir (<stripes-* ui-*>) {
