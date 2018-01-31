@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 // import ReactDOM from 'react-dom';
-import RootCloseWrapper from 'react-overlays/lib/RootCloseWrapper'; // eslint-disable-line
+import RootCloseWrapper from 'react-overlays/lib/RootCloseWrapper';
 import css from './NavDropdownMenu.css';
 
 const propTypes = {

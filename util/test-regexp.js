@@ -11,7 +11,7 @@ const tests = [
 const re = /\/(stripes|ui)-(?!.*\/node_modules\/)/;
 let failed = 0;
 
-for (let i = 0; i < tests.length; i++) {
+for (let i = 0; i < tests.length; i += 1) {
   const test = tests[i];
   const expected = test[0];
   const string = test[1];
@@ -19,7 +19,7 @@ for (let i = 0; i < tests.length; i++) {
   print(`${i}: '${string}': ` +
         `expected ${expected}, got ${result}: ${
           result === expected ? 'OK' : 'FAIL'}`);
-  if (result !== expected) failed++;
+  if (result !== expected) failed += 1;
 }
 
 const passed = tests.length - failed;
