@@ -32,6 +32,7 @@ dirs=`echo '
     ui-okapi-console
     ui-users
     ui-inventory
+    ui-eholdings
     ui-checkin
     ui-checkout
     ui-circulation
