@@ -20,6 +20,7 @@
 * Add `-c` (clone git repositories) mode to `pull-stripes`. Fixes STCOR-135.
 * `link-stripes -i` skips platform packages, quietly re-links already-linked packages, and exits when done. Fixes STCOR-136.
 * Add new document, [Creating a new development setup for Stripes](doc/new-development-setup.md). Fixes STCOR-137.
+* Gather module translations from separate files and add ability to filter languages at build-time. Fixes STCOR-49.
 
 ## [2.8.0](https://github.com/folio-org/stripes-core/tree/v2.8.0) (2017-11-20)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.7.0...v2.8.0)

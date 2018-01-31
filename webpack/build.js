@@ -2,6 +2,7 @@ const webpack = require('webpack');
 const path = require('path');
 const StripesConfigPlugin = require('./stripes-config-plugin');
 const StripesBrandingPlugin = require('./stripes-branding-plugin');
+const StripesTranslationsPlugin = require('./stripes-translations-plugin');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 const applyWebpackOverrides = require('./apply-webpack-overrides');
 
@@ -13,6 +14,8 @@ module.exports = function build(stripesConfig, options) {
 
     config.plugins.push(new StripesConfigPlugin(stripesConfig));
     config.plugins.push(new StripesBrandingPlugin(stripesConfig.branding));
+    config.plugins.push(new StripesTranslationsPlugin(stripesConfig));
+
     config.resolve.modules = ['node_modules', platformModulePath];
     config.resolveLoader = { modules: ['node_modules', platformModulePath] };
 
