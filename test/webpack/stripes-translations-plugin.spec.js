@@ -102,7 +102,7 @@ describe('The stripes-translations-plugin', function () {
       this.sandbox.stub(this.sut, 'loadTranslationsPackageJson').returns({});
     });
 
-    it('uses translation directory when it exists', function () {
+    it('uses the translation directory when it exists', function () {
       this.sandbox.stub(fs, 'existsSync').returns(true); // translation dir exists
       this.sut.gatherAllTranslations();
       expect(this.sut.loadTranslationsDirectory).to.have.been.called;
@@ -124,13 +124,13 @@ describe('The stripes-translations-plugin', function () {
       this.sut = new StripesTranslationsPlugin(this.stripesConfig);
     });
 
-    it('loads all translations from translation directory', function () {
+    it('loads all translations from the translation directory', function () {
       const result = this.sut.loadTranslationsDirectory('@folio/my-app', 'path/to/translations');
       expect(StripesTranslationsPlugin.loadFile).to.have.callCount(3);
       expect(result).to.be.an('object').with.all.keys('en', 'fr', 'es');
     });
 
-    it('loads filtered translations from translation directory', function () {
+    it('loads only filtered translations from the translation directory', function () {
       this.sut.languageFilter = ['en'];
       const result = this.sut.loadTranslationsDirectory('@folio/my-app', 'path/to/translations');
       expect(StripesTranslationsPlugin.loadFile).to.have.been.calledOnce;
@@ -152,12 +152,12 @@ describe('The stripes-translations-plugin', function () {
       this.sut = new StripesTranslationsPlugin(this.stripesConfig);
     });
 
-    it('loads all translations package.json', function () {
+    it('loads all translations from package.json', function () {
       const result = this.sut.loadTranslationsPackageJson('@folio/my-app', 'path/to/package.json');
       expect(result).to.be.an('object').with.all.keys('en', 'fr', 'es');
     });
 
-    it('loads filtered translations from package.json', function () {
+    it('loads only filtered translations from package.json', function () {
       this.sut.languageFilter = ['en'];
       const result = this.sut.loadTranslationsPackageJson('@folio/my-app', 'path/to/translations');
       expect(result).to.be.an('object').with.all.keys('en').and.not.any.keys('fr', 'es');

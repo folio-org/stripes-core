@@ -14,7 +14,8 @@ function prefixKeys(obj, prefix) {
 
 module.exports = class StripesTranslationPlugin {
   constructor(options) {
-    // Include stripes-core because it has translations too
+    // Include stripes-core because it has translations
+    // If we ever have translations in other common modules, like stripes-components, include them here as well
     this.modules = {
       '@folio/stripes-core': {},
     };
@@ -28,9 +29,9 @@ module.exports = class StripesTranslationPlugin {
     this.publicPath = compiler.options.output.publicPath;
     this.aliases = compiler.options.resolve.alias;
 
-    // Limit the number of languages processed during build
+    // Limit the number of languages loaded by third-party libraries with the ContextReplacementPlugin
     if (this.languageFilter.length) {
-      const filterRegex = new RegExp(`(${this.languageFilter.join('|')})`);
+      const filterRegex = new RegExp(`(${this.languageFilter.join('|')})`); // constructed regex will look something like /(en|es)/
       compiler.apply(new webpack.ContextReplacementPlugin(/react-intl[/\\]locale-data/, filterRegex));
       compiler.apply(new webpack.ContextReplacementPlugin(/moment[/\\]locale/, filterRegex));
     }
@@ -38,7 +39,7 @@ module.exports = class StripesTranslationPlugin {
     // Gather all translations available in each module
     const allTranslations = this.gatherAllTranslations();
     const fileData = this.generateFileNames(allTranslations);
-    this.allFiles = _.mapValues(fileData, data => data.browserPath);
+    this.allFiles = _.mapValues(fileData, data => data.browserPath); // stripes-config-plugin will grab "allFiles" for fetching in the browser
 
     // Emit merged translations to the output directory
     compiler.plugin('emit', (compilation, callback) => {
@@ -69,10 +70,12 @@ module.exports = class StripesTranslationPlugin {
     return allTranslations;
   }
 
+  // Load translation *.json files from a single module's translation directory
   loadTranslationsDirectory(moduleName, dir) {
     const moduleTranslations = {};
     for (const translationFile of fs.readdirSync(dir)) {
       const language = translationFile.replace('.json', '');
+      // When filter is set, skip other languages. Otherwise loads all
       if (!this.languageFilter.length || this.languageFilter.includes(language)) {
         const translations = StripesTranslationPlugin.loadFile(path.join(dir, translationFile));
         moduleTranslations[language] = StripesTranslationPlugin.prefixModuleKeys(moduleName, translations);
@@ -87,6 +90,7 @@ module.exports = class StripesTranslationPlugin {
     const packageJson = StripesTranslationPlugin.loadFile(packageJsonPath);
     if (packageJson.stripes && packageJson.stripes.translations) {
       for (const language of Object.keys(packageJson.stripes.translations)) {
+        // When filter is set, skip other languages. Otherwise loads all
         if (!this.languageFilter.length || this.languageFilter.includes(language)) {
           moduleTranslations[language] = StripesTranslationPlugin.prefixModuleKeys(moduleName, packageJson.stripes.translations[language]);
         }
@@ -95,12 +99,14 @@ module.exports = class StripesTranslationPlugin {
     return moduleTranslations;
   }
 
+  // Common point for loading and parsing the file facilitates testing
   static loadFile(filePath) {
-    // console.log(filePath);
     return JSON.parse(fs.readFileSync(filePath, 'utf8'));
+    // Could also use require here...
     // return require(filePath); // eslint-disable-line global-require, import/no-dynamic-require
   }
 
+  // Converts "example.key" for "@folio/app" into "ui-app.example.key"
   static prefixModuleKeys(moduleName, translations) {
     const name = moduleName.replace(/.*\//, '');
     const prefix = name === 'stripes-core' ? `${name}.` : `ui-${name}.`;
