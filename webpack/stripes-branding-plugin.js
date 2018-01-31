@@ -28,9 +28,9 @@ module.exports = class StripesBrandingPlugin {
     const assetPath = (thePath) => {
       if (thePath.startsWith('@folio/stripes-core')) {
         return thePath; // leave as-is and import defaults from stripes-core
-      } else {
-        return path.join('..', thePath); // Look outside the node_modules directory
       }
+
+      return path.join('..', thePath); // Look outside the node_modules directory
     };
 
     // Wraps image paths with require()'s for webpack to process via its file loaders
@@ -38,9 +38,9 @@ module.exports = class StripesBrandingPlugin {
     const injectRequire = (key, value) => {
       if (key === 'src') {
         return `require('${assetPath(value)}')`;
-      } else {
-        return value;
       }
+
+      return value;
     };
     // Serialize whole branding configuration, adding require()'s as needed
     const brandingString = JSON.stringify(branding, injectRequire, 2);

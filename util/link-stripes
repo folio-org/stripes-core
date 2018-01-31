@@ -48,7 +48,7 @@ foreach my $dir (<stripes-* ui-*>) {
 	print "* Skipping '$dir' -- no package.json\n";
 	next;
     }
-    print "* Linking for for '$dir'\n";
+    print "* Linking for '$dir'\n";
     my $deps = `grep '^ *"\@folio/' $dir/package.json`;
     foreach my $line (split /\n/, $deps) {
 	my($name) = ($line =~ /.*"(\@folio\/.*?)"/);
