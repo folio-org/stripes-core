@@ -55,12 +55,12 @@ foreach my $dir (<stripes-* ui-*>) {
 	system "cd $dir && yarn link \"$name\"";
     }
 
-#     if ($dir ne 'stripes-core' &&
-# 	-d "$dir/node_modules" &&
-# 	(`grep '"react"' $dir/package.json` || -d "$dir/node_modules/react")) {
-# 	system("rm -rf $dir/node_modules/react");
-# 	symlink("../../stripes-core/node_modules/react", "$dir/node_modules/react") ||
-# 	    print STDERR "$0: can't symlink $dir/node_modules/react: $!\n";
-# 	system("ls -ld $dir/node_modules/react");
-#     }
+    if ($dir ne 'stripes-core' &&
+	-d "$dir/node_modules" &&
+	(`grep '"react"' $dir/package.json` || -d "$dir/node_modules/react")) {
+	system("rm -rf $dir/node_modules/react");
+	symlink("../../stripes-core/node_modules/react", "$dir/node_modules/react") ||
+	    print STDERR "$0: can't symlink $dir/node_modules/react: $!\n";
+	system("ls -ld $dir/node_modules/react");
+    }
 }
