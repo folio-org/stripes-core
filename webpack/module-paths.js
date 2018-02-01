@@ -42,7 +42,7 @@ function locateStripesModule(context, moduleName, alias, ...segments) {
     tryPaths.unshift(path.join(alias[moduleName], ...segments));
   }
 
-  for (let i = 0; i < tryPaths.length; i++) {
+  for (let i = 0; i < tryPaths.length; i += 1) {
     const found = tryResolve(tryPaths[i]);
     if (found) {
       foundPath = tryPaths[i];
