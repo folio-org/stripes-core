@@ -48,7 +48,7 @@
   },
   "dependencies": {
     "@folio/stripes-components": "^2.0.0",
-    "@folio/stripes-connect": "^3.0.0",
+    "@folio/stripes-connect": "^3.1.0",
     "@folio/stripes-logger": "^0.0.2",
     "apollo-cache-inmemory": "^1.1.1",
     "apollo-client": "^2.0.3",
