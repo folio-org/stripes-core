@@ -1,17 +1,28 @@
 # Creating a new development setup for Stripes
 
 <!-- md2toc -l 2 new-development-setup.md -->
-* [Remove your old source directory](#remove-your-old-source-directory)
-* [Make a new source directory](#make-a-new-source-directory)
-* [Clone stripes-core](#clone-stripes-core)
-* [Clone all the stripes modules and apps](#clone-all-the-stripes-modules-and-apps)
-* [Yarn linking (eek!)](#yarn-linking-eek)
-* [Yarn install](#yarn-install)
-* [Run your development code!](#run-your-development-code)
+* [Introduction](#introduction)
+* [Instructions](#instructions)
+    * [Remove your old source directory](#remove-your-old-source-directory)
+    * [Make a new source directory](#make-a-new-source-directory)
+    * [Clone stripes-core](#clone-stripes-core)
+    * [Clone all the stripes modules and apps](#clone-all-the-stripes-modules-and-apps)
+    * [Yarn linking (eek!)](#yarn-linking-eek)
+    * [Yarn install](#yarn-install)
+    * [Run your development code!](#run-your-development-code)
+* [Troubleshooting](#troubleshooting)
+    * [Inventory (or another module) is missing](#inventory-or-another-module-is-missing)
+    * [leveldown](#leveldown)
+* [Summary](#summary)
+
+
+## Introduction
 
 Sometimes, due to the vagaries of NPM and Yarn, it becomes necessary to blow away an existing Stripes development setup and make a new one. This document walks through the steps required in this process.
 
-## Remove your old source directory
+## Instructions
+
+### Remove your old source directory
 
 First, of course, be sure that you have no uncommitted or unpushed changes. Once you have safely committed and pushed everything, you can remove the directory:
 
@@ -19,13 +30,13 @@ First, of course, be sure that you have no uncommitted or unpushed changes. Once
 $ rm -rf stripes
 ```
 
-## Make a new source directory
+### Make a new source directory
 
 ```
 $ mkdir stripes
 ```
 
-## Clone stripes-core
+### Clone stripes-core
 
 You need this first, so that you can use utility scripts included in it to help with the rest of the process. So:
 
@@ -46,7 +57,7 @@ You _may_ find that, for reasons which are completely opaque to me, a `stripes-s
 $ rm -rf stripes-sample-platform
 ```
 
-## Clone all the stripes modules and apps
+### Clone all the stripes modules and apps
 
 You can do this using the `-c` option of the ubiquitous `pull-stripes` script from stripes-core:
 
@@ -58,7 +69,7 @@ remote: Total 1540 (delta 0), reused 0 (delta 0), pack-reused 1540
 [...]
 ```
 
-## Yarn linking (eek!)
+### Yarn linking (eek!)
 
 Yarn linking is horrible and error-prone and unpredictable, and is in fact the main reason why we need a procedure for replacing decayed Stripes development environments at all. There is another utility script that helps with this.
 
@@ -81,7 +92,7 @@ $ ./stripes-core/util/link-stripes
 (Yes, that is the same utility script used for both steps. Use the `-i` option the first time, but not the second.)
 
 
-## Yarn install
+### Yarn install
 
 You need to do this in each source directory. As before, there's a script for this, and it's our old friend `pull-stripes` with the `-b` ("build") option:
 
@@ -97,13 +108,46 @@ info No lockfile found.
 
 (Note that this pulls recent changes to each package and then builds the result. Perhaps the two operations should be completely separate. Perhaps `pull-stripes -b` should be a completely different script from `pull-stripes`. Maybe `link-stripes -i` should be a different script from `link-stripes`. Maybe the two modes of `link-stripes` should be two more options to `pull-stripes`. None of this is pretty.)
 
-## Run your development code!
+### Run your development code!
 
 This is done in the usual way: in `stripes-sample-platform`, copy `stripes.config.js` to `stripes.config.js.local`, edit the latter as required, and then:
 
 ```
 $ yarn start
 ```
+
+
+## Troubleshooting
+
+### Inventory (or another module) is missing
+
+```
+error An unexpected error occurred:
+"https://repository.folio.org/repository/npm-folio/@folio%2finventory: Package '@folio/inventory' not found".
+```
+
+This is due to a combination of two things: one is that [yarn-linked packages are not used if there is no already-released version](https://github.com/yarnpkg/yarn/issues/5298), a long-standing bug. The other is that, for reasons that are not clear, the Inventory UI module has yet to be released.
+
+Clearly yarn should not care whether or not it's posible to find a release of a linked module. But since it does, the simple work-around is to point to the `folioci` NPM repository instead of the regular `folio` repository. This contains releases of all the UI modules in the `folio-org` GitHub area, and allows yarn to ignore those releases and use the linked module. Before trying to `yarn install`, use:
+
+```
+$ yarn config set @folio:registry https://repository.folio.org/repository/npm-folioci/
+```
+
+### leveldown
+
+```
+error /private/tmp/t/stripes-cli/node_modules/leveldown: Command failed.
+Exit code: 127
+Command: prebuild-install || node-gyp rebuild
+```
+
+We have no idea what causes this, but it seems that `node-gyp`, whatever that is, knows how to patch up the problem. So globally install that program, and things more or less work out, probably. Before trying to `yarn install`, use:
+
+```
+$ yarn global add node-gyp
+```
+
 
 ## Summary
 
@@ -116,9 +160,13 @@ $ rm -rf stripes-sample-platform
 $ ./stripes-core/util/pull-stripes -c
 $ ./stripes-core/util/link-stripes -i
 $ ./stripes-core/util/link-stripes
+$ yarn config set @folio:registry https://repository.folio.org/repository/npm-folioci/
+$ yarn global add node-gyp
 $ ./stripes-core/util/pull-stripes -b
 $ cd stripes-sample-platform
 $ cp stripes.config.js stripes.config.js.local
 $ $EDITOR stripes.config.js.local
 $ yarn start
 ```
+
+

@@ -1,0 +1,12 @@
+@import "@folio/stripes-components/lib/variables.css";
+
+@media (--largeUp) {
+  .versionsContainer {
+    display: flex;
+  }
+
+  .versionsColumn {
+    flex: 1;
+    padding: 0 1em;
+  }
+}
