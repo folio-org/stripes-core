@@ -1,6 +1,7 @@
 # Change history for stripes-core
 
-## 2.9.0 (IN PROGRESS)
+## [2.9.0](https://github.com/folio-org/stripes-core/tree/v2.9.0) (2018-02-01)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.8.0...v2.9.0)
 
 * Add documentation on [how to add a permission to a user from the command-line](doc/adding-permissions.md#add-a-permission-to-a-user). Fixes STCOR-112.
 * Restore open-in-new-tab to primary navigation. Fixes STCOR-113.
@@ -21,6 +22,9 @@
 * `link-stripes -i` skips platform packages, quietly re-links already-linked packages, and exits when done. Fixes STCOR-136.
 * Add new document, [Creating a new development setup for Stripes](doc/new-development-setup.md). Fixes STCOR-137.
 * Gather module translations from separate files and add ability to filter languages at build-time. Fixes STCOR-49.
+* Make About component responsive to narrow screens. No JIRA issue, but see PR #155.
+* Better contstruction of notification links. Fixes STCOR-104.
+* Add Apollo provider so modules can use GraphQL. Fixes STCOR-133.
 
 ## [2.8.0](https://github.com/folio-org/stripes-core/tree/v2.8.0) (2017-11-20)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.7.0...v2.8.0)
