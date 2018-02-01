@@ -139,16 +139,21 @@ class MainNav extends Component {
     const menuLinks = modules.app.map((entry) => {
       const name = entry.module.replace(/^@[a-z0-9_]+\//, '');
       const perm = `module.${name}.enabled`;
-      const navId = `clickable-${name}-module`;
 
-      if (!stripes.hasPerm(perm)) return null;
+      if (!stripes.hasPerm(perm)) {
+        return null;
+      }
+
+      const navId = `clickable-${name}-module`;
+      const isActive = pathname.startsWith(entry.route);
+      const href = !isActive ? (this.lastVisited[name] || entry.home || entry.route) : null;
 
       return (
         <NavButton
           label={entry.displayName}
           id={navId}
-          selected={pathname.startsWith(entry.route)}
-          href={this.lastVisited[name] || entry.home || entry.route}
+          selected={isActive}
+          href={href}
           title={entry.displayName}
           key={entry.route}
         />);
