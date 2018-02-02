@@ -3,6 +3,7 @@ const fs = require('fs');
 const _ = require('lodash');
 const webpack = require('webpack');
 const modulePaths = require('./module-paths');
+const StripesBuildError = require('./stripes-build-error');
 
 function prefixKeys(obj, prefix) {
   const res = {};
