@@ -62,7 +62,8 @@ module.exports = function serve(stripesConfig, options) {
     app.use(connectHistoryApiFallback({}));
 
     app.use(webpackDevMiddleware(compiler, {
-      noInfo: true,
+      logLevel: 'warn',
+      stats: 'minimal',
       publicPath: config.output.publicPath,
     }));
 

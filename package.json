@@ -117,7 +117,7 @@
     "uglifyjs-webpack-plugin": "^1.1.8",
     "uuid": "^3.0.0",
     "webpack": "^3.4.1",
-    "webpack-dev-middleware": "^1.10.0",
+    "webpack-dev-middleware": "^2.0.4",
     "webpack-hot-middleware": "^2.16.1",
     "webpack-virtual-modules": "^0.1.8"
   }
