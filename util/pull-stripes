@@ -29,6 +29,7 @@ dirs=`echo '
     stripes-cli
     stripes-sample-platform
     stripes-demo-platform
+    folio-testing-platform
     ui-okapi-console
     ui-users
     ui-inventory
