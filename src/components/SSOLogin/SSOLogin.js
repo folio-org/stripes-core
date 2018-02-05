@@ -14,7 +14,7 @@ function SSOLogin(props) {
 
   return (
     <div className={authFormStyles.formGroup}>
-      <Button type="button" buttonClass={authFormStyles.submitButton} onClick={handleSSOLogin} fullWidth>Login via SSO</Button>
+      <Button buttonStyle="primary" type="button" buttonClass={authFormStyles.submitButton} onClick={handleSSOLogin} fullWidth>Login via SSO</Button>
       <form id="ssoForm" />
     </div>
   );
