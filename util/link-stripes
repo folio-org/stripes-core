@@ -10,6 +10,15 @@
 use strict;
 use warnings;
 
+if (@ARGV && $ARGV[0] eq '--really') {
+    shift @ARGV;
+} else {
+    print STDERR "$0: using `yarn link` is deprecated in Stripes\
+See https://tinyurl.com/new-stripes
+If you want to use this script, supply '--really' as the FIRST argument\n";
+    exit 1;
+}
+
 my $initialise = 0;
 if (@ARGV && $ARGV[0] eq '-i') {
     $initialise = 1;
