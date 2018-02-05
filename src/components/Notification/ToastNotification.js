@@ -113,7 +113,7 @@ class ToastNotification extends React.Component {
       <Layout className="flex full justified centerItems">
         {this.props.message}
         <Button
-          buttonStyle="transparent"
+          buttonStyle="link"
           title="Dismiss this message"
           onClick={this.handleHide}
         >
@@ -124,7 +124,7 @@ class ToastNotification extends React.Component {
       <Layout className="flex full justified centerItems">
         {this.props.message}
         <Button
-          buttonStyle="transparent"
+          buttonStyle="link"
           title="Dismiss this message"
           onClick={this.handleHide}
         >

@@ -91,7 +91,7 @@ class Login extends Component {
               />
             </div>
             <div className={authFormStyles.formGroup}>
-              <Button id="clickable-login" type="submit" buttonClass={authFormStyles.submitButton} disabled={buttonDisabled} fullWidth marginBottom0>
+              <Button buttonStyle="primary" id="clickable-login" type="submit" buttonClass={authFormStyles.submitButton} disabled={buttonDisabled} fullWidth marginBottom0>
                 {buttonLabel}
               </Button>
             </div>
