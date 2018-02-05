@@ -26,7 +26,7 @@ module.exports = class StripesBrandingPlugin {
   // Serialize the branding config.
   static _serializeBranding(branding) {
     const assetPath = (thePath) => {
-      if (thePath.startsWith('/')) {
+      if (path.isAbsolute(thePath)) {
         return thePath;
       }
 
@@ -52,7 +52,7 @@ module.exports = class StripesBrandingPlugin {
 
   // Prep favicon path for use with HtmlWebpackPlugin
   static _initFavicon(favicon) {
-    if (favicon.startsWith('/')) {
+    if (path.isAbsolute(favicon)) {
       return favicon;
     }
     return path.join(path.resolve(), favicon);
