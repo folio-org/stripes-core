@@ -61,6 +61,24 @@ if [ $clone = y ]; then
     exit
 fi
 
+if [ ! -f ./package.json ]; then
+    echo "$0: creating workspace package.json"
+    `echo '{
+    "private": true,
+    "workspaces": [
+        "stripes-*",
+        "ui-*"
+    ],
+    "dependencies": {
+    }
+}
+' > package.json`
+else
+    echo "workspace package.json file already exists..."
+fi
+
+yarn
+
 for i in $dirs; do
     (
         cd $i
