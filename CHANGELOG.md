@@ -27,7 +27,7 @@
 * Add new document, [Creating a new development setup for Stripes](doc/new-development-setup.md). Fixes STCOR-137.
 * Gather module translations from separate files and add ability to filter languages at build-time. Fixes STCOR-49.
 * Make About component responsive to narrow screens. No JIRA issue, but see PR #155.
-* Better contstruction of notification links. Fixes STCOR-104.
+* Better construction of notification links. Fixes STCOR-104.
 * Add Apollo provider so modules can use GraphQL. Fixes STCOR-133.
 
 ## [2.8.0](https://github.com/folio-org/stripes-core/tree/v2.8.0) (2017-11-20)
