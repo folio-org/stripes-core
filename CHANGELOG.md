@@ -3,6 +3,7 @@
 ## 2.10.0 (IN PROGRESS)
 
 * Update [Creating a new development setup for Stripes](doc/new-development-setup.md) for `stripes-cli`-based workflow. Fixes STCOR-140.
+* New document, [Depending on unreleased features](doc/depending-on-unreleased-features.md). Fixes STCOR-152.
 
 ## [2.9.0](https://github.com/folio-org/stripes-core/tree/v2.9.0) (2018-02-01)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.8.0...v2.9.0)
