@@ -14,7 +14,7 @@ We frequently find that fixing a front-end bug, or adding a front-end feature, r
 For example the Codex Search application's new feature [UISE-41 (When starting the Codex Search UI, do not search for cql.allRecords=1)](https://issues.folio.org/browse/UISE-41) required a new facility
 [STCOM-181 (boolean argument for makeQueryFunction: whether to reject an empty query)](https://issues.folio.org/browse/STCOM-181).
 
-In these circumstances we would like to express that the higher level package depends on the existence of the new feature in the lower-level: in this case, that the version of ui-search that does not make an initial search for all records depends on a version of stripes-smart-components whose `makeQueryFunction` provides the necessary underlying "reject empty query?" argument. The obvious way to do this would be to make a new release of the low-level package and make the high-level module depend on it. But releasing UI packages is [a non-trivial process](release-procedure.md) and we do not want to do this for each newly added feature.
+In these circumstances we would like to express that the higher level package depends on the existence of the new feature in the lower-level: in this case, the version of ui-search that does not make an initial search for all records depends on a version of stripes-smart-components whose `makeQueryFunction` provides the necessary underlying "reject empty query?" argument. The obvious way to do this would be to make a new release of the low-level package and make the high-level module depend on it. But releasing UI packages is [a non-trivial process](release-procedure.md) and we do not want to do this for each newly added feature.
 
 
 ## The solution
@@ -42,19 +42,19 @@ Similarly, consider the serial number rolling over from 99 to 100. If the serial
 
 **Conclusion**: the CI version number must be formed by setting the serial number in a fixed-width zero-padded number, and blindly appending that to the patch-level irrespective of how many digits it has. In Perl, `$patchlevel . sprintf("%05d", $serial)`. This generates the right sequences as both the patch-level and serial-number roll over into an additional digit:
 
-	$ cat generate-ci-version.pl 
+	$ cat generate-ci-version.pl
 	for (my $patchlevel = 9; $patchlevel <= 10; $patchlevel++) {
 	    for (my $serial = 99; $serial <= 100; $serial++) {
 	        my $ci = $patchlevel . sprintf("%05d", $serial);
 	        print "CI version $ci\n";
 	    }
 	}
-	$ perl generate-ci-version.pl 
+	$ perl generate-ci-version.pl
 	CI version 900099
 	CI version 900100
 	CI version 1000099
 	CI version 1000100
-	$ 
+	$
 
 
 ## Open questions
