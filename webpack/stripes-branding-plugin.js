@@ -26,8 +26,8 @@ module.exports = class StripesBrandingPlugin {
   // Serialize the branding config.
   static _serializeBranding(branding) {
     const assetPath = (thePath) => {
-      if (thePath.startsWith('@folio/stripes-core')) {
-        return thePath; // leave as-is and import defaults from stripes-core
+      if (path.isAbsolute(thePath)) {
+        return thePath;
       }
 
       return path.join('..', thePath); // Look outside the node_modules directory
@@ -52,9 +52,8 @@ module.exports = class StripesBrandingPlugin {
 
   // Prep favicon path for use with HtmlWebpackPlugin
   static _initFavicon(favicon) {
-    if (favicon.startsWith('@folio/stripes-core')) {
-      // The plugin wants a file path for this
-      return path.join(__dirname, '..', favicon.replace('@folio/stripes-core', ''));
+    if (path.isAbsolute(favicon)) {
+      return favicon;
     }
     return path.join(path.resolve(), favicon);
   }

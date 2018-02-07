@@ -29,6 +29,7 @@ dirs=`echo '
     stripes-cli
     stripes-sample-platform
     stripes-demo-platform
+    folio-testing-platform
     ui-okapi-console
     ui-users
     ui-inventory
@@ -75,10 +76,8 @@ for i in $dirs; do
                     git pull
                     if [ $build = y ]; then
                         case $i in
-                            ui-*) echo "No need to build UI module";;
-                            *)    yarn install
-                                  test $i = stripes-core || rm -rf node_modules/react
-                                  ;;
+                            *-platform) echo "No need to build platform module";;
+                            *) yarn install;;
                         esac
                     fi
                 fi

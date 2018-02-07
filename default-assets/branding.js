@@ -3,10 +3,10 @@
 // and processed through the webpack loaders from the stripes-core in use.
 module.exports = {
   logo: {
-    src: '@folio/stripes-core/default-assets/folio-logo.svg',
+    src: `${__dirname}/folio-logo.svg`,
     alt: 'Future Of Libraries Is Open',
   },
   favicon: {
-    src: '@folio/stripes-core/default-assets/favicon.ico',
+    src: `${__dirname}/favicon.ico`,
   },
 };

@@ -37,7 +37,12 @@ function locateStripesModule(context, moduleName, alias, ...segments) {
     path.join(moduleName, ...segments), { paths: [context] }, // This better incorporates the context path but requires nodejs 9+
   ];
 
-  // When available, ty for the alias first
+  // If we are looking for anything in stripes-core, then we are already there!
+  if (moduleName === '@folio/stripes-core') {
+    tryPaths.unshift(path.join(__dirname, '..', ...segments));
+  }
+
+  // When available, try for the alias first
   if (alias[moduleName]) {
     tryPaths.unshift(path.join(alias[moduleName], ...segments));
   }

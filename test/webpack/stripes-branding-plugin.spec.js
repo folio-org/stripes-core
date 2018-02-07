@@ -59,11 +59,10 @@ describe('The stripes-branding-plugin', function () {
   });
 
   describe('_serializeBranding method', function () {
-    it('maintains default @folio/stripes-core src paths', function () {
+    it('maintains absolute src paths', function () {
       const result = StripesBrandingPlugin._serializeBranding(defaultBranding);
       expect(result).to.be.a('string')
-        .which.includes(`'${defaultBranding.logo.src}'`)
-        .and.includes('@folio/stripes-core');
+        .which.includes(`'${defaultBranding.logo.src}'`);
     });
 
     it('updates custom src paths', function () {
