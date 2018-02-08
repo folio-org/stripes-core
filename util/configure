@@ -1,0 +1,28 @@
+#!/bin/sh
+
+#
+# Given that somebody has cloned stripes-core, build out the platform
+# for them: clone the rest of the repositories, create a yarn workspace
+# file, install all the dependencies, install stripes-cli if necessary,
+# and install the stripes-sample-platform skeleton files.
+#
+
+./stripes-core/util/pull-stripes -c
+./stripes-core/util/pull-stripes -b
+
+yarn config set @folio:registry https://repository.folio.org/repository/npm-folioci/
+
+npm list -g --depth 0 | grep -q '@folio/stripes-cli'
+if [[ $? != 0 ]]; then
+    yarn global add node-gyp
+    yarn global add @folio/stripes-cli
+fi
+
+cp stripes-sample-platform/stripes.config.js stripes-sample-platform/stripes.config.js.local
+cp stripes-sample-platform/.stripesclirc.example stripes-sample-platform/.stripesclirc
+
+port=`cat stripes-sample-platform/.stripesclirc | grep port | sed 's/[^0-9]*//g'`
+
+echo "cd into stripes-sample-platform and run 'stripescli serve', then browse to 'localhost:${port}'"
+echo "edit stripes-sample-platform/.stripesclirc to change the port and turn modules on or off"
+echo "edit stripes-sample-platform/stripes.config.js.local to change other config values"

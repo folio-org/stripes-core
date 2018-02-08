@@ -4,6 +4,7 @@
 
 * Update [Creating a new development setup for Stripes](doc/new-development-setup.md) for `stripes-cli`-based workflow. Fixes STCOR-140.
 * New document, [Depending on unreleased features](doc/depending-on-unreleased-features.md). Fixes STCOR-152.
+* Reorganize [Creating a new development setup for Stripes](doc/new-development-setup.md) and add `configure` script. Refs STCOR-140.
 
 ## [2.9.0](https://github.com/folio-org/stripes-core/tree/v2.9.0) (2018-02-01)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.8.0...v2.9.0)
@@ -30,6 +31,7 @@
 * Make About component responsive to narrow screens. No JIRA issue, but see PR #155.
 * Better construction of notification links. Fixes STCOR-104.
 * Add Apollo provider so modules can use GraphQL. Fixes STCOR-133.
+* New `util/configure` script handles new development setup in one go; corresponding updates to [Creating a new development setup for Stripes](doc/new-development-setup.md). Refs STCOR-140.
 
 ## [2.8.0](https://github.com/folio-org/stripes-core/tree/v2.8.0) (2017-11-20)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.7.0...v2.8.0)

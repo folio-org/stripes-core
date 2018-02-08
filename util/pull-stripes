@@ -26,7 +26,6 @@ dirs=`echo '
     stripes-logger
     stripes-form
     stripes-core
-    stripes-cli
     stripes-sample-platform
     stripes-demo-platform
     folio-testing-platform
@@ -53,10 +52,10 @@ if [ $clone = y ]; then
     echo "$0: cloning"
     for i in $dirs; do
         if [ -d $i ]; then
-	    echo "*** skipping '$i': aleady exists"
-	else 
-	    git clone git@github.com:folio-org/$i.git
-	fi
+            echo "*** skipping '$i': aleady exists"
+        else
+            git clone git@github.com:folio-org/$i.git
+        fi
     done
     exit
 fi
@@ -65,7 +64,7 @@ for i in $dirs; do
     (
         cd $i
         branch=`git branch | sed -n 's/^\* //p'`
-	echo "=== $i ($branch) ==="
+        echo "=== $i ($branch) ==="
         if [ "x$branch" != xmaster -a "x$branch" != xdev -a "x$branch" != x`whoami` ]; then
             echo "*** on branch '$branch': doing nothing"
         else
@@ -74,12 +73,6 @@ for i in $dirs; do
                     echo "*** some committed changes to push: doing nothing"
                 else
                     git pull
-                    if [ $build = y ]; then
-                        case $i in
-                            *-platform) echo "No need to build platform module";;
-                            *) yarn install;;
-                        esac
-                    fi
                 fi
             else
                 echo "*** some changes to commit: doing nothing"
@@ -87,3 +80,25 @@ for i in $dirs; do
         fi
     )
 done
+
+# use yarn workspaces to handle shared libraries more efficiently
+# https://yarnpkg.com/lang/en/docs/workspaces/
+if [ $build = y ]; then
+    if [ ! -f ./package.json ]; then
+        echo "$0: creating workspace package.json"
+        `echo '{
+    "private": true,
+    "workspaces": [
+        "stripes-*",
+        "ui-*"
+    ],
+    "dependencies": {
+    }
+}
+' > package.json`
+    else
+        echo "workspace package.json file already exists..."
+    fi
+
+    yarn
+fi
