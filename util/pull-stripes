@@ -29,7 +29,6 @@ dirs=`echo '
     stripes-sample-platform
     stripes-demo-platform
     folio-testing-platform
-    ui-okapi-console
     ui-users
     ui-inventory
     ui-eholdings
