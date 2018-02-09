@@ -141,7 +141,7 @@ Root.propTypes = {
   okapi: PropTypes.shape({
     url: PropTypes.string,
     tenant: PropTypes.string,
-    withoutOkapi: PropTypes.boolean,
+    withoutOkapi: PropTypes.bool,
   }),
   actionNames: PropTypes.arrayOf(
     PropTypes.string,
@@ -149,7 +149,7 @@ Root.propTypes = {
   discovery: PropTypes.shape({
     modules: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     interfaces: PropTypes.object, // eslint-disable-line react/forbid-prop-types
-    isFinished: PropTypes.boolean,
+    isFinished: PropTypes.bool,
   }),
   history: PropTypes.shape({
     length: PropTypes.number.isRequired,
