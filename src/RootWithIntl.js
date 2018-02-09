@@ -41,10 +41,12 @@ const RootWithIntl = (props, context) => {
                     <Route path="/settings" render={() => <Settings stripes={stripes} />} />
                     {getModuleRoutes(stripes)}
                     <Route
-                      component={() => (<div>
-                        <h2>Uh-oh!</h2>
-                        <p>This route does not exist.</p>
-                      </div>)}
+                      component={() => (
+                        <div>
+                          <h2>Uh-oh!</h2>
+                          <p>This route does not exist.</p>
+                        </div>
+                      )}
                     />
                   </Switch>
                 </ModuleContainer>

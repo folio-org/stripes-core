@@ -46,14 +46,16 @@ const About = (props) => {
       return <li key={key} style={style}>{key} {text}</li>;
     };
 
-    return (<span>
-      <Headline size="small" faded>{m.module} {m.version} depends on:</Headline>
-      <List
-        items={Object.keys(okapiInterfaces)}
-        itemFormatter={itemFormatter}
-        listStyle="bullets"
-      />
-    </span>);
+    return (
+      <span>
+        <Headline size="small" faded>{m.module} {m.version} depends on:</Headline>
+        <List
+          items={Object.keys(okapiInterfaces)}
+          itemFormatter={itemFormatter}
+          listStyle="bullets"
+        />
+      </span>
+    );
   }
 
   function listModules(caption, list, interfaces) {

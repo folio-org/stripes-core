@@ -15,5 +15,5 @@ TenantEdit.manifest = {
 };
 
 TenantEdit.propTypes = {
-  params: PropTypes.obj,
+  params: PropTypes.object,
 };

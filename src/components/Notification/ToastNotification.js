@@ -83,12 +83,10 @@ class ToastNotification extends React.Component {
     const { position, transition } = this.props;
     return classNames(
       { [`${css.startOutside}`]:
-        /start\b/.test(position) && transition === 'slide',
-      },
+        /start\b/.test(position) && transition === 'slide' },
       { [`${css.endOutside}`]:
         /end\b/.test(position) && transition === 'slide' || // eslint-disable-line
-        ((position === 'top' || position === 'bottom') && transition === 'slide'),
-      },
+        ((position === 'top' || position === 'bottom') && transition === 'slide') },
       { [`${css.fade}`]: transition === 'fade' },
     );
   }
