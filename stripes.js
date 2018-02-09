@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+/* eslint-disable no-console */
+
 const commander = require('commander');
 const path = require('path');
 const stripes = require('./webpack/stripes-node-api');
