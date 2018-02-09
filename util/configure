@@ -23,6 +23,6 @@ cp stripes-sample-platform/.stripesclirc.example stripes-sample-platform/.stripe
 
 port=`cat stripes-sample-platform/.stripesclirc | grep port | sed 's/[^0-9]*//g'`
 
-echo "cd into stripes-sample-platform and run 'stripescli serve', then browse to 'localhost:${port}'"
+echo "cd into stripes-sample-platform and run 'stripes serve', then browse to 'localhost:${port}'"
 echo "edit stripes-sample-platform/.stripesclirc to change the port and turn modules on or off"
 echo "edit stripes-sample-platform/stripes.config.js.local to change other config values"
