@@ -178,7 +178,7 @@ class MainNav extends Component {
           }
           {
             stripes.hasPerm('settings.enabled') && pathname.startsWith('/settings') &&
-            <NavButton label="Settings" href={this.lastVisited.x_settings || '/settings'} />
+            <NavButton label="Settings" />
           }
         </NavGroup>
       );
