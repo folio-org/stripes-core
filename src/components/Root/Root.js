@@ -157,6 +157,7 @@ Root.propTypes = {
     push: PropTypes.func.isRequired,
     replace: PropTypes.func.isRequired,
   }),
+  okapiReady: PropTypes.bool,
 };
 
 Root.defaultProps = {

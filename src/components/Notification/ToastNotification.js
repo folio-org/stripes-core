@@ -42,7 +42,6 @@ const propTypes = {
 const defaultProps = {
   position: 'end bottom',
   transition: 'slide',
-  toastStyle: 'info',
   timeout: 6000,
 };
 

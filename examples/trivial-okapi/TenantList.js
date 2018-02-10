@@ -28,7 +28,7 @@ class TenantList extends Component {
     if (!data.tenants) return null;
     const tenantNodes = data.tenants.map(tenant => (
       <li key={tenant.id}>
-        {tenant.name} [<a role="button" tabIndex={0} onClick={() => mutator.tenants.DELETE(tenant)}>delete</a>]
+        {tenant.name} [<button tabIndex={0} onClick={() => mutator.tenants.DELETE(tenant)}>delete</button>]
           [<Link to={`${pathname}/edit/${tenant.id}`}>Edit</Link>]
       </li>
     ));
