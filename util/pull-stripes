@@ -44,7 +44,6 @@ dirs=`echo '
     ui-search
     ui-testing
     ui-trivial
-    ui-items
     eslint-config-stripes
 '`
 

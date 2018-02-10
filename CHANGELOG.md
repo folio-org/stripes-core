@@ -6,6 +6,7 @@
 * New document, [Depending on unreleased features](doc/depending-on-unreleased-features.md). Fixes STCOR-152.
 * Reorganize [Creating a new development setup for Stripes](doc/new-development-setup.md) and add `configure` script. Refs STCOR-140.
 * Update docs to reflect that "stripescli" is now "stripes". Refs STCLI-11. 
+* Deprecate ui-items. Refs UIIN-18.
 
 ## [2.9.0](https://github.com/folio-org/stripes-core/tree/v2.9.0) (2018-02-01)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.8.0...v2.9.0)
