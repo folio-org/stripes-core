@@ -162,6 +162,11 @@ class MainNav extends Component {
     let firstNav;
     let breadcrumbArray = []; // eslint-disable-line
 
+    let settingsApp;
+    if (stripes.hasPerm('settings.enabled') && pathname.startsWith('/settings')) {
+      settingsApp = { displayName: 'Settings', description: 'FOLIO settings' };
+    }
+
     if (breadcrumbArray.length === 0) {
       firstNav = (
         <NavGroup md="hide">
@@ -173,12 +178,8 @@ class MainNav extends Component {
           </a>
           <CurrentApp
             id="ModuleMainHeading"
-            currentApp={selectedApp}
+            currentApp={selectedApp || settingsApp}
           />
-          {
-            stripes.hasPerm('settings.enabled') && pathname.startsWith('/settings') &&
-            <NavButton label="Settings" />
-          }
         </NavGroup>
       );
     } else {
