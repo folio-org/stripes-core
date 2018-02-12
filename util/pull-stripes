@@ -1,6 +1,11 @@
 clone=n
 build=n
 dir=.
+warning="⚠️ "
+
+if [ "$TERM" = dumb ]; then
+    warning="***"
+fi
 
 if [ "x$1" = x-c ]; then
     clone=y
@@ -50,7 +55,7 @@ if [ $clone = y ]; then
     echo "$0: cloning"
     for i in $dirs; do
         if [ -d $i ]; then
-            echo "*** skipping '$i': aleady exists"
+            echo "$warning skipping '$i': aleady exists"
         else
             git clone git@github.com:folio-org/$i.git
         fi
@@ -64,16 +69,16 @@ for i in $dirs; do
         branch=`git branch | sed -n 's/^\* //p'`
         echo "=== $i ($branch) ==="
         if [ "x$branch" != xmaster -a "x$branch" != xdev -a "x$branch" != x`whoami` ]; then
-            echo "*** on branch '$branch': doing nothing"
+            echo "$warning on branch '$branch': doing nothing"
         else
             if git status | grep 'nothing to commit' > /dev/null; then
                 if git status | grep 'Your branch is ahead' > /dev/null; then
-                    echo "*** some committed changes to push: doing nothing"
+                    echo "$warning some committed changes to push: doing nothing"
                 else
                     git pull
                 fi
             else
-                echo "*** some changes to commit: doing nothing"
+                echo "$warning some changes to commit: doing nothing"
             fi
         fi
     )
