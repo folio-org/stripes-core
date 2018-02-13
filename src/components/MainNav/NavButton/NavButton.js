@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import Link from 'react-router-dom/Link';
 import AppIcon from '@folio/stripes-components/lib/AppIcon';
 import Badge from '@folio/stripes-components/lib/Badge';
+import AccessibleFocus from '@folio/stripes-components/lib/AccessibleFocus';
 import css from './NavButton.css';
 
 const propTypes = {
@@ -70,11 +71,11 @@ const NavButton = ({ label, title, selected, onClick, href, icon, noSelectedBar,
 
   return (
     <Element id={id} title={title} className={rootClasses} role="button" {...clickableProps}>
-      <div className={css.inner}>
+      <AccessibleFocus className={css.inner}>
         { badge && (<Badge color="red" className={css.badge}>{badge}</Badge>) }
         { displayIcon }
         { label && <span className={css.label}>{label}</span>}
-      </div>
+      </AccessibleFocus>
     </Element>
   );
 };
