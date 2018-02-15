@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import createBrowserHistory from 'history/createBrowserHistory';
 import { IntlProvider } from 'react-intl';
 import queryString from 'query-string';
-import _ from 'lodash';
 import { ApolloProvider } from 'react-apollo';
 
 import initialReducers from '../../initialReducers';
@@ -13,6 +12,7 @@ import enhanceReducer from '../../enhanceReducer';
 import createApolloClient from '../../createApolloClient';
 import { setSinglePlugin, setBindings, setOkapiToken } from '../../okapiActions';
 import { loadTranslations, checkOkapiSession } from '../../loginServices';
+import { getQueryResourceKey } from '../../locationService';
 import Stripes from '../../Stripes';
 import RootWithIntl from '../../RootWithIntl';
 
@@ -27,13 +27,10 @@ class Root extends Component {
     this.epics = {};
     this.withOkapi = this.props.okapi.withoutOkapi !== true;
 
-    for (const app of modules.app) {
-      if (window.location.pathname.startsWith(app.route) && app.queryResource) {
-        // This is not DRY, as it was expressed already in LocalResource is stripes-connect,
-        // And in MainNav.js in stripes-core. Both State Keys should be derived from a common mechanism.
-        this.queryResourceStateKey = `${app.dataKey ? `${app.dataKey}#` : ''}${_.snakeCase(app.module)}_${app.queryResource}`;
-        break;
-      }
+    const appModule = modules.app.find(m => window.location.pathname.startsWith(m.route) && m.queryResource);
+
+    if (appModule) {
+      this.queryResourceStateKey = getQueryResourceKey(appModule);
     }
   }
 
