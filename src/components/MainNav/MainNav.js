@@ -81,7 +81,7 @@ class MainNav extends Component {
     this.store.subscribe(() => {
       const { history, location } = this.props;
       const module = this.curModule;
-      if (module && module.queryResource && location.pathname.startsWith(module.route)) {
+      if (module && location.pathname.startsWith(module.route)) {
         updateLocation(module, this.store, history, location);
       }
     });
@@ -89,9 +89,8 @@ class MainNav extends Component {
 
   componentDidUpdate(prevProps) {
     const { location } = this.props;
-    this.curModule = this.moduleList.find(m => location.pathname.startsWith(m.route));
-    if (!this.curModule || !this.curModule.queryResource) return;
-    if (!isEqual(location, prevProps.location)) {
+    this.curModule = this.moduleList.find(m => location.pathname.startsWith(m.route) && m.queryResource);
+    if (this.curModule && !isEqual(location, prevProps.location)) {
       updateQueryResource(location, this.curModule, this.store);
     }
   }
