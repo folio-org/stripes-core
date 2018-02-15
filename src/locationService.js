@@ -37,7 +37,7 @@ export function updateLocation(module, curQuery, store, history, location) {
 
   // This is a temp solution to address: https://issues.folio.org/browse/UISE-67
   if (params._path && params.filters) {
-    unset(params, 'filters');
+    //unset(params, 'filters');
   }
 
   unset(params, '_path');
