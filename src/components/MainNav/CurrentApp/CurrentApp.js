@@ -37,7 +37,7 @@ const CurrentApp = ({ currentApp, icon, badge, id }) => {
     <div id={id} title={currentApp.description} className={css.currentApp}>
       {badge && (<Badge color="red" className={css.badge}>{badge}</Badge>)}
       {displayIcon}
-      <Headline tag="h1" size="small" style={{ margin: 0 }} >{currentApp.displayName}</Headline>
+      <Headline tag="h1" size="small" margin="none" >{currentApp.displayName}</Headline>
     </div>
   );
 };
