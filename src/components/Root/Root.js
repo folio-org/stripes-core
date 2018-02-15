@@ -28,10 +28,7 @@ class Root extends Component {
     this.withOkapi = this.props.okapi.withoutOkapi !== true;
 
     const appModule = modules.app.find(m => window.location.pathname.startsWith(m.route) && m.queryResource);
-
-    if (appModule) {
-      this.queryResourceStateKey = getQueryResourceKey(appModule);
-    }
+    this.queryResourceStateKey = (appModule) ? getQueryResourceKey(appModule) : null;
   }
 
   getChildContext() {
