@@ -11,7 +11,7 @@ export function getQueryResourceState(module, store) {
   return store.getState()[key];
 }
 
-// updates query resource based on current location query
+// updates query resource based on the current location query
 export function updateQueryResource(location, module, store) {
   const stateQuery = getQueryResourceState(module, store);
   const locationQuery = location.query ? location.query : queryString.parse(location.search);
