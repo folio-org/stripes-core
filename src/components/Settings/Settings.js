@@ -7,6 +7,7 @@ import { connectFor } from '@folio/stripes-connect';
 import { modules } from 'stripes-config'; // eslint-disable-line
 import { withRouter } from 'react-router';
 import NavList from '@folio/stripes-components/lib/NavList';
+import NavListItem from '@folio/stripes-components/lib/NavListItem';
 import NavListSection from '@folio/stripes-components/lib/NavListSection';
 import Paneset from '@folio/stripes-components/lib/Paneset';
 import Pane from '@folio/stripes-components/lib/Pane';
@@ -28,12 +29,12 @@ const Settings = (props) => {
   ).filter(
     x => stripes.hasPerm(`settings.${x.module.replace(/^@folio\//, '')}.enabled`),
   ).map(m => (
-    <Link
+    <NavListItem
       key={m.route}
       to={`/settings${m.route}`}
     >
       {m.displayName}
-    </Link>
+    </NavListItem>
   ));
 
   const routes = settingsModules.filter(
@@ -64,7 +65,7 @@ const Settings = (props) => {
         </NavList>
         <br /><br />
         <NavListSection label="System information" activeLink={props.location.pathname}>
-          <Link to="/settings/about"><FormattedMessage id="stripes-core.front.about" /></Link>
+          <NavListItem to="/settings/about"><FormattedMessage id="stripes-core.front.about" /></NavListItem>
         </NavListSection>
       </Pane>
       <Switch>
