@@ -10,6 +10,7 @@
 * Add notes about stripes-cli install trouble. Fixes STCOR-154.
 * Lint. It's what's for dinner. Fixes STCOR-157.
 * Deprecate ui-items. Refs UIIN-18.
+* Add Vagrant doc to [Creating a new development setup for Stripes](doc/new-development-setup.md). Fixes STCOR-160.
 
 ## [2.9.0](https://github.com/folio-org/stripes-core/tree/v2.9.0) (2018-02-01)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.8.0...v2.9.0)
