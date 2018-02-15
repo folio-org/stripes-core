@@ -6,6 +6,7 @@ import Link from 'react-router-dom/Link';
 
 import NavList from '@folio/stripes-components/lib/NavList';
 import NavListSection from '@folio/stripes-components/lib/NavListSection';
+import NavListItem from '@folio/stripes-components/lib/NavListItem';
 import List from '@folio/stripes-components/lib/List';
 import { Row, Col } from '@folio/stripes-components/lib/LayoutGrid';
 import Button from '@folio/stripes-components/lib/Button';
@@ -122,10 +123,10 @@ class NotificationsMenu extends React.Component {
         <div className={css.dropdownBody}>
           <div className={`${css.dropdownColumn} ${css.secondary}`} style={{ width: '30%' }}>
             <NavList>
-              <NavListSection activeLink="all">
-                <Button buttonStyle="link" fullWidth name="all" onClick={() => this.onClickFilter(null)}>All</Button>
-                <Button buttonStyle="link" fullWidth name="users" onClick={() => this.onClickFilter('users')}>Users</Button>
-                <Button buttonStyle="link" fullWidth name="requests" onClick={() => this.onClickFilter('requests')}>Requests</Button>
+              <NavListSection>
+                <NavListItem name="all" onClick={() => this.onClickFilter(null)}>All</NavListItem>
+                <NavListItem name="users" onClick={() => this.onClickFilter('users')}>Users</NavListItem>
+                <NavListItem name="requests" onClick={() => this.onClickFilter('requests')}>Requests</NavListItem>
               </NavListSection>
             </NavList>
           </div>
