@@ -26,11 +26,11 @@ export function updateQueryResource(location, module, store) {
 }
 
 // updates location query based on the change in the query resource
-export function updateLocation(module, store, history, location) {
+export function updateLocation(module, curQuery, store, history, location) {
   const stateQuery = getQueryResourceState(module, store);
   const locationQuery = getLocationQuery(location);
 
-  if (isEqual(stateQuery, locationQuery)) return;
+  if (isEqual(stateQuery, locationQuery)) return curQuery;
 
   const allParams = Object.assign({}, locationQuery, stateQuery);
   let url = allParams._path || location.pathname;
@@ -38,9 +38,15 @@ export function updateLocation(module, store, history, location) {
 
   const params = omitBy(allParams, isNil);
 
+  if (isEqual(curQuery, params) && url === location.pathname) {
+    return curQuery;
+  }
+
   if (!isEmpty(params)) {
     url += `?${queryString.stringify(params)}`;
   }
 
   history.push(url);
+
+  return params;
 }

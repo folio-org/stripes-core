@@ -78,11 +78,12 @@ class MainNav extends Component {
   }
 
   componentDidMount() {
+    let curQuery = null;
     this.store.subscribe(() => {
       const { history, location } = this.props;
       const module = this.curModule;
       if (module && location.pathname.startsWith(module.route)) {
-        updateLocation(module, this.store, history, location);
+        curQuery = updateLocation(module, curQuery, this.store, history, location);
       }
     });
   }
