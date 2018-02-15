@@ -1,4 +1,4 @@
-import { snakeCase, isEqual, omitBy, isNil, isEmpty } from 'lodash';
+import { snakeCase, isEqual, omitBy, isNil, isEmpty, unset } from 'lodash';
 import queryString from 'query-string';
 import { replaceQueryResource } from './locationActions';
 
@@ -32,11 +32,15 @@ export function updateLocation(module, curQuery, store, history, location) {
 
   if (isEqual(stateQuery, locationQuery)) return curQuery;
 
-  const allParams = Object.assign({}, locationQuery, stateQuery);
-  let url = allParams._path || location.pathname;
-  delete allParams._path;
+  const params = omitBy(Object.assign({}, locationQuery, stateQuery), isNil);
+  let url = params._path || location.pathname;
 
-  const params = omitBy(allParams, isNil);
+  // This is a temp solution to address: https://issues.folio.org/browse/UISE-67
+  if (params._path && params.filters) {
+    unset(params, 'filters');
+  }
+
+  unset(params, '_path');
 
   if (isEqual(curQuery, params) && url === location.pathname) {
     return curQuery;
