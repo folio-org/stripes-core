@@ -80,7 +80,10 @@ class MainNav extends Component {
   componentDidMount() {
     this.store.subscribe(() => {
       const { history, location } = this.props;
-      updateLocation(this.curModule, this.store, history, location);
+      const module = this.curModule;
+      if (module && module.queryResource && location.pathname.startsWith(module.route)) {
+        updateLocation(module, this.store, history, location);
+      }
     });
   }
 
