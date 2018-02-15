@@ -55,16 +55,18 @@ const Settings = (props) => {
     />);
   });
 
+  const activeLink = `/settings/${props.location.pathname.split('/')[2]}`;
+
   return (
     <Paneset>
       <Pane defaultWidth="20%" paneTitle="Settings">
         <NavList>
-          <NavListSection activeLink={props.location.pathname} label="Settings">
+          <NavListSection activeLink={activeLink} label="Settings">
             {navLinks}
           </NavListSection>
         </NavList>
         <br /><br />
-        <NavListSection label="System information" activeLink={props.location.pathname}>
+        <NavListSection label="System information" activeLink={activeLink}>
           <NavListItem to="/settings/about"><FormattedMessage id="stripes-core.front.about" /></NavListItem>
         </NavListSection>
       </Pane>
