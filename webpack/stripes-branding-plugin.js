@@ -2,7 +2,6 @@
 // The virtual module contains require()'s needed for webpack to pull images into the bundle.
 
 const path = require('path');
-const VirtualModulesPlugin = require('webpack-virtual-modules');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const defaultBranding = require('../default-assets/branding');
 
@@ -13,11 +12,8 @@ module.exports = class StripesBrandingPlugin {
   }
 
   apply(compiler) {
-    const brandingVirtualModule = `module.exports = ${StripesBrandingPlugin._serializeBranding(this.branding)};`;
-
-    compiler.apply(new VirtualModulesPlugin({
-      'node_modules/stripes-branding.js': brandingVirtualModule,
-    }));
+    // The serialized output will be picked up by stripes-config-plugin
+    this.serializedBranding = StripesBrandingPlugin._serializeBranding(this.branding);
 
     // Locate the HtmlWebpackPlugin and apply the favicon.
     compiler.plugin('after-plugins', theCompiler => this._replaceFavicon(theCompiler));

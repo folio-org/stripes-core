@@ -41,13 +41,12 @@ describe('The stripes-branding-plugin', function () {
   });
 
   describe('apply method', function () {
-    it('registers a virtual module', function () {
-      this.sandbox.spy(compilerStub, 'apply');
+    it('assigns serialized branding to this.serializedBranding', function () {
       const sut = new StripesBrandingPlugin();
       sut.apply(compilerStub);
-
-      const applyArg = compilerStub.apply.getCall(0).args[0];
-      expect(applyArg).to.be.an.instanceOf(VirtualModulesPlugin);
+      console.log(sut.serializedBranding);
+      expect(sut.serializedBranding).to.be.a('string')
+        .which.includes(`"${defaultBranding.logo.alt}"`);
     });
 
     it('registers the "after-plugins" hook', function () {
