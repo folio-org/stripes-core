@@ -34,7 +34,7 @@ describe('The stripes-config-plugin', function () {
     it('throws StripesBuildError when missing modules config', function () {
       const config = {};
       try {
-        const sut = new StripesConfigPlugin(config);
+        const sut = new StripesConfigPlugin(config); // eslint-disable-line no-unused-vars
         expect('should not get here').to.equal(false);
       } catch (err) {
         expect(err.message).match(/was not provided a "modules" object/);

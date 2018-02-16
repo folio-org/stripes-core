@@ -2,7 +2,6 @@
 // To access this configuration simply import 'stripes-config' within your JavaScript:
 //   import { okapi, config, modules } from 'stripes-config';
 
-const assert = require('assert');
 const _ = require('lodash');
 const VirtualModulesPlugin = require('webpack-virtual-modules');
 const StripesBrandingPlugin = require('./stripes-branding-plugin');
@@ -22,8 +21,9 @@ module.exports = class StripesConfigPlugin {
   apply(compiler) {
     const enabledModules = this.options.modules;
     const stripesModuleParser = new StripesModuleParser(enabledModules, compiler.context, compiler.options.resolve.alias);
-    const moduleConfigs = stripesModuleParser.parseEnabledModules();
+    const { moduleConfigs, metadata } = stripesModuleParser.parseEnabledModules();
     this.mergedConfig = Object.assign({}, this.options, { modules: moduleConfigs });
+    this.metadata = metadata;
 
     // Prep the virtual module now, we will write to it when ready
     this.virtualModule = new VirtualModulesPlugin();

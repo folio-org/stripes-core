@@ -4,7 +4,7 @@ const StripesModuleParser = require('../../webpack/stripes-module-parser');
 
 function mockPackageJson(mod) {
   return {
-    name: mod.replace('@folio/', 'ui-'),
+    name: mod,
     description: `description for ${mod}`,
     version: '1.0.0',
     stripes: {
@@ -98,8 +98,8 @@ describe('The stripes-module-parser', function () {
     it('returns config grouped by stripes type', function () {
       this.sandbox.stub(this.sut, 'loadModulePackageJson').callsFake(mockPackageJson);
       const result = this.sut.parseEnabledModules();
-      expect(result).to.be.an('object').with.property('app').that.is.an('array');
-      expect(result.app[0]).to.be.an('object').with.all.keys(
+      expect(result.moduleConfigs).to.be.an('object').with.property('app').that.is.an('array');
+      expect(result.moduleConfigs.app[0]).to.be.an('object').with.all.keys(
         'module', 'getModule', 'description', 'version', 'displayName', 'route', 'permissionSets',
       );
     });
