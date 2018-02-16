@@ -44,7 +44,6 @@ describe('The stripes-branding-plugin', function () {
     it('assigns serialized branding to this.serializedBranding', function () {
       const sut = new StripesBrandingPlugin();
       sut.apply(compilerStub);
-      console.log(sut.serializedBranding);
       expect(sut.serializedBranding).to.be.a('string')
         .which.includes(`"${defaultBranding.logo.alt}"`);
     });
