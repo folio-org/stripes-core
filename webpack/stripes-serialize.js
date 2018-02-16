@@ -14,7 +14,7 @@ function serializeWithRequire(theObject) {
   // Wraps image paths with require()'s for webpack to process via its file loaders
   // The require()'s are just strings here so we don't attempt to invoke them right now
   const injectRequire = (key, value) => {
-    if (key === 'src') {
+    if (key === 'src' && typeof value === 'string') {
       return `require('${assetPath(value)}')`;
     }
 

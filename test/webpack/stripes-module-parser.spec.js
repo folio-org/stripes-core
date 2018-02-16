@@ -13,6 +13,24 @@ const enabledModules = {
   '@folio/search': {},
   '@folio/developer': {},
 };
+const icons = [
+  { name: 'one',
+    alt: 'alt for one',
+    src: './path/to/one.png',
+    title: 'a title for one' },
+  { name: 'two',
+    alt: 'alt for two',
+    src: './path/to/two.png',
+    title: 'a title for two' },
+];
+const welcomePageEntries = [
+  { iconName: 'one',
+    headline: 'welcome headline',
+    description: 'welcome description' },
+  { iconName: 'two',
+    headline: 'another welcome headline',
+    description: 'another welcome description' },
+];
 
 function mockPackageJson(mod) {
   return {
@@ -24,6 +42,8 @@ function mockPackageJson(mod) {
       displayName: `display name for ${mod}`,
       route: `/${mod}`,
       permissionSets: [],
+      icons,
+      welcomePageEntries,
     },
   };
 }
@@ -41,49 +61,89 @@ describe('The stripes-module-parser', function () {
     });
   });
 
-  describe('parseStripesConfig method', function () {
+  describe('parsing methods', function () {
     beforeEach(function () {
       this.packageJson = mockPackageJson('@folio/users');
       this.sandbox.stub(StripesModuleParser.prototype, 'loadModulePackageJson').callsFake(mockPackageJson);
       this.sut = new StripesModuleParser(moduleName, moduleConfig, context, aliases);
     });
 
-    it('throws StripesBuildError when stripes is missing', function () {
-      delete this.packageJson.stripes;
-      try {
-        this.sut.parseStripesConfig('@folio/users', this.packageJson);
-        expect('never to be called').to.equal(true);
-      } catch (err) {
-        expect(err.message).to.match(/does not have a "stripes" key/);
-      }
+    describe('parseStripesConfig', function () {
+      it('throws StripesBuildError when stripes is missing', function () {
+        delete this.packageJson.stripes;
+        try {
+          this.sut.parseStripesConfig('@folio/users', this.packageJson);
+          expect('never to be called').to.equal(true);
+        } catch (err) {
+          expect(err.message).to.match(/does not have a "stripes" key/);
+        }
+      });
+
+      it('throws StripesBuildError when stripes.type is missing', function () {
+        delete this.packageJson.stripes.type;
+        try {
+          this.sut.parseStripesConfig('@folio/users', this.packageJson);
+          expect('never to be called').to.equal(true);
+        } catch (err) {
+          expect(err.message).to.match(/does not specify stripes\.type/);
+        }
+      });
+
+      it('returns a parsed config', function () {
+        const result = this.sut.parseStripesConfig('@folio/users', this.packageJson);
+        expect(result).to.be.an('object').with.keys(
+          'module', 'getModule', 'description', 'version', 'displayName', 'route', 'permissionSets', 'icons', 'welcomePageEntries',
+        );
+      });
+
+      it('applies overrides from tenant config', function () {
+        this.sut.overrideConfig = { displayName: 'something else' };
+        const result = this.sut.parseStripesConfig('@folio/users', this.packageJson);
+        expect(result.displayName).to.equal('something else');
+      });
+
+      it('assigns getModule function', function () {
+        const result = this.sut.parseStripesConfig('@folio/users', this.packageJson);
+        expect(result.getModule).to.be.a('function');
+      });
     });
 
-    it('throws StripesBuildError when stripes.type is missing', function () {
-      delete this.packageJson.stripes.type;
-      try {
-        this.sut.parseStripesConfig('@folio/users', this.packageJson);
-        expect('never to be called').to.equal(true);
-      } catch (err) {
-        expect(err.message).to.match(/does not specify stripes\.type/);
-      }
+    describe('parseStripesMetadata', function () {
+      it('returns metadata', function () {
+        const result = this.sut.parseStripesMetadata(this.packageJson);
+        expect(result).to.be.an('object').with.keys(
+          'name', 'version', 'description', 'license', 'feedback', 'type', 'shortTitle', 'fullTitle',
+          'defaultPopoverSize', 'defaultPreviewWidth', 'helpPage', 'icons', 'welcomePageEntries',
+        );
+      });
     });
 
-    it('returns a parsed config', function () {
-      const result = this.sut.parseStripesConfig('@folio/users', this.packageJson);
-      expect(result).to.be.an('object').with.all.keys(
-        'module', 'getModule', 'description', 'version', 'displayName', 'route', 'permissionSets',
-      );
+    describe('getIconMetadata', function () {
+      it('returns icons by name', function () {
+        const result = StripesModuleParser.getIconMetadata(icons);
+        expect(result).to.be.an('object').with.all.keys('one', 'two');
+        expect(result.one).to.deep.equal({ alt: 'alt for one', src: './path/to/one.png', title: 'a title for one' });
+      });
     });
 
-    it('applies overrides from tenant config', function () {
-      this.sut.overrideConfig = { displayName: 'something else' };
-      const result = this.sut.parseStripesConfig('@folio/users', this.packageJson);
-      expect(result.displayName).to.equal('something else');
-    });
+    describe('getWelcomePageEntries', function () {
+      it('returns array of welcomePageEntries', function () {
+        const parsedIcons = StripesModuleParser.getIconMetadata(icons);
+        const result = this.sut.getWelcomePageEntries(welcomePageEntries, parsedIcons);
+        expect(result).to.be.an('array').with.length(2);
+        expect(result[0]).to.deep.equal(welcomePageEntries[0]);
+      });
 
-    it('assigns getModule function', function () {
-      const result = this.sut.parseStripesConfig('@folio/users', this.packageJson);
-      expect(result.getModule).to.be.a('function');
+      xit('throws StripesBuildError when a missing icon is referenced', function () {
+        const parsedIcons = StripesModuleParser.getIconMetadata(icons);
+        delete parsedIcons.one;
+        try {
+          this.sut.getWelcomePageEntries(welcomePageEntries, parsedIcons);
+          expect('never to be called').to.equal(true);
+        } catch (err) {
+          expect(err.message).to.match(/has no icon defined/);
+        }
+      });
     });
   });
 });
@@ -102,8 +162,8 @@ describe('parseAllModules function', function () {
   it('returns config grouped by stripes type', function () {
     const result = this.sut(enabledModules, context, aliases);
     expect(result.config).to.be.an('object').with.property('app').that.is.an('array');
-    expect(result.config.app[0]).to.be.an('object').with.all.keys(
-      'module', 'getModule', 'description', 'version', 'displayName', 'route', 'permissionSets',
+    expect(result.config.app[0]).to.be.an('object').with.keys(
+      'module', 'getModule', 'description', 'version', 'displayName', 'route', 'permissionSets', 'icons', 'welcomePageEntries',
     );
   });
 

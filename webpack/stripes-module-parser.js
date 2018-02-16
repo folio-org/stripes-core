@@ -91,7 +91,7 @@ class StripesModuleParser {
     }
     return _.reduce(icons, (iconMetadata, icon) => {
       iconMetadata[icon.name] = {
-        filename: icon.fileName,
+        src: icon.src,
         alt: icon.alt,
         title: icon.title,
       };
