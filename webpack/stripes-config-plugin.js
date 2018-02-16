@@ -9,6 +9,7 @@ const StripesTranslationPlugin = require('./stripes-translations-plugin');
 const serialize = require('serialize-javascript');
 const StripesModuleParser = require('./stripes-module-parser');
 const StripesBuildError = require('./stripes-build-error');
+const stripesSerialize = require('./stripes-serialize');
 
 module.exports = class StripesConfigPlugin {
   constructor(options) {
@@ -41,9 +42,10 @@ module.exports = class StripesConfigPlugin {
     // Create a virtual module for Webpack to include in the build
     const stripesVirtualModule = `
       const { okapi, config, modules } = ${serialize(this.mergedConfig, { space: 2 })};
-      const branding = ${brandingPlugin.serializedBranding};
+      const branding = ${stripesSerialize.serializeWithRequire(brandingPlugin.branding)};
       const translations = ${serialize(translationPlugin.allFiles, { space: 2 })};
-      export { okapi, config, modules, branding, translations };
+      const metadata = ${stripesSerialize.serializeWithRequire(this.metadata)};
+      export { okapi, config, modules, branding, translations, metadata };
     `;
 
     this.virtualModule.writeModule('node_modules/stripes-config.js', stripesVirtualModule);

@@ -73,7 +73,7 @@ module.exports = class StripesModuleParser {
   static parseStripesMetadata(packageJson) {
     // Name without @folio/ scope
     const icons = StripesModuleParser.getIconMetadata(packageJson.stripes.icons);
-    const welcomePageEntries = StripesModuleParser.getWelcomePageEntries(packageJson.stripes.welcomePageEntries, icons, nameOnly);
+    const welcomePageEntries = StripesModuleParser.getWelcomePageEntries(packageJson.stripes.welcomePageEntries, icons, packageJson.name);
 
     const metadata = {
       name: nameOnly(packageJson.name),

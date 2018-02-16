@@ -5,7 +5,7 @@ const StripesConfigPlugin = require('../../webpack/stripes-config-plugin');
 const StripesTranslationsPlugin = require('../../webpack/stripes-translations-plugin');
 const StripesBrandingPlugin = require('../../webpack/stripes-branding-plugin');
 const StripesModuleParser = require('../../webpack/stripes-module-parser');
-
+const stripesSerialize = require('../../webpack/stripes-serialize');
 
 const compilerStub = {
   apply: () => {},
@@ -78,6 +78,7 @@ describe('The stripes-config-plugin', function () {
     beforeEach(function () {
       this.sandbox.stub(StripesModuleParser.prototype, 'parseEnabledModules').returns({ app: ['something'] });
       this.sandbox.stub(VirtualModulesPlugin.prototype, 'writeModule').returns({});
+      this.sandbox.stub(stripesSerialize, 'serializeWithRequire').returns({});
       this.sut = new StripesConfigPlugin(mockConfig);
 
       compilerStub.plugins = [];
@@ -104,7 +105,7 @@ describe('The stripes-config-plugin', function () {
       expect(writeModuleArgs[0]).to.be.a('string').that.equals('node_modules/stripes-config.js');
 
       // TODO: More thorough analysis of the generated virtual module
-      expect(writeModuleArgs[1]).to.be.a('string').with.match(/export { okapi, config, modules, branding, translations }/);
+      expect(writeModuleArgs[1]).to.be.a('string').with.match(/export { okapi, config, modules, branding, translations, metadata }/);
     });
   });
 });
