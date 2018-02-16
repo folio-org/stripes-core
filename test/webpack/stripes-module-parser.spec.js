@@ -1,6 +1,18 @@
 const expect = require('chai').expect;
 const modulePaths = require('../../webpack/module-paths');
-const StripesModuleParser = require('../../webpack/stripes-module-parser');
+const { StripesModuleParser, parseAllModules } = require('../../webpack/stripes-module-parser');
+
+const moduleName = '@folio/users';
+const moduleConfig = {};
+const context = '/path/to/folio-testing-platform';
+const aliases = {
+  react: '/path/to/node_modules/react',
+};
+const enabledModules = {
+  '@folio/users': {},
+  '@folio/search': {},
+  '@folio/developer': {},
+};
 
 function mockPackageJson(mod) {
   return {
@@ -17,25 +29,11 @@ function mockPackageJson(mod) {
 }
 
 describe('The stripes-module-parser', function () {
-  beforeEach(function () {
-    const enabledModules = {
-      '@folio/users': {},
-      '@folio/search': {},
-      '@folio/developer': {},
-    };
-    const context = '/path/to/folio-testing-platform';
-    const aliases = {
-      react: '/path/to/node_modules/react',
-    };
-
-    this.sut = new StripesModuleParser(enabledModules, context, aliases);
-  });
-
   describe('loadPackageJson method', function () {
     it('throws StripesBuildError when package.json is missing', function () {
       this.sandbox.stub(modulePaths, 'locateStripesModule').returns(false);
       try {
-        this.sut.loadModulePackageJson('test');
+        this.sut = new StripesModuleParser(moduleName, moduleConfig, context, aliases);
         expect('never to be called').to.equal(true);
       } catch (err) {
         expect(err.message).to.match(/Unable to locate/);
@@ -46,6 +44,8 @@ describe('The stripes-module-parser', function () {
   describe('parseStripesConfig method', function () {
     beforeEach(function () {
       this.packageJson = mockPackageJson('@folio/users');
+      this.sandbox.stub(StripesModuleParser.prototype, 'loadModulePackageJson').callsFake(mockPackageJson);
+      this.sut = new StripesModuleParser(moduleName, moduleConfig, context, aliases);
     });
 
     it('throws StripesBuildError when stripes is missing', function () {
@@ -76,7 +76,7 @@ describe('The stripes-module-parser', function () {
     });
 
     it('applies overrides from tenant config', function () {
-      this.sut.enabledModules['@folio/users'] = { displayName: 'something else' };
+      this.sut.overrideConfig = { displayName: 'something else' };
       const result = this.sut.parseStripesConfig('@folio/users', this.packageJson);
       expect(result.displayName).to.equal('something else');
     });
@@ -86,22 +86,29 @@ describe('The stripes-module-parser', function () {
       expect(result.getModule).to.be.a('function');
     });
   });
+});
 
-  describe('parseAllModules method', function () {
-    it('calls parseStripesConfig for each module', function () {
-      this.sandbox.stub(this.sut, 'loadModulePackageJson').callsFake(mockPackageJson);
-      this.sandbox.spy(this.sut, 'parseStripesConfig');
-      this.sut.parseEnabledModules();
-      expect(this.sut.parseStripesConfig).to.have.callCount(3);
-    });
+describe('parseAllModules function', function () {
+  beforeEach(function () {
+    this.sandbox.stub(StripesModuleParser.prototype, 'loadModulePackageJson').callsFake(mockPackageJson);
+    this.sut = parseAllModules;
+  });
 
-    it('returns config grouped by stripes type', function () {
-      this.sandbox.stub(this.sut, 'loadModulePackageJson').callsFake(mockPackageJson);
-      const result = this.sut.parseEnabledModules();
-      expect(result.moduleConfigs).to.be.an('object').with.property('app').that.is.an('array');
-      expect(result.moduleConfigs.app[0]).to.be.an('object').with.all.keys(
-        'module', 'getModule', 'description', 'version', 'displayName', 'route', 'permissionSets',
-      );
-    });
+  it('returns config and metadata collections', function () {
+    const result = this.sut(enabledModules, context, aliases);
+    expect(result).to.be.an('object').with.all.keys('config', 'metadata');
+  });
+
+  it('returns config grouped by stripes type', function () {
+    const result = this.sut(enabledModules, context, aliases);
+    expect(result.config).to.be.an('object').with.property('app').that.is.an('array');
+    expect(result.config.app[0]).to.be.an('object').with.all.keys(
+      'module', 'getModule', 'description', 'version', 'displayName', 'route', 'permissionSets',
+    );
+  });
+
+  it('returns metadata for each module', function () {
+    const result = this.sut(enabledModules, context, aliases);
+    expect(result.metadata).to.be.an('object').with.all.keys('users', 'search', 'developer');
   });
 });

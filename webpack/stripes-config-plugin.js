@@ -7,7 +7,7 @@ const VirtualModulesPlugin = require('webpack-virtual-modules');
 const StripesBrandingPlugin = require('./stripes-branding-plugin');
 const StripesTranslationPlugin = require('./stripes-translations-plugin');
 const serialize = require('serialize-javascript');
-const StripesModuleParser = require('./stripes-module-parser');
+const stripesModuleParser = require('./stripes-module-parser');
 const StripesBuildError = require('./stripes-build-error');
 const stripesSerialize = require('./stripes-serialize');
 
@@ -21,9 +21,8 @@ module.exports = class StripesConfigPlugin {
 
   apply(compiler) {
     const enabledModules = this.options.modules;
-    const stripesModuleParser = new StripesModuleParser(enabledModules, compiler.context, compiler.options.resolve.alias);
-    const { moduleConfigs, metadata } = stripesModuleParser.parseEnabledModules();
-    this.mergedConfig = Object.assign({}, this.options, { modules: moduleConfigs });
+    const { config, metadata } = stripesModuleParser.parseAllModules(enabledModules, compiler.context, compiler.options.resolve.alias);
+    this.mergedConfig = Object.assign({}, this.options, { modules: config });
     this.metadata = metadata;
 
     // Prep the virtual module now, we will write to it when ready

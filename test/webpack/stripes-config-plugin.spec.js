@@ -4,7 +4,7 @@ const VirtualModulesPlugin = require('webpack-virtual-modules');
 const StripesConfigPlugin = require('../../webpack/stripes-config-plugin');
 const StripesTranslationsPlugin = require('../../webpack/stripes-translations-plugin');
 const StripesBrandingPlugin = require('../../webpack/stripes-branding-plugin');
-const StripesModuleParser = require('../../webpack/stripes-module-parser');
+const stripesModuleParser = require('../../webpack/stripes-module-parser');
 const stripesSerialize = require('../../webpack/stripes-serialize');
 
 const compilerStub = {
@@ -54,7 +54,7 @@ describe('The stripes-config-plugin', function () {
 
   describe('apply method', function () {
     beforeEach(function () {
-      this.sandbox.stub(StripesModuleParser.prototype, 'parseEnabledModules').returns({ app: ['something'] });
+      this.sandbox.stub(stripesModuleParser, 'parseAllModules').returns({ app: ['something'] });
       this.sut = new StripesConfigPlugin(mockConfig);
     });
 
@@ -76,7 +76,7 @@ describe('The stripes-config-plugin', function () {
 
   describe('afterPlugins method', function () {
     beforeEach(function () {
-      this.sandbox.stub(StripesModuleParser.prototype, 'parseEnabledModules').returns({ app: ['something'] });
+      this.sandbox.stub(stripesModuleParser, 'parseAllModules').returns({ config: 'something', metadata: 'something' });
       this.sandbox.stub(VirtualModulesPlugin.prototype, 'writeModule').returns({});
       this.sandbox.stub(stripesSerialize, 'serializeWithRequire').returns({});
       this.sut = new StripesConfigPlugin(mockConfig);

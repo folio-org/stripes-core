@@ -8,40 +8,33 @@ function appendOrSingleton(maybeArray, newValue) {
   return singleton;
 }
 
-function nameOnly(moduleName) {
-  return moduleName.replace(/.*\//, '');
-}
-
-module.exports = class StripesModuleParser {
-  constructor(enabledModules, context, aliases) {
-    this.enabledModules = enabledModules;
-    this.context = context;
-    this.aliases = aliases;
+// Handles the parsing of one Stripes module's configuration and metadata
+class StripesModuleParser {
+  constructor(moduleName, overrideConfig, context, aliases) {
+    this.moduleName = moduleName;
+    this.nameOnly = moduleName.replace(/.*\//, '');
+    this.overrideConfig = overrideConfig;
+    this.packageJson = this.loadModulePackageJson(context, aliases);
   }
 
   // Loads a given module's package.json and errors when it fails
   // By using require, the JSON will already be parsed
-  loadModulePackageJson(moduleName) {
-    const packageJson = modulePaths.locateStripesModule(this.context, moduleName, this.aliases, 'package.json');
-    if (!packageJson) {
-      throw new StripesBuildError(`Unable to locate ${moduleName}'s package.json`);
+  loadModulePackageJson(context, aliases) {
+    const packageJsonFile = modulePaths.locateStripesModule(context, this.moduleName, aliases, 'package.json');
+    if (!packageJsonFile) {
+      throw new StripesBuildError(`StripesModuleParser: Unable to locate ${this.moduleName}'s package.json`);
     }
-    return require(packageJson); // eslint-disable-line
+    return require(packageJsonFile); // eslint-disable-line
   }
 
   // Wrapper to source data and transform into collections (config and metadata)
-  parseModule(moduleName) {
-    const packageJson = this.loadModulePackageJson(moduleName);
-    const config = this.parseStripesConfig(moduleName, packageJson);
-    const metadata = StripesModuleParser.parseStripesMetadata(packageJson);
-
-    const parsedModule = {
-      name: nameOnly(moduleName),
-      type: packageJson.stripes.type,
-      config,
-      metadata,
+  parseModule() {
+    return {
+      name: this.nameOnly,
+      type: this.packageJson.stripes.type,
+      config: this.config || this.parseStripesConfig(this.moduleName, this.packageJson),
+      metadata: this.metadata || this.parseStripesMetadata(this.packageJson),
     };
-    return parsedModule;
   }
 
   // Validates and parses a module's stripes data
@@ -49,7 +42,6 @@ module.exports = class StripesModuleParser {
   // This will be modified to a webpack-compatible dynamic import when we implement code-splitting.
   parseStripesConfig(moduleName, packageJson) {
     const { stripes, description, version } = packageJson;
-    const tenantModuleConfig = this.enabledModules[moduleName];
 
     if (!_.isObject(stripes)) {
       throw new StripesBuildError(`Included module ${moduleName} does not have a "stripes" key in package.json`);
@@ -58,7 +50,7 @@ module.exports = class StripesModuleParser {
       throw new StripesBuildError(`Included module ${moduleName} does not specify stripes.type in package.json`);
     }
 
-    const stripeConfig = Object.assign({}, stripes, tenantModuleConfig, {
+    const stripeConfig = Object.assign({}, stripes, this.overrideConfig, {
       module: moduleName,
       getModule: new Function([], `return require('${moduleName}').default;`), // eslint-disable-line no-new-func
       description,
@@ -70,20 +62,16 @@ module.exports = class StripesModuleParser {
 
   // Extract metadata defined here:
   // https://github.com/folio-org/stripes-core/blob/master/doc/app-metadata.md
-  static parseStripesMetadata(packageJson) {
-    // Name without @folio/ scope
+  parseStripesMetadata(packageJson) {
     const icons = StripesModuleParser.getIconMetadata(packageJson.stripes.icons);
-    const welcomePageEntries = StripesModuleParser.getWelcomePageEntries(packageJson.stripes.welcomePageEntries, icons, packageJson.name);
+    const welcomePageEntries = this.getWelcomePageEntries(packageJson.stripes.welcomePageEntries, icons);
 
     const metadata = {
-      name: nameOnly(packageJson.name),
+      name: this.nameOnly,
       version: packageJson.version,
       description: packageJson.description,
       license: packageJson.license,
-      feedback: {
-        url: packageJson.bugs ? packageJson.bugs.url : undefined,
-        email: packageJson.bugs ? packageJson.bugs.email : undefined,
-      },
+      feedback: packageJson.bugs,
       type: packageJson.stripes.type,
       shortTitle: packageJson.stripes.displayName,
       fullTitle: packageJson.stripes.fullName,
@@ -103,7 +91,7 @@ module.exports = class StripesModuleParser {
     }
     return _.reduce(icons, (iconMetadata, icon) => {
       iconMetadata[icon.name] = {
-        filename: icon.filename,
+        filename: icon.fileName,
         alt: icon.alt,
         title: icon.title,
       };
@@ -111,14 +99,14 @@ module.exports = class StripesModuleParser {
     }, {});
   }
 
-  static getWelcomePageEntries(entries, icons, name) {
+  getWelcomePageEntries(entries, icons) {
     if (!entries || !Array.isArray(entries)) {
       return [];
     }
     return _.map(entries, (entry) => {
       if (!icons[entry.iconName]) {
-        console.warn(`Welcome page entry icon "${entry.iconName}" has no icon defined in stripes.icons for module ${name}`);
-        // throw new StripesBuildError(`Welcome page entry icon "${entry.iconName}" has no icon defined in stripes.icons for module ${name}`);
+        console.warn(`Welcome page entry icon "${entry.iconName}" has no icon defined in stripes.icons for module ${this.moduleName}`);
+        // throw new StripesBuildError(`Welcome page entry icon "${entry.iconName}" has no icon defined in stripes.icons for module ${this.moduleName}`);
       }
       return {
         iconName: entry.iconName,
@@ -127,22 +115,29 @@ module.exports = class StripesModuleParser {
       };
     });
   }
+}
 
-  // Loops over all the tenant's module configs and parses each
-  // The resulting config is grouped by stripes module type (app, settings, plugin, etc.)
-  parseEnabledModules() {
-    const moduleConfigs = {};
-    const metadata = {};
+// The helper loops over a tenant's enabled modules and parses each module
+// The resulting config is grouped by stripes module type (app, settings, plugin, etc.)
+// The metadata is grouped by module name
+function parseAllModules(enabledModules, context, aliases) {
+  const allModuleConfigs = {};
+  const allMetadata = {};
 
-    _.forOwn(this.enabledModules, (moduleConfig, moduleName) => {
-      const parsedModule = this.parseModule(moduleName);
-      moduleConfigs[parsedModule.type] = appendOrSingleton(moduleConfigs[parsedModule.type], parsedModule.config);
-      metadata[parsedModule.name] = parsedModule.metadata;
-    });
+  _.forOwn(enabledModules, (overrideConfig, moduleName) => {
+    const moduleParser = new StripesModuleParser(moduleName, overrideConfig, context, aliases);
+    const parsedModule = moduleParser.parseModule();
+    allModuleConfigs[parsedModule.type] = appendOrSingleton(allModuleConfigs[parsedModule.type], parsedModule.config);
+    allMetadata[parsedModule.name] = parsedModule.metadata;
+  });
 
-    return {
-      moduleConfigs,
-      metadata,
-    };
-  }
+  return {
+    config: allModuleConfigs,
+    metadata: allMetadata,
+  };
+}
+
+module.exports = {
+  StripesModuleParser,
+  parseAllModules,
 };
