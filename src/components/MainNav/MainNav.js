@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import queryString from 'query-string';
-import _ from 'lodash';
+import { isEqual } from 'lodash';
 
 import { Dropdown } from '@folio/stripes-components/lib/Dropdown'; // eslint-disable-line
 import { withRouter } from 'react-router';
@@ -11,6 +10,7 @@ import { modules } from 'stripes-config'; // eslint-disable-line
 
 import { clearOkapiToken, clearCurrentUser } from '../../okapiActions';
 import { resetStore } from '../../mainActions';
+import { updateQueryResource, updateLocation } from '../../locationService';
 
 import css from './MainNav.css';
 import NavButton from './NavButton';
@@ -20,6 +20,7 @@ import Breadcrumbs from './Breadcrumbs';
 import CurrentApp from './CurrentApp';
 import MyProfile from './MyProfile';
 import NotificationsDropdown from './Notifications/NotificationsDropdown';
+
 
 if (!Array.isArray(modules.app) || modules.app.length < 1) {
   throw new Error('At least one module of type "app" must be enabled.');
@@ -76,20 +77,22 @@ class MainNav extends Component {
     });
   }
 
-  componentDidUpdate() {
-    for (const entry of this.moduleList) {
-      if (this.props.location.pathname.startsWith(entry.route)) {
-        const name = entry.module.replace(/^@folio\//, '');
-        if (this.moduleName !== name) {
-          if (this.unsubscribe) {
-            this.unsubscribe();
-          }
-          if (entry.queryResource) {
-            this.unsubscribe = this.subscribeToQueryChanges(entry);
-          }
-          this.moduleName = name;
-        }
+  componentDidMount() {
+    let curQuery = null;
+    this.store.subscribe(() => {
+      const { history, location } = this.props;
+      const module = this.curModule;
+      if (module && location.pathname.startsWith(module.route)) {
+        curQuery = updateLocation(module, curQuery, this.store, history, location);
       }
+    });
+  }
+
+  componentDidUpdate(prevProps) {
+    const { location } = this.props;
+    this.curModule = this.moduleList.find(m => location.pathname.startsWith(m.route) && m.queryResource);
+    if (this.curModule && !isEqual(location, prevProps.location)) {
+      updateQueryResource(location, this.curModule, this.store);
     }
   }
 
@@ -106,30 +109,6 @@ class MainNav extends Component {
     this.store.dispatch(resetStore());
     localforage.removeItem('okapiSess');
     this.context.router.history.push('/');
-  }
-
-  subscribeToQueryChanges(moduleInfo) {
-    return this.store.subscribe(() => {
-      const previousQueryValues = this.queryValues;
-      // This is not DRY, as it was expressed already in LocalResource is stripes-connect,
-      // And in Root.js in stripes-core. Both State Keys should be derived from a common mechanism.
-      this.queryValues = this.store.getState()[`${moduleInfo.dataKey ? `${moduleInfo.dataKey}#` : ''}${_.snakeCase(moduleInfo.module)}_${moduleInfo.queryResource}`];
-      if (previousQueryValues !== this.queryValues) {
-        // This is not DRY, as it was expressed already in utils/transitionToParams is stripes-connect,
-        // It is changed slightly, but I did not want to make changes to a method that is being used elswhere.
-        const location = this.props.location;
-        const query = location.query ? location.query : queryString.parse(location.search);
-        const allParams = Object.assign({}, query, this.queryValues);
-        let url = allParams._path || location.pathname;
-        delete allParams._path;
-
-        const nonNull = Object.keys(allParams).filter(k => allParams[k] != null).reduce((r, k) => Object.assign(r, { [k]: allParams[k] }), {});
-        if (Object.keys(nonNull).length) {
-          url += `?${queryString.stringify(nonNull)}`;
-        }
-        this.props.history.push(url);
-      }
-    });
   }
 
   render() {
