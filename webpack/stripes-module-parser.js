@@ -106,24 +106,24 @@ class StripesModuleParser {
   // Construct and validate expected icon file paths
   buildIconFilePaths(name) {
     const iconDir = 'icons';
-    const iconNames = {
+    const defaultKey = 'high';
+    const iconVariants = {
       high: `${name}.svg`,
       low: `${name}.png`,
       // bw: `${name}-bw.png`, example
     };
 
-    return _.reduce(iconNames, (iconPaths, file, key) => {
+    return _.reduce(iconVariants, (iconPaths, file, key) => {
       const iconFilePath = path.join(this.modulePath, iconDir, file);
       const isFound = modulePaths.tryResolve(iconFilePath);
-      if (isFound) {
-        iconPaths[key] = {
-          src: iconFilePath,
-        };
-      } else {
+      if (!isFound) {
         console.warn(`  Warning: Module ${this.moduleName} defines icon "${name}" but is missing file "${iconDir}/${file}"`);
-        iconPaths[key] = {
-          src: '',
-        };
+      }
+      iconPaths[key] = {
+        src: isFound ? iconFilePath : '',
+      };
+      if (key === defaultKey) {
+        iconPaths.src = isFound ? iconFilePath : '';
       }
       return iconPaths;
     }, {});

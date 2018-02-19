@@ -132,12 +132,18 @@ describe('The stripes-module-parser', function () {
     });
 
     describe('buildIconFilePaths', function () {
-      it('returns all file variations (high/low)', function () {
+      it('returns all file variants (high/low)', function () {
         const result = this.sut.buildIconFilePaths('one');
-        expect(result).to.be.an('object').with.keys('high', 'low');
-        expect(result).to.deep.equal({
+        expect(result).to.deep.include({
           high: { src: '/path/to/module/icons/one.svg' },
           low: { src: '/path/to/module/icons/one.png' },
+        });
+      });
+
+      it('returns default icon src', function () {
+        const result = this.sut.buildIconFilePaths('one');
+        expect(result).to.deep.include({
+          src: '/path/to/module/icons/one.svg',
         });
       });
 
@@ -145,7 +151,7 @@ describe('The stripes-module-parser', function () {
         modulePaths.tryResolve.restore();
         this.sandbox.stub(modulePaths, 'tryResolve').returns(false);
         const result = this.sut.buildIconFilePaths('one');
-        expect(result).to.deep.equal({
+        expect(result).to.deep.include({
           high: { src: '' },
           low: { src: '' },
         });
