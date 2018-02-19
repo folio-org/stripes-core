@@ -16,11 +16,11 @@ const enabledModules = {
 const icons = [
   { name: 'one',
     alt: 'alt for one',
-    src: './path/to/one.png',
+    fileName: 'oneFile',
     title: 'a title for one' },
   { name: 'two',
     alt: 'alt for two',
-    src: './path/to/two.png',
+    fileName: 'twoFile',
     title: 'a title for two' },
 ];
 const welcomePageEntries = [
@@ -65,7 +65,9 @@ describe('The stripes-module-parser', function () {
     beforeEach(function () {
       this.packageJson = mockPackageJson('@folio/users');
       this.sandbox.stub(StripesModuleParser.prototype, 'loadModulePackageJson').callsFake(mockPackageJson);
+      this.sandbox.stub(modulePaths, 'tryResolve').returns(true); // Mocks finding all the icon files
       this.sut = new StripesModuleParser(moduleName, moduleConfig, context, aliases);
+      this.sut.modulePath = '/path/to/module';
     });
 
     describe('parseStripesConfig', function () {
@@ -119,23 +121,47 @@ describe('The stripes-module-parser', function () {
     });
 
     describe('getIconMetadata', function () {
-      it('returns icons by name', function () {
-        const result = StripesModuleParser.getIconMetadata(icons);
+      it('returns icon data by name', function () {
+        const result = this.sut.getIconMetadata(icons);
         expect(result).to.be.an('object').with.all.keys('one', 'two');
-        expect(result.one).to.deep.equal({ alt: 'alt for one', src: './path/to/one.png', title: 'a title for one' });
+        expect(result.one).to.include({
+          alt: 'alt for one',
+          title: 'a title for one',
+        });
+      });
+    });
+
+    describe('buildIconFilePaths', function () {
+      it('returns all file variations (high/low)', function () {
+        const result = this.sut.buildIconFilePaths('one');
+        expect(result).to.be.an('object').with.keys('high', 'low');
+        expect(result).to.deep.equal({
+          high: { src: '/path/to/module/icons/one.svg' },
+          low: { src: '/path/to/module/icons/one.png' },
+        });
+      });
+
+      it('does not return paths for missing icons', function () {
+        modulePaths.tryResolve.restore();
+        this.sandbox.stub(modulePaths, 'tryResolve').returns(false);
+        const result = this.sut.buildIconFilePaths('one');
+        expect(result).to.deep.equal({
+          high: { src: '' },
+          low: { src: '' },
+        });
       });
     });
 
     describe('getWelcomePageEntries', function () {
       it('returns array of welcomePageEntries', function () {
-        const parsedIcons = StripesModuleParser.getIconMetadata(icons);
+        const parsedIcons = this.sut.getIconMetadata(icons);
         const result = this.sut.getWelcomePageEntries(welcomePageEntries, parsedIcons);
         expect(result).to.be.an('array').with.length(2);
         expect(result[0]).to.deep.equal(welcomePageEntries[0]);
       });
 
       xit('throws StripesBuildError when a missing icon is referenced', function () {
-        const parsedIcons = StripesModuleParser.getIconMetadata(icons);
+        const parsedIcons = this.sut.getIconMetadata(icons);
         delete parsedIcons.one;
         try {
           this.sut.getWelcomePageEntries(welcomePageEntries, parsedIcons);
@@ -151,6 +177,7 @@ describe('The stripes-module-parser', function () {
 describe('parseAllModules function', function () {
   beforeEach(function () {
     this.sandbox.stub(StripesModuleParser.prototype, 'loadModulePackageJson').callsFake(mockPackageJson);
+    this.sandbox.stub(modulePaths, 'tryResolve').returns(true); // Mocks finding all the icon files
     this.sut = parseAllModules;
   });
 

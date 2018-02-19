@@ -1,3 +1,4 @@
+const path = require('path');
 const _ = require('lodash');
 const modulePaths = require('./module-paths');
 const StripesBuildError = require('./stripes-build-error');
@@ -12,6 +13,7 @@ function appendOrSingleton(maybeArray, newValue) {
 class StripesModuleParser {
   constructor(moduleName, overrideConfig, context, aliases) {
     this.moduleName = moduleName;
+    this.modulePath = '';
     this.nameOnly = moduleName.replace(/.*\//, '');
     this.overrideConfig = overrideConfig;
     this.packageJson = this.loadModulePackageJson(context, aliases);
@@ -24,6 +26,7 @@ class StripesModuleParser {
     if (!packageJsonFile) {
       throw new StripesBuildError(`StripesModuleParser: Unable to locate ${this.moduleName}'s package.json`);
     }
+    this.modulePath = packageJsonFile.replace('package.json', '');
     return require(packageJsonFile); // eslint-disable-line
   }
 
@@ -63,7 +66,7 @@ class StripesModuleParser {
   // Extract metadata defined here:
   // https://github.com/folio-org/stripes-core/blob/master/doc/app-metadata.md
   parseStripesMetadata(packageJson) {
-    const icons = StripesModuleParser.getIconMetadata(packageJson.stripes.icons);
+    const icons = this.getIconMetadata(packageJson.stripes.icons);
     const welcomePageEntries = this.getWelcomePageEntries(packageJson.stripes.welcomePageEntries, icons);
 
     const metadata = {
@@ -85,17 +88,44 @@ class StripesModuleParser {
     return metadata;
   }
 
-  static getIconMetadata(icons) {
+  getIconMetadata(icons) {
     if (!icons || !Array.isArray(icons)) {
+      console.warn(`  Warning: Module ${this.moduleName} has no icons defined in stripes.icons`);
       return {};
     }
     return _.reduce(icons, (iconMetadata, icon) => {
       iconMetadata[icon.name] = {
-        src: icon.src,
         alt: icon.alt,
         title: icon.title,
       };
+      Object.assign(iconMetadata[icon.name], this.buildIconFilePaths(icon.name));
       return iconMetadata;
+    }, {});
+  }
+
+  // Construct and validate expected icon file paths
+  buildIconFilePaths(name) {
+    const iconDir = 'icons';
+    const iconNames = {
+      high: `${name}.svg`,
+      low: `${name}.png`,
+      // bw: `${name}-bw.png`, example
+    };
+
+    return _.reduce(iconNames, (iconPaths, file, key) => {
+      const iconFilePath = path.join(this.modulePath, iconDir, file);
+      const isFound = modulePaths.tryResolve(iconFilePath);
+      if (isFound) {
+        iconPaths[key] = {
+          src: iconFilePath,
+        };
+      } else {
+        console.warn(`  Warning: Module ${this.moduleName} defines icon "${name}" but is missing file "${iconDir}/${file}"`);
+        iconPaths[key] = {
+          src: '',
+        };
+      }
+      return iconPaths;
     }, {});
   }
 
@@ -105,8 +135,8 @@ class StripesModuleParser {
     }
     return _.map(entries, (entry) => {
       if (!icons[entry.iconName]) {
-        console.warn(`Welcome page entry icon "${entry.iconName}" has no icon defined in stripes.icons for module ${this.moduleName}`);
-        // throw new StripesBuildError(`Welcome page entry icon "${entry.iconName}" has no icon defined in stripes.icons for module ${this.moduleName}`);
+        console.warn(`  Warning: Module ${this.moduleName} defines welcome page entry icon "${entry.iconName}" with no matching stripes.icons definition`);
+        // throw new StripesBuildError(`  Warning: Module ${this.moduleName} defines welcome page entry icon "${entry.iconName}" with no matching stripes.icons definition`);
       }
       return {
         iconName: entry.iconName,
