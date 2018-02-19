@@ -19,6 +19,7 @@ const compilerStub = {
     plugins: [],
   },
   context: '/context/path',
+  warnings: [],
 };
 
 const mockConfig = {
@@ -70,7 +71,7 @@ describe('The stripes-config-plugin', function () {
     it('registers the "after-plugins" hook', function () {
       this.sandbox.spy(compilerStub, 'plugin');
       this.sut.apply(compilerStub);
-      expect(compilerStub.plugin).to.have.been.calledOnce;
+      expect(compilerStub.plugin).to.have.been.calledWith('after-plugins');
     });
   });
 
@@ -106,6 +107,27 @@ describe('The stripes-config-plugin', function () {
 
       // TODO: More thorough analysis of the generated virtual module
       expect(writeModuleArgs[1]).to.be.a('string').with.match(/export { okapi, config, modules, branding, translations, metadata }/);
+    });
+  });
+
+  describe('processWarnings method', function () {
+    beforeEach(function () {
+      compilerStub.warnings = [];
+      this.sut = new StripesConfigPlugin(mockConfig);
+    });
+
+    it('assigns warnings to the Webpack compilation', function () {
+      this.sut.warnings = ['uh-oh', 'something happened'];
+      this.sut.processWarnings(compilerStub, () => {});
+      expect(compilerStub.warnings).to.be.an('array').with.length(1);
+      expect(compilerStub.warnings[0]).to.match(/uh-oh/);
+      expect(compilerStub.warnings[0]).to.match(/something happened/);
+    });
+
+    it('does not assign warnings when not present', function () {
+      this.sut.warnings = [];
+      this.sut.processWarnings(compilerStub, () => {});
+      expect(compilerStub.warnings).to.be.an('array').with.length(0);
     });
   });
 });

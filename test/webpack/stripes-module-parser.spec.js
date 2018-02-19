@@ -129,6 +129,11 @@ describe('The stripes-module-parser', function () {
           title: 'a title for one',
         });
       });
+
+      it('warns when icons are missing', function () {
+        const result = this.sut.getIconMetadata();
+        expect(this.sut.warnings[0]).to.match(/no icons defined/);
+      });
     });
 
     describe('buildIconFilePaths', function () {
@@ -156,6 +161,13 @@ describe('The stripes-module-parser', function () {
           low: { src: '' },
         });
       });
+
+      it('warns for missing icons variants', function () {
+        modulePaths.tryResolve.restore();
+        this.sandbox.stub(modulePaths, 'tryResolve').returns(false);
+        const result = this.sut.buildIconFilePaths('one');
+        expect(this.sut.warnings[0]).to.match(/missing file/);
+      });
     });
 
     describe('getWelcomePageEntries', function () {
@@ -166,15 +178,11 @@ describe('The stripes-module-parser', function () {
         expect(result[0]).to.deep.equal(welcomePageEntries[0]);
       });
 
-      xit('throws StripesBuildError when a missing icon is referenced', function () {
+      it('warns when a missing icon is referenced', function () {
         const parsedIcons = this.sut.getIconMetadata(icons);
         delete parsedIcons.one;
-        try {
-          this.sut.getWelcomePageEntries(welcomePageEntries, parsedIcons);
-          expect('never to be called').to.equal(true);
-        } catch (err) {
-          expect(err.message).to.match(/has no icon defined/);
-        }
+        this.sut.getWelcomePageEntries(welcomePageEntries, parsedIcons);
+        expect(this.sut.warnings[0]).to.match(/no matching stripes.icons/);
       });
     });
   });
@@ -189,7 +197,7 @@ describe('parseAllModules function', function () {
 
   it('returns config and metadata collections', function () {
     const result = this.sut(enabledModules, context, aliases);
-    expect(result).to.be.an('object').with.all.keys('config', 'metadata');
+    expect(result).to.be.an('object').with.all.keys('config', 'metadata', 'warnings');
   });
 
   it('returns config grouped by stripes type', function () {
@@ -203,5 +211,13 @@ describe('parseAllModules function', function () {
   it('returns metadata for each module', function () {
     const result = this.sut(enabledModules, context, aliases);
     expect(result.metadata).to.be.an('object').with.all.keys('users', 'search', 'developer');
+    expect(result.warnings).to.be.an('array').with.lengthOf(0);
+  });
+
+  it('returns warnings for each module', function () {
+    modulePaths.tryResolve.restore();
+    this.sandbox.stub(modulePaths, 'tryResolve').returns(false); // Mock missing files
+    const result = this.sut(enabledModules, context, aliases);
+    expect(result.warnings).to.be.an('array').with.lengthOf.at.least(1);
   });
 });

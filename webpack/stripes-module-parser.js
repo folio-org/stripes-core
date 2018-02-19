@@ -17,6 +17,7 @@ class StripesModuleParser {
     this.nameOnly = moduleName.replace(/.*\//, '');
     this.overrideConfig = overrideConfig;
     this.packageJson = this.loadModulePackageJson(context, aliases);
+    this.warnings = [];
   }
 
   // Loads a given module's package.json and errors when it fails
@@ -90,7 +91,7 @@ class StripesModuleParser {
 
   getIconMetadata(icons) {
     if (!icons || !Array.isArray(icons)) {
-      console.warn(`  Warning: Module ${this.moduleName} has no icons defined in stripes.icons`);
+      this.warnings.push(`Module ${this.moduleName} has no icons defined in stripes.icons`);
       return {};
     }
     return _.reduce(icons, (iconMetadata, icon) => {
@@ -117,7 +118,7 @@ class StripesModuleParser {
       const iconFilePath = path.join(this.modulePath, iconDir, file);
       const isFound = modulePaths.tryResolve(iconFilePath);
       if (!isFound) {
-        console.warn(`  Warning: Module ${this.moduleName} defines icon "${name}" but is missing file "${iconDir}/${file}"`);
+        this.warnings.push(`Module ${this.moduleName} defines icon "${name}" but is missing file "${iconDir}/${file}"`);
       }
       iconPaths[key] = {
         src: isFound ? iconFilePath : '',
@@ -135,8 +136,7 @@ class StripesModuleParser {
     }
     return _.map(entries, (entry) => {
       if (!icons[entry.iconName]) {
-        console.warn(`  Warning: Module ${this.moduleName} defines welcome page entry icon "${entry.iconName}" with no matching stripes.icons definition`);
-        // throw new StripesBuildError(`  Warning: Module ${this.moduleName} defines welcome page entry icon "${entry.iconName}" with no matching stripes.icons definition`);
+        this.warnings.push(`Module ${this.moduleName} defines welcome page entry icon "${entry.iconName}" with no matching stripes.icons definition`);
       }
       return {
         iconName: entry.iconName,
@@ -153,17 +153,22 @@ class StripesModuleParser {
 function parseAllModules(enabledModules, context, aliases) {
   const allModuleConfigs = {};
   const allMetadata = {};
+  let warnings = [];
 
   _.forOwn(enabledModules, (overrideConfig, moduleName) => {
     const moduleParser = new StripesModuleParser(moduleName, overrideConfig, context, aliases);
     const parsedModule = moduleParser.parseModule();
     allModuleConfigs[parsedModule.type] = appendOrSingleton(allModuleConfigs[parsedModule.type], parsedModule.config);
     allMetadata[parsedModule.name] = parsedModule.metadata;
+    if (moduleParser.warnings.length) {
+      warnings = warnings.concat(moduleParser.warnings);
+    }
   });
 
   return {
     config: allModuleConfigs,
     metadata: allMetadata,
+    warnings,
   };
 }
 

@@ -21,9 +21,10 @@ module.exports = class StripesConfigPlugin {
 
   apply(compiler) {
     const enabledModules = this.options.modules;
-    const { config, metadata } = stripesModuleParser.parseAllModules(enabledModules, compiler.context, compiler.options.resolve.alias);
+    const { config, metadata, warnings } = stripesModuleParser.parseAllModules(enabledModules, compiler.context, compiler.options.resolve.alias);
     this.mergedConfig = Object.assign({}, this.options, { modules: config });
     this.metadata = metadata;
+    this.warnings = warnings;
 
     // Prep the virtual module now, we will write to it when ready
     this.virtualModule = new VirtualModulesPlugin();
@@ -31,6 +32,7 @@ module.exports = class StripesConfigPlugin {
 
     // Wait until after other plugins to generate virtual stripes-config
     compiler.plugin('after-plugins', theCompiler => this.afterPlugins(theCompiler));
+    compiler.plugin('emit', (compilation, callback) => this.processWarnings(compilation, callback));
   }
 
   afterPlugins(compiler) {
@@ -48,5 +50,12 @@ module.exports = class StripesConfigPlugin {
     `;
 
     this.virtualModule.writeModule('node_modules/stripes-config.js', stripesVirtualModule);
+  }
+
+  processWarnings(compilation, callback) {
+    if (this.warnings.length) {
+      compilation.warnings.push(new StripesBuildError(`stripes-config-plugin:\n  ${this.warnings.join('\n  ')}`));
+    }
+    callback();
   }
 };
