@@ -31,6 +31,17 @@ class MainNav extends Component {
     router: PropTypes.object.isRequired,
   }
 
+  static childContextTypes = {
+    // It seems wrong that we have to tell this generic component what specific properties to put in the context
+    stripes: PropTypes.object,
+  };
+
+  getChildContext() {
+    return {
+      stripes: this.props.stripes,
+    };
+  }
+
   static propTypes = {
     stripes: PropTypes.shape({
       config: PropTypes.shape({
@@ -135,6 +146,7 @@ class MainNav extends Component {
           href={href}
           title={entry.displayName}
           key={entry.route}
+          iconKey={name}
         />);
     });
 

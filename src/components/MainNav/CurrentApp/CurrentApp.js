@@ -12,10 +12,12 @@ const propTypes = {
 
 const CurrentApp = ({ currentApp }) => {
   const { displayName, description } = currentApp;
+  const iconKey = currentApp.module.replace(/^@[a-z0-9_]+\//, '');
   return (
     <NavButton
       label={displayName}
       title={description}
+      iconKey={iconKey}
     />
   );
 };
