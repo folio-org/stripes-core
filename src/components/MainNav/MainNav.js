@@ -131,7 +131,7 @@ class MainNav extends Component {
   render() {
     const { stripes, location: { pathname } } = this.props;
     const selectedApp = modules.app.find(entry => pathname.startsWith(entry.route));
-console.log(modules);
+
     const menuLinks = modules.app.map((entry) => {
       const name = entry.module.replace(/^@[a-z0-9_]+\//, '');
       const perm = `module.${name}.enabled`;
