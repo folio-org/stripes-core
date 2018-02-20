@@ -1,9 +1,8 @@
 const path = require('path');
 
-function tryResolve(modulePath) {
+function tryResolve(modulePath, options) {
   try {
-    require.resolve(modulePath);
-    return true;
+    return require.resolve(modulePath, options);
   } catch (e) {
     return false;
   }
@@ -32,9 +31,17 @@ function locateStripesModule(context, moduleName, alias, ...segments) {
   let foundPath = false;
 
   const tryPaths = [
-    path.join(context, 'node_modules', moduleName, ...segments), // The place we normally expect to find this module
-    path.join(moduleName, ...segments), // The above resolution is overspecific and prevents some use cases eg. yarn workspaces
-    path.join(moduleName, ...segments), { paths: [context] }, // This better incorporates the context path but requires nodejs 9+
+    {
+      // The place we normally expect to find this module
+      request: path.join(context, 'node_modules', moduleName, ...segments),
+    }, {
+      // The above resolution is overspecific and prevents some use cases eg. yarn workspaces
+      request: path.join(moduleName, ...segments),
+    }, {
+      // This better incorporates the context path but requires nodejs 9+
+      request: path.join(moduleName, ...segments),
+      options: { paths: [context] },
+    },
   ];
 
   // If we are looking for anything in stripes-core, then we are already there!
@@ -48,9 +55,8 @@ function locateStripesModule(context, moduleName, alias, ...segments) {
   }
 
   for (let i = 0; i < tryPaths.length; i += 1) {
-    const found = tryResolve(tryPaths[i]);
-    if (found) {
-      foundPath = tryPaths[i];
+    foundPath = tryResolve(tryPaths[i].request, tryPaths[i].options);
+    if (foundPath) {
       break;
     }
   }
