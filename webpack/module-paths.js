@@ -58,6 +58,7 @@ function locateStripesModule(context, moduleName, alias, ...segments) {
 }
 
 module.exports = {
+  tryResolve,
   generateStripesAlias,
   locateStripesModule,
 };
