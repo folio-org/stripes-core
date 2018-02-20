@@ -21,6 +21,12 @@ import CurrentApp from './CurrentApp';
 import MyProfile from './MyProfile';
 import NotificationsDropdown from './Notifications/NotificationsDropdown';
 
+/* temporary until settings becomes an app */
+const settingsIcon = {
+  src: require('./settings.svg'),
+  alt: 'Manage preferences for system, apps and more',
+  title: 'Settings',
+};
 
 if (!Array.isArray(modules.app) || modules.app.length < 1) {
   throw new Error('At least one module of type "app" must be enabled.');
@@ -125,7 +131,7 @@ class MainNav extends Component {
   render() {
     const { stripes, location: { pathname } } = this.props;
     const selectedApp = modules.app.find(entry => pathname.startsWith(entry.route));
-
+console.log(modules);
     const menuLinks = modules.app.map((entry) => {
       const name = entry.module.replace(/^@[a-z0-9_]+\//, '');
       const perm = `module.${name}.enabled`;
@@ -169,7 +175,7 @@ class MainNav extends Component {
           }
           {
             stripes.hasPerm('settings.enabled') && pathname.startsWith('/settings') &&
-            <NavButton label="Settings" />
+            <NavButton label="Settings" iconData={settingsIcon} />
           }
         </NavGroup>
       );
@@ -193,6 +199,7 @@ class MainNav extends Component {
                 <NavButton
                   label="Settings"
                   id="clickable-settings"
+                  iconData={settingsIcon}
                   selected={pathname.startsWith('/settings')}
                   href={this.lastVisited.x_settings || '/settings'}
                 />
