@@ -23,6 +23,7 @@ import NotificationsDropdown from './Notifications/NotificationsDropdown';
 
 /* temporary until settings becomes an app */
 import settingsIcon from './settings.svg';
+
 const settingsIconData = {
   src: settingsIcon,
   alt: 'Tenant Settings',
