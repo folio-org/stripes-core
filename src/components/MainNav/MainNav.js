@@ -20,16 +20,14 @@ import Breadcrumbs from './Breadcrumbs';
 import CurrentApp from './CurrentApp';
 import MyProfile from './MyProfile';
 import NotificationsDropdown from './Notifications/NotificationsDropdown';
-
-/* temporary until settings becomes an app */
 import settingsIcon from './settings.svg';
 
+/* temporary until settings becomes an app */
 const settingsIconData = {
   src: settingsIcon,
   alt: 'Tenant Settings',
   title: 'Settings',
 };
-
 
 if (!Array.isArray(modules.app) || modules.app.length < 1) {
   throw new Error('At least one module of type "app" must be enabled.');
