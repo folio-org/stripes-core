@@ -21,6 +21,15 @@ import CurrentApp from './CurrentApp';
 import MyProfile from './MyProfile';
 import NotificationsDropdown from './Notifications/NotificationsDropdown';
 
+/* temporary until settings becomes an app */
+import settingsIcon from './settings.svg';
+const settingsIconData = {
+  src: settingsIcon,
+  alt: 'Tenant Settings',
+  title: 'Settings',
+};
+
+
 if (!Array.isArray(modules.app) || modules.app.length < 1) {
   throw new Error('At least one module of type "app" must be enabled.');
 }
@@ -70,13 +79,6 @@ class MainNav extends Component {
       route: '/settings',
       module: '@folio/x_settings',
     });
-
-    /* temporary until settings becomes an app */
-    this.settingsIcon = {
-      src: require('./settings.svg'),
-      alt: 'Tenant Settings',
-      title: 'Settings',
-    };
 
     props.history.listen((hist) => {
       for (const entry of this.moduleList) {
@@ -175,7 +177,7 @@ class MainNav extends Component {
           }
           {
             stripes.hasPerm('settings.enabled') && pathname.startsWith('/settings') &&
-            <NavButton label="Settings" iconData={this.settingsIcon} />
+            <NavButton label="Settings" iconData={settingsIconData} />
           }
         </NavGroup>
       );
@@ -200,7 +202,7 @@ class MainNav extends Component {
                   label="Settings"
                   id="clickable-settings"
                   title="Settings"
-                  iconData={this.settingsIcon}
+                  iconData={settingsIconData}
                   selected={pathname.startsWith('/settings')}
                   href={pathname.startsWith('/settings') ? null : (this.lastVisited.x_settings || '/settings')}
                 />
