@@ -141,6 +141,11 @@ class MainNav extends Component {
     let firstNav;
     let breadcrumbArray = []; // eslint-disable-line
 
+    let settingsApp;
+    if (stripes.hasPerm('settings.enabled') && pathname.startsWith('/settings')) {
+      settingsApp = { displayName: 'Settings', description: 'FOLIO settings' };
+    }
+
     if (breadcrumbArray.length === 0) {
       firstNav = (
         <NavGroup md="hide">
@@ -150,15 +155,10 @@ class MainNav extends Component {
               <polygon style={{ fill: '#999' }} points="13 24.8 1.2 13.5 3.2 11.3 13 20.6 22.8 11.3 24.8 13.5 " />
             </svg>
           </a>
-          {selectedApp &&
-            <CurrentApp
-              currentApp={selectedApp}
-            />
-          }
-          {
-            stripes.hasPerm('settings.enabled') && pathname.startsWith('/settings') &&
-            <NavButton label="Settings" />
-          }
+          <CurrentApp
+            id="ModuleMainHeading"
+            currentApp={selectedApp || settingsApp}
+          />
         </NavGroup>
       );
     } else {
