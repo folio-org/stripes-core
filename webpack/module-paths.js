@@ -46,12 +46,16 @@ function locateStripesModule(context, moduleName, alias, ...segments) {
 
   // If we are looking for anything in stripes-core, then we are already there!
   if (moduleName === '@folio/stripes-core') {
-    tryPaths.unshift(path.join(__dirname, '..', ...segments));
+    tryPaths.unshift({
+      request: path.join(__dirname, '..', ...segments),
+    });
   }
 
   // When available, try for the alias first
   if (alias[moduleName]) {
-    tryPaths.unshift(path.join(alias[moduleName], ...segments));
+    tryPaths.unshift({
+      request: path.join(alias[moduleName], ...segments),
+    });
   }
 
   for (let i = 0; i < tryPaths.length; i += 1) {
