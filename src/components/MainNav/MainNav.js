@@ -21,13 +21,6 @@ import CurrentApp from './CurrentApp';
 import MyProfile from './MyProfile';
 import NotificationsDropdown from './Notifications/NotificationsDropdown';
 
-/* temporary until settings becomes an app */
-const settingsIcon = {
-  src: require('./settings.svg'),
-  alt: 'Tenant Settings',
-  title: 'Settings',
-};
-
 if (!Array.isArray(modules.app) || modules.app.length < 1) {
   throw new Error('At least one module of type "app" must be enabled.');
 }
@@ -41,12 +34,6 @@ class MainNav extends Component {
     // It seems wrong that we have to tell this generic component what specific properties to put in the context
     stripes: PropTypes.object,
   };
-
-  getChildContext() {
-    return {
-      stripes: this.props.stripes,
-    };
-  }
 
   static propTypes = {
     stripes: PropTypes.shape({
@@ -84,6 +71,13 @@ class MainNav extends Component {
       module: '@folio/x_settings',
     });
 
+    /* temporary until settings becomes an app */
+    this.settingsIcon = {
+      src: require('./settings.svg'),
+      alt: 'Tenant Settings',
+      title: 'Settings',
+    };
+
     props.history.listen((hist) => {
       for (const entry of this.moduleList) {
         if (hist.pathname === entry.route || hist.pathname.startsWith(`${entry.route}/`)) {
@@ -92,6 +86,12 @@ class MainNav extends Component {
         }
       }
     });
+  }
+
+  getChildContext() {
+    return {
+      stripes: this.props.stripes,
+    };
   }
 
   componentDidMount() {
@@ -175,7 +175,7 @@ class MainNav extends Component {
           }
           {
             stripes.hasPerm('settings.enabled') && pathname.startsWith('/settings') &&
-            <NavButton label="Settings" iconData={settingsIcon} />
+            <NavButton label="Settings" iconData={this.settingsIcon} />
           }
         </NavGroup>
       );
@@ -199,9 +199,10 @@ class MainNav extends Component {
                 <NavButton
                   label="Settings"
                   id="clickable-settings"
-                  iconData={settingsIcon}
+                  title="Settings"
+                  iconData={this.settingsIcon}
                   selected={pathname.startsWith('/settings')}
-                  href={this.lastVisited.x_settings || '/settings'}
+                  href={pathname.startsWith('/settings') ? null : (this.lastVisited.x_settings || '/settings')}
                 />
               )
             }
