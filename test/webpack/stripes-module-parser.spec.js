@@ -134,6 +134,25 @@ describe('The stripes-module-parser', function () {
         const result = this.sut.getIconMetadata();
         expect(this.sut.warnings[0]).to.match(/no icons defined/);
       });
+
+      it('uses icon.fileName for building file paths', function () {
+        const result = this.sut.getIconMetadata(icons);
+        expect(result.one).to.include({
+          src: '/path/to/module/icons/oneFile.svg',
+        });
+      });
+
+      it('falls back to icon.name when icon.fileName is not specified', function () {
+        const iconsNoFileName = [
+          { name: 'one',
+            alt: 'alt for one',
+            title: 'a title for one' },
+        ];
+        const result = this.sut.getIconMetadata(iconsNoFileName);
+        expect(result.one).to.include({
+          src: '/path/to/module/icons/one.svg',
+        });
+      });
     });
 
     describe('buildIconFilePaths', function () {

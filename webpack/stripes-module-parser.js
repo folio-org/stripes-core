@@ -99,7 +99,8 @@ class StripesModuleParser {
         alt: icon.alt,
         title: icon.title,
       };
-      Object.assign(iconMetadata[icon.name], this.buildIconFilePaths(icon.name));
+      // The icon's name will be used in the event fileName is not specified
+      Object.assign(iconMetadata[icon.name], this.buildIconFilePaths(icon.fileName || icon.name));
       return iconMetadata;
     }, {});
   }
