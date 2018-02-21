@@ -24,7 +24,7 @@ import NotificationsDropdown from './Notifications/NotificationsDropdown';
 /* temporary until settings becomes an app */
 const settingsIcon = {
   src: require('./settings.svg'),
-  alt: 'Manage preferences for system, apps and more',
+  alt: 'Tenant Settings',
   title: 'Settings',
 };
 
