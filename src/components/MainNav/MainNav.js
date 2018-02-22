@@ -22,7 +22,7 @@ import MyProfile from './MyProfile';
 import NotificationsDropdown from './Notifications/NotificationsDropdown';
 import settingsIcon from './settings.svg';
 
-/* temporary until settings becomes an app */
+// Temporary until settings becomes an app
 const settingsIconData = {
   src: settingsIcon,
   alt: 'Tenant Settings',
@@ -160,6 +160,12 @@ class MainNav extends Component {
     let firstNav;
     let breadcrumbArray = []; // eslint-disable-line
 
+    // Temporary solution until Settings becomes a standalone app
+    let settingsApp;
+    if (stripes.hasPerm('settings.enabled') && pathname.startsWith('/settings')) {
+      settingsApp = { displayName: 'Settings', description: 'FOLIO settings' };
+    }
+
     if (breadcrumbArray.length === 0) {
       firstNav = (
         <NavGroup md="hide">
@@ -169,15 +175,11 @@ class MainNav extends Component {
               <polygon style={{ fill: '#999' }} points="13 24.8 1.2 13.5 3.2 11.3 13 20.6 22.8 11.3 24.8 13.5 " />
             </svg>
           </a>
-          {selectedApp &&
-            <CurrentApp
-              currentApp={selectedApp}
-            />
-          }
-          {
-            stripes.hasPerm('settings.enabled') && pathname.startsWith('/settings') &&
-            <NavButton label="Settings" iconData={settingsIconData} />
-          }
+          <CurrentApp
+            id="ModuleMainHeading"
+            currentApp={selectedApp || settingsApp}
+            iconData={ settingsApp && settingsIconData}
+          />
         </NavGroup>
       );
     } else {
