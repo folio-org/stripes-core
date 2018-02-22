@@ -31,9 +31,9 @@ const defaultProps = {
 const CurrentApp = ({ currentApp, iconData, id, badge }) => {
   const { displayName, description } = currentApp;
   const iconKey = currentApp.module && currentApp.module.replace(/^@[a-z0-9_]+\//, '');
-console.log('icon data', iconData);
+
   return (
-    <div id={id} title={currentApp.description} className={css.currentApp}>
+    <div id={id} title={description} className={css.currentApp}>
       {badge && (<Badge color="red" className={css.badge}>{badge}</Badge>)}
       <AppIcon icon={iconData} app={iconKey} className={css.icon} />
       <Headline tag="h1" size="small" margin="none" >{displayName}</Headline>

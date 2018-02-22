@@ -178,7 +178,7 @@ class MainNav extends Component {
           <CurrentApp
             id="ModuleMainHeading"
             currentApp={selectedApp || settingsApp}
-            iconData={ settingsApp && settingsIconData}
+            iconData={settingsApp && settingsIconData}
           />
         </NavGroup>
       );
