@@ -11,6 +11,8 @@
 
   /* Is selected */
   &.selected {
+    color: rgba(0, 0, 0, 1);
+
     &::before {
       content: '';
       position: absolute;
@@ -36,11 +38,7 @@
 /* To make sure we overwrite default link colors */
 a.navButton,
 button.navButton {
-  color: rgba(0, 0, 0, 0.61);
-
-  &.selected {
-    color: rgba(0, 0, 0, 1);
-  }
+  color: rgba(0, 0, 0, 0.62);
 }
 
 /* No active bar - primarily used for popover icons with no label */
@@ -49,7 +47,6 @@ button.navButton {
 }
 
 .icon {
-  opacity: 0.75;
   height: 24px;
   margin: 0 4px;
 
@@ -114,11 +111,6 @@ button.navButton {
   z-index: 1;
 }
 
-.navButton.isInteractable:hover .icon,
-.navButton.isInteractable:focus .icon {
-  opacity: 1;
-}
-
 .navButton.isInteractable:hover .inner::before {
   background-color: rgba(37, 118, 195, 0.2);
 }
@@ -126,8 +118,6 @@ button.navButton {
 .navButton.isInteractable:focus .inner::before {
   background: rgba(37, 118, 195, 0.3);
   border: 1px solid rgba(0, 0, 0, 0.2);
-
-  /* box-shadow: 0 0 0 3px rgba(37, 118, 195, 0.3); */
 }
 
 .navButton.isInteractable:active .inner {
