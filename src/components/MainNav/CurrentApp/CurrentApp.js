@@ -17,9 +17,7 @@ const propTypes = {
     },
   ),
   id: PropTypes.string,
-  icon: PropTypes.oneOfType([
-    PropTypes.element,
-  ]),
+  iconData: PropTypes.object,
   badge: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.number,
@@ -30,14 +28,15 @@ const defaultProps = {
   currentApp: { displayName: 'FOLIO', description: 'FOLIO platform' },
 };
 
-const CurrentApp = ({ currentApp, icon, badge, id }) => {
-  const displayIcon = (<div className={css.icon}>{icon || <AppIcon focusable={false} />}</div>);
+const CurrentApp = ({ currentApp, iconData, id, badge }) => {
+  const { displayName, description, module } = currentApp;
+  const iconKey = module && module.replace(/^@[a-z0-9_]+\//, '');
 
   return (
-    <div id={id} title={currentApp.description} className={css.currentApp}>
+    <div id={id} title={description} className={css.currentApp}>
       {badge && (<Badge color="red" className={css.badge}>{badge}</Badge>)}
-      {displayIcon}
-      <Headline tag="h1" size="small" margin="none" >{currentApp.displayName}</Headline>
+      <AppIcon icon={iconData} app={iconKey} className={css.icon} />
+      <Headline tag="h1" size="small" margin="none">{displayName}</Headline>
     </div>
   );
 };

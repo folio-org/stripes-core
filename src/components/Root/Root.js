@@ -18,7 +18,7 @@ import RootWithIntl from '../../RootWithIntl';
 
 import './Root.css';
 
-import { modules } from 'stripes-config'; // eslint-disable-line
+import { modules, metadata } from 'stripes-config'; // eslint-disable-line
 
 class Root extends Component {
   constructor(...args) {
@@ -86,6 +86,7 @@ class Root extends Component {
       setToken: (val) => { store.dispatch(setOkapiToken(val)); },
       actionNames,
       locale,
+      metadata,
       setLocale: (val) => { loadTranslations(store, val); },
       plugins: plugins || {},
       setSinglePlugin: (key, value) => { store.dispatch(setSinglePlugin(key, value)); },
