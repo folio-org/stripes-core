@@ -131,7 +131,7 @@ describe('The stripes-module-parser', function () {
       });
 
       it('warns when icons are missing', function () {
-        // const result = this.sut.getIconMetadata();
+        this.sut.getIconMetadata();
         expect(this.sut.warnings[0]).to.match(/no icons defined/);
       });
 
@@ -184,7 +184,7 @@ describe('The stripes-module-parser', function () {
       it('warns for missing icons variants', function () {
         modulePaths.tryResolve.restore();
         this.sandbox.stub(modulePaths, 'tryResolve').returns(false);
-        // const result = this.sut.buildIconFilePaths('one');
+        this.sut.buildIconFilePaths('one');
         expect(this.sut.warnings[0]).to.match(/missing file/);
       });
     });
