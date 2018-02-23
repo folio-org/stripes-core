@@ -13,6 +13,7 @@
 * Add Vagrant doc to [Creating a new development setup for Stripes](doc/new-development-setup.md). Fixes STCOR-160.
 * The anointed resource is correctly set from the URL. Fixes STCOR-134. Available from v2.9.1.
 * Rename bin command from `stripes` to `stripescore` to avoid conflicts with the CLI. STCOR-153
+* When the FOLIO server is absent, say so instead of displaying nothing at all. Fixes STCOR-164.
 
 ## [2.9.0](https://github.com/folio-org/stripes-core/tree/v2.9.0) (2018-02-01)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.8.0...v2.9.0)

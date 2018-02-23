@@ -87,6 +87,12 @@ function setOkapiReady() {
   };
 }
 
+function setServerDown() {
+  return {
+    type: 'SERVER_DOWN',
+  };
+}
+
 export { setCurrentUser,
   clearCurrentUser,
   setCurrentPerms,
@@ -99,4 +105,5 @@ export { setCurrentUser,
   setAuthError,
   setTranslations,
   checkSSO,
-  setOkapiReady };
+  setOkapiReady,
+  setServerDown };

@@ -43,7 +43,7 @@ class Root extends Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    return !this.withOkapi || nextProps.okapiReady;
+    return !this.withOkapi || nextProps.okapiReady || nextProps.serverDown;
   }
 
   addReducer = (key, reducer) => {
@@ -72,9 +72,16 @@ class Root extends Component {
   }
 
   render() {
-    const { logger, store, epics, config, okapi, actionNames, token, disableAuth, currentUser, currentPerms, locale, plugins, bindings, discovery, translations, history } = this.props;
+    const { logger, store, epics, config, okapi, actionNames, token, disableAuth, currentUser, currentPerms, locale, plugins, bindings, discovery, translations, history, serverDown } = this.props;
 
-    if (!translations) return (<div />);
+    if (serverDown) {
+      return <div>Error: server is down.</div>;
+    }
+
+    if (!translations) {
+      // We don't know the locale, so we use English as backup
+      return <div>Loading translations...</div>;
+    }
 
     const stripes = new Stripes({
       logger,
@@ -153,6 +160,7 @@ Root.propTypes = {
     replace: PropTypes.func.isRequired,
   }),
   okapiReady: PropTypes.bool,
+  serverDown: PropTypes.bool,
 };
 
 Root.defaultProps = {
@@ -160,6 +168,7 @@ Root.defaultProps = {
   // TODO: remove after locale is accessible from a global config / public url
   locale: 'en-US',
   okapiReady: false,
+  serverDown: false,
 };
 
 function mapStateToProps(state) {
@@ -173,6 +182,7 @@ function mapStateToProps(state) {
     bindings: state.okapi.bindings,
     discovery: state.discovery,
     okapiReady: state.okapi.okapiReady,
+    serverDown: state.okapi.serverDown,
     okapi: state.okapi,
   };
 }

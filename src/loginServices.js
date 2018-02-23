@@ -18,6 +18,7 @@ import {
   setAuthError,
   checkSSO,
   setOkapiReady,
+  setServerDown,
 } from './okapiActions';
 
 function getHeaders(tenant, token) {
@@ -150,6 +151,8 @@ function validateUser(okapiUrl, store, tenant, session) {
       getPlugins(okapiUrl, store, tenant);
       getBindings(okapiUrl, store, tenant);
     }
+  }).catch(() => {
+    store.dispatch(setServerDown());
   });
 }
 
