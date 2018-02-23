@@ -77,6 +77,7 @@ button.navButton {
 .label {
   margin: 0 4px;
   font-weight: 600;
+  display: none;
 }
 
 .inner {
@@ -131,4 +132,13 @@ button.navButton {
 .navButton.isInteractable:active .inner::before {
   background: rgb(37, 118, 195);
   border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+/**
+ * Responsive
+ */
+@media (--largeUp) {
+  .label {
+    display: block;
+  }
 }
