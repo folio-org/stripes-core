@@ -13,6 +13,8 @@ const propTypes = {
   title: PropTypes.string,
   className: PropTypes.string,
   id: PropTypes.string,
+  iconKey: PropTypes.string,
+  iconData: PropTypes.object, // Alternative way of passing icon data
   icon: PropTypes.oneOfType([
     PropTypes.element,
   ]),
@@ -29,7 +31,7 @@ const defaultProps = {
   noSelectedBar: false,
 };
 
-const NavButton = ({ label, title, selected, onClick, href, icon, noSelectedBar, className, badge, id }) => {
+const NavButton = ({ label, title, selected, onClick, href, icon, noSelectedBar, className, badge, id, iconKey, iconData }) => {
   /**
    * Root classes
    */
@@ -44,7 +46,7 @@ const NavButton = ({ label, title, selected, onClick, href, icon, noSelectedBar,
   /**
    * Icon
    */
-  const displayIcon = (<span className={css.icon}>{icon || <AppIcon focusable={false} />}</span>);
+  const displayIcon = (<span className={css.icon}>{icon || <AppIcon app={iconKey} icon={iconData} focusable={false} />}</span>);
 
   let Element = 'span';
   let clickableProps = {};

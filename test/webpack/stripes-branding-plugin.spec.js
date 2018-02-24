@@ -1,7 +1,6 @@
 const expect = require('chai').expect;
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const VirtualModulesPlugin = require('webpack-virtual-modules');
 const defaultBranding = require('../../default-assets/branding');
 const StripesBrandingPlugin = require('../../webpack/stripes-branding-plugin');
 
@@ -41,45 +40,11 @@ describe('The stripes-branding-plugin', function () {
   });
 
   describe('apply method', function () {
-    it('registers a virtual module', function () {
-      this.sandbox.spy(compilerStub, 'apply');
-      const sut = new StripesBrandingPlugin();
-      sut.apply(compilerStub);
-
-      const applyArg = compilerStub.apply.getCall(0).args[0];
-      expect(applyArg).to.be.an.instanceOf(VirtualModulesPlugin);
-    });
-
     it('registers the "after-plugins" hook', function () {
       this.sandbox.spy(compilerStub, 'plugin');
       const sut = new StripesBrandingPlugin();
       sut.apply(compilerStub);
       expect(compilerStub.plugin).to.be.calledWith('after-plugins');
-    });
-  });
-
-  describe('_serializeBranding method', function () {
-    it('maintains absolute src paths', function () {
-      const result = StripesBrandingPlugin._serializeBranding(defaultBranding);
-      expect(result).to.be.a('string')
-        .which.includes(`'${defaultBranding.logo.src}'`);
-    });
-
-    it('updates custom src paths', function () {
-      const result = StripesBrandingPlugin._serializeBranding(tenantBranding);
-      expect(result).to.be.a('string')
-        .which.includes(`'.${tenantBranding.logo.src}'`)
-        .and.not.include(`'${tenantBranding.logo.src}'`);
-    });
-
-    it('wraps src values in require()', function () {
-      const result = StripesBrandingPlugin._serializeBranding(tenantBranding);
-      expect(result).to.include('"src": require(');
-    });
-
-    it('does not wrap non-src values in require()', function () {
-      const result = StripesBrandingPlugin._serializeBranding(tenantBranding);
-      expect(result).to.not.include('"alt": require(');
     });
   });
 

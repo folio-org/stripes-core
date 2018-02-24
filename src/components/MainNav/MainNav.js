@@ -20,7 +20,14 @@ import Breadcrumbs from './Breadcrumbs';
 import CurrentApp from './CurrentApp';
 import MyProfile from './MyProfile';
 import NotificationsDropdown from './Notifications/NotificationsDropdown';
+import settingsIcon from './settings.svg';
 
+// Temporary until settings becomes an app
+const settingsIconData = {
+  src: settingsIcon,
+  alt: 'Tenant Settings',
+  title: 'Settings',
+};
 
 if (!Array.isArray(modules.app) || modules.app.length < 1) {
   throw new Error('At least one module of type "app" must be enabled.');
@@ -30,6 +37,11 @@ class MainNav extends Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
+
+  static childContextTypes = {
+    // It seems wrong that we have to tell this generic component what specific properties to put in the context
+    stripes: PropTypes.object,
+  };
 
   static propTypes = {
     stripes: PropTypes.shape({
@@ -75,6 +87,12 @@ class MainNav extends Component {
         }
       }
     });
+  }
+
+  getChildContext() {
+    return {
+      stripes: this.props.stripes,
+    };
   }
 
   componentDidMount() {
@@ -135,11 +153,18 @@ class MainNav extends Component {
           href={href}
           title={entry.displayName}
           key={entry.route}
+          iconKey={name}
         />);
     });
 
     let firstNav;
     let breadcrumbArray = []; // eslint-disable-line
+
+    // Temporary solution until Settings becomes a standalone app
+    let settingsApp;
+    if (stripes.hasPerm('settings.enabled') && pathname.startsWith('/settings')) {
+      settingsApp = { displayName: 'Settings', description: 'FOLIO settings' };
+    }
 
     if (breadcrumbArray.length === 0) {
       firstNav = (
@@ -150,15 +175,11 @@ class MainNav extends Component {
               <polygon style={{ fill: '#999' }} points="13 24.8 1.2 13.5 3.2 11.3 13 20.6 22.8 11.3 24.8 13.5 " />
             </svg>
           </a>
-          {selectedApp &&
-            <CurrentApp
-              currentApp={selectedApp}
-            />
-          }
-          {
-            stripes.hasPerm('settings.enabled') && pathname.startsWith('/settings') &&
-            <NavButton label="Settings" />
-          }
+          <CurrentApp
+            id="ModuleMainHeading"
+            currentApp={selectedApp || settingsApp}
+            iconData={settingsApp && settingsIconData}
+          />
         </NavGroup>
       );
     } else {
@@ -181,8 +202,10 @@ class MainNav extends Component {
                 <NavButton
                   label="Settings"
                   id="clickable-settings"
+                  title="Settings"
+                  iconData={settingsIconData}
                   selected={pathname.startsWith('/settings')}
-                  href={this.lastVisited.x_settings || '/settings'}
+                  href={pathname.startsWith('/settings') ? null : (this.lastVisited.x_settings || '/settings')}
                 />
               )
             }

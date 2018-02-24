@@ -2,17 +2,41 @@
  * Current App
  */
 
-/**
- * Button
- */
-button.currentAppButton {
-  margin: 0;
-  overflow: auto;
-  padding: 2px 2px 2px 4px;
-  height: auto;
-  max-height: none;
+.currentApp {
+  padding: 0 5px;
+  height: 44px;
+  outline: 0;
+  display: flex;
+  align-items: center;
+  color: rgba(0, 0, 0, 0.62);
+
+  &::-moz-focus-inner {
+    border: 0;
+  }
 }
 
-.currentAppButtonLabel {
-  margin: 0 6px;
+/**
+ * Badge
+ */
+.badge {
+  font-size: 10px;
+  position: absolute;
+  top: 0;
+  right: -1px;
+  z-index: 5;
+}
+
+.icon {
+  height: 24px;
+  margin: 0 4px;
+
+  & img,
+  & svg {
+    height: 24px;
+    width: 24px;
+  }
+
+  & svg {
+    fill: #999;
+  }
 }

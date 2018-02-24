@@ -9,7 +9,6 @@ import NavListSection from '@folio/stripes-components/lib/NavListSection';
 import NavListItem from '@folio/stripes-components/lib/NavListItem';
 import List from '@folio/stripes-components/lib/List';
 import { Row, Col } from '@folio/stripes-components/lib/LayoutGrid';
-import Button from '@folio/stripes-components/lib/Button';
 import css from '@folio/stripes-components/lib/DropdownMenu/DropdownLayout.css';
 import menuStyles from './NotificationMenu.css';
 import mapDomainToPath from '../../../mapDomains';
