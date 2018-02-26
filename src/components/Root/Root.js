@@ -19,6 +19,10 @@ import RootWithIntl from '../../RootWithIntl';
 import './Root.css';
 
 import { modules, metadata } from 'stripes-config'; // eslint-disable-line
+if (!metadata) {
+  // eslint-disable-next-line no-console
+  console.error('No metadata harvested from package files, so you will not get app icons. Probably the stripes-core in your Stripes CLI is too old. Try `yarn global upgrade @folio/stripes-cli`');
+}
 
 class Root extends Component {
   constructor(...args) {

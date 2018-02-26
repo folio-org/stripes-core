@@ -55,7 +55,7 @@
     "apollo-link-http": "^1.2.0",
     "autoprefixer": "^7.1.1",
     "babel-core": "^6.23.1",
-    "babel-eslint": "^7.2.3",
+    "babel-eslint": "^8.2.2",
     "babel-loader": "^7.0.0",
     "babel-plugin-react-transform": "^2.0.2",
     "babel-polyfill": "^6.16.0",
