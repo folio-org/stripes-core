@@ -96,7 +96,7 @@
     "query-string": "^5.0.0",
     "react": "^16.2.0",
     "react-apollo": "^2.0.1",
-    "react-cookie": "^2.0.8",
+    "react-cookie": "^2.1.4",
     "react-dom": "^16.2.0",
     "react-intl": "^2.3.0",
     "react-overlays": "^0.8.3",
