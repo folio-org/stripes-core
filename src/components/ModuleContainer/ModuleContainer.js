@@ -8,7 +8,7 @@ const propTypes = {
 
 function ModuleContainer(props) {
   return (
-    <div className={style.moduleContainer} id="ModuleContainer">{props.children}</div>
+    <main className={style.moduleContainer} id="ModuleContainer">{props.children}</main>
   );
 }
 
