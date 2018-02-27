@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { isEqual } from 'lodash';
-
+import Headline from '@folio/stripes-components/lib/Headline';
 import { Dropdown } from '@folio/stripes-components/lib/Dropdown'; // eslint-disable-line
 import { withRouter } from 'react-router';
 import localforage from 'localforage';
@@ -192,8 +192,10 @@ class MainNav extends Component {
     }
 
     return (
-      <nav className={css.navRoot}>
+      <header className={css.navRoot}>
         {firstNav}
+        <nav>
+          <Headline tag="h2" className="sr-only">Main Navigation</Headline>
         <NavGroup>
           <NavGroup>
             {menuLinks}
@@ -221,7 +223,8 @@ class MainNav extends Component {
             />
           </NavGroup>
         </NavGroup>
-      </nav>
+        </nav>
+      </header>
     );
   }
 }
