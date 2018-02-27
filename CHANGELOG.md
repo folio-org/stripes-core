@@ -14,6 +14,9 @@
 * The anointed resource is correctly set from the URL. Fixes STCOR-134. Available from v2.9.1.
 * Rename bin command from `stripes` to `stripescore` to avoid conflicts with the CLI. STCOR-153
 * When the FOLIO server is absent, say so instead of displaying nothing at all. Fixes STCOR-164.
+* Guard against absence of icons and other metadata. Mitigates STCOR-165.
+* Add -l to stripes-pull to iterate through local directories instead of through a hard-coded list. Fixes STCOR-166. Available from v2.9.2.
+* Update react-cookie dependency, eliminating a duplicate-package warning from WebPack. Fixes part of STCOR-167.
 
 ## [2.9.0](https://github.com/folio-org/stripes-core/tree/v2.9.0) (2018-02-01)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.8.0...v2.9.0)

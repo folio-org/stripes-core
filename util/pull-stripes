@@ -2,27 +2,7 @@ clone=n
 build=n
 dir=.
 warning="⚠️ "
-
-if [ "$TERM" = dumb ]; then
-    warning="***"
-fi
-
-if [ "x$1" = x-c ]; then
-    clone=y
-    shift
-fi
-
-if [ "x$1" = x-b ]; then
-    build=y
-    shift
-fi
-
-if [ $# != 0 ]; then
-    echo Running in directory $1
-    cd $1
-fi
-
-cd $dir
+local=n
 dirs=`echo '
     stripes-connect
     stripes-components
@@ -51,6 +31,45 @@ dirs=`echo '
     eslint-config-stripes
 '`
 
+if [ "$TERM" = dumb ]; then
+    warning="***"
+fi
+
+if [ "x$1" = x-c ]; then
+    clone=y
+    shift
+fi
+
+if [ "x$1" = x-b ]; then
+    build=y
+    shift
+fi
+
+if [ "x$1" = x-l ]; then
+    local=y
+    shift
+fi
+
+if [ $# != 0 ]; then
+    echo Running in directory $1
+    cd $1
+fi
+
+
+cd $dir
+
+# when "local" is "y", iterate over locally-cloned modules instead of
+# over a hard-coded list. this is useful when only a few modules are
+# checked out for update and the rest are pulled in via yarn/npm as
+# regular dependencies.
+# obviously, assignment to $dirs is not super smart; it assumes your
+# working directory is clean of stuff aside from, well, cloned modules
+# that you are actually working on.
+if [ $local = y ]; then
+    dirs=`ls | grep -v node_modules`
+fi
+
+
 if [ $clone = y ]; then
     echo "$0: cloning"
     for i in $dirs; do
@@ -64,24 +83,32 @@ if [ $clone = y ]; then
 fi
 
 for i in $dirs; do
-    (
-        cd $i
-        branch=`git branch | sed -n 's/^\* //p'`
-        echo "=== $i ($branch) ==="
-        if [ "x$branch" != xmaster -a "x$branch" != xdev -a "x$branch" != x`whoami` ]; then
-            echo "$warning on branch '$branch': doing nothing"
-        else
-            if git status | grep 'nothing to commit' > /dev/null; then
-                if git status | grep 'Your branch is ahead' > /dev/null; then
-                    echo "$warning some committed changes to push: doing nothing"
-                else
-                    git pull
-                fi
+    if [[ -d $i && -d $i/.git ]]; then
+        (
+            cd $i
+            branch=`git branch | sed -n 's/^\* //p'`
+            echo "=== $i ($branch) ==="
+            if [ "x$branch" != xmaster -a "x$branch" != xdev -a "x$branch" != x`whoami` ]; then
+                echo "$warning on branch '$branch': doing nothing"
             else
-                echo "$warning some changes to commit: doing nothing"
+                if git status | grep 'nothing to commit' > /dev/null; then
+                    if git status | grep 'Your branch is ahead' > /dev/null; then
+                        echo "$warning some committed changes to push: doing nothing"
+                    else
+                        git pull
+                    fi
+                else
+                    echo "$warning some changes to commit: doing nothing"
+                fi
             fi
-        fi
-    )
+        )
+    elif [ -d $i ]; then
+        echo "=== $i ==="
+        echo "$warning '$i' is not a git repository"
+    else [ ! -d $i ];
+        echo "=== $i ==="
+        echo "$warning '$i' does not exist"
+    fi
 done
 
 # use yarn workspaces to handle shared libraries more efficiently
