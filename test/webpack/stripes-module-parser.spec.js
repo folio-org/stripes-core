@@ -131,7 +131,7 @@ describe('The stripes-module-parser', function () {
       });
 
       it('warns when icons are missing', function () {
-        this.sut.getIconMetadata();
+        this.sut.getIconMetadata(undefined, true);
         expect(this.sut.warnings[0]).to.match(/no icons defined/);
       });
 
