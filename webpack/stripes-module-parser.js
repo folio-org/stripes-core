@@ -67,7 +67,7 @@ class StripesModuleParser {
   // Extract metadata defined here:
   // https://github.com/folio-org/stripes-core/blob/master/doc/app-metadata.md
   parseStripesMetadata(packageJson) {
-    const icons = this.getIconMetadata(packageJson.stripes.icons);
+    const icons = this.getIconMetadata(packageJson.stripes.icons, packageJson.stripes.type === 'app');
     const welcomePageEntries = this.getWelcomePageEntries(packageJson.stripes.welcomePageEntries, icons);
 
     const metadata = {
@@ -89,9 +89,9 @@ class StripesModuleParser {
     return metadata;
   }
 
-  getIconMetadata(icons) {
+  getIconMetadata(icons, isApp) {
     if (!icons || !Array.isArray(icons)) {
-      this.warnings.push(`Module ${this.moduleName} has no icons defined in stripes.icons`);
+      if (isApp) this.warnings.push(`Module ${this.moduleName} has no icons defined in stripes.icons`);
       return {};
     }
     return _.reduce(icons, (iconMetadata, icon) => {
