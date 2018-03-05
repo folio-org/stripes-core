@@ -1,0 +1,15 @@
+{
+  "front.welcome": "Üdvözöljük! A jövő könyvtára NYITVA ÁLL!",
+  "front.home": "Főoldal",
+  "front.about": "Szoftver verziók",
+  "button.new": "+ Új",
+  "button.edit": "Szerkeszt",
+  "button.delete": "Töröl",
+  "button.deleteEntry": "{entry} törölése",
+  "button.save": "Ment és bezár",
+  "button.cancel": "Mégsem",
+  "button.close": "bezár",
+  "label.confirmDeleteEntry": "Biztosan törli: {entry}?",
+  "label.editEntry": "{entry} szerkesztése",
+  "label.createEntry": "{entry} létrehozása"
+}
