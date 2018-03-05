@@ -9,7 +9,11 @@
   "button.save": "Ment és bezár",
   "button.cancel": "Mégsem",
   "button.close": "bezár",
+  "button.SaveChanges": "Változások mentése",
+  "button.discardChanges": "Változások elvetése",
+  "button.keepEditing": "Szerkesztés folytatása",
   "label.confirmDeleteEntry": "Biztosan törli: {entry}?",
   "label.editEntry": "{entry} szerkesztése",
-  "label.createEntry": "{entry} létrehozása"
+  "label.createEntry": "{entry} létrehozása",
+  "label.unsavedChanges": "Elmentetlen változások"
 }
