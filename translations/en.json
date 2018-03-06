@@ -10,7 +10,12 @@
   "button.save": "Save and close",
   "button.cancel": "Cancel",
   "button.close": "close",
+  "button.saveChanges": "Save Changes",
+  "button.discardChanges": "Close without saving",
+  "button.keepEditing": "Keep editing",
   "label.confirmDeleteEntry": "{entry} will be removed",
   "label.editEntry": "Edit {entry}",
-  "label.createEntry": "Create {entry}"
+  "label.createEntry": "Create {entry}",
+  "label.unsavedChanges": "There are unsaved changes"
+  
 }
