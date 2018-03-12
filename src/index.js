@@ -12,7 +12,10 @@ import gatherActions from './gatherActions';
 
 import Root from './components/Root';
 
-const okapi = (typeof okapiConfig === 'object') ? okapiConfig : { withoutOkapi: true };
+const okapi = (typeof okapiConfig === 'object' && Object.keys(okapiConfig) > 0)
+  ? okapiConfig
+  : { withoutOkapi: true };
+console.log("REDIOUS", okapi);
 const initialState = { okapi };
 const epics = configureEpics(connectErrorEpic);
 const logger = configureLogger(config);
