@@ -12,7 +12,7 @@ import gatherActions from './gatherActions';
 
 import Root from './components/Root';
 
-const okapi = (typeof okapiConfig === 'object' && Object.keys(okapiConfig) > 0)
+const okapi = (typeof okapiConfig === 'object' && Object.keys(okapiConfig).length > 0)
   ? okapiConfig
   : { withoutOkapi: true };
 const initialState = { okapi };
