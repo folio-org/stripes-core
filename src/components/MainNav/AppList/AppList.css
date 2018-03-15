@@ -1,0 +1,106 @@
+/**
+ * App Switcher
+ */
+
+@import '@folio/stripes-components/lib/variables.css';
+
+.appList {
+  display: flex;
+}
+
+/**
+ * Nav List
+ */
+.navItemsList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: none;
+}
+
+/**
+ * Nav Dropdown
+ */
+
+.navListDropdownWrap,
+.navListDropdown {
+  display: block;
+}
+
+.navListDropdown {
+  z-index: 200;
+}
+
+.dropdownBody {
+  width: 100%;
+}
+
+.dropdownList {
+  padding: 5px 15px;
+}
+
+.dropdownListItem {
+  display: flex;
+  align-items: center;
+}
+
+.dropdownListItemLabel {
+  padding: 0 4px;
+  min-width: 200px;
+  font-weight: 600;
+}
+
+.dropdownListItemDescription {
+  color: var(--labelColor);
+  display: none;
+}
+
+.dropdownHeader {
+  padding: 10px 10px 5px;
+}
+
+/**
+ * Focus trap
+ */
+.focusTrap {
+  position: absolute;
+  height: 0;
+  width: 0;
+  left: -99999px;
+  opacity: 0;
+}
+
+/**
+ * Responsive
+ */
+
+/* A bit of a hack to force tether to 100% width on mobile.. */
+@media (--small) {
+  .navListDropdown,
+  .navListDropdown > div {
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+  }
+}
+
+@media (--mediumUp) {
+  .dropdownListItemDescription {
+    display: block;
+  }
+
+  .dropdownBody {
+    width: 600px;
+  }
+}
+
+@media (--largeUp) {
+  .navItemsList {
+    display: flex;
+  }
+
+  .navListDropdownWrap,
+  .navListDropdown {
+    display: none;
+  }
+}

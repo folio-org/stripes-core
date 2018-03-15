@@ -28,14 +28,13 @@ const defaultProps = {
   currentApp: { displayName: 'FOLIO', description: 'FOLIO platform' },
 };
 
-const CurrentApp = ({ currentApp, iconData, id, badge }) => {
-  const { displayName, description, module } = currentApp;
-  const iconKey = module && module.replace(/^@[a-z0-9_]+\//, '');
+const CurrentApp = ({ currentApp, id, badge }) => {
+  const { description, iconData, name, displayName } = currentApp;
 
   return (
     <div id={id} title={description} className={css.currentApp}>
       {badge && (<Badge color="red" className={css.badge}>{badge}</Badge>)}
-      <AppIcon icon={iconData} app={iconKey} className={css.icon} />
+      <AppIcon icon={iconData} app={name} className={css.icon} />
       <Headline tag="h1" size="small" margin="none">{displayName}</Headline>
     </div>
   );
