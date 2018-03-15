@@ -17,7 +17,6 @@ const propTypes = {
     },
   ),
   id: PropTypes.string,
-  iconData: PropTypes.object,
   badge: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.number,

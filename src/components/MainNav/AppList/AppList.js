@@ -45,16 +45,6 @@ class AppList extends Component {
     };
   }
 
-  // componentDidUpdate(prevProps, prevState) {
-  //   const { open } = this.state;
-  //   const { searchfieldId } = this.props;
-  //
-  //   // Focus SearchField when dropdown opens
-  //   if (open && !prevState.open) {
-  //     setTimeout(() => document.getElementById(searchfieldId).focus(), 50);
-  //   }
-  // }
-
   /**
    * Get the nav buttons that is displayed
    * in the app header on desktop
@@ -110,7 +100,7 @@ class AppList extends Component {
   }
 
   render() {
-    const { getNavButtons, getDropdownToggleButton } = this;
+    const { getNavButtons, getDropdownToggleButton, toggleDropdown } = this;
     const { dropdownId, apps, searchfieldId } = this.props;
 
     return (
@@ -119,12 +109,13 @@ class AppList extends Component {
           { getNavButtons() }
         </ul>
         <div className={css.navListDropdownWrap}>
-          <Dropdown dropdownClass={css.navListDropdown} open={this.state.open} id={dropdownId} onToggle={this.toggleDropdown}>
+          <Dropdown dropdownClass={css.navListDropdown} open={this.state.open} id={dropdownId} onToggle={toggleDropdown}>
             { getDropdownToggleButton() }
-            <DropdownMenu data-role="menu" onToggle={this.toggleDropdown}>
+            <DropdownMenu data-role="menu" onToggle={toggleDropdown}>
               <AppListDropdown
                 apps={apps}
                 searchfieldId={searchfieldId}
+                toggleDropdown={toggleDropdown}
               />
             </DropdownMenu>
           </Dropdown>

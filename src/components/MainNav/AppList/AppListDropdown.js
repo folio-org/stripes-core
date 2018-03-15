@@ -14,6 +14,7 @@ import css from './AppList.css';
 const propTypes = {
   apps: PropTypes.arrayOf(PropTypes.object).isRequired,
   searchfieldId: PropTypes.string.isRequired,
+  toggleDropdown: PropTypes.func.isRequired,
 };
 
 class AppListDropdown extends Component {
@@ -25,12 +26,15 @@ class AppListDropdown extends Component {
     };
   }
 
+  /**
+   * Focus search field on mount
+   */
   componentDidMount() {
     document.getElementById(this.props.searchfieldId).focus();
   }
 
   render() {
-    const { apps, searchfieldId } = this.props;
+    const { apps, searchfieldId, toggleDropdown } = this.props;
     const { query } = this.state;
     let list = apps;
     let activeLink = null;
@@ -47,7 +51,7 @@ class AppListDropdown extends Component {
 
       return (
         <Link
-          onClick={this.toggleDropdown}
+          onClick={toggleDropdown}
           key={index}
           to={app.href}
           className={css.dropdownListItem}
