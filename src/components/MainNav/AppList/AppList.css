@@ -37,6 +37,8 @@
 
 .dropdownList {
   padding: 5px 15px;
+  max-height: 225px;
+  overflow-y: auto;
 }
 
 .dropdownListItem {
