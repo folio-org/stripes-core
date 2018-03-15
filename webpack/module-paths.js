@@ -41,6 +41,9 @@ function locateStripesModule(context, moduleName, alias, ...segments) {
       // This better incorporates the context path but requires nodejs 9+
       request: path.join(moduleName, ...segments),
       options: { paths: [context] },
+    }, {
+      // Yarn workspaces fallback: Try node_modules of the parent directory
+      request: path.join(context, '..', 'node_modules', moduleName, ...segments),
     },
   ];
 

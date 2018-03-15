@@ -4,6 +4,7 @@
   padding: 0 5px;
   height: 44px;
   outline: 0;
+  color: #000;
 
   &::-moz-focus-inner {
     border: 0;
@@ -11,8 +12,6 @@
 
   /* Is selected */
   &.selected {
-    color: rgba(0, 0, 0, 1);
-
     &::before {
       content: '';
       position: absolute;
@@ -26,8 +25,6 @@
     }
 
     & .icon {
-      opacity: 1;
-
       & svg {
         fill: var(--primary);
       }
@@ -38,7 +35,7 @@
 /* To make sure we overwrite default link colors */
 a.navButton,
 button.navButton {
-  color: rgba(0, 0, 0, 0.62);
+  color: #000;
 }
 
 /* No active bar - primarily used for popover icons with no label */

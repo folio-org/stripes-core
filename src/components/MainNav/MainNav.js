@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { isEqual } from 'lodash';
-
+import Headline from '@folio/stripes-components/lib/Headline';
 import { Dropdown } from '@folio/stripes-components/lib/Dropdown'; // eslint-disable-line
 import { withRouter } from 'react-router';
 import localforage from 'localforage';
@@ -192,36 +192,39 @@ class MainNav extends Component {
     }
 
     return (
-      <nav className={css.navRoot}>
+      <header className={css.navRoot}>
         {firstNav}
-        <NavGroup>
+        <nav>
+          <Headline tag="h2" className="sr-only">Main Navigation</Headline>
           <NavGroup>
-            {menuLinks}
-            {
-              !stripes.hasPerm('settings.enabled') ? '' : (
-                <NavButton
-                  label="Settings"
-                  id="clickable-settings"
-                  title="Settings"
-                  iconData={settingsIconData}
-                  selected={pathname.startsWith('/settings')}
-                  href={pathname.startsWith('/settings') ? null : (this.lastVisited.x_settings || '/settings')}
-                />
-              )
-            }
+            <NavGroup>
+              {menuLinks}
+              {
+                !stripes.hasPerm('settings.enabled') ? '' : (
+                  <NavButton
+                    label="Settings"
+                    id="clickable-settings"
+                    title="Settings"
+                    iconData={settingsIconData}
+                    selected={pathname.startsWith('/settings')}
+                    href={pathname.startsWith('/settings') ? null : (this.lastVisited.x_settings || '/settings')}
+                  />
+                )
+              }
+            </NavGroup>
+            <NavGroup className={css.smallAlignRight}>
+              <NavDivider md="hide" />
+              {this.props.stripes.withOkapi && this.props.stripes.hasPerm('notify.item.get,notify.item.put,notify.collection.get') && <NotificationsDropdown stripes={stripes} {...this.props} />}
+              { /* temporary divider solution.. */}
+              {this.props.stripes.hasPerm('notify.item.get,notify.item.put,notify.collection.get') && (<NavDivider md="hide" />)}
+              <MyProfile
+                onLogout={this.logout}
+                stripes={stripes}
+              />
+            </NavGroup>
           </NavGroup>
-          <NavGroup className={css.smallAlignRight}>
-            <NavDivider md="hide" />
-            { this.props.stripes.withOkapi && this.props.stripes.hasPerm('notify.item.get,notify.item.put,notify.collection.get') && <NotificationsDropdown stripes={stripes} {...this.props} /> }
-            { /* temporary divider solution.. */ }
-            { this.props.stripes.hasPerm('notify.item.get,notify.item.put,notify.collection.get') && (<NavDivider md="hide" />) }
-            <MyProfile
-              onLogout={this.logout}
-              stripes={stripes}
-            />
-          </NavGroup>
-        </NavGroup>
-      </nav>
+        </nav>
+      </header>
     );
   }
 }
