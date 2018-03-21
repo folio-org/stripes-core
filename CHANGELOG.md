@@ -45,6 +45,8 @@
 * Better construction of notification links. Fixes STCOR-104.
 * Add Apollo provider so modules can use GraphQL. Fixes STCOR-133.
 * New `util/configure` script handles new development setup in one go; corresponding updates to [Creating a new development setup for Stripes](doc/new-development-setup.md). Refs STCOR-140.
+* Updated NavButton to use new AccessibleFocus component (from stripes-components)
+* Updated NotificationsMenu and Settings to use NavListItem instead of Button's and Link's
 
 ## [2.8.0](https://github.com/folio-org/stripes-core/tree/v2.8.0) (2017-11-20)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.7.0...v2.8.0)
