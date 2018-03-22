@@ -187,6 +187,7 @@ class MainNav extends Component {
             <NavGroup className={css.smallAlignRight}>
               <AppList
                 apps={apps}
+                searchfieldId="app-list-search-field"
               />
               <NavDivider md="hide" />
               { this.props.stripes.withOkapi && this.props.stripes.hasPerm('notify.item.get,notify.item.put,notify.collection.get') &&

@@ -3,17 +3,12 @@
  */
 
 import React, { Component } from 'react';
-import { uniqueId } from 'lodash';
 import PropTypes from 'prop-types';
 import { Dropdown } from '@folio/stripes-components/lib/Dropdown';
 import DropdownMenu from '@folio/stripes-components/lib/DropdownMenu';
 import AppListDropdown from './AppListDropdown';
 import NavButton from '../NavButton';
 import css from './AppList.css';
-
-const defaultProps = {
-  searchfieldId: uniqueId('app-list-searchfield-'),
-};
 
 const propTypes = {
   dropdownId: PropTypes.string,
@@ -125,7 +120,6 @@ class AppList extends Component {
   }
 }
 
-AppList.defaultProps = defaultProps;
 AppList.propTypes = propTypes;
 
 export default AppList;
