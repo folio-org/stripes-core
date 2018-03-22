@@ -18,6 +18,7 @@
 * Add -l to stripes-pull to iterate through local directories instead of through a hard-coded list. Fixes STCOR-166. Available from v2.9.2.
 * Update react-cookie dependency, eliminating a duplicate-package warning from WebPack. Fixes part of STCOR-167.
 * Do not emit "no icons defined in stripes.icons" warning for non-app modules. Fixes STCOR-171.
+* Updated MainNav to be more responsive. UX-153.
 
 ## [2.9.0](https://github.com/folio-org/stripes-core/tree/v2.9.0) (2018-02-01)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.8.0...v2.9.0)
