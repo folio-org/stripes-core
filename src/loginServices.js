@@ -10,6 +10,7 @@ import {
   clearCurrentUser,
   setCurrentPerms,
   setLocale,
+  setTimezone,
   setPlugins,
   setBindings,
   setOkapiToken,
@@ -45,13 +46,16 @@ export function loadTranslations(store, locale) {
 }
 
 export function getLocale(okapiUrl, store, tenant) {
-  fetch(`${okapiUrl}/configurations/entries?query=(module=ORG and configName=locale)`,
+  fetch(`${okapiUrl}/configurations/entries?query=(module=ORG and configName=localeSettings)`,
     { headers: getHeaders(tenant, store.getState().okapi.token) })
     .then((response) => {
       if (response.status === 200) {
         response.json().then((json) => {
           if (json.configs.length) {
-            loadTranslations(store, json.configs[0].value);
+            const localeValues = JSON.parse(json.configs[0].value);
+            const { locale, timezone } = localeValues;
+            if(locale) loadTranslations(store, locale);
+            if(timezone) store.dispatch(setTimezone(timezone));
           }
         });
       }

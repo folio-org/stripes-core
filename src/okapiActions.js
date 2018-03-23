@@ -25,6 +25,13 @@ function setLocale(locale) {
   };
 }
 
+function setTimezone(timezone) {
+  return {
+    type: 'SET_TIMEZONE',
+    timezone,
+  };
+}
+
 function setPlugins(plugins) {
   return {
     type: 'SET_PLUGINS',
@@ -97,6 +104,7 @@ export { setCurrentUser,
   clearCurrentUser,
   setCurrentPerms,
   setLocale,
+  setTimezone,
   setPlugins,
   setSinglePlugin,
   setBindings,

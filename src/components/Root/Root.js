@@ -6,11 +6,11 @@ import createBrowserHistory from 'history/createBrowserHistory';
 import { IntlProvider } from 'react-intl';
 import queryString from 'query-string';
 import { ApolloProvider } from 'react-apollo';
-
 import initialReducers from '../../initialReducers';
 import enhanceReducer from '../../enhanceReducer';
 import createApolloClient from '../../createApolloClient';
-import { setSinglePlugin, setBindings, setOkapiToken } from '../../okapiActions';
+import { setSinglePlugin, setBindings, setOkapiToken, setTimezone } from '../../okapiActions';
+import { getDateTime, formatDate, formatTime, formatDateTime } from '../../../util/dateUtil';
 import { loadTranslations, checkOkapiSession } from '../../loginServices';
 import { getQueryResourceKey } from '../../locationService';
 import Stripes from '../../Stripes';
@@ -40,7 +40,7 @@ class Root extends Component {
   }
 
   componentWillMount() {
-    const { okapi, store, locale } = this.props;
+    const { okapi, store, locale, timezone } = this.props;
     if (this.withOkapi) checkOkapiSession(okapi.url, store, okapi.tenant);
     // TODO: remove this after we load locale and translations at start from a public endpoint
     loadTranslations(store, locale);
@@ -76,7 +76,7 @@ class Root extends Component {
   }
 
   render() {
-    const { logger, store, epics, config, okapi, actionNames, token, disableAuth, currentUser, currentPerms, locale, plugins, bindings, discovery, translations, history, serverDown } = this.props;
+    const { logger, store, epics, config, okapi, actionNames, token, disableAuth, currentUser, currentPerms, locale, timezone, plugins, bindings, discovery, translations, history, serverDown } = this.props;
 
     if (serverDown) {
       return <div>Error: server is down.</div>;
@@ -97,10 +97,16 @@ class Root extends Component {
       setToken: (val) => { store.dispatch(setOkapiToken(val)); },
       actionNames,
       locale,
+      timezone,
       metadata,
-      setLocale: (val) => { loadTranslations(store, val); },
+      setLocale: (locale) => { loadTranslations(store, locale); },
+      setTimezone: (timezone) => { store.dispatch(setTimezone(timezone)) },
       plugins: plugins || {},
       setSinglePlugin: (key, value) => { store.dispatch(setSinglePlugin(key, value)); },
+      getDateTime: (dateStr, zone) => getDateTime(dateStr, zone || timezone),
+      formatDate: (dateStr, zone) => formatDate(dateStr, zone || timezone),
+      formatTime: (dateStr, zone)  => formatTime(dateStr, zone || timezone),
+      formatDateTime: (dateStr, zone) => formatDateTime(dateStr, zone || timezone),
       bindings,
       setBindings: (val) => { store.dispatch(setBindings(val)); },
       discovery,
@@ -140,6 +146,7 @@ Root.propTypes = {
   currentUser: PropTypes.object, // eslint-disable-line react/forbid-prop-types
   epics: PropTypes.object, // eslint-disable-line react/forbid-prop-types
   locale: PropTypes.string,
+  timezone: PropTypes.string,
   translations: PropTypes.object, // eslint-disable-line react/forbid-prop-types
   plugins: PropTypes.object, // eslint-disable-line react/forbid-prop-types
   bindings: PropTypes.object, // eslint-disable-line react/forbid-prop-types
@@ -171,6 +178,7 @@ Root.defaultProps = {
   history: createBrowserHistory(),
   // TODO: remove after locale is accessible from a global config / public url
   locale: 'en-US',
+  timezone: 'UTC',
   okapiReady: false,
   serverDown: false,
 };
@@ -181,6 +189,7 @@ function mapStateToProps(state) {
     currentUser: state.okapi.currentUser,
     currentPerms: state.okapi.currentPerms,
     locale: state.okapi.locale,
+    timezone: state.okapi.timezone,
     translations: state.okapi.translations,
     plugins: state.okapi.plugins,
     bindings: state.okapi.bindings,

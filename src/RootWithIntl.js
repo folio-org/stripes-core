@@ -18,14 +18,19 @@ import SSORedirect from './components/SSORedirect';
 import Settings from './components/Settings/Settings';
 import LoginCtrl from './components/Login';
 import getModuleRoutes from './moduleRoutes';
+import { getDateTime } from '../util/dateUtil';
 import { stripesShape } from './Stripes';
 
 const RootWithIntl = (props, context) => {
   const intl = context.intl;
   const connect = connectFor('@folio/core', props.stripes.epics, props.stripes.logger);
-  const stripes = props.stripes.clone({ intl, connect });
+  const stripes = props.stripes.clone(
+      {
+          intl,
+          connect
+      }
+ );
   const { token, disableAuth, history } = props;
-
   return (
     <HotKeys keyMap={stripes.bindings} noWrapper>
       <Provider store={stripes.store}>
