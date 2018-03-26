@@ -113,7 +113,7 @@ module.exports = class StripesTranslationPlugin {
   // Converts "example.key" for "@folio/app" into "ui-app.example.key"
   static prefixModuleKeys(moduleName, translations) {
     const name = moduleName.replace(/.*\//, '');
-    const prefix = name === 'stripes-core' ? `${name}.` : `ui-${name}.`;
+    const prefix = name.indexOf('stripes-') === 0 ? `${name}.` : `ui-${name}.`;
     return prefixKeys(translations, prefix);
   }
 
