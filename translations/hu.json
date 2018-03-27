@@ -7,7 +7,7 @@
   "button.edit": "Szerkeszt",
   "button.delete": "Töröl",
   "button.deleteEntry": "{entry} törlése",
-  "button.save": "Ment és bezár",
+  "button.saveAndClose": "Ment és bezár",
   "button.cancel": "Mégsem",
   "button.close": "bezár",
   "button.SaveChanges": "Módosítások mentése",

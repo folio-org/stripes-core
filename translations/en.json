@@ -7,7 +7,7 @@
   "button.edit": "Edit",
   "button.delete": "Delete",
   "button.deleteEntry": "Delete {entry}",
-  "button.save": "Save and close",
+  "button.saveAndClose": "Save and close",
   "button.cancel": "Cancel",
   "button.close": "close",
   "button.saveChanges": "Save Changes",
