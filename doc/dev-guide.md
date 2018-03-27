@@ -33,6 +33,7 @@
         * [Creating module translations](#creating-module-translations)
         * [Using module translations](#using-module-translations)
         * [Using core translations](#using-core-translations)
+        * [Filtering translations at build time](#filtering-translations-at-build-time)
         * [Other uses of the locale](#other-uses-of-the-locale)
     * [Styling HTML](#styling-html)
     * [Network tab in Google Chrome](#network-tab-in-google-chrome)
@@ -44,6 +45,7 @@
     * [Firing actions](#firing-actions)
 * [Component structure in Stripes UI modules](#component-structure-in-stripes-ui-modules)
 * [Appendix A: Escaping to Redux](#appendix-a-escaping-to-redux)
+* [Appendix B: Mandatory back-end services for stripes-core](#appendix-b-mandatory-back-end-services-for-stripes-core)
 
 
 
@@ -513,7 +515,10 @@ In JavaScript, the Stripes object furnishes an internationalization object as it
 
 In addition to the translations that it provides itself, a module may use translations provided by stripes-core. In particular, it provides translations for a set of common labels, which modules therefore need not translate for themselves. The keys for these labels all begin with `common.`. The translations provided by stripes-core are provided in [language-specific translation files](https://github.com/folio-org/stripes-core/tree/master/translations).
 
-For example, if the `stripes-core/translations/*.json` files define a property as `"common.search": "Search"`, then search buttons may use `<Button label={stripes.intl.formatMessage({ id: 'stripes-core.common.search' })} />`.
+For example, if the `stripes-core/translations/*.json` files define a property as `"common.search": "Search"`, then the translation can be done like so: 
+```
+<Button label={stripes.intl.formatMessage({ id: 'stripes-core.common.search' })} />
+```
 
 #### Filtering translations at build time
 
@@ -684,3 +689,6 @@ class Users extends React.Component {
 
 Note that this code does _not_ access the stripes-connect data within the Redux store: so far, no situation has been found where that is necessary or desirable. Instead, it accesses internal data about the present session. (Arguably, that data should be made available in the Stripes object; but really, module code should not need to use this at all.)
 
+## Appendix B: Mandatory back-end services for stripes-core
+
+Stripes-core currently requires certain server-side modules to be enabled, i.e. /notify endpoint

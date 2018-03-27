@@ -76,7 +76,7 @@ if [ $clone = y ]; then
         if [ -d $i ]; then
             echo "$warning skipping '$i': aleady exists"
         else
-            git clone git@github.com:folio-org/$i.git
+            git clone https://github.com/folio-org/$i
         fi
     done
     exit
