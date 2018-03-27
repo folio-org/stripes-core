@@ -39,6 +39,7 @@ devConfig.module.rules.push({
         localIdentName: '[local]---[hash:base64:5]',
         modules: true,
         sourceMap: true,
+        importLoaders: 1,
       },
     },
     {
