@@ -1,5 +1,20 @@
 {
   "front.welcome": "Welcome, the Future Of Libraries Is OPEN!",
   "front.home": "Home",
-  "front.about": "Software versions"
+  "front.about": "Software versions",
+  "button.new": "+ New",
+  "button.new_tooltip": "Add {entry}",
+  "button.edit": "Edit",
+  "button.delete": "Delete",
+  "button.deleteEntry": "Delete {entry}",
+  "button.saveAndClose": "Save and close",
+  "button.cancel": "Cancel",
+  "button.close": "close",
+  "button.saveChanges": "Save Changes",
+  "button.discardChanges": "Close without saving",
+  "button.keepEditing": "Keep editing",
+  "label.confirmDeleteEntry": "{entry} will be removed",
+  "label.editEntry": "Edit {entry}",
+  "label.createEntry": "Create {entry}",
+  "label.unsavedChanges": "There are unsaved changes"
 }

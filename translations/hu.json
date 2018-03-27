@@ -1,0 +1,20 @@
+{
+  "front.welcome": "Üdvözöljük! A jövő könyvtára NYITVA ÁLL!",
+  "front.home": "Főoldal",
+  "front.about": "Szoftver verziók",
+  "button.new": "+ Új",
+  "button.new_tooltip": "{entry} hozzáadása",
+  "button.edit": "Szerkeszt",
+  "button.delete": "Töröl",
+  "button.deleteEntry": "{entry} törlése",
+  "button.saveAndClose": "Ment és bezár",
+  "button.cancel": "Mégsem",
+  "button.close": "bezár",
+  "button.SaveChanges": "Módosítások mentése",
+  "button.discardChanges": "Módosítások elvetése",
+  "button.keepEditing": "Szerkesztés folytatása",
+  "label.confirmDeleteEntry": "Biztosan törli: {entry}?",
+  "label.editEntry": "{entry} szerkesztése",
+  "label.createEntry": "{entry} létrehozása",
+  "label.unsavedChanges": "Mentetlen módosítások"
+}
