@@ -15,10 +15,11 @@ function prefixKeys(obj, prefix) {
 
 module.exports = class StripesTranslationPlugin {
   constructor(options) {
-    // Include stripes-core because it has translations
-    // If we ever have translations in other common modules, like stripes-components, include them here as well
+    // Include stripes-core et al because they have translations
     this.modules = {
       '@folio/stripes-core': {},
+      '@folio/stripes-components': {},
+      '@folio/stripes-smart-components': {},
     };
     Object.assign(this.modules, options.modules);
     this.languageFilter = options.config.languages || [];
