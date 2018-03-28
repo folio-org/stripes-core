@@ -40,7 +40,7 @@ class Root extends Component {
   }
 
   componentWillMount() {
-    const { okapi, store, locale, timezone } = this.props;
+    const { okapi, store, locale } = this.props;
     if (this.withOkapi) checkOkapiSession(okapi.url, store, okapi.tenant);
     // TODO: remove this after we load locale and translations at start from a public endpoint
     loadTranslations(store, locale);
@@ -99,13 +99,13 @@ class Root extends Component {
       locale,
       timezone,
       metadata,
-      setLocale: (locale) => { loadTranslations(store, locale); },
-      setTimezone: (timezone) => { store.dispatch(setTimezone(timezone)) },
+      setLocale: (localeValue) => { loadTranslations(store, localeValue); },
+      setTimezone: (timezoneValue) => { store.dispatch(setTimezone(timezoneValue)); },
       plugins: plugins || {},
       setSinglePlugin: (key, value) => { store.dispatch(setSinglePlugin(key, value)); },
       getDateTime: (dateStr, zone) => getDateTime(dateStr, zone || timezone),
       formatDate: (dateStr, zone) => formatDate(dateStr, zone || timezone),
-      formatTime: (dateStr, zone)  => formatTime(dateStr, zone || timezone),
+      formatTime: (dateStr, zone) => formatTime(dateStr, zone || timezone),
       formatDateTime: (dateStr, zone) => formatDateTime(dateStr, zone || timezone),
       bindings,
       setBindings: (val) => { store.dispatch(setBindings(val)); },

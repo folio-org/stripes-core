@@ -54,8 +54,8 @@ export function getLocale(okapiUrl, store, tenant) {
           if (json.configs.length) {
             const localeValues = JSON.parse(json.configs[0].value);
             const { locale, timezone } = localeValues;
-            if(locale) loadTranslations(store, locale);
-            if(timezone) store.dispatch(setTimezone(timezone));
+            if (locale) loadTranslations(store, locale);
+            if (timezone) store.dispatch(setTimezone(timezone));
           }
         });
       }
