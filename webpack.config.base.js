@@ -20,7 +20,7 @@ module.exports = {
   resolve: {
     alias: {
       'stripes-loader': 'stripes-config', // TODO: Remove this alias after UI module references have been updated
-      react: specificReact,
+      'react': specificReact,
     },
   },
   plugins: [
