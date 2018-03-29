@@ -25,7 +25,6 @@ const RootWithIntl = (props, context) => {
   const connect = connectFor('@folio/core', props.stripes.epics, props.stripes.logger);
   const stripes = props.stripes.clone({ intl, connect });
   const { token, disableAuth, history } = props;
-
   return (
     <HotKeys keyMap={stripes.bindings} noWrapper>
       <Provider store={stripes.store}>

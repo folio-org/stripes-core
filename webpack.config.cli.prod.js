@@ -32,6 +32,7 @@ prodConfig.module.rules.push({
         options: {
           localIdentName: '[local]---[hash:base64:5]',
           modules: true,
+          importLoaders: 1,
         },
       },
       {

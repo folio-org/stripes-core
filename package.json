@@ -1,6 +1,6 @@
 {
   "name": "@folio/stripes-core",
-  "version": "2.9.2",
+  "version": "2.9.3",
   "description": "The starting point for Stripes applications",
   "license": "Apache-2.0",
   "repository": "folio-org/stripes-core",
@@ -33,11 +33,11 @@
     ]
   },
   "devDependencies": {
+    "@folio/eslint-config-stripes": "^1.1.0",
     "babel-register": "^6.16.3",
     "chai": "^4.0.2",
     "enzyme": "^2.5.0",
     "eslint": "^4.8.0",
-    "@folio/eslint-config-stripes": "^1.1.0",
     "mocha": "^3.1.2",
     "mock-require": "^2.0.1",
     "react-addons-test-utils": "^15.3.2",
@@ -80,6 +80,7 @@
     "localforage": "^1.5.6",
     "lodash": "^4.16.4",
     "moment": "^2.19.1",
+    "moment-timezone": "^0.5.14",
     "node-object-hash": "^1.2.0",
     "optimize-css-assets-webpack-plugin": "^3.2.0",
     "postcss": "^6.0.2",
