@@ -163,7 +163,7 @@ function validateUser(okapiUrl, store, tenant, session) {
 const validateUserDep = _.debounce(validateUser, 5000, { leading: true, trailing: false });
 
 function isSSOEnabled(okapiUrl, store, tenant) {
-  fetch(`${okapiUrl}/saml/check`, { headers: { 'X-Okapi-Tenant': tenant, Accept: 'application/json' } })
+  fetch(`${okapiUrl}/saml/check`, { headers: { 'X-Okapi-Tenant': tenant, 'Accept': 'application/json' } })
     .then((response) => {
       if (response.status >= 400) {
         store.dispatch(checkSSO(false));
