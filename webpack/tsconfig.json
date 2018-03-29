@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "noImplicitAny": true,
+    "jsx": "react",
+  },
+  "awesomeTypescriptLoaderOptions": {
+    "useCache": true
+  }
+}
