@@ -88,6 +88,7 @@
     "postcss-color-function": "^4.0.0",
     "postcss-custom-media": "^6.0.0",
     "postcss-custom-properties": "^6.1.0",
+    "postcss-functions": "^3.0.0",
     "postcss-import": "^10.0.0",
     "postcss-loader": "^2.0.6",
     "postcss-media-minmax": "^3.0.0",
