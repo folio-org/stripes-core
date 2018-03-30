@@ -3,7 +3,6 @@ const fs = require('fs');
 const _ = require('lodash');
 const webpack = require('webpack');
 const modulePaths = require('./module-paths');
-const StripesBuildError = require('./stripes-build-error');
 
 function prefixKeys(obj, prefix) {
   const res = {};
@@ -61,15 +60,15 @@ module.exports = class StripesTranslationPlugin {
     const allTranslations = {};
     for (const mod of Object.keys(this.modules)) {
       const modPackageJsonPath = modulePaths.locateStripesModule(this.context, mod, this.aliases, 'package.json');
-      if (!modPackageJsonPath) {
-        throw new StripesBuildError(`Unable to locate ${mod} while looking for translations.`);
-      }
-      const modTranslationDir = modPackageJsonPath.replace('package.json', 'translations');
-
-      if (fs.existsSync(modTranslationDir)) {
-        _.merge(allTranslations, this.loadTranslationsDirectory(mod, modTranslationDir));
+      if (modPackageJsonPath) {
+        const modTranslationDir = modPackageJsonPath.replace('package.json', 'translations');
+        if (fs.existsSync(modTranslationDir)) {
+          _.merge(allTranslations, this.loadTranslationsDirectory(mod, modTranslationDir));
+        } else {
+          _.merge(allTranslations, this.loadTranslationsPackageJson(mod, modPackageJsonPath));
+        }
       } else {
-        _.merge(allTranslations, this.loadTranslationsPackageJson(mod, modPackageJsonPath));
+        console.log(`Unable to locate ${mod} while looking for translations.`);
       }
     }
     return allTranslations;
