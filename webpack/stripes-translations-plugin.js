@@ -62,7 +62,8 @@ module.exports = class StripesTranslationPlugin {
     for (const mod of Object.keys(this.modules)) {
       const modPackageJsonPath = modulePaths.locateStripesModule(this.context, mod, this.aliases, 'package.json');
       if (!modPackageJsonPath) {
-        throw new StripesBuildError(`Unable to locate ${mod} while looking for translations.`);
+        console.log(`Unable to locate ${mod} while looking for translations.`);
+        continue;
       }
       const modTranslationDir = modPackageJsonPath.replace('package.json', 'translations');
 
