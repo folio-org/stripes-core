@@ -42,6 +42,10 @@ module.exports = {
         loader: 'file-loader?name=img/[path][name].[hash].[ext]',
       },
       {
+        test: /\.(mp3)$/,
+        loader: 'file-loader?name=sound/[name].[hash].[ext]',
+      },
+      {
         test: /\.(woff2?)$/,
         loader: 'file-loader?name=fonts/[name].[hash].[ext]',
       },
