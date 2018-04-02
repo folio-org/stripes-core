@@ -42,7 +42,7 @@ module.exports = {
         loader: 'file-loader?name=img/[path][name].[hash].[ext]',
       },
       {
-        test: /\.(mp3)$/,
+        test: /\.(mp3|m4a)$/,
         loader: 'file-loader?name=sound/[name].[hash].[ext]',
       },
       {
