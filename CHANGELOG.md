@@ -18,6 +18,10 @@
 * Add -l to stripes-pull to iterate through local directories instead of through a hard-coded list. Fixes STCOR-166. Available from v2.9.2.
 * Update react-cookie dependency, eliminating a duplicate-package warning from WebPack. Fixes part of STCOR-167.
 * Do not emit "no icons defined in stripes.icons" warning for non-app modules. Fixes STCOR-171.
+* Ignore yarn-error.log file. Refs STRIPES-517.
+* Don't add "ui-" prefix to translation keys in stripes libraries. Fixes STCOR-178. Available from v2.9.3.
+* Don't throw errors when searching for translations in stripes- libraries; those are optional, not dependencies. Fixes STCOR-183. Available from v2.9.4.
+* Add rule to webpack's file-loader configuration to support audio files. Fixes STCOR-184.
 
 ## [2.9.0](https://github.com/folio-org/stripes-core/tree/v2.9.0) (2018-02-01)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.8.0...v2.9.0)

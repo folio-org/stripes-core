@@ -10,6 +10,7 @@ import {
   clearCurrentUser,
   setCurrentPerms,
   setLocale,
+  setTimezone,
   setPlugins,
   setBindings,
   setOkapiToken,
@@ -45,13 +46,16 @@ export function loadTranslations(store, locale) {
 }
 
 export function getLocale(okapiUrl, store, tenant) {
-  fetch(`${okapiUrl}/configurations/entries?query=(module=ORG and configName=locale)`,
+  fetch(`${okapiUrl}/configurations/entries?query=(module=ORG and configName=localeSettings)`,
     { headers: getHeaders(tenant, store.getState().okapi.token) })
     .then((response) => {
       if (response.status === 200) {
         response.json().then((json) => {
           if (json.configs.length) {
-            loadTranslations(store, json.configs[0].value);
+            const localeValues = JSON.parse(json.configs[0].value);
+            const { locale, timezone } = localeValues;
+            if (locale) loadTranslations(store, locale);
+            if (timezone) store.dispatch(setTimezone(timezone));
           }
         });
       }
@@ -159,7 +163,7 @@ function validateUser(okapiUrl, store, tenant, session) {
 const validateUserDep = _.debounce(validateUser, 5000, { leading: true, trailing: false });
 
 function isSSOEnabled(okapiUrl, store, tenant) {
-  fetch(`${okapiUrl}/saml/check`, { headers: { 'X-Okapi-Tenant': tenant, Accept: 'application/json' } })
+  fetch(`${okapiUrl}/saml/check`, { headers: { 'X-Okapi-Tenant': tenant, 'Accept': 'application/json' } })
     .then((response) => {
       if (response.status >= 400) {
         store.dispatch(checkSSO(false));

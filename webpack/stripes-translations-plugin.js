@@ -3,7 +3,6 @@ const fs = require('fs');
 const _ = require('lodash');
 const webpack = require('webpack');
 const modulePaths = require('./module-paths');
-const StripesBuildError = require('./stripes-build-error');
 
 function prefixKeys(obj, prefix) {
   const res = {};
@@ -15,10 +14,11 @@ function prefixKeys(obj, prefix) {
 
 module.exports = class StripesTranslationPlugin {
   constructor(options) {
-    // Include stripes-core because it has translations
-    // If we ever have translations in other common modules, like stripes-components, include them here as well
+    // Include stripes-core et al because they have translations
     this.modules = {
       '@folio/stripes-core': {},
+      '@folio/stripes-components': {},
+      '@folio/stripes-smart-components': {},
     };
     Object.assign(this.modules, options.modules);
     this.languageFilter = options.config.languages || [];
@@ -60,15 +60,15 @@ module.exports = class StripesTranslationPlugin {
     const allTranslations = {};
     for (const mod of Object.keys(this.modules)) {
       const modPackageJsonPath = modulePaths.locateStripesModule(this.context, mod, this.aliases, 'package.json');
-      if (!modPackageJsonPath) {
-        throw new StripesBuildError(`Unable to locate ${mod} while looking for translations.`);
-      }
-      const modTranslationDir = modPackageJsonPath.replace('package.json', 'translations');
-
-      if (fs.existsSync(modTranslationDir)) {
-        _.merge(allTranslations, this.loadTranslationsDirectory(mod, modTranslationDir));
+      if (modPackageJsonPath) {
+        const modTranslationDir = modPackageJsonPath.replace('package.json', 'translations');
+        if (fs.existsSync(modTranslationDir)) {
+          _.merge(allTranslations, this.loadTranslationsDirectory(mod, modTranslationDir));
+        } else {
+          _.merge(allTranslations, this.loadTranslationsPackageJson(mod, modPackageJsonPath));
+        }
       } else {
-        _.merge(allTranslations, this.loadTranslationsPackageJson(mod, modPackageJsonPath));
+        console.log(`Unable to locate ${mod} while looking for translations.`);
       }
     }
     return allTranslations;
@@ -113,7 +113,7 @@ module.exports = class StripesTranslationPlugin {
   // Converts "example.key" for "@folio/app" into "ui-app.example.key"
   static prefixModuleKeys(moduleName, translations) {
     const name = moduleName.replace(/.*\//, '');
-    const prefix = name === 'stripes-core' ? `${name}.` : `ui-${name}.`;
+    const prefix = name.indexOf('stripes-') === 0 ? `${name}.` : `ui-${name}.`;
     return prefixKeys(translations, prefix);
   }
 
