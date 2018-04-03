@@ -23,6 +23,7 @@
 * Don't throw errors when searching for translations in stripes- libraries; those are optional, not dependencies. Fixes STCOR-183. Available from v2.9.4.
 * Add rule to webpack's file-loader configuration to support audio files. Fixes STCOR-184.
 * Update "configure" script to use a Yarn workspace. Fixes STCOR-185.
+* Fix typos in workspace-creation section of [_Creating a new development setup_ document](doc/new-development-setup.md). Fixes STCOR-186.
 
 ## [2.9.0](https://github.com/folio-org/stripes-core/tree/v2.9.0) (2018-02-01)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.8.0...v2.9.0)
