@@ -20,7 +20,7 @@ module.exports = {
   resolve: {
     alias: {
       'stripes-loader': 'stripes-config', // TODO: Remove this alias after UI module references have been updated
-      react: specificReact,
+      'react': specificReact,
     },
   },
   plugins: [
@@ -40,6 +40,10 @@ module.exports = {
       {
         test: /\.(jpg|jpeg|gif|png|ico|svg)$/,
         loader: 'file-loader?name=img/[path][name].[hash].[ext]',
+      },
+      {
+        test: /\.(mp3|m4a)$/,
+        loader: 'file-loader?name=sound/[name].[hash].[ext]',
       },
       {
         test: /\.(woff2?)$/,

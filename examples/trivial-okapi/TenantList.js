@@ -17,7 +17,7 @@ class TenantList extends Component {
 
   static manifest = {
     '@errorHandler': TenantList.handler,
-    tenants: {
+    'tenants': {
       path: '_/proxy/tenants',
       type: 'okapi',
     },

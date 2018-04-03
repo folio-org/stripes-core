@@ -20,6 +20,8 @@
 * Do not emit "no icons defined in stripes.icons" warning for non-app modules. Fixes STCOR-171.
 * Ignore yarn-error.log file. Refs STRIPES-517.
 * Don't add "ui-" prefix to translation keys in stripes libraries. Fixes STCOR-178. Available from v2.9.3.
+* Don't throw errors when searching for translations in stripes- libraries; those are optional, not dependencies. Fixes STCOR-183. Available from v2.9.4.
+* Add rule to webpack's file-loader configuration to support audio files. Fixes STCOR-184.
 * Updated MainNav to be more responsive. UX-153.
 
 ## [2.9.0](https://github.com/folio-org/stripes-core/tree/v2.9.0) (2018-02-01)
