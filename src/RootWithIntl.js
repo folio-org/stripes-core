@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import Router from 'react-router-dom/Router';
 import Route from 'react-router-dom/Route';
 import Switch from 'react-router-dom/Switch';
-import OverlayContainer from './components/OverlayContainer';
 import { Provider } from 'react-redux';
 import { CookiesProvider } from 'react-cookie';
 import { HotKeys } from '@folio/stripes-components/lib/HotKeys';
@@ -18,6 +17,7 @@ import SSOLanding from './components/SSOLanding';
 import SSORedirect from './components/SSORedirect';
 import Settings from './components/Settings/Settings';
 import LoginCtrl from './components/Login';
+import OverlayContainer from './components/OverlayContainer';
 import getModuleRoutes from './moduleRoutes';
 import { stripesShape } from './Stripes';
 
@@ -30,7 +30,6 @@ const RootWithIntl = (props, context) => {
     <HotKeys keyMap={stripes.bindings} noWrapper>
       <Provider store={stripes.store}>
         <Router history={history}>
-          
           { token || disableAuth ?
             <MainContainer>
               <OverlayContainer />
