@@ -1,8 +1,7 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import css from './OverlayContainer.css';
 
-function OverlayContainer(props) {
+function OverlayContainer() {
   return (
     <div id="OverlayContainer" className={css.overlayContainer} />
   );
