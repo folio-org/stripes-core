@@ -61,7 +61,7 @@ button.navButton {
 .icon,
 .label {
   position: relative;
-  z-index: 2;
+  z-index: stripesZIndex('navButtonIcon');
 }
 
 .navButton,
@@ -90,7 +90,7 @@ button.navButton {
   position: absolute;
   top: 0;
   right: -1px;
-  z-index: 5;
+  z-index: stripesZIndex('navButtonBadge');
 }
 
 /**
@@ -106,7 +106,7 @@ button.navButton {
   right: 0;
   background: transparent;
   border-radius: calc(var(--radius) * 1.2);
-  z-index: 1;
+  z-index: stripesZIndex('navButtonInteractableIcon');
 }
 
 .navButton.isInteractable:hover .inner::before {

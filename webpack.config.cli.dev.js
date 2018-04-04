@@ -2,6 +2,7 @@
 // from the command line via devServer.js
 
 const webpack = require('webpack');
+const path = require('path');
 const postCssImport = require('postcss-import');
 const autoprefixer = require('autoprefixer');
 const postCssCustomProperties = require('postcss-custom-properties');
@@ -10,6 +11,7 @@ const postCssNesting = require('postcss-nesting');
 const postCssCustomMedia = require('postcss-custom-media');
 const postCssMediaMinMax = require('postcss-media-minmax');
 const postCssColorFunction = require('postcss-color-function');
+const postCssFunctions = require('postcss-functions');
 
 const base = require('./webpack.config.base');
 const cli = require('./webpack.config.cli');
@@ -54,6 +56,9 @@ devConfig.module.rules.push({
           postCssCustomMedia(),
           postCssMediaMinMax(),
           postCssColorFunction(),
+          postCssFunctions({
+            glob: path.join(path.resolve(), 'node_modules/@folio/stripes-components/lib/sharedStyles/functions', '*.js'),
+          }),
         ],
         sourceMap: true,
       },
