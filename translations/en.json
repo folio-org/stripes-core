@@ -16,5 +16,7 @@
   "label.confirmDeleteEntry": "{entry} will be removed",
   "label.editEntry": "Edit {entry}",
   "label.createEntry": "Create {entry}",
-  "label.unsavedChanges": "There are unsaved changes"
+  "label.unsavedChanges": "There are unsaved changes",
+  "label.missingRequiredField": "Please fill this in to continue",
+  "label.okay": "Okay"
 }
