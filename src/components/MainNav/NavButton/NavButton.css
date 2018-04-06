@@ -1,6 +1,7 @@
 @import '@folio/stripes-components/lib/variables.css';
 
 .navButton {
+  /* composes: accessibleFocusRoot from "@folio/stripes-components/lib/sharedStyles/AccessibleFocus.css"; */
   padding: 0 5px;
   height: 44px;
   outline: 0;
