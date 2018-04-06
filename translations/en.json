@@ -13,8 +13,10 @@
   "button.saveChanges": "Save Changes",
   "button.discardChanges": "Close without saving",
   "button.keepEditing": "Keep editing",
-  "label.confirmDeleteEntry": "{entry} will be removed",
+  "label.confirmDeleteEntry": "<strong>{name}</strong> will be <strong>removed</strong>",
   "label.editEntry": "Edit {entry}",
   "label.createEntry": "Create {entry}",
-  "label.unsavedChanges": "There are unsaved changes"
+  "label.unsavedChanges": "There are unsaved changes",
+  "successfullyDeleted": "The {entry} <strong>{name}</strong> was successfully <strong>deleted</strong>.",
+  "untitled": "Untitled"
 }
