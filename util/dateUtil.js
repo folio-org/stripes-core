@@ -8,7 +8,7 @@ export function formatDate(dateStr, timezone) {
   return (<FormattedDate value={dateTime} timeZone={timezone} />);
 }
 
-// This function helps in formatting dates that are timezone agnostic (eg: birthdays)
+// This function helps in formatting dates that are timezone agnostic (eg: birthdays, expiration days, etc)
 export function formatAbsoluteDate(dateStr) {
   if (!dateStr) return dateStr;
   // Consider only the date part of the ISO string ('yyyy-mm-dd'T'hh:mm:ss') for formatting Date
