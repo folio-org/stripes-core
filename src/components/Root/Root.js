@@ -10,7 +10,7 @@ import initialReducers from '../../initialReducers';
 import enhanceReducer from '../../enhanceReducer';
 import createApolloClient from '../../createApolloClient';
 import { setSinglePlugin, setBindings, setOkapiToken, setTimezone } from '../../okapiActions';
-import { formatDate, formatTime, formatDateTime } from '../../../util/dateUtil';
+import { formatDate, formatTime, formatDateTime, formatAbsoluteDate } from '../../../util/dateUtil';
 import { loadTranslations, checkOkapiSession } from '../../loginServices';
 import { getQueryResourceKey } from '../../locationService';
 import Stripes from '../../Stripes';
@@ -106,6 +106,7 @@ class Root extends Component {
       formatDate: (dateStr, zone) => formatDate(dateStr, zone || timezone),
       formatTime: (dateStr, zone) => formatTime(dateStr, zone || timezone),
       formatDateTime: (dateStr, zone) => formatDateTime(dateStr, zone || timezone),
+      formatAbsoluteDate: (dateStr) => formatAbsoluteDate(dateStr),
       bindings,
       setBindings: (val) => { store.dispatch(setBindings(val)); },
       discovery,
