@@ -1,5 +1,10 @@
 .overlayContainer{
-    position: relative;
+    position: absolute;
     pointer-events: none;
-    z-index: 99999;
+    z-index: 9999;
+    width: 100vw;
+    height: 100vh;
+    &>* {
+        pointer-events: all;
+    }
 }
