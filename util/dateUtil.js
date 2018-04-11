@@ -13,7 +13,7 @@ export function formatAbsoluteDate(dateStr) {
   if (!dateStr) return dateStr;
   // Consider only the date part of the ISO string ('yyyy-mm-dd'T'hh:mm:ss') for formatting Date
   const date = moment(dateStr.split('T')[0]).format('MM-DD-YYYY');
-  return (<FormattedDate value={date}/>);
+  return (<FormattedDate value={date} />);
 }
 
 export function formatTime(dateStr, timezone) {
