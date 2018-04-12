@@ -25,8 +25,9 @@
 * Update "configure" script to use a Yarn workspace. Fixes STCOR-185.
 * Fix typos in workspace-creation section of [_Creating a new development setup_ document](doc/new-development-setup.md). Fixes STCOR-186.
 * Add i18n best practices documentation. Fixes STCOR-182.
-* Add overlay container div for system-level communications, dropdowns, modals etc.
-* Modified z-index of MainNav, ModuleContainer, OverlayContainer so that components within these containers can apply their own z-indexes without collision or unwanted overlap.
+* Upgrade react-apollo dependency to v2.1.3. Fixes STCOR-188.
+* Add overlay container div for system-level communications, dropdowns, modals etc. Implements STCOR-187
+* Modified z-index of MainNav, ModuleContainer, OverlayContainer so that components within these containers can apply their own z-indexes without collision or unwanted overlap. Also Implements STCOR-187.
 
 ## [2.9.0](https://github.com/folio-org/stripes-core/tree/v2.9.0) (2018-02-01)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.8.0...v2.9.0)
