@@ -4,9 +4,11 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const defaultBranding = require('../default-assets/branding');
+const logger = require('./logger')('stripesBrandingPlugin');
 
 module.exports = class StripesBrandingPlugin {
   constructor(tenantBranding) {
+    logger.log('initializing...');
     // TODO: Validate incoming tenantBranding paths
     this.branding = Object.assign({}, defaultBranding, tenantBranding);
   }

@@ -10,6 +10,7 @@ const StripesConfigPlugin = require('./stripes-config-plugin');
 const StripesBrandingPlugin = require('./stripes-branding-plugin');
 const StripesTranslationsPlugin = require('./stripes-translations-plugin');
 const applyWebpackOverrides = require('./apply-webpack-overrides');
+const logger = require('./logger')();
 
 const cwd = path.resolve();
 const platformModulePath = path.join(cwd, 'node_modules');
@@ -29,6 +30,7 @@ const cachePlugin = new HardSourceWebpackPlugin({
 
 module.exports = function serve(stripesConfig, options) {
   return new Promise((resolve) => {
+    logger.log('starting serve...');
     const app = express();
     let config = require('../webpack.config.cli.dev'); // eslint-disable-line
 
@@ -49,6 +51,7 @@ module.exports = function serve(stripesConfig, options) {
     // Give the caller a chance to apply their own webpack overrides
     config = applyWebpackOverrides(options.webpackOverrides, config);
 
+    logger.log('assign final webpack config', config);
     const compiler = webpack(config);
     compiler.plugin('done', stats => resolve(stats));
 
