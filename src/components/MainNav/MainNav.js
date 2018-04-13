@@ -188,6 +188,7 @@ class MainNav extends Component {
               <AppList
                 apps={apps}
                 searchfieldId="app-list-search-field"
+                dropdownToggleId="app-list-dropdown-toggle"
               />
               <NavDivider md="hide" />
               { this.props.stripes.withOkapi && this.props.stripes.hasPerm('notify.item.get,notify.item.put,notify.collection.get') &&
