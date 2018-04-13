@@ -184,7 +184,7 @@ class MainNav extends Component {
         <nav>
           <Headline tag="h2" className="sr-only">Main Navigation</Headline>
           <NavGroup>
-            <NavGroup className={css.smallAlignRight}>
+            <NavGroup>
               <AppList
                 apps={apps}
                 searchfieldId="app-list-search-field"
