@@ -8,12 +8,22 @@
 #
 
 ./stripes-core/util/pull-stripes -c
-./stripes-core/util/pull-stripes -b
+
+echo '{
+    "private": true,
+    "workspaces": [
+        "stripes-*",
+        "ui-*"
+    ],
+    "dependencies": {
+    }
+}' > package.json
+yarn install
 
 yarn config set @folio:registry https://repository.folio.org/repository/npm-folioci/
 
 npm list -g --depth 0 | grep -q '@folio/stripes-cli'
-if [[ $? != 0 ]]; then
+if [ $? != 0 ]; then
     yarn global add node-gyp
     yarn global add @folio/stripes-cli
 fi

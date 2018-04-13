@@ -106,6 +106,7 @@ class Root extends Component {
       formatDate: (dateStr, zone) => formatDate(dateStr, zone || timezone),
       formatTime: (dateStr, zone) => formatTime(dateStr, zone || timezone),
       formatDateTime: (dateStr, zone) => formatDateTime(dateStr, zone || timezone),
+      formatAbsoluteDate: (dateStr) => formatDate(dateStr, 'UTC'),
       bindings,
       setBindings: (val) => { store.dispatch(setBindings(val)); },
       discovery,
