@@ -10,9 +10,11 @@ const serialize = require('serialize-javascript');
 const stripesModuleParser = require('./stripes-module-parser');
 const StripesBuildError = require('./stripes-build-error');
 const stripesSerialize = require('./stripes-serialize');
+const logger = require('./logger')('stripesConfigPlugin');
 
 module.exports = class StripesConfigPlugin {
   constructor(options) {
+    logger.log('initializing...');
     if (!_.isObject(options.modules)) {
       throw new StripesBuildError('stripes-config-plugin was not provided a "modules" object for enabling stripes modules');
     }
@@ -21,6 +23,7 @@ module.exports = class StripesConfigPlugin {
 
   apply(compiler) {
     const enabledModules = this.options.modules;
+    logger.log('enabled modules:', enabledModules);
     const { config, metadata, warnings } = stripesModuleParser.parseAllModules(enabledModules, compiler.context, compiler.options.resolve.alias);
     this.mergedConfig = Object.assign({}, this.options, { modules: config });
     this.metadata = metadata;
@@ -49,6 +52,7 @@ module.exports = class StripesConfigPlugin {
       export { okapi, config, modules, branding, translations, metadata };
     `;
 
+    logger.log('writing virtual module...', stripesVirtualModule);
     this.virtualModule.writeModule('node_modules/stripes-config.js', stripesVirtualModule);
   }
 

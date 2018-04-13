@@ -3,6 +3,7 @@ const fs = require('fs');
 const _ = require('lodash');
 const webpack = require('webpack');
 const modulePaths = require('./module-paths');
+const logger = require('./logger')('stripesTranslationsPlugin');
 
 function prefixKeys(obj, prefix) {
   const res = {};
@@ -22,6 +23,7 @@ module.exports = class StripesTranslationPlugin {
     };
     Object.assign(this.modules, options.modules);
     this.languageFilter = options.config.languages || [];
+    logger.log('language filter', this.languageFilter);
   }
 
   apply(compiler) {
@@ -45,6 +47,7 @@ module.exports = class StripesTranslationPlugin {
     // Emit merged translations to the output directory
     compiler.plugin('emit', (compilation, callback) => {
       Object.keys(allTranslations).forEach((language) => {
+        logger.log(`emitting translations for ${language} --> ${fileData[language].emitPath}`);
         const content = JSON.stringify(allTranslations[language]);
         compilation.assets[fileData[language].emitPath] = {
           source: () => content,
@@ -76,6 +79,7 @@ module.exports = class StripesTranslationPlugin {
 
   // Load translation *.json files from a single module's translation directory
   loadTranslationsDirectory(moduleName, dir) {
+    logger.log('loading translations from directory', dir);
     const moduleTranslations = {};
     for (const translationFile of fs.readdirSync(dir)) {
       const language = translationFile.replace('.json', '');
@@ -90,6 +94,7 @@ module.exports = class StripesTranslationPlugin {
 
   // Maintains backwards-compatibility with existing apps
   loadTranslationsPackageJson(moduleName, packageJsonPath) {
+    logger.log('loading translations from package.json (legacy)', packageJsonPath);
     const moduleTranslations = {};
     const packageJson = StripesTranslationPlugin.loadFile(packageJsonPath);
     if (packageJson.stripes && packageJson.stripes.translations) {
