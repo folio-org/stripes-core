@@ -38,7 +38,6 @@ const NavButton = ({ label, title, selected, onClick, href, icon, noSelectedBar,
     css.navButton,
     { [css.selected]: selected },
     { [css.noSelectedBar]: noSelectedBar },
-    { [css.isInteractable]: href || onClick },
     className,
   );
 
@@ -72,7 +71,7 @@ const NavButton = ({ label, title, selected, onClick, href, icon, noSelectedBar,
 
   return (
     <Element id={id} title={title} className={rootClasses} role="button" {...clickableProps}>
-      <span className={css.inner}>
+      <span className={classNames(css.inner, { [css.isInteractable]: href || onClick })}>
         { badge && (<Badge color="red" className={css.badge}>{badge}</Badge>) }
         { displayIcon }
         { label && <span className={css.label}>{label}</span>}
