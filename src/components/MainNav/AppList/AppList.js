@@ -67,6 +67,11 @@ class AppList extends Component {
    * When dropdown is getting toggled
    */
   toggleDropdown = () => {
+    // Re-focus dropdown toggle on close
+    if (this.state.open) {
+      document.getElementById(this.props.dropdownToggleId).focus();
+    }
+
     this.setState({
       open: !this.state.open,
     });

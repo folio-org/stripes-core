@@ -101,7 +101,7 @@ class AppListDropdown extends Component {
             {items}
           </NavListSection>
         </NavList>
-        <input className={css.focusTrap} onFocus={() => document.getElementById(dropdownToggleId).focus()} />
+        <input className={css.focusTrap} onFocus={() => document.getElementById(searchfieldId).focus()} />
       </div>
     );
   }
