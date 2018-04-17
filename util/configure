@@ -7,6 +7,8 @@
 # and install the stripes-sample-platform skeleton files.
 #
 
+yarn config set @folio:registry https://repository.folio.org/repository/npm-folioci/
+
 ./stripes-core/util/pull-stripes -c
 
 echo '{
@@ -19,8 +21,6 @@ echo '{
     }
 }' > package.json
 yarn install
-
-yarn config set @folio:registry https://repository.folio.org/repository/npm-folioci/
 
 npm list -g --depth 0 | grep -q '@folio/stripes-cli'
 if [ $? != 0 ]; then
