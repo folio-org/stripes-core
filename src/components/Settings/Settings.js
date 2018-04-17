@@ -54,6 +54,8 @@ const Settings = (props) => {
     />);
   });
 
+  // To keep the top level parent menu item shown as active
+  // when a child settings page is active
   const activeLink = `/settings/${props.location.pathname.split('/')[2]}`;
 
   return (
