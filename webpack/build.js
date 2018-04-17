@@ -5,11 +5,13 @@ const StripesBrandingPlugin = require('./stripes-branding-plugin');
 const StripesTranslationsPlugin = require('./stripes-translations-plugin');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 const applyWebpackOverrides = require('./apply-webpack-overrides');
+const logger = require('./logger')();
 
 const platformModulePath = path.join(path.resolve(), 'node_modules');
 
 module.exports = function build(stripesConfig, options) {
   return new Promise((resolve, reject) => {
+    logger.log('starting build...');
     let config = require('../webpack.config.cli.prod'); // eslint-disable-line
 
     config.plugins.push(new StripesConfigPlugin(stripesConfig));
@@ -35,6 +37,7 @@ module.exports = function build(stripesConfig, options) {
     // Give the caller a chance to apply their own webpack overrides
     config = applyWebpackOverrides(options.webpackOverrides, config);
 
+    logger.log('assign final webpack config', config);
     const compiler = webpack(config);
     compiler.run((err, stats) => {
       if (err) {

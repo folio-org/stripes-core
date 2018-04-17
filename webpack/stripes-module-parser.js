@@ -2,6 +2,7 @@ const path = require('path');
 const _ = require('lodash');
 const modulePaths = require('./module-paths');
 const StripesBuildError = require('./stripes-build-error');
+const logger = require('./logger')('stripesModuleParser');
 
 function appendOrSingleton(maybeArray, newValue) {
   const singleton = [newValue];
@@ -12,6 +13,7 @@ function appendOrSingleton(maybeArray, newValue) {
 // Handles the parsing of one Stripes module's configuration and metadata
 class StripesModuleParser {
   constructor(moduleName, overrideConfig, context, aliases) {
+    logger.log(`initializing parser for ${moduleName}...`);
     this.moduleName = moduleName;
     this.modulePath = '';
     this.nameOnly = moduleName.replace(/.*\//, '');
@@ -61,6 +63,7 @@ class StripesModuleParser {
       version,
     });
     delete stripeConfig.type;
+    logger.log('config:', stripeConfig);
     return stripeConfig;
   }
 
@@ -85,7 +88,7 @@ class StripesModuleParser {
       icons,
       welcomePageEntries,
     };
-
+    logger.log('metadata:', metadata);
     return metadata;
   }
 
