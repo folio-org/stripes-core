@@ -1,7 +1,10 @@
+const logger = require('./logger')();
+
 // Applies overrides to the webpack configuration
 // Supports a function or an array of functions
 
 module.exports = function applyWebpackOverrides(overrides, originalConfig) {
+  logger.log('applying webpack overrides...');
   let config = originalConfig;
 
   if (overrides && typeof overrides === 'function') {
