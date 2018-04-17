@@ -27,6 +27,7 @@
 * Add i18n best practices documentation. Fixes STCOR-182.
 * Upgrade react-apollo dependency to v2.1.3. Fixes STCOR-188.
 * Add diagnostic output to stripes builds, STCOR-141.
+* Updated MainNav to be more responsive. UX-153.
 
 ## [2.9.0](https://github.com/folio-org/stripes-core/tree/v2.9.0) (2018-02-01)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.8.0...v2.9.0)

@@ -13,21 +13,13 @@ import { resetStore } from '../../mainActions';
 import { updateQueryResource, updateLocation } from '../../locationService';
 
 import css from './MainNav.css';
-import NavButton from './NavButton';
 import NavDivider from './NavDivider';
 import NavGroup from './NavGroup';
-import Breadcrumbs from './Breadcrumbs';
 import CurrentApp from './CurrentApp';
 import MyProfile from './MyProfile';
+import AppList from './AppList';
 import NotificationsDropdown from './Notifications/NotificationsDropdown';
 import settingsIcon from './settings.svg';
-
-// Temporary until settings becomes an app
-const settingsIconData = {
-  src: settingsIcon,
-  alt: 'Tenant Settings',
-  title: 'Settings',
-};
 
 if (!Array.isArray(modules.app) || modules.app.length < 1) {
   throw new Error('At least one module of type "app" must be enabled.');
@@ -131,9 +123,8 @@ class MainNav extends Component {
 
   render() {
     const { stripes, location: { pathname } } = this.props;
-    const selectedApp = modules.app.find(entry => pathname.startsWith(entry.route));
 
-    const menuLinks = modules.app.map((entry) => {
+    const apps = modules.app.map((entry) => {
       const name = entry.module.replace(/^@[a-z0-9_]+\//, '');
       const perm = `module.${name}.enabled`;
 
@@ -141,34 +132,44 @@ class MainNav extends Component {
         return null;
       }
 
-      const navId = `clickable-${name}-module`;
-      const isActive = pathname.startsWith(entry.route);
-      const href = !isActive ? (this.lastVisited[name] || entry.home || entry.route) : null;
+      const id = `clickable-${name}-module`;
+      const active = pathname.startsWith(entry.route);
+      const href = (this.lastVisited[name] || entry.home || entry.route);
 
-      return (
-        <NavButton
-          label={entry.displayName}
-          id={navId}
-          selected={isActive}
-          href={href}
-          title={entry.displayName}
-          key={entry.route}
-          iconKey={name}
-        />);
-    });
+      return {
+        id,
+        href,
+        active,
+        name,
+        ...entry,
+      };
+    }).filter(app => app);
 
-    let firstNav;
-    let breadcrumbArray = []; // eslint-disable-line
+    /**
+     * Add Settings to apps array manually
+     * until Settings becomes a standalone app
+     */
 
-    // Temporary solution until Settings becomes a standalone app
-    let settingsApp;
-    if (stripes.hasPerm('settings.enabled') && pathname.startsWith('/settings')) {
-      settingsApp = { displayName: 'Settings', description: 'FOLIO settings' };
+    if (stripes.hasPerm('settings.enabled')) {
+      apps.push({
+        displayName: 'Settings',
+        id: 'clickable-settings',
+        href: this.lastVisited.x_settings || '/settings',
+        active: pathname.startsWith('/settings'),
+        description: 'FOLIO settings',
+        iconData: {
+          src: settingsIcon,
+          alt: 'Tenant Settings',
+          title: 'Settings',
+        },
+      });
     }
 
-    if (breadcrumbArray.length === 0) {
-      firstNav = (
-        <NavGroup md="hide">
+    const selectedApp = apps.find(app => app.active);
+
+    return (
+      <header className={css.navRoot}>
+        <NavGroup>
           <a className={css.skipLink} href="#ModuleContainer" aria-label="Skip Main Navigation" title="Skip Main Navigation">
             <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 26 26">
               <polygon style={{ fill: '#999' }} points="13 16.5 1.2 5.3 3.2 3.1 13 12.4 22.8 3.1 24.8 5.3 " />
@@ -177,46 +178,25 @@ class MainNav extends Component {
           </a>
           <CurrentApp
             id="ModuleMainHeading"
-            currentApp={selectedApp || settingsApp}
-            iconData={settingsApp && settingsIconData}
+            currentApp={selectedApp}
           />
         </NavGroup>
-      );
-    } else {
-      firstNav = (
-        <NavGroup>
-          <NavButton md="hide" />
-          <Breadcrumbs linkArray={breadcrumbArray} />
-        </NavGroup>
-      );
-    }
-
-    return (
-      <header className={css.navRoot}>
-        {firstNav}
         <nav>
           <Headline tag="h2" className="sr-only">Main Navigation</Headline>
           <NavGroup>
             <NavGroup>
-              {menuLinks}
-              {
-                !stripes.hasPerm('settings.enabled') ? '' : (
-                  <NavButton
-                    label="Settings"
-                    id="clickable-settings"
-                    title="Settings"
-                    iconData={settingsIconData}
-                    selected={pathname.startsWith('/settings')}
-                    href={pathname.startsWith('/settings') ? null : (this.lastVisited.x_settings || '/settings')}
-                  />
-                )
-              }
-            </NavGroup>
-            <NavGroup className={css.smallAlignRight}>
+              <AppList
+                apps={apps}
+                searchfieldId="app-list-search-field"
+                dropdownToggleId="app-list-dropdown-toggle"
+              />
               <NavDivider md="hide" />
-              {this.props.stripes.withOkapi && this.props.stripes.hasPerm('notify.item.get,notify.item.put,notify.collection.get') && <NotificationsDropdown stripes={stripes} {...this.props} />}
-              { /* temporary divider solution.. */}
-              {this.props.stripes.hasPerm('notify.item.get,notify.item.put,notify.collection.get') && (<NavDivider md="hide" />)}
+              { this.props.stripes.withOkapi && this.props.stripes.hasPerm('notify.item.get,notify.item.put,notify.collection.get') &&
+                <NavGroup>
+                  <NotificationsDropdown stripes={stripes} {...this.props} />
+                  <NavDivider md="hide" />
+                </NavGroup>
+              }
               <MyProfile
                 onLogout={this.logout}
                 stripes={stripes}

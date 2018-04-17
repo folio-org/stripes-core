@@ -80,6 +80,7 @@ button.navButton {
 .inner {
   padding: 4px 0;
   position: relative;
+  flex-shrink: 0;
 }
 
 /**
