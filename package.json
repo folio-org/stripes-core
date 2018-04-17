@@ -17,7 +17,7 @@
     "lint": "eslint ./ && stylelint \"src/**/*.css\""
   },
   "engines": {
-    "node": ">=8.11.1"
+    "node": ">=8.11.0"
   },
   "stripes": {
     "okapiInterfaces": {
