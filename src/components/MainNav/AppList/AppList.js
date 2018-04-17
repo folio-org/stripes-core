@@ -39,13 +39,17 @@ class AppList extends Component {
     this.state = {
       open: false,
     };
+
+    this.getDropdownToggleButton = this.getDropdownToggleButton.bind(this);
+    this.getNavButtons = this.getNavButtons.bind(this);
+    this.toggleDropdown = this.toggleDropdown.bind(this);
   }
 
   /**
    * Get the nav buttons that is displayed
    * in the app header on desktop
    */
-  getNavButtons = () => {
+  getNavButtons() {
     const { apps } = this.props;
 
     return apps.map(app => (
@@ -66,7 +70,7 @@ class AppList extends Component {
   /**
    * When dropdown is getting toggled
    */
-  toggleDropdown = () => {
+  toggleDropdown() {
     // Re-focus dropdown toggle on close
     if (this.state.open) {
       document.getElementById(this.props.dropdownToggleId).focus();
@@ -80,7 +84,7 @@ class AppList extends Component {
   /**
    * The button that toggles the dropdown
    */
-  getDropdownToggleButton = () => {
+  getDropdownToggleButton() {
     const { searchfieldId, dropdownToggleId } = this.props;
 
     const icon = (<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M6.9 2.2H2.7c-.4 0-.7.4-.7.7v4.2c0 .4.3.7.7.7h4.2c.4 0 .7-.3.7-.7V2.9c0-.3-.3-.7-.7-.7zM14 2.2H9.8c-.4 0-.8.4-.8.7v4.2c0 .4.3.7.7.7H14c.4 0 .7-.3.7-.7V2.9c0-.3-.3-.7-.7-.7zM21 2.2h-4.2c-.4 0-.7.3-.7.7v4.2c0 .4.3.7.7.7H21c.4 0 .7-.3.7-.7V2.9c0-.3-.3-.7-.7-.7zM6.9 9.3H2.7c-.4 0-.7.3-.7.7v4.2c0 .4.3.7.7.7h4.2c.4 0 .7-.3.7-.7V10c0-.4-.3-.7-.7-.7zM14 9.3H9.8c-.4 0-.8.3-.8.7v4.2c0 .4.3.7.7.7H14c.4 0 .7-.3.7-.7V10c0-.4-.3-.7-.7-.7zM21 9.3h-4.2c-.4 0-.7.3-.7.7v4.2c0 .4.3.7.7.7H21c.4 0 .7-.3.7-.7V10c0-.4-.3-.7-.7-.7zM6.9 16.3H2.7c-.4 0-.7.3-.7.7v4.2c0 .4.3.8.7.8h4.2c.4 0 .7-.3.7-.7V17c0-.4-.3-.7-.7-.7zM14 16.3H9.8c-.4 0-.8.3-.8.7v4.2c0 .4.4.8.8.8H14c.4 0 .7-.3.7-.7V17c0-.4-.3-.7-.7-.7zM21 16.3h-4.2c-.4 0-.7.3-.7.7v4.2c0 .4.3.7.7.7H21c.4 0 .7-.3.7-.7V17c0-.4-.3-.7-.7-.7z" /></svg>);
