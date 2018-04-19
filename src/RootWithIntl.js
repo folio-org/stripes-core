@@ -17,6 +17,7 @@ import SSOLanding from './components/SSOLanding';
 import SSORedirect from './components/SSORedirect';
 import Settings from './components/Settings/Settings';
 import LoginCtrl from './components/Login';
+import OverlayContainer from './components/OverlayContainer';
 import getModuleRoutes from './moduleRoutes';
 import { stripesShape } from './Stripes';
 
@@ -31,6 +32,7 @@ const RootWithIntl = (props, context) => {
         <Router history={history}>
           { token || disableAuth ?
             <MainContainer>
+              <OverlayContainer />
               <MainNav stripes={stripes} />
               { (stripes.okapi !== 'object' || stripes.discovery.isFinished) && (
                 <ModuleContainer id="content">

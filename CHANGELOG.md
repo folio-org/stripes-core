@@ -26,6 +26,8 @@
 * Fix typos in workspace-creation section of [_Creating a new development setup_ document](doc/new-development-setup.md). Fixes STCOR-186.
 * Add i18n best practices documentation. Fixes STCOR-182.
 * Upgrade react-apollo dependency to v2.1.3. Fixes STCOR-188.
+* Add overlay container div for system-level communications, dropdowns, modals etc. Implements STCOR-187
+* Modified z-index of MainNav, ModuleContainer, OverlayContainer so that components within these containers can apply their own z-indexes without collision or unwanted overlap. Also Implements STCOR-187.
 * Add diagnostic output to stripes builds, STCOR-141.
 * Set @folio's NPM registry before using it. Duh. Fixes STCOR-193. Available from v2.9.5.
 
