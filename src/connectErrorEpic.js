@@ -3,6 +3,9 @@ const connectErrorEpic = action$ => action$
   .map((action) => {
     const { meta, payload: e } = action;
     const op = action.type === '@@stripes-connect/FETCH_ERROR' ? 'GET' : e.type;
+
+    if (!meta.throwErrors) return undefined;
+
     // eslint-disable-next-line prefer-template,no-alert
     window.alert(`ERROR: in module ${meta.module}, operation ${op}`
       + ` on resource '${meta.resource}' failed`
@@ -13,6 +16,7 @@ const connectErrorEpic = action$ => action$
     // through it this will better follow the redux-observable pattern of emitting
     // another action.
     return { type: '@@stripes-core/CREATE_NOTIFICATION' };
-  });
+  })
+  .filter(action => action !== undefined);
 
 export default connectErrorEpic;

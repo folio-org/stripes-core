@@ -15,6 +15,7 @@ import { loadTranslations, checkOkapiSession } from '../../loginServices';
 import { getQueryResourceKey } from '../../locationService';
 import Stripes from '../../Stripes';
 import RootWithIntl from '../../RootWithIntl';
+import GlobalErrorBoundary from '../GlobalErrorBoundary';
 
 import './Root.css';
 
@@ -118,11 +119,13 @@ class Root extends Component {
     });
 
     return (
-      <ApolloProvider client={createApolloClient(okapi)}>
-        <IntlProvider locale={locale} key={locale} messages={translations}>
-          <RootWithIntl stripes={stripes} token={token} disableAuth={disableAuth} history={history} />
-        </IntlProvider>
-      </ApolloProvider>
+      <GlobalErrorBoundary>
+        <ApolloProvider client={createApolloClient(okapi)}>
+          <IntlProvider locale={locale} key={locale} messages={translations}>
+            <RootWithIntl stripes={stripes} token={token} disableAuth={disableAuth} history={history} />
+          </IntlProvider>
+        </ApolloProvider>
+      </GlobalErrorBoundary>
     );
   }
 }
