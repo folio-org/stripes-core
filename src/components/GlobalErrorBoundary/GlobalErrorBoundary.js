@@ -10,18 +10,25 @@ class GlobalErrorBoundary extends React.Component {
     super(props);
 
     this.state = {
-      error: false,
+      error: undefined,
+      info: undefined,
     };
   }
 
-  componentDidCatch(error) {
-    this.setState({ error });
+  componentDidCatch(error, info) {
+    this.setState({ error, info });
   }
 
   render() {
-    const { error } = this.state;
+    const { error, info } = this.state;
     if (error) {
-      return <h1>{error.message}</h1>;
+      return (
+        <div>
+          <h1>The following error has occurred:</h1>
+          <h3>{error.message}</h3>
+          <p>{info}</p>
+        </div>
+      );
     }
 
     return this.props.children;
