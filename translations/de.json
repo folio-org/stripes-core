@@ -1,5 +1,19 @@
 {
   "front.welcome": "Willkommen, die Zukunft der Bibliotheken ist OFFEN!",
   "front.home": "Startseite",
-  "front.about": "Installationsdetails"
+  "front.about": "Installationsdetails",
+  "button.new": "+ Neu",
+  "button.new_tooltip": "{entry} neu anlegen",
+  "button.edit": "Bearbeiten",
+  "button.delete": "Löschen",
+  "button.deleteEntry": "{entry} löschen",
+  "button.saveAndClose": "Speichern und Schließen",
+  "button.cancel": "Abbrechen",
+  "label.confirmDeleteEntry": "<strong>{name}</strong> wird <strong>gelöscht</strong>",
+  "label.editEntry": "{entry} bearbeiten",
+  "label.createEntry": "{entry} neu anlegen",
+  "label.missingRequiredField": "Bitte ausfüllen um fortzufahren",
+  "label.okay": "OK",
+  "successfullyDeleted": "{entry} <strong>{name}</strong> wurde erfolgreich <strong>gelöscht</strong>.",
+  "untitled": "Ohne Name"
 }
