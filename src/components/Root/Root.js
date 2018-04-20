@@ -6,6 +6,7 @@ import createBrowserHistory from 'history/createBrowserHistory';
 import { IntlProvider } from 'react-intl';
 import queryString from 'query-string';
 import { ApolloProvider } from 'react-apollo';
+import ErrorBoundary from '@folio/stripes-components/lib/ErrorBoundary';
 import initialReducers from '../../initialReducers';
 import enhanceReducer from '../../enhanceReducer';
 import createApolloClient from '../../createApolloClient';
@@ -15,7 +16,6 @@ import { loadTranslations, checkOkapiSession } from '../../loginServices';
 import { getQueryResourceKey } from '../../locationService';
 import Stripes from '../../Stripes';
 import RootWithIntl from '../../RootWithIntl';
-import GlobalErrorBoundary from '../GlobalErrorBoundary';
 
 import './Root.css';
 
@@ -119,13 +119,13 @@ class Root extends Component {
     });
 
     return (
-      <GlobalErrorBoundary>
+      <ErrorBoundary>
         <ApolloProvider client={createApolloClient(okapi)}>
           <IntlProvider locale={locale} key={locale} messages={translations}>
             <RootWithIntl stripes={stripes} token={token} disableAuth={disableAuth} history={history} />
           </IntlProvider>
         </ApolloProvider>
-      </GlobalErrorBoundary>
+      </ErrorBoundary>
     );
   }
 }
