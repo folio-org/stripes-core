@@ -9,6 +9,8 @@
   flex: 0 0 auto;
   padding: 0 6px;
   background-color: #f7f7f7;
+  z-index: 99999;
+  position: relative;
 }
 
 .nowrap {
