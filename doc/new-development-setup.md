@@ -23,6 +23,7 @@
     * [Configure yarn](#configure-yarn)
     * [Create a workspace](#create-a-workspace)
     * [Use `stripes-cli` from your workspace](#use-stripes-cli-from-your-workspace)
+* [Setting up a development environment using Stripes CLI](#setting-up-a-development-environment-using-stripes-cli)
 
 
 ## Introduction
@@ -391,4 +392,22 @@ alias stripes='node /path/to/my/workspace/node_modules/.bin/stripes $*'
 
 Currently I have `stripes-cli` as a dependency on my local development platform so it's brought in via NPM. Were I impatient to try a new feature, I could check `stripes-cli` out into my workspace and `yarn install`. My alias would now be using my local checkout--yarn keeps symlinks in `.bin` for packages in the workspace too.
 
-Speaking of new features, `stripes-cli` will soon be able to pull new changes from the repos in your workspace with `stripes pull`.
+Speaking of new features, `stripes-cli` is able to pull new changes from the repos in your workspace with `stripes platform pull`.
+
+
+## Setting up a development environment using Stripes CLI
+
+Many of the above steps can be accomplished using the CLI's `workspace` command.  Given Stripes CLI (version `1.1.0` or greater) has been globally installed, use `workspace` to select, clone, and install Stripes modules and platforms into a new directory.  The CLI will also create a `.stripesclirc` configuration in your workspace as well as a `.local` Stripes config file for any selected platforms in their respective directories.
+
+```
+stripes workspace
+```
+
+Platforms like `stripes-sample-platform` can be immediately run with the `serve` command and your `.local` Stripes configuration.
+
+```
+cd stripes/stripes-sample-platform
+stripes serve stripes.config.js.local
+```
+
+See the [Stripes CLI User Guide](https://github.com/folio-org/stripes-cli/blob/master/doc/user-guide.md) and [workspace command reference](https://github.com/folio-org/stripes-cli/blob/master/doc/commands.md#workspace-command) for more information.
