@@ -20,5 +20,15 @@
   "label.missingRequiredField": "Please fill this in to continue",
   "label.okay": "Okay",
   "successfullyDeleted": "The {entry} <strong>{name}</strong> was successfully <strong>deleted</strong>.",
-  "untitled": "Untitled"
+  "untitled": "Untitled",
+  "about.paneTitle": "Software versions",
+  "about.userInterface": "User interface",
+  "about.foundation": "Foundation",
+  "about.okapiServices": "Okapi services",
+  "about.unknown": "Unknown",
+  "about.version": "Version {version}",
+  "about.forTenant": "For tenant {tenant}",
+  "about.onUrl": "On URL {url}",
+  "about.legendKey": "Key",
+  "about.notEnabledModules": "Installed modules that are not enabled for this tenant are displayed <span class='{className}'>in gray</span>."
 }

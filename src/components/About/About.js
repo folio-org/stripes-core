@@ -2,7 +2,8 @@ import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { modules as uiModules } from 'stripes-config'; // eslint-disable-line
-
+import { FormattedMessage } from 'react-intl';
+import SafeHTMLMessage from '@folio/react-intl-safe-html';
 /* eslint-disable import/extensions */
 import stripesConnect from '@folio/stripes-connect/package.json';
 import stripesComponents from '@folio/stripes-components/package.json';
@@ -79,24 +80,28 @@ const About = (props) => {
   const nm = Object.keys(modules).length;
   const ni = Object.keys(interfaces).length;
   const ConnectedAboutEnabledModules = props.stripes.connect(AboutEnabledModules);
-
+  const formatMsg = props.stripes.intl.formatMessage;
+  const unknownMsg = formatMsg({ id: 'stripes-core.about.unknown' });
   return (
     <Pane
       defaultWidth="fill"
-      paneTitle="Software versions"
-
+      paneTitle={formatMsg({ id:'stripes-core.about.paneTitle' })}
     >
       <div className={css.versionsContainer}>
         <div className={css.versionsColumn}>
-          <Headline size="large">User interface</Headline>
-          <Headline>Foundation</Headline>
+          <Headline size="large">
+            <FormattedMessage id='stripes-core.about.userInterface' />
+          </Headline>
+          <Headline>
+            <FormattedMessage id='stripes-core.about.foundation' />
+          </Headline>
           <span
             id="platform-versions"
             data-stripes-core={stripesCore.version}
             data-stripes-connect={stripesConnect.version}
             data-stripes-components={stripesComponents.version}
-            data-okapi-version={_.get(props.stripes, ['discovery', 'okapi']) || 'unknown'}
-            data-okapi-url={_.get(props.stripes, ['okapi', 'url']) || 'unknown'}
+            data-okapi-version={_.get(props.stripes, ['discovery', 'okapi']) || unknownMsg}
+            data-okapi-url={_.get(props.stripes, ['okapi', 'url']) || unknownMsg}
           />
           <List
             listStyle="bullets"
@@ -124,24 +129,27 @@ const About = (props) => {
           {Object.keys(uiModules).map(key => listModules(key, uiModules[key]))}
         </div>
         <div className={css.versionsColumn}>
-          <Headline size="large">Okapi services</Headline>
+          <Headline size="large">
+            <FormattedMessage id='stripes-core.about.okapiServices' />
+          </Headline>
           <Headline>Okapi</Headline>
           <List
             listStyle="bullets"
             itemFormatter={(item, i) => (<li key={i}>{item}</li>)}
             items={[
-              `Version ${_.get(props.stripes, ['discovery', 'okapi']) || 'unknown'}`,
-              `For tenant ${_.get(props.stripes, ['okapi', 'tenant']) || 'unknown'}`,
-              `On URL ${_.get(props.stripes, ['okapi', 'url']) || 'unknown'}`,
+              formatMsg({ id: 'stripes-core.about.version' }, { version: _.get(props.stripes, ['discovery', 'okapi']) || unknownMsg}),
+              formatMsg({ id: 'stripes-core.about.forTenant' }, { tenant: _.get(props.stripes, ['okapi', 'tenant']) || unknownMsg}),
+              formatMsg({ id: 'stripes-core.about.onUrl' }, { url: _.get(props.stripes, ['okapi', 'url']) || unknownMsg}),
             ]}
           />
           <br />
           <Headline>{nm} module{nm === 1 ? '' : 's'}</Headline>
-          <ConnectedAboutEnabledModules tenantid={_.get(props.stripes, ['okapi', 'tenant']) || 'unknown'} availableModules={modules} />
-          <Headline size="small">Key</Headline>
+          <ConnectedAboutEnabledModules tenantid={_.get(props.stripes, ['okapi', 'tenant']) || unknownMsg} availableModules={modules} />
+          <Headline size="small">
+            <FormattedMessage id='stripes-core.about.legendKey' />
+          </Headline>
           <p>
-            Installed modules that are not enabled for this tenant are
-            displayed <span style={{ color: '#ccc' }}>in gray</span>.
+            <SafeHTMLMessage id='stripes-core.about.notEnabledModules' values={{ className: css.isEmptyMessage }} />
           </p>
           <br />
           <Headline>{ni} interface{ni === 1 ? '' : 's'}</Headline>
