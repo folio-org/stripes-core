@@ -28,7 +28,7 @@ const About = (props) => {
 
     const okapiInterfaces = m.okapiInterfaces;
     if (!okapiInterfaces) {
-      return `${base} declares no dependencies`;
+      return <FormattedMessage id="stripes-core.about.noDependencies" values={{ base }} />;
     }
 
     const itemFormatter = (key) => {
@@ -41,7 +41,7 @@ const About = (props) => {
         style = { color: 'red', fontWeight: 'bold' };
       } else if (!isVersionCompatible(available, required)) {
         style = { color: 'orange' };
-        text = `${required} (${available} available)`;
+        text = <FormattedMessage id="stripes-core.about.newerModuleAvailable" values={{ required, available }} />;
       }
 
       return <li key={key} style={style}>{key} {text}</li>;
@@ -49,7 +49,9 @@ const About = (props) => {
 
     return (
       <span>
-        <Headline size="small" faded>{m.module} {m.version} depends on:</Headline>
+        <Headline size="small" faded>
+          <FormattedMessage id="stripes-core.about.moduleDependsOn" values={{ module: `${m.module} ${m.version || ''}` }} />
+        </Headline>
         <List
           items={Object.keys(okapiInterfaces)}
           itemFormatter={itemFormatter}
@@ -60,11 +62,11 @@ const About = (props) => {
   }
 
   function listModules(caption, list, interfaces) {
-    const n = list.length;
     const itemFormatter = m => (<li key={m.module}>{renderDependencies(m, interfaces)}</li>);
+    const headlineMsg = list.length === 1 ? <FormattedMessage id="stripes-core.about.oneSpecialModule" values={{ type: caption }} /> : <FormattedMessage id="stripes-core.about.numOfSpecialModules" values={{ num: list.length, type: caption }} />;
     return (
       <div key={caption}>
-        <Headline>{n} {caption} module{n === 1 ? '' : 's'}</Headline>
+        <Headline>{headlineMsg}</Headline>
         <List
           listStyle="bullets"
           items={list}
@@ -82,18 +84,20 @@ const About = (props) => {
   const ConnectedAboutEnabledModules = props.stripes.connect(AboutEnabledModules);
   const formatMsg = props.stripes.intl.formatMessage;
   const unknownMsg = formatMsg({ id: 'stripes-core.about.unknown' });
+  const numModulesMsg = nm === 1 ? formatMsg({ id: 'stripes-core.about.oneModule' }) : formatMsg({ id: 'stripes-core.about.numberOfModules' }, { num: nm });
+  const numInterfacesMsg = ni === 1 ? formatMsg({ id: 'stripes-core.about.oneInterface' }) : formatMsg({ id: 'stripes-core.about.numberOfInterfaces' }, { num: ni });
   return (
     <Pane
       defaultWidth="fill"
-      paneTitle={formatMsg({ id:'stripes-core.about.paneTitle' })}
+      paneTitle={formatMsg({ id: 'stripes-core.about.paneTitle' })}
     >
       <div className={css.versionsContainer}>
         <div className={css.versionsColumn}>
           <Headline size="large">
-            <FormattedMessage id='stripes-core.about.userInterface' />
+            <FormattedMessage id="stripes-core.about.userInterface" />
           </Headline>
           <Headline>
-            <FormattedMessage id='stripes-core.about.foundation' />
+            <FormattedMessage id="stripes-core.about.foundation" />
           </Headline>
           <span
             id="platform-versions"
@@ -130,29 +134,31 @@ const About = (props) => {
         </div>
         <div className={css.versionsColumn}>
           <Headline size="large">
-            <FormattedMessage id='stripes-core.about.okapiServices' />
+            <FormattedMessage id="stripes-core.about.okapiServices" />
           </Headline>
           <Headline>Okapi</Headline>
           <List
             listStyle="bullets"
             itemFormatter={(item, i) => (<li key={i}>{item}</li>)}
             items={[
-              formatMsg({ id: 'stripes-core.about.version' }, { version: _.get(props.stripes, ['discovery', 'okapi']) || unknownMsg}),
-              formatMsg({ id: 'stripes-core.about.forTenant' }, { tenant: _.get(props.stripes, ['okapi', 'tenant']) || unknownMsg}),
-              formatMsg({ id: 'stripes-core.about.onUrl' }, { url: _.get(props.stripes, ['okapi', 'url']) || unknownMsg}),
+              formatMsg({ id: 'stripes-core.about.version' }, { version: _.get(props.stripes, ['discovery', 'okapi']) || unknownMsg }),
+              formatMsg({ id: 'stripes-core.about.forTenant' }, { tenant: _.get(props.stripes, ['okapi', 'tenant']) || unknownMsg }),
+              formatMsg({ id: 'stripes-core.about.onUrl' }, { url: _.get(props.stripes, ['okapi', 'url']) || unknownMsg }),
             ]}
           />
           <br />
-          <Headline>{nm} module{nm === 1 ? '' : 's'}</Headline>
+          <Headline>{numModulesMsg}</Headline>
           <ConnectedAboutEnabledModules tenantid={_.get(props.stripes, ['okapi', 'tenant']) || unknownMsg} availableModules={modules} />
           <Headline size="small">
-            <FormattedMessage id='stripes-core.about.legendKey' />
+            <FormattedMessage id="stripes-core.about.legendKey" />
           </Headline>
-          <p>
-            <SafeHTMLMessage id='stripes-core.about.notEnabledModules' values={{ className: css.isEmptyMessage }} />
-          </p>
+          <SafeHTMLMessage
+            id="stripes-core.about.notEnabledModules"
+            values={{ className: css.isEmptyMessage }}
+            tagName="p"
+          />
           <br />
-          <Headline>{ni} interface{ni === 1 ? '' : 's'}</Headline>
+          <Headline>{numInterfacesMsg}</Headline>
           <List
             listStyle="bullets"
             items={Object.keys(interfaces).sort()}
@@ -160,20 +166,30 @@ const About = (props) => {
           />
         </div>
         <div className={css.versionsColumn}>
-          <Headline size="large">UI/service dependencies</Headline>
-          <Headline>Foundation</Headline>
+          <Headline size="large">
+            <FormattedMessage id="stripes-core.about.uiOrServiceDependencies" />
+          </Headline>
+          <Headline>
+            <FormattedMessage id="stripes-core.about.foundation" />
+          </Headline>
           {renderDependencies(Object.assign({}, stripesCore.stripes || {}, { module: 'stripes-core' }), interfaces)}
           <br />
           {Object.keys(uiModules).map(key => listModules(key, uiModules[key], interfaces))}
-          <Headline size="small">Key</Headline>
+          <Headline size="small">
+            <FormattedMessage id="stripes-core.about.legendKey" />
+          </Headline>
           <p>
-            Interfaces that are required but absent are highlighted
-            in <span style={{ color: 'red', fontWeight: 'bold' }}>bold red</span>.
+            <SafeHTMLMessage
+              id="stripes-core.about.key.absentInterfaces"
+              values={{ className: css.absent }}
+            />
             <br />
-            Interfaces that are required but present only in an incompatible version are highlighted
-            in <span style={{ color: 'orange' }}>orange</span>.
+            <SafeHTMLMessage
+              id="stripes-core.about.key.incompatibleIntf"
+              values={{ className: css.incompatible }}
+            />
             <br />
-            Interfaces that are present in a compatible version are shown in regular font.
+            <FormattedMessage id="stripes-core.about.key.compatible" />
           </p>
         </div>
       </div>
@@ -186,6 +202,9 @@ About.propTypes = {
     discovery: PropTypes.shape({
       modules: PropTypes.object,
       interfaces: PropTypes.object,
+    }),
+    intl: PropTypes.shape({
+      formatMessage: PropTypes.func,
     }),
     connect: PropTypes.func,
   }).isRequired,

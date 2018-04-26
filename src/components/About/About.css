@@ -14,3 +14,12 @@
 .isEmptyMessage {
   color: var(--subLabelColor);
 }
+
+.absent {
+  color: red;
+  font-weight: bold;
+}
+
+.incompatible {
+  color: orange;
+}

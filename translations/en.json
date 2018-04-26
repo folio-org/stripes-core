@@ -21,6 +21,7 @@
   "label.okay": "Okay",
   "successfullyDeleted": "The {entry} <strong>{name}</strong> was successfully <strong>deleted</strong>.",
   "untitled": "Untitled",
+  
   "about.paneTitle": "Software versions",
   "about.userInterface": "User interface",
   "about.foundation": "Foundation",
@@ -30,5 +31,18 @@
   "about.forTenant": "For tenant {tenant}",
   "about.onUrl": "On URL {url}",
   "about.legendKey": "Key",
-  "about.notEnabledModules": "Installed modules that are not enabled for this tenant are displayed <span class='{className}'>in gray</span>."
+  "about.notEnabledModules": "Installed modules that are not enabled for this tenant are displayed <span class='{className}'>in gray</span>.",
+  "about.oneModule": "1 module",
+  "about.numberOfModules": "{num} modules",
+  "about.oneInterface": "1 interface",
+  "about.numberOfInterfaces": "{num} interfaces",
+  "about.uiOrServiceDependencies": "UI/service dependencies",
+  "about.moduleDependsOn": "{module} depends on:",
+  "about.newerModuleAvailable": "{required} ({available} available)",
+  "about.noDependencies": "{base} declares no dependencies",
+  "about.key.absentInterfaces": "Interfaces that are required but absent are highlighted in <span class='{className}'>bold red</span>.",
+  "about.key.incompatibleIntf": "Interfaces that are required but present only in an incompatible version are highlighted in <span class='{className}'>orange</span>.",
+  "about.key.compatible": "Interfaces that are present in a compatible version are shown in regular font.",
+  "about.numOfSpecialModules": "{num} {type} modules",
+  "about.oneSpecialModule": "1 {type} module"
 }
