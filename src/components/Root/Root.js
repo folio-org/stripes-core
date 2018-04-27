@@ -7,6 +7,8 @@ import { IntlProvider } from 'react-intl';
 import queryString from 'query-string';
 import { ApolloProvider } from 'react-apollo';
 import ErrorBoundary from '@folio/stripes-components/lib/ErrorBoundary';
+import { LocaleContext } from '@folio/stripes-components/lib/Locale';
+import { TimeZoneContext } from '@folio/stripes-components/lib/TimeZone';
 import initialReducers from '../../initialReducers';
 import enhanceReducer from '../../enhanceReducer';
 import createApolloClient from '../../createApolloClient';
@@ -107,7 +109,7 @@ class Root extends Component {
       formatDate: (dateStr, zone) => formatDate(dateStr, zone || timezone),
       formatTime: (dateStr, zone) => formatTime(dateStr, zone || timezone),
       formatDateTime: (dateStr, zone) => formatDateTime(dateStr, zone || timezone),
-      formatAbsoluteDate: (dateStr) => formatDate(dateStr, 'UTC'),
+      formatAbsoluteDate: dateStr => formatDate(dateStr, 'UTC'),
       bindings,
       setBindings: (val) => { store.dispatch(setBindings(val)); },
       discovery,
@@ -120,11 +122,15 @@ class Root extends Component {
 
     return (
       <ErrorBoundary>
-        <ApolloProvider client={createApolloClient(okapi)}>
-          <IntlProvider locale={locale} key={locale} messages={translations}>
-            <RootWithIntl stripes={stripes} token={token} disableAuth={disableAuth} history={history} />
-          </IntlProvider>
-        </ApolloProvider>
+        <LocaleContext.Provider value={locale}>
+          <TimeZoneContext.Provider value={timezone}>
+            <ApolloProvider client={createApolloClient(okapi)}>
+              <IntlProvider locale={locale} key={locale} messages={translations}>
+                <RootWithIntl stripes={stripes} token={token} disableAuth={disableAuth} history={history} />
+              </IntlProvider>
+            </ApolloProvider>
+          </TimeZoneContext.Provider>
+        </LocaleContext.Provider>
       </ErrorBoundary>
     );
   }
