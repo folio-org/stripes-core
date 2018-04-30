@@ -105,7 +105,7 @@ export default class MyProfile extends Component {
     return (
       <main>
         <header className={css.loggedInAs}>
-          Logged in as {`${user.firstName} ${user.lastName}`}
+          <FormattedMessage id="stripes-core.loggedInAs" values={{ firstName: user.firstName, lastName: user.lastName }} />
         </header>
         <hr className={css.divider} />
         <NavList>
@@ -117,7 +117,9 @@ export default class MyProfile extends Component {
                   <FormattedMessage id="stripes-core.front.home" />
                 </NavListItem>
             }
-            <NavListItem id="clickable-logout" type="button" onClick={onLogout}>Log out</NavListItem>
+            <NavListItem id="clickable-logout" type="button" onClick={onLogout}>
+              <FormattedMessage id="stripes-core.logout" />
+            </NavListItem>
           </NavListSection>
         </NavList>
         { perms }
