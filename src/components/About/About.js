@@ -63,7 +63,7 @@ const About = (props) => {
 
   function listModules(caption, list, interfaces) {
     const itemFormatter = m => (<li key={m.module}>{renderDependencies(m, interfaces)}</li>);
-    const headlineMsg = list.length === 1 ? <FormattedMessage id="stripes-core.about.oneSpecialModule" values={{ type: caption }} /> : <FormattedMessage id="stripes-core.about.numOfSpecialModules" values={{ num: list.length, type: caption }} />;
+    const headlineMsg = <FormattedMessage id="stripes-core.about.moduleTypeCount" values={{ count: list.length, type: caption }} />;
     return (
       <div key={caption}>
         <Headline>{headlineMsg}</Headline>
@@ -84,8 +84,8 @@ const About = (props) => {
   const ConnectedAboutEnabledModules = props.stripes.connect(AboutEnabledModules);
   const formatMsg = props.stripes.intl.formatMessage;
   const unknownMsg = formatMsg({ id: 'stripes-core.about.unknown' });
-  const numModulesMsg = nm === 1 ? formatMsg({ id: 'stripes-core.about.oneModule' }) : formatMsg({ id: 'stripes-core.about.numberOfModules' }, { num: nm });
-  const numInterfacesMsg = ni === 1 ? formatMsg({ id: 'stripes-core.about.oneInterface' }) : formatMsg({ id: 'stripes-core.about.numberOfInterfaces' }, { num: ni });
+  const numModulesMsg = formatMsg({ id: 'stripes-core.about.moduleCount' }, { count: nm });
+  const numInterfacesMsg = formatMsg({ id: 'stripes-core.about.interfaceCount' }, { count: ni });
   return (
     <Pane
       defaultWidth="fill"
