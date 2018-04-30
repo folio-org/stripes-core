@@ -21,7 +21,7 @@
   "label.okay": "Okay",
   "successfullyDeleted": "The {entry} <strong>{name}</strong> was successfully <strong>deleted</strong>.",
   "untitled": "Untitled",
-  
+
   "about.paneTitle": "Software versions",
   "about.userInterface": "User interface",
   "about.foundation": "Foundation",
@@ -44,5 +44,12 @@
   "about.key.incompatibleIntf": "Interfaces that are required but present only in an incompatible version are highlighted in <span class='{className}'>orange</span>.",
   "about.key.compatible": "Interfaces that are present in a compatible version are shown in regular font.",
   "about.numOfSpecialModules": "{num} {type} modules",
-  "about.oneSpecialModule": "1 {type} module"
+  "about.oneSpecialModule": "1 {type} module",
+
+  "loggedInAs": "Logged in as {firstName} {lastName}",
+  "logout": "Log out",
+  "settings": "Settings",
+  "folioSettings": "FOLIO settings",
+  "mainNavigation": "Main Navigation",
+  "loginViaSSO": "Login via SSO"
 }
