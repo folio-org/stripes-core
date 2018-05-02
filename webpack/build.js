@@ -30,9 +30,11 @@ module.exports = function build(stripesConfig, options) {
     if (options.sourcemap) {
       config.devtool = 'source-map';
     }
-    config.plugins.push(new UglifyJSPlugin({
-      sourceMap: config.devtool && config.devtool === 'source-map',
-    }));
+    if (options.minify !== false) {
+      config.plugins.push(new UglifyJSPlugin({
+        sourceMap: config.devtool && config.devtool === 'source-map',
+      }));
+    }
 
     // Give the caller a chance to apply their own webpack overrides
     config = applyWebpackOverrides(options.webpackOverrides, config);
