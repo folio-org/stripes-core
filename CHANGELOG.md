@@ -31,6 +31,7 @@
 * Add diagnostic output to stripes builds, STCOR-141.
 * Set @folio's NPM registry before using it. Duh. Fixes STCOR-193. Available from v2.9.5.
 * Added React Error Boundary to catch errors thrown during render(), implementing STCOR-150.
+* Retrieve tenant module details in one swell foop. Fixes STCOR-200. Available from v2.9.6.
 
 ## [2.9.0](https://github.com/folio-org/stripes-core/tree/v2.9.0) (2018-02-01)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.8.0...v2.9.0)
