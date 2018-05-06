@@ -5,52 +5,16 @@
   justify-content: space-between;
   align-content: stretch;
   width: 100%;
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid var(--color-border);
   flex: 0 0 auto;
   padding: 0 6px;
-  background-color: #f7f7f7;
+  background-color: var(--color-fill);
   z-index: 99999;
   position: relative;
 }
 
 .nowrap {
   white-space: nowrap;
-}
-
-.ddButton,
-.ddLink {
-  width: 100%;
-  display: block;
-  text-align: left;
-  background: transparent;
-  border: none;
-  appearance: none;
-  padding: 4px 8px;
-  border-radius: 4px;
-  -moz-border-radius: 4px;
-  text-decoration: none;
-  color: #333;
-  cursor: pointer;
-
-  &:hover,
-  &:focus,
-  &:active {
-    background-color: #efefef;
-    outline: none;
-    color: #333;
-    text-decoration: none;
-  }
-}
-
-.ddTextItem {
-  padding: 4px;
-  display: block;
-}
-
-.ddDivider {
-  border-bottom: 1px solid #cdcdcd;
-  padding: 4px;
-  margin-bottom: 4px;
 }
 
 .skipLink {
@@ -75,15 +39,5 @@
     position: absolute;
     top: 0;
     right: 0;
-  }
-
-  .ddButton {
-    height: var(--controlHeightSmall);
-  }
-
-  .ddLink {
-    height: var(--controlHeightSmall);
-    display: flex;
-    align-items: center;
   }
 }
