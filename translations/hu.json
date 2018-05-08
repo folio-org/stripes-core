@@ -13,6 +13,5 @@
   "button.discardChanges": "Módosítások elvetése",
   "label.confirmDeleteEntry": "Biztosan törli: {entry}?",
   "label.editEntry": "{entry} szerkesztése",
-  "label.createEntry": "{entry} létrehozása",
-  "label.unsavedChanges": "Mentetlen módosítások"
+  "label.createEntry": "{entry} létrehozása"
 }
