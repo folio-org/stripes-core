@@ -12,7 +12,6 @@
   "button.close": "close",
   "button.saveChanges": "Save Changes",
   "button.discardChanges": "Close without saving",
-  "button.keepEditing": "Keep editing",
   "label.confirmDeleteEntry": "<strong>{name}</strong> will be <strong>removed</strong>",
   "label.editEntry": "Edit {entry}",
   "label.createEntry": "Create {entry}",

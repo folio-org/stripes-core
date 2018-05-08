@@ -12,7 +12,6 @@
   "button.close": "bezár",
   "button.SaveChanges": "Módosítások mentése",
   "button.discardChanges": "Módosítások elvetése",
-  "button.keepEditing": "Szerkesztés folytatása",
   "label.confirmDeleteEntry": "Biztosan törli: {entry}?",
   "label.editEntry": "{entry} szerkesztése",
   "label.createEntry": "{entry} létrehozása",
