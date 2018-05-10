@@ -10,7 +10,6 @@
   "button.saveAndClose": "Save and close",
   "button.cancel": "Cancel",
   "button.close": "close",
-  "button.discardChanges": "Close without saving",
   "label.confirmDeleteEntry": "<strong>{name}</strong> will be <strong>removed</strong>",
   "label.editEntry": "Edit {entry}",
   "label.createEntry": "Create {entry}",
