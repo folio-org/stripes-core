@@ -1,4 +1,5 @@
 .moduleContainer {
+  z-index: 9;
   position: relative;
   outline: none;
   flex: 1 1 auto;

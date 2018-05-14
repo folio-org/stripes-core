@@ -6,6 +6,7 @@ import createBrowserHistory from 'history/createBrowserHistory';
 import { IntlProvider } from 'react-intl';
 import queryString from 'query-string';
 import { ApolloProvider } from 'react-apollo';
+import ErrorBoundary from '@folio/stripes-components/lib/ErrorBoundary';
 import initialReducers from '../../initialReducers';
 import enhanceReducer from '../../enhanceReducer';
 import createApolloClient from '../../createApolloClient';
@@ -106,6 +107,7 @@ class Root extends Component {
       formatDate: (dateStr, zone) => formatDate(dateStr, zone || timezone),
       formatTime: (dateStr, zone) => formatTime(dateStr, zone || timezone),
       formatDateTime: (dateStr, zone) => formatDateTime(dateStr, zone || timezone),
+      formatAbsoluteDate: (dateStr) => formatDate(dateStr, 'UTC'),
       bindings,
       setBindings: (val) => { store.dispatch(setBindings(val)); },
       discovery,
@@ -117,11 +119,13 @@ class Root extends Component {
     });
 
     return (
-      <ApolloProvider client={createApolloClient(okapi)}>
-        <IntlProvider locale={locale} key={locale} messages={translations}>
-          <RootWithIntl stripes={stripes} token={token} disableAuth={disableAuth} history={history} />
-        </IntlProvider>
-      </ApolloProvider>
+      <ErrorBoundary>
+        <ApolloProvider client={createApolloClient(okapi)}>
+          <IntlProvider locale={locale} key={locale} messages={translations}>
+            <RootWithIntl stripes={stripes} token={token} disableAuth={disableAuth} history={history} />
+          </IntlProvider>
+        </ApolloProvider>
+      </ErrorBoundary>
     );
   }
 }

@@ -1,4 +1,5 @@
 const path = require('path');
+const logger = require('./logger')();
 
 function tryResolve(modulePath, options) {
   try {
@@ -28,6 +29,7 @@ function generateStripesAlias(moduleName) {
 
 // Common logic to locate a stripes module (pass 'package.json') or file within
 function locateStripesModule(context, moduleName, alias, ...segments) {
+  logger.log(`locating stripes module ${moduleName}...`);
   let foundPath = false;
 
   const tryPaths = [
@@ -66,6 +68,9 @@ function locateStripesModule(context, moduleName, alias, ...segments) {
     if (foundPath) {
       break;
     }
+  }
+  if (foundPath) {
+    logger.log('found', foundPath);
   }
   return foundPath;
 }

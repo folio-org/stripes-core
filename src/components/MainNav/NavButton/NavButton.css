@@ -1,6 +1,7 @@
 @import '@folio/stripes-components/lib/variables.css';
 
 .navButton {
+  composes: interactionStylesControl from "@folio/stripes-components/lib/sharedStyles/interactionStyles.css";  /* stylelint-disable-line */
   padding: 0 5px;
   height: 44px;
   outline: 0;
@@ -82,6 +83,10 @@ button.navButton {
   position: relative;
 }
 
+.isInteractable {
+  composes: interactionStyles from "@folio/stripes-components/lib/sharedStyles/interactionStyles.css";  /* stylelint-disable-line */
+}
+
 /**
  * Badge
  */
@@ -91,44 +96,6 @@ button.navButton {
   top: 0;
   right: -1px;
   z-index: 5;
-}
-
-/**
- * Interaction styles
- */
-
-.navButton.isInteractable .inner::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: transparent;
-  border-radius: calc(var(--radius) * 1.2);
-  z-index: 1;
-}
-
-.navButton.isInteractable:hover .inner::before {
-  background-color: rgba(37, 118, 195, 0.2);
-}
-
-.navButton.isInteractable:focus .inner::before {
-  background: rgba(37, 118, 195, 0.3);
-  border: 1px solid rgba(0, 0, 0, 0.2);
-}
-
-.navButton.isInteractable:active .inner {
-  color: rgb(255, 255, 255);
-
-  & svg {
-    fill: #fff;
-  }
-}
-
-.navButton.isInteractable:active .inner::before {
-  background: rgb(37, 118, 195);
-  border: 1px solid rgba(0, 0, 0, 0.2);
 }
 
 /**

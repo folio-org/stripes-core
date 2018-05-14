@@ -10,3 +10,16 @@
     padding: 0 1em;
   }
 }
+
+.isEmptyMessage {
+  color: var(--subLabelColor);
+}
+
+.absent {
+  color: red;
+  font-weight: bold;
+}
+
+.incompatible {
+  color: orange;
+}

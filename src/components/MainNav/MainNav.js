@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { isEqual } from 'lodash';
+import { FormattedMessage } from 'react-intl';
 import Headline from '@folio/stripes-components/lib/Headline';
 import { Dropdown } from '@folio/stripes-components/lib/Dropdown'; // eslint-disable-line
 import { withRouter } from 'react-router';
@@ -21,13 +22,6 @@ import CurrentApp from './CurrentApp';
 import MyProfile from './MyProfile';
 import NotificationsDropdown from './Notifications/NotificationsDropdown';
 import settingsIcon from './settings.svg';
-
-// Temporary until settings becomes an app
-const settingsIconData = {
-  src: settingsIcon,
-  alt: 'Tenant Settings',
-  title: 'Settings',
-};
 
 if (!Array.isArray(modules.app) || modules.app.length < 1) {
   throw new Error('At least one module of type "app" must be enabled.');
@@ -131,8 +125,15 @@ class MainNav extends Component {
 
   render() {
     const { stripes, location: { pathname } } = this.props;
+    const formatMsg = stripes.intl.formatMessage;
     const selectedApp = modules.app.find(entry => pathname.startsWith(entry.route));
 
+    // Temporary until settings becomes an app
+    const settingsIconData = {
+      src: settingsIcon,
+      alt: 'Tenant Settings',
+      title: formatMsg({ id: 'stripes-core.settings' }),
+    };
     const menuLinks = modules.app.map((entry) => {
       const name = entry.module.replace(/^@[a-z0-9_]+\//, '');
       const perm = `module.${name}.enabled`;
@@ -162,8 +163,9 @@ class MainNav extends Component {
 
     // Temporary solution until Settings becomes a standalone app
     let settingsApp;
+    const settingsMsg = formatMsg({ id: 'stripes-core.settings' });
     if (stripes.hasPerm('settings.enabled') && pathname.startsWith('/settings')) {
-      settingsApp = { displayName: 'Settings', description: 'FOLIO settings' };
+      settingsApp = { displayName: settingsMsg, description: formatMsg({ id: 'stripes-core.folioSettings' }) };
     }
 
     if (breadcrumbArray.length === 0) {
@@ -195,16 +197,18 @@ class MainNav extends Component {
       <header className={css.navRoot}>
         {firstNav}
         <nav>
-          <Headline tag="h2" className="sr-only">Main Navigation</Headline>
+          <Headline tag="h2" className="sr-only">
+            <FormattedMessage id="stripes-core.mainNavigation" />
+          </Headline>
           <NavGroup>
             <NavGroup>
               {menuLinks}
               {
                 !stripes.hasPerm('settings.enabled') ? '' : (
                   <NavButton
-                    label="Settings"
+                    label={settingsMsg}
                     id="clickable-settings"
-                    title="Settings"
+                    title={settingsMsg}
                     iconData={settingsIconData}
                     selected={pathname.startsWith('/settings')}
                     href={pathname.startsWith('/settings') ? null : (this.lastVisited.x_settings || '/settings')}

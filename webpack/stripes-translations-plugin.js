@@ -3,7 +3,7 @@ const fs = require('fs');
 const _ = require('lodash');
 const webpack = require('webpack');
 const modulePaths = require('./module-paths');
-const StripesBuildError = require('./stripes-build-error');
+const logger = require('./logger')('stripesTranslationsPlugin');
 
 function prefixKeys(obj, prefix) {
   const res = {};
@@ -23,6 +23,7 @@ module.exports = class StripesTranslationPlugin {
     };
     Object.assign(this.modules, options.modules);
     this.languageFilter = options.config.languages || [];
+    logger.log('language filter', this.languageFilter);
   }
 
   apply(compiler) {
@@ -46,6 +47,7 @@ module.exports = class StripesTranslationPlugin {
     // Emit merged translations to the output directory
     compiler.plugin('emit', (compilation, callback) => {
       Object.keys(allTranslations).forEach((language) => {
+        logger.log(`emitting translations for ${language} --> ${fileData[language].emitPath}`);
         const content = JSON.stringify(allTranslations[language]);
         compilation.assets[fileData[language].emitPath] = {
           source: () => content,
@@ -61,15 +63,15 @@ module.exports = class StripesTranslationPlugin {
     const allTranslations = {};
     for (const mod of Object.keys(this.modules)) {
       const modPackageJsonPath = modulePaths.locateStripesModule(this.context, mod, this.aliases, 'package.json');
-      if (!modPackageJsonPath) {
-        throw new StripesBuildError(`Unable to locate ${mod} while looking for translations.`);
-      }
-      const modTranslationDir = modPackageJsonPath.replace('package.json', 'translations');
-
-      if (fs.existsSync(modTranslationDir)) {
-        _.merge(allTranslations, this.loadTranslationsDirectory(mod, modTranslationDir));
+      if (modPackageJsonPath) {
+        const modTranslationDir = modPackageJsonPath.replace('package.json', 'translations');
+        if (fs.existsSync(modTranslationDir)) {
+          _.merge(allTranslations, this.loadTranslationsDirectory(mod, modTranslationDir));
+        } else {
+          _.merge(allTranslations, this.loadTranslationsPackageJson(mod, modPackageJsonPath));
+        }
       } else {
-        _.merge(allTranslations, this.loadTranslationsPackageJson(mod, modPackageJsonPath));
+        console.log(`Unable to locate ${mod} while looking for translations.`);
       }
     }
     return allTranslations;
@@ -77,6 +79,7 @@ module.exports = class StripesTranslationPlugin {
 
   // Load translation *.json files from a single module's translation directory
   loadTranslationsDirectory(moduleName, dir) {
+    logger.log('loading translations from directory', dir);
     const moduleTranslations = {};
     for (const translationFile of fs.readdirSync(dir)) {
       const language = translationFile.replace('.json', '');
@@ -91,6 +94,7 @@ module.exports = class StripesTranslationPlugin {
 
   // Maintains backwards-compatibility with existing apps
   loadTranslationsPackageJson(moduleName, packageJsonPath) {
+    logger.log('loading translations from package.json (legacy)', packageJsonPath);
     const moduleTranslations = {};
     const packageJson = StripesTranslationPlugin.loadFile(packageJsonPath);
     if (packageJson.stripes && packageJson.stripes.translations) {

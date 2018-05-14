@@ -8,7 +8,8 @@
 * [Notes on breaking changes](#notes-on-breaking-changes)
 * [Notes on dependencies](#notes-on-dependencies)
 * [Notes on testing](#notes-on-testing)
-* [Note on access to the NPM repository](#note-on-access-to-the-npm-repository)
+* [Publishing to NPM via Jenkins](#publishing-to-npm-via-jenkins)
+* [Direct access to the NPM repository](#direct-access-to-the-npm-repository)
 
 NOTE. This document is subject to revision.
 
@@ -16,7 +17,7 @@ NOTE. This document is subject to revision.
 ## Version numbers, branches and tags
 
 The libraries that make up Stripes adhere to [the FOLIO
-version-numbering scheme](http://dev.folio.org/community/contrib-code#version-numbers), which is essentially identical to [Semantic Versioning](http://semver.org/). All releases are tagged in git.
+version-numbering scheme](https://dev.folio.org/guidelines/contributing/#version-numbers), which is essentially identical to [Semantic Versioning](http://semver.org/). All releases are tagged in git.
 
 Each release is tagged with a name beginning with `v` and followed by the version number -- for example, `v2.3.5`.
 
@@ -81,12 +82,25 @@ Update dependant packages when needed to allow CI to pick up the pre-release ver
 
 ## Notes on testing
 
-XXX to be done. See http://dev.folio.org/doc/automation
+XXX to be done. See https://dev.folio.org/guides/automation
 
+## Publishing to NPM via Jenkins
 
-## Note on access to the NPM repository
+1. Add a `Jenkinsfile` to your project with the following contents:
+```
+buildNPM {
+ publishModDescriptor = ‘no’
+ runLint = ‘no’
+ runTest = ‘no’
+}
+```
 
-Before you can do `yarn publish`, you will need access to the Index Data/FOLIO NPM repository at `repository.folio.org`. Get these credentials from an administrator. Once you have them, login as follows:
+2. Scope the project `name` in package.json with `@folio`, e.g. `"name": "@folio/react-intl-safe-html"`
+3. Check your job in Jenkins (https://jenkins-aws.indexdata.com/job/folio-org)
+
+## Direct access to the NPM repository
+
+If you need to manually run `yarn publish`, you will need access to the Index Data/FOLIO NPM repository at `repository.folio.org`. Get these credentials from an administrator. Once you have them, login as follows:
 ```
 $ npm config set @folio:registry https://repository.folio.org/repository/npm-folio/
 $ npm adduser --registry=https://repository.folio.org/repository/npm-folio/

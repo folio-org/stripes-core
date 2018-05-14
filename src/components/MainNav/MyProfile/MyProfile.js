@@ -9,6 +9,7 @@ import { Dropdown } from '@folio/stripes-components/lib/Dropdown';
 import NavList from '@folio/stripes-components/lib/NavList';
 import Avatar from '@folio/stripes-components/lib/Avatar';
 import NavListSection from '@folio/stripes-components/lib/NavListSection';
+import NavListItem from '@folio/stripes-components/lib/NavListItem';
 import List from '@folio/stripes-components/lib/List';
 import NavDropdownMenu from '../NavDropdownMenu';
 import NavButton from '../NavButton';
@@ -104,19 +105,21 @@ export default class MyProfile extends Component {
     return (
       <main>
         <header className={css.loggedInAs}>
-          Logged in as {`${user.firstName} ${user.lastName}`}
+          <FormattedMessage id="stripes-core.loggedInAs" values={{ firstName: user.firstName, lastName: user.lastName }} />
         </header>
         <hr className={css.divider} />
         <NavList>
-          <NavListSection activeLink="none">
+          <NavListSection>
             {
               (!stripes.config || !stripes.config.showHomeLink) ?
                 null :
-                <button id="clickable-home" type="button" onClick={this.onHome}>
+                <NavListItem id="clickable-home" type="button" onClick={this.onHome}>
                   <FormattedMessage id="stripes-core.front.home" />
-                </button>
+                </NavListItem>
             }
-            <button id="clickable-logout" type="button" onClick={onLogout}>Log out</button>
+            <NavListItem id="clickable-logout" type="button" onClick={onLogout}>
+              <FormattedMessage id="stripes-core.logout" />
+            </NavListItem>
           </NavListSection>
         </NavList>
         { perms }

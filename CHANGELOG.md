@@ -18,8 +18,21 @@
 * Add -l to stripes-pull to iterate through local directories instead of through a hard-coded list. Fixes STCOR-166. Available from v2.9.2.
 * Update react-cookie dependency, eliminating a duplicate-package warning from WebPack. Fixes part of STCOR-167.
 * Do not emit "no icons defined in stripes.icons" warning for non-app modules. Fixes STCOR-171.
-* Ignore yarn-error.log file. Refs STRIPES-517. 
-* Don't add "ui-" prefix to translation keys in stripes libraries. Fixes STCOR-178. Available from v2.9.3. 
+* Ignore yarn-error.log file. Refs STRIPES-517.
+* Don't add "ui-" prefix to translation keys in stripes libraries. Fixes STCOR-178. Available from v2.9.3.
+* Don't throw errors when searching for translations in stripes- libraries; those are optional, not dependencies. Fixes STCOR-183. Available from v2.9.4.
+* Add rule to webpack's file-loader configuration to support audio files. Fixes STCOR-184.
+* Update "configure" script to use a Yarn workspace. Fixes STCOR-185.
+* Fix typos in workspace-creation section of [_Creating a new development setup_ document](doc/new-development-setup.md). Fixes STCOR-186.
+* Add i18n best practices documentation. Fixes STCOR-182.
+* Upgrade react-apollo dependency to v2.1.3. Fixes STCOR-188.
+* Add overlay container div for system-level communications, dropdowns, modals etc. Implements STCOR-187
+* Modified z-index of MainNav, ModuleContainer, OverlayContainer so that components within these containers can apply their own z-indexes without collision or unwanted overlap. Also Implements STCOR-187.
+* Add diagnostic output to stripes builds, STCOR-141.
+* Set @folio's NPM registry before using it. Duh. Fixes STCOR-193. Available from v2.9.5.
+* Added React Error Boundary to catch errors thrown during render(), implementing STCOR-150.
+* Retrieve tenant module details in one swell foop. Fixes STCOR-200. Available from v2.9.6.
+* Add build option to disable JS minification, STCOR-197
 
 ## [2.9.0](https://github.com/folio-org/stripes-core/tree/v2.9.0) (2018-02-01)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.8.0...v2.9.0)
@@ -47,6 +60,8 @@
 * Better construction of notification links. Fixes STCOR-104.
 * Add Apollo provider so modules can use GraphQL. Fixes STCOR-133.
 * New `util/configure` script handles new development setup in one go; corresponding updates to [Creating a new development setup for Stripes](doc/new-development-setup.md). Refs STCOR-140.
+* Updated NavButton to use new universal interaction styles (from stripes-components)
+* Updated NotificationsMenu and Settings to use NavListItem instead of Button's and Link's
 
 ## [2.8.0](https://github.com/folio-org/stripes-core/tree/v2.8.0) (2017-11-20)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.7.0...v2.8.0)

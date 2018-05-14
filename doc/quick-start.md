@@ -2,7 +2,7 @@
 
 ## Pre-requisites
 
-To run Stripes, you'll need to have [Node.js](https://nodejs.org/) 6.x installed (check with `node --version`).
+To run Stripes, you'll need to have [Node.js](https://nodejs.org/) with an [active LTS version](https://github.com/nodejs/Release#release-schedule) installed (check with `node --version`).
 
 You'll also need a package manager. We strongly recommend using [yarn](https://yarnpkg.com/). Once Yarn is installed, inform it that packages in the `@folio` scope are found on the FOLIO NPM repository:
 ```
@@ -50,9 +50,9 @@ Create a new Stripes UI app module without a platform:
 stripes app create "Hello World"
 ```
 
-Create a new Stripes platform:
+Create a new Stripes workspace for platform development:
 ```
-stripes platform create
+stripes workspace
 ```
 
 Refer to the [Stripes-CLI user guide](https://github.com/folio-org/stripes-cli/blob/master/doc/user-guide.md) for a complete overview on creating an app or platform with the CLI as well as other useful commands.

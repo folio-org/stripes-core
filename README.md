@@ -27,10 +27,11 @@ Stripes is a toolkit for building single-page web applications that FOLIO UI mod
 * [An example component: the **PluginType** component](doc/component-example.md) walks through a simple example of a component that is connected to the back-end service using Stripes Connect.
 * [A component hierarchy example: the "Patrons" module](doc/component-hierarchy.md) shows by example how a set of components -- some connected, some not -- can work together to implement part of an application. **NOTE that this is somewhat out of date**, but still helpfully illustrative.
 * [Adding new permissions to FOLIO UI modules](doc/adding-permissions.md).
+* [I18n best practices](doc/i18n.md) describes our approach to internationalization.
 
 ## Additional information
 
 See project [STRPCORE](https://issues.folio.org/browse/STRPCORE)
-at the [FOLIO issue tracker](http://dev.folio.org/community/guide-issues).
+at the [FOLIO issue tracker](https://dev.folio.org/guidelines/issue-tracker/).
 
-Other FOLIO Developer documentation is at [dev.folio.org](http://dev.folio.org/)
+Other FOLIO Developer documentation is at [dev.folio.org](https://dev.folio.org/)

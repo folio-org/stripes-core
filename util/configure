@@ -7,13 +7,23 @@
 # and install the stripes-sample-platform skeleton files.
 #
 
-./stripes-core/util/pull-stripes -c
-./stripes-core/util/pull-stripes -b
-
 yarn config set @folio:registry https://repository.folio.org/repository/npm-folioci/
 
+./stripes-core/util/pull-stripes -c
+
+echo '{
+    "private": true,
+    "workspaces": [
+        "stripes-*",
+        "ui-*"
+    ],
+    "dependencies": {
+    }
+}' > package.json
+yarn install
+
 npm list -g --depth 0 | grep -q '@folio/stripes-cli'
-if [[ $? != 0 ]]; then
+if [ $? != 0 ]; then
     yarn global add node-gyp
     yarn global add @folio/stripes-cli
 fi
