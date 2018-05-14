@@ -2,6 +2,9 @@
   "compilerOptions": {
     "noImplicitAny": true,
     "jsx": "react",
+    "lib": [
+      "esnext"
+    ]
   },
   "awesomeTypescriptLoaderOptions": {
     "useCache": true
