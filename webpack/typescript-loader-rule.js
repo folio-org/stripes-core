@@ -1,3 +1,4 @@
+const path = require('path');
 const { locateStripesModule } = require('./module-paths');
 
 // We want to transpile files inside node_modules/@folio or outside
@@ -19,6 +20,6 @@ module.exports = {
   test: babelLoaderTest,
   loader: 'awesome-typescript-loader',
   query: {
-    configFileName: locateStripesModule('.', '@folio/stripes-core', '', 'webpack', 'tsconfig.json'),
+    configFileName: path.join(__dirname, 'tsconfig.json'),
   },
 };
