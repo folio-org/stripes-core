@@ -14,7 +14,7 @@ mockReq('stripes-config', { modules: {
     displayName: 'someApp',
     module: 'some-app',
     getModule: () => () => 'Close enough to a React component for this purpose.',
-    route: '/someapp' 
+    route: '/someapp'
   } ]
 } });
 
