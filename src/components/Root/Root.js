@@ -40,7 +40,7 @@ class Root extends Component {
     return { addReducer: this.addReducer, addEpic: this.addEpic };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const { okapi, store, locale } = this.props;
     if (this.withOkapi) checkOkapiSession(okapi.url, store, okapi.tenant);
     // TODO: remove this after we load locale and translations at start from a public endpoint
