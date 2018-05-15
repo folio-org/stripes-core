@@ -74,7 +74,7 @@
     "extract-text-webpack-plugin": "^3.0.0",
     "file-loader": "^1.1.5",
     "graphql": "^0.11.7",
-    "hard-source-webpack-plugin": "^0.7.0-alpha.0",
+    "hard-source-webpack-plugin": "^0.6.7",
     "history": "^4.6.3",
     "html-webpack-plugin": "^2.30.1",
     "isomorphic-fetch": "^2.2.1",
