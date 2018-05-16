@@ -18,9 +18,8 @@ class SSOLanding extends Component {
     this.tenant = this.sys.okapi.tenant;
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const token = this.getToken();
-
     if (token) {
       requestUserWithPermsDeb(this.okapiUrl, this.store, this.tenant, token);
     }

@@ -1,4 +1,4 @@
-// Disable some rules that encourage arrow functions because the 
+// Disable some rules that encourage arrow functions because the
 // lexically bound "this" prevents access to the Mocha test context.
 // See https://mochajs.org/#arrow-functions
 {

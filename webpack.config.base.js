@@ -4,6 +4,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { generateStripesAlias } = require('./webpack/module-paths');
 const babelLoaderRule = require('./webpack/babel-loader-rule');
+const typescriptLoaderRule = require('./webpack/typescript-loader-rule');
 const StripesDuplicatesPlugin = require('./webpack/stripes-duplicate-plugin');
 
 // React doesn't like being included multiple times as can happen when using
@@ -22,6 +23,7 @@ module.exports = {
       'stripes-loader': 'stripes-config', // TODO: Remove this alias after UI module references have been updated
       'react': specificReact,
     },
+    extensions: ['.js', '.json', '.tsx'],
   },
   plugins: [
     new HtmlWebpackPlugin({
@@ -33,6 +35,7 @@ module.exports = {
   module: {
     rules: [
       babelLoaderRule,
+      typescriptLoaderRule,
       {
         test: /\.json$/,
         loader: 'json-loader',
