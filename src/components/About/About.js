@@ -63,7 +63,20 @@ const About = (props) => {
 
   function listModules(caption, list, interfaces) {
     const itemFormatter = m => (<li key={m.module}>{renderDependencies(m, interfaces)}</li>);
-    const headlineMsg = <FormattedMessage id="stripes-core.about.moduleTypeCount" values={{ count: list.length, type: caption }} />;
+    var headlineMsg;
+    switch (caption) {
+      case 'app':
+        headlineMsg = <FormattedMessage id="stripes-core.about.appModuleCount" values={{ count: list.length }} />;
+        break;
+      case 'settings':
+        headlineMsg = <FormattedMessage id="stripes-core.about.settingsModuleCount" values={{ count: list.length }} />;
+        break;
+      case 'plugin':
+        headlineMsg = <FormattedMessage id="stripes-core.about.pluginModuleCount" values={{ count: list.length }} />;
+        break;
+      default:
+        headlineMsg = <FormattedMessage id="stripes-core.about.moduleTypeCount" values={{ count: list.length, type: caption }} />;
+    }
     return (
       <div key={caption}>
         <Headline>{headlineMsg}</Headline>
