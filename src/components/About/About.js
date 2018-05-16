@@ -63,7 +63,7 @@ const About = (props) => {
 
   function listModules(caption, list, interfaces) {
     const itemFormatter = m => (<li key={m.module}>{renderDependencies(m, interfaces)}</li>);
-    var headlineMsg;
+    let headlineMsg;
     switch (caption) {
       case 'app':
         headlineMsg = <FormattedMessage id="stripes-core.about.appModuleCount" values={{ count: list.length }} />;
