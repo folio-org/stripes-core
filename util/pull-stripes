@@ -28,6 +28,7 @@ dirs=`echo '
     ui-search
     ui-testing
     ui-trivial
+    ui-vendors
     eslint-config-stripes
 '`
 
