@@ -8,7 +8,7 @@ import css from './SystemSkeleton.css';
 
 const SystemSkeleton = () => {
   /**
-   * Generate x amount of bards
+   * Generate x amount of bars
    */
   const generateBars = (count = 10) => {
     const bars = [];
