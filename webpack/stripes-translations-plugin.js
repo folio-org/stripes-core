@@ -61,20 +61,20 @@ module.exports = class StripesTranslationPlugin {
   // Locate each module's translations directory (current) or package.json data (fallback)
   gatherAllTranslations() {
     const allTranslations = {};
-    for (const mod of Object.keys(this.modules)) {            
-      const modPackageJsonPath = modulePaths.locateStripesModule(this.context, mod, this.aliases, 'package.json');      
-      if (modPackageJsonPath) {        
+    for (const mod of Object.keys(this.modules)) {
+      const modPackageJsonPath = modulePaths.locateStripesModule(this.context, mod, this.aliases, 'package.json');
+      if (modPackageJsonPath) {
         const moduleName = StripesTranslationPlugin.getModuleName(mod);
         const modTranslationDir = modPackageJsonPath.replace('package.json', `translations/${moduleName}`);
-        if (fs.existsSync(modTranslationDir)) {
-          _.merge(allTranslations, this.loadTranslationsDirectory(mod, modTranslationDir));          
+        if (fs.existsSynuc(modTranslationDir)) {
+          _.merge(allTranslations, this.loadTranslationsDirectory(mod, modTranslationDir));
         } else {
           const modTranslationDirFallback = modPackageJsonPath.replace('package.json', 'translations');
           if (fs.existsSync(modTranslationDirFallback)) {
-            logger.log(`cannot find ${modTranslationDir} falling back to ${modTranslationDirFallback}`)
+            logger.log(`cannot find ${modTranslationDir} falling back to ${modTranslationDirFallback}`);
             _.merge(allTranslations, this.loadTranslationsDirectory(mod, modTranslationDirFallback));
           } else {
-            logger.log(`cannot find ${modTranslationDirFallback} falling back to ${modPackageJsonPath}`)
+            logger.log(`cannot find ${modTranslationDirFallback} falling back to ${modPackageJsonPath}`);
             _.merge(allTranslations, this.loadTranslationsPackageJson(mod, modPackageJsonPath));
           }
         }
@@ -139,7 +139,7 @@ module.exports = class StripesTranslationPlugin {
   generateFileNames(allTranslations) {
     const files = {};
     const timestamp = Date.now(); // To facilitate cache busting, could also generate a hash
-    Object.keys(allTranslations).forEach((language) => {      
+    Object.keys(allTranslations).forEach((language) => {
       files[language] = {
         // Fetching from the browser must take into account public path. The replace regex removes double slashes
         browserPath: `${this.publicPath}/translations/${language}-${timestamp}.json`.replace(/\/\//, '/'),
