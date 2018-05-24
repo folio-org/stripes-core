@@ -164,6 +164,18 @@ describe('The stripes-translations-plugin', function () {
     });
   });
 
+  describe('getModuleName method', function () {
+    it('applies "ui-" prefix to module keys', function () {
+      const result = StripesTranslationsPlugin.getModuleName('@folio/my-app');
+      expect(result).to.be.a('string').to.equal('ui-my-app');
+    });
+
+    it('does not apply "ui-" prefix to stripes-core keys', function () {
+      const result = StripesTranslationsPlugin.getModuleName('@folio/stripes-core');
+      expect(result).to.be.a('string').to.equal('stripes-core');
+    });
+  });
+
   describe('prefixModuleKeys method', function () {
     it('applies "ui-" prefix to module keys', function () {
       const translations = { key1: 'Value 1', key2: 'Value 2', key3: 'Value 3' };

@@ -61,14 +61,22 @@ module.exports = class StripesTranslationPlugin {
   // Locate each module's translations directory (current) or package.json data (fallback)
   gatherAllTranslations() {
     const allTranslations = {};
-    for (const mod of Object.keys(this.modules)) {
-      const modPackageJsonPath = modulePaths.locateStripesModule(this.context, mod, this.aliases, 'package.json');
-      if (modPackageJsonPath) {
-        const modTranslationDir = modPackageJsonPath.replace('package.json', 'translations');
+    for (const mod of Object.keys(this.modules)) {            
+      const modPackageJsonPath = modulePaths.locateStripesModule(this.context, mod, this.aliases, 'package.json');      
+      if (modPackageJsonPath) {        
+        const moduleName = StripesTranslationPlugin.getModuleName(mod);
+        const modTranslationDir = modPackageJsonPath.replace('package.json', `translations/${moduleName}`);
         if (fs.existsSync(modTranslationDir)) {
-          _.merge(allTranslations, this.loadTranslationsDirectory(mod, modTranslationDir));
+          _.merge(allTranslations, this.loadTranslationsDirectory(mod, modTranslationDir));          
         } else {
-          _.merge(allTranslations, this.loadTranslationsPackageJson(mod, modPackageJsonPath));
+          const modTranslationDirFallback = modPackageJsonPath.replace('package.json', 'translations');
+          if (fs.existsSync(modTranslationDirFallback)) {
+            logger.log(`cannot find ${modTranslationDir} falling back to ${modTranslationDirFallback}`)
+            _.merge(allTranslations, this.loadTranslationsDirectory(mod, modTranslationDirFallback));
+          } else {
+            logger.log(`cannot find ${modTranslationDirFallback} falling back to ${modPackageJsonPath}`)
+            _.merge(allTranslations, this.loadTranslationsPackageJson(mod, modPackageJsonPath));
+          }
         }
       } else {
         console.log(`Unable to locate ${mod} while looking for translations.`);
@@ -115,10 +123,15 @@ module.exports = class StripesTranslationPlugin {
     // return require(filePath); // eslint-disable-line global-require, import/no-dynamic-require
   }
 
+  static getModuleName(module) {
+    const name = module.replace(/.*\//, '');
+    const moduleName = name.indexOf('stripes-') === 0 ? `${name}` : `ui-${name}`;
+    return moduleName;
+  }
+
   // Converts "example.key" for "@folio/app" into "ui-app.example.key"
   static prefixModuleKeys(moduleName, translations) {
-    const name = moduleName.replace(/.*\//, '');
-    const prefix = name.indexOf('stripes-') === 0 ? `${name}.` : `ui-${name}.`;
+    const prefix = `${StripesTranslationPlugin.getModuleName(moduleName)}.`;
     return prefixKeys(translations, prefix);
   }
 
@@ -126,7 +139,7 @@ module.exports = class StripesTranslationPlugin {
   generateFileNames(allTranslations) {
     const files = {};
     const timestamp = Date.now(); // To facilitate cache busting, could also generate a hash
-    Object.keys(allTranslations).forEach((language) => {
+    Object.keys(allTranslations).forEach((language) => {      
       files[language] = {
         // Fetching from the browser must take into account public path. The replace regex removes double slashes
         browserPath: `${this.publicPath}/translations/${language}-${timestamp}.json`.replace(/\/\//, '/'),

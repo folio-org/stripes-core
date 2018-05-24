@@ -85,7 +85,7 @@ describe('The stripes-config-plugin', function () {
       compilerStub.plugins = [];
 
       const translationPlugin = new StripesTranslationsPlugin({ config: {} });
-      translationPlugin.allFiles = { en: '/translations/en.json' };
+      translationPlugin.allFiles = { en: '/translations/stripes-core/en.json' };
       compilerStub.options.plugins.push(translationPlugin);
 
       const brandingPlugin = new StripesBrandingPlugin({});
