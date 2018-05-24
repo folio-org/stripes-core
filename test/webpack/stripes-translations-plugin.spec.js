@@ -98,6 +98,7 @@ describe('The stripes-translations-plugin', function () {
     beforeEach(function () {
       this.sandbox.stub(modulePaths, 'locateStripesModule').callsFake((context, mod) => `path/to/${mod}/package.json`);
       this.sut = new StripesTranslationsPlugin(this.stripesConfig);
+      this.sandbox.stub(this.sut, 'getModuleName').returns('stripes-core');
       this.sandbox.stub(this.sut, 'loadTranslationsDirectory').returns({});
       this.sandbox.stub(this.sut, 'loadTranslationsPackageJson').returns({});
     });
