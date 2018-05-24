@@ -66,7 +66,7 @@ module.exports = class StripesTranslationPlugin {
       if (modPackageJsonPath) {
         const moduleName = StripesTranslationPlugin.getModuleName(mod);
         const modTranslationDir = modPackageJsonPath.replace('package.json', `translations/${moduleName}`);
-        if (fs.existsSynuc(modTranslationDir)) {
+        if (fs.existsSync(modTranslationDir)) {
           _.merge(allTranslations, this.loadTranslationsDirectory(mod, modTranslationDir));
         } else {
           const modTranslationDirFallback = modPackageJsonPath.replace('package.json', 'translations');
