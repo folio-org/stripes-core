@@ -16,6 +16,7 @@ import { loadTranslations, checkOkapiSession } from '../../loginServices';
 import { getQueryResourceKey } from '../../locationService';
 import Stripes from '../../Stripes';
 import RootWithIntl from '../../RootWithIntl';
+import SystemSkeleton from '../SystemSkeleton';
 
 import './Root.css';
 
@@ -85,7 +86,7 @@ class Root extends Component {
 
     if (!translations) {
       // We don't know the locale, so we use English as backup
-      return <div>Loading translations...</div>;
+      return (<SystemSkeleton />);
     }
 
     const stripes = new Stripes({
