@@ -2,6 +2,7 @@
 
 ## 2.10.0 (IN PROGRESS)
 
+* Translation plugin looks for language files in folder `translations/moduleName` at first. If there is no translation in that folder it falls back to `translations` folder to provide backward compatibility. Fixes STCOR-211.
 * Update [Creating a new development setup for Stripes](doc/new-development-setup.md) for `stripes-cli`-based workflow. Fixes STCOR-140.
 * New document, [Depending on unreleased features](doc/depending-on-unreleased-features.md). Fixes STCOR-152.
 * Reorganize [Creating a new development setup for Stripes](doc/new-development-setup.md) and add `configure` script. Refs STCOR-140.
