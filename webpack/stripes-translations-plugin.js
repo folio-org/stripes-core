@@ -20,6 +20,7 @@ module.exports = class StripesTranslationPlugin {
       '@folio/stripes-core': {},
       '@folio/stripes-components': {},
       '@folio/stripes-smart-components': {},
+      '@folio/stripes-form': {},
     };
     Object.assign(this.modules, options.modules);
     this.languageFilter = options.config.languages || [];
