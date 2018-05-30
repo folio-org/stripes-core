@@ -12,6 +12,11 @@ import { branding } from 'stripes-config'; //eslint-disable-line
 
 class Login extends Component {
   static propTypes = {
+    stripes: PropTypes.shape({
+      intl: PropTypes.shape({
+        formatMessage: PropTypes.func.isRequired,
+      }),
+    }).isRequired,
     handleSubmit: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
     submitting: PropTypes.bool,
@@ -50,11 +55,12 @@ class Login extends Component {
       onSubmit,
       formValues,
       submitSucceeded,
+      stripes: { intl: { formatMessage: translate } },
     } = this.props;
 
     const { username } = formValues;
     const buttonDisabled = submitting || submitSucceeded || !(username);
-    const buttonLabel = (submitting || (submitSucceeded)) ? 'Logging in...' : 'Log in';
+    const buttonLabel = translate({ id: (submitting || (submitSucceeded)) ? 'stripes-core.loggingIn' : 'stripes-core.login' });
     return (
       <div className={authFormStyles.wrap}>
         <div className={authFormStyles.centered}>
@@ -66,7 +72,7 @@ class Login extends Component {
                 component={TextField}
                 name="username"
                 type="text"
-                placeholder="Username"
+                placeholder={translate({ id: 'stripes-core.username' })}
                 marginBottom0
                 fullWidth
                 inputClass={authFormStyles.input}
@@ -81,7 +87,7 @@ class Login extends Component {
                 component={TextField}
                 name="password"
                 type="password"
-                placeholder="Password"
+                placeholder={translate({ id: 'stripes-core.password' })}
                 marginBottom0
                 fullWidth
                 inputClass={authFormStyles.input}

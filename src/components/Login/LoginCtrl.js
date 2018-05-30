@@ -18,6 +18,11 @@ class LoginCtrl extends Component {
       username: PropTypes.string.isRequired,
       password: PropTypes.string.isRequired,
     }),
+    stripes: PropTypes.shape({
+      intl: PropTypes.shape({
+        formatMessage: PropTypes.func.isRequired,
+      }),
+    }).isRequired,
   }
 
   constructor(props, context) {
@@ -55,6 +60,7 @@ class LoginCtrl extends Component {
         authError={authFailure}
         handleSSOLogin={this.handleSSOLogin}
         ssoActive={ssoEnabled}
+        stripes={this.props.stripes}
       />
     );
   }

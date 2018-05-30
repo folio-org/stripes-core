@@ -60,7 +60,7 @@ const RootWithIntl = (props, context) => {
             </MainContainer> :
             <Switch>
               <Route exact path="/sso-landing" component={() => wrapInErrorBoundary(<CookiesProvider><SSOLanding stripes={stripes} /></CookiesProvider>)} key="sso-landing" />
-              <Route component={() => wrapInErrorBoundary(<LoginCtrl autoLogin={stripes.config.autoLogin} />)} />
+              <Route component={() => wrapInErrorBoundary(<LoginCtrl autoLogin={stripes.config.autoLogin} stripes={stripes} />)} />
             </Switch>
           }
         </Router>
