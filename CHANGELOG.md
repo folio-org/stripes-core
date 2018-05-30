@@ -35,6 +35,8 @@
 * Add build option to disable JS minification, STCOR-197
 * Upgrade required version of hard-source-webpack-plugin, and thereby of leveldown. Fixes STCOR-210.
 * Include ui-vendors in pull-stripes.
+* Added system skeleton loading
+* I18n-ify login page. Fixes STCOR-213.
 
 ## [2.9.0](https://github.com/folio-org/stripes-core/tree/v2.9.0) (2018-02-01)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.8.0...v2.9.0)
