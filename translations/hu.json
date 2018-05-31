@@ -9,7 +9,7 @@
   "button.deleteEntry": "{entry} törlése",
   "button.saveAndClose": "Ment és bezár",
   "button.cancel": "Mégsem",
-  "button.close": "bezár",
+  "button.close": "Bezár",
   "label.confirmDeleteEntry": "Biztosan törli: {entry}?",
   "label.editEntry": "{entry} szerkesztése",
   "label.createEntry": "{entry} létrehozása"
