@@ -9,7 +9,7 @@
   "button.deleteEntry": "Delete {entry}",
   "button.saveAndClose": "Save and close",
   "button.cancel": "Cancel",
-  "button.close": "close",
+  "button.close": "Close",
   "label.confirmDeleteEntry": "<strong>{name}</strong> will be <strong>removed</strong>",
   "label.editEntry": "Edit {entry}",
   "label.createEntry": "Create {entry}",
