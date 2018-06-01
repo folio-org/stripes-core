@@ -53,7 +53,7 @@ module.exports = function serve(stripesConfig, options) {
 
     logger.log('assign final webpack config', config);
     const compiler = webpack(config);
-    compiler.plugin('done', stats => resolve(stats));
+    compiler.hooks.done.tap('StripesCoreServe', stats => resolve(stats));
 
     const port = options.port || process.env.STRIPES_PORT || 3000;
     const host = options.host || process.env.STRIPES_HOST || 'localhost';

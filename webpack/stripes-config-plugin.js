@@ -34,8 +34,8 @@ module.exports = class StripesConfigPlugin {
     compiler.apply(this.virtualModule);
 
     // Wait until after other plugins to generate virtual stripes-config
-    compiler.plugin('after-plugins', theCompiler => this.afterPlugins(theCompiler));
-    compiler.plugin('emit', (compilation, callback) => this.processWarnings(compilation, callback));
+    compiler.hooks.afterPlugins.tap('StripesConfigPlugin', (theCompiler) => this.afterPlugins(theCompiler));
+    compiler.hooks.emit.tapAsync('StripesConfigPlugin', (compilation, callback) => this.processWarnings(compilation, callback));
   }
 
   afterPlugins(compiler) {
