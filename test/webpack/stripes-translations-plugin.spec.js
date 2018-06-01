@@ -17,6 +17,11 @@ const compilerStub = {
       aliases: {},
     },
   },
+  hooks: {
+    emit: {
+      tapAsync: () => {},
+    }
+  },
 };
 
 describe('The stripes-translations-plugin', function () {
@@ -52,7 +57,7 @@ describe('The stripes-translations-plugin', function () {
       this.sandbox.stub(fs, 'existsSync').returns(true);
       this.sandbox.stub(fs, 'readdirSync').returns(['en.json', 'es.json', 'fr.json']);
       this.sandbox.spy(compilerStub, 'apply');
-      this.sandbox.spy(compilerStub, 'plugin');
+      this.sandbox.spy(compilerStub.hooks.emit, 'tapAsync');
       this.sandbox.stub(StripesTranslationsPlugin, 'loadFile').returns({ key1: 'Value 1', key2: 'Value 2' });
       this.compilationStub = {
         assets: {},
@@ -62,7 +67,7 @@ describe('The stripes-translations-plugin', function () {
     it('registers the "emit" hook', function () {
       this.sut = new StripesTranslationsPlugin(this.stripesConfig);
       this.sut.apply(compilerStub);
-      expect(compilerStub.plugin).to.be.calledWith('emit');
+      expect(compilerStub.hooks.emit.tapAsync).to.be.calledWith('StripesTranslationsPlugin');
     });
 
     it('generates an emit function with all translations', function () {
@@ -70,7 +75,7 @@ describe('The stripes-translations-plugin', function () {
       this.sut.apply(compilerStub);
 
       // Get the function passed to 'emit' hook
-      const pluginArgs = compilerStub.plugin.getCall(0).args;
+      const pluginArgs = compilerStub.hooks.emit.tapAsync.getCall(0).args;
       const emitFunction = pluginArgs[1];
 
       // Call it and observe the modification to compilation.assets

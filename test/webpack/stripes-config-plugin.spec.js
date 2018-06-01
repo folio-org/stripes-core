@@ -18,6 +18,14 @@ const compilerStub = {
     },
     plugins: [],
   },
+  hooks: {
+    afterPlugins: {
+      tap: () => {},
+    },
+    emit: {
+      tapAsync: () => {},
+    }
+  },
   context: '/context/path',
   warnings: [],
 };
@@ -69,9 +77,9 @@ describe('The stripes-config-plugin', function () {
     });
 
     it('registers the "after-plugins" hook', function () {
-      this.sandbox.spy(compilerStub, 'plugin');
+      this.sandbox.spy(compilerStub.hooks.afterPlugins, 'tap');
       this.sut.apply(compilerStub);
-      expect(compilerStub.plugin).to.have.been.calledWith('after-plugins');
+      expect(compilerStub.hooks.afterPlugins.tap).to.have.been.calledWith('StripesConfigPlugin');
     });
   });
 
