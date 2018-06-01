@@ -15,7 +15,9 @@ const postCssColorFunction = require('postcss-color-function');
 const base = require('./webpack.config.base');
 const cli = require('./webpack.config.cli');
 
-const prodConfig = Object.assign({}, base, cli);
+const prodConfig = Object.assign({}, base, cli, {
+  mode: 'production',
+});
 
 prodConfig.plugins = prodConfig.plugins.concat([
   new ExtractTextPlugin({ filename: 'style.[contenthash].css', allChunks: true }),

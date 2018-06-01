@@ -37,10 +37,6 @@ module.exports = {
       babelLoaderRule,
       typescriptLoaderRule,
       {
-        test: /\.json$/,
-        loader: 'json-loader',
-      },
-      {
         test: /\.(jpg|jpeg|gif|png|ico|svg)$/,
         loader: 'file-loader?name=img/[path][name].[hash].[ext]',
       },
