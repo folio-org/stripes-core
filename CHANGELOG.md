@@ -37,6 +37,7 @@
 * Include ui-vendors in pull-stripes.
 * Added system skeleton loading
 * I18n-ify login page. Fixes STCOR-213.
+* Update Okapi dependencies corresponding with UIU-495.
 
 ## [2.9.0](https://github.com/folio-org/stripes-core/tree/v2.9.0) (2018-02-01)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.8.0...v2.9.0)
