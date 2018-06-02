@@ -9,6 +9,7 @@
   "button.deleteEntry": "{entry} löschen",
   "button.saveAndClose": "Speichern und Schließen",
   "button.cancel": "Abbrechen",
+  "button.close": "Schließen",
   "label.confirmDeleteEntry": "<strong>{name}</strong> wird <strong>gelöscht</strong>",
   "label.editEntry": "{entry} bearbeiten",
   "label.createEntry": "{entry} neu anlegen",
@@ -40,6 +41,10 @@
 
   "loggedInAs": "Als {firstName} {lastName} eingeloggt",
   "logout": "Ausloggen",
+  "login": "Einloggen",
+  "username": "Nutzername",
+  "password": "Passwort",
+  "loggingIn": "Einloggen ...",
   "settings": "Einstellungen",
   "folioSettings": "FOLIO-Einstellungen",
   "mainNavigation": "Hauptmenü",
