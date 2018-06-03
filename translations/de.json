@@ -38,6 +38,10 @@
   "about.key.compatible": "Interfaces, die in kompatibler Version bereitstehen, erscheinen in normaler Schrift.",
   "about.moduleTypeCount": "{count, number} {type}-{count, plural, one {Modul} other {Module}}",
 
+  "about.appModuleCount": "{count, number} {count, plural, one {Appmodul} other {Appmodule}}",
+  "about.settingsModuleCount": "{count, number} {count, plural, one {Modul} other {Module}} für Einstellungen",
+  "about.pluginModuleCount": "{count, number} {count, plural, one {Pluginmodul} other {Pluginmodule}}",
+
   "loggedInAs": "Als {firstName} {lastName} eingeloggt",
   "logout": "Ausloggen",
   "settings": "Einstellungen",

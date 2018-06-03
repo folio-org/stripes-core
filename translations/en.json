@@ -39,6 +39,10 @@
   "about.key.compatible": "Interfaces that are present in a compatible version are shown in regular font.",
   "about.moduleTypeCount": "{count, number} {type} {count, plural, one {module} other {modules}}",
 
+  "about.appModuleCount": "{count, number} app {count, plural, one {module} other {modules}}",
+  "about.settingsModuleCount": "{count, number} settings {count, plural, one {module} other {modules}}",
+  "about.pluginModuleCount": "{count, number} plugin {count, plural, one {module} other {modules}}",
+
   "loggedInAs": "Logged in as {firstName} {lastName}",
   "logout": "Log out",
   "login": "Log in",
