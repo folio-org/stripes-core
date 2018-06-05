@@ -2,6 +2,7 @@
 
 ## 2.10.0 (IN PROGRESS)
 
+* Translation plugin looks for language files in folder `translations/moduleName` at first. If there is no translation in that folder it falls back to `translations` folder to provide backward compatibility. Fixes STCOR-211.
 * Update [Creating a new development setup for Stripes](doc/new-development-setup.md) for `stripes-cli`-based workflow. Fixes STCOR-140.
 * New document, [Depending on unreleased features](doc/depending-on-unreleased-features.md). Fixes STCOR-152.
 * Reorganize [Creating a new development setup for Stripes](doc/new-development-setup.md) and add `configure` script. Refs STCOR-140.
@@ -37,6 +38,7 @@
 * Include ui-vendors in pull-stripes.
 * Added system skeleton loading
 * I18n-ify login page. Fixes STCOR-213.
+* Update Okapi dependencies corresponding with UIU-495.
 
 ## [2.9.0](https://github.com/folio-org/stripes-core/tree/v2.9.0) (2018-02-01)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.8.0...v2.9.0)
