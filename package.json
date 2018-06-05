@@ -117,6 +117,7 @@
     "rxjs": "^5.4.3",
     "serialize-javascript": "^1.4.0",
     "style-loader": "^0.18.2",
+    "tapable": "^1.0.0",
     "typeface-source-sans-pro": "0.0.43",
     "typescript": "^2.8.1",
     "uglify-es": "3.3.9",

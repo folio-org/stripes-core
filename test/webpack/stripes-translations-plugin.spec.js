@@ -20,8 +20,11 @@ const compilerStub = {
   hooks: {
     emit: {
       tapAsync: () => {},
-    }
-  },
+    },
+    stripesConfigPluginBeforeWrite: {
+      tap: () => {},
+    },
+  }
 };
 
 describe('The stripes-translations-plugin', function () {

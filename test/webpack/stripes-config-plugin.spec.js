@@ -67,6 +67,10 @@ describe('The stripes-config-plugin', function () {
       this.sut = new StripesConfigPlugin(mockConfig);
     });
 
+    afterEach(function () {
+      delete compilerStub.hooks.stripesConfigPluginBeforeWrite;
+    });
+
     it('applies a virtual module', function () {
       this.sandbox.spy(compilerStub, 'apply');
       this.sut.apply(compilerStub);
@@ -101,6 +105,10 @@ describe('The stripes-config-plugin', function () {
       compilerStub.options.plugins.push(brandingPlugin);
 
       this.sut.apply(compilerStub);
+    });
+
+    afterEach(function () {
+      delete compilerStub.hooks.stripesConfigPluginBeforeWrite;
     });
 
     it('calls virtualModule.writeModule()', function () {

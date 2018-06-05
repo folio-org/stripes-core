@@ -23,6 +23,11 @@ const compilerStub = {
   options: {
     plugins: ['something', {}, new HtmlWebpackPlugin()], // sample plugin data
   },
+  hooks: {
+    stripesConfigPluginBeforeWrite: {
+      tap: () => {},
+    },
+  }
 };
 
 describe('The stripes-branding-plugin', function () {
