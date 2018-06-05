@@ -7,7 +7,8 @@ function getLocationQuery(location) {
 }
 
 export function getQueryResourceKey({ dataKey, module, queryResource }) {
-  return `${dataKey || ''}${snakeCase(module)}_${queryResource}`;
+  const prefix = dataKey ? `${dataKey}#` : '';
+  return `${prefix}${snakeCase(module)}_${queryResource}`;
 }
 
 export function getQueryResourceState(module, store) {
