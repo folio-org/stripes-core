@@ -43,10 +43,16 @@ module.exports = class StripesTranslationPlugin {
     // Gather all translations available in each module
     const allTranslations = this.gatherAllTranslations();
     const fileData = this.generateFileNames(allTranslations);
-    this.allFiles = _.mapValues(fileData, data => data.browserPath); // stripes-config-plugin will grab "allFiles" for fetching in the browser
+    const allFiles = _.mapValues(fileData, data => data.browserPath);
+
+    // Hook into stripesConfigPlugin to supply paths to translation files
+    compiler.hooks.stripesConfigPluginBeforeWrite.tap('StripesTranslationsPlugin', (config) => {
+      config.translations = allFiles;
+      logger.log('stripesConfigPluginBeforeWrite', config.translations);
+    });
 
     // Emit merged translations to the output directory
-    compiler.plugin('emit', (compilation, callback) => {
+    compiler.hooks.emit.tapAsync('StripesTranslationsPlugin', (compilation, callback) => {
       Object.keys(allTranslations).forEach((language) => {
         logger.log(`emitting translations for ${language} --> ${fileData[language].emitPath}`);
         const content = JSON.stringify(allTranslations[language]);

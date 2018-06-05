@@ -6,9 +6,7 @@ const express = require('express');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 const webpackHotMiddleware = require('webpack-hot-middleware');
 const connectHistoryApiFallback = require('connect-history-api-fallback');
-const StripesConfigPlugin = require('./stripes-config-plugin');
-const StripesBrandingPlugin = require('./stripes-branding-plugin');
-const StripesTranslationsPlugin = require('./stripes-translations-plugin');
+const StripesWebpackPlugin = require('./stripes-webpack-plugin');
 const applyWebpackOverrides = require('./apply-webpack-overrides');
 const logger = require('./logger')();
 
@@ -34,9 +32,7 @@ module.exports = function serve(stripesConfig, options) {
     const app = express();
     let config = require('../webpack.config.cli.dev'); // eslint-disable-line
 
-    config.plugins.push(new StripesConfigPlugin(stripesConfig));
-    config.plugins.push(new StripesBrandingPlugin(stripesConfig.branding));
-    config.plugins.push(new StripesTranslationsPlugin(stripesConfig));
+    config.plugins.push(new StripesWebpackPlugin({ stripesConfig }));
 
     // Look for modules in node_modules, then the platform, then stripes-core
     config.resolve.modules = ['node_modules', platformModulePath, coreModulePath];
@@ -53,7 +49,7 @@ module.exports = function serve(stripesConfig, options) {
 
     logger.log('assign final webpack config', config);
     const compiler = webpack(config);
-    compiler.plugin('done', stats => resolve(stats));
+    compiler.hooks.done.tap('StripesCoreServe', stats => resolve(stats));
 
     const port = options.port || process.env.STRIPES_PORT || 3000;
     const host = options.host || process.env.STRIPES_HOST || 'localhost';

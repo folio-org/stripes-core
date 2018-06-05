@@ -1,6 +1,7 @@
 const expect = require('chai').expect;
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
 const defaultBranding = require('../../default-assets/branding');
 const StripesBrandingPlugin = require('../../webpack/stripes-branding-plugin');
 
@@ -22,6 +23,11 @@ const compilerStub = {
   options: {
     plugins: ['something', {}, new HtmlWebpackPlugin()], // sample plugin data
   },
+  hooks: {
+    stripesConfigPluginBeforeWrite: {
+      tap: () => {},
+    },
+  }
 };
 
 describe('The stripes-branding-plugin', function () {
@@ -40,11 +46,14 @@ describe('The stripes-branding-plugin', function () {
   });
 
   describe('apply method', function () {
-    it('registers the "after-plugins" hook', function () {
-      this.sandbox.spy(compilerStub, 'plugin');
+    it('applies the FaviconsWebpackPlugin', function () {
+      this.sandbox.spy(compilerStub, 'apply');
       const sut = new StripesBrandingPlugin();
       sut.apply(compilerStub);
-      expect(compilerStub.plugin).to.be.calledWith('after-plugins');
+
+      expect(compilerStub.apply).to.have.been.calledOnce;
+      const applyCall = compilerStub.apply.getCall(0);
+      expect(applyCall.args[0]).to.be.an.instanceOf(FaviconsWebpackPlugin);
     });
   });
 
@@ -58,16 +67,6 @@ describe('The stripes-branding-plugin', function () {
       const result = StripesBrandingPlugin._initFavicon(tenantBranding.favicon.src);
       expect(result).to.include(tenantBranding.favicon.src.replace('.', ''));
       expect(result.substr(0, 1)).to.equal('/');
-    });
-  });
-
-  describe('_replaceFavicon method', function () {
-    it('locates HtmlWebpackPlugin and updates favicon', function () {
-      const sut = new StripesBrandingPlugin(tenantBranding);
-      sut._replaceFavicon(compilerStub);
-
-      const expected = tenantBranding.favicon.src.replace('.', '');
-      expect(compilerStub.options.plugins[2].options.favicon).to.include(expected);
     });
   });
 });
