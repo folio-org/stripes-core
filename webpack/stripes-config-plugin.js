@@ -4,8 +4,6 @@
 
 const _ = require('lodash');
 const VirtualModulesPlugin = require('webpack-virtual-modules');
-const StripesBrandingPlugin = require('./stripes-branding-plugin');
-const StripesTranslationPlugin = require('./stripes-translations-plugin');
 const serialize = require('serialize-javascript');
 const stripesModuleParser = require('./stripes-module-parser');
 const StripesBuildError = require('./stripes-build-error');
