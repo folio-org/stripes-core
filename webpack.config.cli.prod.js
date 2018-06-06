@@ -55,4 +55,13 @@ prodConfig.module.rules.push({
   }),
 });
 
+// Remove all data-test or data-test-* attributes
+const babelLoaderConfig = prodConfig.module.rules.find(rule => rule.loader === 'babel-loader');
+
+babelLoaderConfig.options.plugins = (babelLoaderConfig.options.plugins || []).concat([
+  [require.resolve('babel-plugin-remove-jsx-attributes'), {
+    patterns: ['^data-test.*$']
+  }]
+]);
+
 module.exports = prodConfig;
