@@ -121,8 +121,6 @@
     "tapable": "^1.0.0",
     "typeface-source-sans-pro": "0.0.43",
     "typescript": "^2.8.1",
-    "uglify-es": "3.3.9",
-    "uglifyjs-webpack-plugin": "^1.1.8",
     "uuid": "^3.0.0",
     "webpack": "^4.10.2",
     "webpack-dev-middleware": "^2.0.4",
