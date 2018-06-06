@@ -16,7 +16,7 @@ module.exports = class StripesBrandingPlugin {
   apply(compiler) {
     // FaviconsWebpackPlugin will inject the necessary html via HtmlWebpackPlugin
     const faviconPath = StripesBrandingPlugin._initFavicon(this.branding.favicon.src);
-    compiler.apply(new FaviconsWebpackPlugin(faviconPath));
+    new FaviconsWebpackPlugin(faviconPath).apply(compiler);
 
     // Hook into stripesConfigPlugin to supply branding config
     compiler.hooks.stripesConfigPluginBeforeWrite.tap('StripesBrandingPlugin', (config) => {

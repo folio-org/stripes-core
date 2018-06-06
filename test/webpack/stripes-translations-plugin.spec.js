@@ -24,6 +24,12 @@ const compilerStub = {
     stripesConfigPluginBeforeWrite: {
       tap: () => {},
     },
+    contextModuleFactory: {
+      tap: () => {},
+    },
+    afterResolve: {
+      tap: () => {},
+    }
   }
 };
 
@@ -59,7 +65,7 @@ describe('The stripes-translations-plugin', function () {
       this.sandbox.stub(modulePaths, 'locateStripesModule').callsFake((context, mod) => `path/to/${mod}/package.json`);
       this.sandbox.stub(fs, 'existsSync').returns(true);
       this.sandbox.stub(fs, 'readdirSync').returns(['en.json', 'es.json', 'fr.json']);
-      this.sandbox.spy(compilerStub, 'apply');
+      this.sandbox.spy(webpack.ContextReplacementPlugin.prototype, 'apply');
       this.sandbox.spy(compilerStub.hooks.emit, 'tapAsync');
       this.sandbox.stub(StripesTranslationsPlugin, 'loadFile').returns({ key1: 'Value 1', key2: 'Value 2' });
       this.compilationStub = {
@@ -96,9 +102,8 @@ describe('The stripes-translations-plugin', function () {
       this.sut.languageFilter = ['en'];
       this.sut.apply(compilerStub);
 
-      expect(compilerStub.apply).to.be.calledTwice;
-      const applyArgs = compilerStub.apply.getCall(0).args;
-      expect(applyArgs[0]).to.be.instanceOf(webpack.ContextReplacementPlugin);
+      expect(webpack.ContextReplacementPlugin.prototype.apply).to.have.been.calledTwice;
+      expect(webpack.ContextReplacementPlugin.prototype.apply).to.be.calledWith(compilerStub);
     });
   });
 

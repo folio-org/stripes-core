@@ -17,16 +17,16 @@ function StripesDuplicatePlugin() {}
 
 StripesDuplicatePlugin.prototype.apply = (compiler) => {
   // This will surface duplicates as warnings
-  compiler.apply(new DuplicatePackageCheckerPlugin({
+  new DuplicatePackageCheckerPlugin({
     exclude: instance => duplicatesAllowed.includes(instance.name),
-  }));
+  }).apply(compiler);
 
   // This will error when duplicates of specific modules are found
-  compiler.apply(new DuplicatePackageCheckerPlugin({
+  new DuplicatePackageCheckerPlugin({
     exclude: instance => !duplicatesNotAllowed.includes(instance.name),
     verbose: true,
     emitError: true,
-  }));
+  }).apply(compiler);
 };
 
 module.exports = StripesDuplicatePlugin;

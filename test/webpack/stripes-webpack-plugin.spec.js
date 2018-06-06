@@ -41,8 +41,11 @@ const mockConfig = {
 describe('The stripes-webpack-plugin', function () {
   describe('apply method', function () {
     beforeEach(function () {
+      this.sandbox.stub(StripesConfigPlugin.prototype, 'apply').callsFake(() => {});
+      this.sandbox.stub(StripesBrandingPlugin.prototype, 'apply').callsFake(() => {});
+      this.sandbox.stub(StripesTranslationsPlugin.prototype, 'apply').callsFake(() => {});
+      this.sandbox.stub(StripesDuplicatesPlugin.prototype, 'apply').callsFake(() => {});
       this.sut = new StripesWebpackPlugin({ stripesConfig: mockConfig });
-      this.sandbox.spy(compilerStub, 'apply');
     });
 
     afterEach(function () {
@@ -51,26 +54,26 @@ describe('The stripes-webpack-plugin', function () {
 
     it('applies StripesConfigPlugin', function () {
       this.sut.apply(compilerStub);
-      const matchingCall = compilerStub.apply.getCalls().find(call => call.args[0] instanceof StripesConfigPlugin);
-      expect(matchingCall).to.exist;
+      expect(StripesConfigPlugin.prototype.apply).to.have.been.calledOnce;
+      expect(StripesConfigPlugin.prototype.apply).to.be.calledWith(compilerStub);
     });
 
     it('applies StripesBrandingPlugin', function () {
       this.sut.apply(compilerStub);
-      const matchingCall = compilerStub.apply.getCalls().find(call => call.args[0] instanceof StripesBrandingPlugin);
-      expect(matchingCall).to.exist;
+      expect(StripesBrandingPlugin.prototype.apply).to.have.been.calledOnce;
+      expect(StripesBrandingPlugin.prototype.apply).to.be.calledWith(compilerStub);
     });
 
     it('applies StripesTranslationsPlugin', function () {
       this.sut.apply(compilerStub);
-      const matchingCall = compilerStub.apply.getCalls().find(call => call.args[0] instanceof StripesTranslationsPlugin);
-      expect(matchingCall).to.exist;
+      expect(StripesTranslationsPlugin.prototype.apply).to.have.been.calledOnce;
+      expect(StripesTranslationsPlugin.prototype.apply).to.be.calledWith(compilerStub);
     });
 
     it('applies StripesDuplicatesPlugin', function () {
       this.sut.apply(compilerStub);
-      const matchingCall = compilerStub.apply.getCalls().find(call => call.args[0] instanceof StripesDuplicatesPlugin);
-      expect(matchingCall).to.exist;
+      expect(StripesDuplicatesPlugin.prototype.apply).to.have.been.calledOnce;
+      expect(StripesDuplicatesPlugin.prototype.apply).to.be.calledWith(compilerStub);
     });
   });
 });

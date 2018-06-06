@@ -21,6 +21,6 @@ module.exports = class StripesWebpackPlugin {
     ];
 
     logger.log('Applying Stripes plugins...');
-    stripesPlugins.forEach(plugin => compiler.apply(plugin));
+    stripesPlugins.forEach(plugin => plugin.apply(compiler));
   }
 };

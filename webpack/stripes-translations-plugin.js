@@ -36,8 +36,8 @@ module.exports = class StripesTranslationPlugin {
     // Limit the number of languages loaded by third-party libraries with the ContextReplacementPlugin
     if (this.languageFilter.length) {
       const filterRegex = new RegExp(`(${this.languageFilter.join('|')})`); // constructed regex will look something like /(en|es)/
-      compiler.apply(new webpack.ContextReplacementPlugin(/react-intl[/\\]locale-data/, filterRegex));
-      compiler.apply(new webpack.ContextReplacementPlugin(/moment[/\\]locale/, filterRegex));
+      new webpack.ContextReplacementPlugin(/react-intl[/\\]locale-data/, filterRegex).apply(compiler);
+      new webpack.ContextReplacementPlugin(/moment[/\\]locale/, filterRegex).apply(compiler);
     }
 
     // Gather all translations available in each module

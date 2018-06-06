@@ -30,7 +30,7 @@ module.exports = class StripesConfigPlugin {
 
     // Prep the virtual module now, we will write to it when ready
     this.virtualModule = new VirtualModulesPlugin();
-    compiler.apply(this.virtualModule);
+    this.virtualModule.apply(compiler);
 
     // Establish hook for other plugins to update the config
     if (compiler.hooks.stripesConfigPluginBeforeWrite) {

@@ -27,7 +27,17 @@ const compilerStub = {
     stripesConfigPluginBeforeWrite: {
       tap: () => {},
     },
-  }
+    make: {
+      tapAsync: () => {},
+    },
+    compilation: {
+      tap: () => {},
+    },
+    emit: {
+      tapAsync: () => {},
+    }
+  },
+  context: ''
 };
 
 describe('The stripes-branding-plugin', function () {
@@ -47,13 +57,12 @@ describe('The stripes-branding-plugin', function () {
 
   describe('apply method', function () {
     it('applies the FaviconsWebpackPlugin', function () {
-      this.sandbox.spy(compilerStub, 'apply');
+      this.sandbox.spy(FaviconsWebpackPlugin.prototype, 'apply');
       const sut = new StripesBrandingPlugin();
       sut.apply(compilerStub);
 
-      expect(compilerStub.apply).to.have.been.calledOnce;
-      const applyCall = compilerStub.apply.getCall(0);
-      expect(applyCall.args[0]).to.be.an.instanceOf(FaviconsWebpackPlugin);
+      expect(FaviconsWebpackPlugin.prototype.apply).to.have.been.calledOnce;
+      expect(FaviconsWebpackPlugin.prototype.apply).to.be.calledWith(compilerStub);
     });
   });
 

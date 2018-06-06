@@ -24,7 +24,16 @@ const compilerStub = {
     },
     emit: {
       tapAsync: () => {},
-    }
+    },
+    afterEnvironment: {
+      tap: () => {}
+    },
+    afterResolvers: {
+      tap: () => {}
+    },
+    watchRun: {
+      tapAsync: () => {}
+    },
   },
   context: '/context/path',
   warnings: [],
@@ -72,12 +81,11 @@ describe('The stripes-config-plugin', function () {
     });
 
     it('applies a virtual module', function () {
-      this.sandbox.spy(compilerStub, 'apply');
+      this.sandbox.spy(VirtualModulesPlugin.prototype, 'apply');
       this.sut.apply(compilerStub);
 
-      expect(compilerStub.apply).to.have.been.calledOnce;
-      const applyCall = compilerStub.apply.getCall(0);
-      expect(applyCall.args[0]).to.be.an.instanceOf(VirtualModulesPlugin);
+      expect(VirtualModulesPlugin.prototype.apply).to.have.been.calledOnce;
+      expect(VirtualModulesPlugin.prototype.apply).to.be.calledWith(compilerStub);
     });
 
     it('registers the "after-plugins" hook', function () {
