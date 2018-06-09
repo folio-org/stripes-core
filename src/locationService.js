@@ -1,4 +1,4 @@
-import { snakeCase, isEqual, omitBy, isNil, isEmpty, unset } from 'lodash';
+import { snakeCase, isEqual, omitBy, isEmpty, unset } from 'lodash';
 import queryString from 'query-string';
 import { replaceQueryResource } from './locationActions';
 
@@ -7,7 +7,8 @@ function getLocationQuery(location) {
 }
 
 export function getQueryResourceKey({ dataKey, module, queryResource }) {
-  return `${dataKey || ''}${snakeCase(module)}_${queryResource}`;
+  const prefix = dataKey ? `${dataKey}#` : '';
+  return `${prefix}${snakeCase(module)}_${queryResource}`;
 }
 
 export function getQueryResourceState(module, store) {
@@ -29,12 +30,14 @@ export function updateQueryResource(location, module, store) {
 export function updateLocation(module, curQuery, store, history, location) {
   const stateQuery = getQueryResourceState(module, store);
   const locationQuery = getLocationQuery(location);
+  const cleanStateQuery = omitBy(stateQuery, isEmpty);
+  const cleanLocationQuery = omitBy(locationQuery, isEmpty);
 
-  if (isEqual(stateQuery, locationQuery)) return curQuery;
+  if (isEqual(cleanStateQuery, cleanLocationQuery)) return curQuery;
 
-  const params = omitBy(Object.assign({}, locationQuery, stateQuery), isNil);
+  const params = omitBy(Object.assign({}, locationQuery, stateQuery), isEmpty);
+
   let url = params._path || location.pathname;
-
   unset(params, '_path');
 
   if (isEqual(curQuery, params) && url === location.pathname) {

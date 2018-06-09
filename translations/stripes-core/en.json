@@ -10,6 +10,8 @@
   "button.saveAndClose": "Save and close",
   "button.cancel": "Cancel",
   "button.close": "Close",
+  "button.back": "Back",
+  "button.confirm": "Confirm",
   "label.confirmDeleteEntry": "<strong>{name}</strong> will be <strong>removed</strong>",
   "label.editEntry": "Edit {entry}",
   "label.createEntry": "Create {entry}",
@@ -38,6 +40,10 @@
   "about.key.incompatibleIntf": "Interfaces that are required but present only in an incompatible version are highlighted in <span class='{className}'>orange</span>.",
   "about.key.compatible": "Interfaces that are present in a compatible version are shown in regular font.",
   "about.moduleTypeCount": "{count, number} {type} {count, plural, one {module} other {modules}}",
+
+  "about.appModuleCount": "{count, number} app {count, plural, one {module} other {modules}}",
+  "about.settingsModuleCount": "{count, number} settings {count, plural, one {module} other {modules}}",
+  "about.pluginModuleCount": "{count, number} plugin {count, plural, one {module} other {modules}}",
 
   "loggedInAs": "Logged in as {firstName} {lastName}",
   "logout": "Log out",
