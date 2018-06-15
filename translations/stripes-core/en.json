@@ -10,6 +10,8 @@
   "button.saveAndClose": "Save and close",
   "button.cancel": "Cancel",
   "button.close": "Close",
+  "button.back": "Back",
+  "button.confirm": "Confirm",
   "label.confirmDeleteEntry": "<strong>{name}</strong> will be <strong>removed</strong>",
   "label.editEntry": "Edit {entry}",
   "label.createEntry": "Create {entry}",

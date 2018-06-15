@@ -10,7 +10,11 @@ import 'isomorphic-fetch';
 export function discoverServices(store) {
   const okapi = store.getState().okapi;
   return Promise.all([
-    fetch(`${okapi.url}/_/version`)
+    fetch(`${okapi.url}/_/version`, {
+      'headers': {
+        'X-Okapi-Tenant': 'supertenant'
+      }
+    })
       .then((response) => { // eslint-disable-line consistent-return
         if (response.status >= 400) {
           store.dispatch({ type: 'DISCOVERY_FAILURE', code: response.status });
@@ -22,7 +26,11 @@ export function discoverServices(store) {
       }).catch((reason) => {
         store.dispatch({ type: 'DISCOVERY_FAILURE', message: reason });
       }),
-    fetch(`${okapi.url}/_/proxy/tenants/${okapi.tenant}/modules?full=true`)
+    fetch(`${okapi.url}/_/proxy/tenants/${okapi.tenant}/modules?full=true`, {
+      'headers': {
+        'X-Okapi-Tenant': 'supertenant'
+      }
+    })
       .then((response) => { // eslint-disable-line consistent-return
         if (response.status >= 400) {
           store.dispatch({ type: 'DISCOVERY_FAILURE', code: response.status });

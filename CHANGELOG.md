@@ -1,16 +1,20 @@
 # Change history for stripes-core
 
-## 2.10.0 (IN PROGRESS)
+## 2.11.0 (IN PROGRESS)
+* Update release procedure to guard against publishing with unreleased dependencies, STCOR-225
+
+
+## [2.10.0](https://github.com/folio-org/stripes-core/tree/v2.10.0) (2018-06-06)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.9.0...v2.10.0)
 
 * Translation plugin looks for language files in folder `translations/moduleName` at first. If there is no translation in that folder it falls back to `translations` folder to provide backward compatibility. Fixes STCOR-211.
-* Update [Creating a new development setup for Stripes](doc/new-development-setup.md) for `stripes-cli`-based workflow. Fixes STCOR-140.
+* Update [Creating a new development setup for Stripes](doc/new-development-setup.md) for `stripes-cli`-based workflow and add `configure` script. Fixes STCOR-140.
 * New document, [Depending on unreleased features](doc/depending-on-unreleased-features.md). Fixes STCOR-152.
-* Reorganize [Creating a new development setup for Stripes](doc/new-development-setup.md) and add `configure` script. Refs STCOR-140.
 * Update docs to reflect that "stripescli" is now "stripes". Refs STCLI-11.
 * Remove ui-okapi-console from pull-stripes; it's deprecated. Fixes STCOR-156.
 * Add notes about stripes-cli install trouble. Fixes STCOR-154.
 * Lint. It's what's for dinner. Fixes STCOR-157.
-* Deprecate ui-items. Refs UIIN-18.
+* `ui-items`, which is deprecated, is no longer included in `pull-stripes`. Refs UIIN-18.
 * Add Vagrant doc to [Creating a new development setup for Stripes](doc/new-development-setup.md). Fixes STCOR-160.
 * The anointed resource is correctly set from the URL. Fixes STCOR-134. Available from v2.9.1.
 * Rename bin command from `stripes` to `stripescore` to avoid conflicts with the CLI. STCOR-153
@@ -25,10 +29,9 @@
 * Add rule to webpack's file-loader configuration to support audio files. Fixes STCOR-184.
 * Update "configure" script to use a Yarn workspace. Fixes STCOR-185.
 * Fix typos in workspace-creation section of [_Creating a new development setup_ document](doc/new-development-setup.md). Fixes STCOR-186.
-* Add i18n best practices documentation. Fixes STCOR-182.
+* Add [i18n best practices documentation](doc/i18n.md). Fixes STCOR-182.
 * Upgrade react-apollo dependency to v2.1.3. Fixes STCOR-188.
-* Add overlay container div for system-level communications, dropdowns, modals etc. Implements STCOR-187
-* Modified z-index of MainNav, ModuleContainer, OverlayContainer so that components within these containers can apply their own z-indexes without collision or unwanted overlap. Also Implements STCOR-187.
+* Add overlay container div for system-level communications, dropdowns, modals etc.; modified z-index of MainNav, ModuleContainer, OverlayContainer so that components within these containers can apply their own z-indexes without collision or unwanted overlap. Implements STCOR-187
 * Add diagnostic output to stripes builds, STCOR-141.
 * Set @folio's NPM registry before using it. Duh. Fixes STCOR-193. Available from v2.9.5.
 * Added React Error Boundary to catch errors thrown during render(), implementing STCOR-150.
@@ -36,9 +39,16 @@
 * Add build option to disable JS minification, STCOR-197
 * Upgrade required version of hard-source-webpack-plugin, and thereby of leveldown. Fixes STCOR-210.
 * Include ui-vendors in pull-stripes.
-* Added system skeleton loading
+* Added visual skeleton when system is loading. Fixes STCOR-169.
 * I18n-ify login page. Fixes STCOR-213.
-* Update Okapi dependencies corresponding with UIU-495.
+* Update dependency on `users-bl` corresponding with UIU-495.
+* Introduce `stripes-metadata-plugin`. Fixes STCOR-139.
+* Resolve "TypeError: modPackageJsonPath.replace is not a function". Fixes STCOR-143.
+* Quieten the webpack output. Fixes STCOR-144.
+* Fix Node v9.x module resolution errror. Fixes STCOR-163.
+* Fix StripesBuildError with Yarn workspaces. Fixes STCOR-170.
+* Update Node.js version requirement from 6.x to >=8.11.1. Fixes STCOR-192.
+* Remove unused "button.discardChanges" translation key. Fixes STCOR-201.
 
 ## [2.9.0](https://github.com/folio-org/stripes-core/tree/v2.9.0) (2018-02-01)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.8.0...v2.9.0)
