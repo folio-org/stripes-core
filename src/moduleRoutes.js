@@ -3,6 +3,7 @@ import Route from 'react-router-dom/Route';
 import { connectFor } from '@folio/stripes-connect';
 import ErrorBoundary from '@folio/stripes-components/lib/ErrorBoundary';
 import { modules } from 'stripes-config'; // eslint-disable-line
+import { StripesProvider } from '@folio/stripes-core/src/StripesContext';
 import AddContext from './AddContext';
 
 if (!Array.isArray(modules.app) && modules.length < 0) {
@@ -24,13 +25,15 @@ function getModuleRoutes(stripes) {
         path={module.route}
         key={module.route}
         render={props => (
-          <AddContext context={{ stripes: moduleStripes }}>
-            <div id={`${name}-module-display`} data-module={module.module} data-version={module.version} >
-              <ErrorBoundary>
-                <Current {...props} connect={connect} stripes={moduleStripes} />
-              </ErrorBoundary>
-            </div>
-          </AddContext>
+          <StripesProvider value={moduleStripes}>
+            <AddContext context={{ stripes: moduleStripes }}>
+              <div id={`${name}-module-display`} data-module={module.module} data-version={module.version} >
+                <ErrorBoundary>
+                  <Current {...props} connect={connect} stripes={moduleStripes} />
+                </ErrorBoundary>
+              </div>
+            </AddContext>
+          </StripesProvider>
         )}
       />
     );
