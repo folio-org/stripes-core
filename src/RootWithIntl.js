@@ -28,7 +28,7 @@ const RootWithIntl = (props, context) => {
   const stripes = props.stripes.clone({ intl, connect });
   const { token, disableAuth, history } = props;
   return (
-    <TitleManager app="Folio">
+    <TitleManager>
       <HotKeys keyMap={stripes.bindings} noWrapper>
         <Provider store={stripes.store}>
           <Router history={history}>
