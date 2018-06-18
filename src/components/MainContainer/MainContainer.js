@@ -11,11 +11,9 @@ const propTypes = {
 
 function MainContainer(props) {
   return (
-    <TitleManager title="FOLIO">
-      <div className={css.root}>
-        {props.children}
-      </div>
-    </TitleManager>
+    <div className={css.root}>
+      {props.children}
+    </div>
   );
 }
 

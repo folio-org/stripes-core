@@ -20,7 +20,7 @@ class AppRoute extends React.Component {
         {...rest}
         component={() => (
           <ErrorBoundary>
-            <TitleManager title={displayName} />
+            <TitleManager page={displayName} />
             {component}
           </ErrorBoundary>
         )}

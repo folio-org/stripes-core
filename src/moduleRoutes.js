@@ -28,7 +28,7 @@ function getModuleRoutes(stripes) {
           <AddContext context={{ stripes: moduleStripes }}>
             <div id={`${name}-module-display`} data-module={module.module} data-version={module.version} >
               <ErrorBoundary>
-                <TitleManager title={module.displayName}>
+                <TitleManager page={module.displayName}>
                   <Current {...props} connect={connect} stripes={moduleStripes} />
                 </TitleManager>
               </ErrorBoundary>
