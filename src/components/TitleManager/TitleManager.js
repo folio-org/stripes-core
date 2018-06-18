@@ -14,7 +14,7 @@ class TitleManager extends React.Component {
   renderTitle = (currentTitle) => {
     const { page, record } = this.props;
 
-    if (typeof currentTitle !== 'string') return 'Folio';
+    if (typeof currentTitle !== 'string') return '';
 
     const tokens = currentTitle.split(' - ');
     if (page) tokens[0] = page;
