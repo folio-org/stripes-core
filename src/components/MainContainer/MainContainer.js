@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import TitleManager from '../TitleManager';
+
 import css from './MainContainer.css';
 
 const propTypes = {
@@ -9,7 +11,11 @@ const propTypes = {
 
 function MainContainer(props) {
   return (
-    <div className={css.root}>{props.children}</div>
+    <TitleManager title="FOLIO">
+      <div className={css.root}>
+        {props.children}
+      </div>
+    </TitleManager>
   );
 }
 
