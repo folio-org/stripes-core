@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Route from 'react-router-dom/Route';
+import { injectIntl, intlShape } from 'react-intl';
 
 import ErrorBoundary from '@folio/stripes-components/lib/ErrorBoundary';
 
@@ -8,19 +9,24 @@ import TitleManager from '../TitleManager';
 
 class TitledRoute extends React.Component {
   static propTypes = {
-    displayName: PropTypes.string,
+    name: PropTypes.string,
     component: PropTypes.element,
+    intl: intlShape.isRequired,
   }
 
   render() {
-    const { displayName, component, ...rest } = this.props;
+    const { name, component, intl, ...rest } = this.props;
+    const formattedName = intl.formatMessage({
+      id: `stripes-core.title.${name}`,
+      defaultMessage: name,
+    });
 
     return (
       <Route
         {...rest}
         component={() => (
           <ErrorBoundary>
-            <TitleManager page={displayName} />
+            <TitleManager page={formattedName} />
             {component}
           </ErrorBoundary>
         )}
@@ -29,4 +35,4 @@ class TitledRoute extends React.Component {
   }
 }
 
-export default TitledRoute;
+export default injectIntl(TitledRoute);

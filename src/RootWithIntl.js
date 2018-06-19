@@ -39,12 +39,12 @@ const RootWithIntl = (props, context) => {
                 { (stripes.okapi !== 'object' || stripes.discovery.isFinished) && (
                   <ModuleContainer id="content">
                     <Switch>
-                      <TitledRoute displayName="Home" path="/" key="root" exact component={<Front stripes={stripes} />} />
-                      <TitledRoute displayName="SSO Redirect" path="/sso-landing" key="sso-landing" component={<SSORedirect stripes={stripes} />} />
-                      <TitledRoute displayName="Settings" path="/settings" component={<Settings stripes={stripes} />} />
+                      <TitledRoute name="home" path="/" key="root" exact component={<Front stripes={stripes} />} />
+                      <TitledRoute name="ssoRedirect" path="/sso-landing" key="sso-landing" component={<SSORedirect stripes={stripes} />} />
+                      <TitledRoute name="settings" path="/settings" component={<Settings stripes={stripes} />} />
                       {getModuleRoutes(stripes)}
                       <TitledRoute
-                        displayName="Not Found"
+                        name="notFound"
                         component={(
                           <div>
                             <h2>Uh-oh!</h2>
@@ -57,8 +57,8 @@ const RootWithIntl = (props, context) => {
                 )}
               </MainContainer> :
               <Switch>
-                <TitledRoute displayName="SSO Landing" exact path="/sso-landing" component={<CookiesProvider><SSOLanding stripes={stripes} /></CookiesProvider>} key="sso-landing" />
-                <TitledRoute displayName="Log in" component={<LoginCtrl autoLogin={stripes.config.autoLogin} stripes={stripes} />} />
+                <TitledRoute name="ssoLanding" exact path="/sso-landing" component={<CookiesProvider><SSOLanding stripes={stripes} /></CookiesProvider>} key="sso-landing" />
+                <TitledRoute name="login" component={<LoginCtrl autoLogin={stripes.config.autoLogin} stripes={stripes} />} />
               </Switch>
             }
           </Router>

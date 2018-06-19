@@ -11,6 +11,8 @@ if (!Array.isArray(modules.app) && modules.length < 0) {
 }
 
 function getModuleRoutes(stripes) {
+  const { intl } = stripes;
+
   return modules.app.map((module) => {
     const name = module.module.replace(/^@folio\//, '');
     const perm = `module.${name}.enabled`;
@@ -20,6 +22,9 @@ function getModuleRoutes(stripes) {
     const Current = connect(module.getModule());
     const moduleStripes = stripes.clone({ connect });
 
+    let displayName = module.displayName;
+    if (module.displayNameKey) displayName = intl.formatMessage({ id: module.displayNameKey });
+
     return (
       <Route
         path={module.route}
@@ -28,7 +33,7 @@ function getModuleRoutes(stripes) {
           <AddContext context={{ stripes: moduleStripes }}>
             <div id={`${name}-module-display`} data-module={module.module} data-version={module.version} >
               <ErrorBoundary>
-                <TitleManager page={module.displayName}>
+                <TitleManager page={displayName}>
                   <Current {...props} connect={connect} stripes={moduleStripes} />
                 </TitleManager>
               </ErrorBoundary>
