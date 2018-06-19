@@ -1,8 +1,9 @@
 # Change history for stripes-core
 
 ## 2.11.0 (IN PROGRESS)
-* Update release procedure to guard against publishing with unreleased dependencies, STCOR-225
 
+* Update release procedure to guard against publishing with unreleased dependencies, STCOR-225
+* Fix typo in [The Stripes Module Developer's Guide](doc/dev-guide.md). Fixes STCOR-227.
 
 ## [2.10.0](https://github.com/folio-org/stripes-core/tree/v2.10.0) (2018-06-06)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.9.0...v2.10.0)
