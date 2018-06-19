@@ -6,7 +6,7 @@ import ErrorBoundary from '@folio/stripes-components/lib/ErrorBoundary';
 
 import TitleManager from '../TitleManager';
 
-class AppRoute extends React.Component {
+class TitledRoute extends React.Component {
   static propTypes = {
     displayName: PropTypes.string,
     component: PropTypes.element,
@@ -29,4 +29,4 @@ class AppRoute extends React.Component {
   }
 }
 
-export default AppRoute;
+export default TitledRoute;

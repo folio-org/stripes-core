@@ -11,7 +11,7 @@ import { intlShape } from 'react-intl';
 import MainContainer from './components/MainContainer';
 import MainNav from './components/MainNav';
 import ModuleContainer from './components/ModuleContainer';
-import AppRoute from './components/AppRoute';
+import TitledRoute from './components/TitledRoute';
 import Front from './components/Front';
 import SSOLanding from './components/SSOLanding';
 import SSORedirect from './components/SSORedirect';
@@ -39,11 +39,11 @@ const RootWithIntl = (props, context) => {
                 { (stripes.okapi !== 'object' || stripes.discovery.isFinished) && (
                   <ModuleContainer id="content">
                     <Switch>
-                      <AppRoute displayName="Home" path="/" key="root" exact component={<Front stripes={stripes} />} />
-                      <AppRoute displayName="SSO Redirect" path="/sso-landing" key="sso-landing" component={<SSORedirect stripes={stripes} />} />
-                      <AppRoute displayName="Settings" path="/settings" component={<Settings stripes={stripes} />} />
+                      <TitledRoute displayName="Home" path="/" key="root" exact component={<Front stripes={stripes} />} />
+                      <TitledRoute displayName="SSO Redirect" path="/sso-landing" key="sso-landing" component={<SSORedirect stripes={stripes} />} />
+                      <TitledRoute displayName="Settings" path="/settings" component={<Settings stripes={stripes} />} />
                       {getModuleRoutes(stripes)}
-                      <AppRoute
+                      <TitledRoute
                         displayName="Not Found"
                         component={(
                           <div>
@@ -57,8 +57,8 @@ const RootWithIntl = (props, context) => {
                 )}
               </MainContainer> :
               <Switch>
-                <AppRoute displayName="SSO Landing" exact path="/sso-landing" component={<CookiesProvider><SSOLanding stripes={stripes} /></CookiesProvider>} key="sso-landing" />
-                <AppRoute displayName="Log in" component={<LoginCtrl autoLogin={stripes.config.autoLogin} stripes={stripes} />} />
+                <TitledRoute displayName="SSO Landing" exact path="/sso-landing" component={<CookiesProvider><SSOLanding stripes={stripes} /></CookiesProvider>} key="sso-landing" />
+                <TitledRoute displayName="Log in" component={<LoginCtrl autoLogin={stripes.config.autoLogin} stripes={stripes} />} />
               </Switch>
             }
           </Router>

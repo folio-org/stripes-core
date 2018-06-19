@@ -4,7 +4,7 @@
 
 * Update release procedure to guard against publishing with unreleased dependencies, STCOR-225
 * Added `<TitleManager>` to help compose `document.title`. Fixes STCOR-226
-* Added `<AppRoute>` component to clean up generic, non-module routing.
+* Added `<TitledRoute>` component to clean up generic, non-module routing.
 * Update release procedure to guard against publishing with unreleased dependencies, STCOR-225
 * Fix typo in [The Stripes Module Developer's Guide](doc/dev-guide.md). Fixes STCOR-227.
 
