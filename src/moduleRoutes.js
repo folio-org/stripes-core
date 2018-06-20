@@ -3,7 +3,7 @@ import Route from 'react-router-dom/Route';
 import { connectFor } from '@folio/stripes-connect';
 import ErrorBoundary from '@folio/stripes-components/lib/ErrorBoundary';
 import { modules } from 'stripes-config'; // eslint-disable-line
-import { StripesProvider } from '@folio/stripes-core/src/StripesContext';
+import { StripesProvider } from './StripesContext';
 import AddContext from './AddContext';
 import TitleManager from './components/TitleManager';
 
