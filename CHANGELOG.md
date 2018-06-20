@@ -3,6 +3,9 @@
 ## 2.11.0 (IN PROGRESS)
 
 * Update release procedure to guard against publishing with unreleased dependencies, STCOR-225
+* Added `<TitleManager>` to help compose `document.title`. Fixes STCOR-226
+* Added `<TitledRoute>` component to clean up generic, non-module routing.
+* Update release procedure to guard against publishing with unreleased dependencies, STCOR-225
 * Fix typo in [The Stripes Module Developer's Guide](doc/dev-guide.md). Fixes STCOR-227.
 
 ## [2.10.0](https://github.com/folio-org/stripes-core/tree/v2.10.0) (2018-06-06)

@@ -5,6 +5,7 @@ import ErrorBoundary from '@folio/stripes-components/lib/ErrorBoundary';
 import { modules } from 'stripes-config'; // eslint-disable-line
 import { StripesProvider } from '@folio/stripes-core/src/StripesContext';
 import AddContext from './AddContext';
+import TitleManager from './components/TitleManager';
 
 if (!Array.isArray(modules.app) && modules.length < 0) {
   throw new Error('At least one module of type "app" must be enabled.');
@@ -29,7 +30,9 @@ function getModuleRoutes(stripes) {
             <AddContext context={{ stripes: moduleStripes }}>
               <div id={`${name}-module-display`} data-module={module.module} data-version={module.version} >
                 <ErrorBoundary>
-                  <Current {...props} connect={connect} stripes={moduleStripes} />
+                  <TitleManager page={module.displayName}>
+                    <Current {...props} connect={connect} stripes={moduleStripes} />
+                  </TitleManager>
                 </ErrorBoundary>
               </div>
             </AddContext>
