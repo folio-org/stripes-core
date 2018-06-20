@@ -23,7 +23,9 @@ function getModuleRoutes(stripes) {
     const moduleStripes = stripes.clone({ connect });
 
     let displayName = module.displayName;
-    if (module.displayNameKey) displayName = intl.formatMessage({ id: module.displayNameKey });
+    if (module.displayNameTranslationKey) {
+      displayName = intl.formatMessage({ id: module.displayNameTranslationKey });
+    }
 
     return (
       <Route
