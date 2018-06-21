@@ -137,6 +137,10 @@ class MainNav extends Component {
     const menuLinks = modules.app.map((entry) => {
       const name = entry.module.replace(/^@[a-z0-9_]+\//, '');
       const perm = `module.${name}.enabled`;
+      const displayName = formatMsg({
+        id: entry.displayName,
+        defaultMessage: entry.displayName,
+      });
 
       if (!stripes.hasPerm(perm)) {
         return null;
@@ -148,11 +152,11 @@ class MainNav extends Component {
 
       return (
         <NavButton
-          label={entry.displayName}
+          label={displayName}
           id={navId}
           selected={isActive}
           href={href}
-          title={entry.displayName}
+          title={displayName}
           key={entry.route}
           iconKey={name}
         />);

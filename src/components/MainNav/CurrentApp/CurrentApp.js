@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 import AppIcon from '@folio/stripes-components/lib/AppIcon';
 import Badge from '@folio/stripes-components/lib/Badge';
 import Headline from '@folio/stripes-components/lib/Headline';
+import { withStripes } from '../../../StripesContext';
 import css from './CurrentApp.css';
 
 const propTypes = {
@@ -22,14 +23,24 @@ const propTypes = {
     PropTypes.string,
     PropTypes.number,
   ]),
+  stripes: PropTypes.shape({
+    intl: PropTypes.shape({
+      formatMessage: PropTypes.func,
+    })
+  })
 };
 
 const defaultProps = {
   currentApp: { displayName: 'FOLIO', description: 'FOLIO platform' },
 };
 
-const CurrentApp = ({ currentApp, iconData, id, badge }) => {
-  const { displayName, description, module } = currentApp;
+const CurrentApp = ({ currentApp, iconData, id, badge, stripes }) => {
+  const { description, module } = currentApp;
+  const displayName = stripes.intl.formatMessage({
+    id: currentApp.displayName,
+    defaultMessage: currentApp.displayName,
+  });
+
   const iconKey = module && module.replace(/^@[a-z0-9_]+\//, '');
 
   return (
@@ -44,4 +55,4 @@ const CurrentApp = ({ currentApp, iconData, id, badge }) => {
 CurrentApp.propTypes = propTypes;
 CurrentApp.defaultProps = defaultProps;
 
-export default CurrentApp;
+export default withStripes(CurrentApp);

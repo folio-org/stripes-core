@@ -23,7 +23,15 @@ const settingsModules = [].concat(
 
 const Settings = (props) => {
   const stripes = props.stripes;
-  const navLinks = settingsModules.sort(
+  const navLinks = settingsModules.map(
+    m => ({
+      ...m,
+      displayName: stripes.intl.formatMessage({
+        id: m.displayName,
+        defaultMessage: m.displayName,
+      })
+    })
+  ).sort(
     (x, y) => x.displayName.toLowerCase() > y.displayName.toLowerCase(),
   ).filter(
     x => stripes.hasPerm(`settings.${x.module.replace(/^@folio\//, '')}.enabled`),
