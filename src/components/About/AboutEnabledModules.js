@@ -4,6 +4,13 @@ import PropTypes from 'prop-types';
 import List from '@folio/stripes-components/lib/List';
 
 class AboutEnabledModules extends React.Component {
+  static manifest = Object.freeze({
+    enabledModules: {
+      type: 'okapi',
+      path: '_/proxy/tenants/!{tenantid}/modules',
+    },
+  });
+
   static propTypes = {
     resources: PropTypes.shape({
       enabledModules: PropTypes.shape({
@@ -13,13 +20,6 @@ class AboutEnabledModules extends React.Component {
     availableModules: PropTypes.object,
     tenantid: PropTypes.string.isRequired, // eslint-disable-line
   };
-
-  static manifest = Object.freeze({
-    enabledModules: {
-      type: 'okapi',
-      path: '_/proxy/tenants/!{tenantid}/modules',
-    },
-  });
 
   render() {
     const em = {};
