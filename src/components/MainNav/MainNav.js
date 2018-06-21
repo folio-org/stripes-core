@@ -126,7 +126,13 @@ class MainNav extends Component {
   render() {
     const { stripes, location: { pathname } } = this.props;
     const formatMsg = stripes.intl.formatMessage;
-    const selectedApp = modules.app.find(entry => pathname.startsWith(entry.route));
+
+    const apps = modules.app.map(m => ({
+      ...m,
+      displayName: formatMsg({ id: m.displayName }),
+    }));
+
+    const selectedApp = apps.find(entry => pathname.startsWith(entry.route));
 
     // Temporary until settings becomes an app
     const settingsIconData = {
@@ -134,10 +140,9 @@ class MainNav extends Component {
       alt: 'Tenant Settings',
       title: formatMsg({ id: 'stripes-core.settings' }),
     };
-    const menuLinks = modules.app.map((entry) => {
+    const menuLinks = apps.map((entry) => {
       const name = entry.module.replace(/^@[a-z0-9_]+\//, '');
       const perm = `module.${name}.enabled`;
-      const displayName = formatMsg({ id: entry.displayName });
 
       if (!stripes.hasPerm(perm)) {
         return null;
@@ -149,11 +154,11 @@ class MainNav extends Component {
 
       return (
         <NavButton
-          label={displayName}
+          label={entry.displayName}
           id={navId}
           selected={isActive}
           href={href}
-          title={displayName}
+          title={entry.displayName}
           key={entry.route}
           iconKey={name}
         />);

@@ -36,7 +36,6 @@ const defaultProps = {
 
 const CurrentApp = ({ currentApp, iconData, id, badge, stripes }) => {
   const { description, module } = currentApp;
-  const displayName = stripes.intl.formatMessage({ id: currentApp.displayName });
 
   const iconKey = module && module.replace(/^@[a-z0-9_]+\//, '');
 
@@ -44,7 +43,7 @@ const CurrentApp = ({ currentApp, iconData, id, badge, stripes }) => {
     <div id={id} title={description} className={css.currentApp}>
       {badge && (<Badge color="red" className={css.badge}>{badge}</Badge>)}
       <AppIcon icon={iconData} app={iconKey} className={css.icon} />
-      <Headline tag="h1" size="small" margin="none">{displayName}</Headline>
+      <Headline tag="h1" size="small" margin="none">{currentApp.displayName}</Headline>
     </div>
   );
 };
