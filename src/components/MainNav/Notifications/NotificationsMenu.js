@@ -15,6 +15,19 @@ import mapDomainToPath from '../../../mapDomains';
 import uuidRe from '../../../uuidRe';
 
 class NotificationsMenu extends React.Component {
+  static manifest = Object.freeze({
+    notifications: {
+      type: 'okapi',
+      path: 'notify/_self?query=seen=false',
+      records: 'notifications',
+    },
+    seenNotifications: {
+      type: 'okapi',
+      path: 'notify',
+      records: 'notifications',
+    },
+  });
+
   static propTypes = {
     stripes: PropTypes.shape({
       locale: PropTypes.string.isRequired,
@@ -36,19 +49,6 @@ class NotificationsMenu extends React.Component {
   static defaultProps = {
     dateFormat: 'l LT',
   };
-
-  static manifest = Object.freeze({
-    notifications: {
-      type: 'okapi',
-      path: 'notify/_self?query=seen=false',
-      records: 'notifications',
-    },
-    seenNotifications: {
-      type: 'okapi',
-      path: 'notify',
-      records: 'notifications',
-    },
-  });
 
   constructor(props) {
     super(props);
