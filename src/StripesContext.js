@@ -1,17 +1,14 @@
 import React from 'react';
 
-const Context = React.createContext();
-
-export const StripesProvider = Context.Provider;
-export const StripesConsumer = Context.Consumer;
+export const StripesContext = React.createContext();
 
 export function withStripes(WrappedComponent) {
   return class extends React.Component {
     render(props) {
       return (
-        <StripesConsumer>
+        <StripesContext.Consumer>
           {stripes => <WrappedComponent {...props} stripes={stripes} /> }
-        </StripesConsumer>
+        </StripesContext.Consumer>
       );
     }
   };
