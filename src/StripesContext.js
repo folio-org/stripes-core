@@ -2,6 +2,10 @@ import React from 'react';
 
 export const StripesContext = React.createContext();
 
+function getDisplayName(WrappedComponent) {
+  return WrappedComponent.displayName || WrappedComponent.name || 'Component';
+}
+
 export function withStripes(WrappedComponent) {
   class WithStripes extends React.Component {
     render(props) {
@@ -11,11 +15,7 @@ export function withStripes(WrappedComponent) {
         </StripesContext.Consumer>
       );
     }
-  };
+  }
   WithStripes.displayName = `WithStripes(${getDisplayName(WrappedComponent)})`;
   return WithStripes;
-}
-
-function getDisplayName(WrappedComponent) {
-  return WrappedComponent.displayName || WrappedComponent.name || 'Component';
 }

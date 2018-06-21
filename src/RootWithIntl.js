@@ -6,7 +6,6 @@ import { Provider } from 'react-redux';
 import { CookiesProvider } from 'react-cookie';
 import { HotKeys } from '@folio/stripes-components/lib/HotKeys';
 import { connectFor } from '@folio/stripes-connect';
-import { StripesContext } from '@folio/stripes-core/src/StripesContext';
 import { intlShape } from 'react-intl';
 
 import MainContainer from './components/MainContainer';
@@ -22,6 +21,7 @@ import LoginCtrl from './components/Login';
 import OverlayContainer from './components/OverlayContainer';
 import getModuleRoutes from './moduleRoutes';
 import { stripesShape } from './Stripes';
+import { StripesContext } from './StripesContext';
 
 const RootWithIntl = (props, context) => {
   const intl = context.intl;
