@@ -6,6 +6,7 @@ import { Provider } from 'react-redux';
 import { CookiesProvider } from 'react-cookie';
 import { HotKeys } from '@folio/stripes-components/lib/HotKeys';
 import { connectFor } from '@folio/stripes-connect';
+import { StripesContext } from '@folio/stripes-core/src/StripesContext';
 import { intlShape } from 'react-intl';
 
 import MainContainer from './components/MainContainer';
@@ -28,43 +29,45 @@ const RootWithIntl = (props, context) => {
   const stripes = props.stripes.clone({ intl, connect });
   const { token, disableAuth, history } = props;
   return (
-    <TitleManager>
-      <HotKeys keyMap={stripes.bindings} noWrapper>
-        <Provider store={stripes.store}>
-          <Router history={history}>
-            { token || disableAuth ?
-              <MainContainer>
-                <OverlayContainer />
-                <MainNav stripes={stripes} />
-                { (stripes.okapi !== 'object' || stripes.discovery.isFinished) && (
-                  <ModuleContainer id="content">
-                    <Switch>
-                      <TitledRoute displayName="Home" path="/" key="root" exact component={<Front stripes={stripes} />} />
-                      <TitledRoute displayName="SSO Redirect" path="/sso-landing" key="sso-landing" component={<SSORedirect stripes={stripes} />} />
-                      <TitledRoute displayName="Settings" path="/settings" component={<Settings stripes={stripes} />} />
-                      {getModuleRoutes(stripes)}
-                      <TitledRoute
-                        displayName="Not Found"
-                        component={(
-                          <div>
-                            <h2>Uh-oh!</h2>
-                            <p>This route does not exist.</p>
-                          </div>
-                        )}
-                      />
-                    </Switch>
-                  </ModuleContainer>
-                )}
-              </MainContainer> :
-              <Switch>
-                <TitledRoute displayName="SSO Landing" exact path="/sso-landing" component={<CookiesProvider><SSOLanding stripes={stripes} /></CookiesProvider>} key="sso-landing" />
-                <TitledRoute displayName="Log in" component={<LoginCtrl autoLogin={stripes.config.autoLogin} stripes={stripes} />} />
-              </Switch>
-            }
-          </Router>
-        </Provider>
-      </HotKeys>
-    </TitleManager>
+    <StripesContext.Provider value={stripes}>
+      <TitleManager>
+        <HotKeys keyMap={stripes.bindings} noWrapper>
+          <Provider store={stripes.store}>
+            <Router history={history}>
+              { token || disableAuth ?
+                <MainContainer>
+                  <OverlayContainer />
+                  <MainNav stripes={stripes} />
+                  { (stripes.okapi !== 'object' || stripes.discovery.isFinished) && (
+                    <ModuleContainer id="content">
+                      <Switch>
+                        <TitledRoute displayName="Home" path="/" key="root" exact component={<Front stripes={stripes} />} />
+                        <TitledRoute displayName="SSO Redirect" path="/sso-landing" key="sso-landing" component={<SSORedirect stripes={stripes} />} />
+                        <TitledRoute displayName="Settings" path="/settings" component={<Settings stripes={stripes} />} />
+                        {getModuleRoutes(stripes)}
+                        <TitledRoute
+                          displayName="Not Found"
+                          component={(
+                            <div>
+                              <h2>Uh-oh!</h2>
+                              <p>This route does not exist.</p>
+                            </div>
+                          )}
+                        />
+                      </Switch>
+                    </ModuleContainer>
+                  )}
+                </MainContainer> :
+                <Switch>
+                  <TitledRoute displayName="SSO Landing" exact path="/sso-landing" component={<CookiesProvider><SSOLanding stripes={stripes} /></CookiesProvider>} key="sso-landing" />
+                  <TitledRoute displayName="Log in" component={<LoginCtrl autoLogin={stripes.config.autoLogin} stripes={stripes} />} />
+                </Switch>
+              }
+            </Router>
+          </Provider>
+        </HotKeys>
+      </TitleManager>
+    </StripesContext.Provider>
   );
 };
 
