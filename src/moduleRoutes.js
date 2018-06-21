@@ -23,10 +23,7 @@ function getModuleRoutes(stripes) {
     const Current = connect(module.getModule());
     const moduleStripes = stripes.clone({ connect });
 
-    const displayName = intl.formatMessage({
-      id: module.displayName,
-      defaultMessage: module.displayName,
-    });
+    const displayName = intl.formatMessage({ id: module.displayName });
 
     return (
       <Route

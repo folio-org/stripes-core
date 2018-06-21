@@ -26,10 +26,7 @@ const Settings = (props) => {
   const navLinks = settingsModules.map(
     m => ({
       ...m,
-      displayName: stripes.intl.formatMessage({
-        id: m.displayName,
-        defaultMessage: m.displayName,
-      })
+      displayName: stripes.intl.formatMessage({ id: m.displayName })
     })
   ).sort(
     (x, y) => x.displayName.toLowerCase() > y.displayName.toLowerCase(),
