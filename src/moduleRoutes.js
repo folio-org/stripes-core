@@ -23,7 +23,7 @@ function getModuleRoutes(stripes) {
     const Current = connect(module.getModule());
     const moduleStripes = stripes.clone({ connect });
 
-    module.displayName = intl.formatMessage({
+    const displayName = intl.formatMessage({
       id: module.displayName,
       defaultMessage: module.displayName,
     });
@@ -37,7 +37,7 @@ function getModuleRoutes(stripes) {
             <AddContext context={{ stripes: moduleStripes }}>
               <div id={`${name}-module-display`} data-module={module.module} data-version={module.version} >
                 <ErrorBoundary>
-                  <TitleManager page={module.displayName}>
+                  <TitleManager page={displayName}>
                     <Current {...props} connect={connect} stripes={moduleStripes} />
                   </TitleManager>
                 </ErrorBoundary>
