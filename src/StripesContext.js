@@ -8,10 +8,10 @@ function getDisplayName(WrappedComponent) {
 
 export function withStripes(WrappedComponent) {
   class WithStripes extends React.Component {
-    render(props) {
+    render() {
       return (
         <StripesContext.Consumer>
-          {stripes => <WrappedComponent {...props} stripes={stripes} /> }
+          {stripes => <WrappedComponent {...this.props} stripes={stripes} /> }
         </StripesContext.Consumer>
       );
     }
