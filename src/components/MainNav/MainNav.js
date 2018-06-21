@@ -28,15 +28,6 @@ if (!Array.isArray(modules.app) || modules.app.length < 1) {
 }
 
 class MainNav extends Component {
-  static contextTypes = {
-    router: PropTypes.object.isRequired,
-  }
-
-  static childContextTypes = {
-    // It seems wrong that we have to tell this generic component what specific properties to put in the context
-    stripes: PropTypes.object,
-  };
-
   static propTypes = {
     stripes: PropTypes.shape({
       config: PropTypes.shape({
@@ -56,6 +47,15 @@ class MainNav extends Component {
     location: PropTypes.shape({
       pathname: PropTypes.string,
     }).isRequired,
+  };
+
+  static contextTypes = {
+    router: PropTypes.object.isRequired,
+  }
+
+  static childContextTypes = {
+    // It seems wrong that we have to tell this generic component what specific properties to put in the context
+    stripes: PropTypes.object,
   };
 
   constructor(props) {

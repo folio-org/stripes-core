@@ -7,10 +7,6 @@ import { requestLogin, requestSSOLogin } from '../../loginServices';
 import Login from './Login';
 
 class LoginCtrl extends Component {
-  static contextTypes = {
-    store: PropTypes.object,
-  }
-
   static propTypes = {
     authFailure: PropTypes.string,
     ssoEnabled: PropTypes.bool,
@@ -23,6 +19,10 @@ class LoginCtrl extends Component {
         formatMessage: PropTypes.func.isRequired,
       }),
     }).isRequired,
+  }
+
+  static contextTypes = {
+    store: PropTypes.object,
   }
 
   constructor(props, context) {

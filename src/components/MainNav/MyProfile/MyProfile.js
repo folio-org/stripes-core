@@ -16,10 +16,6 @@ import NavButton from '../NavButton';
 import css from './MyProfile.css';
 
 export default class MyProfile extends Component {
-  static contextTypes = {
-    router: PropTypes.object.isRequired,
-  }
-
   static propTypes = {
     stripes: PropTypes.shape({
       user: PropTypes.shape({
@@ -33,6 +29,10 @@ export default class MyProfile extends Component {
     }).isRequired,
     onLogout: PropTypes.func.isRequired,
   };
+
+  static contextTypes = {
+    router: PropTypes.object.isRequired,
+  }
 
   constructor(props) {
     super(props);
