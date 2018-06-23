@@ -1,0 +1,21 @@
+{
+    "loanTypeTemporary": "Tipo de préstamo (Temporal)",
+    "note": "Nota",
+    "publications": "Publicaciones",
+    "subjects": "Temas",
+    "url": "URL",
+    "urls": "URLs",
+    "loanTypes": "Tipos de préstamos",
+    "loanType": "Tipo de préstamo",
+    "loans": "Préstamos",
+    "materialTypes": "Tipos de materiales",
+    "metadataSource": "Fuente de metadatos",
+    "tba": "TBA",
+    "resourceTitle": "Título del recurso",
+    "contributor": "Colaborador",
+    "publisher": "Editor",
+    "place": "Lugar",
+    "classification": "Clasificación",
+    "confirmLocation.selectBtn": "Seleccionar",
+    "confirmLocation.header": "Localización inactiva"
+}
