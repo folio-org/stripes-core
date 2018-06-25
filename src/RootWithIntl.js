@@ -67,28 +67,6 @@ class RootWithIntl extends React.Component {
       ...module,
       description: module.description ? formatMessage({ id: module.description }) : undefined,
       displayName: module.displayName ? formatMessage({ id: module.displayName }) : undefined,
-      icons: module.icons ? module.icons.map(this.translateIcons) : undefined,
-      permissionSets: module.permissionSets ? module.permissionSets.map(this.translatePermissionSets) : undefined,
-    };
-  }
-
-  translateIcons = (icon) => {
-    const { formatMessage } = this.context.intl;
-
-    return {
-      ...icon,
-      alt: icon.alt ? formatMessage({ id: icon.alt }) : undefined,
-      title: icon.title ? formatMessage({ id: icon.title }) : undefined,
-    };
-  }
-
-  translatePermissionSets = (perm) => {
-    const { formatMessage } = this.context.intl;
-
-    return {
-      ...perm,
-      displayName: perm.displayName ? formatMessage({ id: perm.displayName }) : undefined,
-      description: perm.description ? formatMessage({ id: perm.description }) : undefined,
     };
   }
 
