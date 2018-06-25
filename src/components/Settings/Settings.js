@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Switch from 'react-router-dom/Switch';
 import Route from 'react-router-dom/Route';
 import { connectFor } from '@folio/stripes-connect';
-import { modules } from 'stripes-config'; // eslint-disable-line
+// import { modules } from 'stripes-config'; // eslint-disable-line
 import { withRouter } from 'react-router';
 import NavList from '@folio/stripes-components/lib/NavList';
 import NavListItem from '@folio/stripes-components/lib/NavListItem';
@@ -14,32 +14,39 @@ import { FormattedMessage } from 'react-intl';
 
 import About from '../About';
 import AddContext from '../../AddContext';
+import { withModules } from '../Modules';
 import { stripesShape } from '../../Stripes';
 
-const settingsModules = [].concat(
-  (modules.app || []).filter(m => m.hasSettings),
-  (modules.settings || []),
+const getSettingsModules = (modules) => (
+  [].concat(
+    (modules.app || []).filter(m => m.hasSettings),
+    (modules.settings || []),
+  )
 );
+// const settingsModules = [].concat(
+//   (modules.app || []).filter(m => m.hasSettings),
+//   (modules.settings || []),
+// );
 
 const Settings = (props) => {
   const stripes = props.stripes;
-  const navLinks = settingsModules.map(
-    m => ({
-      ...m,
-      displayName: stripes.intl.formatMessage({ id: m.displayName })
-    })
-  ).sort(
-    (x, y) => x.displayName.toLowerCase() > y.displayName.toLowerCase(),
-  ).filter(
-    x => stripes.hasPerm(`settings.${x.module.replace(/^@folio\//, '')}.enabled`),
-  ).map(m => (
-    <NavListItem
-      key={m.route}
-      to={`/settings${m.route}`}
-    >
-      {m.displayName}
-    </NavListItem>
-  ));
+  const settingsModules = getSettingsModules(props.modules);
+
+  const navLinks = settingsModules
+    // .map(m => ({
+    //   ...m,
+    //   displayName: stripes.intl.formatMessage({ id: m.displayName })
+    // }))
+    .sort((x, y) => x.displayName.toLowerCase() > y.displayName.toLowerCase())
+    .filter(x => stripes.hasPerm(`settings.${x.module.replace(/^@folio\//, '')}.enabled`))
+    .map(m => (
+      <NavListItem
+        key={m.route}
+        to={`/settings${m.route}`}
+      >
+        {m.displayName}
+      </NavListItem>
+    ));
 
   const routes = settingsModules.filter(
     x => stripes.hasPerm(`settings.${x.module.replace(/^@folio\//, '')}.enabled`),
@@ -90,6 +97,10 @@ Settings.propTypes = {
   location: PropTypes.shape({
     pathname: PropTypes.string,
   }).isRequired,
+  modules: PropTypes.shape({
+    app: PropTypes.array,
+    settings: PropTypes.array,
+  })
 };
 
-export default withRouter(Settings);
+export default withRouter(withModules(Settings));
