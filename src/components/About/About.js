@@ -3,7 +3,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import SafeHTMLMessage from '@folio/react-intl-safe-html';
-import { withModules } from '@folio/stripes-core/src/components/Modules';
 /* eslint-disable import/extensions */
 import stripesConnect from '@folio/stripes-connect/package.json';
 import stripesComponents from '@folio/stripes-components/package.json';
@@ -15,6 +14,7 @@ import Headline from '@folio/stripes-components/lib/Headline';
 import List from '@folio/stripes-components/lib/List';
 import { isVersionCompatible } from '../../discoverServices';
 import AboutEnabledModules from './AboutEnabledModules';
+import { withModules } from '../Modules';
 
 import stripesCore from '../../../package.json'; // eslint-disable-line
 import css from './About.css';

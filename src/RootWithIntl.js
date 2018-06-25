@@ -6,6 +6,7 @@ import { Provider } from 'react-redux';
 import { CookiesProvider } from 'react-cookie';
 import { HotKeys } from '@folio/stripes-components/lib/HotKeys';
 import { connectFor } from '@folio/stripes-connect';
+import { modules } from 'stripes-config';
 import { intlShape } from 'react-intl';
 
 import MainContainer from './components/MainContainer';
@@ -23,8 +24,6 @@ import getModuleRoutes from './moduleRoutes';
 import { stripesShape } from './Stripes';
 import { StripesContext } from './StripesContext';
 import ModulesContext from './ModulesContext';
-
-import { modules } from 'stripes-config';
 
 class RootWithIntl extends React.Component {
   static propTypes = {
