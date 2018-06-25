@@ -22,20 +22,12 @@ const getSettingsModules = (modules) => (
     (modules.settings || []),
   )
 );
-// const settingsModules = [].concat(
-//   (modules.app || []).filter(m => m.hasSettings),
-//   (modules.settings || []),
-// );
 
 const Settings = (props) => {
   const stripes = props.stripes;
   const settingsModules = getSettingsModules(props.modules);
 
   const navLinks = settingsModules
-    // .map(m => ({
-    //   ...m,
-    //   displayName: stripes.intl.formatMessage({ id: m.displayName })
-    // }))
     .sort((x, y) => x.displayName.toLowerCase() > y.displayName.toLowerCase())
     .filter(x => stripes.hasPerm(`settings.${x.module.replace(/^@folio\//, '')}.enabled`))
     .map(m => (
