@@ -6,7 +6,7 @@ const getDisplayName = (WrappedComponent) => {
 };
 
 const findModuleInArray = (array, moduleName) => {
-  return array.find(m => m.name === moduleName || m.name === `@folio/${moduleName}`);
+  return array.find(m => m.module === moduleName || m.module === `@folio/${moduleName}`);
 };
 
 const findModule = (modules, moduleName) => {
@@ -21,9 +21,14 @@ export default function withModule(moduleName) {
   return (WrappedComponent) => {
     class WithModule extends React.Component {
       render() {
+        let name = moduleName;
+        if (typeof moduleName === 'function') {
+          name = moduleName(this.props);
+        }
+
         return (
           <ModulesContext.Consumer>
-            {modules => <WrappedComponent {...this.props} module={findModule(modules, moduleName)} /> }
+            {modules => <WrappedComponent {...this.props} module={findModule(modules, name)} /> }
           </ModulesContext.Consumer>
         );
       }
