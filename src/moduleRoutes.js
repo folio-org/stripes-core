@@ -2,7 +2,6 @@ import React from 'react';
 import Route from 'react-router-dom/Route';
 import { connectFor } from '@folio/stripes-connect';
 import ErrorBoundary from '@folio/stripes-components/lib/ErrorBoundary';
-// import { modules } from 'stripes-config';
 import ModulesContext from './ModulesContext';
 import { StripesContext } from './StripesContext';
 import AddContext from './AddContext';

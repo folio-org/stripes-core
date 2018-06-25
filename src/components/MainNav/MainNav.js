@@ -7,9 +7,6 @@ import { Dropdown } from '@folio/stripes-components/lib/Dropdown'; // eslint-dis
 import { withRouter } from 'react-router';
 import localforage from 'localforage';
 
-// import { modules } from 'stripes-config'; // eslint-disable-line
-// import { apps } from '../../modules';
-
 import { withModules } from '../Modules';
 import { clearOkapiToken, clearCurrentUser } from '../../okapiActions';
 import { resetStore } from '../../mainActions';
@@ -24,10 +21,6 @@ import CurrentApp from './CurrentApp';
 import MyProfile from './MyProfile';
 import NotificationsDropdown from './Notifications/NotificationsDropdown';
 import settingsIcon from './settings.svg';
-
-// if (!Array.isArray(apps()) || apps().length < 1) {
-//   throw new Error('At least one module of type "app" must be enabled.');
-// }
 
 class MainNav extends Component {
   static propTypes = {

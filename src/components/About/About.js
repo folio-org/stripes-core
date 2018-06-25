@@ -1,7 +1,6 @@
 import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
-// import { modules as uiModules } from 'stripes-config'; // eslint-disable-line
 import { FormattedMessage } from 'react-intl';
 import SafeHTMLMessage from '@folio/react-intl-safe-html';
 import { withModules } from '@folio/stripes-core/src/components/Modules';
