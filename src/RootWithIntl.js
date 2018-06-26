@@ -6,12 +6,12 @@ import { Provider } from 'react-redux';
 import { CookiesProvider } from 'react-cookie';
 import { HotKeys } from '@folio/stripes-components/lib/HotKeys';
 import { connectFor } from '@folio/stripes-connect';
-import { modules } from 'stripes-config';
 import { intlShape } from 'react-intl';
 
 import MainContainer from './components/MainContainer';
 import MainNav from './components/MainNav';
 import ModuleContainer from './components/ModuleContainer';
+import ModuleTranslator from './components/ModuleTranslator';
 import TitledRoute from './components/TitledRoute';
 import Front from './components/Front';
 import SSOLanding from './components/SSOLanding';
@@ -23,7 +23,6 @@ import OverlayContainer from './components/OverlayContainer';
 import getModuleRoutes from './moduleRoutes';
 import { stripesShape } from './Stripes';
 import { StripesContext } from './StripesContext';
-import ModulesContext from './ModulesContext';
 
 class RootWithIntl extends React.Component {
   static propTypes = {
@@ -37,38 +36,6 @@ class RootWithIntl extends React.Component {
     intl: intlShape.isRequired,
   };
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      modules,
-    };
-  }
-
-  componentDidMount() {
-    this.translateModules();
-  }
-
-  translateModules = () => {
-    this.setState({
-      modules: {
-        app: modules.app.map(this.translateModule),
-        plugin: modules.plugin.map(this.translateModule),
-        settings: modules.settings.map(this.translateModule),
-      }
-    });
-  }
-
-  translateModule = (module) => {
-    const { formatMessage } = this.context.intl;
-
-    return {
-      ...module,
-      description: module.description ? formatMessage({ id: module.description }) : undefined,
-      displayName: module.displayName ? formatMessage({ id: module.displayName }) : undefined,
-    };
-  }
-
   render() {
     const intl = this.context.intl;
     const connect = connectFor('@folio/core', this.props.stripes.epics, this.props.stripes.logger);
@@ -76,8 +43,8 @@ class RootWithIntl extends React.Component {
     const { token, disableAuth, history } = this.props;
 
     return (
-      <ModulesContext.Provider value={this.state.modules}>
-        <StripesContext.Provider value={stripes}>
+      <StripesContext.Provider value={stripes}>
+        <ModuleTranslator>
           <TitleManager>
             <HotKeys keyMap={stripes.bindings} noWrapper>
               <Provider store={stripes.store}>
@@ -115,8 +82,8 @@ class RootWithIntl extends React.Component {
               </Provider>
             </HotKeys>
           </TitleManager>
-        </StripesContext.Provider>
-      </ModulesContext.Provider>
+        </ModuleTranslator>
+      </StripesContext.Provider>
     );
   }
 }
