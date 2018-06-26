@@ -31,7 +31,6 @@ class ModuleTranslator extends React.Component {
 
     return {
       ...module,
-      description: module.description ? formatMessage({ id: module.description }) : undefined,
       displayName: module.displayName ? formatMessage({ id: module.displayName }) : undefined,
     };
   }
