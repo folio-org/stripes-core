@@ -20,9 +20,9 @@ class ModuleTranslator extends React.Component {
 
   translateModules = () => {
     return {
-      app: originalModules.app.map(this.translateModule),
-      plugin: originalModules.plugin.map(this.translateModule),
-      settings: originalModules.settings.map(this.translateModule),
+      app: (originalModules.app || []).map(this.translateModule),
+      plugin: (originalModules.plugin || []).map(this.translateModule),
+      settings: (originalModules.settings || []).map(this.translateModule),
     };
   }
 
