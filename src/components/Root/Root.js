@@ -20,7 +20,9 @@ import SystemSkeleton from '../SystemSkeleton';
 
 import './Root.css';
 
-import { modules, metadata } from 'stripes-config'; // eslint-disable-line
+import { metadata } from 'stripes-config'; // eslint-disable-line
+import { withModules } from '../Modules';
+
 if (!metadata) {
   // eslint-disable-next-line no-console
   console.error('No metadata harvested from package files, so you will not get app icons. Probably the stripes-core in your Stripes CLI is too old. Try `yarn global upgrade @folio/stripes-cli`');
@@ -33,7 +35,7 @@ class Root extends Component {
     this.epics = {};
     this.withOkapi = this.props.okapi.withoutOkapi !== true;
 
-    const appModule = modules.app.find(m => window.location.pathname.startsWith(m.route) && m.queryResource);
+    const appModule = this.props.modules.app.find(m => window.location.pathname.startsWith(m.route) && m.queryResource);
     this.queryResourceStateKey = (appModule) ? getQueryResourceKey(appModule) : null;
   }
 
@@ -152,6 +154,9 @@ Root.propTypes = {
   locale: PropTypes.string,
   timezone: PropTypes.string,
   translations: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+  modules: PropTypes.shape({
+    app: PropTypes.array,
+  }),
   plugins: PropTypes.object, // eslint-disable-line react/forbid-prop-types
   bindings: PropTypes.object, // eslint-disable-line react/forbid-prop-types
   config: PropTypes.object, // eslint-disable-line react/forbid-prop-types
@@ -204,4 +209,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(Root);
+export default connect(mapStateToProps)(withModules(Root));

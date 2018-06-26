@@ -1,4 +1,11 @@
 {
+  "title.home": "Home",
+  "title.ssoRedirect": "SSO Redirect",
+  "title.settings": "Settings",
+  "title.notFound": "Not Found",
+  "title.ssoLanding": "SSO Landing",
+  "title.login": "Log in",
+
   "front.welcome": "Welcome, the Future Of Libraries Is OPEN!",
   "front.home": "Home",
   "front.about": "Software versions",

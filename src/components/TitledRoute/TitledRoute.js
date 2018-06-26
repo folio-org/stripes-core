@@ -4,23 +4,33 @@ import Route from 'react-router-dom/Route';
 
 import ErrorBoundary from '@folio/stripes-components/lib/ErrorBoundary';
 
+import { withStripes } from '../../StripesContext';
 import TitleManager from '../TitleManager';
 
 class TitledRoute extends React.Component {
   static propTypes = {
-    displayName: PropTypes.string,
+    name: PropTypes.string,
     component: PropTypes.element,
+    stripes: PropTypes.shape({
+      intl: PropTypes.shape({
+        formatMessage: PropTypes.func,
+      })
+    })
   }
 
   render() {
-    const { displayName, component, ...rest } = this.props;
+    const { name, component, stripes, ...rest } = this.props;
+    const formattedName = stripes.intl.formatMessage({
+      id: `stripes-core.title.${name}`,
+      defaultMessage: name,
+    });
 
     return (
       <Route
         {...rest}
         component={() => (
           <ErrorBoundary>
-            <TitleManager page={displayName} />
+            <TitleManager page={formattedName} />
             {component}
           </ErrorBoundary>
         )}
@@ -29,4 +39,4 @@ class TitledRoute extends React.Component {
   }
 }
 
-export default TitledRoute;
+export default withStripes(TitledRoute);
