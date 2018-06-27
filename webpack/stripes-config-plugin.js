@@ -1,6 +1,10 @@
 // This webpack plugin generates a virtual module containing the stripes configuration
 // To access this configuration simply import 'stripes-config' within your JavaScript:
 //   import { okapi, config, modules } from 'stripes-config';
+//
+// NOTE: If importing module data for UI purposes such as displaying
+// the module name, DO NOT import this module.
+// Instead, use the ModulesContext directly or via the withModules/withModule HOCs.
 
 const _ = require('lodash');
 const VirtualModulesPlugin = require('webpack-virtual-modules');

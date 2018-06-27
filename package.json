@@ -1,6 +1,6 @@
 {
   "name": "@folio/stripes-core",
-  "version": "2.10.0",
+  "version": "2.10.2",
   "description": "The starting point for Stripes applications",
   "license": "Apache-2.0",
   "repository": "folio-org/stripes-core",
@@ -33,7 +33,7 @@
     ]
   },
   "devDependencies": {
-    "@folio/eslint-config-stripes": "^1.1.0",
+    "@folio/eslint-config-stripes": "^2.0.0",
     "babel-register": "^6.16.3",
     "chai": "^4.0.2",
     "enzyme": "^2.5.0",
@@ -110,6 +110,7 @@
     "react-redux": "^5.0.2",
     "react-router": "^4.0.0",
     "react-router-dom": "^4.0.0",
+    "react-titled": "^1.0.0",
     "react-transform-catch-errors": "^1.0.2",
     "redux": "^3.6.0",
     "redux-form": "^7.0.3",

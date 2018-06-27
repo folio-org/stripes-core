@@ -1,7 +1,6 @@
 import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
-import { modules as uiModules } from 'stripes-config'; // eslint-disable-line
 import { FormattedMessage } from 'react-intl';
 import SafeHTMLMessage from '@folio/react-intl-safe-html';
 /* eslint-disable import/extensions */
@@ -15,6 +14,7 @@ import Headline from '@folio/stripes-components/lib/Headline';
 import List from '@folio/stripes-components/lib/List';
 import { isVersionCompatible } from '../../discoverServices';
 import AboutEnabledModules from './AboutEnabledModules';
+import { withModules } from '../Modules';
 
 import stripesCore from '../../../package.json'; // eslint-disable-line
 import css from './About.css';
@@ -143,7 +143,7 @@ const About = (props) => {
             itemFormatter={item => (<li key={item.key}>{item.value}</li>)}
           />
           <br />
-          {Object.keys(uiModules).map(key => listModules(key, uiModules[key]))}
+          {Object.keys(props.modules).map(key => listModules(key, props.modules[key]))}
         </div>
         <div className={css.versionsColumn}>
           <Headline size="large">
@@ -187,7 +187,7 @@ const About = (props) => {
           </Headline>
           {renderDependencies(Object.assign({}, stripesCore.stripes || {}, { module: 'stripes-core' }), interfaces)}
           <br />
-          {Object.keys(uiModules).map(key => listModules(key, uiModules[key], interfaces))}
+          {Object.keys(props.modules).map(key => listModules(key, props.modules[key], interfaces))}
           <Headline size="small">
             <FormattedMessage id="stripes-core.about.legendKey" />
           </Headline>
@@ -211,6 +211,7 @@ const About = (props) => {
 };
 
 About.propTypes = {
+  modules: PropTypes.object,
   stripes: PropTypes.shape({
     discovery: PropTypes.shape({
       modules: PropTypes.object,
@@ -223,4 +224,4 @@ About.propTypes = {
   }).isRequired,
 };
 
-export default About;
+export default withModules(About);

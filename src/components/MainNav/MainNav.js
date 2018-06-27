@@ -7,8 +7,7 @@ import { Dropdown } from '@folio/stripes-components/lib/Dropdown'; // eslint-dis
 import { withRouter } from 'react-router';
 import localforage from 'localforage';
 
-import { modules } from 'stripes-config'; // eslint-disable-line
-
+import { withModules } from '../Modules';
 import { clearOkapiToken, clearCurrentUser } from '../../okapiActions';
 import { resetStore } from '../../mainActions';
 import { updateQueryResource, updateLocation } from '../../locationService';
@@ -23,20 +22,7 @@ import MyProfile from './MyProfile';
 import NotificationsDropdown from './Notifications/NotificationsDropdown';
 import settingsIcon from './settings.svg';
 
-if (!Array.isArray(modules.app) || modules.app.length < 1) {
-  throw new Error('At least one module of type "app" must be enabled.');
-}
-
 class MainNav extends Component {
-  static contextTypes = {
-    router: PropTypes.object.isRequired,
-  }
-
-  static childContextTypes = {
-    // It seems wrong that we have to tell this generic component what specific properties to put in the context
-    stripes: PropTypes.object,
-  };
-
   static propTypes = {
     stripes: PropTypes.shape({
       config: PropTypes.shape({
@@ -56,6 +42,18 @@ class MainNav extends Component {
     location: PropTypes.shape({
       pathname: PropTypes.string,
     }).isRequired,
+    modules: PropTypes.shape({
+      app: PropTypes.array,
+    })
+  };
+
+  static contextTypes = {
+    router: PropTypes.object.isRequired,
+  }
+
+  static childContextTypes = {
+    // It seems wrong that we have to tell this generic component what specific properties to put in the context
+    stripes: PropTypes.object,
   };
 
   constructor(props) {
@@ -68,7 +66,7 @@ class MainNav extends Component {
     this.lastVisited = {};
     this.queryValues = null;
 
-    this.moduleList = modules.app.concat({
+    this.moduleList = props.modules.app.concat({
       route: '/settings',
       module: '@folio/x_settings',
     });
@@ -124,9 +122,8 @@ class MainNav extends Component {
   }
 
   render() {
-    const { stripes, location: { pathname } } = this.props;
+    const { stripes, location: { pathname }, modules } = this.props;
     const formatMsg = stripes.intl.formatMessage;
-    const selectedApp = modules.app.find(entry => pathname.startsWith(entry.route));
 
     // Temporary until settings becomes an app
     const settingsIconData = {
@@ -134,6 +131,9 @@ class MainNav extends Component {
       alt: 'Tenant Settings',
       title: formatMsg({ id: 'stripes-core.settings' }),
     };
+
+    // const stripesApps = modules.app;
+    const selectedApp = modules.app.find(entry => pathname.startsWith(entry.route));
     const menuLinks = modules.app.map((entry) => {
       const name = entry.module.replace(/^@[a-z0-9_]+\//, '');
       const perm = `module.${name}.enabled`;
@@ -233,4 +233,4 @@ class MainNav extends Component {
   }
 }
 
-export default withRouter(MainNav);
+export default withRouter(withModules(MainNav));

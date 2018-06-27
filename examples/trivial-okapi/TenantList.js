@@ -9,18 +9,18 @@ class TenantList extends Component {
                 ` resource '${e.resource}' failed, saying: ${e.error}`);
   }
 
-  static propTypes = {
-    data: PropTypes.obj.isRequired,
-    mutator: PropTypes.func.isRequired,
-    pathname: PropTypes.string.isRequired,
-  };
-
   static manifest = {
     '@errorHandler': TenantList.handler,
     'tenants': {
       path: '_/proxy/tenants',
       type: 'okapi',
     },
+  };
+
+  static propTypes = {
+    data: PropTypes.obj.isRequired,
+    mutator: PropTypes.func.isRequired,
+    pathname: PropTypes.string.isRequired,
   };
 
   render() {
