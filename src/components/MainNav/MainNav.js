@@ -65,8 +65,7 @@ class MainNav extends Component {
     this.logout = this.logout.bind(this);
     this.lastVisited = {};
     this.queryValues = null;
-    this.updateQueryResource = throttle(updateQueryResource);
-
+    this.updateQueryResource = throttle(updateQueryResource, 50, { 'leading': true });
     this.moduleList = props.modules.app.concat({
       route: '/settings',
       module: '@folio/x_settings',
