@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { isEqual } from 'lodash';
+import { isEqual, throttle } from 'lodash';
 import { FormattedMessage } from 'react-intl';
 import Headline from '@folio/stripes-components/lib/Headline';
 import { Dropdown } from '@folio/stripes-components/lib/Dropdown'; // eslint-disable-line
@@ -65,6 +65,7 @@ class MainNav extends Component {
     this.logout = this.logout.bind(this);
     this.lastVisited = {};
     this.queryValues = null;
+    this.updateQueryResource = throttle(updateQueryResource);
 
     this.moduleList = props.modules.app.concat({
       route: '/settings',
@@ -102,7 +103,7 @@ class MainNav extends Component {
     const { location } = this.props;
     this.curModule = this.moduleList.find(m => location.pathname.startsWith(m.route) && m.queryResource);
     if (this.curModule && !isEqual(location, prevProps.location)) {
-      updateQueryResource(location, this.curModule, this.store);
+      this.updateQueryResource(location, this.curModule, this.store);
     }
   }
 
