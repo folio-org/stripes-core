@@ -126,7 +126,11 @@ function clearOkapiSession(store, resp) {
 function createOkapiSession(okapiUrl, store, tenant, token, data) {
   store.dispatch(setOkapiToken(token));
   store.dispatch(setAuthError(null));
-  store.dispatch(setCurrentUser(data.user.personal));
+  store.dispatch(setCurrentUser({
+    id: data.user.id,
+    username: data.user.username,
+    ...data.user.personal,
+  }));
 
   // You are not expected to understand this
   // ...then aren't you expected to explain it?
