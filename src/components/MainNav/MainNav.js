@@ -65,7 +65,6 @@ class MainNav extends Component {
     this.logout = this.logout.bind(this);
     this.lastVisited = {};
     this.queryValues = null;
-
     this.moduleList = props.modules.app.concat({
       route: '/settings',
       module: '@folio/x_settings',

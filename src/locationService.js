@@ -1,9 +1,19 @@
-import { snakeCase, isEqual, omitBy, isEmpty, unset } from 'lodash';
+/* eslint-disable */
+import { snakeCase, isEqual, forOwn, isEmpty, unset } from 'lodash';
 import queryString from 'query-string';
 import { replaceQueryResource } from './locationActions';
 
 function getLocationQuery(location) {
   return location.query ? location.query : queryString.parse(location.search);
+}
+
+function removeEmpty(obj) {
+  const cleanObj = {};
+  forOwn(obj, (value, key) => {
+    if (value) cleanObj[key] = value;
+  });
+
+  return cleanObj;
 }
 
 export function getQueryResourceKey({ dataKey, module, queryResource }) {
@@ -30,15 +40,27 @@ export function updateQueryResource(location, module, store) {
 export function updateLocation(module, curQuery, store, history, location) {
   const stateQuery = getQueryResourceState(module, store);
   const locationQuery = getLocationQuery(location);
-  const cleanStateQuery = omitBy(stateQuery, isEmpty);
-  const cleanLocationQuery = omitBy(locationQuery, isEmpty);
+  const cleanStateQuery = removeEmpty(stateQuery);
+  const cleanLocationQuery = removeEmpty(locationQuery);
+
+  console.log('******updateLocation.START*****!!!!!!!!!!!');
+  console.log('stateQuery', stateQuery);
+  console.log('locationQuery', locationQuery);
+  console.log('cleanStateQuery', cleanStateQuery);
+  console.log('cleanLocationQuery', cleanLocationQuery);
+  console.log('isEqual(cleanStateQuery, cleanLocationQuery)', isEqual(cleanStateQuery, cleanLocationQuery));
 
   if (isEqual(cleanStateQuery, cleanLocationQuery)) return curQuery;
 
-  const params = omitBy(Object.assign({}, locationQuery, stateQuery), isEmpty);
+  const params = removeEmpty(Object.assign({}, locationQuery, stateQuery));
 
   let url = params._path || location.pathname;
   unset(params, '_path');
+
+  console.log('params', params);
+  console.log('url', url);
+  console.log('location.pathname', location.pathname);
+  console.log('isEqual(curQuery, params)', isEqual(curQuery, params));
 
   if (isEqual(curQuery, params) && url === location.pathname) {
     return curQuery;
@@ -47,6 +69,8 @@ export function updateLocation(module, curQuery, store, history, location) {
   if (!isEmpty(params)) {
     url += `?${queryString.stringify(params)}`;
   }
+
+  console.log('url', url);
 
   history.push(url);
 
