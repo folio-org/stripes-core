@@ -124,13 +124,15 @@ function clearOkapiSession(store, resp) {
 }
 
 function createOkapiSession(okapiUrl, store, tenant, token, data) {
-  store.dispatch(setOkapiToken(token));
-  store.dispatch(setAuthError(null));
-  store.dispatch(setCurrentUser({
+  const user = {
     id: data.user.id,
     username: data.user.username,
     ...data.user.personal,
-  }));
+  };
+
+  store.dispatch(setOkapiToken(token));
+  store.dispatch(setAuthError(null));
+  store.dispatch(setCurrentUser(user));
 
   // You are not expected to understand this
   // ...then aren't you expected to explain it?
@@ -138,7 +140,7 @@ function createOkapiSession(okapiUrl, store, tenant, token, data) {
   store.dispatch(setCurrentPerms(perms));
   const okapiSess = {
     token,
-    user: data.user.personal,
+    user,
     perms,
   };
   localforage.setItem('okapiSess', okapiSess);
