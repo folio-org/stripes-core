@@ -40,7 +40,9 @@ export function updateLocation(module, curQuery, store, history, location) {
   console.log('cleanStateQuery', cleanStateQuery);
   console.log('cleanLocationQuery', cleanLocationQuery);
   console.log('isEqual(cleanStateQuery, cleanLocationQuery)', isEqual(cleanStateQuery, cleanLocationQuery));
-  if (isEqual(cleanStateQuery, cleanLocationQuery)) return curQuery;
+
+
+  if (isEqual({...cleanStateQuery}, {...cleanLocationQuery})) return curQuery;
 
   const params = omitBy(Object.assign({}, locationQuery, stateQuery), isEmpty);
 
