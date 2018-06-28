@@ -31,8 +31,8 @@ export function updateQueryResource(location, module, store) {
 export function updateLocation(module, curQuery, store, history, location) {
   const stateQuery = getQueryResourceState(module, store);
   const locationQuery = getLocationQuery(location);
-  const cleanStateQuery = omitBy(stateQuery, isEmpty);
-  const cleanLocationQuery = omitBy(locationQuery, isEmpty);
+  const cleanStateQuery = omitBy({...stateQuery}, isEmpty);
+  const cleanLocationQuery = omitBy({...locationQuery}, isEmpty);
 
   console.log('******updateLocation.START*****');
   console.log('stateQuery', stateQuery);
@@ -41,11 +41,9 @@ export function updateLocation(module, curQuery, store, history, location) {
   console.log('cleanLocationQuery', cleanLocationQuery);
   console.log('isEqual(cleanStateQuery, cleanLocationQuery)', isEqual(cleanStateQuery, cleanLocationQuery));
 
-
-  if (isEqual({...cleanStateQuery}, {...cleanLocationQuery})) return curQuery;
+  if (isEqual(cleanStateQuery, cleanLocationQuery)) return curQuery;
 
   const params = omitBy(Object.assign({}, locationQuery, stateQuery), isEmpty);
-
 
   let url = params._path || location.pathname;
   unset(params, '_path');
