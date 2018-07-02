@@ -16,13 +16,29 @@ function removeEmpty(obj) {
 }
 
 export function getQueryResourceKey({ dataKey, module, queryResource }) {
+  console.log('getQueryResourceKey.module', module);
+  console.log('module', module);
   const prefix = dataKey ? `${dataKey}#` : '';
   return `${prefix}${snakeCase(module)}_${queryResource}`;
 }
 
 export function getQueryResourceState(module, store) {
+  console.log('getQueryResourceState', module);
   const key = getQueryResourceKey(module);
   return store.getState()[key];
+}
+
+export function isQueryResourceModule(module, location) {
+  if (!module) return false;
+
+  const path = location.pathname;
+  const re = new RegExp(`^${module.route}|^\/settings${module.route}`, "i");
+  return module.queryResource && path.match(re);
+}
+
+export function getCurrentModule(modules, location) {
+  const { app, settings } = modules;
+  return app.concat(settings).find(m => isQueryResourceModule(m, location));
 }
 
 // updates query resource based on the current location query
