@@ -16,14 +16,11 @@ function removeEmpty(obj) {
 }
 
 export function getQueryResourceKey({ dataKey, module, queryResource }) {
-  console.log('getQueryResourceKey.module', module);
-  console.log('module', module);
   const prefix = dataKey ? `${dataKey}#` : '';
   return `${prefix}${snakeCase(module)}_${queryResource}`;
 }
 
 export function getQueryResourceState(module, store) {
-  console.log('getQueryResourceState', module);
   const key = getQueryResourceKey(module);
   return store.getState()[key];
 }

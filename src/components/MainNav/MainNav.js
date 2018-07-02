@@ -65,12 +65,6 @@ class MainNav extends Component {
     this.logout = this.logout.bind(this);
     this.lastVisited = {};
     this.queryValues = null;
-    /*
-    this.moduleList = props.modules.app.concat({
-      route: '/settings',
-      module: '@folio/x_settings',
-    });
-    */
 
     props.history.listen((hist) => {
       for (const entry of this.moduleList) {
@@ -101,7 +95,7 @@ class MainNav extends Component {
 
   componentDidUpdate(prevProps) {
     const { modules, location } = this.props;
-    //this.curModule = this.moduleList.find(m => location.pathname.startsWith(m.route) && m.queryResource);
+
     this.curModule = getCurrentModule(modules, location);
     if (this.curModule && !isEqual(location, prevProps.location)) {
       updateQueryResource(location, this.curModule, this.store);
