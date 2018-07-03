@@ -12,6 +12,7 @@ import Pane from '@folio/stripes-components/lib/Pane';
 import { FormattedMessage } from 'react-intl';
 
 import About from '../About';
+import { StripesContext } from '../../StripesContext';
 import AddContext from '../../AddContext';
 import { withModules } from '../Modules';
 import { stripesShape } from '../../Stripes';
@@ -50,9 +51,11 @@ const Settings = (props) => {
       path={`/settings${m.route}`}
       key={m.route}
       render={props2 => (
-        <AddContext context={{ stripes: moduleStripes }}>
-          <Current {...props2} stripes={moduleStripes} showSettings />
-        </AddContext>
+        <StripesContext.Provider value={moduleStripes}>
+          <AddContext context={{ stripes: moduleStripes }}>
+            <Current {...props2} stripes={moduleStripes} showSettings />
+          </AddContext>
+        </StripesContext.Provider>
       )}
     />);
   });
