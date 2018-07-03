@@ -43,7 +43,6 @@ const Settings = (props) => {
   const routes = settingsModules.filter(
     x => stripes.hasPerm(`settings.${x.module.replace(/^@folio\//, '')}.enabled`),
   ).map((m) => {
-
     const connect = connectFor(m.module, stripes.epics, stripes.logger);
     const Current = connect(m.getModule());
     const moduleStripes = stripes.clone({ connect });
