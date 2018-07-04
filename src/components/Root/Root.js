@@ -13,7 +13,7 @@ import createApolloClient from '../../createApolloClient';
 import { setSinglePlugin, setBindings, setOkapiToken, setTimezone } from '../../okapiActions';
 import { formatDate, formatTime, formatDateTime } from '../../../util/dateUtil';
 import { loadTranslations, checkOkapiSession } from '../../loginServices';
-import { getQueryResourceKey } from '../../locationService';
+import { getQueryResourceKey, getCurrentModule } from '../../locationService';
 import Stripes from '../../Stripes';
 import RootWithIntl from '../../RootWithIntl';
 import SystemSkeleton from '../SystemSkeleton';
@@ -35,7 +35,8 @@ class Root extends Component {
     this.epics = {};
     this.withOkapi = this.props.okapi.withoutOkapi !== true;
 
-    const appModule = this.props.modules.app.find(m => window.location.pathname.startsWith(m.route) && m.queryResource);
+    const { modules, history } = this.props;
+    const appModule = getCurrentModule(modules, history.location);
     this.queryResourceStateKey = (appModule) ? getQueryResourceKey(appModule) : null;
   }
 
