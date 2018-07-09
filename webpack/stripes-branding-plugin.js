@@ -2,7 +2,7 @@
 // The virtual module contains require()'s needed for webpack to pull images into the bundle.
 
 const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
 const defaultBranding = require('../default-assets/branding');
 const logger = require('./logger')('stripesBrandingPlugin');
 
@@ -14,8 +14,15 @@ module.exports = class StripesBrandingPlugin {
   }
 
   apply(compiler) {
-    // Locate the HtmlWebpackPlugin and apply the favicon.
-    compiler.plugin('after-plugins', theCompiler => this._replaceFavicon(theCompiler));
+    // FaviconsWebpackPlugin will inject the necessary html via HtmlWebpackPlugin
+    const faviconPath = StripesBrandingPlugin._initFavicon(this.branding.favicon.src);
+    new FaviconsWebpackPlugin(faviconPath).apply(compiler);
+
+    // Hook into stripesConfigPlugin to supply branding config
+    compiler.hooks.stripesConfigPluginBeforeWrite.tap('StripesBrandingPlugin', (config) => {
+      config.branding = this.branding;
+      logger.log('stripesConfigPluginBeforeWrite', config.branding);
+    });
   }
 
   // Prep favicon path for use with HtmlWebpackPlugin
@@ -24,11 +31,5 @@ module.exports = class StripesBrandingPlugin {
       return favicon;
     }
     return path.join(path.resolve(), favicon);
-  }
-
-  // Find the HtmlWebpackPlugin and modify its favicon option
-  _replaceFavicon(compiler) {
-    const index = compiler.options.plugins.findIndex(plugin => plugin instanceof HtmlWebpackPlugin);
-    compiler.options.plugins[index].options.favicon = StripesBrandingPlugin._initFavicon(this.branding.favicon.src);
   }
 };

@@ -16,6 +16,7 @@ const cli = require('./webpack.config.cli');
 
 const devConfig = Object.assign({}, base, cli, {
   devtool: 'inline-source-map',
+  mode: 'development',
 });
 
 devConfig.entry.unshift('webpack-hot-middleware/client');

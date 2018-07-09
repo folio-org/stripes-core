@@ -17,6 +17,20 @@ const compilerStub = {
       aliases: {},
     },
   },
+  hooks: {
+    emit: {
+      tapAsync: () => {},
+    },
+    stripesConfigPluginBeforeWrite: {
+      tap: () => {},
+    },
+    contextModuleFactory: {
+      tap: () => {},
+    },
+    afterResolve: {
+      tap: () => {},
+    }
+  }
 };
 
 describe('The stripes-translations-plugin', function () {
@@ -51,8 +65,8 @@ describe('The stripes-translations-plugin', function () {
       this.sandbox.stub(modulePaths, 'locateStripesModule').callsFake((context, mod) => `path/to/${mod}/package.json`);
       this.sandbox.stub(fs, 'existsSync').returns(true);
       this.sandbox.stub(fs, 'readdirSync').returns(['en.json', 'es.json', 'fr.json']);
-      this.sandbox.spy(compilerStub, 'apply');
-      this.sandbox.spy(compilerStub, 'plugin');
+      this.sandbox.spy(webpack.ContextReplacementPlugin.prototype, 'apply');
+      this.sandbox.spy(compilerStub.hooks.emit, 'tapAsync');
       this.sandbox.stub(StripesTranslationsPlugin, 'loadFile').returns({ key1: 'Value 1', key2: 'Value 2' });
       this.compilationStub = {
         assets: {},
@@ -62,7 +76,7 @@ describe('The stripes-translations-plugin', function () {
     it('registers the "emit" hook', function () {
       this.sut = new StripesTranslationsPlugin(this.stripesConfig);
       this.sut.apply(compilerStub);
-      expect(compilerStub.plugin).to.be.calledWith('emit');
+      expect(compilerStub.hooks.emit.tapAsync).to.be.calledWith('StripesTranslationsPlugin');
     });
 
     it('generates an emit function with all translations', function () {
@@ -70,7 +84,7 @@ describe('The stripes-translations-plugin', function () {
       this.sut.apply(compilerStub);
 
       // Get the function passed to 'emit' hook
-      const pluginArgs = compilerStub.plugin.getCall(0).args;
+      const pluginArgs = compilerStub.hooks.emit.tapAsync.getCall(0).args;
       const emitFunction = pluginArgs[1];
 
       // Call it and observe the modification to compilation.assets
@@ -88,9 +102,8 @@ describe('The stripes-translations-plugin', function () {
       this.sut.languageFilter = ['en'];
       this.sut.apply(compilerStub);
 
-      expect(compilerStub.apply).to.be.calledTwice;
-      const applyArgs = compilerStub.apply.getCall(0).args;
-      expect(applyArgs[0]).to.be.instanceOf(webpack.ContextReplacementPlugin);
+      expect(webpack.ContextReplacementPlugin.prototype.apply).to.have.been.calledTwice;
+      expect(webpack.ContextReplacementPlugin.prototype.apply).to.be.calledWith(compilerStub);
     });
   });
 

@@ -7,6 +7,7 @@
 * Added `<TitledRoute>` component to clean up generic, non-module routing.
 * Fix typo in [The Stripes Module Developer's Guide](doc/dev-guide.md). Fixes STCOR-227.
 * Added `ModulesContext` and `withModule` and `withModules` HOCs for module i18n. Fixes STCOR-228.
+* Upgrade to Webpack 4. STCOR-175 and STCOR-217
 
 ## [2.10.0](https://github.com/folio-org/stripes-core/tree/v2.10.0) (2018-06-06)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.9.0...v2.10.0)

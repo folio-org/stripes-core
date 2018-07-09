@@ -36,17 +36,23 @@ module.exports = class StripesTranslationPlugin {
     // Limit the number of languages loaded by third-party libraries with the ContextReplacementPlugin
     if (this.languageFilter.length) {
       const filterRegex = new RegExp(`(${this.languageFilter.join('|')})`); // constructed regex will look something like /(en|es)/
-      compiler.apply(new webpack.ContextReplacementPlugin(/react-intl[/\\]locale-data/, filterRegex));
-      compiler.apply(new webpack.ContextReplacementPlugin(/moment[/\\]locale/, filterRegex));
+      new webpack.ContextReplacementPlugin(/react-intl[/\\]locale-data/, filterRegex).apply(compiler);
+      new webpack.ContextReplacementPlugin(/moment[/\\]locale/, filterRegex).apply(compiler);
     }
 
     // Gather all translations available in each module
     const allTranslations = this.gatherAllTranslations();
     const fileData = this.generateFileNames(allTranslations);
-    this.allFiles = _.mapValues(fileData, data => data.browserPath); // stripes-config-plugin will grab "allFiles" for fetching in the browser
+    const allFiles = _.mapValues(fileData, data => data.browserPath);
+
+    // Hook into stripesConfigPlugin to supply paths to translation files
+    compiler.hooks.stripesConfigPluginBeforeWrite.tap('StripesTranslationsPlugin', (config) => {
+      config.translations = allFiles;
+      logger.log('stripesConfigPluginBeforeWrite', config.translations);
+    });
 
     // Emit merged translations to the output directory
-    compiler.plugin('emit', (compilation, callback) => {
+    compiler.hooks.emit.tapAsync('StripesTranslationsPlugin', (compilation, callback) => {
       Object.keys(allTranslations).forEach((language) => {
         logger.log(`emitting translations for ${language} --> ${fileData[language].emitPath}`);
         const content = JSON.stringify(allTranslations[language]);

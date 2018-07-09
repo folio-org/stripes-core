@@ -8,13 +8,12 @@
 
 const _ = require('lodash');
 const VirtualModulesPlugin = require('webpack-virtual-modules');
-const StripesBrandingPlugin = require('./stripes-branding-plugin');
-const StripesTranslationPlugin = require('./stripes-translations-plugin');
 const serialize = require('serialize-javascript');
 const stripesModuleParser = require('./stripes-module-parser');
 const StripesBuildError = require('./stripes-build-error');
 const stripesSerialize = require('./stripes-serialize');
 const logger = require('./logger')('stripesConfigPlugin');
+const { SyncHook } = require('tapable');
 
 module.exports = class StripesConfigPlugin {
   constructor(options) {
@@ -35,23 +34,32 @@ module.exports = class StripesConfigPlugin {
 
     // Prep the virtual module now, we will write to it when ready
     this.virtualModule = new VirtualModulesPlugin();
-    compiler.apply(this.virtualModule);
+    this.virtualModule.apply(compiler);
+
+    // Establish hook for other plugins to update the config
+    if (compiler.hooks.stripesConfigPluginBeforeWrite) {
+      throw new StripesBuildError('StripesConfigPlugin hook already in use');
+    }
+    compiler.hooks.stripesConfigPluginBeforeWrite = new SyncHook(['config']);
 
     // Wait until after other plugins to generate virtual stripes-config
-    compiler.plugin('after-plugins', theCompiler => this.afterPlugins(theCompiler));
-    compiler.plugin('emit', (compilation, callback) => this.processWarnings(compilation, callback));
+    compiler.hooks.afterPlugins.tap('StripesConfigPlugin', (theCompiler) => this.afterPlugins(theCompiler));
+    compiler.hooks.emit.tapAsync('StripesConfigPlugin', (compilation, callback) => this.processWarnings(compilation, callback));
   }
 
   afterPlugins(compiler) {
-    // Locate the StripesTranslationPlugin to grab its translation file list
-    const translationPlugin = compiler.options.plugins.find(plugin => plugin instanceof StripesTranslationPlugin);
-    const brandingPlugin = compiler.options.plugins.find(plugin => plugin instanceof StripesBrandingPlugin);
+    // Data provided by other stripes plugins via hooks
+    const pluginData = {
+      branding: {},
+      translations: {},
+    };
+    compiler.hooks.stripesConfigPluginBeforeWrite.call(pluginData);
 
     // Create a virtual module for Webpack to include in the build
     const stripesVirtualModule = `
       const { okapi, config, modules } = ${serialize(this.mergedConfig, { space: 2 })};
-      const branding = ${stripesSerialize.serializeWithRequire(brandingPlugin.branding)};
-      const translations = ${serialize(translationPlugin.allFiles, { space: 2 })};
+      const branding = ${stripesSerialize.serializeWithRequire(pluginData.branding)};
+      const translations = ${serialize(pluginData.translations, { space: 2 })};
       const metadata = ${stripesSerialize.serializeWithRequire(this.metadata)};
       export { okapi, config, modules, branding, translations, metadata };
     `;

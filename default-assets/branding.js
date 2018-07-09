@@ -7,6 +7,6 @@ module.exports = {
     alt: 'Future Of Libraries Is Open',
   },
   favicon: {
-    src: `${__dirname}/favicon.ico`,
+    src: `${__dirname}/favicon.png`,
   },
 };
