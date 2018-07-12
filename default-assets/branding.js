@@ -4,9 +4,9 @@
 module.exports = {
   logo: {
     src: `${__dirname}/folio-logo.svg`,
-    alt: 'Future Of Libraries Is Open',
+    alt: 'FOLIO',
   },
   favicon: {
-    src: `${__dirname}/favicon.png`,
+    src: `${__dirname}/favicon.svg`,
   },
 };
