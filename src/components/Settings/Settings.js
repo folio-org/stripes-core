@@ -25,7 +25,7 @@ const getSettingsModules = (modules) => (
 );
 
 const Settings = (props) => {
-  const { stripes, addReducer, store } = stripes;
+  const { stripes, addReducer, store } = props;
   const settingsModules = getSettingsModules(props.modules);
 
   const navLinks = settingsModules
@@ -94,7 +94,9 @@ Settings.propTypes = {
   modules: PropTypes.shape({
     app: PropTypes.array,
     settings: PropTypes.array,
-  })
+  }),
+  addReducer: PropTypes.func.isRequired,
+  store: PropTypes.object.isRequired,
 };
 
 export default withRouter(withModules(Settings));

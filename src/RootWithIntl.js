@@ -30,6 +30,8 @@ class RootWithIntl extends React.Component {
     token: PropTypes.string,
     disableAuth: PropTypes.bool.isRequired,
     history: PropTypes.shape({}),
+    addReducer: PropTypes.func.isRequired,
+    store: PropTypes.object.isRequired,
   };
 
   static contextTypes = {
