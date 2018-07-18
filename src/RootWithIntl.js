@@ -38,9 +38,9 @@ class RootWithIntl extends React.Component {
 
   render() {
     const intl = this.context.intl;
-    const connect = connectFor('@folio/core', this.props.stripes.epics, this.props.stripes.logger);
+    const { addReducer, store, token, disableAuth, history } = this.props;
+    const connect = connectFor('@folio/core', this.props.stripes.epics, this.props.stripes.logger, addReducer, store);
     const stripes = this.props.stripes.clone({ intl, connect });
-    const { token, disableAuth, history } = this.props;
 
     return (
       <StripesContext.Provider value={stripes}>
@@ -58,8 +58,8 @@ class RootWithIntl extends React.Component {
                           <Switch>
                             <TitledRoute name="home" path="/" key="root" exact component={<Front stripes={stripes} />} />
                             <TitledRoute name="ssoRedirect" path="/sso-landing" key="sso-landing" component={<SSORedirect stripes={stripes} />} />
-                            <TitledRoute name="settings" path="/settings" component={<Settings stripes={stripes} />} />
-                            {getModuleRoutes(stripes)}
+                            <TitledRoute name="settings" path="/settings" component={<Settings stripes={stripes} addReducer={addReducer} store={store} />} />
+                            {getModuleRoutes(stripes, addReducer, store)}
                             <TitledRoute
                               name="notFound"
                               component={(

@@ -25,7 +25,7 @@ const getSettingsModules = (modules) => (
 );
 
 const Settings = (props) => {
-  const stripes = props.stripes;
+  const { stripes, addReducer, store } = stripes;
   const settingsModules = getSettingsModules(props.modules);
 
   const navLinks = settingsModules
@@ -43,7 +43,7 @@ const Settings = (props) => {
   const routes = settingsModules.filter(
     x => stripes.hasPerm(`settings.${x.module.replace(/^@folio\//, '')}.enabled`),
   ).map((m) => {
-    const connect = connectFor(m.module, stripes.epics, stripes.logger);
+    const connect = connectFor(m.module, stripes.epics, stripes.logger, addReducer, store);
     const Current = connect(m.getModule());
     const moduleStripes = stripes.clone({ connect });
 
