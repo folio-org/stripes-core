@@ -7,6 +7,7 @@ import { IntlProvider } from 'react-intl';
 import queryString from 'query-string';
 import { ApolloProvider } from 'react-apollo';
 import ErrorBoundary from '@folio/stripes-components/lib/ErrorBoundary';
+import { RootContext } from './RootContext';
 import initialReducers from '../../initialReducers';
 import enhanceReducer from '../../enhanceReducer';
 import createApolloClient from '../../createApolloClient';
@@ -124,11 +125,13 @@ class Root extends Component {
 
     return (
       <ErrorBoundary>
-        <ApolloProvider client={createApolloClient(okapi)}>
-          <IntlProvider locale={locale} key={locale} messages={translations}>
-            <RootWithIntl stripes={stripes} token={token} disableAuth={disableAuth} history={history} />
-          </IntlProvider>
-        </ApolloProvider>
+        <RootContext.Provider value={{ addReducer: this.addReducer, addEpic: this.addEpic }}>
+          <ApolloProvider client={createApolloClient(okapi)}>
+            <IntlProvider locale={locale} key={locale} messages={translations}>
+              <RootWithIntl stripes={stripes} token={token} disableAuth={disableAuth} history={history} />
+            </IntlProvider>
+          </ApolloProvider>
+        </RootContext.Provider>
       </ErrorBoundary>
     );
   }
