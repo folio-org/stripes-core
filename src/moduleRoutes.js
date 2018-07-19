@@ -4,7 +4,6 @@ import { connectFor } from '@folio/stripes-connect';
 import ErrorBoundary from '@folio/stripes-components/lib/ErrorBoundary';
 import ModulesContext from './ModulesContext';
 import { StripesContext } from './StripesContext';
-import AddContext from './AddContext';
 import TitleManager from './components/TitleManager';
 
 function getModuleRoutes(stripes, addReducer, store) {
@@ -30,15 +29,13 @@ function getModuleRoutes(stripes, addReducer, store) {
               key={module.route}
               render={props => (
                 <StripesContext.Provider value={moduleStripes}>
-                  <AddContext context={{ stripes: moduleStripes }}>
-                    <div id={`${name}-module-display`} data-module={module.module} data-version={module.version} >
-                      <ErrorBoundary>
-                        <TitleManager page={module.displayName}>
-                          <Current {...props} connect={connect} stripes={moduleStripes} />
-                        </TitleManager>
-                      </ErrorBoundary>
-                    </div>
-                  </AddContext>
+                  <div id={`${name}-module-display`} data-module={module.module} data-version={module.version} >
+                    <ErrorBoundary>
+                      <TitleManager page={module.displayName}>
+                        <Current {...props} connect={connect} stripes={moduleStripes} />
+                      </TitleManager>
+                    </ErrorBoundary>
+                  </div>
                 </StripesContext.Provider>
               )}
             />

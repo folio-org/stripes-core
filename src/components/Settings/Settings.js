@@ -13,7 +13,6 @@ import { FormattedMessage } from 'react-intl';
 
 import About from '../About';
 import { StripesContext } from '../../StripesContext';
-import AddContext from '../../AddContext';
 import { withModules } from '../Modules';
 import { stripesShape } from '../../Stripes';
 
@@ -52,9 +51,7 @@ const Settings = (props) => {
       key={m.route}
       render={props2 => (
         <StripesContext.Provider value={moduleStripes}>
-          <AddContext context={{ stripes: moduleStripes }}>
-            <Current {...props2} stripes={moduleStripes} showSettings />
-          </AddContext>
+          <Current {...props2} stripes={moduleStripes} showSettings />
         </StripesContext.Provider>
       )}
     />);
