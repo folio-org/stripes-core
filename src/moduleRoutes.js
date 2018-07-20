@@ -7,7 +7,7 @@ import { StripesContext } from './StripesContext';
 import AddContext from './AddContext';
 import TitleManager from './components/TitleManager';
 
-function getModuleRoutes(stripes, addReducer, store) {
+function getModuleRoutes(stripes) {
   return (
     <ModulesContext.Consumer>
       {(modules) => {
@@ -20,7 +20,7 @@ function getModuleRoutes(stripes, addReducer, store) {
           const perm = `module.${name}.enabled`;
           if (!stripes.hasPerm(perm)) return null;
 
-          const connect = connectFor(module.module, stripes.epics, stripes.logger, addReducer, store);
+          const connect = connectFor(module.module, stripes.epics, stripes.logger);
           const Current = connect(module.getModule());
           const moduleStripes = stripes.clone({ connect });
 
