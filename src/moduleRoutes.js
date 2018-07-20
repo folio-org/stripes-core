@@ -4,10 +4,9 @@ import { connectFor } from '@folio/stripes-connect';
 import ErrorBoundary from '@folio/stripes-components/lib/ErrorBoundary';
 import ModulesContext from './ModulesContext';
 import { StripesContext } from './StripesContext';
-import AddContext from './AddContext';
 import TitleManager from './components/TitleManager';
 
-function getModuleRoutes(stripes) {
+function getModuleRoutes(stripes, addReducer, store) {
   return (
     <ModulesContext.Consumer>
       {(modules) => {
@@ -20,7 +19,7 @@ function getModuleRoutes(stripes) {
           const perm = `module.${name}.enabled`;
           if (!stripes.hasPerm(perm)) return null;
 
-          const connect = connectFor(module.module, stripes.epics, stripes.logger);
+          const connect = connectFor(module.module, stripes.epics, stripes.logger, addReducer, store);
           const Current = connect(module.getModule());
           const moduleStripes = stripes.clone({ connect });
 
@@ -30,15 +29,13 @@ function getModuleRoutes(stripes) {
               key={module.route}
               render={props => (
                 <StripesContext.Provider value={moduleStripes}>
-                  <AddContext context={{ stripes: moduleStripes }}>
-                    <div id={`${name}-module-display`} data-module={module.module} data-version={module.version} >
-                      <ErrorBoundary>
-                        <TitleManager page={module.displayName}>
-                          <Current {...props} connect={connect} stripes={moduleStripes} />
-                        </TitleManager>
-                      </ErrorBoundary>
-                    </div>
-                  </AddContext>
+                  <div id={`${name}-module-display`} data-module={module.module} data-version={module.version} >
+                    <ErrorBoundary>
+                      <TitleManager page={module.displayName}>
+                        <Current {...props} connect={connect} stripes={moduleStripes} />
+                      </TitleManager>
+                    </ErrorBoundary>
+                  </div>
                 </StripesContext.Provider>
               )}
             />

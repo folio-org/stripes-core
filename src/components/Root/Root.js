@@ -7,6 +7,7 @@ import { IntlProvider } from 'react-intl';
 import queryString from 'query-string';
 import { ApolloProvider } from 'react-apollo';
 import ErrorBoundary from '@folio/stripes-components/lib/ErrorBoundary';
+import { RootContext } from './RootContext';
 import initialReducers from '../../initialReducers';
 import enhanceReducer from '../../enhanceReducer';
 import createApolloClient from '../../createApolloClient';
@@ -38,10 +39,6 @@ class Root extends Component {
     const { modules, history } = this.props;
     const appModule = getCurrentModule(modules, history.location);
     this.queryResourceStateKey = (appModule) ? getQueryResourceKey(appModule) : null;
-  }
-
-  getChildContext() {
-    return { addReducer: this.addReducer, addEpic: this.addEpic };
   }
 
   componentDidMount() {
@@ -124,20 +121,24 @@ class Root extends Component {
 
     return (
       <ErrorBoundary>
-        <ApolloProvider client={createApolloClient(okapi)}>
-          <IntlProvider locale={locale} key={locale} messages={translations}>
-            <RootWithIntl stripes={stripes} token={token} disableAuth={disableAuth} history={history} />
-          </IntlProvider>
-        </ApolloProvider>
+        <RootContext.Provider value={{ addReducer: this.addReducer, addEpic: this.addEpic }}>
+          <ApolloProvider client={createApolloClient(okapi)}>
+            <IntlProvider locale={locale} key={locale} messages={translations}>
+              <RootWithIntl
+                stripes={stripes}
+                token={token}
+                disableAuth={disableAuth}
+                history={history}
+                addReducer={this.addReducer}
+                store={store}
+              />
+            </IntlProvider>
+          </ApolloProvider>
+        </RootContext.Provider>
       </ErrorBoundary>
     );
   }
 }
-
-Root.childContextTypes = {
-  addReducer: PropTypes.func,
-  addEpic: PropTypes.func,
-};
 
 Root.propTypes = {
   store: PropTypes.shape({

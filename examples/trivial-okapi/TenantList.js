@@ -18,7 +18,7 @@ class TenantList extends Component {
   };
 
   static propTypes = {
-    data: PropTypes.obj.isRequired,
+    data: PropTypes.object.isRequired,
     mutator: PropTypes.func.isRequired,
     pathname: PropTypes.string.isRequired,
   };

@@ -13,7 +13,6 @@ import { FormattedMessage } from 'react-intl';
 
 import About from '../About';
 import { StripesContext } from '../../StripesContext';
-import AddContext from '../../AddContext';
 import { withModules } from '../Modules';
 import { stripesShape } from '../../Stripes';
 
@@ -25,7 +24,7 @@ const getSettingsModules = (modules) => (
 );
 
 const Settings = (props) => {
-  const stripes = props.stripes;
+  const { stripes, addReducer, store } = props;
   const settingsModules = getSettingsModules(props.modules);
 
   const navLinks = settingsModules
@@ -43,7 +42,7 @@ const Settings = (props) => {
   const routes = settingsModules.filter(
     x => stripes.hasPerm(`settings.${x.module.replace(/^@folio\//, '')}.enabled`),
   ).map((m) => {
-    const connect = connectFor(m.module, stripes.epics, stripes.logger);
+    const connect = connectFor(m.module, stripes.epics, stripes.logger, addReducer, store);
     const Current = connect(m.getModule());
     const moduleStripes = stripes.clone({ connect });
 
@@ -52,9 +51,7 @@ const Settings = (props) => {
       key={m.route}
       render={props2 => (
         <StripesContext.Provider value={moduleStripes}>
-          <AddContext context={{ stripes: moduleStripes }}>
-            <Current {...props2} stripes={moduleStripes} showSettings />
-          </AddContext>
+          <Current {...props2} stripes={moduleStripes} showSettings />
         </StripesContext.Provider>
       )}
     />);
@@ -94,7 +91,9 @@ Settings.propTypes = {
   modules: PropTypes.shape({
     app: PropTypes.array,
     settings: PropTypes.array,
-  })
+  }),
+  addReducer: PropTypes.func.isRequired,
+  store: PropTypes.object.isRequired,
 };
 
 export default withRouter(withModules(Settings));
