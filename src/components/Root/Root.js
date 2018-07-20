@@ -7,7 +7,6 @@ import { IntlProvider } from 'react-intl';
 import queryString from 'query-string';
 import { ApolloProvider } from 'react-apollo';
 import ErrorBoundary from '@folio/stripes-components/lib/ErrorBoundary';
-
 import initialReducers from '../../initialReducers';
 import enhanceReducer from '../../enhanceReducer';
 import createApolloClient from '../../createApolloClient';
@@ -127,13 +126,7 @@ class Root extends Component {
       <ErrorBoundary>
         <ApolloProvider client={createApolloClient(okapi)}>
           <IntlProvider locale={locale} key={locale} messages={translations}>
-            <RootWithIntl 
-              stripes={stripes}
-              token={token}
-              disableAuth={disableAuth}
-              history={history}
-              addReducer={this.addReducer}
-              store={store} />
+            <RootWithIntl stripes={stripes} token={token} disableAuth={disableAuth} history={history} />
           </IntlProvider>
         </ApolloProvider>
       </ErrorBoundary>
