@@ -7,7 +7,7 @@ import { IntlProvider } from 'react-intl';
 import queryString from 'query-string';
 import { ApolloProvider } from 'react-apollo';
 import ErrorBoundary from '@folio/stripes-components/lib/ErrorBoundary';
-import { RootContext } from './RootContext'
+import { RootContext } from './RootContext';
 import initialReducers from '../../initialReducers';
 import enhanceReducer from '../../enhanceReducer';
 import createApolloClient from '../../createApolloClient';
