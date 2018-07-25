@@ -41,6 +41,10 @@ class Root extends Component {
     this.queryResourceStateKey = (appModule) ? getQueryResourceKey(appModule) : null;
   }
 
+  getChildContext() {
+    return { addReducer: this.addReducer, addEpic: this.addEpic };
+  }
+
   componentDidMount() {
     const { okapi, store, locale } = this.props;
     if (this.withOkapi) checkOkapiSession(okapi.url, store, okapi.tenant);
@@ -132,6 +136,11 @@ class Root extends Component {
     );
   }
 }
+
+Root.childContextTypes = {
+  addReducer: PropTypes.func,
+  addEpic: PropTypes.func,
+};
 
 Root.propTypes = {
   store: PropTypes.shape({
