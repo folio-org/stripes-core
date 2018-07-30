@@ -13,9 +13,14 @@ module.exports = class StripesWebpackPlugin {
 
   apply(compiler) {
     logger.log('Creating Stripes plugins...');
+    const isProduction = compiler.options.mode === 'production';
+
     const stripesPlugins = [
       new StripesConfigPlugin(this.stripesConfig),
-      new StripesBrandingPlugin(this.stripesConfig.branding),
+      new StripesBrandingPlugin({
+        tenantBranding: this.stripesConfig.branding,
+        buildAllFavicons: isProduction,
+      }),
       new StripesTranslationsPlugin(this.stripesConfig),
       new StripesDuplicatesPlugin(),
     ];

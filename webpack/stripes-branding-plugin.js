@@ -6,23 +6,58 @@ const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
 const defaultBranding = require('../default-assets/branding');
 const logger = require('./logger')('stripesBrandingPlugin');
 
+// Minimal favicon settings for favicons-webpack-plugin
+const standardFaviconsOnly = {
+  android: false,
+  appleIcon: false,
+  appleStartup: false,
+  coast: false,
+  favicons: true,
+  firefox: false,
+  windows: false,
+  yandex: false,
+};
+
+// Complete favicon settings for favicons-webpack-plugin
+const allFavicons = {
+  android: true,
+  appleIcon: true,
+  appleStartup: true,
+  coast: true,
+  favicons: true,
+  firefox: true,
+  windows: true,
+  yandex: true,
+};
+
 module.exports = class StripesBrandingPlugin {
-  constructor(tenantBranding) {
+  constructor(options) {
     logger.log('initializing...');
     // TODO: Validate incoming tenantBranding paths
+    const tenantBranding = (options && options.tenantBranding) ? options.tenantBranding : {};
     this.branding = Object.assign({}, defaultBranding, tenantBranding);
+    this.buildAllFavicons = options && options.buildAllFavicons;
   }
 
   apply(compiler) {
     // FaviconsWebpackPlugin will inject the necessary html via HtmlWebpackPlugin
-    const faviconPath = StripesBrandingPlugin._initFavicon(this.branding.favicon.src);
-    new FaviconsWebpackPlugin(faviconPath).apply(compiler);
+    const faviconOptions = this._getFaviconOptions();
+    new FaviconsWebpackPlugin(faviconOptions).apply(compiler);
 
     // Hook into stripesConfigPlugin to supply branding config
     compiler.hooks.stripesConfigPluginBeforeWrite.tap('StripesBrandingPlugin', (config) => {
       config.branding = this.branding;
       logger.log('stripesConfigPluginBeforeWrite', config.branding);
     });
+  }
+
+  _getFaviconOptions() {
+    const faviconOptions = {
+      logo: StripesBrandingPlugin._initFavicon(this.branding.favicon.src),
+      icons: this.buildAllFavicons ? allFavicons : standardFaviconsOnly,
+    };
+    logger.log('favicon options', faviconOptions);
+    return faviconOptions;
   }
 
   // Prep favicon path for use with HtmlWebpackPlugin
