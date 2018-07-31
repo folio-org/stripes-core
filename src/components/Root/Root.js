@@ -213,5 +213,4 @@ function mapStateToProps(state) {
   };
 }
 
-export * from './RootContext';
 export default connect(mapStateToProps)(withModules(Root));
