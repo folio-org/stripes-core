@@ -30,6 +30,7 @@ dirs=`echo '
     ui-trivial
     ui-vendors
     ui-tags
+    ui-myprofile
     eslint-config-stripes
 '`
 
