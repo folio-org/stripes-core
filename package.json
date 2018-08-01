@@ -45,7 +45,7 @@
     "stylelint-config-standard": "^17.0.0"
   },
   "dependencies": {
-    "@folio/react-intl-safe-html": "^1.0.1",
+    "@folio/react-intl-safe-html": "^1.0.2",
     "@folio/stripes-components": "^3.0.0",
     "@folio/stripes-connect": "^3.1.2",
     "@folio/stripes-logger": "^0.0.2",
