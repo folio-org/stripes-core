@@ -14,8 +14,10 @@ import List from '@folio/stripes-components/lib/List';
 import NavDropdownMenu from '../NavDropdownMenu';
 import NavButton from '../NavButton';
 import css from './MyProfile.css';
+import { withModules } from '../../Modules';
+import userDropdownChecks from '../../../userDropdownLinksService';
 
-export default class MyProfile extends Component {
+class MyProfile extends Component {
   static propTypes = {
     stripes: PropTypes.shape({
       user: PropTypes.shape({
@@ -26,7 +28,12 @@ export default class MyProfile extends Component {
         showPerms: PropTypes.bool,
         showHomeLink: PropTypes.bool,
       }),
+      okapi: PropTypes.object,
     }).isRequired,
+    modules: PropTypes.shape({
+      app: PropTypes.array,
+      settings: PropTypes.array,
+    }),
     onLogout: PropTypes.func.isRequired,
   };
 
@@ -39,12 +46,41 @@ export default class MyProfile extends Component {
 
     this.state = {
       dropdownOpen: false,
+      userLinks: [],
     };
 
     this.toggleDropdown = this.toggleDropdown.bind(this);
     this.getDropdownContent = this.getDropdownContent.bind(this);
     this.getUserData = this.getUserData.bind(this);
     this.getProfileImage = this.getProfileImage.bind(this);
+  }
+
+  componentDidMount() {
+    const { modules, stripes } = this.props;
+    const userDropdownLinks = ([].concat(modules.app, modules.settings))
+      .filter(({ links }) => links && Array.isArray(links.userDropdown))
+      .reduce((result, { links }) => result.concat(links.userDropdown), []);
+
+    userDropdownLinks.forEach((link, index) => {
+      const linkFunction = link.check;
+      if (!linkFunction) {
+        this.createLink(link, index);
+      } else if (typeof userDropdownChecks[linkFunction] === 'function') {
+        if (userDropdownChecks[linkFunction](stripes)) {
+          this.createLink(link, index);
+        }
+      }
+    });
+  }
+
+  createLink(link, index) {
+    const buttonId = `clickable-menuItem${index}`;
+    const newItem = (
+      <NavListItem id={buttonId} key={buttonId} type="button" onClick={() => this.navigateByUrl(link.route)}>
+        <FormattedMessage id={link.caption} />
+      </NavListItem>
+    );
+    this.setState({ userLinks: this.state.userLinks.concat(newItem) });
   }
 
   toggleDropdown() {
@@ -69,9 +105,13 @@ export default class MyProfile extends Component {
     return (<Avatar alt={user.name} title={user.name} />);
   }
 
-  onHome = () => {
+  navigateByUrl = (url) => {
     this.toggleDropdown();
-    this.context.router.history.push('/');
+    this.context.router.history.push(url);
+  }
+
+  onHome = () => {
+    this.navigateByUrl('/');
   }
 
   getDropdownContent() {
@@ -117,6 +157,7 @@ export default class MyProfile extends Component {
                   <FormattedMessage id="stripes-core.front.home" />
                 </NavListItem>
             }
+            {this.state.userLinks}
             <NavListItem id="clickable-logout" type="button" onClick={onLogout}>
               <FormattedMessage id="stripes-core.logout" />
             </NavListItem>
@@ -139,3 +180,5 @@ export default class MyProfile extends Component {
     );
   }
 }
+
+export default withModules(MyProfile);
