@@ -53,6 +53,8 @@
   "about.pluginModuleCount": "{count, number} plugin {count, plural, one {module} other {modules}}",
 
   "loggedInAs": "Logged in as {firstName} {lastName}",
+  "currentServicePoint": "Service point: {name}",
+  "currentServicePointNotSelected": "Service point: None",
   "logout": "Log out",
   "login": "Log in",
   "username": "Username",

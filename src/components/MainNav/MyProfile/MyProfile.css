@@ -5,7 +5,7 @@
 @import "@folio/stripes-components/lib/variables.css";
 
 /* Logged in as */
-.loggedInAs {
+.header {
   color: var(--secondary);
 }
 

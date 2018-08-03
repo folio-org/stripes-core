@@ -20,6 +20,8 @@ import {
   checkSSO,
   setOkapiReady,
   setServerDown,
+  setSessionData,
+  setCurrentServicePoint,
 } from './okapiActions';
 
 function getHeaders(tenant, token) {
@@ -123,6 +125,37 @@ function clearOkapiSession(store, resp) {
   });
 }
 
+function processServicePoint(resp) {
+  const { servicepoints } = resp;
+  if (!servicepoints.length) return null;
+  return servicepoints[0];
+}
+
+function processUserServicePoints(resp) {
+  const { servicePointsUsers } = resp;
+  if (!servicePointsUsers.length) return null;
+  return servicePointsUsers[0].defaultServicePointId;
+}
+
+function getServicePoint(okapiUrl, tenant, store, currentUser, servicePointId) {
+  if (!servicePointId) return null;
+  const headers = getHeaders(tenant, store.getState().okapi.token);
+  return fetch(`${okapiUrl}/service-points?query=(id==${servicePointId})`, { headers })
+    .then(resp => ((resp.status < 400) ? resp.json().then(processServicePoint) : null));
+}
+
+function getUserServicePoints(okapiUrl, tenant, store, currentUser) {
+  const headers = getHeaders(tenant, store.getState().okapi.token);
+  fetch(`${okapiUrl}/service-points-users?query=(userId==${currentUser.id})`, { headers })
+    .then(resp => ((resp.status < 400) ? resp.json().then(processUserServicePoints) : null))
+    .then(servicePointId => getServicePoint(...arguments, servicePointId)) // eslint-disable-line prefer-rest-params
+    .then(servicePoint => {
+      if (servicePoint) {
+        store.dispatch(setCurrentServicePoint(servicePoint));
+      }
+    });
+}
+
 function createOkapiSession(okapiUrl, store, tenant, token, data) {
   const user = {
     id: data.user.id,
@@ -147,6 +180,7 @@ function createOkapiSession(okapiUrl, store, tenant, token, data) {
   getLocale(okapiUrl, store, tenant);
   getPlugins(okapiUrl, store, tenant);
   getBindings(okapiUrl, store, tenant);
+  getUserServicePoints(okapiUrl, tenant, store, user);
 }
 
 // Validate stored token by attempting to fetch /users
@@ -158,12 +192,12 @@ function validateUser(okapiUrl, store, tenant, session) {
       store.dispatch(setOkapiReady());
       localforage.removeItem('okapiSess');
     } else {
-      store.dispatch(setOkapiToken(session.token));
-      store.dispatch(setCurrentUser(session.user));
-      store.dispatch(setCurrentPerms(session.perms));
+      const { token, user, perms } = session;
+      store.dispatch(setSessionData({ token, user, perms }));
       getLocale(okapiUrl, store, tenant);
       getPlugins(okapiUrl, store, tenant);
       getBindings(okapiUrl, store, tenant);
+      getUserServicePoints(okapiUrl, tenant, store, user);
     }
   }).catch(() => {
     store.dispatch(setServerDown());

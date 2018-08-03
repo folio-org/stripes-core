@@ -144,8 +144,14 @@ class MyProfile extends Component {
 
     return (
       <main>
-        <header className={css.loggedInAs}>
+        <header className={css.header}>
           <FormattedMessage id="stripes-core.loggedInAs" values={{ firstName: user.firstName, lastName: user.lastName }} />
+          <br />
+          {
+            user.curServicePoint ?
+              <FormattedMessage id="stripes-core.currentServicePoint" values={{ name: user.curServicePoint.name }} /> :
+              <FormattedMessage id="stripes-core.currentServicePointNotSelected" />
+          }
         </header>
         <hr className={css.divider} />
         <NavList>
