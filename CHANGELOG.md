@@ -11,6 +11,7 @@
 * Limit icons generated to reduce dev build time, STCOR-232
 * New context API, RootContext. Legacy context API should be removed in next major version. Available from v2.10.4; STCOR-208
 * Update react-intl-safe-html version. STRIPES-545
+* Summary: Add _all_ properties to `stripesShape`. Fixes STCOR-236.
 
 ## [2.10.0](https://github.com/folio-org/stripes-core/tree/v2.10.0) (2018-06-06)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.9.0...v2.10.0)
