@@ -24,7 +24,7 @@ export default function okapiReducer(state = {}, action) {
       return Object.assign({}, state, { currentUser: {}, currentPerms: {} });
     case 'SET_SESSION_DATA': {
       const { perms, user, token } = action.session;
-      return Object.assign({}, state, { currentUser: user, currentPerms: perms, token });
+      return { ...state, currentUser: user, currentPerms: perms, token };
     }
     case 'SET_AUTH_FAILURE':
       return Object.assign({}, state, { authFailure: action.message });
@@ -36,10 +36,9 @@ export default function okapiReducer(state = {}, action) {
       return Object.assign({}, state, { okapiReady: true });
     case 'SERVER_DOWN':
       return Object.assign({}, state, { serverDown: true });
-    case 'SET_PREF_SERVICE_POINT': {
-      const prefServicePoint = action.servicePoint;
-      const currentUser = Object.assign({}, state.currentUser, { prefServicePoint });
-      return Object.assign({}, state, { currentUser });
+    case 'SET_CURRENT_SERVICE_POINT': {
+      const currentUser = { ...state.currentUser, curServicePoint: action.servicePoint };
+      return { ...state, currentUser };
     }
     default:
       return state;

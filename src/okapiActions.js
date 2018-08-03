@@ -107,9 +107,9 @@ function setSessionData(session) {
   };
 }
 
-function setPrefServicePoint(servicePoint) {
+function setCurrentServicePoint(servicePoint) {
   return {
-    type: 'SET_PREF_SERVICE_POINT',
+    type: 'SET_CURRENT_SERVICE_POINT',
     servicePoint,
   };
 }
@@ -131,4 +131,4 @@ export { setCurrentUser,
   setOkapiReady,
   setServerDown,
   setSessionData,
-  setPrefServicePoint };
+  setCurrentServicePoint };

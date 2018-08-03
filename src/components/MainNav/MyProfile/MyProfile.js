@@ -148,9 +148,9 @@ class MyProfile extends Component {
           <FormattedMessage id="stripes-core.loggedInAs" values={{ firstName: user.firstName, lastName: user.lastName }} />
           <br />
           {
-            user.prefServicePoint ?
-              <FormattedMessage id="stripes-core.preferredServicePoint" values={{ name: user.prefServicePoint.name }} /> :
-              <FormattedMessage id="stripes-core.preferredServicePointNotSelected" />
+            user.curServicePoint ?
+              <FormattedMessage id="stripes-core.currentServicePoint" values={{ name: user.curServicePoint.name }} /> :
+              <FormattedMessage id="stripes-core.currentServicePointNotSelected" />
           }
         </header>
         <hr className={css.divider} />

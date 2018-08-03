@@ -21,7 +21,7 @@ import {
   setOkapiReady,
   setServerDown,
   setSessionData,
-  setPrefServicePoint,
+  setCurrentServicePoint,
 } from './okapiActions';
 
 function getHeaders(tenant, token) {
@@ -125,7 +125,7 @@ function clearOkapiSession(store, resp) {
   });
 }
 
-function processPrefServicePoint(resp) {
+function processServicePoint(resp) {
   const { servicepoints } = resp;
   if (!servicepoints.length) return null;
   return servicepoints[0];
@@ -137,21 +137,21 @@ function processUserServicePoints(resp) {
   return servicePointsUsers[0].defaultServicePointId;
 }
 
-function getPrefServicePoint(okapiUrl, tenant, store, currentUser, prefServicePointId) {
-  if (!prefServicePointId) return null;
+function getServicePoint(okapiUrl, tenant, store, currentUser, servicePointId) {
+  if (!servicePointId) return null;
   const headers = getHeaders(tenant, store.getState().okapi.token);
-  return fetch(`${okapiUrl}/service-points?query=(id==${prefServicePointId})`, { headers })
-    .then(resp => ((resp.status < 400) ? resp.json().then(processPrefServicePoint) : null));
+  return fetch(`${okapiUrl}/service-points?query=(id==${servicePointId})`, { headers })
+    .then(resp => ((resp.status < 400) ? resp.json().then(processServicePoint) : null));
 }
 
 function getUserServicePoints(okapiUrl, tenant, store, currentUser) {
   const headers = getHeaders(tenant, store.getState().okapi.token);
   fetch(`${okapiUrl}/service-points-users?query=(userId==${currentUser.id})`, { headers })
     .then(resp => ((resp.status < 400) ? resp.json().then(processUserServicePoints) : null))
-    .then(prefServicePointId => getPrefServicePoint(...arguments, prefServicePointId)) // eslint-disable-line prefer-rest-params
-    .then(prefServicePoint => {
-      if (prefServicePoint) {
-        store.dispatch(setPrefServicePoint(prefServicePoint));
+    .then(servicePointId => getServicePoint(...arguments, servicePointId)) // eslint-disable-line prefer-rest-params
+    .then(servicePoint => {
+      if (servicePoint) {
+        store.dispatch(setCurrentServicePoint(servicePoint));
       }
     });
 }
@@ -180,7 +180,7 @@ function createOkapiSession(okapiUrl, store, tenant, token, data) {
   getLocale(okapiUrl, store, tenant);
   getPlugins(okapiUrl, store, tenant);
   getBindings(okapiUrl, store, tenant);
-  getUserServicePoints(okapiUrl, store, tenant, user);
+  getUserServicePoints(okapiUrl, tenant, store, user);
 }
 
 // Validate stored token by attempting to fetch /users
