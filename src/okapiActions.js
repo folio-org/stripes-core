@@ -100,6 +100,21 @@ function setServerDown() {
   };
 }
 
+function setSessionData(session) {
+  return {
+    type: 'SET_SESSION_DATA',
+    session,
+  };
+}
+
+function setPrefServicePoint(servicePoint) {
+  return {
+    type: 'SET_PREF_SERVICE_POINT',
+    servicePoint,
+  };
+}
+
+
 export { setCurrentUser,
   clearCurrentUser,
   setCurrentPerms,
@@ -114,4 +129,6 @@ export { setCurrentUser,
   setTranslations,
   checkSSO,
   setOkapiReady,
-  setServerDown };
+  setServerDown,
+  setSessionData,
+  setPrefServicePoint };
