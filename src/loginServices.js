@@ -159,12 +159,15 @@ function getUserServicePoints(okapiUrl, store, tenant, user, servicePoints) {
     });
 }
 
-function loadResources(okapiUrl, store, tenant, user) {
+function loadResources(okapiUrl, store, tenant, perms, user) {
   getLocale(okapiUrl, store, tenant);
   getPlugins(okapiUrl, store, tenant);
   getBindings(okapiUrl, store, tenant);
-  getServicePoints(okapiUrl, store, tenant)
-    .then((servicePoints) => getUserServicePoints(okapiUrl, store, tenant, user, servicePoints));
+
+  if (perms['inventory-storage.service-points.collection.get']) {
+    getServicePoints(okapiUrl, store, tenant)
+      .then((servicePoints) => getUserServicePoints(okapiUrl, store, tenant, user, servicePoints));
+  }
 }
 
 function createOkapiSession(okapiUrl, store, tenant, token, data) {
@@ -188,7 +191,7 @@ function createOkapiSession(okapiUrl, store, tenant, token, data) {
     perms,
   };
   localforage.setItem('okapiSess', okapiSess);
-  loadResources(okapiUrl, store, tenant, user);
+  loadResources(okapiUrl, store, tenant, perms, user);
 }
 
 // Validate stored token by attempting to fetch /users
@@ -202,7 +205,7 @@ function validateUser(okapiUrl, store, tenant, session) {
     } else {
       const { token, user, perms } = session;
       store.dispatch(setSessionData({ token, user, perms }));
-      loadResources(okapiUrl, store, tenant, user);
+      loadResources(okapiUrl, store, tenant, perms, user);
     }
   }).catch(() => {
     store.dispatch(setServerDown());
