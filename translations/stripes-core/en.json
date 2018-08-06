@@ -55,6 +55,7 @@
   "loggedInAs": "Logged in as {firstName} {lastName}",
   "currentServicePoint": "Service point: {name}",
   "currentServicePointNotSelected": "Service point: None",
+  "selectServicePoint": "Select service point",
   "logout": "Log out",
   "login": "Log in",
   "username": "Username",

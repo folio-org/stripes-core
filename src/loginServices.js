@@ -22,6 +22,7 @@ import {
   setServerDown,
   setSessionData,
   setCurrentServicePoint,
+  setServicePoints,
 } from './okapiActions';
 
 function getHeaders(tenant, token) {
@@ -125,35 +126,45 @@ function clearOkapiSession(store, resp) {
   });
 }
 
-function processServicePoint(resp) {
-  const { servicepoints } = resp;
-  if (!servicepoints.length) return null;
-  return servicepoints[0];
-}
-
-function processUserServicePoints(resp) {
-  const { servicePointsUsers } = resp;
-  if (!servicePointsUsers.length) return null;
-  return servicePointsUsers[0].defaultServicePointId;
-}
-
-function getServicePoint(okapiUrl, tenant, store, currentUser, servicePointId) {
-  if (!servicePointId) return null;
+function getServicePoints(okapiUrl, store, tenant) {
   const headers = getHeaders(tenant, store.getState().okapi.token);
-  return fetch(`${okapiUrl}/service-points?query=(id==${servicePointId})`, { headers })
-    .then(resp => ((resp.status < 400) ? resp.json().then(processServicePoint) : null));
-}
-
-function getUserServicePoints(okapiUrl, tenant, store, currentUser) {
-  const headers = getHeaders(tenant, store.getState().okapi.token);
-  fetch(`${okapiUrl}/service-points-users?query=(userId==${currentUser.id})`, { headers })
-    .then(resp => ((resp.status < 400) ? resp.json().then(processUserServicePoints) : null))
-    .then(servicePointId => getServicePoint(...arguments, servicePointId)) // eslint-disable-line prefer-rest-params
-    .then(servicePoint => {
-      if (servicePoint) {
-        store.dispatch(setCurrentServicePoint(servicePoint));
-      }
+  return fetch(`${okapiUrl}/service-points`, { headers })
+    .then(resp => ((resp.status < 400) ? resp.json() : null))
+    .then((json) => {
+      if (!json) return null;
+      const { servicepoints } = json;
+      if (!servicepoints || !servicepoints.length) return null;
+      store.dispatch(setServicePoints(servicepoints));
+      return servicepoints;
     });
+}
+
+function getUserServicePoints(okapiUrl, store, tenant, user, servicePoints) {
+  const headers = getHeaders(tenant, store.getState().okapi.token);
+  fetch(`${okapiUrl}/service-points-users?query=(userId==${user.id})`, { headers })
+    .then(resp => ((resp.status < 400) ? resp.json() : null))
+    .then((json) => {
+      let servicePoint = null;
+
+      if (json) {
+        const { servicePointsUsers } = json;
+        if (servicePointsUsers && servicePointsUsers.length) {
+          const spId = servicePointsUsers[0].defaultServicePointId;
+          servicePoint = servicePoints.find(sp => sp.id === spId) || null;
+        }
+      }
+
+      store.dispatch(setCurrentServicePoint(servicePoint));
+      return servicePoint;
+    });
+}
+
+function loadResources(okapiUrl, store, tenant, user) {
+  getLocale(okapiUrl, store, tenant);
+  getPlugins(okapiUrl, store, tenant);
+  getBindings(okapiUrl, store, tenant);
+  getServicePoints(okapiUrl, store, tenant)
+    .then((servicePoints) => getUserServicePoints(okapiUrl, store, tenant, user, servicePoints));
 }
 
 function createOkapiSession(okapiUrl, store, tenant, token, data) {
@@ -177,10 +188,7 @@ function createOkapiSession(okapiUrl, store, tenant, token, data) {
     perms,
   };
   localforage.setItem('okapiSess', okapiSess);
-  getLocale(okapiUrl, store, tenant);
-  getPlugins(okapiUrl, store, tenant);
-  getBindings(okapiUrl, store, tenant);
-  getUserServicePoints(okapiUrl, tenant, store, user);
+  loadResources(okapiUrl, store, tenant, user);
 }
 
 // Validate stored token by attempting to fetch /users
@@ -194,10 +202,7 @@ function validateUser(okapiUrl, store, tenant, session) {
     } else {
       const { token, user, perms } = session;
       store.dispatch(setSessionData({ token, user, perms }));
-      getLocale(okapiUrl, store, tenant);
-      getPlugins(okapiUrl, store, tenant);
-      getBindings(okapiUrl, store, tenant);
-      getUserServicePoints(okapiUrl, tenant, store, user);
+      loadResources(okapiUrl, store, tenant, user);
     }
   }).catch(() => {
     store.dispatch(setServerDown());

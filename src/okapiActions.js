@@ -114,6 +114,12 @@ function setCurrentServicePoint(servicePoint) {
   };
 }
 
+function setServicePoints(servicePoints) {
+  return {
+    type: 'SET_SERVICE_POINTS',
+    servicePoints,
+  };
+}
 
 export { setCurrentUser,
   clearCurrentUser,
@@ -131,4 +137,5 @@ export { setCurrentUser,
   setOkapiReady,
   setServerDown,
   setSessionData,
-  setCurrentServicePoint };
+  setCurrentServicePoint,
+  setServicePoints };
