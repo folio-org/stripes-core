@@ -24,77 +24,87 @@ const getSettingsModules = (modules) => (
   )
 );
 
-const Settings = (props) => {
-  const stripes = props.stripes;
-  const settingsModules = getSettingsModules(props.modules);
+class Settings extends React.Component {
+  static propTypes = {
+    stripes: stripesShape.isRequired,
+    location: PropTypes.shape({
+      pathname: PropTypes.string,
+    }).isRequired,
+    modules: PropTypes.shape({
+      app: PropTypes.array,
+      settings: PropTypes.array,
+    })
+  };
 
-  const navLinks = settingsModules
-    .sort((x, y) => x.displayName.toLowerCase() > y.displayName.toLowerCase())
-    .filter(x => stripes.hasPerm(`settings.${x.module.replace(/^@folio\//, '')}.enabled`))
-    .map(m => (
+  constructor(props) {
+    super(props);
+
+    const { stripes, modules } = props;
+    const settingsModules = getSettingsModules(modules);
+
+    this.connectedModules = settingsModules
+      .filter(x => stripes.hasPerm(`settings.${x.module.replace(/^@folio\//, '')}.enabled`))
+      .sort((x, y) => x.displayName.toLowerCase() > y.displayName.toLowerCase())
+      .map((m) => {
+        const connect = connectFor(m.module, stripes.epics, stripes.logger);
+        return {
+          module: m,
+          Component: connect(m.getModule()),
+          moduleStripes: stripes.clone({ connect }),
+        };
+      });
+  }
+
+  render() {
+    const { stripes, location } = this.props;
+    const navLinks = this.connectedModules.map(({ module }) => (
       <NavListItem
-        key={m.route}
-        to={`/settings${m.route}`}
+        key={module.route}
+        to={`/settings${module.route}`}
       >
-        {m.displayName}
+        {module.displayName}
       </NavListItem>
     ));
 
-  const routes = settingsModules.filter(
-    x => stripes.hasPerm(`settings.${x.module.replace(/^@folio\//, '')}.enabled`),
-  ).map((m) => {
-    const connect = connectFor(m.module, stripes.epics, stripes.logger);
-    const Current = connect(m.getModule());
-    const moduleStripes = stripes.clone({ connect });
+    const routes = this.connectedModules.map(({ module, Component, moduleStripes }) => {
+      return (<Route
+        path={`/settings${module.route}`}
+        key={module.route}
+        render={(props2) => (
+          <StripesContext.Provider value={moduleStripes}>
+            <AddContext context={{ stripes: moduleStripes }}>
+              <Component {...props2} stripes={moduleStripes} showSettings />
+            </AddContext>
+          </StripesContext.Provider>
+        )}
+      />);
+    });
 
-    return (<Route
-      path={`/settings${m.route}`}
-      key={m.route}
-      render={props2 => (
-        <StripesContext.Provider value={moduleStripes}>
-          <AddContext context={{ stripes: moduleStripes }}>
-            <Current {...props2} stripes={moduleStripes} showSettings />
-          </AddContext>
-        </StripesContext.Provider>
-      )}
-    />);
-  });
+    // To keep the top level parent menu item shown as active
+    // when a child settings page is active
+    const activeLink = `/settings/${location.pathname.split('/')[2]}`;
 
-  // To keep the top level parent menu item shown as active
-  // when a child settings page is active
-  const activeLink = `/settings/${props.location.pathname.split('/')[2]}`;
-
-  return (
-    <Paneset>
-      <Pane defaultWidth="20%" paneTitle="Settings">
-        <NavList>
-          <NavListSection activeLink={activeLink} label="Settings">
-            {navLinks}
+    return (
+      <Paneset>
+        <Pane defaultWidth="20%" paneTitle="Settings">
+          <NavList>
+            <NavListSection activeLink={activeLink} label="Settings">
+              {navLinks}
+            </NavListSection>
+          </NavList>
+          <br /><br />
+          <NavListSection label="System information" activeLink={activeLink}>
+            <NavListItem to="/settings/about"><FormattedMessage id="stripes-core.front.about" /></NavListItem>
           </NavListSection>
-        </NavList>
-        <br /><br />
-        <NavListSection label="System information" activeLink={activeLink}>
-          <NavListItem to="/settings/about"><FormattedMessage id="stripes-core.front.about" /></NavListItem>
-        </NavListSection>
-      </Pane>
-      <Switch>
-        {routes}
-        <Route path="/settings/about" component={() => <About stripes={stripes} />} key="about" />
-        <Route component={() => <div style={{ padding: '15px' }}>Choose settings</div>} />
-      </Switch>
-    </Paneset>
-  );
-};
-
-Settings.propTypes = {
-  stripes: stripesShape.isRequired,
-  location: PropTypes.shape({
-    pathname: PropTypes.string,
-  }).isRequired,
-  modules: PropTypes.shape({
-    app: PropTypes.array,
-    settings: PropTypes.array,
-  })
-};
+        </Pane>
+        <Switch>
+          {routes}
+          <Route path="/settings/about" component={() => <About stripes={stripes} />} key="about" />
+          <Route component={() => <div style={{ padding: '15px' }}>Choose settings</div>} />
+        </Switch>
+      </Paneset>
+    );
+  }
+}
 
 export default withRouter(withModules(Settings));
