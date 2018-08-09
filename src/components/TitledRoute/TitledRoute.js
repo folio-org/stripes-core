@@ -28,7 +28,7 @@ class TitledRoute extends React.Component {
     return (
       <Route
         {...rest}
-        component={() => (
+        render={() => (
           <ErrorBoundary>
             <TitleManager page={formattedName} />
             {component}
