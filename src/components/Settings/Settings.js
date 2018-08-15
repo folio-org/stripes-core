@@ -17,6 +17,8 @@ import AddContext from '../../AddContext';
 import { withModules } from '../Modules';
 import { stripesShape } from '../../Stripes';
 
+import css from './Settings.css';
+
 const getSettingsModules = (modules) => (
   [].concat(
     (modules.app || []).filter(m => m.hasSettings),
@@ -88,12 +90,11 @@ class Settings extends React.Component {
       <Paneset>
         <Pane defaultWidth="20%" paneTitle="Settings">
           <NavList>
-            <NavListSection activeLink={activeLink} label="Settings">
+            <NavListSection activeLink={activeLink} label="Settings" className={css.navListSection}>
               {navLinks}
             </NavListSection>
           </NavList>
-          <br /><br />
-          <NavListSection label="System information" activeLink={activeLink}>
+          <NavListSection label="System information" activeLink={activeLink} className={css.navListSection}>
             <NavListItem to="/settings/about"><FormattedMessage id="stripes-core.front.about" /></NavListItem>
           </NavListSection>
         </Pane>
