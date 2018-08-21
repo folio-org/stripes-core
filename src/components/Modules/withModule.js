@@ -13,7 +13,8 @@ const findModule = (modules, moduleName) => {
   return (
     findModuleInArray(modules.app, moduleName) ||
     findModuleInArray(modules.plugin, moduleName) ||
-    findModuleInArray(modules.settings, moduleName)
+    findModuleInArray(modules.settings, moduleName) ||
+    findModuleInArray(modules.handler, moduleName)
   );
 };
 
