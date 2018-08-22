@@ -17,12 +17,14 @@ import Front from './components/Front';
 import SSOLanding from './components/SSOLanding';
 import SSORedirect from './components/SSORedirect';
 import Settings from './components/Settings/Settings';
+import Handlers from './components/Handlers';
 import TitleManager from './components/TitleManager';
 import LoginCtrl from './components/Login';
 import OverlayContainer from './components/OverlayContainer';
 import getModuleRoutes from './moduleRoutes';
 import { stripesShape } from './Stripes';
 import { StripesContext } from './StripesContext';
+import events from './events';
 
 class RootWithIntl extends React.Component {
   static propTypes = {
@@ -53,6 +55,7 @@ class RootWithIntl extends React.Component {
                     <MainContainer>
                       <OverlayContainer />
                       <MainNav stripes={stripes} />
+                      <Handlers event={events.LOGIN} stripes={stripes} />
                       { (stripes.okapi !== 'object' || stripes.discovery.isFinished) && (
                         <ModuleContainer id="content">
                           <Switch>

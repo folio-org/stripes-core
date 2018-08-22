@@ -10,11 +10,10 @@ const findModuleInArray = (array, moduleName) => {
 };
 
 const findModule = (modules, moduleName) => {
-  return (
-    findModuleInArray(modules.app, moduleName) ||
-    findModuleInArray(modules.plugin, moduleName) ||
-    findModuleInArray(modules.settings, moduleName)
-  );
+  return Object.values(modules)
+    .map(mods => findModuleInArray(mods, moduleName))
+    .filter(m => m)
+    .pop();
 };
 
 export default function withModule(moduleName) {
