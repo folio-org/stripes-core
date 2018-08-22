@@ -14,6 +14,8 @@
 * Add _all_ properties to `stripesShape`. Fixes STCOR-236. Available from v2.10.5.
 * Automatically select service point preference when logging in. Fixes STCOR-235.
 * In [the Developer's Guide](doc/dev-guide.md), document the pattern for specifying limits. Fixes STCOR-239.
+* Introduce a new ui module type: handler. Fixes STCOR-240. Available from v2.10.6
+
 
 ## [2.10.0](https://github.com/folio-org/stripes-core/tree/v2.10.0) (2018-06-06)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.9.0...v2.10.0)
