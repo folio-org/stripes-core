@@ -3,7 +3,6 @@
  */
 
 import React, { Component } from 'react';
-import { isNull } from 'lodash';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import { Dropdown } from '@folio/stripes-components/lib/Dropdown';
@@ -17,7 +16,6 @@ import NavButton from '../NavButton';
 import css from './MyProfile.css';
 import { withModules } from '../../Modules';
 import userDropdownChecks from '../../../userDropdownLinksService';
-import ServicePointsModal from '../../ServicePointsModal';
 
 class MyProfile extends Component {
   static propTypes = {
@@ -153,9 +151,6 @@ class MyProfile extends Component {
             user.curServicePoint ?
               <FormattedMessage id="stripes-core.currentServicePoint" values={{ name: user.curServicePoint.name }} /> :
               <FormattedMessage id="stripes-core.currentServicePointNotSelected" />
-          }
-          {
-            isNull(user.curServicePoint) && user.servicePoints && <ServicePointsModal open stripes={stripes} servicePoints={user.servicePoints} />
           }
         </header>
         <hr className={css.divider} />
