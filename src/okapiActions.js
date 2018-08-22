@@ -114,7 +114,6 @@ function setCurrentServicePoint(servicePoint) {
   };
 }
 
-
 export { setCurrentUser,
   clearCurrentUser,
   setCurrentPerms,
