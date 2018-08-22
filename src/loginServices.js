@@ -6,14 +6,12 @@ import { addLocaleData } from 'react-intl';
 import { translations } from 'stripes-config'; // eslint-disable-line
 
 import {
-  setCurrentUser,
   clearCurrentUser,
   setCurrentPerms,
   setLocale,
   setTimezone,
   setPlugins,
   setBindings,
-  setOkapiToken,
   setTranslations,
   clearOkapiToken,
   setAuthError,
@@ -22,7 +20,6 @@ import {
   setServerDown,
   setSessionData,
   setCurrentServicePoint,
-  setServicePoints,
 } from './okapiActions';
 
 function getHeaders(tenant, token) {
@@ -126,60 +123,26 @@ function clearOkapiSession(store, resp) {
   });
 }
 
-function getServicePoints(okapiUrl, store, tenant) {
-  const headers = getHeaders(tenant, store.getState().okapi.token);
-  return fetch(`${okapiUrl}/service-points`, { headers })
-    .then(resp => ((resp.status < 400) ? resp.json() : null))
-    .then((json) => {
-      if (!json) return null;
-      const { servicepoints } = json;
-      if (!servicepoints || !servicepoints.length) return null;
-      store.dispatch(setServicePoints(servicepoints));
-      return servicepoints;
-    });
-}
-
-function getUserServicePoints(okapiUrl, store, tenant, user, servicePoints) {
-  const headers = getHeaders(tenant, store.getState().okapi.token);
-  fetch(`${okapiUrl}/service-points-users?query=(userId==${user.id})`, { headers })
-    .then(resp => ((resp.status < 400) ? resp.json() : null))
-    .then((json) => {
-      let servicePoint = null;
-
-      if (json) {
-        const { servicePointsUsers } = json;
-        if (servicePointsUsers && servicePointsUsers.length) {
-          const spId = servicePointsUsers[0].defaultServicePointId;
-          servicePoint = servicePoints.find(sp => sp.id === spId) || null;
-        }
-      }
-
-      store.dispatch(setCurrentServicePoint(servicePoint));
-      return servicePoint;
-    });
-}
-
-function loadResources(okapiUrl, store, tenant, perms, user) {
+function loadResources(okapiUrl, store, tenant) {
   getLocale(okapiUrl, store, tenant);
   getPlugins(okapiUrl, store, tenant);
   getBindings(okapiUrl, store, tenant);
-
-  if (perms['inventory-storage.service-points.collection.get']) {
-    getServicePoints(okapiUrl, store, tenant)
-      .then((servicePoints) => getUserServicePoints(okapiUrl, store, tenant, user, servicePoints));
-  }
 }
 
 function createOkapiSession(okapiUrl, store, tenant, token, data) {
+  const servicePoints = _.get(data, ['servicePointsUser', 'servicePoints'], []);
+  const curSpId = _.get(data, ['servicePointsUser', 'defaultServicePointId']);
+  const curServicePoint = servicePoints.find(sp => sp.id === curSpId);
+
   const user = {
     id: data.user.id,
     username: data.user.username,
     ...data.user.personal,
+    servicePoints,
+    curServicePoint,
   };
 
-  store.dispatch(setOkapiToken(token));
   store.dispatch(setAuthError(null));
-  store.dispatch(setCurrentUser(user));
 
   // You are not expected to understand this
   // ...then aren't you expected to explain it?
@@ -191,7 +154,9 @@ function createOkapiSession(okapiUrl, store, tenant, token, data) {
     perms,
   };
   localforage.setItem('okapiSess', okapiSess);
-  loadResources(okapiUrl, store, tenant, perms, user);
+  store.dispatch(setSessionData(okapiSess));
+
+  loadResources(okapiUrl, store, tenant);
 }
 
 // Validate stored token by attempting to fetch /users
@@ -205,7 +170,7 @@ function validateUser(okapiUrl, store, tenant, session) {
     } else {
       const { token, user, perms } = session;
       store.dispatch(setSessionData({ token, user, perms }));
-      loadResources(okapiUrl, store, tenant, perms, user);
+      loadResources(okapiUrl, store, tenant);
     }
   }).catch(() => {
     store.dispatch(setServerDown());
@@ -303,4 +268,12 @@ export function requestSSOLogin(okapiUrl, tenant) {
     body: JSON.stringify({ stripesUrl }),
   })
     .then(resp => processSSOLoginResponse(resp));
+}
+
+export function setCurServicePoint(store, servicePoint) {
+  localforage.getItem('okapiSess').then((sess) => {
+    sess.user.curServicePoint = servicePoint;
+    localforage.setItem('okapiSess', sess);
+    store.dispatch(setCurrentServicePoint(servicePoint));
+  });
 }

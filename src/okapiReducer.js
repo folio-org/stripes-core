@@ -36,8 +36,6 @@ export default function okapiReducer(state = {}, action) {
       return Object.assign({}, state, { okapiReady: true });
     case 'SERVER_DOWN':
       return Object.assign({}, state, { serverDown: true });
-    case 'SET_SERVICE_POINTS':
-      return { ...state, currentUser: { ...state.currentUser, servicePoints: action.servicePoints } };
     case 'SET_CURRENT_SERVICE_POINT':
       return { ...state, currentUser: { ...state.currentUser, curServicePoint: action.servicePoint } };
     default:
