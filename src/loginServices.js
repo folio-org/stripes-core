@@ -217,6 +217,10 @@ function isSSOEnabled(okapiUrl, store, tenant) {
         });
       }
       store.dispatch(setOkapiReady());
+    })
+    .catch(() => {
+      store.dispatch(checkSSO(false));
+      store.dispatch(setOkapiReady());
     });
 }
 
