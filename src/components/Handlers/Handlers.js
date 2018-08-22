@@ -6,6 +6,8 @@ import { stripesShape } from '../../Stripes';
 class Handlers extends React.Component {
   static propTypes = {
     stripes: stripesShape.isRequired,
+    event: PropTypes.number,
+    data: PropTypes.object,
     modules: PropTypes.shape({
       handler: PropTypes.array,
     }),
@@ -14,13 +16,13 @@ class Handlers extends React.Component {
   constructor(props) {
     super(props);
 
-    const { stripes, modules } = props;
+    const { event, stripes, modules, data } = props;
 
-    this.handlers = modules.handler.reduce((acc, m) => {
+    this.components = modules.handler.reduce((acc, m) => {
       const module = m.getModule();
-      const handler = module[m.handlerName];
-      if (!handler) return acc;
-      const component = handler(stripes);
+      const eventHander = module[m.handlerName];
+      if (!eventHander) return acc;
+      const component = eventHander(event, stripes, data);
       if (component) {
         acc.push(stripes.connect(component));
       }
@@ -29,8 +31,9 @@ class Handlers extends React.Component {
   }
 
   render() {
-    const { stripes } = this.props;
-    return (this.handlers.map(Component => (<Component stripes={stripes} />)));
+    const { stripes, data } = this.props;
+    return (this.components.map(Component =>
+      (<Component key={Component.name} stripes={stripes} data={data} />)));
   }
 }
 
