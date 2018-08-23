@@ -1,8 +1,5 @@
-/**
- * My profile
- */
-
 import React, { Component } from 'react';
+import { isFunction, kebabCase } from 'lodash';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import { Dropdown } from '@folio/stripes-components/lib/Dropdown';
@@ -15,6 +12,8 @@ import NavDropdownMenu from '../NavDropdownMenu';
 import NavButton from '../NavButton';
 import css from './MyProfile.css';
 import { withModules } from '../../Modules';
+import { withHandlers } from '../../Handlers';
+
 import userDropdownChecks from '../../../userDropdownLinksService';
 
 class MyProfile extends Component {
@@ -34,53 +33,60 @@ class MyProfile extends Component {
       app: PropTypes.array,
       settings: PropTypes.array,
     }),
+    getComponentFromHandler: PropTypes.func,
     onLogout: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
     router: PropTypes.object.isRequired,
-  }
+  };
 
   constructor(props) {
     super(props);
 
-    this.state = {
-      dropdownOpen: false,
-      userLinks: [],
-    };
+    this.state = { dropdownOpen: false };
 
     this.toggleDropdown = this.toggleDropdown.bind(this);
     this.getDropdownContent = this.getDropdownContent.bind(this);
     this.getUserData = this.getUserData.bind(this);
     this.getProfileImage = this.getProfileImage.bind(this);
+
+    const modulesWithLinks = this.getModulesWithLinks();
+    this.userLinks = modulesWithLinks.reduce((acc, m) => {
+      const links = m.links.userDropdown.map((link, index) => this.createLink(link, index, m));
+      return acc.concat(links);
+    }, []);
   }
 
-  componentDidMount() {
-    const { modules, stripes } = this.props;
-    const userDropdownLinks = ([].concat(modules.app, modules.settings))
-      .filter(({ links }) => links && Array.isArray(links.userDropdown))
-      .reduce((result, { links }) => result.concat(links.userDropdown), []);
+  getModulesWithLinks() {
+    const { modules } = this.props;
+    return ([].concat(...Object.values(modules)))
+      .filter(({ links }) => links && Array.isArray(links.userDropdown));
+  }
 
-    userDropdownLinks.forEach((link, index) => {
-      const linkFunction = link.check;
-      if (!linkFunction) {
-        this.createLink(link, index);
-      } else if (typeof userDropdownChecks[linkFunction] === 'function') {
-        if (userDropdownChecks[linkFunction](stripes)) {
-          this.createLink(link, index);
-        }
+  createLink(link, index, module) {
+    const { stripes, getComponentFromHandler } = this.props;
+    const { check, event } = link;
+    const buttonId = `${kebabCase(module.displayName)}-clickable-menuItem${index}`;
+
+    if (!check || (isFunction(userDropdownChecks[check]) && userDropdownChecks[check](stripes))) {
+      if (event) {
+        const HandlerComponent = getComponentFromHandler(event, stripes, module);
+        return (<HandlerComponent key={buttonId} stripes={stripes} />);
+      } else {
+        return this.renderNavLink(link, buttonId);
       }
-    });
+    }
+
+    return null;
   }
 
-  createLink(link, index) {
-    const buttonId = `clickable-menuItem${index}`;
-    const newItem = (
-      <NavListItem id={buttonId} key={buttonId} type="button" onClick={() => this.navigateByUrl(link.route)}>
+  renderNavLink(link, id) {
+    return (
+      <NavListItem id={id} key={id} type="button" onClick={() => this.navigateByUrl(link.route)}>
         <FormattedMessage id={link.caption} />
       </NavListItem>
     );
-    this.setState({ userLinks: this.state.userLinks.concat(newItem) });
   }
 
   toggleDropdown() {
@@ -116,7 +122,6 @@ class MyProfile extends Component {
 
   getDropdownContent() {
     const { stripes, onLogout } = this.props;
-
     const user = this.getUserData();
     const currentPerms = stripes.user ? stripes.user.perms : undefined;
 
@@ -163,7 +168,7 @@ class MyProfile extends Component {
                   <FormattedMessage id="stripes-core.front.home" />
                 </NavListItem>
             }
-            {this.state.userLinks}
+            {this.userLinks}
             <NavListItem id="clickable-logout" type="button" onClick={onLogout}>
               <FormattedMessage id="stripes-core.logout" />
             </NavListItem>
@@ -187,4 +192,4 @@ class MyProfile extends Component {
   }
 }
 
-export default withModules(MyProfile);
+export default withModules(withHandlers(MyProfile));

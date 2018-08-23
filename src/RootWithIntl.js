@@ -17,7 +17,7 @@ import Front from './components/Front';
 import SSOLanding from './components/SSOLanding';
 import SSORedirect from './components/SSORedirect';
 import Settings from './components/Settings/Settings';
-import Handlers from './components/Handlers';
+import { Handlers } from './components/Handlers';
 import TitleManager from './components/TitleManager';
 import LoginCtrl from './components/Login';
 import OverlayContainer from './components/OverlayContainer';
