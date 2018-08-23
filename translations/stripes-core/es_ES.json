@@ -51,5 +51,15 @@
     "password": "Contraseña",
     "loggingIn": "Iniciar sesión...",
     "button.back": "Atrás",
-    "button.confirm": "Confirmar"
+    "button.confirm": "Confirmar",
+    "title.home": "Página de inicio",
+    "title.settings": "Configuraciones",
+    "title.login": "Iniciar sesión",
+    "title.ssoRedirect": "Redirección SSO",
+    "title.notFound": "No encontrado",
+    "title.ssoLanding": "Aterrizaje SSO",
+    "currentServicePoint": "Punto de servicio: {name}",
+    "currentServicePointNotSelected": "Punto de servicio: ninguno",
+    "stripes-core.front.welcome": "Vacío",
+    "stripes-core.front.about": "Vacío"
 }
