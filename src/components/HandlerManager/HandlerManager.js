@@ -3,7 +3,9 @@ import PropTypes from 'prop-types';
 import { withModules } from '../Modules';
 import { stripesShape } from '../../Stripes';
 
-class Handlers extends React.Component {
+import { getHandlerComponents } from '../../handlerService';
+
+class HandlerManager extends React.Component {
   static propTypes = {
     stripes: stripesShape.isRequired,
     event: PropTypes.number,
@@ -15,19 +17,8 @@ class Handlers extends React.Component {
 
   constructor(props) {
     super(props);
-
     const { event, stripes, modules, data } = props;
-
-    this.components = modules.handler.reduce((acc, m) => {
-      const module = m.getModule();
-      const eventHander = module[m.handlerName];
-      if (!eventHander) return acc;
-      const component = eventHander(event, stripes, data);
-      if (component) {
-        acc.push(stripes.connect(component));
-      }
-      return acc;
-    }, []);
+    this.components = getHandlerComponents(event, stripes, modules.handler, data);
   }
 
   render() {
@@ -37,4 +28,4 @@ class Handlers extends React.Component {
   }
 }
 
-export default withModules(Handlers);
+export default withModules(HandlerManager);

@@ -17,7 +17,7 @@ import Front from './components/Front';
 import SSOLanding from './components/SSOLanding';
 import SSORedirect from './components/SSORedirect';
 import Settings from './components/Settings/Settings';
-import Handlers from './components/Handlers';
+import HandlerManager from './components/HandlerManager';
 import TitleManager from './components/TitleManager';
 import LoginCtrl from './components/Login';
 import OverlayContainer from './components/OverlayContainer';
@@ -55,7 +55,7 @@ class RootWithIntl extends React.Component {
                     <MainContainer>
                       <OverlayContainer />
                       <MainNav stripes={stripes} />
-                      <Handlers event={events.LOGIN} stripes={stripes} />
+                      <HandlerManager event={events.LOGIN} stripes={stripes} />
                       { (stripes.okapi !== 'object' || stripes.discovery.isFinished) && (
                         <ModuleContainer id="content">
                           <Switch>
