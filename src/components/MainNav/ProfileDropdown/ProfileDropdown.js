@@ -8,15 +8,15 @@ import Avatar from '@folio/stripes-components/lib/Avatar';
 import NavListSection from '@folio/stripes-components/lib/NavListSection';
 import NavListItem from '@folio/stripes-components/lib/NavListItem';
 import List from '@folio/stripes-components/lib/List';
+
 import NavDropdownMenu from '../NavDropdownMenu';
 import NavButton from '../NavButton';
-import css from './MyProfile.css';
+import css from './ProfileDropdown.css';
 import { withModules } from '../../Modules';
-import { withHandlers } from '../../Handlers';
-
+import { getHandlerComponent } from '../../../handlerService';
 import validations from '../../../userDropdownLinksService';
 
-class MyProfile extends Component {
+class ProfileDropdown extends Component {
   static propTypes = {
     stripes: PropTypes.shape({
       user: PropTypes.shape({
@@ -33,7 +33,6 @@ class MyProfile extends Component {
       app: PropTypes.array,
       settings: PropTypes.array,
     }),
-    getComponentFromHandler: PropTypes.func,
     onLogout: PropTypes.func.isRequired,
   };
 
@@ -65,13 +64,13 @@ class MyProfile extends Component {
   }
 
   createLink(link, index, module) {
-    const { stripes, getComponentFromHandler } = this.props;
+    const { stripes } = this.props;
     const { check, event } = link;
     const buttonId = `${kebabCase(module.displayName)}-clickable-menuItem${index}`;
 
     if (!check || (isFunction(validations[check]) && validations[check](stripes))) {
       if (event) {
-        const HandlerComponent = getComponentFromHandler(event, stripes, module);
+        const HandlerComponent = getHandlerComponent(event, stripes, module);
         return (<HandlerComponent key={buttonId} stripes={stripes} />);
       } else {
         return this.renderNavLink(link, buttonId);
@@ -192,4 +191,4 @@ class MyProfile extends Component {
   }
 }
 
-export default withModules(withHandlers(MyProfile));
+export default withModules(ProfileDropdown);

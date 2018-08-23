@@ -18,7 +18,7 @@ import NavDivider from './NavDivider';
 import NavGroup from './NavGroup';
 import Breadcrumbs from './Breadcrumbs';
 import CurrentApp from './CurrentApp';
-import MyProfile from './MyProfile';
+import ProfileDropdown from './ProfileDropdown';
 import NotificationsDropdown from './Notifications/NotificationsDropdown';
 import settingsIcon from './settings.svg';
 
@@ -220,7 +220,7 @@ class MainNav extends Component {
               {this.props.stripes.withOkapi && this.props.stripes.hasPerm('notify.item.get,notify.item.put,notify.collection.get') && <NotificationsDropdown stripes={stripes} {...this.props} />}
               { /* temporary divider solution.. */}
               {this.props.stripes.hasPerm('notify.item.get,notify.item.put,notify.collection.get') && (<NavDivider md="hide" />)}
-              <MyProfile
+              <ProfileDropdown
                 onLogout={this.logout}
                 stripes={stripes}
               />
