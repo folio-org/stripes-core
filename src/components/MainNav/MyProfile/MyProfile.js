@@ -14,7 +14,7 @@ import css from './MyProfile.css';
 import { withModules } from '../../Modules';
 import { withHandlers } from '../../Handlers';
 
-import userDropdownChecks from '../../../userDropdownLinksService';
+import validations from '../../../userDropdownLinksService';
 
 class MyProfile extends Component {
   static propTypes = {
@@ -69,7 +69,7 @@ class MyProfile extends Component {
     const { check, event } = link;
     const buttonId = `${kebabCase(module.displayName)}-clickable-menuItem${index}`;
 
-    if (!check || (isFunction(userDropdownChecks[check]) && userDropdownChecks[check](stripes))) {
+    if (!check || (isFunction(validations[check]) && validations[check](stripes))) {
       if (event) {
         const HandlerComponent = getComponentFromHandler(event, stripes, module);
         return (<HandlerComponent key={buttonId} stripes={stripes} />);
