@@ -1,6 +1,6 @@
 {
     "front.welcome": "Welcome, the Future Of Libraries Is OPEN!",
-    "front.home": "Page d'accueil",
+    "front.home": "Home",
     "front.about": "Software versions",
     "button.new": "+ New",
     "button.new_tooltip": "Add {entry}",
@@ -60,6 +60,6 @@
     "title.ssoLanding": "SSO Landing",
     "currentServicePoint": "Service point: {name}",
     "currentServicePointNotSelected": "Service point: None",
-    "stripes-core.front.welcome": "Bienvenue, l'avenir des bibliothèques est OUVERT!",
-    "stripes-core.front.about": "Sur"
+    "stripes-core.front.welcome": "",
+    "stripes-core.front.about": ""
 }

@@ -45,7 +45,21 @@
     "folioSettings": "FOLIO-Einstellungen",
     "mainNavigation": "Hauptmenü",
     "loginViaSSO": "Login per SSO",
+    "button.close": "Close",
+    "login": "Log in",
+    "username": "Username",
+    "password": "Password",
+    "loggingIn": "Logging in...",
+    "button.back": "Back",
+    "button.confirm": "Confirm",
     "title.home": "Startseite",
     "title.settings": "Einstellungen",
-    "title.login": "Einloggen"
+    "title.login": "Einloggen",
+    "title.ssoRedirect": "SSO Redirect",
+    "title.notFound": "Not Found",
+    "title.ssoLanding": "SSO Landing",
+    "currentServicePoint": "Service point: {name}",
+    "currentServicePointNotSelected": "Service point: None",
+    "stripes-core.front.welcome": "",
+    "stripes-core.front.about": ""
 }
