@@ -62,7 +62,7 @@
 * Fix StripesBuildError with Yarn workspaces. Fixes STCOR-170.
 * Update Node.js version requirement from 6.x to >=8.11.1. Fixes STCOR-192.
 * Remove unused "button.discardChanges" translation key. Fixes STCOR-201.
-* Support link-checking functions that are actual functions, as well as names. Fixes STCOR-247.
+* Support link-checking functions that are actual functions, as well as names. Fixes STCOR-247. Available from v2.10.7.
 
 ## [2.9.0](https://github.com/folio-org/stripes-core/tree/v2.9.0) (2018-02-01)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.8.0...v2.9.0)
