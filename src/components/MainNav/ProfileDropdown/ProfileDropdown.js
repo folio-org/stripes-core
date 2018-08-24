@@ -68,7 +68,8 @@ class ProfileDropdown extends Component {
     const { check, event, caption } = link;
     const buttonId = `${kebabCase(module.displayName)}-clickable-menuItem${index}`;
 
-    if (!check || (isFunction(validations[check]) && validations[check](stripes))) {
+    const checkfn = !check ? undefined : (module.getModule()[check] || validations[check]);
+    if (!check || (isFunction(checkfn) && checkfn(stripes))) {
       if (event) {
         const HandlerComponent = getHandlerComponent(event, stripes, module);
         return (<HandlerComponent key={buttonId} stripes={stripes} data={{ caption }} />);
