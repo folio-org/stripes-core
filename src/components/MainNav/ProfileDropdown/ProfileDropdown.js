@@ -43,12 +43,14 @@ class ProfileDropdown extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { dropdownOpen: false };
+    this.state = {};
 
     this.toggleDropdown = this.toggleDropdown.bind(this);
     this.getDropdownContent = this.getDropdownContent.bind(this);
     this.getUserData = this.getUserData.bind(this);
     this.getProfileImage = this.getProfileImage.bind(this);
+    this.createHandlerComponent = this.createHandlerComponent.bind(this);
+    this.navigateByUrl = this.navigateByUrl.bind(this);
 
     const modulesWithLinks = this.getModulesWithLinks();
     this.userLinks = modulesWithLinks.reduce((acc, m) => {
@@ -57,33 +59,49 @@ class ProfileDropdown extends Component {
     }, []);
   }
 
+  setInitialState(callback) {
+    this.setState({
+      dropdownOpen: false,
+      HandlerComponent: null,
+    }, callback);
+  }
+
   getModulesWithLinks() {
     const { modules } = this.props;
     return ([].concat(...Object.values(modules)))
       .filter(({ links }) => links && Array.isArray(links.userDropdown));
   }
 
+  createHandlerComponent(link, module) {
+    const { stripes } = this.props;
+    const HandlerComponent = getHandlerComponent(link.event, stripes, module);
+
+    // forces to recreate a handler component
+    this.setInitialState(() => this.setState({ HandlerComponent }));
+  }
+
   createLink(link, index, module) {
     const { stripes } = this.props;
-    const { check, event, caption } = link;
-    const buttonId = `${kebabCase(module.displayName)}-clickable-menuItem${index}`;
-
+    const { check } = link;
     const checkfn = !check ? undefined : (module.getModule()[check] || validations[check]);
+
     if (!check || (isFunction(checkfn) && checkfn(stripes))) {
-      if (event) {
-        const HandlerComponent = getHandlerComponent(event, stripes, module);
-        return (<HandlerComponent key={buttonId} stripes={stripes} data={{ caption }} />);
-      } else {
-        return this.renderNavLink(link, buttonId);
-      }
+      return this.renderNavLink(link, index, module);
     }
 
     return null;
   }
 
-  renderNavLink(link, id) {
+  onNavItemClicked(link, module) {
+    const handler = (link.event) ? this.createHandlerComponent : this.navigateByUrl;
+    this.toggleDropdown();
+    handler(link, module);
+  }
+
+  renderNavLink(link, index, module) {
+    const buttonId = `${kebabCase(module.displayName)}-clickable-menuItem${index}`;
     return (
-      <NavListItem id={id} key={id} type="button" onClick={() => this.navigateByUrl(link.route)}>
+      <NavListItem id={buttonId} key={buttonId} type="button" onClick={() => this.onNavItemClicked(link, module)}>
         <FormattedMessage id={link.caption} />
       </NavListItem>
     );
@@ -111,9 +129,8 @@ class ProfileDropdown extends Component {
     return (<Avatar alt={user.name} title={user.name} />);
   }
 
-  navigateByUrl = (url) => {
-    this.toggleDropdown();
-    this.context.router.history.push(url);
+  navigateByUrl(link) {
+    this.context.router.history.push(link.url);
   }
 
   onHome = () => {
@@ -180,14 +197,18 @@ class ProfileDropdown extends Component {
   }
 
   render() {
-    const { dropdownOpen } = this.state;
+    const { dropdownOpen, HandlerComponent } = this.state;
+
     return (
-      <Dropdown open={dropdownOpen} id="profileDropdown" onToggle={this.toggleDropdown} pullRight hasPadding>
-        <NavButton data-role="toggle" title="My Profile" selected={dropdownOpen} icon={this.getProfileImage()} noSelectedBar />
-        <NavDropdownMenu data-role="menu" onToggle={this.toggleDropdown}>
-          {this.getDropdownContent()}
-        </NavDropdownMenu>
-      </Dropdown>
+      <div>
+        { HandlerComponent && <HandlerComponent stripes={this.props.stripes} /> }
+        <Dropdown open={dropdownOpen} id="profileDropdown" onToggle={this.toggleDropdown} pullRight hasPadding>
+          <NavButton data-role="toggle" title="My Profile" selected={dropdownOpen} icon={this.getProfileImage()} noSelectedBar />
+          <NavDropdownMenu data-role="menu" onToggle={this.toggleDropdown}>
+            {this.getDropdownContent()}
+          </NavDropdownMenu>
+        </Dropdown>
+      </div>
     );
   }
 }
