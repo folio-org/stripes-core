@@ -52,7 +52,6 @@ class ProfileDropdown extends Component {
     this.createHandlerComponent = this.createHandlerComponent.bind(this);
     this.navigateByUrl = this.navigateByUrl.bind(this);
 
-
     const modulesWithLinks = this.getModulesWithLinks();
     this.userLinks = modulesWithLinks.reduce((acc, m) => {
       const links = m.links.userDropdown.map((link, index) => this.createLink(link, index, m));
