@@ -93,16 +93,16 @@ class ProfileDropdown extends Component {
     return null;
   }
 
-  onNavItemClick(link, module) {
-    const onClickHandler = (link.event) ? this.createHandlerComponent : this.navigateByUrl;
+  onNavItemClicked(link, module) {
+    const handler = (link.event) ? this.createHandlerComponent : this.navigateByUrl;
     this.toggleDropdown();
-    onClickHandler(link, module);
+    handler(link, module);
   }
 
   renderNavLink(link, index, module) {
     const buttonId = `${kebabCase(module.displayName)}-clickable-menuItem${index}`;
     return (
-      <NavListItem id={buttonId} key={buttonId} type="button" onClick={() => this.onNavItemClick(link, module)}>
+      <NavListItem id={buttonId} key={buttonId} type="button" onClick={() => this.onNavItemClicked(link, module)}>
         <FormattedMessage id={link.caption} />
       </NavListItem>
     );
