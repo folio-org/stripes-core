@@ -16,6 +16,8 @@
 * In [the Developer's Guide](doc/dev-guide.md), document the pattern for specifying limits. Fixes STCOR-239.
 * Introduce a new ui module type: handler. Fixes STCOR-240. Available from v2.10.6
 * Manually select service point at login when no preference is specified. Fixes STCOR-237.
+* Support link-checking functions that are actual functions, as well as names. Fixes STCOR-247. Available from v2.10.7.
+* Update [the Developer's Guide](doc/dev-guide.md) with new sections on [handlers](doc/dev-guide.md#handlers-and-events) and [links](doc/dev-guide.md#links). Also, some restructuring. Fixes STCOR-246.
 
 ## [2.10.0](https://github.com/folio-org/stripes-core/tree/v2.10.0) (2018-06-06)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.9.0...v2.10.0)
@@ -62,7 +64,6 @@
 * Fix StripesBuildError with Yarn workspaces. Fixes STCOR-170.
 * Update Node.js version requirement from 6.x to >=8.11.1. Fixes STCOR-192.
 * Remove unused "button.discardChanges" translation key. Fixes STCOR-201.
-* Support link-checking functions that are actual functions, as well as names. Fixes STCOR-247. Available from v2.10.7.
 
 ## [2.9.0](https://github.com/folio-org/stripes-core/tree/v2.9.0) (2018-02-01)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.8.0...v2.9.0)
