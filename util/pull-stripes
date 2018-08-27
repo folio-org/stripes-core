@@ -22,6 +22,7 @@ dirs=`echo '
     ui-circulation
     ui-organization
     ui-developer
+    ui-calendar
     ui-plugin-example
     ui-plugin-find-user
     ui-requests
