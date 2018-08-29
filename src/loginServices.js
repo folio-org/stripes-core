@@ -33,7 +33,7 @@ function getHeaders(tenant, token) {
 export function loadTranslations(store, locale) {
   const parentLocale = locale.split('-')[0];
   return import(`react-intl/locale-data/${parentLocale}`)
-    .then(intlData => addLocaleData(intlData))
+    .then(intlData => addLocaleData(intlData.default))
     .then(() => fetch(translations[parentLocale]))
     .then((response) => {
       if (response.ok) {
