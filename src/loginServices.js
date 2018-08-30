@@ -132,7 +132,9 @@ function loadResources(okapiUrl, store, tenant) {
 function createOkapiSession(okapiUrl, store, tenant, token, data) {
   const servicePoints = _.get(data, ['servicePointsUser', 'servicePoints'], []);
   const curSpId = _.get(data, ['servicePointsUser', 'defaultServicePointId']);
-  const curServicePoint = servicePoints.find(sp => sp.id === curSpId);
+  const curServicePoint = (!curSpId && servicePoints.length === 1) ?
+    servicePoints[0] :
+    servicePoints.find(sp => sp.id === curSpId);
 
   const user = {
     id: data.user.id,
