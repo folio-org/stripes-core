@@ -19,6 +19,7 @@
 * Support link-checking functions that are actual functions, as well as names. Fixes STCOR-247. Available from v2.10.7.
 * Update [the Developer's Guide](doc/dev-guide.md) with new sections on [handlers](doc/dev-guide.md#handlers-and-events) and [links](doc/dev-guide.md#links). Also, some restructuring. Fixes STCOR-246.
 * Introduce `SELECT_MODULE` event. Part of UICHKOUT-433 and UICHKIN-32.
+* Add new document, [_Settings and Preferences_](doc/settings-and-preferences.md), discussing the distinction and outlining implementation options. Addresses the concerns of UIP-1.
 
 ## [2.10.0](https://github.com/folio-org/stripes-core/tree/v2.10.0) (2018-06-06)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.9.0...v2.10.0)
