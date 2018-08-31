@@ -28,6 +28,7 @@ Stripes is a toolkit for building single-page web applications that FOLIO UI mod
 * [A component hierarchy example: the "Patrons" module](doc/component-hierarchy.md) shows by example how a set of components -- some connected, some not -- can work together to implement part of an application. **NOTE that this is somewhat out of date**, but still helpfully illustrative.
 * [Adding new permissions to FOLIO UI modules](doc/adding-permissions.md).
 * [I18n best practices](doc/i18n.md) describes our approach to internationalization.
+* UX and implementation concerns for [Settings and Preferences](doc/settings-and-preferences.md)
 
 ## Additional information
 
