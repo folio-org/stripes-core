@@ -31,20 +31,23 @@ const welcomePageEntries = [
     headline: 'another welcome headline',
     description: 'another welcome description' },
 ];
+let mockPackageJson;
 
-function mockPackageJson(mod) {
-  return {
-    name: mod,
-    description: `description for ${mod}`,
-    version: '1.0.0',
-    stripes: {
-      type: 'app',
-      displayName: `display name for ${mod}`,
-      route: `/${mod}`,
-      permissionSets: [],
-      icons,
-      welcomePageEntries,
-    },
+function getMockPackageJson(type = 'app') {
+  return function (mod) {
+    return {
+      name: mod,
+      description: `description for ${mod}`,
+      version: '1.0.0',
+      stripes: {
+        type,
+        displayName: `display name for ${mod}`,
+        route: `/${mod}`,
+        permissionSets: [],
+        icons,
+        welcomePageEntries,
+      },
+    };
   };
 }
 
@@ -63,6 +66,7 @@ describe('The stripes-module-parser', function () {
 
   describe('parsing methods', function () {
     beforeEach(function () {
+      mockPackageJson = getMockPackageJson();
       this.packageJson = mockPackageJson('@folio/users');
       this.sandbox.stub(StripesModuleParser.prototype, 'loadModulePackageJson').callsFake(mockPackageJson);
       this.sandbox.stub(modulePaths, 'tryResolve').returns(true); // Mocks finding all the icon files
@@ -208,35 +212,56 @@ describe('The stripes-module-parser', function () {
 });
 
 describe('parseAllModules function', function () {
-  beforeEach(function () {
-    this.sandbox.stub(StripesModuleParser.prototype, 'loadModulePackageJson').callsFake(mockPackageJson);
-    this.sandbox.stub(modulePaths, 'tryResolve').returns(true); // Mocks finding all the icon files
-    this.sut = parseAllModules;
+  describe('module type is "app"', function () {
+    beforeEach(function () {
+      mockPackageJson = getMockPackageJson();
+      this.sandbox.stub(StripesModuleParser.prototype, 'loadModulePackageJson').callsFake(mockPackageJson);
+      this.sandbox.stub(modulePaths, 'tryResolve').returns(true); // Mocks finding all the icon files
+      this.sut = parseAllModules;
+    });
+
+    it('returns config and metadata collections', function () {
+      const result = this.sut(enabledModules, context, aliases);
+      expect(result).to.be.an('object').with.all.keys('config', 'metadata', 'warnings');
+    });
+
+    it('returns config grouped by stripes type', function () {
+      const result = this.sut(enabledModules, context, aliases);
+      expect(result.config).to.be.an('object').with.property('app').that.is.an('array');
+      expect(result.config.app[0]).to.be.an('object').with.keys(
+        'module', 'getModule', 'description', 'version', 'displayName', 'route', 'permissionSets', 'icons', 'welcomePageEntries',
+      );
+    });
+
+    it('returns metadata for each module', function () {
+      const result = this.sut(enabledModules, context, aliases);
+      expect(result.metadata).to.be.an('object').with.all.keys('users', 'search', 'developer');
+      expect(result.warnings).to.be.an('array').with.lengthOf(0);
+    });
+
+    it('returns warnings for each module', function () {
+      modulePaths.tryResolve.restore();
+      this.sandbox.stub(modulePaths, 'tryResolve').returns(false); // Mock missing files
+      const result = this.sut(enabledModules, context, aliases);
+      expect(result.warnings).to.be.an('array').with.lengthOf.at.least(1);
+    });
   });
 
-  it('returns config and metadata collections', function () {
-    const result = this.sut(enabledModules, context, aliases);
-    expect(result).to.be.an('object').with.all.keys('config', 'metadata', 'warnings');
-  });
+  describe('module type is "settings"', function () {
+    beforeEach(function () {
+      mockPackageJson = getMockPackageJson('settings');
+      this.sandbox.stub(StripesModuleParser.prototype, 'loadModulePackageJson').callsFake(mockPackageJson);
+      this.sandbox.stub(modulePaths, 'tryResolve').returns(true); // Mocks finding all the icon files
+      this.sut = parseAllModules;
+    });
 
-  it('returns config grouped by stripes type', function () {
-    const result = this.sut(enabledModules, context, aliases);
-    expect(result.config).to.be.an('object').with.property('app').that.is.an('array');
-    expect(result.config.app[0]).to.be.an('object').with.keys(
-      'module', 'getModule', 'description', 'version', 'displayName', 'route', 'permissionSets', 'icons', 'welcomePageEntries',
-    );
-  });
+    it('has empty app as array if there is no app modules provided', function () {
+      const modules = {
+        '@folio/myprofile': {},
+      };
 
-  it('returns metadata for each module', function () {
-    const result = this.sut(enabledModules, context, aliases);
-    expect(result.metadata).to.be.an('object').with.all.keys('users', 'search', 'developer');
-    expect(result.warnings).to.be.an('array').with.lengthOf(0);
-  });
-
-  it('returns warnings for each module', function () {
-    modulePaths.tryResolve.restore();
-    this.sandbox.stub(modulePaths, 'tryResolve').returns(false); // Mock missing files
-    const result = this.sut(enabledModules, context, aliases);
-    expect(result.warnings).to.be.an('array').with.lengthOf.at.least(1);
+      const result = this.sut(modules, context, aliases);
+      expect(result.config.app).to.be.an('array').with.lengthOf(0);
+    });
   });
 });

@@ -155,7 +155,9 @@ class StripesModuleParser {
 // The resulting config is grouped by stripes module type (app, settings, plugin, etc.)
 // The metadata is grouped by module name
 function parseAllModules(enabledModules, context, aliases) {
-  const allModuleConfigs = {};
+  const allModuleConfigs = {
+    app: [],
+  };
   const allMetadata = {};
   let warnings = [];
 
