@@ -1,0 +1,22 @@
+#!/bin/sh
+
+set -ex
+CLONE=`sed -n 's/^.url = //p' .git/config`
+DIR=/tmp/build$$
+REG=`yarn config get @folio:registry`
+mkdir $DIR
+cd $DIR
+git clone $CLONE
+cd *
+(
+  set +e
+  yarn config set @folio:registry https://repository.folio.org/repository/npm-folio/
+  yarn --non-interactive install
+  STATUS=$?
+  yarn config set @folio:registry $REG
+  exit $STATUS
+)
+STATUS=$?
+cd
+rm -rf $DIR
+exit $STATUS
