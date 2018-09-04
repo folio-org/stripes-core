@@ -1,24 +1,26 @@
 # Change history for stripes-core
 
-## 2.11.0 (IN PROGRESS)
+## [2.11.0](https://github.com/folio-org/stripes-core/tree/v2.11.0) (2018-09-04)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.10.0...v2.11.0)
 
-* Update release procedure to guard against publishing with unreleased dependencies, STCOR-225
-* Added `<TitleManager>` to help compose `document.title`. Fixes STCOR-226
+* New context API, RootContext. Legacy context API should be removed in next major version. Fixes STCOR-208. Available from v2.10.4.
+* Upgrade to Webpack 4. Fixes STCOR-175 and STCOR-217.
+* Limit icons generated to reduce dev build time. Fixes STCOR-232.
+* Added `<TitleManager>` to help compose `document.title`. Fixes STCOR-226.
 * Added `<TitledRoute>` component to clean up generic, non-module routing.
-* Fix typo in [The Stripes Module Developer's Guide](doc/dev-guide.md). Fixes STCOR-227.
 * Added `ModulesContext` and `withModule` and `withModules` HOCs for module i18n. Fixes STCOR-228.
-* Upgrade to Webpack 4. STCOR-175 and STCOR-217
-* Limit icons generated to reduce dev build time, STCOR-232
-* New context API, RootContext. Legacy context API should be removed in next major version. Available from v2.10.4; STCOR-208
-* Update react-intl-safe-html version. STRIPES-545
-* Add _all_ properties to `stripesShape`. Fixes STCOR-236. Available from v2.10.5.
+* Update react-intl-safe-html version. Part of STRIPES-545.
 * Automatically select service point preference when logging in. Fixes STCOR-235.
-* In [the Developer's Guide](doc/dev-guide.md), document the pattern for specifying limits. Fixes STCOR-239.
-* Introduce a new ui module type: handler. Fixes STCOR-240. Available from v2.10.6
 * Manually select service point at login when no preference is specified. Fixes STCOR-237.
+* Introduce a new ui module type: handler. Fixes STCOR-240. Available from v2.10.6
 * Support link-checking functions that are actual functions, as well as names. Fixes STCOR-247. Available from v2.10.7.
 * Update [the Developer's Guide](doc/dev-guide.md) with new sections on [handlers](doc/dev-guide.md#handlers-and-events) and [links](doc/dev-guide.md#links). Also, some restructuring. Fixes STCOR-246.
 * Introduce `SELECT_MODULE` event. Part of UICHKOUT-433 and UICHKIN-32.
+* Declare all Stripes-object properties in `stripesShape`. Fixes STCOR-236. Available from v2.10.5.
+* Update release procedure to guard against publishing with unreleased dependencies, STCOR-225
+* Add new utility script, [`util/checkdeps`](util/checkdeps), to check for unreleased dependencies.
+* In [the Developer's Guide](doc/dev-guide.md), document the pattern for specifying limits. Fixes STCOR-239.
+* Fix typo in [The Stripes Module Developer's Guide](doc/dev-guide.md). Fixes STCOR-227.
 * Add new document, [_Settings and Preferences_](doc/settings-and-preferences.md), discussing the distinction and outlining implementation options. Addresses the concerns of UIP-1.
 
 ## [2.10.0](https://github.com/folio-org/stripes-core/tree/v2.10.0) (2018-06-06)
