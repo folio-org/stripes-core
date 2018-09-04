@@ -130,12 +130,12 @@ class ProfileDropdown extends Component {
   }
 
   navigateByUrl(link) {
-    this.context.router.history.push(link.url);
+    this.context.router.history.push(link.route);
   }
 
   onHome = () => {
-    this.navigateByUrl('/');
-  }
+    this.navigateByUrl({ route: '/' });
+  };
 
   getDropdownContent() {
     const { stripes, onLogout } = this.props;
