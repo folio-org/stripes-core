@@ -26,6 +26,7 @@ const Pluggable = (props) => {
 
   if (!props.children) return null;
   if (props.children.length) {
+    // eslint-disable-next-line no-console
     console.error(`<Pluggable type="${props.type}"> has ${props.children.length} children, can only return one`);
   }
   return props.children;
