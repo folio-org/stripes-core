@@ -13,6 +13,7 @@ class HandlerManager extends React.Component {
     modules: PropTypes.shape({
       handler: PropTypes.array,
     }),
+    props: PropTypes.object,
   };
 
   constructor(props) {
@@ -22,9 +23,9 @@ class HandlerManager extends React.Component {
   }
 
   render() {
-    const { stripes, data } = this.props;
+    const { stripes, data, props } = this.props;
     return (this.components.map(Component =>
-      (<Component key={Component.name} stripes={stripes} data={data} />)));
+      (<Component key={Component.name} stripes={stripes} data={data} {...props} />)));
   }
 }
 
