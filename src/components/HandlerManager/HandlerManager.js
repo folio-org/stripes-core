@@ -8,7 +8,7 @@ import { getHandlerComponents } from '../../handlerService';
 class HandlerManager extends React.Component {
   static propTypes = {
     stripes: stripesShape.isRequired,
-    event: PropTypes.number,
+    event: PropTypes.string,
     data: PropTypes.object,
     modules: PropTypes.shape({
       handler: PropTypes.array,
