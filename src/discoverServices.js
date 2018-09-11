@@ -1,3 +1,6 @@
+import 'isomorphic-fetch';
+import { some } from 'lodash';
+
 /*
  * This function probes Okapi to discover what versions of what
  * interfaces are supported by the services that it is proxying
@@ -5,7 +8,6 @@
  * (e.g. not attempting to fetch loan information for a
  * non-circulating library that doesn't provide the circ interface)
  */
-import 'isomorphic-fetch';
 
 export function discoverServices(store) {
   const okapi = store.getState().okapi;
@@ -78,7 +80,7 @@ export function discoveryReducer(state = {}, action) {
   }
 }
 
-export function isVersionCompatible(got, wanted) {
+function isSingleVersionCompatible(got, wanted) {
   const [gmajor, gminor, gpatch] = got.split('.');
   const [wmajor, wminor, wpatch] = wanted.split('.');
 
@@ -92,4 +94,8 @@ export function isVersionCompatible(got, wanted) {
   const gpint = parseInt(gpatch || '0', 10);
   const wpint = parseInt(wpatch || '0', 10);
   return gpint >= wpint;
+}
+
+export function isVersionCompatible(got, wanted) {
+  return some(wanted.split(/\s+/), (w) => isSingleVersionCompatible(got, w));
 }
