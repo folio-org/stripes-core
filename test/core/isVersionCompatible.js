@@ -40,6 +40,11 @@ describe('the isVersionCompatible function', function () {
       '3.5.2',
       ['3.5.2', '3.5.5', '3.5.11', '3.6.1'], // should succeed
       ['2.9', '3.4', '3.4.7', '3.5', '3.5.1', '4.0', '4.0.0'], // should fail
+    ], [
+      'selection of options',
+      '4.0 6.0',
+      ['4.0', '4.1', '6.0', '6.3'], // should succeed
+      ['3.0', '3.4', '5.0', '5.2', '7.0', '7.12'], // should fail
     ]
   ];
 
