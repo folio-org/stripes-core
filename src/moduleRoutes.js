@@ -50,7 +50,7 @@ function getModuleRoutes(stripes) {
                       </div>
                     </AddContext>
                   </StripesContext.Provider>);
-                }
+              }
               }
             />
           );

@@ -9,11 +9,11 @@
 const _ = require('lodash');
 const VirtualModulesPlugin = require('webpack-virtual-modules');
 const serialize = require('serialize-javascript');
+const { SyncHook } = require('tapable');
 const stripesModuleParser = require('./stripes-module-parser');
 const StripesBuildError = require('./stripes-build-error');
 const stripesSerialize = require('./stripes-serialize');
 const logger = require('./logger')('stripesConfigPlugin');
-const { SyncHook } = require('tapable');
 
 module.exports = class StripesConfigPlugin {
   constructor(options) {

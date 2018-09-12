@@ -33,7 +33,8 @@ class AboutEnabledModules extends React.Component {
 
       return (
         <li key={key} style={style}>
-          {this.props.availableModules[key]} (<tt>{key}</tt>)
+          {this.props.availableModules[key]}
+          {`(<tt>${key}</tt>)`}
         </li>
       );
     };

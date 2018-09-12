@@ -235,8 +235,7 @@ function processOkapiSession(okapiUrl, store, tenant, resp) {
   if (resp.status >= 400) {
     clearOkapiSession(store, resp);
   } else {
-    resp.json().then(json =>
-      createOkapiSession(okapiUrl, store, tenant, token, json));
+    resp.json().then(json => createOkapiSession(okapiUrl, store, tenant, token, json));
   }
   return resp;
 }
