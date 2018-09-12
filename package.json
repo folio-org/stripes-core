@@ -1,6 +1,6 @@
 {
   "name": "@folio/stripes-core",
-  "version": "2.11.2",
+  "version": "2.11.3",
   "description": "The starting point for Stripes applications",
   "license": "Apache-2.0",
   "repository": "folio-org/stripes-core",

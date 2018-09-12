@@ -5,6 +5,7 @@
 * Added ability to set the current user's service points in the session object. Available from 2.11.1. Enables UIU-551.
 * Refactor handler events to strings. Part of UIU-551.
 * `isVersionCompatible` accepts a space-separated list of wanted versions. Available from v2.11.2. Fixes STCOR-249.
+* The `<Pluggable>` component is moved into stripes-core from stripes-components. Available from v2.11.3. References STCOM-331.
 
 ## [2.11.0](https://github.com/folio-org/stripes-core/tree/v2.11.0) (2018-09-04)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.10.0...v2.11.0)
