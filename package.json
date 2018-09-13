@@ -1,6 +1,6 @@
 {
   "name": "@folio/stripes-core",
-  "version": "2.12.0",
+  "version": "2.12.1",
   "description": "The starting point for Stripes applications",
   "license": "Apache-2.0",
   "repository": "folio-org/stripes-core",
@@ -22,7 +22,7 @@
   "stripes": {
     "okapiInterfaces": {
       "users-bl": "3.0",
-      "authtoken": "1.0",
+      "authtoken": "1.0 2.0",
       "configuration": "2.0"
     },
     "permissionSets": [
