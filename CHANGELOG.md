@@ -1,6 +1,7 @@
 # Change history for stripes-core
 
-## 2.12.0 (IN PROGRESS)
+## [2.12.0](https://github.com/folio-org/stripes-core/tree/v2.12.0) (2018-09-13)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.11.0...v2.12.0)
 
 * Added ability to set the current user's service points in the session object. Available from 2.11.1. Enables UIU-551.
 * Refactor handler events to strings. Part of UIU-551.
