@@ -15,7 +15,7 @@
   list-style: none;
   margin: 0;
   padding: 0;
-  display: none;
+  display: flex;
 }
 
 /**
@@ -102,8 +102,8 @@
     display: flex;
   }
 
-  .navListDropdownWrap,
+  /* .navListDropdownWrap,
   .navListDropdown {
     display: none;
-  }
+  } */
 }

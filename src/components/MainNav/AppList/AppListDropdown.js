@@ -4,6 +4,7 @@
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+
 import SearchField from '@folio/stripes-components/lib/SearchField';
 
 import css from './AppList.css';

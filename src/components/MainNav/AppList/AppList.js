@@ -4,8 +4,11 @@
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { DragDropContext } from 'react-beautiful-dnd';
+
 import { Dropdown } from '@folio/stripes-components/lib/Dropdown';
 import DropdownMenu from '@folio/stripes-components/lib/DropdownMenu';
+
 import AppListDropdown from './AppListDropdown';
 import NavButton from '../NavButton';
 import css from './AppList.css';
@@ -38,11 +41,18 @@ class AppList extends Component {
 
     this.state = {
       open: false,
+      order: [],
     };
 
     this.getDropdownToggleButton = this.getDropdownToggleButton.bind(this);
     this.getNavButtons = this.getNavButtons.bind(this);
     this.toggleDropdown = this.toggleDropdown.bind(this);
+    this.onDragEnd = this.onDragEnd.bind(this);
+    this.updateItemOrder = this.updateItemOrder.bind(this);
+    this.getOrderedItems = this.getOrderedItems.bind(this);
+    this.buildOrder = this.buildOrder.bind(this);
+
+    this.buildOrder();
   }
 
   /**
@@ -50,9 +60,7 @@ class AppList extends Component {
    * in the app header on desktop
    */
   getNavButtons() {
-    const { apps } = this.props;
-
-    return apps.map(app => (
+    return this.getOrderedItems().filter((a, i) => i < 5).map(app => (
       <li className={css.navItem} key={app.id}>
         <NavButton
           label={app.displayName}
@@ -109,29 +117,80 @@ class AppList extends Component {
     ];
   }
 
+  updateItemOrder(id, from, to) {
+    console.log('Update order', id);
+    const currentOrder = this.state.order.concat();
+    const updatedOrder = currentOrder.splice(to, 0, currentOrder.splice(from, 1)[0]);
+
+    console.log('updatedOrder', updatedOrder, currentOrder);
+    this.setState({
+      order: currentOrder
+    })
+  }
+
+  buildOrder() {
+    const { apps } = this.props;
+    const order = this.state.order;
+
+    if (!order.length) {
+      apps.forEach((app) => {
+        order.push(app.id);
+      });
+
+      this.setState({
+        order,
+      });
+    }
+  }
+
+  getOrderedItems() {
+    const { apps } = this.props;
+    const { order } = this.state;
+
+    return apps.sort((a, b) => {
+      const orderedIndexA = order.indexOf(a.id);
+      const orderedIndexB = order.indexOf(b.id);
+      return orderedIndexA - orderedIndexB;
+    });
+  }
+
+  onDragEnd(data) {
+    console.log('data', data);
+    const { destination, source, draggableId } = data;
+
+    this.updateItemOrder(draggableId, source.index, destination.index);
+  }
+
   render() {
     const { getNavButtons, getDropdownToggleButton, toggleDropdown } = this;
     const { dropdownId, apps, searchfieldId, dropdownToggleId } = this.props;
+    console.log('order', this.state.order);
 
     return (
-      <nav className={css.appList}>
-        <ul className={css.navItemsList}>
-          { getNavButtons() }
-        </ul>
-        <div className={css.navListDropdownWrap}>
-          <Dropdown dropdownClass={css.navListDropdown} open={this.state.open} id={dropdownId} onToggle={toggleDropdown}>
-            <div>{ getDropdownToggleButton() }</div>
-            <DropdownMenu data-role="menu" onToggle={toggleDropdown}>
-              <AppListDropdown
-                apps={apps}
-                searchfieldId={searchfieldId}
-                dropdownToggleId={dropdownToggleId}
-                toggleDropdown={toggleDropdown}
-              />
-            </DropdownMenu>
-          </Dropdown>
-        </div>
-      </nav>
+      <DragDropContext
+        onDragStart={this.onDragStart}
+        onDragUpdate={this.onDragUpdate}
+        onDragEnd={this.onDragEnd}
+      >
+        <nav className={css.appList}>
+          <ul className={css.navItemsList}>
+            { getNavButtons() }
+          </ul>
+          <div className={css.navListDropdownWrap}>
+            <Dropdown dropdownClass={css.navListDropdown} open={this.state.open} id={dropdownId} onToggle={toggleDropdown}>
+              <div>{ getDropdownToggleButton() }</div>
+              <DropdownMenu data-role="menu" onToggle={toggleDropdown}>
+                <AppListDropdown
+                  apps={this.getOrderedItems()}
+                  searchfieldId={searchfieldId}
+                  dropdownToggleId={dropdownToggleId}
+                  toggleDropdown={toggleDropdown}
+                />
+              </DropdownMenu>
+            </Dropdown>
+          </div>
+        </nav>
+      </DragDropContext>
     );
   }
 }

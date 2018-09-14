@@ -75,7 +75,7 @@ button.navButton {
 .label {
   margin: 0 4px;
   font-weight: 600;
-  display: none;
+  display: block;
 }
 
 .inner {
@@ -101,8 +101,8 @@ button.navButton {
 /**
  * Responsive
  */
-@media (--largeUp) {
+/* @media (--largeUp) {
   .label {
     display: block;
   }
-}
+} */
