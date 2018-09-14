@@ -4,13 +4,10 @@
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import AppIcon from '@folio/stripes-components/lib/AppIcon';
-import NavList from '@folio/stripes-components/lib/NavList';
-import NavListSection from '@folio/stripes-components/lib/NavListSection';
-import NavListItem from '@folio/stripes-components/lib/NavListItem';
 import SearchField from '@folio/stripes-components/lib/SearchField';
-import Link from 'react-router-dom/Link';
+
 import css from './AppList.css';
+import List from './List';
 
 const propTypes = {
   apps: PropTypes.arrayOf(PropTypes.object).isRequired,
@@ -26,61 +23,29 @@ class AppListDropdown extends Component {
     this.state = {
       query: '',
     };
+
+    this.getListItems = this.getListItems.bind(this);
   }
 
-  render() {
-    const { apps, searchfieldId, toggleDropdown, dropdownToggleId } = this.props;
+  getListItems() {
+    const { apps } = this.props;
     const { query } = this.state;
-    let list = apps;
-    let activeLink = null;
+    let items = apps;
 
     // If we are filtering by searching
     if (query) {
-      list = apps.filter(app => app.displayName.toLowerCase().indexOf(query.toLowerCase()) >= 0);
+      items = apps.filter(app => app.displayName.toLowerCase().indexOf(query.toLowerCase()) >= 0);
     }
 
-    const items = list.map((app, index) => {
-      if (app.active) {
-        activeLink = app.href;
-      }
+    return items;
+  }
 
-      return (
-        <NavListItem
-          onClick={toggleDropdown}
-          key={index}
-          to={app.href}
-          className={css.dropdownListItem}
-        >
-          <AppIcon app={app.name} size="small" icon={app.iconData} />
-          <span className={css.dropdownListItemLabel}>{ app.displayName }</span>
-          { app.description && <span className={css.dropdownListItemDescription}>{ app.description }</span>}
-        </NavListItem>
-      );
-    });
-
-
-    // If we have any items in the list (filtered by search or not)
-    // we want to continue to the first app in the list
-    // when a user presses enter in the search field
-
-    // TO-DO: This needs to be activated once the user
-    // can use arrow keys to scroll through the list
-
-    // let onSearchEnter = null;
-    // const firstItem = list.length && list[0];
-    // if (firstItem && activeLink !== firstItem.href) {
-    //   onSearchEnter = (e) => {
-    //     if (e.key === 'Enter') {
-    //       this.context.router.history.push(firstItem.href);
-    //       this.toggleDropdown();
-    //     }
-    //   };
-    // }
+  render() {
+    const { searchfieldId, toggleDropdown } = this.props;
 
     return (
       <div className={css.dropdownBody}>
         <header className={css.dropdownHeader}>
-          <input className={css.focusTrap} onFocus={() => document.getElementById(dropdownToggleId).focus()} />
           <SearchField
             value={this.state.query}
             onChange={e => this.setState({ query: e.target.value })}
@@ -90,13 +55,10 @@ class AppListDropdown extends Component {
             autoFocus
           />
         </header>
-        <NavList className={css.dropdownList}>
-          { (query && !list.length) && <div>No apps with the name &quot;{query}&quot; was found.</div> }
-          <NavListSection stripped activeLink={activeLink}>
-            {items}
-          </NavListSection>
-        </NavList>
-        <input className={css.focusTrap} onFocus={() => document.getElementById(searchfieldId).focus()} />
+        <List
+          items={this.getListItems()}
+          onItemClick={toggleDropdown}
+        />
       </div>
     );
   }
