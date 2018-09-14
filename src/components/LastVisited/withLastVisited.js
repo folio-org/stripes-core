@@ -42,7 +42,7 @@ function withLastVisited(WrappedComponent) {
     }
 
     getCurrentModule(location) {
-      return this.moduleList.filter(entry => (location.pathname === entry.route ||
+      return this.moduleList.find(entry => (location.pathname === entry.route ||
         location.pathname.startsWith(`${entry.route}/`)));
     }
 
