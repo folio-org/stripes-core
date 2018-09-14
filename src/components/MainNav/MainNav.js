@@ -63,11 +63,14 @@ class MainNav extends Component {
     };
     this.store = props.stripes.store;
     this.logout = this.logout.bind(this);
+    this.getAppList = this.getAppList.bind(this);
     this.lastVisited = {};
     this.moduleList = props.modules.app.concat({
       route: '/settings',
       module: '@folio/x_settings',
     });
+
+    this.apps = this.getAppList();
 
     props.history.listen((hist) => {
       for (const entry of this.moduleList) {
@@ -120,20 +123,10 @@ class MainNav extends Component {
     this.context.router.history.push('/');
   }
 
-  render() {
+  getAppList() {
     const { stripes, location: { pathname }, modules } = this.props;
-    const formatMsg = stripes.intl.formatMessage;
 
-    // Temporary until settings becomes an app
-    const settingsIconData = {
-      src: settingsIcon,
-      alt: 'Tenant Settings',
-      title: formatMsg({ id: 'stripes-core.settings' }),
-    };
-
-    // const stripesApps = modules.app;
-    const selectedApp = modules.app.find(entry => pathname.startsWith(entry.route));
-    const menuLinks = modules.app.map((entry) => {
+    const apps = modules.app.map((entry) => {
       const name = entry.module.replace(/^@[a-z0-9_]+\//, '');
       const perm = `module.${name}.enabled`;
 
@@ -141,21 +134,49 @@ class MainNav extends Component {
         return null;
       }
 
-      const navId = `clickable-${name}-module`;
-      const isActive = pathname.startsWith(entry.route);
-      const href = !isActive ? (this.lastVisited[name] || entry.home || entry.route) : null;
+      const id = `clickable-${name}-module`;
+      const active = pathname.startsWith(entry.route);
+      const href = !active ? (this.lastVisited[name] || entry.home || entry.route) : null;
 
-      return (
-        <NavButton
-          label={entry.displayName}
-          id={navId}
-          selected={isActive}
-          href={href}
-          title={entry.displayName}
-          key={entry.route}
-          iconKey={name}
-        />);
-    });
+      return {
+        id,
+        href,
+        active,
+        name,
+        ...entry,
+      };
+    }).filter(app => app);
+
+    /**
+     * Add Settings to apps array manually
+     * until Settings becomes a standalone app
+     */
+
+    if (stripes.hasPerm('settings.enabled')) {
+      apps.push({
+        displayName: 'Settings',
+        id: 'clickable-settings',
+        href: this.lastVisited.x_settings || '/settings',
+        active: pathname.startsWith('/settings'),
+        description: 'FOLIO settings',
+        iconData: {
+          src: settingsIcon,
+          alt: 'Tenant Settings',
+          title: 'Settings',
+        },
+      });
+    }
+
+    return apps;
+  }
+
+  render() {
+    const { stripes, location: { pathname } } = this.props;
+    const formatMsg = stripes.intl.formatMessage;
+    
+    const apps = this.apps;
+    const selectedApp = apps.find(app => app.active);
+
 
     let firstNav;
     let breadcrumbArray = []; // eslint-disable-line
@@ -178,8 +199,7 @@ class MainNav extends Component {
           </a>
           <CurrentApp
             id="ModuleMainHeading"
-            currentApp={selectedApp || settingsApp}
-            iconData={settingsApp && settingsIconData}
+            currentApp={selectedApp}
           />
         </NavGroup>
       );
@@ -201,19 +221,7 @@ class MainNav extends Component {
           </Headline>
           <NavGroup>
             <NavGroup>
-              {menuLinks}
-              {
-                !stripes.hasPerm('settings.enabled') ? '' : (
-                  <NavButton
-                    label={settingsMsg}
-                    id="clickable-settings"
-                    title={settingsMsg}
-                    iconData={settingsIconData}
-                    selected={pathname.startsWith('/settings')}
-                    href={pathname.startsWith('/settings') ? null : (this.lastVisited.x_settings || '/settings')}
-                  />
-                )
-              }
+             
             </NavGroup>
             <NavGroup className={css.smallAlignRight}>
               <NavDivider md="hide" />
