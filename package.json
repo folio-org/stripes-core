@@ -12,8 +12,7 @@
   },
   "scripts": {
     "clean": "rimraf static",
-    "test": "mocha --compilers js:babel-core/register --recursive",
-    "test-watch": "mocha --compilers js:babel-core/register -w --watch-extensions json",
+    "test": "stripes test karma",
     "lint": "eslint . && stylelint \"src/**/*.css\"",
     "eslint": "eslint .",
     "stylelint": "stylelint \"src/**/*.css\""
@@ -22,6 +21,7 @@
     "node": ">=8.9.4"
   },
   "stripes": {
+    "type": "app",
     "okapiInterfaces": {
       "users-bl": "3.0",
       "authtoken": "1.0 2.0",
@@ -35,10 +35,16 @@
     ]
   },
   "devDependencies": {
+    "@bigtest/convergence": "^0.10.0",
+    "@bigtest/interactor": "^0.7.2",
+    "@bigtest/mirage": "^0.0.1",
+    "@bigtest/mocha": "^0.5.1",
+    "@bigtest/react": "^0.1.2",
     "@folio/eslint-config-stripes": "^3.2.0",
+    "@folio/stripes-cli": "^1.4.0",
     "babel-eslint": "^9.0.0",
     "babel-register": "^6.16.3",
-    "chai": "^4.0.2",
+    "chai": "^4.1.2",
     "eslint": "^5.5.0",
     "mocha": "^3.1.2",
     "mocha-junit-reporter": "^1.17.0",
