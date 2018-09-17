@@ -27,7 +27,7 @@ function withLastVisited(WrappedComponent) {
         module: '@folio/x_settings',
       });
 
-      this.goBack = this.goBack.bind(this);
+      this.cachePreviousUrl = this.cachePreviousUrl.bind(this);
       this.lastVisited = {};
       this.previous = {};
 
@@ -46,14 +46,19 @@ function withLastVisited(WrappedComponent) {
         location.pathname.startsWith(`${entry.route}/`)));
     }
 
-    goBack() {
+    cachePreviousUrl() {
       const name = this.currentName;
       this.lastVisited[name] = this.previous[name];
     }
 
     render() {
+      const value = {
+        lastVisited: this.lastVisited,
+        cachePreviousUrl: this.cachePreviousUrl
+      };
+
       return (
-        <LastVisitedContext.Provider value={{ lastVisited: this.lastVisited, goBack: this.goBack }}>
+        <LastVisitedContext.Provider value={value}>
           <WrappedComponent {...this.props} />
         </LastVisitedContext.Provider>
       );
