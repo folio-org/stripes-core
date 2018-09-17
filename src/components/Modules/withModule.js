@@ -1,5 +1,5 @@
 import React from 'react';
-import ModulesContext from './../../ModulesContext';
+import ModulesContext from '../../ModulesContext';
 
 const getDisplayName = (WrappedComponent) => {
   return WrappedComponent.displayName || WrappedComponent.name || 'Component';
@@ -36,4 +36,3 @@ export default function withModule(moduleName) {
     return WithModule;
   };
 }
-

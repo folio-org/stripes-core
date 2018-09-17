@@ -17,5 +17,11 @@ export function formatTime(dateStr, timezone) {
 export function formatDateTime(dateStr, timezone) {
   if (!dateStr) return dateStr;
   const dateTime = moment.tz(dateStr, timezone);
-  return (<span><FormattedDate value={dateTime} timeZone={timezone} /> <FormattedTime value={dateStr} timeZone={timezone} /></span>);
+  return (
+    <span>
+      <FormattedDate value={dateTime} timeZone={timezone} />
+      {' '}
+      <FormattedTime value={dateStr} timeZone={timezone} />
+    </span>
+  );
 }

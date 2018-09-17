@@ -4,13 +4,12 @@
 // information from the store.
 
 function enhanceReducer(reducer) {
-  return (state, action) =>
-    (action.type !== 'RESET_STORE' ? reducer(state, action) :
-      {
-        okapi: state.okapi,
-        discovery: state.discovery,
-      }
-    );
+  return (state, action) => (action.type !== 'RESET_STORE' ? reducer(state, action) :
+    {
+      okapi: state.okapi,
+      discovery: state.discovery,
+    }
+  );
 }
 
 export default enhanceReducer;

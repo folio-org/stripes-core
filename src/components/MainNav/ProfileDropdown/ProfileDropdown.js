@@ -108,9 +108,9 @@ class ProfileDropdown extends Component {
   }
 
   toggleDropdown() {
-    this.setState({
-      dropdownOpen: !this.state.dropdownOpen,
-    });
+    this.setState(({ dropdownOpen }) => ({
+      dropdownOpen: !dropdownOpen
+    }));
   }
 
   getUserData() {

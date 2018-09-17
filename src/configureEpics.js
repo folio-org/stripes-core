@@ -10,8 +10,7 @@ import 'rxjs/add/operator/switchMap';
 
 export default function configureEpics(...initialEpics) {
   const epic$ = new BehaviorSubject(combineEpics(...initialEpics));
-  const rootEpic = (action$, store) =>
-    epic$.mergeMap(epic => epic(action$, store));
+  const rootEpic = (action$, store) => epic$.mergeMap(epic => epic(action$, store));
   const middleware = createEpicMiddleware(rootEpic);
 
   return {

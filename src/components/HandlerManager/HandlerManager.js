@@ -24,8 +24,9 @@ class HandlerManager extends React.Component {
 
   render() {
     const { stripes, data, props } = this.props;
-    return (this.components.map(Component =>
-      (<Component key={Component.name} stripes={stripes} data={data} {...props} />)));
+    return (this.components.map(Component => (
+      <Component key={Component.name} stripes={stripes} data={data} {...props} />
+    )));
   }
 }
 
