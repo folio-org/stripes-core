@@ -127,7 +127,7 @@ class Root extends Component {
       <ErrorBoundary>
         <RootContext.Provider value={{ addReducer: this.addReducer, addEpic: this.addEpic, store }}>
           <ApolloProvider client={createApolloClient(okapi)}>
-            <IntlProvider locale={locale} key={locale} messages={translations}>
+            <IntlProvider locale={locale} key={locale} timeZone={timezone} messages={translations}>
               <RootWithIntl stripes={stripes} token={token} disableAuth={disableAuth} history={history} />
             </IntlProvider>
           </ApolloProvider>
