@@ -44,7 +44,11 @@ class SSOLanding extends Component {
     if (!token) {
       return (
         <div>
-          {'No <tt>ssoToken</tt> cookie or query parameter'}
+          No
+          {' '}
+          <tt>ssoToken</tt>
+          {' '}
+          cookie or query parameter
         </div>
       );
     }
@@ -52,7 +56,12 @@ class SSOLanding extends Component {
     return (
       <div>
         <p>
-          {`Logged in with token <tt>${token}</tt> from ${params.ssoToken ? 'param' : 'cookie'}`}
+          Logged in with token
+          {' '}
+          <tt>{token}</tt>
+          from
+          {' '}
+          {params.ssoToken ? 'param' : 'cookie'}
         </p>
       </div>
     );

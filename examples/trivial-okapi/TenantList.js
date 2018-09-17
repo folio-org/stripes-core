@@ -30,12 +30,9 @@ class TenantList extends Component {
       <li key={tenant.id}>
         {tenant.name}
         {' '}
-        [
         <button type="button" tabIndex={0} onClick={() => mutator.tenants.DELETE(tenant)}>delete</button>
-        ]
-        [
+        {' '}
         <Link to={`${pathname}/edit/${tenant.id}`}>Edit</Link>
-        ]
       </li>
     ));
     return (

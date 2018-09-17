@@ -102,8 +102,14 @@ class NotificationsMenu extends React.Component {
     return (
       <Row key={notification.id} onClick={() => { this.onClickNotification(notification); }} className={this.getNotificationClass(notification.date)}>
         <Col xs>
-          {`<div><strong>${notification.source} ${formattedDate}</strong></div>`}
-          {`<p>${text} (${link})</p>`}
+          <div>
+            <strong>
+              {`${notification.source} ${formattedDate}`}
+            </strong>
+          </div>
+          <p>
+            {`${text} (${link})`}
+          </p>
         </Col>
       </Row>
     );
