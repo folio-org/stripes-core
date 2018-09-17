@@ -44,7 +44,7 @@ const NavButton = ({ label, title, selected, onClick, href, icon, noSelectedBar,
   /**
    * Icon
    */
-  const displayIcon = (<span className={css.icon}>{icon || <AppIcon app={iconKey} icon={iconData} focusable={false} />}</span>);
+  const displayIcon = (<span className={css.icon}>{icon || <AppIcon app={iconKey} icon={iconData} focusable={false} alt="" />}</span>);
 
   let Element = 'span';
   let clickableProps = {};

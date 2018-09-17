@@ -3,6 +3,7 @@
 ## 2.13.0 (IN PROGRESS) 
 
 * Support mod-login-saml's requirement for the new authtoken interface in addition to the old interface. Refs STCOR-76. Available from v2.12.1.
+* Removed alt-attribute from AppIcon in NavButton because it was confusing for users of screen readers (STCOR-253)
 
 ## [2.12.0](https://github.com/folio-org/stripes-core/tree/v2.12.0) (2018-09-13)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.11.0...v2.12.0)
