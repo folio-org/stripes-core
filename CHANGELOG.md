@@ -5,7 +5,7 @@
 * Support mod-login-saml's requirement for the new authtoken interface in addition to the old interface. Refs STCOR-76. Available from v2.12.1.
 * Expose timeZone through react-intl provider
 * Export classes and functions intended for external use
-* Extract LastVisited to a separate module. Fixes STCOR-254. Available from v2.12.2.
+* Extract `lastVisited` to a separate higher order component. Fixes STCOR-254. Available from v2.12.2.
 
 ## [2.12.0](https://github.com/folio-org/stripes-core/tree/v2.12.0) (2018-09-13)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.11.0...v2.12.0)
