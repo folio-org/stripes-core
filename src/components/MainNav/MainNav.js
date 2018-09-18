@@ -8,6 +8,7 @@ import { withRouter } from 'react-router';
 import localforage from 'localforage';
 
 import { withModules } from '../Modules';
+import { LastVisitedContext } from '../LastVisited';
 import { clearOkapiToken, clearCurrentUser } from '../../okapiActions';
 import { resetStore } from '../../mainActions';
 import { updateQueryResource, updateLocation, getCurrentModule, isQueryResourceModule } from '../../locationService';
@@ -20,6 +21,7 @@ import Breadcrumbs from './Breadcrumbs';
 import CurrentApp from './CurrentApp';
 import ProfileDropdown from './ProfileDropdown';
 import NotificationsDropdown from './Notifications/NotificationsDropdown';
+
 import settingsIcon from './settings.svg';
 
 class MainNav extends Component {
@@ -63,20 +65,6 @@ class MainNav extends Component {
     };
     this.store = props.stripes.store;
     this.logout = this.logout.bind(this);
-    this.lastVisited = {};
-    this.moduleList = props.modules.app.concat({
-      route: '/settings',
-      module: '@folio/x_settings',
-    });
-
-    props.history.listen((hist) => {
-      for (const entry of this.moduleList) {
-        if (hist.pathname === entry.route || hist.pathname.startsWith(`${entry.route}/`)) {
-          const name = entry.module.replace(/^@folio\//, '');
-          this.lastVisited[name] = `${hist.pathname}${hist.search}`;
-        }
-      }
-    });
   }
 
   getChildContext() {
@@ -120,20 +108,10 @@ class MainNav extends Component {
     this.context.router.history.push('/');
   }
 
-  render() {
-    const { stripes, location: { pathname }, modules } = this.props;
-    const formatMsg = stripes.intl.formatMessage;
+  renderNavButtons(lastVisited) {
+    const { modules, location: { pathname }, stripes } = this.props;
 
-    // Temporary until settings becomes an app
-    const settingsIconData = {
-      src: settingsIcon,
-      alt: 'Tenant Settings',
-      title: formatMsg({ id: 'stripes-core.settings' }),
-    };
-
-    // const stripesApps = modules.app;
-    const selectedApp = modules.app.find(entry => pathname.startsWith(entry.route));
-    const menuLinks = modules.app.map((entry) => {
+    return modules.app.map((entry) => {
       const name = entry.module.replace(/^@[a-z0-9_]+\//, '');
       const perm = `module.${name}.enabled`;
 
@@ -143,7 +121,7 @@ class MainNav extends Component {
 
       const navId = `clickable-${name}-module`;
       const isActive = pathname.startsWith(entry.route);
-      const href = !isActive ? (this.lastVisited[name] || entry.home || entry.route) : null;
+      const href = !isActive ? (lastVisited[name] || entry.home || entry.route) : null;
 
       return (
         <NavButton
@@ -156,7 +134,20 @@ class MainNav extends Component {
           iconKey={name}
         />);
     });
+  }
 
+  render() {
+    const { stripes, location: { pathname }, modules } = this.props;
+    const formatMsg = stripes.intl.formatMessage;
+
+    // Temporary until settings becomes an app
+    const settingsIconData = {
+      src: settingsIcon,
+      alt: 'Tenant Settings',
+      title: formatMsg({ id: 'stripes-core.settings' }),
+    };
+
+    const selectedApp = modules.app.find(entry => pathname.startsWith(entry.route));
     let firstNav;
     let breadcrumbArray = []; // eslint-disable-line
 
@@ -193,41 +184,45 @@ class MainNav extends Component {
     }
 
     return (
-      <header className={css.navRoot}>
-        {firstNav}
-        <nav>
-          <Headline tag="h2" className="sr-only">
-            <FormattedMessage id="stripes-core.mainNavigation" />
-          </Headline>
-          <NavGroup>
-            <NavGroup>
-              {menuLinks}
-              {
-                !stripes.hasPerm('settings.enabled') ? '' : (
-                  <NavButton
-                    label={settingsMsg}
-                    id="clickable-settings"
-                    title={settingsMsg}
-                    iconData={settingsIconData}
-                    selected={pathname.startsWith('/settings')}
-                    href={pathname.startsWith('/settings') ? null : (this.lastVisited.x_settings || '/settings')}
+      <LastVisitedContext.Consumer>
+        {({ lastVisited }) => (
+          <header className={css.navRoot}>
+            {firstNav}
+            <nav>
+              <Headline tag="h2" className="sr-only">
+                <FormattedMessage id="stripes-core.mainNavigation" />
+              </Headline>
+              <NavGroup>
+                <NavGroup>
+                  {this.renderNavButtons(lastVisited)}
+                  {
+                    !stripes.hasPerm('settings.enabled') ? '' : (
+                      <NavButton
+                        label={settingsMsg}
+                        id="clickable-settings"
+                        title={settingsMsg}
+                        iconData={settingsIconData}
+                        selected={pathname.startsWith('/settings')}
+                        href={pathname.startsWith('/settings') ? null : (lastVisited.x_settings || '/settings')}
+                      />
+                    )
+                  }
+                </NavGroup>
+                <NavGroup className={css.smallAlignRight}>
+                  <NavDivider md="hide" />
+                  {this.props.stripes.withOkapi && this.props.stripes.hasPerm('notify.item.get,notify.item.put,notify.collection.get') && <NotificationsDropdown stripes={stripes} {...this.props} />}
+                  { /* temporary divider solution.. */}
+                  {this.props.stripes.hasPerm('notify.item.get,notify.item.put,notify.collection.get') && (<NavDivider md="hide" />)}
+                  <ProfileDropdown
+                    onLogout={this.logout}
+                    stripes={stripes}
                   />
-                )
-              }
-            </NavGroup>
-            <NavGroup className={css.smallAlignRight}>
-              <NavDivider md="hide" />
-              {this.props.stripes.withOkapi && this.props.stripes.hasPerm('notify.item.get,notify.item.put,notify.collection.get') && <NotificationsDropdown stripes={stripes} {...this.props} />}
-              { /* temporary divider solution.. */}
-              {this.props.stripes.hasPerm('notify.item.get,notify.item.put,notify.collection.get') && (<NavDivider md="hide" />)}
-              <ProfileDropdown
-                onLogout={this.logout}
-                stripes={stripes}
-              />
-            </NavGroup>
-          </NavGroup>
-        </nav>
-      </header>
+                </NavGroup>
+              </NavGroup>
+            </nav>
+          </header>
+        )}
+      </LastVisitedContext.Consumer>
     );
   }
 }
