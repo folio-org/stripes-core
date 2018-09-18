@@ -27,7 +27,7 @@ const modules = req.keys().reduce((acc, modulePath) => {
 }, {});
 
 export default function startMirage(...scenarioNames) {
-  const { scenarios, ...options } = modules;
+  const { scenarios = {}, ...options } = modules;
   const server = new Mirage(assign(options, { baseConfig, environment }));
 
   // mirage only loads a `default` scenario for us out of the box, so

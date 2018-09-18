@@ -18,11 +18,14 @@ export default function configure() {
     configs: []
   });
 
+  this.get('/users', {});
+
   this.post('/bl-users/login', () => {
     return new Response(201, {
       'X-Okapi-Token': `myOkapiToken:${Date.now()}`
     }, {
       user: {
+        id: 'test',
         username: 'testuser',
         personal: {
           lastName: 'User',
@@ -45,9 +48,6 @@ export default function configure() {
     notifications: [],
     totalRecords: 0
   });
-
-  // translation bundle passthrough
-  this.pretender.get(`${__webpack_public_path__}translations/:rand.json`, this.pretender.passthrough); // eslint-disable-line
 
   // hot-reload passthrough
   this.pretender.get('/:rand.hot-update.json', this.pretender.passthrough);
