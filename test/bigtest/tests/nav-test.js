@@ -19,11 +19,16 @@ describe('Nav', () => {
     modules: [{
       type: 'app',
       name: '@folio/ui-dummy',
-      displayName: 'Dummy',
+      displayName: 'dummy.title',
       route: '/dummy',
       hasSettings: true,
       module: DummyApp
-    }]
+    }],
+    translations: {
+      en: {
+        'dummy.title': 'Dummy'
+      }
+    }
   });
 
   it('shows a settings button', () => {

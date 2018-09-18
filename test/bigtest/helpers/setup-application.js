@@ -15,10 +15,12 @@ import {
   withConfig,
   clearConfig
 } from './stripes-config';
+import withTranslations from './translations';
 
 export default function setupApplication({
   disableAuth = true,
   modules = [],
+  translations = {},
   stripesConfig,
   scenarios
 } = {}) {
@@ -33,6 +35,8 @@ export default function setupApplication({
       setup: () => {
         this.server = startMirage(scenarios);
         this.server.logging = false;
+
+        withTranslations(this.server, translations);
         withModules(modules);
         withConfig({
           logCategories: '',
