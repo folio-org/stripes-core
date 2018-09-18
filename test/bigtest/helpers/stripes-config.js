@@ -1,5 +1,7 @@
 import * as stripes from 'stripes-config';
 
+const { assign, keys } = Object;
+
 export function withModule({
   name,
   module,
@@ -40,7 +42,7 @@ export function withModules(modules) {
 
 export function clearModules() {
   // delete existing modules and metadata
-  Object.keys(stripes.modules).forEach(type => {
+  keys(stripes.modules).forEach(type => {
     stripes.modules[type].forEach(module => {
       delete stripes.metadata[module.name];
     });
@@ -50,4 +52,14 @@ export function clearModules() {
 
   // app is required
   stripes.modules.app = [];
+}
+
+const originalConfig = assign({}, stripes.config);
+
+export function withConfig(config) {
+  assign(stripes.config, config);
+}
+
+export function clearConfig() {
+  assign(stripes.config, originalConfig);
 }

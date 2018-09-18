@@ -9,11 +9,17 @@ import App from '../../../src/App';
 import 'typeface-source-sans-pro';
 import '@folio/stripes-components/lib/global.css';
 
-import { withModules, clearModules } from './stripes-config';
+import {
+  withModules,
+  clearModules,
+  withConfig,
+  clearConfig
+} from './stripes-config';
 
 export default function setupApplication({
   disableAuth = true,
   modules = [],
+  stripesConfig,
   scenarios
 } = {}) {
   beforeEach(async function () {
@@ -28,12 +34,17 @@ export default function setupApplication({
         this.server = startMirage(scenarios);
         this.server.logging = false;
         withModules(modules);
+        withConfig({
+          logCategories: '',
+          ...stripesConfig
+        });
       },
 
       teardown: () => {
-        this.server.shutdown();
-        localforage.clear();
+        clearConfig();
         clearModules();
+        localforage.clear();
+        this.server.shutdown();
       }
     });
 
