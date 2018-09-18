@@ -1,16 +1,37 @@
 import { describe, it } from '@bigtest/mocha';
 import { expect } from 'chai';
 
+import React, { Component } from 'react';
+
 import setupApplication from '../helpers/setup-application';
 import AppInteractor from '../interactors/app';
 
 describe('Nav', () => {
   const app = new AppInteractor();
 
-  setupApplication();
+  class DummyApp extends Component {
+    render() {
+      return (<h1>Hello Stripes!</h1>);
+    }
+  }
+
+  setupApplication({
+    modules: [{
+      type: 'app',
+      name: '@folio/ui-dummy',
+      displayName: 'Dummy',
+      route: '/dummy',
+      hasSettings: true,
+      module: DummyApp
+    }]
+  });
 
   it('shows a settings button', () => {
     expect(app.nav('Settings').isPresent).to.be.true;
+  });
+
+  it('shows a dummy app button', () => {
+    expect(app.nav('Dummy').isPresent).to.be.true;
   });
 
   describe('clicking settings', () => {
@@ -20,6 +41,16 @@ describe('Nav', () => {
 
     it('navigates to /settings', function () {
       expect(this.location.pathname).to.equal('/settings');
+    });
+  });
+
+  describe('clicking the dummy app', () => {
+    beforeEach(async () => {
+      await app.nav('Dummy').click();
+    });
+
+    it('navigates to the dummy route', function () {
+      expect(this.location.pathname).to.equal('/dummy');
     });
   });
 });

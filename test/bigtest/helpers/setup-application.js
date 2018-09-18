@@ -9,8 +9,11 @@ import App from '../../../src/App';
 import 'typeface-source-sans-pro';
 import '@folio/stripes-components/lib/global.css';
 
+import { withModules, clearModules } from './stripes-config';
+
 export default function setupApplication({
   disableAuth = true,
+  modules = [],
   scenarios
 } = {}) {
   beforeEach(async function () {
@@ -24,11 +27,13 @@ export default function setupApplication({
       setup: () => {
         this.server = startMirage(scenarios);
         this.server.logging = false;
+        withModules(modules);
       },
 
       teardown: () => {
         this.server.shutdown();
         localforage.clear();
+        clearModules();
       }
     });
 
