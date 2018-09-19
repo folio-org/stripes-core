@@ -1,3 +1,4 @@
+/* global describe, beforeEach, it */
 const expect = require('chai').expect;
 const modulePaths = require('../../webpack/module-paths');
 const { StripesModuleParser, parseAllModules } = require('../../webpack/stripes-module-parser');

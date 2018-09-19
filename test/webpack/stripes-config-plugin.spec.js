@@ -1,3 +1,4 @@
+/* global describe, beforeEach, afterEach, it */
 const expect = require('chai').expect;
 
 const VirtualModulesPlugin = require('webpack-virtual-modules');

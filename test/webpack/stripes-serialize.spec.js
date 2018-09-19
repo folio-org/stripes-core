@@ -1,3 +1,4 @@
+/* global describe, it */
 const expect = require('chai').expect;
 
 const defaultBranding = require('../../default-assets/branding');
