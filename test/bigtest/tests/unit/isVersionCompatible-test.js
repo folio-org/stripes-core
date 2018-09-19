@@ -1,5 +1,6 @@
-const expect = require('chai').expect;
-const { isVersionCompatible } = require('../../src/discoverServices');
+/* global describe, it */
+import { expect } from 'chai';
+import { isVersionCompatible } from '../../../../src/discoverServices';
 
 function runTest(tests) {
   const title = tests.shift();
@@ -18,8 +19,7 @@ function runTest(tests) {
   });
 }
 
-
-describe('the isVersionCompatible function', function () {
+describe('Unit: isVersionCompatible', function () {
   it('is a function', function () {
     expect(typeof isVersionCompatible).to.equal('function');
   });
