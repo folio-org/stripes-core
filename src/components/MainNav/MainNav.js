@@ -111,7 +111,7 @@ class MainNav extends Component {
   renderNavButtons(lastVisited) {
     const { modules, location: { pathname }, stripes } = this.props;
 
-    return modules.app.map((entry) => {
+    return modules.app.map((entry, i) => {
       const name = entry.module.replace(/^@[a-z0-9_]+\//, '');
       const perm = `module.${name}.enabled`;
 
@@ -130,7 +130,7 @@ class MainNav extends Component {
           selected={isActive}
           href={href}
           title={entry.displayName}
-          key={entry.route}
+          key={entry.route || i}
           iconKey={name}
         />);
     });
