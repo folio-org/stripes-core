@@ -90,6 +90,63 @@ jobs:
       - store_artifacts:
           path: ./artifacts
 
+  test-firefox:
+    docker:
+      - image: circleci/node:10-browsers
+    steps:
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: Run tests
+          command:
+            yarn test
+            --karma.singleRun
+            --karma.browsers=Firefox
+            --karma.reporters mocha junit
+            --karma.junitReporter.outputDir artifacts/junit/karma
+      - store_test_results:
+          path: ./artifacts/junit
+      - store_artifacts:
+          path: ./artifacts
+
+  test-safari:
+    docker:
+      - image: circleci/node:10
+    steps:
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: Run tests
+          command:
+            yarn test
+            --karma.singleRun
+            --karma.browsers=bs_safari_11
+            --karma.reporters mocha junit BrowserStack
+            --karma.junitReporter.outputDir artifacts/junit/karma
+      - store_test_results:
+          path: ./artifacts/junit
+      - store_artifacts:
+          path: ./artifacts
+
+  test-edge:
+    docker:
+      - image: circleci/node:10
+    steps:
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: Run tests
+          command:
+            yarn test
+            --karma.singleRun
+            --karma.browsers=bs_ieEdge_windows
+            --karma.reporters mocha junit BrowserStack
+            --karma.junitReporter.outputDir artifacts/junit/karma
+      - store_test_results:
+          path: ./artifacts/junit
+      - store_artifacts:
+          path: ./artifacts
+
 workflows:
   version: 2
   push:
@@ -105,5 +162,14 @@ workflows:
           requires:
             - checkout-and-install
       - test-chrome:
+          requires:
+            - checkout-and-install
+      - test-firefox:
+          requires:
+            - checkout-and-install
+      - test-safari:
+          requires:
+            - checkout-and-install
+      - test-edge:
           requires:
             - checkout-and-install

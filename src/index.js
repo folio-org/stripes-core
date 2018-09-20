@@ -1,7 +1,4 @@
-import 'babel-polyfill';
-import React from 'react';
-import { render } from 'react-dom';
+import { hot } from 'react-hot-loader';
+import AppContainer from './AppContainer';
 
-import StripesCore from './App';
-
-render(<StripesCore />, document.getElementById('root'));
+export default hot(module)(AppContainer);
