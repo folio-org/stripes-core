@@ -13,8 +13,7 @@
   "scripts": {
     "start": "stripes serve",
     "clean": "rimraf static",
-    "test": "yarn test:core",
-    "test-all": "yarn test:webpack && yarn test:core --karma.singleRun",
+    "test": "stripes test karma",
     "test:core": "stripes test karma",
     "test:webpack": "mocha --opts test/mocha.opts './test/webpack/**/*.js'",
     "lint": "eslint . && stylelint \"src/**/*.css\"",
