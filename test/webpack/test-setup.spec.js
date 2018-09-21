@@ -1,5 +1,3 @@
-/* global before, beforeEach, afterEach */
-
 // Test setup for webpack tests
 // Root-level Mocha hooks defined here apply to all tests regardless of file.
 

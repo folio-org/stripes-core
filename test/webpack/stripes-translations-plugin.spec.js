@@ -1,4 +1,3 @@
-/* global describe, beforeEach, it */
 const expect = require('chai').expect;
 const fs = require('fs');
 const webpack = require('webpack');
