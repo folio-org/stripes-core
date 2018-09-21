@@ -24,7 +24,6 @@
     "node": ">=8.9.4"
   },
   "stripes": {
-    "type": "app",
     "okapiInterfaces": {
       "users-bl": "3.0",
       "authtoken": "1.0 2.0",
