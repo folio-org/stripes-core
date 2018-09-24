@@ -140,7 +140,7 @@ class ToastNotification extends React.Component {
           onExited={this.onExited}
           transitionAppear
         >
-          <div className={this.getDisplayClass()} >
+          <div className={this.getDisplayClass()}>
             {message}
           </div>
         </Transition>

@@ -44,7 +44,11 @@ const About = (props) => {
         text = <FormattedMessage id="stripes-core.about.newerModuleAvailable" values={{ required, available }} />;
       }
 
-      return <li key={key} style={style}>{key} {text}</li>;
+      return (
+        <li key={key} style={style}>
+          {`${key} ${text}`}
+        </li>
+      );
     };
 
     return (
@@ -175,7 +179,11 @@ const About = (props) => {
           <List
             listStyle="bullets"
             items={Object.keys(interfaces).sort()}
-            itemFormatter={key => (<li key={key}>{key} {interfaces[key]}</li>)}
+            itemFormatter={key => (
+              <li key={key}>
+                {`${key} ${interfaces[key]}`}
+              </li>
+            )}
           />
         </div>
         <div className={css.versionsColumn}>

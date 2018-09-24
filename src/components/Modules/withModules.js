@@ -1,5 +1,5 @@
 import React from 'react';
-import ModulesContext from './../../ModulesContext';
+import ModulesContext from '../../ModulesContext';
 
 function getDisplayName(WrappedComponent) {
   return WrappedComponent.displayName || WrappedComponent.name || 'Component';

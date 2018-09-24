@@ -1,30 +1,32 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { isEqual } from 'lodash';
-import { FormattedMessage } from 'react-intl';
-import Headline from '@folio/stripes-components/lib/Headline';
+import { compose } from 'redux';
+import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 import Layout from '@folio/stripes-components/lib/Layout';
+import Headline from '@folio/stripes-components/lib/Headline';
 import { withRouter } from 'react-router';
 import localforage from 'localforage';
 
 import { withModules } from '../Modules';
+import { LastVisitedContext } from '../LastVisited';
 import { clearOkapiToken, clearCurrentUser } from '../../okapiActions';
 import { resetStore } from '../../mainActions';
 import { updateQueryResource, updateLocation, getCurrentModule, isQueryResourceModule } from '../../locationService';
 
 import css from './MainNav.css';
-import NavButton from './NavButton';
 import NavDivider from './NavDivider';
 import NavGroup from './NavGroup';
-import Breadcrumbs from './Breadcrumbs';
 import CurrentApp from './CurrentApp';
 import ProfileDropdown from './ProfileDropdown';
-import AppList from './AppList';
 import NotificationsDropdown from './Notifications/NotificationsDropdown';
+import AppList from './AppList';
+
 import settingsIcon from './settings.svg';
 
 class MainNav extends Component {
   static propTypes = {
+    intl: intlShape,
     stripes: PropTypes.shape({
       config: PropTypes.shape({
         showPerms: PropTypes.bool,
@@ -64,23 +66,8 @@ class MainNav extends Component {
     };
     this.store = props.stripes.store;
     this.logout = this.logout.bind(this);
+    this.notificationsDropdown = this.notificationsDropdown.bind(this);
     this.getAppList = this.getAppList.bind(this);
-    this.lastVisited = {};
-    this.moduleList = props.modules.app.concat({
-      route: '/settings',
-      module: '@folio/x_settings',
-    });
-
-    this.apps = this.getAppList();
-
-    props.history.listen((hist) => {
-      for (const entry of this.moduleList) {
-        if (hist.pathname === entry.route || hist.pathname.startsWith(`${entry.route}/`)) {
-          const name = entry.module.replace(/^@folio\//, '');
-          this.lastVisited[name] = `${hist.pathname}${hist.search}`;
-        }
-      }
-    });
   }
 
   getChildContext() {
@@ -124,9 +111,8 @@ class MainNav extends Component {
     this.context.router.history.push('/');
   }
 
-  getAppList() {
-    const { stripes, location: { pathname }, modules } = this.props;
-    const formatMsg = stripes.intl.formatMessage;
+  getAppList(lastVisited) {
+    const { stripes, location: { pathname }, modules, intl: { formatMessage } } = this.props;
 
     const apps = modules.app.map((entry) => {
       const name = entry.module.replace(/^@[a-z0-9_]+\//, '');
@@ -138,7 +124,7 @@ class MainNav extends Component {
 
       const id = `clickable-${name}-module`;
       const active = pathname.startsWith(entry.route);
-      const href = !active ? (this.lastVisited[name] || entry.home || entry.route) : null;
+      const href = lastVisited[name] || entry.home || entry.route;
 
       return {
         id,
@@ -156,9 +142,9 @@ class MainNav extends Component {
 
     if (stripes.hasPerm('settings.enabled')) {
       apps.push({
-        displayName: formatMsg({ id: 'stripes-core.settings' }),
+        displayName: formatMessage({ id: 'stripes-core.settings' }),
         id: 'clickable-settings',
-        href: this.lastVisited.x_settings || '/settings',
+        href: lastVisited.x_settings || '/settings',
         active: pathname.startsWith('/settings'),
         description: 'FOLIO settings',
         iconData: {
@@ -190,48 +176,58 @@ class MainNav extends Component {
   render() {
     const { stripes } = this.props;
 
-    const apps = this.getAppList();
-    const selectedApp = apps.find(app => app.active);
-
     return (
-      <header className={css.navRoot}>
-        <NavGroup>
-          <a className={css.skipLink} href="#ModuleContainer" aria-label="Skip Main Navigation" title="Skip Main Navigation">
-            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 26 26">
-              <polygon style={{ fill: '#999' }} points="13 16.5 1.2 5.3 3.2 3.1 13 12.4 22.8 3.1 24.8 5.3 " />
-              <polygon style={{ fill: '#999' }} points="13 24.8 1.2 13.5 3.2 11.3 13 20.6 22.8 11.3 24.8 13.5 " />
-            </svg>
-          </a>
-          <CurrentApp
-            id="ModuleMainHeading"
-            currentApp={selectedApp}
-          />
-        </NavGroup>
-        <nav>
-          <Headline tag="h2" className="sr-only">
-            <FormattedMessage id="stripes-core.mainNavigation" />
-          </Headline>
-          <NavGroup>
-            <NavGroup>
-              <AppList
-                apps={apps}
-                searchfieldId="app-list-search-field"
-                dropdownToggleId="app-list-dropdown-toggle"
-              />
-            </NavGroup>
-            <NavGroup>
-              <NavDivider md="hide" />
-              { this.notificationsDropdown() }
-              <ProfileDropdown
-                onLogout={this.logout}
-                stripes={stripes}
-              />
-            </NavGroup>
-          </NavGroup>
-        </nav>
-      </header>
+      <LastVisitedContext.Consumer>
+        {({ lastVisited }) => {
+          const apps = this.getAppList(lastVisited);
+          const selectedApp = apps.find(entry => entry.active);
+
+          return (
+            <header className={css.navRoot}>
+              <NavGroup>
+                <a className={css.skipLink} href="#ModuleContainer" aria-label="Skip Main Navigation" title="Skip Main Navigation">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 26 26">
+                    <polygon style={{ fill: '#999' }} points="13 16.5 1.2 5.3 3.2 3.1 13 12.4 22.8 3.1 24.8 5.3 " />
+                    <polygon style={{ fill: '#999' }} points="13 24.8 1.2 13.5 3.2 11.3 13 20.6 22.8 11.3 24.8 13.5 " />
+                  </svg>
+                </a>
+                <CurrentApp
+                  id="ModuleMainHeading"
+                  currentApp={selectedApp}
+                />
+              </NavGroup>
+              <nav>
+                <Headline tag="h2" className="sr-only">
+                  <FormattedMessage id="stripes-core.mainNavigation" />
+                </Headline>
+                <NavGroup>
+                  <NavGroup>
+                    <AppList
+                      apps={apps}
+                      searchfieldId="app-list-search-field"
+                      dropdownToggleId="app-list-dropdown-toggle"
+                    />
+                  </NavGroup>
+                  <NavGroup className={css.smallAlignRight}>
+                    <NavDivider md="hide" />
+                    { this.notificationsDropdown() }
+                    <ProfileDropdown
+                      onLogout={this.logout}
+                      stripes={stripes}
+                    />
+                  </NavGroup>
+                </NavGroup>
+              </nav>
+            </header>
+          );
+        }}
+      </LastVisitedContext.Consumer>
     );
   }
 }
 
-export default withRouter(withModules(MainNav));
+export default compose(
+  injectIntl,
+  withRouter,
+  withModules,
+)(MainNav);

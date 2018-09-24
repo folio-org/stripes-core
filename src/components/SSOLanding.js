@@ -42,12 +42,27 @@ class SSOLanding extends Component {
     const token = this.getToken();
 
     if (!token) {
-      return <div>No <tt>ssoToken</tt> cookie or query parameter</div>;
+      return (
+        <div>
+          No
+          {' '}
+          <tt>ssoToken</tt>
+          {' '}
+          cookie or query parameter
+        </div>
+      );
     }
 
     return (
       <div>
-        <p>Logged in with token <tt>{token}</tt> from {params.ssoToken ? 'param' : 'cookie'}</p>
+        <p>
+          Logged in with token
+          {' '}
+          <tt>{token}</tt>
+          from
+          {' '}
+          {params.ssoToken ? 'param' : 'cookie'}
+        </p>
       </div>
     );
   }

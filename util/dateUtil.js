@@ -1,21 +1,27 @@
 import React from 'react';
-import moment from 'moment-timezone'; // eslint-disable-line import/no-extraneous-dependencies
-import { FormattedDate, FormattedTime } from 'react-intl'; // eslint-disable-line import/no-extraneous-dependencies,
+import moment from 'moment-timezone';
+import { FormattedDate, FormattedTime } from 'react-intl';
 
-export function formatDate(dateStr, timezone) {
+export function formatDate(dateStr, timeZone) {
   if (!dateStr) return dateStr;
-  const dateTime = moment.tz(dateStr, timezone);
-  return (<FormattedDate value={dateTime} timeZone={timezone} />);
+  const dateTime = moment.tz(dateStr, timeZone);
+  return (<FormattedDate value={dateTime} timeZone={timeZone} />);
 }
 
-export function formatTime(dateStr, timezone) {
+export function formatTime(dateStr, timeZone) {
   if (!dateStr) return dateStr;
-  const dateTime = moment.tz(dateStr, timezone);
-  return (<FormattedTime value={dateTime} timeZone={timezone} />);
+  const dateTime = moment.tz(dateStr, timeZone);
+  return (<FormattedTime value={dateTime} timeZone={timeZone} />);
 }
 
-export function formatDateTime(dateStr, timezone) {
+export function formatDateTime(dateStr, timeZone) {
   if (!dateStr) return dateStr;
-  const dateTime = moment.tz(dateStr, timezone);
-  return (<span><FormattedDate value={dateTime} timeZone={timezone} /> <FormattedTime value={dateStr} timeZone={timezone} /></span>);
+  const dateTime = moment.tz(dateStr, timeZone);
+  return (
+    <span>
+      <FormattedDate value={dateTime} timeZone={timeZone} />
+      {' '}
+      <FormattedTime value={dateStr} timeZone={timeZone} />
+    </span>
+  );
 }

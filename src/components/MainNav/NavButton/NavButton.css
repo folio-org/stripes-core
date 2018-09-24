@@ -97,12 +97,3 @@ button.navButton {
   right: -1px;
   z-index: 5;
 }
-
-/**
- * Responsive
- */
-/* @media (--largeUp) {
-  .label {
-    display: block;
-  }
-} */

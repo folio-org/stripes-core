@@ -45,7 +45,7 @@ class Toast extends React.Component {
           <div className={`${css.toastContainerRoot} ${css.top}`}>
             {topMessages}
           </div>
-          <div className={css.toastContainerRoot} >
+          <div className={css.toastContainerRoot}>
             {bottomMessages}
           </div>
         </div>
