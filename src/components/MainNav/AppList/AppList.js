@@ -106,6 +106,10 @@ class AppList extends Component {
   render() {
     const { getNavButtons, getDropdownToggleButton, toggleDropdown } = this;
     const { dropdownId, apps, searchfieldId, dropdownToggleId } = this.props;
+    const tether = {
+      attachment: 'top right',
+      targetAttachment: 'bottom right',
+    };
 
     return (
       <nav className={css.appList}>
@@ -113,7 +117,7 @@ class AppList extends Component {
           { getNavButtons() }
         </ul>
         <div className={css.navListDropdownWrap}>
-          <Dropdown dropdownClass={css.navListDropdown} open={this.state.open} id={dropdownId} onToggle={toggleDropdown}>
+          <Dropdown tether={tether} dropdownClass={css.navListDropdown} open={this.state.open} id={dropdownId} onToggle={toggleDropdown}>
             <div>{ getDropdownToggleButton() }</div>
             <DropdownMenu data-role="menu" onToggle={toggleDropdown}>
               <AppListDropdown
