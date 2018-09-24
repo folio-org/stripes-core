@@ -86,10 +86,11 @@ class AppList extends Component {
    */
   getDropdownToggleButton() {
     const { dropdownToggleId } = this.props;
-    const icon = (<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M6.9 2.2H2.7c-.4 0-.7.4-.7.7v4.2c0 .4.3.7.7.7h4.2c.4 0 .7-.3.7-.7V2.9c0-.3-.3-.7-.7-.7zM14 2.2H9.8c-.4 0-.8.4-.8.7v4.2c0 .4.3.7.7.7H14c.4 0 .7-.3.7-.7V2.9c0-.3-.3-.7-.7-.7zM21 2.2h-4.2c-.4 0-.7.3-.7.7v4.2c0 .4.3.7.7.7H21c.4 0 .7-.3.7-.7V2.9c0-.3-.3-.7-.7-.7zM6.9 9.3H2.7c-.4 0-.7.3-.7.7v4.2c0 .4.3.7.7.7h4.2c.4 0 .7-.3.7-.7V10c0-.4-.3-.7-.7-.7zM14 9.3H9.8c-.4 0-.8.3-.8.7v4.2c0 .4.3.7.7.7H14c.4 0 .7-.3.7-.7V10c0-.4-.3-.7-.7-.7zM21 9.3h-4.2c-.4 0-.7.3-.7.7v4.2c0 .4.3.7.7.7H21c.4 0 .7-.3.7-.7V10c0-.4-.3-.7-.7-.7zM6.9 16.3H2.7c-.4 0-.7.3-.7.7v4.2c0 .4.3.8.7.8h4.2c.4 0 .7-.3.7-.7V17c0-.4-.3-.7-.7-.7zM14 16.3H9.8c-.4 0-.8.3-.8.7v4.2c0 .4.4.8.8.8H14c.4 0 .7-.3.7-.7V17c0-.4-.3-.7-.7-.7zM21 16.3h-4.2c-.4 0-.7.3-.7.7v4.2c0 .4.3.7.7.7H21c.4 0 .7-.3.7-.7V17c0-.4-.3-.7-.7-.7z" /></svg>);
+    const icon = <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8.4 2.4H5.1c-1.5 0-2.7 1.2-2.7 2.7v3.3c0 1.5 1.2 2.7 2.7 2.7h3.3c1.5 0 2.7-1.2 2.7-2.7V5.1c0-1.5-1.2-2.7-2.7-2.7zm.7 6c0 .4-.3.7-.7.7H5.1c-.4 0-.7-.3-.7-.7V5.1c0-.4.3-.7.7-.7h3.3c.4 0 .7.3.7.7v3.3zM18.9 2.4h-3.3c-1.5 0-2.7 1.2-2.7 2.7v3.3c0 1.5 1.2 2.7 2.7 2.7h3.3c1.5 0 2.7-1.2 2.7-2.7V5.1c0-1.5-1.2-2.7-2.7-2.7zm.7 6c0 .4-.3.7-.7.7h-3.3c-.4 0-.7-.3-.7-.7V5.1c0-.4.3-.7.7-.7h3.3c.4 0 .7.3.7.7v3.3zM8.4 12.9H5.1c-1.5 0-2.7 1.2-2.7 2.7v3.3c0 1.5 1.2 2.7 2.7 2.7h3.3c1.5 0 2.7-1.2 2.7-2.7v-3.3c0-1.5-1.2-2.7-2.7-2.7zm.7 6c0 .4-.3.7-.7.7H5.1c-.4 0-.7-.3-.7-.7v-3.3c0-.4.3-.7.7-.7h3.3c.4 0 .7.3.7.7v3.3zM18.9 12.9h-3.3c-1.5 0-2.7 1.2-2.7 2.7v3.3c0 1.5 1.2 2.7 2.7 2.7h3.3c1.5 0 2.7-1.2 2.7-2.7v-3.3c0-1.5-1.2-2.7-2.7-2.7zm.7 6c0 .4-.3.7-.7.7h-3.3c-.4 0-.7-.3-.7-.7v-3.3c0-.4.3-.7.7-.7h3.3c.4 0 .7.3.7.7v3.3z" /></svg>;
 
     return (
       <NavButton
+        label="Apps"
         key="mobile-dropdown-toggle"
         title="Show applications"
         data-role="toggle"
@@ -118,7 +119,7 @@ class AppList extends Component {
         </ul>
         <div className={css.navListDropdownWrap}>
           <Dropdown tether={tether} dropdownClass={css.navListDropdown} open={this.state.open} id={dropdownId} onToggle={toggleDropdown}>
-            <div>{ getDropdownToggleButton() }</div>
+            { getDropdownToggleButton() }
             <DropdownMenu data-role="menu" onToggle={toggleDropdown}>
               <AppListDropdown
                 apps={apps}
