@@ -31,6 +31,7 @@ class List extends Component {
           onClick={onItemClick}
           key={index}
           to={app.href}
+          isActive={app.active}
           className={classNames(css.dropdownListItem, { [NavListItemStyles['NavListItem--odd']]: isOdd })}
         >
           <AppIcon app={app.name} size="small" icon={app.iconData} />
@@ -44,7 +45,7 @@ class List extends Component {
   render() {
     return (
       <NavList className={css.dropdownList}>
-        <NavListSection>
+        <NavListSection stripped>
           { this.renderNavItems() }
         </NavListSection>
       </NavList>
