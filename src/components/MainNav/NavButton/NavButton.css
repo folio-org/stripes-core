@@ -28,7 +28,7 @@
 }
 
 .navButton:not(:active).selected .icon svg {
-    fill: var(--primary);
+  fill: var(--primary);
 }
 
 /* To make sure we overwrite default link colors */
