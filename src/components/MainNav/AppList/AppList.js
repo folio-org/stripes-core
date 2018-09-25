@@ -39,6 +39,8 @@ class AppList extends Component {
   constructor(props) {
     super(props);
 
+    this.maxRenderedNavButtons = 10;
+
     this.state = {
       open: false,
     };
@@ -53,7 +55,7 @@ class AppList extends Component {
    * in the app header on desktop
    */
   getNavButtons() {
-    return this.props.apps.filter((a, i) => i < 5).map(app => (
+    return this.props.apps.filter((a, i) => i < this.maxRenderedNavButtons).map(app => (
       <li className={css.navItem} key={app.id}>
         <NavButton
           label={app.displayName}

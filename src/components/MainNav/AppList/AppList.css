@@ -66,6 +66,13 @@
 }
 
 /**
+ * Nav Item
+**/
+.navItem {
+  display: none;
+}
+
+/**
  * Focus trap
  */
 .focusTrap {
@@ -101,9 +108,27 @@
   .navItemsList {
     display: flex;
   }
+}
 
-  /* .navListDropdownWrap,
-  .navListDropdown {
-    display: none;
-  } */
+/**
+ * Adjust visible nav items with CSS for now
+ * Should be made dynamic later on
+**/
+
+@media screen and (min-width: 768px) {
+  .navItem:nth-child(-n+3) {
+    display: block;
+  }
+}
+
+@media screen and (min-width: 1200px) {
+  .navItem:nth-child(-n+6) {
+    display: block;
+  }
+}
+
+@media screen and (min-width: 1500px) {
+  .navItem:nth-child(-n+9) {
+    display: block;
+  }
 }
