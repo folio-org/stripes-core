@@ -132,6 +132,12 @@
   }
 }
 
+@media screen and (min-width: 980px) {
+  .navItem:nth-child(-n+5) {
+    display: block;
+  }
+}
+
 @media screen and (min-width: 1200px) {
   .navItem:nth-child(-n+6) {
     display: block;
@@ -140,6 +146,12 @@
 
 @media screen and (min-width: 1500px) {
   .navItem:nth-child(-n+9) {
+    display: block;
+  }
+}
+
+@media screen and (min-width: 1700px) {
+  .navItem:nth-child(-n+11) {
     display: block;
   }
 }
