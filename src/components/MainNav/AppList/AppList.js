@@ -2,7 +2,7 @@
  * App Switcher
  */
 
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 
 import { Dropdown } from '@folio/stripes-components/lib/Dropdown';
@@ -13,25 +13,24 @@ import AppListDropdown from './AppListDropdown';
 import NavButton from '../NavButton';
 import css from './AppList.css';
 
-const propTypes = {
-  dropdownId: PropTypes.string,
-  dropdownToggleId: PropTypes.string.isRequired,
-  searchfieldId: PropTypes.string.isRequired,
-  apps: PropTypes.arrayOf(
-    PropTypes.shape({
-      displayName: PropTypes.string,
-      description: PropTypes.string,
-      id: PropTypes.string,
-      href: PropTypes.string,
-      active: PropTypes.bool,
-      name: PropTypes.string,
-      icon: PropTypes.string,
-      iconData: PropTypes.object, // Only need because "Settings" isn't a standalone app yet
-    }),
-  ),
-};
-
 class AppList extends Component {
+  static propTypes = {
+    dropdownId: PropTypes.string,
+    dropdownToggleId: PropTypes.string.isRequired,
+    apps: PropTypes.arrayOf(
+      PropTypes.shape({
+        displayName: PropTypes.string,
+        description: PropTypes.string,
+        id: PropTypes.string,
+        href: PropTypes.string,
+        active: PropTypes.bool,
+        name: PropTypes.string,
+        icon: PropTypes.string,
+        iconData: PropTypes.object, // Only need because "Settings" isn't a standalone app yet
+      }),
+    ),
+  }
+
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
@@ -39,7 +38,7 @@ class AppList extends Component {
   constructor(props) {
     super(props);
 
-    this.maxRenderedNavButtons = 10;
+    this.maxRenderedNavButtons = 12;
 
     this.state = {
       open: false,
@@ -48,6 +47,18 @@ class AppList extends Component {
     this.getDropdownToggleButton = this.getDropdownToggleButton.bind(this);
     this.getNavButtons = this.getNavButtons.bind(this);
     this.toggleDropdown = this.toggleDropdown.bind(this);
+    this.focusDropdownToggleButton = this.focusDropdownToggleButton.bind(this);
+    this.focusDropdownContent = this.focusDropdownContent.bind(this);
+
+    this.dropdownContentRef = React.createRef();
+    this.dropdownToggleRef = React.createRef();
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    // Set focus on dropdown when it opens
+    if (this.state.open && !prevState.open) {
+      this.focusDropdownContent();
+    }
   }
 
   /**
@@ -76,7 +87,7 @@ class AppList extends Component {
   toggleDropdown() {
     // Re-focus dropdown toggle on close
     if (this.state.open) {
-      document.getElementById(this.props.dropdownToggleId).focus();
+      this.focusDropdownToggleButton();
     }
 
     this.setState({
@@ -94,25 +105,52 @@ class AppList extends Component {
     const label = <Icon iconPosition="end" icon={open ? 'up-caret' : 'down-caret'}>Apps</Icon>;
 
     return (
-      <NavButton
-        label={label}
-        key="mobile-dropdown-toggle"
-        title="Show applications"
-        data-role="toggle"
-        className={css.navMobileToggle}
-        labelClassName={css.dropdownToggleLabel}
-        onClick={this.toggleDropdown}
-        selected={this.state.open}
-        icon={icon}
-        id={dropdownToggleId}
-        noSelectedBar
-      />
+      <Fragment>
+        <NavButton
+          label={label}
+          key="mobile-dropdown-toggle"
+          title="Show applications"
+          data-role="toggle"
+          className={css.navMobileToggle}
+          labelClassName={css.dropdownToggleLabel}
+          onClick={this.toggleDropdown}
+          selected={this.state.open}
+          icon={icon}
+          id={dropdownToggleId}
+          ref={this.dropdownToggleRef}
+          noSelectedBar
+        />
+        { open && this.focusTrap(this.focusDropdownContent) }
+      </Fragment>
     );
+  }
+
+
+  /**
+   * Focus management
+   */
+  focusDropdownContent() {
+    if (this.dropdownContentRef) {
+      this.dropdownContentRef.current.focus();
+    }
+  }
+
+  focusDropdownToggleButton() {
+    if (this.dropdownToggleRef) {
+      this.dropdownToggleRef.current.focus();
+    }
+  }
+
+  /**
+   * Insert hidden input to help trap focus
+   */
+  focusTrap(onFocus) {
+    return <input className={css.focusTrap} onFocus={onFocus} />;
   }
 
   render() {
     const { getNavButtons, getDropdownToggleButton, toggleDropdown } = this;
-    const { dropdownId, apps, searchfieldId, dropdownToggleId } = this.props;
+    const { dropdownId, apps, dropdownToggleId } = this.props;
     const tether = {
       attachment: 'top right',
       targetAttachment: 'bottom right',
@@ -127,12 +165,14 @@ class AppList extends Component {
           <Dropdown tether={tether} dropdownClass={css.navListDropdown} open={this.state.open} id={dropdownId} onToggle={toggleDropdown}>
             { getDropdownToggleButton() }
             <DropdownMenu data-role="menu" onToggle={toggleDropdown}>
+              { this.focusTrap(this.focusDropdownToggleButton) }
               <AppListDropdown
+                ref={this.dropdownContentRef}
                 apps={apps}
-                searchfieldId={searchfieldId}
                 dropdownToggleId={dropdownToggleId}
                 toggleDropdown={toggleDropdown}
               />
+              { this.focusTrap(this.focusDropdownToggleButton) }
             </DropdownMenu>
           </Dropdown>
         </div>
@@ -140,7 +180,5 @@ class AppList extends Component {
     );
   }
 }
-
-AppList.propTypes = propTypes;
 
 export default AppList;

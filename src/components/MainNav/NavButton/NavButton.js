@@ -8,7 +8,7 @@ import css from './NavButton.css';
 
 const propTypes = {
   href: PropTypes.string,
-  label: PropTypes.string,
+  label: PropTypes.node,
   title: PropTypes.string,
   className: PropTypes.string,
   id: PropTypes.string,
@@ -31,7 +31,7 @@ const defaultProps = {
   noSelectedBar: false,
 };
 
-const NavButton = ({ label, title, selected, onClick, href, icon, noSelectedBar, className, labelClassName, badge, id, iconKey, iconData }) => {
+const NavButton = React.forwardRef(({ label, title, selected, onClick, href, icon, noSelectedBar, className, labelClassName, badge, id, iconKey, iconData }, ref) => {
   /**
    * Root classes
    */
@@ -71,7 +71,7 @@ const NavButton = ({ label, title, selected, onClick, href, icon, noSelectedBar,
   }
 
   return (
-    <Element id={id} title={title} className={rootClasses} role="button" {...clickableProps}>
+    <Element ref={ref} id={id} title={title} className={rootClasses} role="button" {...clickableProps}>
       <span className={classNames(css.inner, { [css.isInteractable]: href || onClick })}>
         { badge && (<Badge color="red" className={css.badge}>{badge}</Badge>) }
         { displayIcon }
@@ -79,7 +79,7 @@ const NavButton = ({ label, title, selected, onClick, href, icon, noSelectedBar,
       </span>
     </Element>
   );
-};
+});
 
 NavButton.propTypes = propTypes;
 NavButton.defaultProps = defaultProps;
