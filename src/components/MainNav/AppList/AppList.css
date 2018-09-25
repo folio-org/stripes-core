@@ -9,6 +9,13 @@
 }
 
 /**
+ * Nav dropdown toggle
+ **/
+.dropdownToggleLabel {
+  display: none;
+}
+
+/**
  * Nav List
  */
 .navItemsList {
@@ -101,6 +108,10 @@
 
   .dropdownBody {
     width: 600px;
+  }
+
+  .dropdownToggleLabel {
+    display: flex;
   }
 }
 

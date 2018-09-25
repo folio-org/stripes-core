@@ -100,6 +100,7 @@ class AppList extends Component {
         title="Show applications"
         data-role="toggle"
         className={css.navMobileToggle}
+        labelClassName={css.dropdownToggleLabel}
         onClick={this.toggleDropdown}
         selected={this.state.open}
         icon={icon}

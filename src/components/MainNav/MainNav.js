@@ -208,7 +208,7 @@ class MainNav extends Component {
                       dropdownToggleId="app-list-dropdown-toggle"
                     />
                   </NavGroup>
-                  <NavGroup className={css.smallAlignRight}>
+                  <NavGroup>
                     <NavDivider md="hide" />
                     { this.notificationsDropdown() }
                     <ProfileDropdown

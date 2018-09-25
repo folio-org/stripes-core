@@ -17,6 +17,7 @@ const propTypes = {
   icon: PropTypes.oneOfType([
     PropTypes.element,
   ]),
+  labelClassName: PropTypes.string,
   badge: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.number,
@@ -30,7 +31,7 @@ const defaultProps = {
   noSelectedBar: false,
 };
 
-const NavButton = ({ label, title, selected, onClick, href, icon, noSelectedBar, className, badge, id, iconKey, iconData }) => {
+const NavButton = ({ label, title, selected, onClick, href, icon, noSelectedBar, className, labelClassName, badge, id, iconKey, iconData }) => {
   /**
    * Root classes
    */
@@ -74,7 +75,7 @@ const NavButton = ({ label, title, selected, onClick, href, icon, noSelectedBar,
       <span className={classNames(css.inner, { [css.isInteractable]: href || onClick })}>
         { badge && (<Badge color="red" className={css.badge}>{badge}</Badge>) }
         { displayIcon }
-        { label && <span className={css.label}>{label}</span>}
+        { label && <span className={classNames(css.label, labelClassName)}>{label}</span>}
       </span>
     </Element>
   );

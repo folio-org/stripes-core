@@ -34,10 +34,4 @@
   .brandingLabel {
     display: none;
   }
-
-  .smallAlignRight {
-    position: absolute;
-    top: 0;
-    right: 0;
-  }
 }
