@@ -17,7 +17,7 @@ const List = React.forwardRef(({ apps, onItemClick }, ref) => {
     const isOddRow = !(index % 2);
     return (
 
-      <li role="none">
+      <li role="none" key={app.id}>
         <NavListItem
           key={index}
           onClick={onItemClick}
