@@ -202,10 +202,10 @@ class MainNav extends Component {
                 </Headline>
                 <NavGroup>
                   <NavGroup>
+                    <NavDivider md="hide" />
                     <AppList
                       apps={apps}
                       selectedApp={selectedApp}
-                      searchfieldId="app-list-search-field"
                       dropdownToggleId="app-list-dropdown-toggle"
                     />
                   </NavGroup>
