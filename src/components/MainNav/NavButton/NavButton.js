@@ -31,7 +31,7 @@ const defaultProps = {
   noSelectedBar: false,
 };
 
-const NavButton = React.forwardRef(({ label, title, selected, onClick, href, icon, noSelectedBar, className, labelClassName, badge, id, iconKey, iconData }, ref) => {
+const NavButton = React.forwardRef(({ label, title, selected, onClick, href, icon, noSelectedBar, className, labelClassName, badge, id, iconKey, iconData, ...rest }, ref) => {
   /**
    * Root classes
    */
@@ -71,7 +71,7 @@ const NavButton = React.forwardRef(({ label, title, selected, onClick, href, ico
   }
 
   return (
-    <Element ref={ref} id={id} title={title} className={rootClasses} role="button" {...clickableProps}>
+    <Element ref={ref} id={id} aria-label={title} className={rootClasses} {...rest} {...clickableProps}>
       <span className={classNames(css.inner, { [css.isInteractable]: href || onClick })}>
         { badge && (<Badge color="red" className={css.badge}>{badge}</Badge>) }
         { displayIcon }

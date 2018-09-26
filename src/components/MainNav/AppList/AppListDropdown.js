@@ -1,5 +1,5 @@
 /**
- * App List Dropdown
+ * App List -> Dropdown
  */
 
 import React from 'react';
@@ -8,17 +8,19 @@ import PropTypes from 'prop-types';
 import css from './AppList.css';
 import List from './List';
 
-const AppListDropdown = React.forwardRef(({ toggleDropdown, apps }, ref) => (
-  <div ref={ref} tabIndex="-1" className={css.dropdownBody}>
+const AppListDropdown = ({ toggleDropdown, apps, listRef }) => (
+  <div className={css.dropdownBody}>
     <List
-      items={apps}
+      ref={listRef}
+      apps={apps}
       onItemClick={toggleDropdown}
     />
   </div>
-));
+);
 
 AppListDropdown.propTypes = {
   apps: PropTypes.arrayOf(PropTypes.object).isRequired,
+  listRef: PropTypes.oneOfType([PropTypes.object, PropTypes.node]),
   toggleDropdown: PropTypes.func.isRequired,
 };
 

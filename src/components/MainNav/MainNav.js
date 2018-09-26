@@ -204,6 +204,7 @@ class MainNav extends Component {
                   <NavGroup>
                     <AppList
                       apps={apps}
+                      selectedApp={selectedApp}
                       searchfieldId="app-list-search-field"
                       dropdownToggleId="app-list-dropdown-toggle"
                     />

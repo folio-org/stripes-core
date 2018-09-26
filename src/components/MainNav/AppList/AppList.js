@@ -1,5 +1,5 @@
 /**
- * App Switcher
+ * App List
  */
 
 import React, { Component, Fragment } from 'react';
@@ -29,6 +29,7 @@ class AppList extends Component {
         iconData: PropTypes.object, // Only need because "Settings" isn't a standalone app yet
       }),
     ),
+    selectedApp: PropTypes.object,
   }
 
   static contextTypes = {
@@ -48,16 +49,24 @@ class AppList extends Component {
     this.getNavButtons = this.getNavButtons.bind(this);
     this.toggleDropdown = this.toggleDropdown.bind(this);
     this.focusDropdownToggleButton = this.focusDropdownToggleButton.bind(this);
-    this.focusDropdownContent = this.focusDropdownContent.bind(this);
+    this.focusFirstItemInList = this.focusFirstItemInList.bind(this);
 
-    this.dropdownContentRef = React.createRef();
+    this.dropdownListRef = React.createRef();
     this.dropdownToggleRef = React.createRef();
   }
 
   componentDidUpdate(prevProps, prevState) {
+    const selectedApp = this.props.selectedApp;
+
     // Set focus on dropdown when it opens
     if (this.state.open && !prevState.open) {
-      this.focusDropdownContent();
+      // If there's an active app
+      if (selectedApp) {
+        this.focusSelectedItem();
+      // If not; focus first item in the list
+      } else {
+        this.focusFirstItemInList();
+      }
     }
   }
 
@@ -109,7 +118,9 @@ class AppList extends Component {
         <NavButton
           label={label}
           key="mobile-dropdown-toggle"
-          title="Show applications"
+          aria-label="Show all applications"
+          aria-haspopup="true"
+          aria-expanded={open}
           data-role="toggle"
           className={css.navMobileToggle}
           labelClassName={css.dropdownToggleLabel}
@@ -120,7 +131,7 @@ class AppList extends Component {
           ref={this.dropdownToggleRef}
           noSelectedBar
         />
-        { open && this.focusTrap(this.focusDropdownContent) }
+        { open && this.focusTrap(this.focusFirstItemInList) }
       </Fragment>
     );
   }
@@ -129,14 +140,24 @@ class AppList extends Component {
   /**
    * Focus management
    */
-  focusDropdownContent() {
-    if (this.dropdownContentRef) {
-      this.dropdownContentRef.current.focus();
+  focusFirstItemInList() {
+    if (this.dropdownListRef && this.dropdownListRef.current) {
+      this.dropdownListRef.current.firstChild.focus();
+    }
+  }
+
+  focusSelectedItem() {
+    const selectedApp = this.props.selectedApp;
+    if (selectedApp) {
+      const activeElement = document.getElementById(`app-list-item-${selectedApp.id}`);
+      if (activeElement) {
+        activeElement.focus();
+      }
     }
   }
 
   focusDropdownToggleButton() {
-    if (this.dropdownToggleRef) {
+    if (this.dropdownToggleRef && this.dropdownToggleRef.current) {
       this.dropdownToggleRef.current.focus();
     }
   }
@@ -145,7 +166,7 @@ class AppList extends Component {
    * Insert hidden input to help trap focus
    */
   focusTrap(onFocus) {
-    return <input className={css.focusTrap} onFocus={onFocus} />;
+    return <input aria-hidden="true" className={css.focusTrap} onFocus={onFocus} />;
   }
 
   render() {
@@ -167,7 +188,7 @@ class AppList extends Component {
             <DropdownMenu data-role="menu" onToggle={toggleDropdown}>
               { this.focusTrap(this.focusDropdownToggleButton) }
               <AppListDropdown
-                ref={this.dropdownContentRef}
+                listRef={this.dropdownListRef}
                 apps={apps}
                 dropdownToggleId={dropdownToggleId}
                 toggleDropdown={toggleDropdown}

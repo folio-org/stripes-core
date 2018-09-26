@@ -11,9 +11,12 @@
 /**
  * Nav dropdown toggle
  **/
-.dropdownToggleLabel {
+
+/* Disabed for now - Visible on all screen sizes until we get breadcrumbs */
+
+/* .dropdownToggleLabel {
   display: none;
-}
+} */
 
 /**
  * Nav List
@@ -40,10 +43,12 @@
 
 .dropdownBody {
   width: 100%;
+  outline: 0;
 }
 
 .dropdownList {
-  padding: 5px 15px;
+  padding: 10px 5px;
+  margin: 0;
   max-height: 225px;
   overflow-y: auto;
 }
@@ -110,9 +115,11 @@
     width: 600px;
   }
 
-  .dropdownToggleLabel {
+  /* Disabled for now - Visible on all screen sizes until we get breadcrumbs */
+
+  /* .dropdownToggleLabel {
     display: flex;
-  }
+  } */
 }
 
 @media (--largeUp) {
