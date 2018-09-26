@@ -47,8 +47,8 @@ class AppList extends Component {
       open: false,
     };
 
-    this.getDropdownToggleButton = this.getDropdownToggleButton.bind(this);
-    this.getNavButtons = this.getNavButtons.bind(this);
+    this.renderDropdownToggleButton = this.renderDropdownToggleButton.bind(this);
+    this.renderNavButtons = this.renderNavButtons.bind(this);
     this.toggleDropdown = this.toggleDropdown.bind(this);
     this.focusDropdownToggleButton = this.focusDropdownToggleButton.bind(this);
     this.focusFirstItemInList = this.focusFirstItemInList.bind(this);
@@ -76,7 +76,7 @@ class AppList extends Component {
    * Get the nav buttons that is displayed
    * in the app header on desktop
    */
-  getNavButtons() {
+  renderNavButtons() {
     return this.props.apps.filter((a, i) => i < this.maxRenderedNavButtons).map(app => (
       <li className={css.navItem} key={app.id}>
         <NavButton
@@ -94,7 +94,7 @@ class AppList extends Component {
   }
 
   /**
-   * When dropdown is getting toggled
+   * When dropdown is toggled
    */
   toggleDropdown() {
     this.setState(state => ({ open: !state.open }), () => {
@@ -108,7 +108,7 @@ class AppList extends Component {
   /**
    * The button that toggles the dropdown
    */
-  getDropdownToggleButton() {
+  renderDropdownToggleButton() {
     const { open } = this.state;
     const { dropdownToggleId, intl } = this.props;
     const icon = <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8.4 2.4H5.1c-1.5 0-2.7 1.2-2.7 2.7v3.3c0 1.5 1.2 2.7 2.7 2.7h3.3c1.5 0 2.7-1.2 2.7-2.7V5.1c0-1.5-1.2-2.7-2.7-2.7zm.7 6c0 .4-.3.7-.7.7H5.1c-.4 0-.7-.3-.7-.7V5.1c0-.4.3-.7.7-.7h3.3c.4 0 .7.3.7.7v3.3zM18.9 2.4h-3.3c-1.5 0-2.7 1.2-2.7 2.7v3.3c0 1.5 1.2 2.7 2.7 2.7h3.3c1.5 0 2.7-1.2 2.7-2.7V5.1c0-1.5-1.2-2.7-2.7-2.7zm.7 6c0 .4-.3.7-.7.7h-3.3c-.4 0-.7-.3-.7-.7V5.1c0-.4.3-.7.7-.7h3.3c.4 0 .7.3.7.7v3.3zM8.4 12.9H5.1c-1.5 0-2.7 1.2-2.7 2.7v3.3c0 1.5 1.2 2.7 2.7 2.7h3.3c1.5 0 2.7-1.2 2.7-2.7v-3.3c0-1.5-1.2-2.7-2.7-2.7zm.7 6c0 .4-.3.7-.7.7H5.1c-.4 0-.7-.3-.7-.7v-3.3c0-.4.3-.7.7-.7h3.3c.4 0 .7.3.7.7v3.3zM18.9 12.9h-3.3c-1.5 0-2.7 1.2-2.7 2.7v3.3c0 1.5 1.2 2.7 2.7 2.7h3.3c1.5 0 2.7-1.2 2.7-2.7v-3.3c0-1.5-1.2-2.7-2.7-2.7zm.7 6c0 .4-.3.7-.7.7h-3.3c-.4 0-.7-.3-.7-.7v-3.3c0-.4.3-.7.7-.7h3.3c.4 0 .7.3.7.7v3.3z" /></svg>;
@@ -142,6 +142,7 @@ class AppList extends Component {
    */
   focusFirstItemInList() {
     if (this.dropdownListRef && this.dropdownListRef.current) {
+      // Applies focus to the <a> inside the first <li> in the list
       this.dropdownListRef.current.firstChild.firstChild.focus();
     }
   }
@@ -170,7 +171,7 @@ class AppList extends Component {
   }
 
   render() {
-    const { getNavButtons, getDropdownToggleButton, toggleDropdown } = this;
+    const { renderNavButtons, renderDropdownToggleButton, toggleDropdown } = this;
     const { dropdownId, apps, dropdownToggleId } = this.props;
     const tether = {
       attachment: 'top right',
@@ -185,11 +186,11 @@ class AppList extends Component {
     return (
       <nav className={css.appList}>
         <ul className={css.navItemsList}>
-          { getNavButtons() }
+          { renderNavButtons() }
         </ul>
         <div className={css.navListDropdownWrap}>
           <Dropdown tether={tether} dropdownClass={css.navListDropdown} open={this.state.open} id={dropdownId} onToggle={toggleDropdown}>
-            { getDropdownToggleButton() }
+            { renderDropdownToggleButton() }
             <DropdownMenu data-role="menu" onToggle={toggleDropdown}>
               { this.focusTrap(this.focusDropdownToggleButton) }
               <AppListDropdown
