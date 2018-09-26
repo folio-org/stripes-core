@@ -84,12 +84,13 @@ const About = (props) => {
     return (
       <div key={caption}>
         <Headline>{headlineMsg}</Headline>
-        <List
-          listStyle="bullets"
-          items={list}
-          itemFormatter={itemFormatter}
-        />
-        <br />
+        <div data-test-stripes-core-about-module={caption}>
+          <List
+            listStyle="bullets"
+            items={list}
+            itemFormatter={itemFormatter}
+          />
+        </div>
       </div>
     );
   }
@@ -147,7 +148,9 @@ const About = (props) => {
             itemFormatter={item => (<li key={item.key}>{item.value}</li>)}
           />
           <br />
-          {Object.keys(props.modules).map(key => listModules(key, props.modules[key]))}
+          <div data-test-stripes-core-about-module-versions>
+            {Object.keys(props.modules).map(key => listModules(key, props.modules[key]))}
+          </div>
         </div>
         <div className={css.versionsColumn}>
           <Headline size="large">
