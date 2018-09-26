@@ -46,7 +46,7 @@
   outline: 0;
 }
 
-.dropdownList {
+ul.dropdownList {
   padding: 10px 5px;
   margin: 0;
   max-height: 225px;

@@ -82,9 +82,10 @@ class AppList extends Component {
           id={app.id}
           selected={app.active}
           href={app.active ? null : app.href}
-          title={app.displayName}
+          aria-label={app.displayName}
           iconKey={app.name}
           iconData={app.iconData}
+          role="button"
         />
       </li>
     ));
@@ -142,7 +143,7 @@ class AppList extends Component {
    */
   focusFirstItemInList() {
     if (this.dropdownListRef && this.dropdownListRef.current) {
-      this.dropdownListRef.current.firstChild.focus();
+      this.dropdownListRef.current.firstChild.firstChild.focus();
     }
   }
 
@@ -177,6 +178,11 @@ class AppList extends Component {
       targetAttachment: 'bottom right',
     };
 
+    // If no apps are installed
+    if (!apps.length) {
+      return null;
+    }
+
     return (
       <nav className={css.appList}>
         <ul className={css.navItemsList}>
@@ -193,7 +199,7 @@ class AppList extends Component {
                 dropdownToggleId={dropdownToggleId}
                 toggleDropdown={toggleDropdown}
               />
-              { this.focusTrap(this.focusDropdownToggleButton) }
+              { this.focusTrap(this.focusFirstItemInList) }
             </DropdownMenu>
           </Dropdown>
         </div>
