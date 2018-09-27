@@ -1,4 +1,7 @@
-import { hot } from 'react-hot-loader';
-import AppContainer from './AppContainer';
+import 'babel-polyfill';
+import React from 'react';
+import { render } from 'react-dom';
 
-export default hot(module)(AppContainer);
+import HotApp from './HotApp';
+
+render(<HotApp />, document.getElementById('root'));
