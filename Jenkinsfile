@@ -1,4 +1,3 @@
-@Library ('folio_jenkins_shared_libs@run_script') _
 
 buildNPM {
   publishModDescriptor = 'yes'
