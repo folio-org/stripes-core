@@ -84,15 +84,11 @@ jobs:
             --karma.singleRun
             --karma.browsers=Chrome
             --karma.reporters mocha junit
-            --karma.junitReporter.outputDir ../../artifacts/junit/karma
+            --karma.junitReporter.outputDir ./artifacts/junit/karma
       - store_test_results:
           path: ./artifacts/junit
       - store_artifacts:
-          name: Store junit test report
-          path: ./artifacts/junit
-      - store_artifacts:
-          name: Store code coverage report
-          path: ./artifacts/coverage/lcov.txt
+          path: ./artifacts
 
 workflows:
   version: 2
