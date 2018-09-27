@@ -22,6 +22,7 @@ export default function setupApplication({
   modules = [],
   translations = {},
   stripesConfig,
+  mirageOptions,
   scenarios
 } = {}) {
   beforeEach(async function () {
@@ -33,15 +34,12 @@ export default function setupApplication({
       },
 
       setup: () => {
-        this.server = startMirage(scenarios);
+        this.server = startMirage(scenarios, mirageOptions);
         this.server.logging = false;
 
-        withTranslations(this.server, translations);
         withModules(modules);
-        withConfig({
-          logCategories: '',
-          ...stripesConfig
-        });
+        withTranslations(this.server, translations);
+        withConfig({ logCategories: '', ...stripesConfig });
       },
 
       teardown: () => {
