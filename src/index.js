@@ -2,6 +2,6 @@ import 'babel-polyfill';
 import React from 'react';
 import { render } from 'react-dom';
 
-import HotApp from './HotApp';
+import App from './App';
 
-render(<HotApp />, document.getElementById('root'));
+render(<App />, document.getElementById('root'));
