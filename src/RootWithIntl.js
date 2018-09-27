@@ -50,7 +50,7 @@ class RootWithIntl extends React.Component {
           <TitleManager>
             <HotKeys keyMap={stripes.bindings} noWrapper>
               <Provider store={stripes.store}>
-                <Router history={history}>
+                <Router history={history} key={Math.random()}>
                   { token || disableAuth ?
                     <MainContainer>
                       <OverlayContainer />

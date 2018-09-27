@@ -2,6 +2,6 @@ import 'babel-polyfill';
 import React from 'react';
 import { render } from 'react-dom';
 
-import StripesCore from './App';
+import HotApp from './HotApp';
 
-render(<StripesCore />, document.getElementById('root'));
+render(<HotApp />, document.getElementById('root'));
