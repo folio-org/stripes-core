@@ -55,16 +55,17 @@ class NavDropdownMenu extends React.Component {
   }
 
   render() {
+    /* eslint-disable no-unused-vars */
     const {
-      bsRole, // eslint-disable-line
-      onSelect, // eslint-disable-line
-      onToggle, // eslint-disable-line
-      open, // eslint-disable-line
+      bsRole,
+      onSelect,
+      onToggle,
+      open,
       pullRight,
-      bsClass, // eslint-disable-line
-      labelledBy, // eslint-disable-line
-      onClose, // eslint-disable-line
-      rootCloseEvent, // eslint-disable-line
+      bsClass,
+      labelledBy,
+      onClose,
+      rootCloseEvent,
       ...ddprops
     } = this.props;
 

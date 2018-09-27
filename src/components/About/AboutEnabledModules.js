@@ -18,7 +18,7 @@ class AboutEnabledModules extends React.Component {
       }),
     }),
     availableModules: PropTypes.object,
-    tenantid: PropTypes.string.isRequired, // eslint-disable-line
+    tenantid: PropTypes.string.isRequired, // eslint-disable-line react/no-unused-prop-types
   };
 
   render() {

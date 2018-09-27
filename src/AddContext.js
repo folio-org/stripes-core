@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 class AddContext extends React.Component {
   static propTypes = {
-    context: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
+    context: PropTypes.object.isRequired,
     children: PropTypes.oneOfType([
       PropTypes.object,
       PropTypes.array,

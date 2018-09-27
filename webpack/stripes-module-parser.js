@@ -30,7 +30,8 @@ class StripesModuleParser {
       throw new StripesBuildError(`StripesModuleParser: Unable to locate ${this.moduleName}'s package.json`);
     }
     this.modulePath = packageJsonFile.replace('package.json', '');
-    return require(packageJsonFile); // eslint-disable-line
+    // eslint-disable-next-line global-require,import/no-dynamic-require
+    return require(packageJsonFile);
   }
 
   // Wrapper to source data and transform into collections (config and metadata)

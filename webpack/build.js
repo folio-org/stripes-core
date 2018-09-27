@@ -9,7 +9,7 @@ const platformModulePath = path.join(path.resolve(), 'node_modules');
 module.exports = function build(stripesConfig, options) {
   return new Promise((resolve, reject) => {
     logger.log('starting build...');
-    let config = require('../webpack.config.cli.prod'); // eslint-disable-line
+    let config = require('../webpack.config.cli.prod'); // eslint-disable-line global-require
 
     config.plugins.push(new StripesWebpackPlugin({ stripesConfig }));
 

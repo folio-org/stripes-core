@@ -1,6 +1,6 @@
-import React, { Component } from 'react'; // eslint-disable-line
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect as reduxConnect } from 'react-redux'; // eslint-disable-line
+import { connect as reduxConnect } from 'react-redux';
 import { SubmissionError } from 'redux-form';
 
 import { requestLogin, requestSSOLogin } from '../../loginServices';
@@ -29,7 +29,7 @@ class LoginCtrl extends Component {
     super(props);
     this.store = context.store;
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.sys = require('stripes-config'); // eslint-disable-line
+    this.sys = require('stripes-config'); // eslint-disable-line global-require
     this.okapiUrl = this.sys.okapi.url;
     this.tenant = this.sys.okapi.tenant;
     this.handleSSOLogin = this.handleSSOLogin.bind(this);

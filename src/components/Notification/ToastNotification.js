@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import Button from '@folio/stripes-components/lib/Button';
 import Icon from '@folio/stripes-components/lib/Icon';
 import Layout from '@folio/stripes-components/lib/Layout';
-import classNames from 'classnames'; // eslint-disable-line
-import { Transition } from 'react-overlays'; // eslint-disable-line
+import classNames from 'classnames';
+import { Transition } from 'react-overlays';
 import css from './Toast.css';
 
 const propTypes = {
@@ -84,7 +84,7 @@ class ToastNotification extends React.Component {
       { [`${css.startOutside}`]:
         /start\b/.test(position) && transition === 'slide' },
       { [`${css.endOutside}`]:
-        /end\b/.test(position) && transition === 'slide' || // eslint-disable-line
+        /end\b/.test(position) && transition === 'slide' || // eslint-disable-line no-mixed-operators
         ((position === 'top' || position === 'bottom') && transition === 'slide') },
       { [`${css.fade}`]: transition === 'fade' },
     );
