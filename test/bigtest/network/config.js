@@ -39,16 +39,6 @@ export default function configure() {
     });
   });
 
-  this.get('/notify/_self', {
-    notifications: [],
-    totalRecords: 0
-  });
-
-  this.get('/notify', {
-    notifications: [],
-    totalRecords: 0
-  });
-
   // hot-reload passthrough
   this.pretender.get('/:rand.hot-update.json', this.pretender.passthrough);
 }

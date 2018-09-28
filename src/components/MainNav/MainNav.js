@@ -19,7 +19,6 @@ import NavDivider from './NavDivider';
 import NavGroup from './NavGroup';
 import CurrentApp from './CurrentApp';
 import ProfileDropdown from './ProfileDropdown';
-import NotificationsDropdown from './Notifications/NotificationsDropdown';
 import AppList from './AppList';
 
 import settingsIcon from './settings.svg';
@@ -66,7 +65,6 @@ class MainNav extends Component {
     };
     this.store = props.stripes.store;
     this.logout = this.logout.bind(this);
-    this.notificationsDropdown = this.notificationsDropdown.bind(this);
     this.getAppList = this.getAppList.bind(this);
   }
 
@@ -158,21 +156,6 @@ class MainNav extends Component {
     return apps;
   }
 
-  notificationsDropdown() {
-    const { stripes } = this.props;
-
-    if (!stripes.withOkapi || !stripes.hasPerm('notify.item.get,notify.item.put,notify.collection.get')) {
-      return null;
-    }
-
-    return (
-      <Layout className="display-flex flex-align-items-center">
-        <NotificationsDropdown stripes={stripes} {...this.props} />
-        <NavDivider md="hide" />
-      </Layout>
-    );
-  }
-
   render() {
     const { stripes } = this.props;
 
@@ -211,7 +194,6 @@ class MainNav extends Component {
                   </NavGroup>
                   <NavGroup>
                     <NavDivider md="hide" />
-                    { this.notificationsDropdown() }
                     <ProfileDropdown
                       onLogout={this.logout}
                       stripes={stripes}
