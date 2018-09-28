@@ -20,10 +20,16 @@ if (environment !== 'production') {
       environment
     }, coreOpts, opts));
 
+    // the default scenario is only used when not in test mode
+    let defaultScenario;
+    if (!scenarioNames && environment !== 'test') {
+      defaultScenario = 'default';
+    }
+
     // mirage only loads a `default` scenario for us out of the box,
     // so instead of providing all scenarios we run specific scenarios
     // after the mirage server is initialized.
-    [].concat(scenarioNames || 'default').filter(Boolean).forEach(name => {
+    [].concat(scenarioNames || defaultScenario).filter(Boolean).forEach(name => {
       const key = camelize(name);
       const scenario = scenarios[key] || coreScenarios[key];
       if (scenario) scenario(server);
