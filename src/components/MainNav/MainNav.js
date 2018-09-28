@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { isEqual } from 'lodash';
 import { compose } from 'redux';
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
-import Layout from '@folio/stripes-components/lib/Layout';
 import Headline from '@folio/stripes-components/lib/Headline';
 import { withRouter } from 'react-router';
 import localforage from 'localforage';
