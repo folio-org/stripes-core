@@ -11,9 +11,11 @@
     "stripescore": "./stripes.js"
   },
   "scripts": {
+    "start": "stripes serve",
     "clean": "rimraf static",
-    "test": "mocha --compilers js:babel-core/register --recursive",
-    "test-watch": "mocha --compilers js:babel-core/register -w --watch-extensions json",
+    "test": "stripes test karma",
+    "test:core": "stripes test karma",
+    "test:webpack": "mocha --opts test/mocha.opts './test/webpack/**/*.js'",
     "lint": "eslint . && stylelint \"src/**/*.css\"",
     "eslint": "eslint .",
     "stylelint": "stylelint \"src/**/*.css\""
@@ -35,10 +37,16 @@
     ]
   },
   "devDependencies": {
+    "@bigtest/convergence": "^0.10.0",
+    "@bigtest/interactor": "^0.7.2",
+    "@bigtest/mirage": "^0.0.1",
+    "@bigtest/mocha": "^0.5.1",
+    "@bigtest/react": "^0.1.2",
     "@folio/eslint-config-stripes": "^3.2.0",
+    "@folio/stripes-cli": "^1.5.0",
     "babel-eslint": "^9.0.0",
     "babel-register": "^6.16.3",
-    "chai": "^4.0.2",
+    "chai": "^4.1.2",
     "eslint": "^5.5.0",
     "mocha": "^3.1.2",
     "mocha-junit-reporter": "^1.17.0",
@@ -72,7 +80,7 @@
     "commander": "^2.9.0",
     "connect-history-api-fallback": "^1.3.0",
     "css-loader": "^1.0.0",
-    "debug": "^3.1.0",
+    "debug": "^4.0.1",
     "duplicate-package-checker-webpack-plugin": "^3.0.0",
     "express": "^4.14.0",
     "favicons-webpack-plugin": "^0.0.9",
@@ -105,6 +113,7 @@
     "react-apollo": "^2.1.3",
     "react-cookie": "^2.1.4",
     "react-dom": "^16.3.0",
+    "react-hot-loader": "^4.3.10",
     "react-intl": "^2.5.0",
     "react-overlays": "^0.8.3",
     "react-redux": "^5.0.2",

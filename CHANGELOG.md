@@ -1,5 +1,9 @@
 # Change history for stripes-core
 
+## 2.14.0 (IN PROGRESS)
+
+* Add `react-hot-loader` to development environment
+
 ## [2.13.0](https://github.com/folio-org/stripes-core/tree/v2.13.0) (2018-09-18)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.12.0...v2.13.0)
 
@@ -15,6 +19,7 @@
 * Refactor handler events to strings. Part of UIU-551.
 * `isVersionCompatible` accepts a space-separated list of wanted versions. Available from v2.11.2. Fixes STCOR-249.
 * The `<Pluggable>` component is moved into stripes-core from stripes-components. Available from v2.11.3. References STCOM-331.
+* Upgrade `debug` dependency, STRIPES-553
 
 ## [2.11.0](https://github.com/folio-org/stripes-core/tree/v2.11.0) (2018-09-04)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.10.0...v2.11.0)
