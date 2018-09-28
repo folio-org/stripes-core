@@ -1,4 +1,3 @@
-@Library ('folio_jenkins_shared_libs@FOLIO-1407b') _
 
 buildNPM {
   publishModDescriptor = 'yes'
@@ -9,4 +8,3 @@ buildNPM {
    'test:webpack':'--reporter mocha-junit-reporter --reporter-options mochaFile=./artifacts/runTest/webpack-results.xml' ]
 
 }
- 
