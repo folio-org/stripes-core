@@ -25,9 +25,7 @@ describe('Nav', () => {
       module: DummyApp
     }],
     translations: {
-      en: {
-        'dummy.title': 'Dummy'
-      }
+      'dummy.title': 'Dummy'
     }
   });
 

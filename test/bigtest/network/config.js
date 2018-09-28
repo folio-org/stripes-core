@@ -41,4 +41,8 @@ export default function configure() {
 
   // hot-reload passthrough
   this.pretender.get('/:rand.hot-update.json', this.pretender.passthrough);
+
+  // translations passthrough
+  // eslint-disable-next-line no-undef, camelcase
+  this.pretender.get(`${__webpack_public_path__}translations/:file`, this.pretender.passthrough);
 }
