@@ -1,0 +1,160 @@
+/**
+ * App Switcher
+ */
+
+@import '@folio/stripes-components/lib/variables.css';
+
+.appList {
+  display: flex;
+}
+
+/**
+ * Nav dropdown toggle
+ **/
+
+.dropdownToggleLabel {
+  display: none;
+}
+
+/**
+ * Nav List
+ */
+.navItemsList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+}
+
+/**
+ * Nav Dropdown
+ */
+
+.navListDropdownWrap,
+.navListDropdown {
+  display: block;
+}
+
+.navListDropdown {
+  z-index: 200;
+}
+
+.dropdownBody {
+  width: 100%;
+  outline: 0;
+}
+
+ul.dropdownList {
+  padding: 10px 5px;
+  margin: 0;
+  max-height: 225px;
+  overflow-y: auto;
+}
+
+.dropdownListItem {
+  display: flex;
+  align-items: center;
+}
+
+.dropdownListItemLabel {
+  padding: 0 4px;
+  min-width: 200px;
+  font-weight: 600;
+}
+
+[dir="rtl"] .dropdownListItemLabel {
+  text-align: right;
+}
+
+.dropdownListItemDescription {
+  color: var(--labelColor);
+  display: none;
+}
+
+.dropdownHeader {
+  padding: 10px 10px 5px;
+}
+
+/**
+ * Nav Item
+**/
+.navItem {
+  display: none;
+}
+
+/**
+ * Focus trap
+ */
+.focusTrap {
+  position: absolute;
+  clip: rect(1px, 1px, 1px, 1px);
+}
+
+/**
+ * Responsive
+ */
+
+/* A bit of a hack to force tether to 100% width on mobile.. */
+@media (--small) {
+  .navListDropdown,
+  .navListDropdown > div {
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+  }
+}
+
+@media (--mediumUp) {
+  .dropdownListItemDescription {
+    display: block;
+  }
+
+  .dropdownBody {
+    width: 600px;
+  }
+
+  .dropdownToggleLabel {
+    display: flex;
+  }
+}
+
+@media (--largeUp) {
+  .navItemsList {
+    display: flex;
+  }
+}
+
+/**
+ * Adjust visible nav items with CSS for now
+ * Should be made dynamic later on
+**/
+
+@media screen and (min-width: 768px) {
+  .navItem:nth-child(-n+3) {
+    display: block;
+  }
+}
+
+@media screen and (min-width: 980px) {
+  .navItem:nth-child(-n+5) {
+    display: block;
+  }
+}
+
+@media screen and (min-width: 1200px) {
+  .navItem:nth-child(-n+6) {
+    display: block;
+  }
+}
+
+@media screen and (min-width: 1500px) {
+  .navItem:nth-child(-n+9) {
+    display: block;
+  }
+}
+
+@media screen and (min-width: 1700px) {
+  .navItem:nth-child(-n+11) {
+    display: block;
+  }
+}

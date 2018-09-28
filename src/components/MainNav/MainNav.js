@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { isEqual } from 'lodash';
-import { FormattedMessage } from 'react-intl';
+import { compose } from 'redux';
+import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
+import Layout from '@folio/stripes-components/lib/Layout';
 import Headline from '@folio/stripes-components/lib/Headline';
-import { Dropdown } from '@folio/stripes-components/lib/Dropdown'; // eslint-disable-line
 import { withRouter } from 'react-router';
 import localforage from 'localforage';
 
@@ -14,18 +15,18 @@ import { resetStore } from '../../mainActions';
 import { updateQueryResource, updateLocation, getCurrentModule, isQueryResourceModule } from '../../locationService';
 
 import css from './MainNav.css';
-import NavButton from './NavButton';
 import NavDivider from './NavDivider';
 import NavGroup from './NavGroup';
-import Breadcrumbs from './Breadcrumbs';
 import CurrentApp from './CurrentApp';
 import ProfileDropdown from './ProfileDropdown';
 import NotificationsDropdown from './Notifications/NotificationsDropdown';
+import AppList from './AppList';
 
 import settingsIcon from './settings.svg';
 
 class MainNav extends Component {
   static propTypes = {
+    intl: intlShape,
     stripes: PropTypes.shape({
       config: PropTypes.shape({
         showPerms: PropTypes.bool,
@@ -65,6 +66,8 @@ class MainNav extends Component {
     };
     this.store = props.stripes.store;
     this.logout = this.logout.bind(this);
+    this.notificationsDropdown = this.notificationsDropdown.bind(this);
+    this.getAppList = this.getAppList.bind(this);
   }
 
   getChildContext() {
@@ -108,10 +111,10 @@ class MainNav extends Component {
     this.context.router.history.push('/');
   }
 
-  renderNavButtons(lastVisited) {
-    const { modules, location: { pathname }, stripes } = this.props;
+  getAppList(lastVisited) {
+    const { stripes, location: { pathname }, modules, intl: { formatMessage } } = this.props;
 
-    return modules.app.map((entry, i) => {
+    const apps = modules.app.map((entry) => {
       const name = entry.module.replace(/^@[a-z0-9_]+\//, '');
       const perm = `module.${name}.enabled`;
 
@@ -119,112 +122,113 @@ class MainNav extends Component {
         return null;
       }
 
-      const navId = `clickable-${name}-module`;
-      const isActive = pathname.startsWith(entry.route);
-      const href = !isActive ? (lastVisited[name] || entry.home || entry.route) : null;
+      const id = `clickable-${name}-module`;
+      const active = pathname.startsWith(entry.route);
+      const href = lastVisited[name] || entry.home || entry.route;
 
-      return (
-        <NavButton
-          label={entry.displayName}
-          id={navId}
-          selected={isActive}
-          href={href}
-          title={entry.displayName}
-          key={entry.route || i}
-          iconKey={name}
-        />);
-    });
-  }
+      return {
+        id,
+        href,
+        active,
+        name,
+        ...entry,
+      };
+    }).filter(app => app);
 
-  render() {
-    const { stripes, location: { pathname }, modules } = this.props;
-    const formatMsg = stripes.intl.formatMessage;
+    /**
+     * Add Settings to apps array manually
+     * until Settings becomes a standalone app
+     */
 
-    // Temporary until settings becomes an app
-    const settingsIconData = {
-      src: settingsIcon,
-      alt: 'Tenant Settings',
-      title: formatMsg({ id: 'stripes-core.settings' }),
-    };
-
-    const selectedApp = modules.app.find(entry => pathname.startsWith(entry.route));
-    let firstNav;
-    let breadcrumbArray = []; // eslint-disable-line
-
-    // Temporary solution until Settings becomes a standalone app
-    let settingsApp;
-    const settingsMsg = formatMsg({ id: 'stripes-core.settings' });
-    if (stripes.hasPerm('settings.enabled') && pathname.startsWith('/settings')) {
-      settingsApp = { displayName: settingsMsg, description: formatMsg({ id: 'stripes-core.folioSettings' }) };
+    if (stripes.hasPerm('settings.enabled')) {
+      apps.push({
+        displayName: formatMessage({ id: 'stripes-core.settings' }),
+        id: 'clickable-settings',
+        href: lastVisited.x_settings || '/settings',
+        active: pathname.startsWith('/settings'),
+        description: 'FOLIO settings',
+        iconData: {
+          src: settingsIcon,
+          alt: 'Tenant Settings',
+          title: 'Settings',
+        },
+      });
     }
 
-    if (breadcrumbArray.length === 0) {
-      firstNav = (
-        <NavGroup md="hide">
-          <a className={css.skipLink} href="#ModuleContainer" aria-label="Skip Main Navigation" title="Skip Main Navigation">
-            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 26 26">
-              <polygon style={{ fill: '#999' }} points="13 16.5 1.2 5.3 3.2 3.1 13 12.4 22.8 3.1 24.8 5.3 " />
-              <polygon style={{ fill: '#999' }} points="13 24.8 1.2 13.5 3.2 11.3 13 20.6 22.8 11.3 24.8 13.5 " />
-            </svg>
-          </a>
-          <CurrentApp
-            id="ModuleMainHeading"
-            currentApp={selectedApp || settingsApp}
-            iconData={settingsApp && settingsIconData}
-          />
-        </NavGroup>
-      );
-    } else {
-      firstNav = (
-        <NavGroup>
-          <NavButton md="hide" />
-          <Breadcrumbs linkArray={breadcrumbArray} />
-        </NavGroup>
-      );
+    return apps;
+  }
+
+  notificationsDropdown() {
+    const { stripes } = this.props;
+
+    if (!stripes.withOkapi || !stripes.hasPerm('notify.item.get,notify.item.put,notify.collection.get')) {
+      return null;
     }
 
     return (
+      <Layout className="display-flex flex-align-items-center">
+        <NotificationsDropdown stripes={stripes} {...this.props} />
+        <NavDivider md="hide" />
+      </Layout>
+    );
+  }
+
+  render() {
+    const { stripes } = this.props;
+
+    return (
       <LastVisitedContext.Consumer>
-        {({ lastVisited }) => (
-          <header className={css.navRoot}>
-            {firstNav}
-            <nav>
-              <Headline tag="h2" className="sr-only">
-                <FormattedMessage id="stripes-core.mainNavigation" />
-              </Headline>
+        {({ lastVisited }) => {
+          const apps = this.getAppList(lastVisited);
+          const selectedApp = apps.find(entry => entry.active);
+
+          return (
+            <header className={css.navRoot}>
               <NavGroup>
-                <NavGroup>
-                  {this.renderNavButtons(lastVisited)}
-                  {
-                    !stripes.hasPerm('settings.enabled') ? '' : (
-                      <NavButton
-                        label={settingsMsg}
-                        id="clickable-settings"
-                        title={settingsMsg}
-                        iconData={settingsIconData}
-                        selected={pathname.startsWith('/settings')}
-                        href={pathname.startsWith('/settings') ? null : (lastVisited.x_settings || '/settings')}
-                      />
-                    )
-                  }
-                </NavGroup>
-                <NavGroup className={css.smallAlignRight}>
-                  <NavDivider md="hide" />
-                  {this.props.stripes.withOkapi && this.props.stripes.hasPerm('notify.item.get,notify.item.put,notify.collection.get') && <NotificationsDropdown stripes={stripes} {...this.props} />}
-                  { /* temporary divider solution.. */}
-                  {this.props.stripes.hasPerm('notify.item.get,notify.item.put,notify.collection.get') && (<NavDivider md="hide" />)}
-                  <ProfileDropdown
-                    onLogout={this.logout}
-                    stripes={stripes}
-                  />
-                </NavGroup>
+                <a className={css.skipLink} href="#ModuleContainer" aria-label="Skip Main Navigation" title="Skip Main Navigation">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 26 26">
+                    <polygon style={{ fill: '#999' }} points="13 16.5 1.2 5.3 3.2 3.1 13 12.4 22.8 3.1 24.8 5.3 " />
+                    <polygon style={{ fill: '#999' }} points="13 24.8 1.2 13.5 3.2 11.3 13 20.6 22.8 11.3 24.8 13.5 " />
+                  </svg>
+                </a>
+                <CurrentApp
+                  id="ModuleMainHeading"
+                  currentApp={selectedApp}
+                />
               </NavGroup>
-            </nav>
-          </header>
-        )}
+              <nav>
+                <Headline tag="h2" className="sr-only">
+                  <FormattedMessage id="stripes-core.mainNavigation" />
+                </Headline>
+                <NavGroup>
+                  <NavGroup>
+                    <NavDivider md="hide" />
+                    <AppList
+                      apps={apps}
+                      selectedApp={selectedApp}
+                      dropdownToggleId="app-list-dropdown-toggle"
+                    />
+                  </NavGroup>
+                  <NavGroup>
+                    <NavDivider md="hide" />
+                    { this.notificationsDropdown() }
+                    <ProfileDropdown
+                      onLogout={this.logout}
+                      stripes={stripes}
+                    />
+                  </NavGroup>
+                </NavGroup>
+              </nav>
+            </header>
+          );
+        }}
       </LastVisitedContext.Consumer>
     );
   }
 }
 
-export default withRouter(withModules(MainNav));
+export default compose(
+  injectIntl,
+  withRouter,
+  withModules,
+)(MainNav);

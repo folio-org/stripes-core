@@ -63,5 +63,8 @@
   "settings": "Settings",
   "folioSettings": "FOLIO settings",
   "mainNavigation": "Main Navigation",
-  "loginViaSSO": "Login via SSO"
+  "loginViaSSO": "Login via SSO",
+
+  "mainnav.showAllApplicationsButtonLabel": "Apps",
+  "mainnav.showAllApplicationsButtonAriaLabel": "Show all applications"
 }

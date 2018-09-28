@@ -1,13 +1,12 @@
 import { beforeEach } from '@bigtest/mocha';
 import { setupAppForTesting, visit, location } from '@bigtest/react';
-import localforage from 'localforage';
-import startMirage from '../network/start';
-
-import App from '../../../src/App';
-
 // load these styles for our tests
 import 'typeface-source-sans-pro';
 import '@folio/stripes-components/lib/global.css';
+
+import localforage from 'localforage';
+import startMirage from '../network/start';
+import App from '../../../src/App';
 
 import {
   withModules,

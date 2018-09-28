@@ -24,13 +24,11 @@
       border-bottom-left-radius: 3px;
       border-bottom-right-radius: 3px;
     }
-
-    & .icon {
-      & svg {
-        fill: var(--primary);
-      }
-    }
   }
+}
+
+.navButton:not(:active).selected .icon svg {
+  fill: var(--primary);
 }
 
 /* To make sure we overwrite default link colors */
@@ -75,7 +73,8 @@ button.navButton {
 .label {
   margin: 0 4px;
   font-weight: 600;
-  display: none;
+  display: flex;
+  align-items: center;
 }
 
 .inner {
@@ -96,13 +95,4 @@ button.navButton {
   top: 0;
   right: -1px;
   z-index: 5;
-}
-
-/**
- * Responsive
- */
-@media (--largeUp) {
-  .label {
-    display: block;
-  }
 }
