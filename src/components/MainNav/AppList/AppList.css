@@ -12,11 +12,9 @@
  * Nav dropdown toggle
  **/
 
-/* Disabed for now - Visible on all screen sizes until we get breadcrumbs */
-
-/* .dropdownToggleLabel {
+.dropdownToggleLabel {
   display: none;
-} */
+}
 
 /**
  * Nav List
@@ -115,11 +113,9 @@ ul.dropdownList {
     width: 600px;
   }
 
-  /* Disabled for now - Visible on all screen sizes until we get breadcrumbs */
-
-  /* .dropdownToggleLabel {
+  .dropdownToggleLabel {
     display: flex;
-  } */
+  }
 }
 
 @media (--largeUp) {
