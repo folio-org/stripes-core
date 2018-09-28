@@ -12,13 +12,29 @@ if (environment !== 'production') {
   require('./force-fetch-polyfill');
 
   start = (scenarioNames, options = {}) => {
-    const { coreScenarios = {}, baseConfig: coreConfig, ...coreOpts } = coreModules;
-    const { scenarios = {}, baseConfig = () => {}, ...opts } = options;
+    const {
+      scenarios: coreScenarios = {},
+      factories: coreFactories = {},
+      baseConfig: coreConfig,
+      ...coreOpts
+    } = coreModules;
+
+    const {
+      scenarios = {},
+      factories = {},
+      baseConfig = () => {},
+      ...opts
+    } = options;
 
     const server = new Mirage(merge({
       baseConfig: flow(coreConfig, baseConfig),
       environment
     }, coreOpts, opts));
+
+    // mirage conditionally includes factories, we want to include
+    // all of them unconditionally
+    server.loadFactories(coreFactories);
+    server.loadFactories(factories);
 
     // the default scenario is only used when not in test mode
     let defaultScenario;
