@@ -1,41 +1,36 @@
-import './force-fetch-polyfill';
-import Mirage, { camelize } from '@bigtest/mirage';
-import baseConfig from './config';
+/* eslint global-require: off, import/no-mutable-exports: off */
+import merge from 'lodash/merge';
+import flow from 'lodash/flow';
 
-const { assign } = Object;
 const environment = process.env.NODE_ENV || 'test';
 
-const req = require.context('./', true, /\.js$/);
+let start = () => {};
 
-const modules = req.keys().reduce((acc, modulePath) => {
-  const moduleParts = modulePath.split('/');
-  const moduleType = moduleParts[1];
-  const moduleName = moduleParts[2];
+if (environment !== 'production') {
+  const { default: Mirage, camelize } = require('@bigtest/mirage');
+  const { default: coreModules } = require('./index');
+  require('./force-fetch-polyfill');
 
-  if (moduleName) {
-    const moduleKey = camelize(moduleName.replace('.js', ''));
+  start = (scenarioNames, options = {}) => {
+    const { coreScenarios = {}, baseConfig: coreConfig, ...coreOpts } = coreModules;
+    const { scenarios = {}, baseConfig = () => {}, ...opts } = options;
 
-    return assign(acc, {
-      [moduleType]: {
-        ...(acc[moduleType] || {}),
-        [moduleKey]: req(modulePath).default
-      }
+    const server = new Mirage(merge({
+      baseConfig: flow(coreConfig, baseConfig),
+      environment
+    }, coreOpts, opts));
+
+    // mirage only loads a `default` scenario for us out of the box,
+    // so instead of providing all scenarios we run specific scenarios
+    // after the mirage server is initialized.
+    [].concat(scenarioNames || 'default').filter(Boolean).forEach(name => {
+      const key = camelize(name);
+      const scenario = scenarios[key] || coreScenarios[key];
+      if (scenario) scenario(server);
     });
-  } else {
-    return acc;
-  }
-}, {});
 
-export default function startMirage(...scenarioNames) {
-  const { scenarios = {}, ...options } = modules;
-  const server = new Mirage(assign(options, { baseConfig, environment }));
-
-  // mirage only loads a `default` scenario for us out of the box, so
-  // instead we run any scenarios after we initialize mirage
-  scenarioNames.filter(Boolean).forEach(name => {
-    const scenario = scenarios[camelize(name)];
-    if (scenario) scenario(server);
-  });
-
-  return server;
+    return server;
+  };
 }
+
+export default start;
