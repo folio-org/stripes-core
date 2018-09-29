@@ -4,6 +4,7 @@
 
 * Add `react-hot-loader` to development environment
 * Remove notifications, STCOR-257
+* Use new type stack
 
 ## [2.13.0](https://github.com/folio-org/stripes-core/tree/v2.13.0) (2018-09-18)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.12.0...v2.13.0)
