@@ -1,12 +1,16 @@
 import { beforeEach } from '@bigtest/mocha';
 import { setupAppForTesting, visit, location } from '@bigtest/react';
+import localforage from 'localforage';
+import sinon from 'sinon';
+
 // load these styles for our tests
 import 'typeface-source-sans-pro';
 import '@folio/stripes-components/lib/global.css';
 
-import localforage from 'localforage';
 import startMirage from '../network/start';
+
 import App from '../../../src/App';
+import * as actions from '../../../src/okapiActions';
 
 import {
   withModules,
@@ -14,7 +18,6 @@ import {
   withConfig,
   clearConfig
 } from './stripes-config';
-import withTranslations from './translations';
 
 export default function setupApplication({
   disableAuth = true,
@@ -37,11 +40,18 @@ export default function setupApplication({
         this.server.logging = false;
 
         withModules(modules);
-        withTranslations(this.server, translations);
         withConfig({ logCategories: '', ...stripesConfig });
+
+        sinon.stub(actions, 'setTranslations').callsFake(incoming => {
+          return {
+            type: 'SET_TRANSLATIONS',
+            translations: Object.assign(incoming, translations)
+          };
+        });
       },
 
       teardown: () => {
+        actions.setTranslations.restore();
         clearConfig();
         clearModules();
         localforage.clear();
