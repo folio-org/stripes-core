@@ -149,6 +149,7 @@ class MainNav extends Component {
           alt: 'Tenant Settings',
           title: 'Settings',
         },
+        route: '/settings'
       });
     }
 
