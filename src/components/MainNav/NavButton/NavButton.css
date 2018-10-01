@@ -6,6 +6,7 @@
   height: 44px;
   outline: 0;
   color: var(--color-text);
+  font-size: var(--font-size-small);
 
   &::-moz-focus-inner {
     border: 0;
@@ -90,7 +91,7 @@ button.navButton {
  * Badge
  */
 .navButton .badge {
-  font-size: 10px;
+  font-size: var(--font-size-x-small);
   position: absolute;
   top: 0;
   right: -1px;

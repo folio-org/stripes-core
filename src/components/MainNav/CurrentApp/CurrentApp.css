@@ -1,3 +1,5 @@
+@import "@folio/stripes-components/lib/variables.css";
+
 /**
  * Current App
  */
@@ -19,7 +21,7 @@
  * Badge
  */
 .badge {
-  font-size: 10px;
+  font-size: var(--font-size-x-small);
   position: absolute;
   top: 0;
   right: -1px;

@@ -1,3 +1,5 @@
+@import "@folio/stripes-components/lib/variables.css";
+
 /**
  * Front
  */
@@ -18,6 +20,6 @@ h1.frontTitle {
 
 @media screen and (max-width: 900px) {
   h1.frontTitle {
-    font-size: 26px;
+    font-size: var(--font-size-large);
   }
 }
