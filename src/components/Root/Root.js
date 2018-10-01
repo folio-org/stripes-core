@@ -7,6 +7,8 @@ import { IntlProvider } from 'react-intl';
 import queryString from 'query-string';
 import { ApolloProvider } from 'react-apollo';
 import ErrorBoundary from '@folio/stripes-components/lib/ErrorBoundary';
+import { metadata } from 'stripes-config';
+
 import { RootContext } from './RootContext';
 import initialReducers from '../../initialReducers';
 import enhanceReducer from '../../enhanceReducer';
@@ -21,7 +23,6 @@ import SystemSkeleton from '../SystemSkeleton';
 
 import './Root.css';
 
-import { metadata } from 'stripes-config'; // eslint-disable-line
 import { withModules } from '../Modules';
 
 if (!metadata) {
@@ -151,19 +152,19 @@ Root.propTypes = {
   }),
   token: PropTypes.string,
   disableAuth: PropTypes.bool.isRequired,
-  logger: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
-  currentPerms: PropTypes.object, // eslint-disable-line react/forbid-prop-types
-  currentUser: PropTypes.object, // eslint-disable-line react/forbid-prop-types
-  epics: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+  logger: PropTypes.object.isRequired,
+  currentPerms: PropTypes.object,
+  currentUser: PropTypes.object,
+  epics: PropTypes.object,
   locale: PropTypes.string,
   timezone: PropTypes.string,
-  translations: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+  translations: PropTypes.object,
   modules: PropTypes.shape({
     app: PropTypes.array,
   }),
-  plugins: PropTypes.object, // eslint-disable-line react/forbid-prop-types
-  bindings: PropTypes.object, // eslint-disable-line react/forbid-prop-types
-  config: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+  plugins: PropTypes.object,
+  bindings: PropTypes.object,
+  config: PropTypes.object,
   okapi: PropTypes.shape({
     url: PropTypes.string,
     tenant: PropTypes.string,
@@ -173,8 +174,8 @@ Root.propTypes = {
     PropTypes.string,
   ).isRequired,
   discovery: PropTypes.shape({
-    modules: PropTypes.object, // eslint-disable-line react/forbid-prop-types
-    interfaces: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+    modules: PropTypes.object,
+    interfaces: PropTypes.object,
     isFinished: PropTypes.bool,
   }),
   history: PropTypes.shape({

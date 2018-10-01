@@ -1,4 +1,4 @@
-import { okapi } from 'stripes-config'; // eslint-disable-line
+import { okapi } from 'stripes-config';
 import { Response } from '@bigtest/mirage';
 
 // typical mirage config export

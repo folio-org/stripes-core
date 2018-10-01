@@ -19,7 +19,7 @@ const Front = ({ stripes }) => (
 );
 
 Front.propTypes = {
-  stripes: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
+  stripes: PropTypes.object.isRequired,
 };
 
 export default Front;

@@ -30,7 +30,7 @@ module.exports = function serve(stripesConfig, options) {
   return new Promise((resolve) => {
     logger.log('starting serve...');
     const app = express();
-    let config = require('../webpack.config.cli.dev'); // eslint-disable-line
+    let config = require('../webpack.config.cli.dev'); // eslint-disable-line global-require
 
     config.plugins.push(new StripesWebpackPlugin({ stripesConfig }));
 

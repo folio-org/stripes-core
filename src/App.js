@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { okapi as okapiConfig, config } from 'stripes-config'; // eslint-disable-line
+import { okapi as okapiConfig, config } from 'stripes-config';
 
 import connectErrorEpic from './connectErrorEpic';
 import configureEpics from './configureEpics';

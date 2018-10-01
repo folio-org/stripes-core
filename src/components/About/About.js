@@ -3,11 +3,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import SafeHTMLMessage from '@folio/react-intl-safe-html';
-/* eslint-disable import/extensions */
-import stripesConnect from '@folio/stripes-connect/package.json';
-import stripesComponents from '@folio/stripes-components/package.json';
-import stripesLogger from '@folio/stripes-logger/package.json';
-/* eslint-enable */
+import stripesConnect from '@folio/stripes-connect/package';
+import stripesComponents from '@folio/stripes-components/package';
+import stripesLogger from '@folio/stripes-logger/package';
 
 import Pane from '@folio/stripes-components/lib/Pane';
 import Headline from '@folio/stripes-components/lib/Headline';
@@ -16,7 +14,7 @@ import { isVersionCompatible } from '../../discoverServices';
 import AboutEnabledModules from './AboutEnabledModules';
 import { withModules } from '../Modules';
 
-import stripesCore from '../../../package.json'; // eslint-disable-line
+import stripesCore from '../../../package';
 import css from './About.css';
 
 const About = (props) => {

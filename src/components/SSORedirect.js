@@ -24,7 +24,6 @@ class SSORedirect extends Component {
 }
 
 SSORedirect.propTypes = {
-  // eslint-disable-next-line react/no-unused-prop-types
   location: PropTypes.shape({
     search: PropTypes.string,
   }).isRequired,

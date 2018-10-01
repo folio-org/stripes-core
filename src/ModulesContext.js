@@ -1,6 +1,5 @@
 import React from 'react';
-import { modules } from 'stripes-config'; // eslint-disable-line
-
+import { modules } from 'stripes-config';
 
 export default React.createContext(modules);
 export { modules as originalModules };

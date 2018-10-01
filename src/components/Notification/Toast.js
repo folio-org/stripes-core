@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Portal } from 'react-overlays'; // eslint-disable-line
+import { Portal } from 'react-overlays';
 import ToastNotification from './ToastNotification';
 import css from './Toast.css';
 

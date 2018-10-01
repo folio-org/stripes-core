@@ -38,7 +38,8 @@ commander
   .arguments('<config>')
   .description('Launch a webpack-dev-server')
   .action((stripesConfigFile, options) => {
-    const stripesConfig = require(path.resolve(stripesConfigFile)); // eslint-disable-line
+    // eslint-disable-next-line global-require,import/no-dynamic-require
+    const stripesConfig = require(path.resolve(stripesConfigFile));
     stripes.serve(stripesConfig, options);
   });
 
@@ -50,7 +51,8 @@ commander
   .arguments('<config> <output>')
   .description('Build a tenant bundle')
   .action((stripesConfigFile, outputPath, options) => {
-    const stripesConfig = require(path.resolve(stripesConfigFile)); // eslint-disable-line
+    // eslint-disable-next-line global-require,import/no-dynamic-require
+    const stripesConfig = require(path.resolve(stripesConfigFile));
     options.outputPath = outputPath;
     stripes.build(stripesConfig, options)
       .then(stats => processStats(stats))

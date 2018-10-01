@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { modules } from 'stripes-config';
 import { withStripes } from './StripesContext';
-import { modules } from 'stripes-config'; // eslint-disable-line
 
 const Pluggable = (props) => {
   const plugins = modules.plugin || [];

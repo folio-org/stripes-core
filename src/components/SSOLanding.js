@@ -13,7 +13,7 @@ class SSOLanding extends Component {
     super(props, context);
 
     this.store = context.store;
-    this.sys = require('stripes-config'); // eslint-disable-line
+    this.sys = require('stripes-config'); // eslint-disable-line global-require
     this.okapiUrl = this.sys.okapi.url;
     this.tenant = this.sys.okapi.tenant;
   }
@@ -73,11 +73,9 @@ SSOLanding.contextTypes = {
 };
 
 SSOLanding.propTypes = {
-  // eslint-disable-next-line react/no-unused-prop-types
   location: PropTypes.shape({
     search: PropTypes.string,
   }).isRequired,
-  // eslint-disable-next-line react/no-unused-prop-types
   cookies: PropTypes.instanceOf(Cookies).isRequired,
 };
 

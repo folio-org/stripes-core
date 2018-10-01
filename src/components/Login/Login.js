@@ -5,10 +5,9 @@ import { connect } from 'react-redux';
 import { reduxForm, Field, Form, formValueSelector } from 'redux-form';
 import TextField from '@folio/stripes-components/lib/TextField';
 import Button from '@folio/stripes-components/lib/Button';
+import { branding } from 'stripes-config';
 import authFormStyles from './AuthForm.css';
 import SSOLogin from '../SSOLogin';
-import { branding } from 'stripes-config'; //eslint-disable-line
-
 
 class Login extends Component {
   static propTypes = {
