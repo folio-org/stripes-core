@@ -1,5 +1,11 @@
 # Change history for stripes-core
 
+## [2.15.0](https://github.com/folio-org/stripes-core/tree/v2.15.0) (2018-10-02)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.14.0...v2.15.0)
+
+* Require newer `stripes-components` and `stripes-logger`
+
+
 ## [2.14.0](https://github.com/folio-org/stripes-core/tree/v2.14.0) (2018-10-01)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.13.0...v2.14.0)
 
