@@ -7,7 +7,6 @@ import PropTypes from 'prop-types';
 import { injectIntl, intlShape } from 'react-intl';
 import Headline from '@folio/stripes-components/lib/Headline';
 import NavButton from '../NavButton';
-import css from './CurrentApp.css';
 
 const propTypes = {
   currentApp: PropTypes.shape(
@@ -40,7 +39,6 @@ const CurrentApp = ({ currentApp, id, intl, badge }) => {
     <NavButton
       label={<Headline tag="h1" size="small" margin="none">{displayName}</Headline>}
       id={id}
-      className={css.currentApp}
       ariaLabel={ariaLabel}
       badge={badge}
       iconKey={name}
