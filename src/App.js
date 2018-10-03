@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { okapi as okapiConfig, config } from 'stripes-config';
+import merge from 'lodash/merge';
 
 import connectErrorEpic from './connectErrorEpic';
 import configureEpics from './configureEpics';
@@ -13,7 +14,8 @@ import Root from './components/Root';
 
 export default class StripesCore extends Component {
   static propTypes = {
-    history: PropTypes.object
+    history: PropTypes.object,
+    initialState: PropTypes.object
   };
 
   constructor(props) {
@@ -22,17 +24,23 @@ export default class StripesCore extends Component {
     const okapi = (typeof okapiConfig === 'object' && Object.keys(okapiConfig).length > 0)
       ? okapiConfig : { withoutOkapi: true };
 
+    const initialState = merge({}, { okapi }, props.initialState);
+
     this.logger = configureLogger(config);
     this.logger.log('core', 'Starting Stripes ...');
 
     this.epics = configureEpics(connectErrorEpic);
-    this.store = configureStore({ okapi }, this.logger, this.epics);
+    this.store = configureStore(initialState, this.logger, this.epics);
     if (!okapi.withoutOkapi) discoverServices(this.store);
 
     this.actionNames = gatherActions();
   }
 
   render() {
+    // no need to pass along `initialState`
+    // eslint-disable-next-line no-unused-vars
+    const { initialState, ...props } = this.props;
+
     return (
       <Root
         store={this.store}
@@ -41,7 +49,7 @@ export default class StripesCore extends Component {
         config={config}
         actionNames={this.actionNames}
         disableAuth={(config && config.disableAuth) || false}
-        {...this.props}
+        {...props}
       />
     );
   }
