@@ -44,10 +44,7 @@ export default function setupApplication({
           addresses: [],
           servicePoints: []
         },
-        currentPerms: {
-          'perms.all': true,
-          ...permissions
-        }
+        currentPerms: permissions
       };
     }
 
