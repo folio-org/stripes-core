@@ -1,5 +1,9 @@
 # Change history for stripes-core
 
+## 2.16.0 (IN PROGRESS)
+
+* Export BigTest helpers
+
 ## [2.15.1](https://github.com/folio-org/stripes-core/tree/v2.15.1) (2018-10-03)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.15.0...v2.15.1)
 
