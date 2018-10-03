@@ -15,7 +15,7 @@ import Root from './components/Root';
 export default class StripesCore extends Component {
   static propTypes = {
     history: PropTypes.object,
-    initiailState: PropTypes.object
+    initialState: PropTypes.object
   };
 
   constructor(props) {
