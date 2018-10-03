@@ -37,6 +37,10 @@ export default class StripesCore extends Component {
   }
 
   render() {
+    // no need to pass along `initialState`
+    // eslint-disable-next-line no-unused-vars
+    const { initialState, ...props } = this.props;
+
     return (
       <Root
         store={this.store}
@@ -45,7 +49,7 @@ export default class StripesCore extends Component {
         config={config}
         actionNames={this.actionNames}
         disableAuth={(config && config.disableAuth) || false}
-        {...this.props}
+        {...props}
       />
     );
   }
