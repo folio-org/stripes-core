@@ -23,6 +23,7 @@ export default function setupApplication({
   disableAuth = true,
   modules = [],
   translations = {},
+  permissions = {},
   stripesConfig,
   mirageOptions,
   scenarios
@@ -44,7 +45,8 @@ export default function setupApplication({
           servicePoints: []
         },
         currentPerms: {
-          'perms.all': true
+          'perms.all': true,
+          ...permissions
         }
       };
     }
