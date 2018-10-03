@@ -28,11 +28,33 @@ export default function setupApplication({
   scenarios
 } = {}) {
   beforeEach(async function () {
+    const initialState = {};
+
+    // when auth is disabled, add a fake user to the store
+    if (disableAuth) {
+      initialState.okapi = {
+        token: 'test',
+        currentUser: {
+          id: 'test',
+          username: 'testuser',
+          firstName: 'Test',
+          lastName: 'User',
+          email: 'user@folio.org',
+          addresses: [],
+          servicePoints: []
+        },
+        currentPerms: {
+          'perms.all': true
+        }
+      };
+    }
+
+    // mount the app
     this.app = await setupAppForTesting(App, {
       mountId: 'testing-root',
 
       props: {
-        disableAuth
+        initialState
       },
 
       setup: () => {
