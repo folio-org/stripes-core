@@ -15,6 +15,7 @@ if (environment !== 'production') {
     const {
       scenarios: coreScenarios = {},
       factories: coreFactories = {},
+      fixtures: coreFixtures = {},
       baseConfig: coreConfig,
       ...coreOpts
     } = coreModules;
@@ -22,6 +23,7 @@ if (environment !== 'production') {
     const {
       scenarios = {},
       factories = {},
+      fixtures = {},
       baseConfig = () => {},
       ...opts
     } = options;
@@ -35,6 +37,11 @@ if (environment !== 'production') {
     // all of them unconditionally
     server.loadFactories(coreFactories);
     server.loadFactories(factories);
+
+    // without initial factories mirage loads all fixtures by default;
+    // we only want to load them when calling `loadFixtures`, so we
+    // manually add them back here to avoid mirage auto-loading
+    server.options.fixtures = merge({}, coreFixtures, fixtures);
 
     // the default scenario is only used when not in test mode
     let defaultScenario;
