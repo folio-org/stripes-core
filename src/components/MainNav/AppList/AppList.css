@@ -67,7 +67,7 @@ ul.dropdownList {
 }
 
 .dropdownListItemDescription {
-  color: var(--labelColor);
+  color: var(--label-color);
   display: none;
 }
 
