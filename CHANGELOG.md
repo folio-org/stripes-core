@@ -1,5 +1,11 @@
 # Change history for stripes-core
 
+## [2.15.2](https://github.com/folio-org/stripes-core/tree/v2.15.2) (2018-10-04)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.15.1...v2.15.2)
+
+* Prevent mirage from auto-loading fixtures
+* Update CSS vars to kebab-case
+
 ## [2.15.1](https://github.com/folio-org/stripes-core/tree/v2.15.1) (2018-10-03)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.15.0...v2.15.1)
 
