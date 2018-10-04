@@ -12,7 +12,7 @@
 }
 
 .isEmptyMessage {
-  color: var(--subLabelColor);
+  color: var(--sub-label-color);
 }
 
 .absent {
