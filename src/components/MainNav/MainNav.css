@@ -30,7 +30,7 @@
   }
 }
 
-@media (--mediumDown) {
+@media (--medium-down) {
   .brandingLabel {
     display: none;
   }

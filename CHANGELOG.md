@@ -1,5 +1,10 @@
 # Change history for stripes-core
 
+## [2.15.3](https://github.com/folio-org/stripes-core/tree/v2.15.3) (2018-10-05)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.15.2...v2.15.3)
+
+* Fix CSS variable naming for breakpoints
+
 ## [2.15.2](https://github.com/folio-org/stripes-core/tree/v2.15.2) (2018-10-04)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.15.1...v2.15.2)
 

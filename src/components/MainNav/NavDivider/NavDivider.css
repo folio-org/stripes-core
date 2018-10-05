@@ -6,7 +6,7 @@
   margin: 0 5px;
 }
 
-@media (--mediumDown) {
+@media (--medium-down) {
   .hideMed {
     display: none;
   }

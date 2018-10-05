@@ -22,7 +22,7 @@
   }
 }
 
-@media (--mediumDown) {
+@media (--medium-down) {
   .DropdownMenu {
     min-width: 29.5rem;
   }
