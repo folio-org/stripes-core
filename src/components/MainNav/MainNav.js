@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { isEqual } from 'lodash';
 import { compose } from 'redux';
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
-import Headline from '@folio/stripes-components/lib/Headline';
 import { withRouter } from 'react-router';
 import localforage from 'localforage';
 
@@ -180,9 +179,9 @@ class MainNav extends Component {
                 />
               </NavGroup>
               <nav>
-                <Headline tag="h2" className="sr-only">
+                <h2 className={css.navigationHeadline}>
                   <FormattedMessage id="stripes-core.mainNavigation" />
-                </Headline>
+                </h2>
                 <NavGroup>
                   <NavGroup>
                     <NavDivider md="hide" />
