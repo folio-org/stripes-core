@@ -62,21 +62,21 @@
 
 input.input {
   height: 60px;
-  font-size: 18px;
+  font-size: var(--font-size-medium);
   padding: 15px;
 }
 
 button.submitButton {
   height: 60px;
   max-height: 100%;
-  font-size: 22px;
+  font-size: var(--font-size-large);
 }
 
 .formMessage {
   line-height: 125%;
   padding: 10px;
   border-radius: var(--radius);
-  font-size: 18px;
+  font-size: var(--font-size-medium);
 
   &.error {
     color: #fff;
@@ -101,12 +101,12 @@ button.submitButton {
 
   button.submitButton {
     height: 44px;
-    font-size: 16px;
+    font-size: var(--font-size-medium);
   }
 
   input.input {
     height: 44px;
-    font-size: 14px;
+    font-size: var(--font-size-medium);
     padding: 8px;
   }
 
