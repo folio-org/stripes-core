@@ -18,10 +18,6 @@ export function formatDateTime(dateStr, timeZone) {
   if (!dateStr) return dateStr;
   const dateTime = moment.tz(dateStr, timeZone);
   return (
-    <span>
-      <FormattedDate value={dateTime} timeZone={timeZone} />
-      {' '}
-      <FormattedTime value={dateStr} timeZone={timeZone} />
-    </span>
+    <FormattedTime value={dateTime} timeZone={timeZone} day="numeric" month="numeric" year="numeric" />
   );
 }
