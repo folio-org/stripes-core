@@ -6,4 +6,6 @@ export default @interactor class LoginInteractor {
   submit = scoped('button[type="submit"]', {
     isDisabled: property('disabled')
   });
+
+  message = scoped('div[class^="formMessage--"]')
 }

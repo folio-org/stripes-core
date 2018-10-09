@@ -2,8 +2,9 @@ import _ from 'lodash';
 import 'isomorphic-fetch';
 import localforage from 'localforage';
 import { change } from 'redux-form';
-import { addLocaleData } from 'react-intl';
+import { addLocaleData, FormattedMessage } from 'react-intl';
 import { translations } from 'stripes-config';
+import React from 'react';
 
 import {
   clearCurrentUser,
@@ -22,6 +23,10 @@ import {
   setCurrentServicePoint,
   setUserServicePoints,
 } from './okapiActions';
+
+const styles = {
+  multipleErrorsUl: { textAlign: 'left', margin: '0' }
+};
 
 function getHeaders(tenant, token) {
   return {
@@ -110,15 +115,50 @@ export function getBindings(okapiUrl, store, tenant) {
     });
 }
 
+function getErrorMessage(error = {}) {
+  const { code = 'default.error', parameters } = error;
+  const values = parameters ?
+    parameters.reduce(
+      (res, key) => {
+        res[key.key] = key.value;
+        return res;
+      }, {}
+    ) : {};
+
+  return <FormattedMessage id={`stripes-core.loginServices.login.${code}`} values={values} />;
+}
+
+function getPasswordValidationMessages(errors) {
+  return errors.map(element => (
+    <li key={`${element.code}-${element.type}`}>
+      { getErrorMessage(element)}
+    </li>
+  ));
+}
+
+function parseErrors(json) {
+  const { errorMessage } = json;
+  try {
+    const { errors } = JSON.parse(errorMessage);
+
+    return errors.length > 1 ? (
+      <ul style={styles.multipleErrorsUl}>{getPasswordValidationMessages(errors)}</ul>
+    ) : (
+      getErrorMessage(errors[0])
+    );
+  } catch (error) {
+    return getErrorMessage();
+  }
+}
+
 function clearOkapiSession(store, resp) {
   resp.json().then((json) => {
     localforage.removeItem('okapiSess');
     store.dispatch(change('login', 'password', ''));
-    // This is a lame way to detect the nature of the error. In future, the response status will be a 4xx
-    if (resp.status === 500 && json.errorMessage.startsWith('Error verifying user existence')) {
-      store.dispatch(setAuthError('Sorry, the information entered does not match our records.'));
+    if (resp.status === 422) {
+      store.dispatch(setAuthError(parseErrors(json)));
     } else {
-      store.dispatch(setAuthError(`Error ${resp.status} ${resp.statusText}: ${json.errorMessage}`));
+      store.dispatch(setAuthError(getErrorMessage()));
     }
     store.dispatch(setOkapiReady());
   });
