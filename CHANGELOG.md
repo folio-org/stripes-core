@@ -1,5 +1,9 @@
 # Change history for stripes-core
 
+## 2.16.0 (IN PROGRESS)
+
+* Report `stripes` version on /settings/about. Fixes STCOR-270.
+
 ## [2.15.3](https://github.com/folio-org/stripes-core/tree/v2.15.3) (2018-10-05)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.15.2...v2.15.3)
 
