@@ -1,5 +1,13 @@
 # Change history for stripes-core
 
+## [2.15.4](https://github.com/folio-org/stripes-core/tree/v2.15.4) (2018-10-12)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.15.3...v2.15.4)
+
+* Increase login form input font size
+* Slim down skeleton loader
+* Update CSS for hidden navigation headline
+* Lean on react-intl FormattedTime for datetime construction
+
 ## [2.15.3](https://github.com/folio-org/stripes-core/tree/v2.15.3) (2018-10-05)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.15.2...v2.15.3)
 
