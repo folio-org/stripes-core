@@ -6,6 +6,7 @@ import SafeHTMLMessage from '@folio/react-intl-safe-html';
 import stripesConnect from '@folio/stripes-connect/package';
 import stripesComponents from '@folio/stripes-components/package';
 import stripesLogger from '@folio/stripes-logger/package';
+import stripesFramework from '@folio/stripes/package';
 
 import Pane from '@folio/stripes-components/lib/Pane';
 import Headline from '@folio/stripes-components/lib/Headline';
@@ -117,6 +118,7 @@ const About = (props) => {
           </Headline>
           <span
             id="platform-versions"
+            data-stripes-framework={stripesFramework.version}
             data-stripes-core={stripesCore.version}
             data-stripes-connect={stripesConnect.version}
             data-stripes-components={stripesComponents.version}
@@ -126,6 +128,10 @@ const About = (props) => {
           <List
             listStyle="bullets"
             items={[
+              {
+                key: 'stripes-framework',
+                value: `stripes-framework ${stripesFramework.version}`,
+              },
               {
                 key: 'stripes-core',
                 value: `stripes-core ${stripesCore.version}`,
