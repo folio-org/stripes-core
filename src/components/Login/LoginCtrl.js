@@ -8,7 +8,7 @@ import Login from './Login';
 
 class LoginCtrl extends Component {
   static propTypes = {
-    authFailure: PropTypes.string,
+    authFailure: PropTypes.arrayOf(PropTypes.object),
     ssoEnabled: PropTypes.bool,
     autoLogin: PropTypes.shape({
       username: PropTypes.string.isRequired,
@@ -19,11 +19,11 @@ class LoginCtrl extends Component {
         formatMessage: PropTypes.func.isRequired,
       }),
     }).isRequired,
-  }
+  };
 
   static contextTypes = {
     store: PropTypes.object,
-  }
+  };
 
   constructor(props, context) {
     super(props);
@@ -57,7 +57,7 @@ class LoginCtrl extends Component {
     return (
       <Login
         onSubmit={this.handleSubmit}
-        authError={authFailure}
+        authErrors={authFailure}
         handleSSOLogin={this.handleSSOLogin}
         ssoActive={ssoEnabled}
         stripes={this.props.stripes}

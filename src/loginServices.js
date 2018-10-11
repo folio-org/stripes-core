@@ -2,9 +2,8 @@ import _ from 'lodash';
 import 'isomorphic-fetch';
 import localforage from 'localforage';
 import { change } from 'redux-form';
-import { addLocaleData, FormattedMessage } from 'react-intl';
+import { addLocaleData } from 'react-intl';
 import { translations } from 'stripes-config';
-import React from 'react';
 
 import {
   clearCurrentUser,
@@ -23,10 +22,6 @@ import {
   setCurrentServicePoint,
   setUserServicePoints,
 } from './okapiActions';
-
-const styles = {
-  multipleErrorsUl: { textAlign: 'left', margin: '0' }
-};
 
 function getHeaders(tenant, token) {
   return {
@@ -115,51 +110,39 @@ export function getBindings(okapiUrl, store, tenant) {
     });
 }
 
-function getErrorMessage(error = {}) {
-  const { code = 'default.error', parameters } = error;
-  const values = parameters ?
-    parameters.reduce(
-      (res, key) => {
-        res[key.key] = key.value;
-        return res;
-      }, {}
-    ) : {};
-
-  return <FormattedMessage id={`stripes-core.loginServices.login.${code}`} values={values} />;
+function getDefaultError() {
+  return {
+    code :'default.error',
+    type :'error',
+  };
 }
 
-function getPasswordValidationMessages(errors) {
-  return errors.map(element => (
-    <li key={`${element.code}-${element.type}`}>
-      { getErrorMessage(element)}
-    </li>
-  ));
-}
+function getLoginErrors(errorMessage, response) {
+  const loginErrors = [];
+  const { status } = response;
 
-function parseErrors(json) {
-  const { errorMessage } = json;
-  try {
-    const { errors } = JSON.parse(errorMessage);
+  if (status === 422) {
+    try {
+      const {
+        errors,
+      } = JSON.parse(errorMessage);
 
-    return errors.length > 1 ? (
-      <ul style={styles.multipleErrorsUl}>{getPasswordValidationMessages(errors)}</ul>
-    ) : (
-      getErrorMessage(errors[0])
-    );
-  } catch (error) {
-    return getErrorMessage();
+      loginErrors.push(...errors);
+    } catch (e) {
+      loginErrors.push(getDefaultError());
+    }
+  } else {
+    loginErrors.push(getDefaultError());
   }
+
+  return loginErrors;
 }
 
-function clearOkapiSession(store, resp) {
-  resp.json().then((json) => {
+function handleBadRequest(store, response) {
+  response.json().then(({ errorMessage }) => {
     localforage.removeItem('okapiSess');
     store.dispatch(change('login', 'password', ''));
-    if (resp.status === 422) {
-      store.dispatch(setAuthError(parseErrors(json)));
-    } else {
-      store.dispatch(setAuthError(getErrorMessage()));
-    }
+    store.dispatch(setAuthError(getLoginErrors(errorMessage, response)));
     store.dispatch(setOkapiReady());
   });
 }
@@ -269,7 +252,7 @@ function processSSOLoginResponse(resp) {
 function processOkapiSession(okapiUrl, store, tenant, resp) {
   const token = resp.headers.get('X-Okapi-Token');
   if (resp.status >= 400) {
-    clearOkapiSession(store, resp);
+    handleBadRequest(store, resp);
   } else {
     resp.json().then(json => createOkapiSession(okapiUrl, store, tenant, token, json));
   }

@@ -1,18 +1,7 @@
 import { describe, it, beforeEach } from '@bigtest/mocha';
 import { expect } from 'chai';
-
 import setupApplication from '../helpers/setup-application';
 import LoginInteractor from '../interactors/login';
-import {
-  wrongUsername,
-  wrongPassword,
-  thirdAttempt,
-  fifthAttempt,
-  multipleErrors,
-  serverError,
-  userLocked,
-  invalidResponce,
-} from '../constants';
 import translations from '../../../translations/stripes-core/en';
 
 const parseMessageFromJsx = (translation, values) => {
@@ -38,7 +27,7 @@ describe('Login', () => {
     expect(login.submit.isDisabled).to.be.true;
   });
 
-  it('error message should not be present', () => {
+  it.always('error message should not be present', () => {
     expect(login.message.isPresent).to.be.false;
   });
 
@@ -54,7 +43,7 @@ describe('Login', () => {
       expect(login.submit.isDisabled).to.be.false;
     });
 
-    it('error message should not be present', () => {
+    it.always('error message should not be present', () => {
       expect(login.message.isPresent).to.be.false;
     });
   });
@@ -66,30 +55,45 @@ describe('Login', () => {
       await password.fill('test');
     });
 
-    it('has a disabled submit button', () => {
+    it.always('has a disabled submit button', () => {
       expect(login.submit.isPresent).to.be.true;
       expect(login.submit.isDisabled).to.be.true;
     });
 
-    it('error message should not be present', () => {
+    it.always('error message should not be present', () => {
       expect(login.message.isPresent).to.be.false;
     });
   });
 
   describe('errors', () => {
     describe('error for the wrong username', () => {
-      beforeEach(async () => {
-        const username = login.username;
-        const password = login.password;
-        const submit = login.submit;
+      beforeEach(async function () {
+        const { username, password, submit } = login;
 
-        await username.fill(wrongUsername);
-        await password.fill(wrongUsername);
+        this.server.post('bl-users/login', {
+          errorMessage: JSON.stringify(
+            { errors: [
+              {
+                type: 'error',
+                code: 'username.invalid',
+                parameters: [
+                  {
+                    key: 'username',
+                    value: 'username',
+                  },
+                ]
+              }
+            ] }
+          )
+        }, 422);
+
+        await username.fill('username');
+        await password.fill('password');
         await submit.click();
       });
 
-      it('username should not be reset upon failed submit', () => {
-        expect(login.username.value).to.equal(wrongUsername);
+      it.always('username should not be reset upon failed submit', () => {
+        expect(login.username.value).to.equal('username');
       });
 
       it('password should be reset upon failed submit', () => {
@@ -103,24 +107,33 @@ describe('Login', () => {
       it('error message should have proper text upon failed submit', () => {
         expect(login.message.text).to.equal(parseMessageFromJsx(
           translations['loginServices.login.username.invalid'],
-          { username:wrongUsername }
+          { username: 'username' }
         ));
       });
     });
 
     describe('error for the wrong password', () => {
-      beforeEach(async () => {
-        const username = login.username;
-        const password = login.password;
-        const submit = login.submit;
+      beforeEach(async function () {
+        const { username, password, submit } = login;
 
-        await username.fill(wrongPassword);
-        await password.fill(wrongPassword);
+        this.server.post('bl-users/login', {
+          errorMessage: JSON.stringify(
+            { errors: [
+              {
+                type: 'error',
+                code: 'password.invalid',
+              }
+            ] }
+          )
+        }, 422);
+
+        await username.fill('username');
+        await password.fill('password');
         await submit.click();
       });
 
-      it('username should not be reset upon failed submit', () => {
-        expect(login.username.value).to.equal(wrongPassword);
+      it.always('username should not be reset upon failed submit', () => {
+        expect(login.username.value).to.equal('username');
       });
 
       it('password should be reset upon failed submit', () => {
@@ -137,18 +150,18 @@ describe('Login', () => {
     });
 
     describe('error for the server error', () => {
-      beforeEach(async () => {
-        const username = login.username;
-        const password = login.password;
-        const submit = login.submit;
+      beforeEach(async function () {
+        const { username, password, submit } = login;
 
-        await username.fill(serverError);
-        await password.fill(serverError);
+        this.server.post('bl-users/login', {}, 500);
+
+        await username.fill('username');
+        await password.fill('password');
         await submit.click();
       });
 
-      it('username should not be reset upon failed submit', () => {
-        expect(login.username.value).to.equal(serverError);
+      it.always('username should not be reset upon failed submit', () => {
+        expect(login.username.value).to.equal('username');
       });
 
       it('password should be reset upon failed submit', () => {
@@ -165,18 +178,27 @@ describe('Login', () => {
     });
 
     describe('error for the third attempt to enter wrong password', () => {
-      beforeEach(async () => {
-        const username = login.username;
-        const password = login.password;
-        const submit = login.submit;
+      beforeEach(async function () {
+        const { username, password, submit } = login;
 
-        await username.fill(thirdAttempt);
-        await password.fill(thirdAttempt);
+        this.server.post('bl-users/login', {
+          errorMessage: JSON.stringify(
+            { errors: [
+              {
+                type: 'error',
+                code: 'third.failed.attempt',
+              }
+            ] }
+          )
+        }, 422);
+
+        await username.fill('username');
+        await password.fill('password');
         await submit.click();
       });
 
-      it('username should not be reset upon failed submit', () => {
-        expect(login.username.value).to.equal(thirdAttempt);
+      it.always('username should not be reset upon failed submit', () => {
+        expect(login.username.value).to.equal('username');
       });
 
       it('password should be reset upon failed submit', () => {
@@ -193,18 +215,27 @@ describe('Login', () => {
     });
 
     describe('error for the fifth attempt to enter wrong password', () => {
-      beforeEach(async () => {
-        const username = login.username;
-        const password = login.password;
-        const submit = login.submit;
+      beforeEach(async function () {
+        const { username, password, submit } = login;
 
-        await username.fill(fifthAttempt);
-        await password.fill(fifthAttempt);
+        this.server.post('bl-users/login', {
+          errorMessage: JSON.stringify(
+            { errors: [
+              {
+                type: 'error',
+                code: 'fifth.failed.attempt.blocked',
+              }
+            ] }
+          )
+        }, 422);
+
+        await username.fill('username');
+        await password.fill('password');
         await submit.click();
       });
 
-      it('username should not be reset upon failed submit', () => {
-        expect(login.username.value).to.equal(fifthAttempt);
+      it.always('username should not be reset upon failed submit', () => {
+        expect(login.username.value).to.equal('username');
       });
 
       it('password should be reset upon failed submit', () => {
@@ -220,20 +251,28 @@ describe('Login', () => {
       });
     });
 
-
     describe('error for the attempt to login to locked account', () => {
-      beforeEach(async () => {
-        const username = login.username;
-        const password = login.password;
-        const submit = login.submit;
+      beforeEach(async function () {
+        const { username, password, submit } = login;
 
-        await username.fill(userLocked);
-        await password.fill(userLocked);
+        this.server.post('bl-users/login', {
+          errorMessage: JSON.stringify(
+            { errors: [
+              {
+                type: 'error',
+                code: 'user.blocked',
+              }
+            ] }
+          )
+        }, 422);
+
+        await username.fill('username');
+        await password.fill('password');
         await submit.click();
       });
 
-      it('username should not be reset upon failed submit', () => {
-        expect(login.username.value).to.equal(userLocked);
+      it.always('username should not be reset upon failed submit', () => {
+        expect(login.username.value).to.equal('username');
       });
 
       it('password should be reset upon failed submit', () => {
@@ -250,18 +289,31 @@ describe('Login', () => {
     });
 
     describe('multiple errors', () => {
-      beforeEach(async () => {
-        const username = login.username;
-        const password = login.password;
-        const submit = login.submit;
+      beforeEach(async function () {
+        const { username, password, submit } = login;
 
-        await username.fill(multipleErrors);
-        await password.fill(multipleErrors);
+        this.server.post('bl-users/login', {
+          errorMessage: JSON.stringify(
+            { errors: [
+              {
+                type: 'error',
+                code: 'user.blocked',
+              },
+              {
+                type: 'error',
+                code: 'third.failed.attempt',
+              },
+            ] }
+          )
+        }, 422);
+
+        await username.fill('username');
+        await password.fill('password');
         await submit.click();
       });
 
-      it('username should not be reset upon failed submit', () => {
-        expect(login.username.value).to.equal(multipleErrors);
+      it.always('username should not be reset upon failed submit', () => {
+        expect(login.username.value).to.equal('username');
       });
 
       it('password should be reset upon failed submit', () => {
@@ -280,18 +332,20 @@ describe('Login', () => {
     });
 
     describe('invalid response body', () => {
-      beforeEach(async () => {
-        const username = login.username;
-        const password = login.password;
-        const submit = login.submit;
+      beforeEach(async function () {
+        const { username, password, submit } = login;
 
-        await username.fill(invalidResponce);
-        await password.fill(invalidResponce);
+        this.server.post('bl-users/login', {
+          errorMessage: JSON.stringify(['test'])
+        }, 422);
+
+        await username.fill('username');
+        await password.fill('password');
         await submit.click();
       });
 
-      it('username should not be reset upon failed submit', () => {
-        expect(login.username.value).to.equal(invalidResponce);
+      it.always('username should not be reset upon failed submit', () => {
+        expect(login.username.value).to.equal('username');
       });
 
       it('password should be reset upon failed submit', () => {
@@ -312,12 +366,10 @@ describe('Login', () => {
 
   describe('with valid credentials', () => {
     beforeEach(async () => {
-      const username = login.username;
-      const password = login.password;
-      const submit = login.submit;
+      const { username, password, submit } = login;
 
-      await username.fill('test');
-      await password.fill('test');
+      await username.fill('username');
+      await password.fill('password');
       await submit.click();
       await submit.blur();
     });

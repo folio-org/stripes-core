@@ -7,5 +7,5 @@ export default @interactor class LoginInteractor {
     isDisabled: property('disabled')
   });
 
-  message = scoped('div[class^="formMessage--"]')
+  message = scoped('div[class^="AuthErrorsContainer--"]')
 }

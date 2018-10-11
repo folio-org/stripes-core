@@ -1,0 +1,21 @@
+@import "@folio/stripes-components/lib/variables.css";
+
+.AuthErrorsContainer {
+  line-height: 125%;
+  padding: 10px;
+  border-radius: var(--radius);
+  font-size: var(--font-size-medium);
+  color: #fff;
+  background-color: var(--error);
+}
+
+.AuthErrorsList {
+  text-align: left;
+  margin: 0;
+}
+
+.AuthErrorsList > li:only-of-type {
+  text-align: center;
+  list-style-type: none;
+  margin-left: -40px;
+}
