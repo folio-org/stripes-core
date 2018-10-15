@@ -3,6 +3,7 @@ const path = require('path');
 // These modules are already transpiled and should be excluded
 const folioScopeBlacklist = [
   'react-githubish-mentions',
+  'react-big-calendar',
 ].map(segment => path.join('@folio', segment));
 
 // We want to transpile files inside node_modules/@folio or outside
