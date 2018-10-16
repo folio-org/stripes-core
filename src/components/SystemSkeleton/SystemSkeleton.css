@@ -78,7 +78,7 @@
   display: flex;
 }
 
-@media (--mediumDown) {
+@media (--medium-down) {
   .hideOnSmallScreens {
     display: none;
   }

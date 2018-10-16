@@ -9,7 +9,7 @@
   margin: 0;
 }
 
-@media (--mediumDown) {
+@media (--medium-down) {
   .navGroup {
     &.hideMed {
       display: none;

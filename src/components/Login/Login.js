@@ -78,6 +78,7 @@ class Login extends Component {
                 validationEnabled={false}
                 hasClearIcon={false}
                 autoComplete="username"
+                autoCapitalize="none"
               />
             </div>
             <div className={authFormStyles.formGroup}>

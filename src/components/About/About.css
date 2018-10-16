@@ -1,6 +1,6 @@
 @import "@folio/stripes-components/lib/variables.css";
 
-@media (--largeUp) {
+@media (--large-up) {
   .versionsContainer {
     display: flex;
   }
@@ -12,7 +12,7 @@
 }
 
 .isEmptyMessage {
-  color: var(--subLabelColor);
+  color: var(--sub-label-color);
 }
 
 .absent {

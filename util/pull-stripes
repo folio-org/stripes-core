@@ -17,6 +17,7 @@ dirs=`echo '
     ui-users
     ui-inventory
     ui-eholdings
+    ui-erm
     ui-checkin
     ui-checkout
     ui-circulation

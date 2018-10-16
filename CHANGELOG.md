@@ -1,5 +1,40 @@
 # Change history for stripes-core
 
+## 2.16.0 (IN PROGRESS)
+
+* Turn off autoCapitalize on login form
+* Deprecate stripes intl utilities, STCOR-267
+
+## [2.15.4](https://github.com/folio-org/stripes-core/tree/v2.15.4) (2018-10-12)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.15.3...v2.15.4)
+
+* Increase login form input font size
+* Slim down skeleton loader
+* Update CSS for hidden navigation headline
+* Lean on react-intl FormattedTime for datetime construction
+
+## [2.15.3](https://github.com/folio-org/stripes-core/tree/v2.15.3) (2018-10-05)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.15.2...v2.15.3)
+
+* Fix CSS variable naming for breakpoints
+
+## [2.15.2](https://github.com/folio-org/stripes-core/tree/v2.15.2) (2018-10-04)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.15.1...v2.15.2)
+
+* Prevent mirage from auto-loading fixtures
+* Update CSS vars to kebab-case
+
+## [2.15.1](https://github.com/folio-org/stripes-core/tree/v2.15.1) (2018-10-03)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.15.0...v2.15.1)
+
+* Remove HMR router hack
+* Fix currentUser error in tests
+
+## [2.15.0](https://github.com/folio-org/stripes-core/tree/v2.15.0) (2018-10-02)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.14.0...v2.15.0)
+
+* Require newer `stripes-components` and `stripes-logger`
+
 ## [2.14.0](https://github.com/folio-org/stripes-core/tree/v2.14.0) (2018-10-01)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.13.0...v2.14.0)
 

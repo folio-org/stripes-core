@@ -30,7 +30,15 @@
   }
 }
 
-@media (--mediumDown) {
+.navigationHeadline {
+  position: absolute;
+  height: 1px;
+  width: 1px;
+  clip-path: polygon(0 0, 0 0, 0 0);
+  overflow: hidden;
+}
+
+@media (--medium-down) {
   .brandingLabel {
     display: none;
   }

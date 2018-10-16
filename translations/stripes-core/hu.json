@@ -32,7 +32,7 @@
     "about.moduleDependsOn": "{module} a következőktől függ:",
     "about.newerModuleAvailable": "{required} ({available} elérhető)",
     "about.noDependencies": "{base} nem mutat függőségeket",
-    "about.key.absentInterfaces": "A szükséges, de hiányzó interfészeket a <span class='{className}'> félkövér piros </span> emeli ki.",
+    "about.key.absentInterfaces": "A szükséges, de hiányzó interfészeket a <span class='{className}'> félkövér piros szín </span> emeli ki.",
     "about.key.incompatibleIntf": "A szükséges, de csak az inkompatibilis verzióban megjelenő felületeket a <span class='{className}'>narancssárga szín</span> emeli ki.",
     "about.key.compatible": "A kompatibilis verzióban megjelenő felületek normál betűtípussal jelennek meg.",
     "about.moduleTypeCount": "{count, number} {type} {count, plural, one {module} other {modules}}",
@@ -58,8 +58,8 @@
     "title.ssoRedirect": "SSO átirányítás",
     "title.notFound": "Nem található",
     "title.ssoLanding": "SSO beállítások",
-    "currentServicePoint": "Service point: {name}",
-    "currentServicePointNotSelected": "Service point: None",
+    "currentServicePoint": "Szolgáltatási pont: {név}",
+    "currentServicePointNotSelected": "Szolgáltatási pont: nincs",
     "stripes-core.front.welcome": "",
     "stripes-core.front.about": ""
 }
