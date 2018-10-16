@@ -1,4 +1,4 @@
-import { snakeCase, isEqual, forOwn, isEmpty, unset } from 'lodash';
+import { snakeCase, isEqual, forOwn, isEmpty, unset, mergeWith } from 'lodash';
 import queryString from 'query-string';
 import { replaceQueryResource } from './locationActions';
 
@@ -56,9 +56,11 @@ export function updateLocation(module, curQuery, store, history, location) {
   const cleanStateQuery = removeEmpty(stateQuery);
   const cleanLocationQuery = removeEmpty(locationQuery);
 
-  if (isEqual(cleanStateQuery, cleanLocationQuery)) return curQuery;
+  if (isEqual(cleanStateQuery, cleanLocationQuery)) {
+    return curQuery;
+  }
 
-  const params = removeEmpty(Object.assign({}, locationQuery, stateQuery));
+  const params = mergeWith(locationQuery, stateQuery, (obj, src) => ((!src) ? obj : src));
 
   let url = params._path || location.pathname;
   unset(params, '_path');
