@@ -66,5 +66,6 @@
   "loginViaSSO": "Login via SSO",
 
   "mainnav.showAllApplicationsButtonLabel": "Apps",
-  "mainnav.showAllApplicationsButtonAriaLabel": "Show all applications"
+  "mainnav.showAllApplicationsButtonAriaLabel": "Show all applications",
+  "mainnav.currentAppAriaLabel": "Current open application: {appName} (Click to go home)"
 }
