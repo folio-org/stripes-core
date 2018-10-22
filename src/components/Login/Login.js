@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import classNames from 'classnames';
 import { connect } from 'react-redux';
 import { reduxForm, Field, Form, formValueSelector } from 'redux-form';
+import isEmpty from 'lodash/isEmpty';
 import TextField from '@folio/stripes-components/lib/TextField';
 import Button from '@folio/stripes-components/lib/Button';
 import { branding } from 'stripes-config';
 import authFormStyles from './AuthForm.css';
 import SSOLogin from '../SSOLogin';
+import AuthErrorsContainer from './components/AuthErrorsContainer';
 
 class Login extends Component {
   static propTypes = {
@@ -19,12 +20,16 @@ class Login extends Component {
     handleSubmit: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
     submitting: PropTypes.bool,
-    authError: PropTypes.string,
+    authErrors: PropTypes.arrayOf(PropTypes.object),
     formValues: PropTypes.object,
     handleSSOLogin: PropTypes.func,
     ssoActive: PropTypes.any, // eslint-disable-line react/forbid-prop-types
     submitSucceeded: PropTypes.bool,
-  }
+  };
+
+  static defaultProps = {
+    authErrors: []
+  };
 
   componentDidMount() {
     // Focus username input on mount
@@ -48,7 +53,7 @@ class Login extends Component {
     const {
       handleSubmit,
       submitting,
-      authError,
+      authErrors,
       handleSSOLogin,
       ssoActive,
       onSubmit,
@@ -102,7 +107,7 @@ class Login extends Component {
               </Button>
             </div>
             <div className={authFormStyles.formGroup}>
-              { authError ? <div className={classNames(authFormStyles.formMessage, authFormStyles.error)}>{authError}</div> : null }
+              { !isEmpty(authErrors) && <AuthErrorsContainer errors={authErrors} /> }
             </div>
             <div className={authFormStyles.formGroup}>
               { ssoActive && <SSOLogin handleSSOLogin={handleSSOLogin} /> }

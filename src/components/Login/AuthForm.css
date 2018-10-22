@@ -72,18 +72,6 @@ button.submitButton {
   font-size: var(--font-size-large);
 }
 
-.formMessage {
-  line-height: 125%;
-  padding: 10px;
-  border-radius: var(--radius);
-  font-size: var(--font-size-medium);
-
-  &.error {
-    color: #fff;
-    background-color: var(--error);
-  }
-}
-
 @media (max-height: 440px) {
   .logo {
     margin-top: 0;
