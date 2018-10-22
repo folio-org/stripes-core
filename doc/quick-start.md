@@ -1,85 +1,101 @@
 # Stripes: quick start
 
-**NOTE:** 2018-10-10: This document is out-of-date.
-See [STCOR-151](https://issues.folio.org/browse/STCOR-151).
+<!-- md2toc -l 2 quick-start.md -->
+* [Prerequisites](#prerequisites)
+* [App development](#app-development)
+* [Platform development](#platform-development)
+* [Using local code](#using-local-code)
+* [More information](#more-information)
 
-## Pre-requisites
+## Prerequisites
 
-To run Stripes, you'll need to have [Node.js](https://nodejs.org/) with an [active LTS version](https://github.com/nodejs/Release#release-schedule) installed (check with `node --version`).
+* [Node.js](https://nodejs.org/) with an [active LTS version](https://github.com/nodejs/Release#release-schedule)
+* [Yarn](https://yarnpkg.com/) package manager
+* [Vagrant](https://www.vagrantup.com/downloads.html) for optionally hosting a local [pre-built back-end](https://github.com/folio-org/folio-ansible/blob/master/doc/index.md) environment
 
-You'll also need a package manager. We strongly recommend using [yarn](https://yarnpkg.com/). Once Yarn is installed, inform it that packages in the `@folio` scope are found on the FOLIO NPM repository:
+Inform Yarn that packages in the `@folio` scope are found on the FOLIO NPM repository:
 ```
-yarn config set @folio:registry https://repository.folio.org/repository/npm-folioci/
-```
-
-## Platform
-
-Next you'll need a Stripes "platform". It consists simply of an NPM [`package.json`](https://docs.npmjs.com/files/package.json) that specifies the version of `@folio/stripes-core` and of any Stripes modules you wish to make available to generate client bundles. As a starting point, check out a [sample platform](https://github.com/folio-org/stripes-sample-platform).
-
-From that platform directory, install everything with:
-```
-yarn install
+$ yarn config set @folio:registry https://repository.folio.org/repository/npm-folio/
 ```
 
-At this point, you can choose some modules to enable in `stripes.config.js` and run the development server with:
+Install the Stripes CLI:
 ```
-yarn start
+$ yarn global add @folio/stripes-cli
+```
+
+## App development
+
+Development of a single application can be performed entirely stand-alone.  Simply clone the repository, install dependencies, and run `yarn start`.
+
+```
+$ git clone https://github.com/folio-org/ui-users.git
+$ cd ui-users
+$ yarn install
+$ yarn start
+```
+
+This is possible because each app declares a devDependency on stripes-cli, and the package script `yarn start` refers to the CLI command `stripes serve`.
+
+Refer to the [Stripes-CLI user guide](https://github.com/folio-org/stripes-cli/blob/master/doc/user-guide.md#app-development) for an overview on creating a new app with the CLI.
+
+
+## Platform development
+
+The easiest way to work on multiple applications simultaneously is with a Yarn workspace.  Create a new workspace with the stripes-cli `workspace` command.  This command is interactive and will prompt for the `ui-*` modules you would like to include.  Be sure to select a platform such as `stripes-sample-platform` as well.  Selected modules will be git-cloned and installed automatically.
+
+```
+$ stripes workspace
+? Stripes modules to include (Press <space> to select, <a> to toggle all, <i> to invert selection)
+ --- UI Modules ---
+❯◯ ui-users
+ ◯ ui-inventory
+ ◯ ui-eholdings
+ ◯ ui-checkin
+ ◯ ui-checkout
+ ◯ ui-circulation
+(Move up and down to reveal more choices)
+```
+
+At this point, the modules you selected with the workspace command will be added to your `stripes.config.js.local` configuration for any platform(s) selected.  Change to the platform directory and run the development server with:
+
+```
+$ cd stripes/stripes-sample-platform
+$ stripes serve stripes.config.js.local
 ```
 
 Voilà! A development server should be running at http://localhost:3000
 
-The default configuration has two UI modules configured in `stripes.config.js`:
-"trivial" (whose code is in [stripes-core/examples/trivial](../examples/trivial))
-and "users" (whose code is in the separate [ui-users](https://github.com/folio-org/ui-users) repository).
+The default configuration has UI modules configured in `stripes.config.js.local`.  If you selected `stripes-sample-platform` this will include "Trivial" and "Users" by default, plus any other modules selected during the workspace command.
 
 The "Trivial" example will work, as it is independent of Okapi.
 However the "Users" example requires Okapi and the back-end services of various modules and sample data.
 The simplest way to achieve that is using one of the provided
-[virtual machines](https://github.com/folio-org/folio-ansible/blob/master/README.md).
-Other ways are also [explained](https://github.com/folio-org/ui-okapi-console/blob/master/doc/running-a-complete-system.md).
+[virtual machines](https://github.com/folio-org/folio-ansible/blob/master/README.md) (e.g. folio/testing-backend).
+Other ways are also [explained](https://dev.folio.org/guides/run-local-folio/).
 
-
-## Using Stripes CLI
-
-Stripes CLI facilitates Stripes UI development and testing.  It can be used in addition to, or in place of, other manual development steps. Install the CLI with:
-```
-yarn global add @folio/stripes-cli
-```
-
-### Sample commands:
-
-Create a new Stripes UI app module without a platform:
-```
-stripes app create "Hello World"
-```
-
-Create a new Stripes workspace for platform development:
-```
-stripes workspace
-```
-
-Refer to the [Stripes-CLI user guide](https://github.com/folio-org/stripes-cli/blob/master/doc/user-guide.md) for a complete overview on creating an app or platform with the CLI as well as other useful commands.
 
 
 ## Using local code
 
-**Stripes CLI users:** Please refer to [Including another Stripes module](https://github.com/folio-org/stripes-cli/blob/master/doc/user-guide.md#including-another-stripes-module) of the Stripes CLI user guide.
+When using a Yarn workspace, module developers and those wanting to use a local checkout of core Stripes components can simply select `stripes-components` (or other `stripes-*` modules) during module selection of the `workspace` command.
 
-Module developers and those wanting to use a local checkout of core Stripes components can use the convenient [`yarn link`](https://yarnpkg.com/en/docs/cli/link) command to set their platform to use the local copy. Simply run `yarn link` in your `somemodule` directory and then run `yarn link somemodule` in the platform's directory and repeat for each local dependency you wish to create symlinks for.
-
-For example, to link the Users module, change to the directory you checked out of git (ui-users) and run:
 ```
-yarn link
-yarn install
-```
-
-Note that linked dependencies will use their local copy of the `node_modules` directory and the platform will not trigger `yarn install` for you there.
-
-Then change to your platform directory and run:
-```
-yarn link @folio/users
-yarn start
+$ stripes workspace
+? Stripes modules to include
+ --- Stripes Modules ---
+ ◉ stripes-connect
+ ◉ stripes-components
+❯◉ stripes-smart-components
+ ◯ stripes-react-hotkeys
+ ◯ stripes-logger
+ ◯ stripes-form
+(Move up and down to reveal more choices)
 ```
 
-**Note 1.** As of 20 February 2017, yarn cannot find `yarn link`ed modules unless they _also_ have been published in the repository. This is [a recognised bug, issue 2611](https://github.com/yarnpkg/yarn/issues/2611) and should soon be fixed.
+Not using a workspace?  Please refer to [Including another Stripes module](https://github.com/folio-org/stripes-cli/blob/master/doc/user-guide.md#including-another-stripes-module) of the Stripes CLI user guide for details on how to include additional modules without a Yarn workspace.
 
+
+## More information
+
+Additional information can be found in the Stripes CLI [User Guide](https://github.com/folio-org/stripes-cli/blob/master/doc/user-guide.md) and the
+Stripes [New Development Setup Guide](https://github.com/folio-org/stripes-core/blob/master/doc/new-development-setup.md).
