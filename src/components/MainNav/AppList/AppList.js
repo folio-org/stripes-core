@@ -65,7 +65,7 @@ class AppList extends Component {
       // If there's an active app
       if (selectedApp) {
         this.focusSelectedItem();
-      // If not; focus first item in the list
+        // If not; focus first item in the list
       } else {
         this.focusFirstItemInList();
       }
@@ -131,7 +131,7 @@ class AppList extends Component {
           ref={this.dropdownToggleRef}
           noSelectedBar
         />
-        { open && this.focusTrap(this.focusFirstItemInList) }
+        {open && this.focusTrap(this.focusFirstItemInList)}
       </Fragment>
     );
   }
@@ -171,11 +171,25 @@ class AppList extends Component {
   }
 
   render() {
-    const { renderNavButtons, renderDropdownToggleButton, toggleDropdown } = this;
+    const {
+      renderNavButtons,
+      renderDropdownToggleButton,
+      toggleDropdown,
+      focusTrap,
+      focusDropdownToggleButton,
+      focusFirstItemInList,
+      dropdownListRef,
+      state: { open },
+    } = this;
+
     const { dropdownId, apps, dropdownToggleId } = this.props;
+
     const tether = {
       attachment: 'top right',
       targetAttachment: 'bottom right',
+      constraints: [{
+        to: 'target',
+      }],
     };
 
     // If no apps are installed
@@ -186,20 +200,26 @@ class AppList extends Component {
     return (
       <nav className={css.appList}>
         <ul className={css.navItemsList}>
-          { renderNavButtons() }
+          {renderNavButtons()}
         </ul>
         <div className={css.navListDropdownWrap}>
-          <Dropdown tether={tether} dropdownClass={css.navListDropdown} open={this.state.open} id={dropdownId} onToggle={toggleDropdown}>
-            { renderDropdownToggleButton() }
+          <Dropdown
+            tether={tether}
+            dropdownClass={css.navListDropdown}
+            open={open}
+            id={dropdownId}
+            onToggle={toggleDropdown}
+          >
+            {renderDropdownToggleButton()}
             <DropdownMenu data-role="menu" onToggle={toggleDropdown}>
-              { this.focusTrap(this.focusDropdownToggleButton) }
+              {focusTrap(focusDropdownToggleButton)}
               <AppListDropdown
-                listRef={this.dropdownListRef}
+                listRef={dropdownListRef}
                 apps={apps}
                 dropdownToggleId={dropdownToggleId}
                 toggleDropdown={toggleDropdown}
               />
-              { this.focusTrap(this.focusFirstItemInList) }
+              {focusTrap(focusFirstItemInList)}
             </DropdownMenu>
           </Dropdown>
         </div>
