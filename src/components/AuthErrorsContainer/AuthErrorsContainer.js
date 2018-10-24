@@ -20,7 +20,7 @@ export default class AuthErrorsContainer extends Component {
     return (
       <li key={`${code}-${type}`}>
         <FormattedMessage
-          id={`stripes-core.loginServices.login.${code}`}
+          id={`stripes-core.errors.${code}`}
           values={values}
         />
       </li>

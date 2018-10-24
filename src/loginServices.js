@@ -4,6 +4,7 @@ import localforage from 'localforage';
 import { change } from 'redux-form';
 import { addLocaleData } from 'react-intl';
 import { translations } from 'stripes-config';
+import processBadResponse from './processBadResponse';
 
 import {
   clearCurrentUser,
@@ -110,43 +111,6 @@ export function getBindings(okapiUrl, store, tenant) {
     });
 }
 
-function getDefaultError() {
-  return {
-    code :'default.error',
-    type :'error',
-  };
-}
-
-function getLoginErrors(errorMessage, response) {
-  const loginErrors = [];
-  const { status } = response;
-
-  if (status === 422) {
-    try {
-      const {
-        errors,
-      } = JSON.parse(errorMessage);
-
-      loginErrors.push(...errors);
-    } catch (e) {
-      loginErrors.push(getDefaultError());
-    }
-  } else {
-    loginErrors.push(getDefaultError());
-  }
-
-  return loginErrors;
-}
-
-function handleBadRequest(store, response) {
-  response.json().then(({ errorMessage }) => {
-    localforage.removeItem('okapiSess');
-    store.dispatch(change('login', 'password', ''));
-    store.dispatch(setAuthError(getLoginErrors(errorMessage, response)));
-    store.dispatch(setOkapiReady());
-  });
-}
-
 function loadResources(okapiUrl, store, tenant) {
   getLocale(okapiUrl, store, tenant);
   getPlugins(okapiUrl, store, tenant);
@@ -249,10 +213,17 @@ function processSSOLoginResponse(resp) {
   }
 }
 
+function handleLoginError(store, resp) {
+  localforage.removeItem('okapiSess');
+  store.dispatch(change('login', 'password', ''));
+  processBadResponse(store, resp);
+  store.dispatch(setOkapiReady());
+}
+
 function processOkapiSession(okapiUrl, store, tenant, resp) {
   const token = resp.headers.get('X-Okapi-Token');
   if (resp.status >= 400) {
-    handleBadRequest(store, resp);
+    handleLoginError(store, resp);
   } else {
     resp.json().then(json => createOkapiSession(okapiUrl, store, tenant, token, json));
   }

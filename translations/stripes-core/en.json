@@ -5,6 +5,7 @@
   "title.notFound": "Not Found",
   "title.ssoLanding": "SSO Landing",
   "title.login": "Log in",
+  "title.CreateResetPassword": "Choose a password",
 
   "front.welcome": "Welcome, the Future Of Libraries Is OPEN!",
   "front.home": "Home",
@@ -19,6 +20,8 @@
   "button.close": "Close",
   "button.back": "Back",
   "button.confirm": "Confirm",
+  "button.hidePassword": "Hide password",
+  "button.showPassword": "Show password",
   "label.confirmDeleteEntry": "<strong>{name}</strong> will be <strong>removed</strong>",
   "label.editEntry": "Edit {entry}",
   "label.createEntry": "Create {entry}",
@@ -64,15 +67,22 @@
   "folioSettings": "FOLIO settings",
   "mainNavigation": "Main Navigation",
   "loginViaSSO": "Login via SSO",
+  "setPassword": "Set password",
+  "settingPassword": "Setting password...",
 
   "mainnav.showAllApplicationsButtonLabel": "Apps",
   "mainnav.showAllApplicationsButtonAriaLabel": "Show all applications",
   "mainnav.currentAppAriaLabel": "Current open application: {appName} (Click to go home)",
 
-  "loginServices.login.default.error": "Sorry, the information entered does not match our records.",
-  "loginServices.login.username.invalid": "Error verifying user existence: No user found by username {username}",
-  "loginServices.login.password.invalid": "Bad credentials",
-  "loginServices.login.third.failed.attempt": "You have entered the wrong username or password for the third time. You have two more tries to login before your account will be locked.",
-  "loginServices.login.fifth.failed.attempt.blocked": "For security, purposes, your account has been locked. Please contact your Folio System Administrator to reset your password.",
-  "loginServices.login.user.blocked": "For security, purposes, your account has been locked. Please try again or contact your Folio System Administrator."
+  "errors.default.error": "Sorry, the information entered does not match our records.",
+  "errors.username.invalid": "Error verifying user existence: No user found by username {username}",
+  "errors.password.invalid": "Bad credentials",
+  "errors.third.failed.attempt": "You have entered the wrong username or password for the third time. You have two more tries to login before your account will be locked.",
+  "errors.fifth.failed.attempt.blocked": "For security, purposes, your account has been locked. Please contact your Folio System Administrator to reset your password.",
+  "errors.user.blocked": "For security, purposes, your account has been locked. Please try again or contact your Folio System Administrator.",
+  "errors.password.match.error": "Password does not match. Retype your password.",
+
+  "createResetPassword.header": "Choose a password",
+  "createResetPassword.newPassword": "New Password",
+  "createResetPassword.confirmPassword": "Confirm Password"
 }
