@@ -4,6 +4,7 @@
 
 * Turn off autoCapitalize on login form
 * Deprecate stripes intl utilities, STCOR-267
+* Updated color of text in profile dropdown (STCOM-377)
 
 ## [2.15.4](https://github.com/folio-org/stripes-core/tree/v2.15.4) (2018-10-12)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.15.3...v2.15.4)
