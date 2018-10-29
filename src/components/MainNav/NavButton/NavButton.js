@@ -46,7 +46,7 @@ const NavButton = React.forwardRef(({ ariaLabel, label, title, selected, onClick
   /**
    * Icon
    */
-  const displayIcon = (<span className={css.icon}>{icon || <AppIcon app={iconKey} icon={iconData} focusable={false} />}</span>);
+  const displayIcon = (<span className={css.icon}>{icon || <AppIcon alt="" app={iconKey} icon={iconData} focusable={false} />}</span>);
 
   let Element = 'span';
   let clickableProps = {};
