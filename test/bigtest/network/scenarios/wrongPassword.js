@@ -4,7 +4,7 @@ export default (server) => {
       { errors: [
         {
           type: 'error',
-          code: 'password.invalid',
+          code: 'password.incorrect',
         }
       ] }
     )

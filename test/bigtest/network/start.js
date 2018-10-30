@@ -10,6 +10,7 @@ if (environment !== 'production') {
   const { default: Mirage, camelize } = require('@bigtest/mirage');
   const { default: coreModules } = require('./index');
   require('./force-fetch-polyfill');
+  require('./patch-response-url');
 
   start = (scenarioNames, options = {}) => {
     const {

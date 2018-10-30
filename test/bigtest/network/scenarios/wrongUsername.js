@@ -4,7 +4,7 @@ export default (server) => {
       { errors: [
         {
           type: 'error',
-          code: 'username.invalid',
+          code: 'username.incorrect',
           parameters: [
             {
               key: 'username',

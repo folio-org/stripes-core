@@ -101,7 +101,7 @@ describe('Login', () => {
 
       it('error message should have proper text upon failed submit', () => {
         expect(login.message.text).to.equal(parseMessageFromJsx(
-          translations['errors.username.invalid'],
+          translations['errors.username.incorrect'],
           { username: 'username' }
         ));
       });
@@ -134,7 +134,7 @@ describe('Login', () => {
       });
 
       it('error message should have proper text upon failed submit', () => {
-        expect(login.message.text).to.equal(translations['errors.password.invalid']);
+        expect(login.message.text).to.equal(translations['errors.password.incorrect']);
       });
     });
 

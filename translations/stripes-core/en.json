@@ -75,10 +75,10 @@
   "mainnav.currentAppAriaLabel": "Current open application: {appName} (Click to go home)",
 
   "errors.default.error": "Sorry, the information entered does not match our records.",
-  "errors.username.invalid": "Error verifying user existence: No user found by username {username}",
-  "errors.password.invalid": "Bad credentials",
+  "errors.username.incorrect": "Error verifying user existence: No user found by username {username}",
+  "errors.password.incorrect": "Bad credentials",
   "errors.third.failed.attempt": "You have entered the wrong username or password for the third time. You have two more tries to login before your account will be locked.",
-  "errors.fifth.failed.attempt.blocked": "For security, purposes, your account has been locked. Please contact your Folio System Administrator to reset your password.",
+  "errors.fifth.failed.attempt.blocked": "For security purposes, your account has been locked. Please contact your Folio System Administrator to reset your password.",
   "errors.user.blocked": "For security, purposes, your account has been locked. Please try again or contact your Folio System Administrator.",
   "errors.password.match.error": "Password does not match. Retype your password.",
 

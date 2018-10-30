@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+
 import { connect as reduxConnect } from 'react-redux';
+
 import CreateResetPassword from './CreateResetPassword';
 import processBadResponse from '../../processBadResponse';
 
@@ -25,7 +27,7 @@ class CreateResetPasswordControl extends Component {
     stripes: PropTypes.shape({
       intl: PropTypes.shape({
         formatMessage: PropTypes.func.isRequired,
-      }),
+      }).isRequired,
     }).isRequired,
   };
 
@@ -39,18 +41,16 @@ class CreateResetPasswordControl extends Component {
 
   // should be changed
   handleSubmit = values => {
-    const { mutator: { changePassword }, stripes: { store } } = this.props;
+    const {
+      mutator: { changePassword },
+      stripes: { store }
+    } = this.props;
     const { newPassword } = values;
+
     return changePassword
-      .POST({
-        password: newPassword
-      })
-      .then(() => {
-        this.handleSuccessfulResponse();
-      })
-      .catch((response) => {
-        processBadResponse(store, response);
-      });
+      .POST({ password: newPassword })
+      .then(() => { this.handleSuccessfulResponse(); })
+      .catch((response) => { processBadResponse(store, response); });
   };
 
   render() {

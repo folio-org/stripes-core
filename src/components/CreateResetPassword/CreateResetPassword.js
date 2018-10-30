@@ -1,21 +1,26 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+
 import { connect } from 'react-redux';
 import { reduxForm, Field, Form, formValueSelector } from 'redux-form';
 import { FormattedMessage } from 'react-intl';
-import { TextField, Button, Row, Col } from '@folio/stripes/components';
+
 import _ from 'lodash';
-import styles from './CreateResetPassword.css';
+
+import { TextField, Button, Row, Col } from '@folio/stripes/components';
+
 import FieldLabel from './components/FieldLabel';
 import OrganizationLogo from '../OrganizationLogo';
 import AuthErrorsContainer from '../AuthErrorsContainer/AuthErrorsContainer';
+
+import styles from './CreateResetPassword.css';
 
 class CreateResetPassword extends Component {
   static propTypes = {
     stripes: PropTypes.shape({
       intl: PropTypes.shape({
         formatMessage: PropTypes.func.isRequired,
-      }),
+      }).isRequired,
     }).isRequired,
     handleSubmit: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
@@ -26,18 +31,26 @@ class CreateResetPassword extends Component {
   };
 
   static defaultProps = {
-    errors: []
+    submitting: false,
+    errors: [],
+    formValues: {},
+    submitSucceeded: false,
   };
 
   constructor(props) {
     super(props);
 
+    this.translateNamespace = 'stripes-core.createResetPassword';
+    this.passwordMatchError = {
+      code: 'password.match.error',
+      type: 'error'
+    };
     this.newPassword = React.createRef();
     this.state = {
       passwordMasked: true,
     };
     this.validators = {
-      confirmPassword: this.confirmPasswordValidation,
+      confirmPassword: this.confirmPasswordFieldValidation,
     };
   }
 
@@ -52,16 +65,17 @@ class CreateResetPassword extends Component {
     }));
   };
 
-  confirmPasswordValidation = (value, { newPassword, confirmPassword }) => {
+  confirmPasswordFieldValidation = (value, { newPassword, confirmPassword }) => {
     const isConfirmPasswordInvalid = newPassword && confirmPassword && newPassword !== confirmPassword;
     const { errors } = this.props;
 
-    if (isConfirmPasswordInvalid) {
-      if (!_.some(errors, this.passwordMatchError)) {
-        errors.push(this.passwordMatchError);
-      }
-    } else {
+    if (!isConfirmPasswordInvalid) {
       _.remove(errors, this.passwordMatchError);
+      return;
+    }
+
+    if (!_.some(errors, this.passwordMatchError)) {
+      errors.push(this.passwordMatchError);
     }
   };
 
@@ -76,17 +90,11 @@ class CreateResetPassword extends Component {
       stripes: { intl: { formatMessage: translate } },
     } = this.props;
     const { passwordMasked } = this.state;
-
-    const translateNamespace = 'stripes-core.createResetPassword';
     const submissionStatus = submitting || submitSucceeded;
     const buttonDisabled = !_.isEmpty(errors) || submissionStatus || !(newPassword && confirmPassword);
     const buttonLabel = translate({ id: `stripes-core.${submissionStatus ? 'settingPassword' : 'setPassword'}` });
     const passwordType = passwordMasked ? 'password' : 'text';
     const passwordToggleLabelId = `stripes-core.button.${passwordMasked ? 'show' : 'hide'}Password`;
-    this.passwordMatchError = {
-      code: 'password.match.error',
-      type: 'error'
-    };
 
     return (
       <div className={styles.wrapper}>
@@ -99,7 +107,7 @@ class CreateResetPassword extends Component {
           <Row center="xs">
             <Col xs={6}>
               <h1 className={styles.header}>
-                {translate({ id: `${translateNamespace}.header` })}
+                {translate({ id: `${this.translateNamespace}.header` })}
               </h1>
             </Col>
           </Row>
@@ -113,7 +121,7 @@ class CreateResetPassword extends Component {
                   <Col xs={6}>
                     <FieldLabel
                       htmlFor="new-password"
-                      text={translate({ id: `${translateNamespace}.newPassword` })}
+                      text={translate({ id: `${this.translateNamespace}.newPassword` })}
                     />
                   </Col>
                 </Row>
@@ -141,7 +149,7 @@ class CreateResetPassword extends Component {
                   <Col xs={6}>
                     <FieldLabel
                       htmlFor="confirm-password"
-                      text={translate({ id: `${translateNamespace}.confirmPassword` })}
+                      text={translate({ id: `${this.translateNamespace}.confirmPassword` })}
                     />
                   </Col>
                 </Row>
@@ -211,7 +219,15 @@ class CreateResetPassword extends Component {
   }
 }
 
-const CreateResetPasswordForm = reduxForm({ form: 'CreateResetPassword' })(CreateResetPassword);
+const CreateResetPasswordForm = reduxForm({
+  form: 'CreateResetPassword'
+})(CreateResetPassword);
 const selector = formValueSelector('CreateResetPassword');
 
-export default connect(state => ({ formValues: selector(state, 'newPassword', 'confirmPassword') }))(CreateResetPasswordForm);
+export default connect(state => ({
+  formValues: selector(
+    state,
+    'newPassword',
+    'confirmPassword'
+  )
+}))(CreateResetPasswordForm);

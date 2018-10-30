@@ -4,6 +4,10 @@
 
 @import '@folio/stripes-components/lib/variables.css';
 
+:root {
+  --padding-for-header: 66px;
+}
+
 .appList {
   display: flex;
 }
@@ -39,16 +43,19 @@
   z-index: 200;
 }
 
+.navListDropdown > div {
+  padding: 10px 5px;
+}
+
 .dropdownBody {
   width: 100%;
   outline: 0;
 }
 
-ul.dropdownList {
-  padding: 10px 5px;
+.dropdownList {
   margin: 0;
-  max-height: 225px;
   overflow-y: auto;
+  max-height: calc(100vh - var(--padding-for-header));
 }
 
 .dropdownListItem {
