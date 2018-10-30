@@ -7,7 +7,7 @@ import { FormattedMessage } from 'react-intl';
 
 import _ from 'lodash';
 
-import { TextField, Button, Row, Col } from '@folio/stripes/components';
+import { TextField, Button, Row, Col } from '@folio/stripes-components';
 
 import FieldLabel from './components/FieldLabel';
 import OrganizationLogo from '../OrganizationLogo';

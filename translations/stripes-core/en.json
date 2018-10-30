@@ -79,7 +79,7 @@
   "errors.password.incorrect": "Bad credentials",
   "errors.third.failed.attempt": "You have entered the wrong username or password for the third time. You have two more tries to login before your account will be locked.",
   "errors.fifth.failed.attempt.blocked": "For security purposes, your account has been locked. Please contact your Folio System Administrator to reset your password.",
-  "errors.user.blocked": "For security, purposes, your account has been locked. Please try again or contact your Folio System Administrator.",
+  "errors.user.blocked": "For security purposes, your account has been locked. Please try again or contact your Folio System Administrator.",
   "errors.password.match.error": "Password does not match. Retype your password.",
 
   "createResetPassword.header": "Choose a password",
