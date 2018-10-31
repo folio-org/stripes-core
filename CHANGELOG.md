@@ -1,11 +1,13 @@
 # Change history for stripes-core
 
-## 2.16.0 (IN PROGRESS)
+## [2.15.5](https://github.com/folio-org/stripes-core/tree/v2.15.5) (2018-11-01)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.15.4...v2.15.5)
 
 * Turn off autoCapitalize on login form
 * Deprecate stripes intl utilities, STCOR-267
 * Set alt="" on app icons in MainNav (STCOR-274)
 * Updated color of text in profile dropdown (STCOM-377)
+* Patch response url in mirage for stripes-connect
 
 ## [2.15.4](https://github.com/folio-org/stripes-core/tree/v2.15.4) (2018-10-12)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.15.3...v2.15.4)
