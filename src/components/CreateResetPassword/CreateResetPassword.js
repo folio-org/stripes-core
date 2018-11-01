@@ -122,10 +122,9 @@ class CreateResetPassword extends Component {
               <div data-test-new-password-field>
                 <Row center="xs">
                   <Col xs={6}>
-                    <FieldLabel
-                      htmlFor="new-password"
-                      text={<FormattedMessage id={`${this.translateNamespace}.newPassword`} />}
-                    />
+                    <FieldLabel htmlFor="new-password">
+                      <FormattedMessage id={`${this.translateNamespace}.newPassword`} />
+                    </FieldLabel>
                   </Col>
                 </Row>
                 <Row center="xs">
@@ -150,10 +149,9 @@ class CreateResetPassword extends Component {
               <div data-test-confirm-password-field>
                 <Row center="xs">
                   <Col xs={6}>
-                    <FieldLabel
-                      htmlFor="confirm-password"
-                      text={<FormattedMessage id={`${this.translateNamespace}.confirmPassword`} />}
-                    />
+                    <FieldLabel htmlFor="confirm-password">
+                      <FormattedMessage id={`${this.translateNamespace}.confirmPassword`} />
+                    </FieldLabel>
                   </Col>
                 </Row>
                 <Row end="sm" center="xs" bottom="xs">

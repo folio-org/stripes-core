@@ -6,13 +6,13 @@ import styles from './FieldLabel.css';
 export default class FieldLabel extends Component {
   static propTypes = {
     htmlFor: PropTypes.string.isRequired,
-    text: PropTypes.string.isRequired
+    children: PropTypes.node.isRequired
   };
 
   render() {
     const {
       htmlFor,
-      text
+      children
     } = this.props;
 
     return (
@@ -20,7 +20,7 @@ export default class FieldLabel extends Component {
         htmlFor={htmlFor}
         className={styles.label}
       >
-        {text}
+        {children}
       </label>
     );
   }

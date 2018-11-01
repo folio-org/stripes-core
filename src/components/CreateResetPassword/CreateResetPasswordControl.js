@@ -33,9 +33,9 @@ class CreateResetPasswordControl extends Component {
     authFailure: []
   };
 
-  handleSuccessfulResponse() {
+  handleSuccessfulResponse = () => {
     // need to discuss, should be implemented
-  }
+  };
 
   // should be changed
   handleSubmit = values => {
@@ -64,10 +64,6 @@ class CreateResetPasswordControl extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    authFailure: state.okapi.authFailure,
-  };
-}
+const mapStateToProps = (state) => ({ authFailure: state.okapi.authFailure });
 
 export default reduxConnect(mapStateToProps)(CreateResetPasswordControl);

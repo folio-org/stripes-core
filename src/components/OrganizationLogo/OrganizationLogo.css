@@ -17,7 +17,7 @@
   }
 }
 
-@media(--medium-up){
+@media (--medium-up) {
   .logo {
     margin-bottom: 45px;
     margin-top: 0;
