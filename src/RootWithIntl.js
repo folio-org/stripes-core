@@ -1,7 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Router from 'react-router-dom/Router';
-import Switch from 'react-router-dom/Switch';
+import {
+  Router,
+  Switch
+} from 'react-router-dom';
 
 import { Provider } from 'react-redux';
 import { CookiesProvider } from 'react-cookie';
@@ -40,6 +42,11 @@ class RootWithIntl extends React.Component {
     history: PropTypes.shape({}),
   };
 
+  static defaultProps = {
+    token: '',
+    history: {}
+  };
+
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -53,7 +60,11 @@ class RootWithIntl extends React.Component {
   }
 
   render() {
-    const { token, disableAuth, history } = this.props;
+    const {
+      token,
+      disableAuth,
+      history
+    } = this.props;
 
     return (
       <StripesContext.Provider value={this.stripes}>

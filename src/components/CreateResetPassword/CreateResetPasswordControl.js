@@ -6,6 +6,8 @@ import { connect as reduxConnect } from 'react-redux';
 import CreateResetPassword from './CreateResetPassword';
 import processBadResponse from '../../processBadResponse';
 
+import { stripesShape } from '../../Stripes';
+
 class CreateResetPasswordControl extends Component {
   // don't have back end yet, should be changed
   static manifest = Object.freeze({
@@ -24,11 +26,7 @@ class CreateResetPasswordControl extends Component {
         POST: PropTypes.func.isRequired,
       }).isRequired,
     }).isRequired,
-    stripes: PropTypes.shape({
-      intl: PropTypes.shape({
-        formatMessage: PropTypes.func.isRequired,
-      }).isRequired,
-    }).isRequired,
+    stripes: stripesShape.isRequired
   };
 
   static defaultProps = {

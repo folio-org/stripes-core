@@ -2,12 +2,21 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import { connect } from 'react-redux';
-import { reduxForm, Field, Form, formValueSelector } from 'redux-form';
 import { FormattedMessage } from 'react-intl';
-
+import {
+  reduxForm,
+  Field,
+  Form,
+  formValueSelector
+} from 'redux-form';
 import _ from 'lodash';
 
-import { TextField, Button, Row, Col } from '@folio/stripes-components';
+import {
+  TextField,
+  Button,
+  Row,
+  Col
+} from '@folio/stripes-components';
 
 import FieldLabel from './components/FieldLabel';
 import OrganizationLogo from '../OrganizationLogo';
@@ -17,11 +26,6 @@ import styles from './CreateResetPassword.css';
 
 class CreateResetPassword extends Component {
   static propTypes = {
-    stripes: PropTypes.shape({
-      intl: PropTypes.shape({
-        formatMessage: PropTypes.func.isRequired,
-      }).isRequired,
-    }).isRequired,
     handleSubmit: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
     submitting: PropTypes.bool,
@@ -65,7 +69,7 @@ class CreateResetPassword extends Component {
     }));
   };
 
-  confirmPasswordFieldValidation = (value, { newPassword, confirmPassword }) => {
+  confirmPasswordFieldValidation = (value, { newPassword, confirmPassword } = {}) => {
     const isConfirmPasswordInvalid = newPassword && confirmPassword && newPassword !== confirmPassword;
     const { errors } = this.props;
 
@@ -87,12 +91,11 @@ class CreateResetPassword extends Component {
       onSubmit,
       submitSucceeded,
       formValues: { newPassword, confirmPassword },
-      stripes: { intl: { formatMessage: translate } },
     } = this.props;
     const { passwordMasked } = this.state;
     const submissionStatus = submitting || submitSucceeded;
     const buttonDisabled = !_.isEmpty(errors) || submissionStatus || !(newPassword && confirmPassword);
-    const buttonLabel = translate({ id: `stripes-core.${submissionStatus ? 'settingPassword' : 'setPassword'}` });
+    const buttonLabelId = `stripes-core.${submissionStatus ? 'settingPassword' : 'setPassword'}`;
     const passwordType = passwordMasked ? 'password' : 'text';
     const passwordToggleLabelId = `stripes-core.button.${passwordMasked ? 'show' : 'hide'}Password`;
 
@@ -107,7 +110,7 @@ class CreateResetPassword extends Component {
           <Row center="xs">
             <Col xs={6}>
               <h1 className={styles.header}>
-                {translate({ id: `${this.translateNamespace}.header` })}
+                <FormattedMessage id={`${this.translateNamespace}.header`} />
               </h1>
             </Col>
           </Row>
@@ -121,7 +124,7 @@ class CreateResetPassword extends Component {
                   <Col xs={6}>
                     <FieldLabel
                       htmlFor="new-password"
-                      text={translate({ id: `${this.translateNamespace}.newPassword` })}
+                      text={<FormattedMessage id={`${this.translateNamespace}.newPassword`} />}
                     />
                   </Col>
                 </Row>
@@ -149,7 +152,7 @@ class CreateResetPassword extends Component {
                   <Col xs={6}>
                     <FieldLabel
                       htmlFor="confirm-password"
-                      text={translate({ id: `${this.translateNamespace}.confirmPassword` })}
+                      text={<FormattedMessage id={`${this.translateNamespace}.confirmPassword`} />}
                     />
                   </Col>
                 </Row>
@@ -199,7 +202,7 @@ class CreateResetPassword extends Component {
                       fullWidth
                       marginBottom0
                     >
-                      {buttonLabel}
+                      <FormattedMessage id={buttonLabelId} />
                     </Button>
                   </div>
                 </Col>
