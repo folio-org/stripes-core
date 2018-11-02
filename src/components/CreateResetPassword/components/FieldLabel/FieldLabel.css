@@ -1,0 +1,10 @@
+@import "@folio/stripes-components/lib/variables.css";
+
+.label {
+  display: block;
+  width: 100%;
+  text-align: left;
+  font-size: var(--font-size-large);
+  font-weight: var(--text-weight-headline-basis);
+  margin: 1.5rem 0 1rem;
+}

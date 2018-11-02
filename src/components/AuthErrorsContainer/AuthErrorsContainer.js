@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+
 import { FormattedMessage } from 'react-intl';
+
 import styles from './AuthErrorsContainer.css';
 
 export default class AuthErrorsContainer extends Component {
@@ -20,7 +22,7 @@ export default class AuthErrorsContainer extends Component {
     return (
       <li key={`${code}-${type}`}>
         <FormattedMessage
-          id={`stripes-core.loginServices.login.${code}`}
+          id={`stripes-core.errors.${code}`}
           values={values}
         />
       </li>

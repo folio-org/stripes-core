@@ -4,8 +4,9 @@ import Route from 'react-router-dom/Route';
 
 import ErrorBoundary from '@folio/stripes-components/lib/ErrorBoundary';
 
-import { withStripes } from '../../StripesContext';
 import TitleManager from '../TitleManager';
+
+import { withStripes } from '../../StripesContext';
 
 class TitledRoute extends React.Component {
   static propTypes = {
@@ -16,14 +17,30 @@ class TitledRoute extends React.Component {
         formatMessage: PropTypes.func,
       })
     })
-  }
+  };
 
   render() {
-    const { name, component, stripes, ...rest } = this.props;
+    const {
+      name,
+      component,
+      stripes,
+      computedMatch,
+      ...rest
+    } = this.props;
     const formattedName = stripes.intl.formatMessage({
       id: `stripes-core.title.${name}`,
       defaultMessage: name,
     });
+
+    const componentWithExtraProps = computedMatch
+      ? {
+        ...component,
+        props: {
+          ...component.props,
+          match: computedMatch
+        }
+      }
+      : component;
 
     return (
       <Route
@@ -31,7 +48,7 @@ class TitledRoute extends React.Component {
         render={() => (
           <ErrorBoundary>
             <TitleManager page={formattedName} />
-            {component}
+            {componentWithExtraProps}
           </ErrorBoundary>
         )}
       />

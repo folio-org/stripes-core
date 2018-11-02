@@ -5,10 +5,10 @@ import { reduxForm, Field, Form, formValueSelector } from 'redux-form';
 import isEmpty from 'lodash/isEmpty';
 import TextField from '@folio/stripes-components/lib/TextField';
 import Button from '@folio/stripes-components/lib/Button';
-import { branding } from 'stripes-config';
 import authFormStyles from './AuthForm.css';
 import SSOLogin from '../SSOLogin';
-import AuthErrorsContainer from './components/AuthErrorsContainer';
+import OrganizationLogo from '../OrganizationLogo';
+import AuthErrorsContainer from '../AuthErrorsContainer';
 
 class Login extends Component {
   static propTypes = {
@@ -37,19 +37,6 @@ class Login extends Component {
   }
 
   render() {
-    // Get organization logo
-    const getOrganizationLogo = () => {
-      if (!branding) {
-        return false;
-      }
-
-      return (
-        <div className={authFormStyles.logo}>
-          <img alt={branding.logo.alt} src={branding.logo.src} />
-        </div>
-      );
-    };
-
     const {
       handleSubmit,
       submitting,
@@ -68,7 +55,7 @@ class Login extends Component {
     return (
       <div className={authFormStyles.wrap}>
         <div className={authFormStyles.centered}>
-          {getOrganizationLogo()}
+          <OrganizationLogo />
           <Form className={authFormStyles.form} onSubmit={handleSubmit(onSubmit)}>
             <div className={authFormStyles.formGroup}>
               <Field
