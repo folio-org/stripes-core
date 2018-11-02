@@ -1,5 +1,9 @@
 # Change history for stripes-core
 
+## 2.16.0 (IN PROGRESS)
+
+* Set `textComponent` on `<IntlProvider>`
+
 ## [2.15.5](https://github.com/folio-org/stripes-core/tree/v2.15.5) (2018-11-01)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.15.4...v2.15.5)
 

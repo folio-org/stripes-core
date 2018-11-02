@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { combineReducers } from 'redux';
 import { connect } from 'react-redux';
@@ -128,8 +128,19 @@ class Root extends Component {
       <ErrorBoundary>
         <RootContext.Provider value={{ addReducer: this.addReducer, addEpic: this.addEpic, store }}>
           <ApolloProvider client={createApolloClient(okapi)}>
-            <IntlProvider locale={locale} key={locale} timeZone={timezone} messages={translations}>
-              <RootWithIntl stripes={stripes} token={token} disableAuth={disableAuth} history={history} />
+            <IntlProvider
+              locale={locale}
+              key={locale}
+              timeZone={timezone}
+              messages={translations}
+              textComponent={Fragment}
+            >
+              <RootWithIntl
+                stripes={stripes}
+                token={token}
+                disableAuth={disableAuth}
+                history={history}
+              />
             </IntlProvider>
           </ApolloProvider>
         </RootContext.Provider>
