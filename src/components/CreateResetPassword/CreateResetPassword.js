@@ -51,18 +51,12 @@ class CreateResetPassword extends Component {
       code: 'password.match.error',
       type: 'error',
     };
-    this.newPassword = React.createRef();
     this.state = {
       passwordMasked: true,
     };
     this.validators = {
       confirmPassword: this.confirmPasswordFieldValidation,
     };
-  }
-
-  componentDidMount() {
-    // Focus new-password input on mount
-    this.newPassword.current.getRenderedComponent().input.current.focus();
   }
 
   togglePasswordMask = () => {
@@ -145,8 +139,7 @@ class CreateResetPassword extends Component {
                       validationEnabled={false}
                       hasClearIcon={false}
                       autoComplete="new-password"
-                      ref={this.newPassword}
-                      withRef
+                      autoFocus
                     />
                   </Col>
                 </Row>

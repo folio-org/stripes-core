@@ -1,8 +1,15 @@
-import { describe, it, beforeEach } from '@bigtest/mocha';
 import { expect } from 'chai';
+
+import {
+  describe,
+  it,
+  beforeEach
+} from '@bigtest/mocha';
+
 import setupApplication from '../helpers/setup-application';
 import parseMessageFromJsx from '../helpers/parseMessageFromJsx';
 import LoginInteractor from '../interactors/login';
+
 import translations from '../../../translations/stripes-core/en';
 
 describe('Login', () => {
@@ -17,6 +24,10 @@ describe('Login', () => {
 
     it('should have password field', () => {
       expect(login.password.isPresent).to.be.true;
+    });
+
+    it('should have forgot password link', () => {
+      expect(login.forgotPassword.isPresent).to.be.true;
     });
 
     it('should have submit button', () => {

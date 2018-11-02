@@ -8,6 +8,7 @@ import {
 
 import setupApplication from '../helpers/setup-application';
 import CreateResetPasswordInteractor from '../interactors/CreateResetPassword';
+
 import translations from '../../../translations/stripes-core/en';
 
 describe('Crereate/Reset password page', () => {
