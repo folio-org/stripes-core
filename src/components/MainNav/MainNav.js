@@ -119,7 +119,11 @@ class MainNav extends Component {
       }
 
       const id = `clickable-${name}-module`;
-      const active = pathname.startsWith(entry.route);
+
+      const pathRoot = pathname.split('/')[1];
+      const entryRoot = entry.route.split('/')[1];
+      const active = pathRoot === entryRoot;
+
       const href = lastVisited[name] || entry.home || entry.route;
 
       return {
