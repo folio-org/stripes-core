@@ -9,7 +9,9 @@ import {
   Form,
   formValueSelector
 } from 'redux-form';
-import _ from 'lodash';
+import isEmpty from 'lodash/isEmpty';
+import remove from 'lodash/remove';
+import some from 'lodash/some';
 
 import {
   TextField,
@@ -74,11 +76,11 @@ class CreateResetPassword extends Component {
     const { errors } = this.props;
 
     if (!isConfirmPasswordInvalid) {
-      _.remove(errors, this.passwordMatchError);
+      remove(errors, this.passwordMatchError);
       return;
     }
 
-    if (!_.some(errors, this.passwordMatchError)) {
+    if (!some(errors, this.passwordMatchError)) {
       errors.push(this.passwordMatchError);
     }
   };
@@ -94,7 +96,7 @@ class CreateResetPassword extends Component {
     } = this.props;
     const { passwordMasked } = this.state;
     const submissionStatus = submitting || submitSucceeded;
-    const buttonDisabled = !_.isEmpty(errors) || submissionStatus || !(newPassword && confirmPassword);
+    const buttonDisabled = !isEmpty(errors) || submissionStatus || !(newPassword && confirmPassword);
     const buttonLabelId = `stripes-core.${submissionStatus ? 'settingPassword' : 'setPassword'}`;
     const passwordType = passwordMasked ? 'password' : 'text';
     const passwordToggleLabelId = `stripes-core.button.${passwordMasked ? 'show' : 'hide'}Password`;
@@ -154,7 +156,11 @@ class CreateResetPassword extends Component {
                     </FieldLabel>
                   </Col>
                 </Row>
-                <Row end="sm" center="xs" bottom="xs">
+                <Row
+                  end="sm"
+                  center="xs"
+                  bottom="xs"
+                >
                   <Col xs={6}>
                     <div className={styles.formGroup}>
                       <Field
@@ -207,8 +213,8 @@ class CreateResetPassword extends Component {
               </Row>
               <Row center="xs">
                 <Col xs={6}>
-                  <div className={styles.AuthErrorsWrapper}>
-                    { !_.isEmpty(errors) && <AuthErrorsContainer errors={errors} /> }
+                  <div className={styles.authErrorsWrapper}>
+                    { !isEmpty(errors) && <AuthErrorsContainer errors={errors} /> }
                   </div>
                 </Col>
               </Row>

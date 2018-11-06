@@ -1,5 +1,11 @@
-import { describe, it, beforeEach } from '@bigtest/mocha';
 import { expect } from 'chai';
+
+import {
+  describe,
+  it,
+  beforeEach
+} from '@bigtest/mocha';
+
 import setupApplication from '../helpers/setup-application';
 import CreateResetPasswordInteractor from '../interactors/CreateResetPassword';
 import translations from '../../../translations/stripes-core/en';
@@ -68,7 +74,7 @@ describe('Crereate/Reset password page', () => {
       });
 
       describe('error message', () => {
-        it('should not be presented', () => {
+        it.always('should not be presented', () => {
           expect(CreateResetPasswordPage.message.isPresent).to.be.false;
         });
       });
@@ -136,11 +142,11 @@ describe('Crereate/Reset password page', () => {
             expect(CreateResetPasswordPage.toggleMask.text).to.equal(translations['button.hidePassword']);
           });
 
-          it('changes the type of the form fields to text', () => {
+          it('changes the type of the confirm password field to text', () => {
             expect(CreateResetPasswordPage.confirmPassword.type).to.equal('text');
           });
 
-          it('changes the type of the form fields to text', () => {
+          it('changes the type of the new password field to text', () => {
             expect(CreateResetPasswordPage.newPassword.type).to.equal('text');
           });
 
@@ -153,11 +159,11 @@ describe('Crereate/Reset password page', () => {
               expect(CreateResetPasswordPage.toggleMask.text).to.equal(translations['button.showPassword']);
             });
 
-            it('changes the type of the form fields to text', () => {
+            it('changes the type of the confirm password field to text', () => {
               expect(CreateResetPasswordPage.confirmPassword.type).to.equal('password');
             });
 
-            it('changes the type of the form fields to text', () => {
+            it('changes the type of the new password field to text', () => {
               expect(CreateResetPasswordPage.newPassword.type).to.equal('password');
             });
           });

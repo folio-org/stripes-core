@@ -9,7 +9,7 @@ import processBadResponse from '../../processBadResponse';
 import { stripesShape } from '../../Stripes';
 
 class CreateResetPasswordControl extends Component {
-  // don't have back end yet, should be changed
+  // Todo: don't have back end yet, should be changed
   static manifest = Object.freeze({
     changePassword: {
       type: 'okapi',
@@ -34,10 +34,10 @@ class CreateResetPasswordControl extends Component {
   };
 
   handleSuccessfulResponse = () => {
-    // need to discuss, should be implemented
+    // Todo: don't have back-end yet, should be implemented
   };
 
-  // should be changed
+  // Todo: don't have back-end yet, should be changed
   handleSubmit = values => {
     const {
       mutator: { changePassword },
@@ -56,9 +56,9 @@ class CreateResetPasswordControl extends Component {
 
     return (
       <CreateResetPassword
-        onSubmit={this.handleSubmit}
         errors={authFailure}
         stripes={this.props.stripes}
+        onSubmit={this.handleSubmit}
       />
     );
   }
