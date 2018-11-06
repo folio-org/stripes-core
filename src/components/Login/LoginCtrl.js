@@ -14,11 +14,6 @@ class LoginCtrl extends Component {
       username: PropTypes.string.isRequired,
       password: PropTypes.string.isRequired,
     }),
-    stripes: PropTypes.shape({
-      intl: PropTypes.shape({
-        formatMessage: PropTypes.func.isRequired,
-      }),
-    }).isRequired,
   };
 
   static contextTypes = {
@@ -60,7 +55,6 @@ class LoginCtrl extends Component {
         authErrors={authFailure}
         handleSSOLogin={this.handleSSOLogin}
         ssoActive={ssoEnabled}
-        stripes={this.props.stripes}
       />
     );
   }
