@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { reduxForm, Field, Form, formValueSelector } from 'redux-form';
+import { FormattedMessage } from 'react-intl';
 import isEmpty from 'lodash/isEmpty';
 import TextField from '@folio/stripes-components/lib/TextField';
 import Button from '@folio/stripes-components/lib/Button';
@@ -12,11 +13,6 @@ import AuthErrorsContainer from '../AuthErrorsContainer';
 
 class Login extends Component {
   static propTypes = {
-    stripes: PropTypes.shape({
-      intl: PropTypes.shape({
-        formatMessage: PropTypes.func.isRequired,
-      }),
-    }).isRequired,
     handleSubmit: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
     submitting: PropTypes.bool,
@@ -46,47 +42,59 @@ class Login extends Component {
       onSubmit,
       formValues,
       submitSucceeded,
-      stripes: { intl: { formatMessage: translate } },
     } = this.props;
 
     const { username } = formValues;
     const buttonDisabled = submitting || submitSucceeded || !(username);
-    const buttonLabel = translate({ id: (submitting || (submitSucceeded)) ? 'stripes-core.loggingIn' : 'stripes-core.login' });
+    const buttonLabel = (submitting || (submitSucceeded)) ? (
+      <FormattedMessage id="stripes-core.loggingIn" />
+    ) : (
+      <FormattedMessage id="stripes-core.login" />
+    );
+
     return (
       <div className={authFormStyles.wrap}>
         <div className={authFormStyles.centered}>
           <OrganizationLogo />
           <Form className={authFormStyles.form} onSubmit={handleSubmit(onSubmit)}>
             <div className={authFormStyles.formGroup}>
-              <Field
-                id="input-username"
-                component={TextField}
-                name="username"
-                type="text"
-                placeholder={translate({ id: 'stripes-core.username' })}
-                marginBottom0
-                fullWidth
-                inputClass={authFormStyles.input}
-                validationEnabled={false}
-                hasClearIcon={false}
-                autoComplete="username"
-                autoCapitalize="none"
-              />
+              <FormattedMessage id="stripes-core.username">
+                {placeholder => (
+                  <Field
+                    id="input-username"
+                    component={TextField}
+                    name="username"
+                    type="text"
+                    placeholder={placeholder}
+                    marginBottom0
+                    fullWidth
+                    inputClass={authFormStyles.input}
+                    validationEnabled={false}
+                    hasClearIcon={false}
+                    autoComplete="username"
+                    autoCapitalize="none"
+                  />
+                )}
+              </FormattedMessage>
             </div>
             <div className={authFormStyles.formGroup}>
-              <Field
-                id="input-password"
-                component={TextField}
-                name="password"
-                type="password"
-                placeholder={translate({ id: 'stripes-core.password' })}
-                marginBottom0
-                fullWidth
-                inputClass={authFormStyles.input}
-                validationEnabled={false}
-                hasClearIcon={false}
-                autoComplete="current-password"
-              />
+              <FormattedMessage id="stripes-core.password">
+                {placeholder => (
+                  <Field
+                    id="input-password"
+                    component={TextField}
+                    name="password"
+                    type="password"
+                    placeholder={placeholder}
+                    marginBottom0
+                    fullWidth
+                    inputClass={authFormStyles.input}
+                    validationEnabled={false}
+                    hasClearIcon={false}
+                    autoComplete="current-password"
+                  />
+                )}
+              </FormattedMessage>
             </div>
             <div className={authFormStyles.formGroup}>
               <Button buttonStyle="primary" id="clickable-login" type="submit" buttonClass={authFormStyles.submitButton} disabled={buttonDisabled} fullWidth marginBottom0>

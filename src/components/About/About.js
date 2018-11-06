@@ -98,14 +98,13 @@ const About = (props) => {
   const nm = Object.keys(modules).length;
   const ni = Object.keys(interfaces).length;
   const ConnectedAboutEnabledModules = props.stripes.connect(AboutEnabledModules);
-  const formatMsg = props.stripes.intl.formatMessage;
-  const unknownMsg = formatMsg({ id: 'stripes-core.about.unknown' });
-  const numModulesMsg = formatMsg({ id: 'stripes-core.about.moduleCount' }, { count: nm });
-  const numInterfacesMsg = formatMsg({ id: 'stripes-core.about.interfaceCount' }, { count: ni });
+  const unknownMsg = <FormattedMessage id="stripes-core.about.unknown" />;
+  const numModulesMsg = <FormattedMessage id="stripes-core.about.moduleCount" values={{ count: nm }} />;
+  const numInterfacesMsg = <FormattedMessage id="stripes-core.about.interfaceCount" values={{ count: ni }} />;
   return (
     <Pane
       defaultWidth="fill"
-      paneTitle={formatMsg({ id: 'stripes-core.about.paneTitle' })}
+      paneTitle={<FormattedMessage id="stripes-core.about.paneTitle" />}
     >
       <div className={css.versionsContainer}>
         <div className={css.versionsColumn}>
@@ -159,9 +158,9 @@ const About = (props) => {
             listStyle="bullets"
             itemFormatter={(item, i) => (<li key={i}>{item}</li>)}
             items={[
-              formatMsg({ id: 'stripes-core.about.version' }, { version: _.get(props.stripes, ['discovery', 'okapi']) || unknownMsg }),
-              formatMsg({ id: 'stripes-core.about.forTenant' }, { tenant: _.get(props.stripes, ['okapi', 'tenant']) || unknownMsg }),
-              formatMsg({ id: 'stripes-core.about.onUrl' }, { url: _.get(props.stripes, ['okapi', 'url']) || unknownMsg }),
+              <FormattedMessage id="stripes-core.about.version" values={{ version: _.get(props.stripes, ['discovery', 'okapi']) || unknownMsg }} />,
+              <FormattedMessage id="stripes-core.about.forTenant" values={{ tenant: _.get(props.stripes, ['okapi', 'tenant']) || unknownMsg }} />,
+              <FormattedMessage id="stripes-core.about.onUrl" values={{ url: _.get(props.stripes, ['okapi', 'url']) || unknownMsg }} />
             ]}
           />
           <br />
@@ -225,9 +224,6 @@ About.propTypes = {
     discovery: PropTypes.shape({
       modules: PropTypes.object,
       interfaces: PropTypes.object,
-    }),
-    intl: PropTypes.shape({
-      formatMessage: PropTypes.func,
     }),
     connect: PropTypes.func,
   }).isRequired,
