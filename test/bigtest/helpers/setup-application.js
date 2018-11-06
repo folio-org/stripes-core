@@ -1,7 +1,6 @@
 import { beforeEach } from '@bigtest/mocha';
 import { setupAppForTesting, visit, location } from '@bigtest/react';
 import localforage from 'localforage';
-import sinon from 'sinon';
 
 // load these styles for our tests
 import 'typeface-source-sans-pro';
@@ -18,6 +17,8 @@ import {
   withConfig,
   clearConfig
 } from './stripes-config';
+
+const { assign } = Object;
 
 export default function setupApplication({
   disableAuth = true,
@@ -63,20 +64,29 @@ export default function setupApplication({
         withModules(modules);
         withConfig({ logCategories: '', ...stripesConfig });
 
-        sinon.stub(actions, 'setTranslations').callsFake(incoming => {
-          return {
-            type: 'SET_TRANSLATIONS',
-            translations: Object.assign(incoming, translations)
-          };
+        assign(actions, {
+          _setTranslations: null,
+          setTranslations: incoming => {
+            return {
+              type: 'SET_TRANSLATIONS',
+              translations: assign(incoming, translations)
+            };
+          }
         });
       },
 
       teardown: () => {
-        actions.setTranslations.restore();
+        assign(actions, {
+          setTranslations: actions._setTranslations,
+          _setTranslations: null
+        });
+
         clearConfig();
         clearModules();
         localforage.clear();
         this.server.shutdown();
+        this.server = null;
+        this.app = null;
       }
     });
 
