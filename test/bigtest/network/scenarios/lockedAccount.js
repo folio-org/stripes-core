@@ -5,7 +5,7 @@ export default (server) => {
         {
           type: 'error',
           code: 'user.blocked',
-        }
+        },
       ] }
     )
   }, 422);

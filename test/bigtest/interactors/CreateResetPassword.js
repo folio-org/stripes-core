@@ -1,4 +1,9 @@
-import { interactor, scoped, property, clickable } from '@bigtest/interactor';
+import {
+  interactor,
+  scoped,
+  property,
+  clickable,
+} from '@bigtest/interactor';
 import TextFieldInteractor from '@folio/stripes-components/lib/TextField/tests/interactor';
 
 @interactor class ToggleMask {

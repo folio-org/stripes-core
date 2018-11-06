@@ -7,7 +7,7 @@ import {
   reduxForm,
   Field,
   Form,
-  formValueSelector
+  formValueSelector,
 } from 'redux-form';
 import isEmpty from 'lodash/isEmpty';
 import remove from 'lodash/remove';
@@ -17,7 +17,7 @@ import {
   TextField,
   Button,
   Row,
-  Col
+  Col,
 } from '@folio/stripes-components';
 
 import FieldLabel from './components/FieldLabel';
@@ -49,7 +49,7 @@ class CreateResetPassword extends Component {
     this.translateNamespace = 'stripes-core.createResetPassword';
     this.passwordMatchError = {
       code: 'password.match.error',
-      type: 'error'
+      type: 'error',
     };
     this.newPassword = React.createRef();
     this.state = {
@@ -92,7 +92,10 @@ class CreateResetPassword extends Component {
       submitting,
       onSubmit,
       submitSucceeded,
-      formValues: { newPassword, confirmPassword },
+      formValues: {
+        newPassword,
+        confirmPassword,
+      },
     } = this.props;
     const { passwordMasked } = this.state;
     const submissionStatus = submitting || submitSucceeded;
@@ -178,7 +181,10 @@ class CreateResetPassword extends Component {
                       />
                     </div>
                   </Col>
-                  <Col sm={3} xs={12}>
+                  <Col
+                    sm={3}
+                    xs={12}
+                  >
                     <div
                       data-test-change-password-toggle-mask-btn
                       className={styles.toggleButtonWrapper}
@@ -227,7 +233,7 @@ class CreateResetPassword extends Component {
 }
 
 const CreateResetPasswordForm = reduxForm({
-  form: 'CreateResetPassword'
+  form: 'CreateResetPassword',
 })(CreateResetPassword);
 const selector = formValueSelector('CreateResetPassword');
 
@@ -235,6 +241,6 @@ export default connect(state => ({
   formValues: selector(
     state,
     'newPassword',
-    'confirmPassword'
+    'confirmPassword',
   )
 }))(CreateResetPasswordForm);

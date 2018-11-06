@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {
   Router,
-  Switch
+  Switch,
 } from 'react-router-dom';
 
 import { Provider } from 'react-redux';
@@ -44,7 +44,7 @@ class RootWithIntl extends React.Component {
 
   static defaultProps = {
     token: '',
-    history: {}
+    history: {},
   };
 
   static contextTypes = {
@@ -53,9 +53,18 @@ class RootWithIntl extends React.Component {
 
   constructor(props, context) {
     super(props);
+
     const { intl } = context;
-    const connect = connectFor('@folio/core', props.stripes.epics, props.stripes.logger);
-    this.stripes = props.stripes.clone({ intl, connect });
+    const connect = connectFor(
+      '@folio/core',
+      props.stripes.epics,
+      props.stripes.logger,
+    );
+
+    this.stripes = props.stripes.clone({
+      intl,
+      connect,
+    });
     this.connectedCreateResetPassword = this.stripes.connect(CreateResetPassword);
   }
 
@@ -63,27 +72,48 @@ class RootWithIntl extends React.Component {
     const {
       token,
       disableAuth,
-      history
+      history,
     } = this.props;
 
     return (
       <StripesContext.Provider value={this.stripes}>
         <ModuleTranslator>
           <TitleManager>
-            <HotKeys keyMap={this.stripes.bindings} noWrapper>
+            <HotKeys
+              keyMap={this.stripes.bindings}
+              noWrapper
+            >
               <Provider store={this.stripes.store}>
                 <Router history={history}>
                   { token || disableAuth ?
                     <MainContainer>
                       <OverlayContainer />
                       <MainNav stripes={this.stripes} />
-                      <HandlerManager event={events.LOGIN} stripes={this.stripes} />
+                      <HandlerManager
+                        event={events.LOGIN}
+                        stripes={this.stripes}
+                      />
                       { (this.stripes.okapi !== 'object' || this.stripes.discovery.isFinished) && (
                         <ModuleContainer id="content">
                           <Switch>
-                            <TitledRoute name="home" path="/" key="root" exact component={<Front stripes={this.stripes} />} />
-                            <TitledRoute name="ssoRedirect" path="/sso-landing" key="sso-landing" component={<SSORedirect stripes={this.stripes} />} />
-                            <TitledRoute name="settings" path="/settings" component={<Settings stripes={this.stripes} />} />
+                            <TitledRoute
+                              name="home"
+                              path="/"
+                              key="root"
+                              exact
+                              component={<Front stripes={this.stripes} />}
+                            />
+                            <TitledRoute
+                              name="ssoRedirect"
+                              path="/sso-landing"
+                              key="sso-landing"
+                              component={<SSORedirect stripes={this.stripes} />}
+                            />
+                            <TitledRoute
+                              name="settings"
+                              path="/settings"
+                              component={<Settings stripes={this.stripes} />}
+                            />
                             {getModuleRoutes(this.stripes)}
                             <TitledRoute
                               name="notFound"
@@ -99,9 +129,27 @@ class RootWithIntl extends React.Component {
                       )}
                     </MainContainer> :
                     <Switch>
-                      <TitledRoute name="CreateResetPassword" path="/(Create|Reset)Password/:token" component={<this.connectedCreateResetPassword stripes={this.stripes} />} />
-                      <TitledRoute name="ssoLanding" exact path="/sso-landing" component={<CookiesProvider><SSOLanding stripes={this.stripes} /></CookiesProvider>} key="sso-landing" />
-                      <TitledRoute name="login" component={<Login autoLogin={this.stripes.config.autoLogin} stripes={this.stripes} />} />
+                      <TitledRoute
+                        name="CreateResetPassword"
+                        path="/(Create|Reset)Password/:token"
+                        component={<this.connectedCreateResetPassword stripes={this.stripes} />}
+                      />
+                      <TitledRoute
+                        name="ssoLanding"
+                        exact
+                        path="/sso-landing"
+                        component={<CookiesProvider><SSOLanding stripes={this.stripes} /></CookiesProvider>}
+                        key="sso-landing"
+                      />
+                      <TitledRoute
+                        name="login"
+                        component={
+                          <Login
+                            autoLogin={this.stripes.config.autoLogin}
+                            stripes={this.stripes}
+                          />
+                        }
+                      />
                     </Switch>
                   }
                 </Router>

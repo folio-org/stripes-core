@@ -6,7 +6,7 @@ import styles from './FieldLabel.css';
 export default class FieldLabel extends Component {
   static propTypes = {
     htmlFor: PropTypes.string.isRequired,
-    children: PropTypes.node.isRequired
+    children: PropTypes.node.isRequired,
   };
 
   render() {

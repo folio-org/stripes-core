@@ -3,7 +3,7 @@ import { expect } from 'chai';
 import {
   describe,
   it,
-  beforeEach
+  beforeEach,
 } from '@bigtest/mocha';
 
 import setupApplication from '../helpers/setup-application';

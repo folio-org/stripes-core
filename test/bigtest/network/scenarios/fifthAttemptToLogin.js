@@ -5,7 +5,7 @@ export default (server) => {
         {
           type: 'error',
           code: 'fifth.failed.attempt.blocked',
-        }
+        },
       ] }
     )
   }, 422);

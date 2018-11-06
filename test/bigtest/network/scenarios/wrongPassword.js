@@ -5,7 +5,7 @@ export default (server) => {
         {
           type: 'error',
           code: 'password.incorrect',
-        }
+        },
       ] }
     )
   }, 422);

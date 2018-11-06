@@ -4,7 +4,6 @@ import localforage from 'localforage';
 import { change } from 'redux-form';
 import { addLocaleData } from 'react-intl';
 import { translations } from 'stripes-config';
-import processBadResponse from './processBadResponse';
 
 import {
   clearCurrentUser,
@@ -23,6 +22,7 @@ import {
   setCurrentServicePoint,
   setUserServicePoints,
 } from './okapiActions';
+import processBadResponse from './processBadResponse';
 
 function getHeaders(tenant, token) {
   return {

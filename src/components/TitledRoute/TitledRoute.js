@@ -37,7 +37,7 @@ class TitledRoute extends React.Component {
         ...component,
         props: {
           ...component.props,
-          match: computedMatch
+          match: computedMatch,
         }
       }
       : component;

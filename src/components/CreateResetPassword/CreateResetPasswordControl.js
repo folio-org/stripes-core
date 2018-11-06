@@ -26,11 +26,11 @@ class CreateResetPasswordControl extends Component {
         POST: PropTypes.func.isRequired,
       }).isRequired,
     }).isRequired,
-    stripes: stripesShape.isRequired
+    stripes: stripesShape.isRequired,
   };
 
   static defaultProps = {
-    authFailure: []
+    authFailure: [],
   };
 
   handleSuccessfulResponse = () => {
@@ -41,7 +41,7 @@ class CreateResetPasswordControl extends Component {
   handleSubmit = values => {
     const {
       mutator: { changePassword },
-      stripes: { store }
+      stripes: { store },
     } = this.props;
     const { newPassword } = values;
 

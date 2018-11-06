@@ -2,8 +2,8 @@ import { setAuthError } from './okapiActions';
 
 function getDefaultError() {
   return {
-    code :'default.error',
-    type :'error',
+    code: 'default.error',
+    type: 'error',
   };
 }
 
@@ -13,9 +13,7 @@ function getProcessedErrors(errorMessage, response) {
 
   if (status === 422) {
     try {
-      const {
-        errors,
-      } = JSON.parse(errorMessage);
+      const { errors } = JSON.parse(errorMessage);
 
       processedErrors.push(...errors);
     } catch (e) {

@@ -5,7 +5,7 @@ export default (server) => {
         {
           type: 'error',
           code: 'third.failed.attempt',
-        }
+        },
       ] }
     )
   }, 422);

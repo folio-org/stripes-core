@@ -76,7 +76,7 @@ describe('Login', () => {
     describe('error for the wrong username', () => {
       setupApplication({
         disableAuth: false,
-        scenarios: ['wrongUsername']
+        scenarios: ['wrongUsername'],
       });
 
       beforeEach(async function () {
@@ -110,7 +110,7 @@ describe('Login', () => {
     describe('error for the wrong password', () => {
       setupApplication({
         disableAuth: false,
-        scenarios: ['wrongPassword']
+        scenarios: ['wrongPassword'],
       });
 
       beforeEach(async function () {
@@ -141,7 +141,7 @@ describe('Login', () => {
     describe('error for the server error', () => {
       setupApplication({
         disableAuth: false,
-        scenarios: ['serverError']
+        scenarios: ['serverError'],
       });
 
       beforeEach(async function () {
@@ -172,7 +172,7 @@ describe('Login', () => {
     describe('error for the third attempt to enter wrong password', () => {
       setupApplication({
         disableAuth: false,
-        scenarios: ['thirdAttemptToLogin']
+        scenarios: ['thirdAttemptToLogin'],
       });
 
       beforeEach(async function () {
@@ -203,7 +203,7 @@ describe('Login', () => {
     describe('error for the fifth attempt to enter wrong password', () => {
       setupApplication({
         disableAuth: false,
-        scenarios: ['fifthAttemptToLogin']
+        scenarios: ['fifthAttemptToLogin'],
       });
 
       beforeEach(async function () {
@@ -234,7 +234,7 @@ describe('Login', () => {
     describe('error for the attempt to login to locked account', () => {
       setupApplication({
         disableAuth: false,
-        scenarios: ['lockedAccount']
+        scenarios: ['lockedAccount'],
       });
 
       beforeEach(async function () {
@@ -265,7 +265,7 @@ describe('Login', () => {
     describe('multiple errors', () => {
       setupApplication({
         disableAuth: false,
-        scenarios: ['multipleErrors']
+        scenarios: ['multipleErrors'],
       });
 
       beforeEach(async function () {
@@ -298,7 +298,7 @@ describe('Login', () => {
     describe('invalid response body', () => {
       setupApplication({
         disableAuth: false,
-        scenarios: ['invalidResponseBody']
+        scenarios: ['invalidResponseBody'],
       });
 
       beforeEach(async function () {
