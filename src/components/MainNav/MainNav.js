@@ -74,7 +74,7 @@ class MainNav extends Component {
 
   componentDidMount() {
     let curQuery = null;
-    this.store.subscribe(() => {
+    this._unsubscribe = this.store.subscribe(() => {
       const { history, location } = this.props;
       const module = this.curModule;
       if (module && isQueryResourceModule(module, location)) {
@@ -90,6 +90,10 @@ class MainNav extends Component {
     if (this.curModule && !isEqual(location, prevProps.location)) {
       updateQueryResource(location, this.curModule, this.store);
     }
+  }
+
+  componentWillUnmount() {
+    this._unsubscribe();
   }
 
   toggleUserMenu() {
