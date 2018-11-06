@@ -1,7 +1,7 @@
 # Change history for stripes-core
 
 
-## 2.18.0 (IN PROGRESS)
+## 3.0.0 (IN PROGRESS)
 
 * Sort the settings. Fixes STCOR-286.
 * Load region-specific translations if available. Fixes STCOR-261.
