@@ -68,6 +68,11 @@ class RootWithIntl extends React.Component {
     this.connectedCreateResetPassword = this.stripes.connect(CreateResetPassword);
   }
 
+  componentDidUpdate() {
+    const { user } = this.props.stripes;
+    this.stripes = this.stripes.clone({ user });
+  }
+
   render() {
     const {
       token,
