@@ -54,11 +54,20 @@ module.exports = function serve(stripesConfig, options) {
     const port = options.port || process.env.STRIPES_PORT || 3000;
     const host = options.host || process.env.STRIPES_HOST || 'localhost';
 
-    app.use(express.static(`${serverRoot}/public`));
+
+    const staticFileMiddleware = express.static(`${serverRoot}/public`);
+
+    app.use(staticFileMiddleware);
 
     // Process index rewrite before webpack-dev-middleware
     // to respond with webpack's dist copy of index.html
-    app.use(connectHistoryApiFallback({}));
+    app.use(connectHistoryApiFallback({
+      disableDotRule: true,
+      htmlAcceptHeaders: ['text/html', 'application/xhtml+xml'],
+    }));
+
+    // To handle rewrites without the dot rule, we should include the static middleware twice
+    app.use(staticFileMiddleware);
 
     app.use(webpackDevMiddleware(compiler, {
       logLevel: 'warn',
