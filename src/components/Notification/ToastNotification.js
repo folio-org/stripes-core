@@ -110,8 +110,8 @@ class ToastNotification extends React.Component {
       <Layout className="flex full justified centerItems">
         {this.props.message}
         <Button
+          ariaLabel="Dismiss this message"
           buttonStyle="link"
-          title="Dismiss this message"
           onClick={this.handleHide}
         >
           <Icon icon="closeX" />
@@ -121,8 +121,8 @@ class ToastNotification extends React.Component {
       <Layout className="flex full justified centerItems">
         {this.props.message}
         <Button
+          ariaLabel="Dismiss this message"
           buttonStyle="link"
-          title="Dismiss this message"
           onClick={this.handleHide}
         >
           <Icon icon="closeX" />
