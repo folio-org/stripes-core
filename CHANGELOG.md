@@ -4,6 +4,7 @@
 
 * Set `textComponent` on `<IntlProvider>`
 * Fixed `MainNav` not setting the correct app as `selected`.
+* Keep stripes user up to date after login. Fixes STRIPES-578.
 
 ## [2.15.5](https://github.com/folio-org/stripes-core/tree/v2.15.5) (2018-11-01)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.15.4...v2.15.5)
