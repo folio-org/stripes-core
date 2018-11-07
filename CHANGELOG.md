@@ -1,9 +1,12 @@
 # Change history for stripes-core
 
-## 2.16.0 (IN PROGRESS)
+## [2.16.0](https://github.com/folio-org/stripes-core/tree/v2.16.0) (2018-11-06)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.15.5...v2.16.0)
 
 * Set `textComponent` on `<IntlProvider>`
 * Fixed `MainNav` not setting the correct app as `selected`.
+* Add Create/Reset a Password Screen, STCOR-273
+* Fix memory leaks, UIEH-570
 * Keep stripes user up to date after login. Fixes STRIPES-578.
 
 ## [2.15.5](https://github.com/folio-org/stripes-core/tree/v2.15.5) (2018-11-01)
