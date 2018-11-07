@@ -22,11 +22,15 @@
   "button.confirm": "Confirm",
   "button.hidePassword": "Hide password",
   "button.showPassword": "Show password",
+  "button.continue": "Continue",
   "label.confirmDeleteEntry": "<strong>{name}</strong> will be <strong>removed</strong>",
   "label.editEntry": "Edit {entry}",
   "label.createEntry": "Create {entry}",
   "label.missingRequiredField": "Please fill this in to continue",
   "label.okay": "Okay",
+  "label.forgotUsername": "Forgot username?",
+  "label.forgotPassword": "Forgot password?",
+  "label.forgotUsernameOrPasswordCallToAction": "Enter your email or phone number",
   "successfullyDeleted": "The {entry} <strong>{name}</strong> was successfully <strong>deleted</strong>.",
   "untitled": "Untitled",
 
@@ -50,7 +54,6 @@
   "about.key.incompatibleIntf": "Interfaces that are required but present only in an incompatible version are highlighted in <span class='{className}'>orange</span>.",
   "about.key.compatible": "Interfaces that are present in a compatible version are shown in regular font.",
   "about.moduleTypeCount": "{count, number} {type} {count, plural, one {module} other {modules}}",
-
   "about.appModuleCount": "{count, number} app {count, plural, one {module} other {modules}}",
   "about.settingsModuleCount": "{count, number} settings {count, plural, one {module} other {modules}}",
   "about.pluginModuleCount": "{count, number} plugin {count, plural, one {module} other {modules}}",
@@ -84,5 +87,11 @@
 
   "createResetPassword.header": "Choose a password",
   "createResetPassword.newPassword": "New Password",
-  "createResetPassword.confirmPassword": "Confirm Password"
+  "createResetPassword.confirmPassword": "Confirm Password",
+  "loginServices.login.default.error": "Sorry, the information entered does not match our records.",
+  "loginServices.login.username.incorrect": "Error verifying user existence: No user found by username {username}",
+  "loginServices.login.password.incorrect": "Bad credentials",
+  "loginServices.login.third.failed.attempt": "You have entered the wrong username or password for the third time. You have two more tries to login before your account will be locked.",
+  "loginServices.login.fifth.failed.attempt.blocked": "For security purposes, your account has been locked. Please contact your Folio System Administrator to reset your password.",
+  "loginServices.login.user.blocked": "For security, purposes, your account has been locked. Please try again or contact your Folio System Administrator."
 }
