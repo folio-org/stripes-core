@@ -21,3 +21,4 @@ export { default as SSORedirect } from './SSORedirect';
 export { default as Front } from './Front';
 export { default as Settings } from './Settings/Settings';
 export { default as ForgotUserNameCtrl } from './ForgotForm/ForgotUserName';
+export { default as CheckEmailStatusPage } from './CheckEmailStatusPage';

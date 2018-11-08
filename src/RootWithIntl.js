@@ -30,7 +30,8 @@ import {
   Login,
   OverlayContainer,
   CreateResetPassword,
-  ForgotUserNameCtrl
+  ForgotUserNameCtrl,
+  CheckEmailStatusPage
 } from './components';
 import { stripesShape } from './Stripes';
 import { StripesContext } from './StripesContext';
@@ -67,6 +68,7 @@ class RootWithIntl extends React.Component {
       connect,
     });
     this.connectedCreateResetPassword = this.stripes.connect(CreateResetPassword);
+    this.connectedForgotUsernameForm = this.stripes.connect(ForgotUserNameCtrl);
   }
 
   render() {
@@ -144,8 +146,13 @@ class RootWithIntl extends React.Component {
                       />
                       <TitledRoute
                         name="forgot-username"
-                        path="/forgot/username"
-                        component={<ForgotUserNameCtrl />}
+                        path="/forgot-username"
+                        component={<this.connectedForgotUsernameForm />}
+                      />
+                      <TitledRoute
+                        name="test"
+                        path="/check-email"
+                        component={<CheckEmailStatusPage />}
                       />
                       <TitledRoute
                         name="login"

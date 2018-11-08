@@ -2,22 +2,36 @@ import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { reduxForm, Field, Form } from 'redux-form';
 import { FormattedMessage } from 'react-intl';
-import {
-  TextField,
-  Button,
-  Headline
-} from '../../../../../stripes-components/index';
+import { Col, Row } from 'react-flexbox-grid';
+
+import TextField from '@folio/stripes-components/lib/TextField';
+import Button from '@folio/stripes-components/lib/Button';
+import Headline from '@folio/stripes-components/lib/Headline';
 import OrganizationLogo from '../../OrganizationLogo/OrganizationLogo';
+import AuthErrorsContainer from '../../AuthErrorsContainer';
+
 import formStyles from '../../Login/AuthForm.css';
+import errorContainerStyles
+  from '../../CreateResetPassword/CreateResetPassword.css';
 
 class ForgotUserName extends Component {
   static propTypes = {
     dirty: PropTypes.bool,
+    isValid: PropTypes.bool,
+    userExists: PropTypes.bool,
     onSubmit: PropTypes.func.isRequired,
+    handleSubmit: PropTypes.func.isRequired,
   };
 
   render() {
-    const { dirty } = this.props;
+    const {
+      dirty,
+      onSubmit,
+      handleSubmit,
+      isValid,
+      userExists,
+    } = this.props;
+
     return (
       <Fragment>
         <div className={formStyles.wrap}>
@@ -25,7 +39,7 @@ class ForgotUserName extends Component {
             <OrganizationLogo />
             <Form
               className={formStyles.form}
-              onSubmit={this.props.onSubmit}
+              onSubmit={handleSubmit(onSubmit)}
               data-form="forgot"
             >
               <Headline
@@ -52,7 +66,7 @@ class ForgotUserName extends Component {
                 <Field
                   id="input-email-or-phone"
                   component={TextField}
-                  name="email-or-phone"
+                  name="userInput"
                   type="text"
                   marginBottom0
                   fullWidth
@@ -79,6 +93,21 @@ class ForgotUserName extends Component {
                   id="stripes-core.button.continue"
                 />
               </Button>
+              <Row center="xs">
+                <Col xs={12}>
+                  <div className={errorContainerStyles.authErrorsWrapper}>
+                    { (!isValid || !userExists) &&
+                    <AuthErrorsContainer
+                      errors={
+                        isValid
+                          ? [{ code: 'unable.locate.account' }]
+                          : [{ code: 'email.invalid' }]
+                      }
+                      data-test-errors
+                    /> }
+                  </div>
+                </Col>
+              </Row>
             </Form>
           </div>
         </div>

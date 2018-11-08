@@ -1,9 +1,10 @@
-export default (email) => {
+import normalizeInput from './normalizeInput';
+
+export default email => {
   const emailRegExp = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-  return emailRegExp
-    .test(
-      String(email)
-        .toLowerCase()
-        .trim()
-    );
+  const phoneRegExp = /^(\d+[.-]*)+\d+$/;
+  const input = normalizeInput(email);
+  return phoneRegExp.test(input)
+    ? true
+    : emailRegExp.test(input);
 };

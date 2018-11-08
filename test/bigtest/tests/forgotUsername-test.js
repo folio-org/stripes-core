@@ -11,7 +11,7 @@ describe.only('Forgot username form test', () => {
   setupApplication({ disableAuth: false });
 
   beforeEach(function () {
-    this.visit('/forgot/username');
+    this.visit('/forgot-username');
   });
 
   const inputField = new TextFieldInteractor('[class^="formGroup--"]');
@@ -19,9 +19,11 @@ describe.only('Forgot username form test', () => {
   const mainHeading = new Interactor('[data-test-h1]');
   const callToActionParagraph = new Interactor('[data-test-p]');
   const { buttonInteractor:button } = submitButton;
+  const errorsContainer = new Interactor('[data-test-p]');
+  const invalidInput = 'asdfgh12345';
 
   describe('Forgot form text input field integration tests', () => {
-    it('Should have a field to enter the email or phone number', () => {
+    it('Should display a field to enter the email or phone number', () => {
       expect(inputField.isPresent).to.be.true;
     });
 
@@ -31,7 +33,7 @@ describe.only('Forgot username form test', () => {
   });
 
   describe('Forgot form submit button integration tests', () => {
-    it('Should have a "Continue" button to submit a request', () => {
+    it('Should display a "Continue" button to submit a request', () => {
       expect(button.isPresent).to.be.true;
     });
 
@@ -40,8 +42,17 @@ describe.only('Forgot username form test', () => {
     });
   });
 
+  describe('Forgot form submit button test after filling the input', () => {
+    beforeEach(async () => {
+      await inputField.fillInput(invalidInput);
+    });
+    it('Should have an enabled submit button', () => {
+      expect(submitButton.isDisabled).to.be.false;
+    });
+  });
+
   describe('Forgot form headings integration tests', () => {
-    it('Should have the heading', () => {
+    it('Should display the heading', () => {
       expect(mainHeading.isPresent).to.be.true;
     });
 
@@ -50,7 +61,7 @@ describe.only('Forgot username form test', () => {
       expect(mainHeading.text).to.equal(translations['label.forgotUsername']);
     });
 
-    it('Should have the paragraph', () => {
+    it('Should display the paragraph', () => {
       expect(callToActionParagraph.isPresent).to.be.true;
     });
 
@@ -60,5 +71,24 @@ describe.only('Forgot username form test', () => {
         translations['label.forgotUsernameOrPasswordCallToAction']
       );
     });
+  });
+
+  describe('Error container initial behaviour', () => {
+    describe('Forgot form error container integration test', () => {
+      it('Should not display the error container', () => {
+        expect(errorsContainer.isPresent).to.be.false;
+      });
+    });
+  });
+
+  describe('Forgot form error container integration tests', () => {
+    beforeEach(async () => {
+      await inputField.fillInput(invalidInput);
+      await submitButton.isClicked;
+    });
+    it('Should display an error container if the input is not a valid email',
+      () => {
+        expect(errorsContainer.isPresent).to.be.true;
+      });
   });
 });

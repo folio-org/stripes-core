@@ -31,6 +31,8 @@
   "label.forgotUsername": "Forgot username?",
   "label.forgotPassword": "Forgot password?",
   "label.forgotUsernameOrPasswordCallToAction": "Enter your email or phone number",
+  "label.check.email": "Check your email",
+  "label.caution.email": "If you don't receive the email, check your spam, junk, social or other folders. Or contact your FOLIO system administrator",
   "successfullyDeleted": "The {entry} <strong>{name}</strong> was successfully <strong>deleted</strong>.",
   "untitled": "Untitled",
 
@@ -84,6 +86,8 @@
   "errors.fifth.failed.attempt.blocked": "For security purposes, your account has been locked. Please contact your Folio System Administrator to reset your password.",
   "errors.user.blocked": "For security purposes, your account has been locked. Please try again or contact your Folio System Administrator.",
   "errors.password.match.error": "Password does not match. Retype your password.",
+  "errors.email.invalid": "Please enter a valid email address",
+  "errors.unable.locate.account": "Unable to find your account. Please enter a valid email address or phone number",
 
   "createResetPassword.header": "Choose a password",
   "createResetPassword.newPassword": "New Password",
