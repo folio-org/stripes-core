@@ -39,16 +39,6 @@ class ForgotUserNameCtrl extends Component {
     };
   }
 
-  render() {
-    return (
-      <ForgotUserNameForm
-        onSubmit={this.handleSubmit}
-        isValid={this.state.isValidEmail}
-        userExists={this.state.userExist}
-      />
-    );
-  }
-
   handleSubmit = values => {
     this.resetState();
     const {
@@ -78,6 +68,16 @@ class ForgotUserNameCtrl extends Component {
   resetState = () => {
     this.setState(() => ({ isValidEmail: true, userExist: true }));
   };
+
+  render() {
+    return (
+      <ForgotUserNameForm
+        onSubmit={this.handleSubmit}
+        isValid={this.state.isValidEmail}
+        userExists={this.state.userExist}
+      />
+    );
+  }
 }
 
 export default withRouter(ForgotUserNameCtrl);

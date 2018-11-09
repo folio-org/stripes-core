@@ -4,7 +4,7 @@ import translations from '../../../translations/stripes-core/en';
 import setupApplication from '../helpers/setup-application';
 import ForgotUsernameInteractor from '../interactors/ForgotUsername';
 
-describe.only('Forgot username form test', () => {
+describe('Forgot username form test', () => {
   setupApplication({ disableAuth: false });
 
   beforeEach(function () {
