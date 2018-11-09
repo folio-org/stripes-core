@@ -10,8 +10,6 @@ import {
   formValueSelector,
 } from 'redux-form';
 import isEmpty from 'lodash/isEmpty';
-import remove from 'lodash/remove';
-import some from 'lodash/some';
 
 import {
   PasswordStrength,
@@ -23,6 +21,7 @@ import {
   Row,
   Col,
 } from '@folio/stripes-components';
+import { setAuthError } from '../../okapiActions';
 
 import FieldLabel from './components/FieldLabel';
 import OrganizationLogo from '../OrganizationLogo';
@@ -77,10 +76,9 @@ class CreateResetPassword extends Component {
     }));
   };
 
-  newPasswordFieldValidation = (valid, errorCode) => {
-    this.handleValidation(
-      valid,
-      errorCode,
+  newPasswordFieldValidation = (errors) => {
+    this.validationHandler(
+      errors,
       this.translationNamespaces.smartComponents,
     );
   };
@@ -88,28 +86,29 @@ class CreateResetPassword extends Component {
   confirmPasswordFieldValidation = (value, { newPassword, confirmPassword } = {}) => {
     const confirmPasswordValid = !(newPassword && confirmPassword && newPassword !== confirmPassword);
 
-    this.handleValidation(
-      confirmPasswordValid,
-      this.passwordMatchErrorCode,
-      this.translationNamespaces.errors,
-    );
+    if (!confirmPasswordValid) {
+      this.validationHandler(
+        [this.passwordMatchErrorCode],
+        this.translationNamespaces.errors,
+      );
+    }
   };
 
-  handleValidation = (valid, errorCode, translationNamespace) => {
-    const { errors } = this.props;
-    const error = {
-      code: errorCode,
-      translationNamespace,
-    };
+  validationHandler = (errors, translationNamespace) => {
+    const {
+      stripes: {
+        store: {
+          dispatch
+        }
+      }
+    } = this.props;
 
-    if (valid) {
-      remove(errors, error);
-      return;
-    }
-
-    if (!some(errors, error)) {
-      errors.push(error);
-    }
+    dispatch(setAuthError(errors.map((error) => {
+      return {
+        code: error,
+        translationNamespace,
+      };
+    })));
   };
 
   render() {
@@ -180,7 +179,6 @@ class CreateResetPassword extends Component {
                       username={username}
                       inputClass={styles.input}
                       hasClearIcon={false}
-                      validationEnabled={false}
                       errors={errors}
                       autoFocus
                       marginBottom0
@@ -195,7 +193,7 @@ class CreateResetPassword extends Component {
                         sm:4,
                         className:styles.passwordStrength
                       }}
-                      handleValidation={this.newPasswordFieldValidation}
+                      validationHandler={this.newPasswordFieldValidation}
                       validate={this.validators.newPassword}
                     />
                   </Col>
