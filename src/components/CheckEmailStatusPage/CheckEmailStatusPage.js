@@ -8,7 +8,10 @@ import styles from './CheckEmailStatusPage.css';
 
 const CheckEmailStatusPage = () => (
   <Fragment>
-    <div className={styles.wrap}>
+    <div
+      className={styles.wrap}
+      data-test-status-page
+    >
       <div className={styles.centered}>
         <OrganizationLogo />
         <Headline
@@ -25,7 +28,7 @@ const CheckEmailStatusPage = () => (
           tag="p"
           bold={false}
           faded
-          data-test-p-caution
+          data-test-p
         >
           <FormattedMessage
             id="stripes-core.label.caution.email"

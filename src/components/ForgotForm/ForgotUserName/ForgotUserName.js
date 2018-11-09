@@ -93,21 +93,25 @@ class ForgotUserName extends Component {
                   id="stripes-core.button.continue"
                 />
               </Button>
-              <Row center="xs">
-                <Col xs={12}>
-                  <div className={errorContainerStyles.authErrorsWrapper}>
-                    { (!isValid || !userExists) &&
+              <div
+                className={errorContainerStyles.authErrorsWrapper}
+                data-test-errors
+              >
+                { (!isValid || !userExists) &&
+                <Row center="xs">
+                  <Col xs={12}>
                     <AuthErrorsContainer
                       errors={
                         isValid
                           ? [{ code: 'unable.locate.account' }]
                           : [{ code: 'email.invalid' }]
                       }
-                      data-test-errors
-                    /> }
-                  </div>
-                </Col>
-              </Row>
+                      data-test-container
+                    />
+                  </Col>
+                </Row>
+                    }
+              </div>
             </Form>
           </div>
         </div>

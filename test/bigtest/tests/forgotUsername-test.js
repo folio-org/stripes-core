@@ -1,11 +1,8 @@
 import { describe, it, beforeEach } from '@bigtest/mocha';
-import { Interactor } from '@bigtest/interactor';
 import { expect } from 'chai';
-import TextFieldInteractor
-  from '@folio/stripes-components/lib/TextField/tests/interactor';
 import translations from '../../../translations/stripes-core/en';
 import setupApplication from '../helpers/setup-application';
-import SubmitButtonInteractor from '../interactors/submit-button';
+import ForgotUsernameInteractor from '../interactors/ForgotUsername';
 
 describe.only('Forgot username form test', () => {
   setupApplication({ disableAuth: false });
@@ -14,15 +11,21 @@ describe.only('Forgot username form test', () => {
     this.visit('/forgot-username');
   });
 
-  const inputField = new TextFieldInteractor('[class^="formGroup--"]');
-  const submitButton = new SubmitButtonInteractor();
-  const mainHeading = new Interactor('[data-test-h1]');
-  const callToActionParagraph = new Interactor('[data-test-p]');
-  const { buttonInteractor:button } = submitButton;
-  const errorsContainer = new Interactor('[data-test-p]');
+  const forgotUsernamePage = new ForgotUsernameInteractor();
+  const
+    {
+      inputField,
+      submitButton,
+      submitButton: { button },
+      mainHeading,
+      callToActionParagraph,
+      errorsWrapper,
+      errorsWrapper: { errorsContainer },
+    } = forgotUsernamePage;
   const invalidInput = 'asdfgh12345';
+  const nonExistingRecord = '12345';
 
-  describe('Forgot form text input field integration tests', () => {
+  describe('Forgot form text input field tests', () => {
     it('Should display a field to enter the email or phone number', () => {
       expect(inputField.isPresent).to.be.true;
     });
@@ -32,7 +35,7 @@ describe.only('Forgot username form test', () => {
     });
   });
 
-  describe('Forgot form submit button integration tests', () => {
+  describe('Forgot form submit button tests', () => {
     it('Should display a "Continue" button to submit a request', () => {
       expect(button.isPresent).to.be.true;
     });
@@ -51,7 +54,7 @@ describe.only('Forgot username form test', () => {
     });
   });
 
-  describe('Forgot form headings integration tests', () => {
+  describe('Forgot form headings tests', () => {
     it('Should display the heading', () => {
       expect(mainHeading.isPresent).to.be.true;
     });
@@ -75,20 +78,58 @@ describe.only('Forgot username form test', () => {
 
   describe('Error container initial behaviour', () => {
     describe('Forgot form error container integration test', () => {
+      it('Should display the error container wrapper', () => {
+        expect(errorsWrapper.isPresent).to.be.true;
+      });
+
       it('Should not display the error container', () => {
         expect(errorsContainer.isPresent).to.be.false;
       });
     });
   });
 
-  describe('Forgot form error container integration tests', () => {
-    beforeEach(async () => {
-      await inputField.fillInput(invalidInput);
-      await submitButton.isClicked;
+  describe('Forgot form submission error behaviour tests', () => {
+    describe('Forgot form validation tests', () => {
+      beforeEach(async () => {
+        await inputField.fillInput(invalidInput);
+        await submitButton.click();
+      });
+
+      it('Should display an error container if the input is not a valid email',
+        () => {
+          expect(errorsContainer.isPresent).to.be.true;
+        });
+
+      it('Should have an appropriate error text content', () => {
+        expect(errorsContainer.text).to.equal(
+          translations['errors.email.invalid']
+        );
+      });
     });
-    it('Should display an error container if the input is not a valid email',
-      () => {
+
+    describe(`Forgot form submission behaviour
+     when the record does not match any in the DB`, () => {
+      setupApplication({
+        disableAuth: false,
+        scenarios: ['wrongUsername'],
+      });
+
+      beforeEach(async function () {
+        this.visit('/forgot-username');
+        await inputField.fillInput(nonExistingRecord);
+        await submitButton.click();
+      });
+
+      it(`Should display an error container 
+      if the input does not match not any record`, () => {
         expect(errorsContainer.isPresent).to.be.true;
       });
+
+      it('Should should have an appropriate error text content', () => {
+        expect(errorsContainer.text).to.equal(
+          translations['errors.unable.locate.account']
+        );
+      });
+    });
   });
 });
