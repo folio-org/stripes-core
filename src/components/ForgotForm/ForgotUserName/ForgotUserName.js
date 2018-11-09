@@ -110,7 +110,7 @@ class ForgotUserName extends Component {
                     />
                   </Col>
                 </Row>
-                    }
+                }
               </div>
             </Form>
           </div>

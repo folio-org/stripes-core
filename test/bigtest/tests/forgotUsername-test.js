@@ -21,9 +21,16 @@ describe.only('Forgot username form test', () => {
       callToActionParagraph,
       errorsWrapper,
       errorsWrapper: { errorsContainer },
+      statusPage,
+      statusPage:
+        {
+          heading: statusPageHeading,
+          cautionParagraph
+        },
     } = forgotUsernamePage;
   const invalidInput = 'asdfgh12345';
   const nonExistingRecord = '12345';
+  const existingRecord = 'hillard@roob-glover.am';
 
   describe('Forgot form text input field tests', () => {
     it('Should display a field to enter the email or phone number', () => {
@@ -88,7 +95,7 @@ describe.only('Forgot username form test', () => {
     });
   });
 
-  describe('Forgot form submission error behaviour tests', () => {
+  describe('Forgot form submission behaviour tests', () => {
     describe('Forgot form validation tests', () => {
       beforeEach(async () => {
         await inputField.fillInput(invalidInput);
@@ -111,7 +118,7 @@ describe.only('Forgot username form test', () => {
      when the record does not match any in the DB`, () => {
       setupApplication({
         disableAuth: false,
-        scenarios: ['wrongUsername'],
+        scenarios: ['forgotUsernameError'],
       });
 
       beforeEach(async function () {
@@ -128,6 +135,50 @@ describe.only('Forgot username form test', () => {
       it('Should should have an appropriate error text content', () => {
         expect(errorsContainer.text).to.equal(
           translations['errors.unable.locate.account']
+        );
+      });
+    });
+
+    describe('Forgot form successful submission behaviour', () => {
+      setupApplication({
+        disableAuth: false,
+        scenarios: ['forgotUsernameSuccess'],
+      });
+
+      beforeEach(async function () {
+        this.visit('/forgot-username');
+        await inputField.fillInput(existingRecord);
+        await submitButton.click();
+      });
+
+      it(`Should not display an error container 
+      if the input match any record in DB`, () => {
+        expect(errorsContainer.isPresent).to.be.false;
+      });
+
+      it('Should be redirected to the Check email status page', () => {
+        expect(statusPage.isPresent).to.be.true;
+      });
+
+      it('Should display a header', () => {
+        expect(statusPageHeading.isPresent).to.be.true;
+      });
+
+      it(`Should have the header with an appropriate text content 
+    equal to check email label in english translation`, () => {
+        expect(statusPageHeading.text).to.equal(
+          translations['label.check.email']
+        );
+      });
+
+      it('Should display a paragraph with precautions', () => {
+        expect(cautionParagraph.isPresent).to.be.true;
+      });
+
+      it(`Should have the paragraph with an appropriate text content 
+    equal to check email precautions label in english translation`, () => {
+        expect(cautionParagraph.text).to.equal(
+          translations['label.caution.email']
         );
       });
     });
