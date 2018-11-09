@@ -30,7 +30,7 @@ import {
   Login,
   OverlayContainer,
   CreateResetPassword,
-  ForgotUserNameCtrl,
+  ForgotPasswordCtrl,
   CheckEmailStatusPage
 } from './components';
 import { stripesShape } from './Stripes';
@@ -68,7 +68,7 @@ class RootWithIntl extends React.Component {
       connect,
     });
     this.connectedCreateResetPassword = this.stripes.connect(CreateResetPassword);
-    this.connectedForgotUsernameForm = this.stripes.connect(ForgotUserNameCtrl);
+    this.connectedForgotPasswordForm = this.stripes.connect(ForgotPasswordCtrl);
   }
 
   render() {
@@ -145,12 +145,12 @@ class RootWithIntl extends React.Component {
                         key="sso-landing"
                       />
                       <TitledRoute
-                        name="forgot-username"
-                        path="/forgot-username"
-                        component={<this.connectedForgotUsernameForm />}
+                        name="forgot-password"
+                        path="/forgot-password"
+                        component={<this.connectedForgotPasswordForm />}
                       />
                       <TitledRoute
-                        name="test"
+                        name="check-email"
                         path="/check-email"
                         component={<CheckEmailStatusPage />}
                       />

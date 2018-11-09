@@ -14,7 +14,7 @@ import formStyles from '../../Login/AuthForm.css';
 import errorContainerStyles
   from '../../CreateResetPassword/CreateResetPassword.css';
 
-class ForgotUserName extends Component {
+class ForgotPassword extends Component {
   static propTypes = {
     dirty: PropTypes.bool,
     isValid: PropTypes.bool,
@@ -48,7 +48,7 @@ class ForgotUserName extends Component {
                 data-test-h1
               >
                 <FormattedMessage
-                  id="stripes-core.label.forgotUsername"
+                  id="stripes-core.label.forgotPassword"
                 />
               </Headline>
               <Headline
@@ -120,6 +120,6 @@ class ForgotUserName extends Component {
   }
 }
 
-const ForgotUserNameForm =
-  reduxForm({ form: 'forgot-user-name' })(ForgotUserName);
-export default ForgotUserNameForm;
+const ForgotPasswordForm =
+  reduxForm({ form: 'forgot-password' })(ForgotPassword);
+export default ForgotPasswordForm;

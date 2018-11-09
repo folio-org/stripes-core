@@ -10,7 +10,7 @@ import ErrorsContainerInteractor from './ErrorsContainer';
 import StatusPageInteractor from './StatusPage';
 
 @interactor
-class ForgotUsernameInteractor {
+class ForgotPasswordInteractor {
   static defaultScope = ('form[class^="form--"]');
   inputField = new TextFieldInteractor('[class^="formGroup--"]');
   submitButton = new SubmitButtonInteractor();
@@ -20,4 +20,4 @@ class ForgotUsernameInteractor {
   statusPage = new StatusPageInteractor();
 }
 
-export default ForgotUsernameInteractor;
+export default ForgotPasswordInteractor;

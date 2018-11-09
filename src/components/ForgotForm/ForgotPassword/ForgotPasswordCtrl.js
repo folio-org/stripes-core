@@ -4,10 +4,10 @@ import {
 } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
-import ForgotUserNameForm from './ForgotUserName';
+import ForgotPasswordForm from './ForgotPassword';
 import validateEmail from '../helpers/validateEmail';
 
-class ForgotUserNameCtrl extends Component {
+class ForgotPassword extends Component {
   static propTypes = {
     mutator: PropTypes.shape({
       searchUsername: PropTypes.shape({
@@ -22,7 +22,7 @@ class ForgotUserNameCtrl extends Component {
   static manifest = Object.freeze({
     searchUsername: {
       type: 'okapi',
-      path: 'bl-users/forgotten/username',
+      path: 'bl-users/forgotten/password',
       headers: {
         'accept': '*/*',
       },
@@ -41,7 +41,7 @@ class ForgotUserNameCtrl extends Component {
 
   render() {
     return (
-      <ForgotUserNameForm
+      <ForgotPasswordForm
         onSubmit={this.handleSubmit}
         isValid={this.state.isValidEmail}
         userExists={this.state.userExist}
@@ -80,4 +80,4 @@ class ForgotUserNameCtrl extends Component {
   };
 }
 
-export default withRouter(ForgotUserNameCtrl);
+export default withRouter(ForgotPassword);

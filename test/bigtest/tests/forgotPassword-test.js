@@ -2,13 +2,13 @@ import { describe, it, beforeEach } from '@bigtest/mocha';
 import { expect } from 'chai';
 import translations from '../../../translations/stripes-core/en';
 import setupApplication from '../helpers/setup-application';
-import ForgotUsernameInteractor from '../interactors/ForgotUsername';
+import ForgotUsernameInteractor from '../interactors/ForgotPassword';
 
-describe('Forgot username form test', () => {
+describe('Forgot password form test', () => {
   setupApplication({ disableAuth: false });
 
   beforeEach(function () {
-    this.visit('/forgot-username');
+    this.visit('/forgot-password');
   });
 
   const forgotUsernamePage = new ForgotUsernameInteractor();
@@ -68,7 +68,7 @@ describe('Forgot username form test', () => {
 
     it(`Should have the main heading content equal to forgot username label 
   in english translation`, () => {
-      expect(mainHeading.text).to.equal(translations['label.forgotUsername']);
+      expect(mainHeading.text).to.equal(translations['label.forgotPassword']);
     });
 
     it('Should display the paragraph', () => {
@@ -118,11 +118,11 @@ describe('Forgot username form test', () => {
      when the record does not match any in the DB`, () => {
       setupApplication({
         disableAuth: false,
-        scenarios: ['forgotUsernameError'],
+        scenarios: ['forgotPasswordError'],
       });
 
       beforeEach(async function () {
-        this.visit('/forgot-username');
+        this.visit('/forgot-password');
         await inputField.fillInput(nonExistingRecord);
         await submitButton.click();
       });
@@ -142,11 +142,11 @@ describe('Forgot username form test', () => {
     describe('Forgot form successful submission behaviour', () => {
       setupApplication({
         disableAuth: false,
-        scenarios: ['forgotUsernameSuccess'],
+        scenarios: ['forgotPasswordSuccess'],
       });
 
       beforeEach(async function () {
-        this.visit('/forgot-username');
+        this.visit('/forgot-password');
         await inputField.fillInput(existingRecord);
         await submitButton.click();
       });
