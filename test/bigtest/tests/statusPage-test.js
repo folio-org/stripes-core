@@ -5,7 +5,7 @@ import translations from '../../../translations/stripes-core/en';
 import setupApplication from '../helpers/setup-application';
 import StatusPageInteractor from '../interactors/StatusPage';
 
-describe.only('Forgot username form test', () => {
+describe('Forgot username form test', () => {
   setupApplication({ disableAuth: false });
 
   beforeEach(function () {
@@ -18,10 +18,6 @@ describe.only('Forgot username form test', () => {
       heading,
       cautionParagraph
     } = statusPage;
-
-  // const statusPage = new Interactor('[data-test-status-page]');
-  // const mainHeading = new Interactor('[data-test-h1]');
-  // const cautionParagraph = new Interactor('[data-test-p]');
 
   describe('Check email status page tests', () => {
     it('Should display a status page to the user', () => {
