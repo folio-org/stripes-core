@@ -39,16 +39,6 @@ class ForgotPassword extends Component {
     };
   }
 
-  render() {
-    return (
-      <ForgotPasswordForm
-        onSubmit={this.handleSubmit}
-        isValid={this.state.isValidEmail}
-        userExists={this.state.userExist}
-      />
-    );
-  }
-
   handleSubmit = values => {
     this.resetState();
     const {
@@ -78,6 +68,16 @@ class ForgotPassword extends Component {
   resetState = () => {
     this.setState(() => ({ isValidEmail: true, userExist: true }));
   };
+
+  render() {
+    return (
+      <ForgotPasswordForm
+        onSubmit={this.handleSubmit}
+        isValid={this.state.isValidEmail}
+        userExists={this.state.userExist}
+      />
+    );
+  }
 }
 
 export default withRouter(ForgotPassword);
