@@ -12,6 +12,7 @@ import StatusPageInteractor from './StatusPage';
 @interactor
 class ForgotPasswordInteractor {
   static defaultScope = ('form[class^="form--"]');
+
   inputField = new TextFieldInteractor('[class^="formGroup--"]');
   submitButton = new SubmitButtonInteractor();
   mainHeading = scoped('[data-test-h1]');

@@ -1,5 +1,4 @@
-import
-{
+import {
   interactor,
   is,
 } from '@bigtest/interactor';
