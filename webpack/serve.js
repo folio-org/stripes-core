@@ -54,7 +54,6 @@ module.exports = function serve(stripesConfig, options) {
     const port = options.port || process.env.STRIPES_PORT || 3000;
     const host = options.host || process.env.STRIPES_HOST || 'localhost';
 
-
     const staticFileMiddleware = express.static(`${serverRoot}/public`);
 
     app.use(staticFileMiddleware);
@@ -67,6 +66,7 @@ module.exports = function serve(stripesConfig, options) {
     }));
 
     // To handle rewrites without the dot rule, we should include the static middleware twice
+    // https://github.com/bripkens/connect-history-api-fallback/blob/master/examples/static-files-and-index-rewrite
     app.use(staticFileMiddleware);
 
     app.use(webpackDevMiddleware(compiler, {

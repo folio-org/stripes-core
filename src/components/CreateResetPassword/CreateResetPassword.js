@@ -13,7 +13,7 @@ import isEmpty from 'lodash/isEmpty';
 
 import {
   PasswordStrength,
-  PasswordValidationField
+  PasswordValidationField,
 } from '@folio/stripes-smart-components';
 import {
   TextField,
@@ -53,6 +53,9 @@ class CreateResetPassword extends Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      passwordMasked: true,
+    };
     this.translationNamespaces = {
       module: 'stripes-core',
       smartComponents: 'stripes-smart-components',
@@ -60,13 +63,19 @@ class CreateResetPassword extends Component {
       errors: 'stripes-core.errors',
       button: 'stripes-core.button',
     };
-    this.newPasswordField = props.stripes.connect(PasswordValidationField);
     this.passwordMatchErrorCode = 'password.match.error';
-    this.state = {
-      passwordMasked: true,
-    };
+    this.newPasswordField = props.stripes.connect(PasswordValidationField);
     this.validators = {
       confirmPassword: this.confirmPasswordFieldValidation,
+    };
+    this.inputColProps = {
+      xs:12,
+      sm:8,
+    };
+    this.passwordMeterColProps = {
+      xs:12,
+      sm:4,
+      className:styles.passwordStrength,
     };
   }
 
@@ -184,15 +193,8 @@ class CreateResetPassword extends Component {
                       marginBottom0
                       fullWidth
                       token={token}
-                      inputColProps={{
-                        xs:12,
-                        sm:8
-                      }}
-                      passwordMeterColProps={{
-                        xs:12,
-                        sm:4,
-                        className:styles.passwordStrength
-                      }}
+                      inputColProps={this.inputColProps}
+                      passwordMeterColProps={this.passwordMeterColProps}
                       validationHandler={this.newPasswordFieldValidation}
                       validate={this.validators.newPassword}
                     />
