@@ -91,11 +91,5 @@
 
   "createResetPassword.header": "Choose a password",
   "createResetPassword.newPassword": "New Password",
-  "createResetPassword.confirmPassword": "Confirm Password",
-  "loginServices.login.default.error": "Sorry, the information entered does not match our records.",
-  "loginServices.login.username.incorrect": "Error verifying user existence: No user found by username {username}",
-  "loginServices.login.password.incorrect": "Bad credentials",
-  "loginServices.login.third.failed.attempt": "You have entered the wrong username or password for the third time. You have two more tries to login before your account will be locked.",
-  "loginServices.login.fifth.failed.attempt.blocked": "For security purposes, your account has been locked. Please contact your Folio System Administrator to reset your password.",
-  "loginServices.login.user.blocked": "For security, purposes, your account has been locked. Please try again or contact your Folio System Administrator."
+  "createResetPassword.confirmPassword": "Confirm Password"
 }

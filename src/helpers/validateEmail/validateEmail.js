@@ -1,4 +1,4 @@
-import normalizeInput from './normalizeInput';
+import normalizeInput from '../normalizeInput';
 
 export default email => {
 // eslint-disable-next-line no-useless-escape
