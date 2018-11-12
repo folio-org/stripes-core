@@ -67,7 +67,7 @@ describe('Forgot username form test', () => {
     });
 
     it(`Should have the main heading content equal to forgot username label 
-  in english translation`, () => {
+    in english translation`, () => {
       expect(mainHeading.text).to.equal(translations['label.forgotUsername']);
     });
 
@@ -76,7 +76,7 @@ describe('Forgot username form test', () => {
     });
 
     it(`Should have the paragraph content equal to forgot username or password
-   call to action label in english translation`, () => {
+    call to action label in english translation`, () => {
       expect(callToActionParagraph.text).to.equal(
         translations['label.forgotUsernameOrPasswordCallToAction']
       );
@@ -165,7 +165,7 @@ describe('Forgot username form test', () => {
       });
 
       it(`Should have the header with an appropriate text content 
-    equal to check email label in english translation`, () => {
+      equal to check email label in english translation`, () => {
         expect(statusPageHeading.text).to.equal(
           translations['label.check.email']
         );
@@ -176,7 +176,7 @@ describe('Forgot username form test', () => {
       });
 
       it(`Should have the paragraph with an appropriate text content 
-    equal to check email precautions label in english translation`, () => {
+      equal to check email precautions label in english translation`, () => {
         expect(cautionParagraph.text).to.equal(
           translations['label.caution.email']
         );

@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
-import {
-  withRouter
-} from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import ForgotUserNameForm from './ForgotUserName';
-import validateEmail from '../helpers/validateEmail';
+import { validateEmail } from '../../helpers';
 
 class ForgotUserNameCtrl extends Component {
   static propTypes = {
@@ -14,7 +12,7 @@ class ForgotUserNameCtrl extends Component {
         POST: PropTypes.func.isRequired,
       }).isRequired,
     }).isRequired,
-    history: PropTypes.object,
+    history: PropTypes.object.isRequired,
   };
 
   // Expect any MIME type to receive because of the empty body
@@ -31,13 +29,10 @@ class ForgotUserNameCtrl extends Component {
     },
   });
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      isValidEmail: true,
-      userExist: true
-    };
-  }
+  state = {
+    isValidEmail: true,
+    userExist: true
+  };
 
   handleSubmit = values => {
     this.resetState();
@@ -50,9 +45,9 @@ class ForgotUserNameCtrl extends Component {
     return isValidInput
       ? searchUsername
         .POST({ id: userInput })
-        .then(() => this.handleSuccessfulResponse())
-        .catch(() => this.handleBadResponse())
-      : this.setState(() => ({ isValidEmail: false }));
+        .then(this.handleSuccessfulResponse)
+        .catch(this.handleBadResponse)
+      : this.setState({ isValidEmail: false });
 
     //     id: 'hillard@roob-glover.am'
   };
@@ -62,11 +57,11 @@ class ForgotUserNameCtrl extends Component {
   };
 
   handleBadResponse = () => {
-    this.setState(() => ({ userExist: false }));
+    this.setState({ userExist: false });
   };
 
   resetState = () => {
-    this.setState(() => ({ isValidEmail: true, userExist: true }));
+    this.setState({ isValidEmail: true, userExist: true });
   };
 
   render() {
