@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
-import { withRouter } from 'react-router-dom';
+import {
+  withRouter,
+  Redirect,
+} from 'react-router-dom';
 import PropTypes from 'prop-types';
 
-import ForgotUserNameForm from './ForgotUserName';
-import { validateEmail } from '../../helpers';
+import ForgotUserNameForm from './ForgotUserNameForm';
+import { validateForgotUsernameForm } from '../../validators';
 
 class ForgotUserNameCtrl extends Component {
   static propTypes = {
@@ -12,7 +15,6 @@ class ForgotUserNameCtrl extends Component {
         POST: PropTypes.func.isRequired,
       }).isRequired,
     }).isRequired,
-    history: PropTypes.object.isRequired,
   };
 
   // Expect any MIME type to receive because of the empty body
@@ -30,46 +32,78 @@ class ForgotUserNameCtrl extends Component {
   });
 
   state = {
-    isValidEmail: true,
-    userExist: true
+    isValidEmail: false,
+    userExists: false,
+    hasErrorsContainer: false,
+    userEmail: '',
   };
 
   handleSubmit = values => {
     this.resetState();
     const {
-      mutator: { searchUsername },
+      mutator: {
+        searchUsername,
+      },
     } = this.props;
     const { userInput } = values;
-    const isValidInput = validateEmail(userInput);
+    const isValidInput = validateForgotUsernameForm(userInput);
 
     return isValidInput
       ? searchUsername
         .POST({ id: userInput })
-        .then(this.handleSuccessfulResponse)
+        .then(() => this.handleSuccessfulResponse(userInput))
         .catch(this.handleBadResponse)
-      : this.setState({ isValidEmail: false });
-
-    //     id: 'hillard@roob-glover.am'
+      : this.setState({
+        isValidEmail: false,
+        hasErrorsContainer: true,
+      });
   };
 
-  handleSuccessfulResponse = () => {
-    this.props.history.push('/check-email');
+  handleSuccessfulResponse = (userEmail) => {
+    this.setState({
+      userExists: true,
+      userEmail,
+    });
   };
 
   handleBadResponse = () => {
-    this.setState({ userExist: false });
+    this.setState({
+      userExists: false,
+      hasErrorsContainer: true,
+    });
   };
 
   resetState = () => {
-    this.setState({ isValidEmail: true, userExist: true });
+    this.setState(
+      {
+        isValidEmail: true,
+        userExists: false,
+        hasErrorsContainer: false,
+      }
+    );
   };
 
   render() {
+    const {
+      userExists,
+      isValidEmail,
+      hasErrorsContainer,
+      userEmail,
+    } = this.state;
+
+    if (userExists) {
+      return <Redirect to={{
+        pathname: '/check-email',
+        state: { userEmail },
+      }}
+      />;
+    }
+
     return (
       <ForgotUserNameForm
+        isValid={isValidEmail}
+        hasErrorsContainer={hasErrorsContainer}
         onSubmit={this.handleSubmit}
-        isValid={this.state.isValidEmail}
-        userExists={this.state.userExist}
       />
     );
   }

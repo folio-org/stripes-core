@@ -31,7 +31,7 @@ import {
   OverlayContainer,
   CreateResetPassword,
   ForgotUserNameCtrl,
-  CheckEmailStatusPage
+  CheckEmailStatusPage,
 } from './components';
 import { stripesShape } from './Stripes';
 import { StripesContext } from './StripesContext';
@@ -145,12 +145,12 @@ class RootWithIntl extends React.Component {
                         key="sso-landing"
                       />
                       <TitledRoute
-                        name="forgot-username"
+                        name="Forgot username"
                         path="/forgot-username"
                         component={<this.connectedForgotUsernameForm />}
                       />
                       <TitledRoute
-                        name="test"
+                        name="Check email"
                         path="/check-email"
                         component={<CheckEmailStatusPage />}
                       />

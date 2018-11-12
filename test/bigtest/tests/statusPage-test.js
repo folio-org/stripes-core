@@ -9,36 +9,50 @@ describe('Forgot username form test', () => {
   setupApplication({ disableAuth: false });
 
   beforeEach(function () {
-    this.visit('/check-email');
+    this.visit({
+      pathname: '/check-email',
+      state: { userEmail: '127-699-8925' }
+    });
   });
 
   const statusPage = new StatusPageInteractor();
-  const
-    {
-      heading,
-      cautionParagraph
-    } = statusPage;
+  const {
+    heading,
+    notificationParagraph,
+    cautionParagraph,
+  } = statusPage;
 
-  describe('Check email status page tests', () => {
-    it('Should display a status page to the user', () => {
+  describe('check email status page tests', () => {
+    it('should display a status page to the user', () => {
       expect(statusPage.isPresent).to.be.true;
     });
 
-    it('Should display a header', () => {
+    it('should display a header', () => {
       expect(heading.isPresent).to.be.true;
     });
 
-    it(`Should have the header with an appropriate text content 
-    equal to check email label in english translation`, () => {
+    it(`should have the header with an appropriate text content 
+      equal to check email label in english translation`, () => {
       expect(heading.text).to.equal(translations['label.check.email']);
     });
 
-    it('Should display a paragraph with precautions', () => {
+    it('should display a paragraph with notification', () => {
+      expect(notificationParagraph.isPresent).to.be.true;
+    });
+
+    it(`should have the paragraph with an appropriate text content 
+      equal to sent email precautions label in english translation`, () => {
+      expect(notificationParagraph.text).to.equal(
+        translations['label.your.email']
+      );
+    });
+
+    it('should display a paragraph with precautions', () => {
       expect(cautionParagraph.isPresent).to.be.true;
     });
 
-    it(`Should have the paragraph with an appropriate text content 
-    equal to check email precautions label in english translation`, () => {
+    it(`should have the paragraph with an appropriate text content 
+      equal to check email precautions label in english translation`, () => {
       expect(cautionParagraph.text).to.equal(
         translations['label.caution.email']
       );

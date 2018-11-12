@@ -93,7 +93,7 @@ export default function setupApplication({
     // set the root to 100% height
     document.getElementById('testing-root').style.height = '100%';
 
-    // setup react helpers
+    // setup react validators
     Object.defineProperties(this, {
       visit: { value: visit },
       location: { get: location }

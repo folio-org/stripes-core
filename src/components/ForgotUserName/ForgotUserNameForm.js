@@ -1,6 +1,10 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
-import { reduxForm, Field, Form } from 'redux-form';
+import {
+  reduxForm,
+  Field,
+  Form,
+} from 'redux-form';
 import { FormattedMessage } from 'react-intl';
 
 import {
@@ -12,17 +16,16 @@ import {
 } from '@folio/stripes-components';
 
 import OrganizationLogo from '../OrganizationLogo/OrganizationLogo';
-import AuthErrorsContainer from '../AuthErrorsContainer/index';
+import AuthErrorsContainer from '../AuthErrorsContainer';
 
 import formStyles from '../Login/AuthForm.css';
-import errorContainerStyles
-  from '../CreateResetPassword/CreateResetPassword.css';
+import errorContainerStyles from '../CreateResetPassword/CreateResetPassword.css';
 
 class ForgotUserName extends Component {
   static propTypes = {
     dirty: PropTypes.bool.isRequired,
     isValid: PropTypes.bool.isRequired,
-    userExists: PropTypes.bool.isRequired,
+    hasErrorsContainer: PropTypes.bool.isRequired,
     onSubmit: PropTypes.func.isRequired,
     handleSubmit: PropTypes.func.isRequired,
   };
@@ -33,7 +36,7 @@ class ForgotUserName extends Component {
       onSubmit,
       handleSubmit,
       isValid,
-      userExists,
+      hasErrorsContainer,
     } = this.props;
 
     return (
@@ -43,8 +46,8 @@ class ForgotUserName extends Component {
             <OrganizationLogo />
             <Form
               className={formStyles.form}
-              onSubmit={handleSubmit(onSubmit)}
               data-form="forgot"
+              onSubmit={handleSubmit(onSubmit)}
             >
               <Headline
                 size="xx-large"
@@ -95,19 +98,17 @@ class ForgotUserName extends Component {
                 className={errorContainerStyles.authErrorsWrapper}
                 data-test-errors
               >
-                { (!isValid || !userExists) &&
-                <Row center="xs">
-                  <Col xs={12}>
-                    <AuthErrorsContainer
-                      errors={
-                        isValid
-                          ? [{ code: 'unable.locate.account' }]
-                          : [{ code: 'email.invalid' }]
-                      }
-                      data-test-container
-                    />
-                  </Col>
-                </Row>
+                {hasErrorsContainer &&
+                  <Row center="xs">
+                    <Col xs={12}>
+                      <AuthErrorsContainer
+                        errors={[{ code: isValid
+                          ? 'unable.locate.account'
+                          : 'email.invalid' }]}
+                        data-test-container
+                      />
+                    </Col>
+                  </Row>
                 }
               </div>
             </Form>

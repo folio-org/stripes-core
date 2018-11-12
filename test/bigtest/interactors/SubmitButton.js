@@ -1,5 +1,4 @@
-import
-{
+import {
   interactor,
   is,
 } from '@bigtest/interactor';
@@ -9,6 +8,7 @@ import ButtonInteractor
 export default @interactor
 class SubmitButtonInteractor {
   static defaultScope = ('button[data-test-submit]');
+
   button = new ButtonInteractor();
   isDisabled = is(':disabled');
 }
