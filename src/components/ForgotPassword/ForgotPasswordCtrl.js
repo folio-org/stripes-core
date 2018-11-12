@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
-import {
-  withRouter
-} from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import ForgotPasswordForm from './ForgotPassword';
-import validateEmail from '../helpers/validateEmail';
+import { validateEmail } from '../../helpers';
 
 class ForgotPassword extends Component {
   static propTypes = {
@@ -14,7 +12,7 @@ class ForgotPassword extends Component {
         POST: PropTypes.func.isRequired,
       }).isRequired,
     }).isRequired,
-    history: PropTypes.object,
+    history: PropTypes.object.isRequired,
   };
 
   // Expect any MIME type to receive because of the empty body
@@ -31,13 +29,11 @@ class ForgotPassword extends Component {
     },
   });
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      isValidEmail: true,
-      userExist: true
-    };
-  }
+  state = {
+    isValidEmail: true,
+    userExist: true
+  };
+
 
   handleSubmit = values => {
     this.resetState();
@@ -50,9 +46,9 @@ class ForgotPassword extends Component {
     return isValidInput
       ? searchUsername
         .POST({ id: userInput })
-        .then(() => this.handleSuccessfulResponse())
-        .catch(() => this.handleBadResponse())
-      : this.setState(() => ({ isValidEmail: false }));
+        .then(this.handleSuccessfulResponse)
+        .catch(this.handleBadResponse)
+      : this.setState({ isValidEmail: false });
 
     //     id: 'hillard@roob-glover.am'
   };
@@ -62,11 +58,16 @@ class ForgotPassword extends Component {
   };
 
   handleBadResponse = () => {
-    this.setState(() => ({ userExist: false }));
+    this.setState({ userExist: false });
   };
 
   resetState = () => {
-    this.setState(() => ({ isValidEmail: true, userExist: true }));
+    this.setState(
+      {
+        isValidEmail: true,
+        userExist: true,
+      }
+    );
   };
 
   render() {
