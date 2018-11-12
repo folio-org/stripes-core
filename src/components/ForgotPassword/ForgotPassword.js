@@ -2,24 +2,28 @@ import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { reduxForm, Field, Form } from 'redux-form';
 import { FormattedMessage } from 'react-intl';
-import { Col, Row } from 'react-flexbox-grid';
 
-import TextField from '@folio/stripes-components/lib/TextField';
-import Button from '@folio/stripes-components/lib/Button';
-import Headline from '@folio/stripes-components/lib/Headline';
-import OrganizationLogo from '../../OrganizationLogo/OrganizationLogo';
-import AuthErrorsContainer from '../../AuthErrorsContainer';
+import {
+  TextField,
+  Button,
+  Headline,
+  Row,
+  Col,
+} from '@folio/stripes-components';
 
-import formStyles from '../../Login/AuthForm.css';
+import OrganizationLogo from '../OrganizationLogo/OrganizationLogo';
+import AuthErrorsContainer from '../AuthErrorsContainer/index';
+
+import formStyles from '../Login/AuthForm.css';
 import errorContainerStyles
-  from '../../CreateResetPassword/CreateResetPassword.css';
+  from '../CreateResetPassword/CreateResetPassword.css';
 
 class ForgotPassword extends Component {
   static propTypes = {
-    dirty: PropTypes.bool,
-    isValid: PropTypes.bool,
-    userExists: PropTypes.bool,
+    isValid: PropTypes.bool.isRequired,
+    userExists: PropTypes.bool.isRequired,
     onSubmit: PropTypes.func.isRequired,
+    dirty: PropTypes.bool.isRequired,
     handleSubmit: PropTypes.func.isRequired,
   };
 
@@ -47,9 +51,7 @@ class ForgotPassword extends Component {
                 tag="h1"
                 data-test-h1
               >
-                <FormattedMessage
-                  id="stripes-core.label.forgotPassword"
-                />
+                <FormattedMessage id="stripes-core.label.forgotPassword" />
               </Headline>
               <Headline
                 size="large"
@@ -58,9 +60,7 @@ class ForgotPassword extends Component {
                 faded
                 data-test-p
               >
-                <FormattedMessage
-                  id="stripes-core.label.forgotUsernameOrPasswordCallToAction"
-                />
+                <FormattedMessage id="stripes-core.label.forgotUsernameOrPasswordCallToAction" />
               </Headline>
               <div className={formStyles.formGroup}>
                 <Field
@@ -89,9 +89,7 @@ class ForgotPassword extends Component {
                 marginBottom0
                 data-test-submit
               >
-                <FormattedMessage
-                  id="stripes-core.button.continue"
-                />
+                <FormattedMessage id="stripes-core.button.continue" />
               </Button>
               <div
                 className={errorContainerStyles.authErrorsWrapper}
@@ -120,6 +118,7 @@ class ForgotPassword extends Component {
   }
 }
 
-const ForgotPasswordForm =
-  reduxForm({ form: 'forgot-password' })(ForgotPassword);
+const ForgotPasswordForm = reduxForm(
+  { form: 'forgot-password' }
+)(ForgotPassword);
 export default ForgotPasswordForm;

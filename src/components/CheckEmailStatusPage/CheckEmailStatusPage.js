@@ -19,9 +19,7 @@ const CheckEmailStatusPage = () => (
           tag="h1"
           data-test-h1
         >
-          <FormattedMessage
-            id="stripes-core.label.check.email"
-          />
+          <FormattedMessage id="stripes-core.label.check.email" />
         </Headline>
         <Headline
           size="x-large"
@@ -30,9 +28,7 @@ const CheckEmailStatusPage = () => (
           faded
           data-test-p
         >
-          <FormattedMessage
-            id="stripes-core.label.caution.email"
-          />
+          <FormattedMessage id="stripes-core.label.caution.email" />
         </Headline>
       </div>
     </div>
