@@ -12,15 +12,14 @@ import {
 import isEmpty from 'lodash/isEmpty';
 
 import {
-  PasswordStrength,
-  PasswordValidationField,
-} from '@folio/stripes-smart-components';
-import {
   TextField,
   Button,
   Row,
   Col,
+  PasswordStrength,
 } from '@folio/stripes-components';
+
+import PasswordValidationField from './components/PasswordValidationField';
 import { setAuthError } from '../../okapiActions';
 
 import FieldLabel from './components/FieldLabel';
