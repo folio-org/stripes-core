@@ -69,8 +69,8 @@ class RootWithIntl extends React.Component {
   }
 
   componentDidUpdate() {
-    const { user } = this.props.stripes;
-    this.stripes = this.stripes.clone({ user });
+    const { user, discovery } = this.props.stripes;
+    this.stripes = this.stripes.clone({ user, discovery });
   }
 
   render() {
