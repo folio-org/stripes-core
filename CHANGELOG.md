@@ -1,5 +1,10 @@
 # Change history for stripes-core
 
+
+## 2.17.0 (IN PROGRESS)
+
+* Keep all stripes attributes up to date after login. Refs STCOR-273, STRIPES-578, STCOR-283.
+
 ## [2.16.0](https://github.com/folio-org/stripes-core/tree/v2.16.0) (2018-11-06)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.15.5...v2.16.0)
 
