@@ -106,18 +106,7 @@ class ToastNotification extends React.Component {
   }
 
   render() {
-    const message = typeof (this.props.message) === 'string' ? (
-      <Layout className="flex full justified centerItems">
-        {this.props.message}
-        <Button
-          ariaLabel="Dismiss this message"
-          buttonStyle="link"
-          onClick={this.handleHide}
-        >
-          <Icon icon="closeX" />
-        </Button>
-      </Layout>
-    ) : (
+    const message = (
       <Layout className="flex full justified centerItems">
         {this.props.message}
         <Button
