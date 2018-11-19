@@ -126,7 +126,7 @@ class ProfileDropdown extends Component {
     const user = this.getUserData();
 
     /* Note: This is not yet available - only prepared for here */
-    return (<Avatar alt={user.name} title={user.name} />);
+    return (<Avatar alt={user.name} ariaLabel={user.name} />);
   }
 
   navigateByUrl(link) {
@@ -203,7 +203,7 @@ class ProfileDropdown extends Component {
       <div>
         { HandlerComponent && <HandlerComponent stripes={this.props.stripes} /> }
         <Dropdown open={dropdownOpen} id="profileDropdown" onToggle={this.toggleDropdown} pullRight hasPadding>
-          <NavButton data-role="toggle" title="My Profile" selected={dropdownOpen} icon={this.getProfileImage()} noSelectedBar />
+          <NavButton data-role="toggle" ariaLabel="My Profile" selected={dropdownOpen} icon={this.getProfileImage()} noSelectedBar />
           <NavDropdownMenu data-role="menu" onToggle={this.toggleDropdown}>
             {this.getDropdownContent()}
           </NavDropdownMenu>
