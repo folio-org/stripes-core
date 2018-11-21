@@ -30,6 +30,8 @@ import {
   Login,
   OverlayContainer,
   CreateResetPassword,
+  CheckEmailStatusPage,
+  ForgotUserNameCtrl,
 } from './components';
 import { stripesShape } from './Stripes';
 import { StripesContext } from './StripesContext';
@@ -127,6 +129,16 @@ class RootWithIntl extends React.Component {
                         path="/sso-landing"
                         component={<CookiesProvider><SSOLanding stripes={stripes} /></CookiesProvider>}
                         key="sso-landing"
+                      />
+                      <TitledRoute
+                        name="forgotUsername"
+                        path="/forgot-username"
+                        component={<ForgotUserNameCtrl stripes={stripes} />}
+                      />
+                      <TitledRoute
+                        name="checkEmail"
+                        path="/check-email"
+                        component={<CheckEmailStatusPage />}
                       />
                       <TitledRoute
                         name="login"
