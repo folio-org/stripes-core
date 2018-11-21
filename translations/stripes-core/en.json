@@ -7,6 +7,8 @@
   "title.login": "Log in",
   "title.CreateResetPassword": "Choose a password",
   "title.forgotPassword": "Forgot password?",
+  "title.forgotUsername": "Forgot username?",
+  "title.checkEmail": "Check your email",
 
   "front.welcome": "Welcome, the Future Of Libraries Is OPEN!",
   "front.home": "Home",
