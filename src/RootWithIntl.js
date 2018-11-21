@@ -30,8 +30,8 @@ import {
   Login,
   OverlayContainer,
   CreateResetPassword,
-  ForgotPasswordCtrl,
   CheckEmailStatusPage,
+  ForgotPasswordCtrl,
 } from './components';
 import { stripesShape } from './Stripes';
 import { StripesContext } from './StripesContext';
@@ -53,24 +53,6 @@ class RootWithIntl extends React.Component {
     intl: intlShape.isRequired,
   };
 
-  constructor(props, context) {
-    super(props);
-
-    const { intl } = context;
-    const connect = connectFor(
-      '@folio/core',
-      props.stripes.epics,
-      props.stripes.logger,
-    );
-
-    this.stripes = props.stripes.clone({
-      intl,
-      connect,
-    });
-    this.connectedCreateResetPassword = this.stripes.connect(CreateResetPassword);
-    this.connectedForgotPasswordForm = this.stripes.connect(ForgotPasswordCtrl);
-  }
-
   render() {
     const {
       token,
@@ -78,25 +60,29 @@ class RootWithIntl extends React.Component {
       history,
     } = this.props;
 
+    const intl = this.context.intl;
+    const connect = connectFor('@folio/core', this.props.stripes.epics, this.props.stripes.logger);
+    const stripes = this.props.stripes.clone({ intl, connect });
+
     return (
-      <StripesContext.Provider value={this.stripes}>
+      <StripesContext.Provider value={stripes}>
         <ModuleTranslator>
           <TitleManager>
             <HotKeys
-              keyMap={this.stripes.bindings}
+              keyMap={stripes.bindings}
               noWrapper
             >
-              <Provider store={this.stripes.store}>
+              <Provider store={stripes.store}>
                 <Router history={history}>
                   { token || disableAuth ?
                     <MainContainer>
                       <OverlayContainer />
-                      <MainNav stripes={this.stripes} />
+                      <MainNav stripes={stripes} />
                       <HandlerManager
                         event={events.LOGIN}
-                        stripes={this.stripes}
+                        stripes={stripes}
                       />
-                      { (this.stripes.okapi !== 'object' || this.stripes.discovery.isFinished) && (
+                      { (stripes.okapi !== 'object' || stripes.discovery.isFinished) && (
                         <ModuleContainer id="content">
                           <Switch>
                             <TitledRoute
@@ -104,20 +90,20 @@ class RootWithIntl extends React.Component {
                               path="/"
                               key="root"
                               exact
-                              component={<Front stripes={this.stripes} />}
+                              component={<Front stripes={stripes} />}
                             />
                             <TitledRoute
                               name="ssoRedirect"
                               path="/sso-landing"
                               key="sso-landing"
-                              component={<SSORedirect stripes={this.stripes} />}
+                              component={<SSORedirect stripes={stripes} />}
                             />
                             <TitledRoute
                               name="settings"
                               path="/settings"
-                              component={<Settings stripes={this.stripes} />}
+                              component={<Settings stripes={stripes} />}
                             />
-                            {getModuleRoutes(this.stripes)}
+                            {getModuleRoutes(stripes)}
                             <TitledRoute
                               name="notFound"
                               component={(
@@ -135,22 +121,22 @@ class RootWithIntl extends React.Component {
                       <TitledRoute
                         name="CreateResetPassword"
                         path="/(Create|Reset)Password/:token"
-                        component={<this.connectedCreateResetPassword stripes={this.stripes} />}
+                        component={<CreateResetPassword stripes={stripes} />}
                       />
                       <TitledRoute
                         name="ssoLanding"
                         exact
                         path="/sso-landing"
-                        component={<CookiesProvider><SSOLanding stripes={this.stripes} /></CookiesProvider>}
+                        component={<CookiesProvider><SSOLanding stripes={stripes} /></CookiesProvider>}
                         key="sso-landing"
                       />
                       <TitledRoute
-                        name="Forgot password"
+                        name="forgotPassword"
                         path="/forgot-password"
-                        component={<this.connectedForgotPasswordForm />}
+                        component={<ForgotPasswordCtrl stripes={stripes} />}
                       />
                       <TitledRoute
-                        name="Check email"
+                        name="checkEmail"
                         path="/check-email"
                         component={<CheckEmailStatusPage />}
                       />
@@ -158,8 +144,8 @@ class RootWithIntl extends React.Component {
                         name="login"
                         component={
                           <Login
-                            autoLogin={this.stripes.config.autoLogin}
-                            stripes={this.stripes}
+                            autoLogin={stripes.config.autoLogin}
+                            stripes={stripes}
                           />
                         }
                       />
