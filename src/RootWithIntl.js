@@ -31,6 +31,7 @@ import {
   OverlayContainer,
   CreateResetPassword,
   CheckEmailStatusPage,
+  ForgotPasswordCtrl,
   ForgotUserNameCtrl,
 } from './components';
 import { stripesShape } from './Stripes';
@@ -129,6 +130,11 @@ class RootWithIntl extends React.Component {
                         path="/sso-landing"
                         component={<CookiesProvider><SSOLanding stripes={stripes} /></CookiesProvider>}
                         key="sso-landing"
+                      />
+                      <TitledRoute
+                        name="forgotPassword"
+                        path="/forgot-password"
+                        component={<ForgotPasswordCtrl stripes={stripes} />}
                       />
                       <TitledRoute
                         name="forgotUsername"
