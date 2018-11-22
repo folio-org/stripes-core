@@ -13,8 +13,9 @@ export default class AuthErrorsContainer extends Component {
   getErrorMessage(error) {
     const {
       code,
-      type,
+      type = 'error',
       parameters = [],
+      translationNamespace = 'stripes-core.errors',
     } = error;
 
     const values = parameters.reduce((res, { key, value }) => ({ ...res, [key]: value }), {});
@@ -22,7 +23,7 @@ export default class AuthErrorsContainer extends Component {
     return (
       <li key={`${code}-${type}`}>
         <FormattedMessage
-          id={`stripes-core.errors.${code}`}
+          id={`${translationNamespace}.${code}`}
           values={values}
         />
       </li>

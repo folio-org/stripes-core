@@ -1,1 +1,1 @@
-export { default } from './CreateResetPasswordControl';
+export { default } from './CreateResetPasswordControlWrapper';

@@ -26,6 +26,11 @@ class CreateResetPasswordControl extends Component {
         POST: PropTypes.func.isRequired,
       }).isRequired,
     }).isRequired,
+    match: PropTypes.shape({
+      params: PropTypes.shape({
+        token: PropTypes.string.isRequired,
+      }).isRequired,
+    }).isRequired,
     stripes: stripesShape.isRequired,
   };
 
@@ -52,10 +57,18 @@ class CreateResetPasswordControl extends Component {
   };
 
   render() {
-    const { authFailure } = this.props;
+    const {
+      authFailure,
+      match: {
+        params: {
+          token,
+        }
+      }
+    } = this.props;
 
     return (
       <CreateResetPassword
+        token={token}
         errors={authFailure}
         stripes={this.props.stripes}
         onSubmit={this.handleSubmit}

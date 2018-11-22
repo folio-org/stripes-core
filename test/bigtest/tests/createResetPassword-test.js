@@ -14,7 +14,10 @@ import translations from '../../../translations/stripes-core/en';
 describe('Crereate/Reset password page', () => {
   const CreateResetPasswordPage = new CreateResetPasswordInteractor('form[class^="form--"]');
 
-  setupApplication({ disableAuth: false });
+  setupApplication({
+    disableAuth: false,
+    scenarios: ['passwordLengthRule'],
+  });
 
   beforeEach(function () {
     return this.visit('/CreatePassword/test', () => {

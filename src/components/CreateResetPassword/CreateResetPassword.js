@@ -10,30 +10,36 @@ import {
   formValueSelector,
 } from 'redux-form';
 import isEmpty from 'lodash/isEmpty';
-import remove from 'lodash/remove';
-import some from 'lodash/some';
 
 import {
   TextField,
   Button,
   Row,
   Col,
+  PasswordStrength,
 } from '@folio/stripes-components';
+
+import PasswordValidationField from './components/PasswordValidationField';
+import { setAuthError } from '../../okapiActions';
 
 import FieldLabel from './components/FieldLabel';
 import OrganizationLogo from '../OrganizationLogo';
 import AuthErrorsContainer from '../AuthErrorsContainer/AuthErrorsContainer';
 
+import { stripesShape } from '../../Stripes';
+
 import styles from './CreateResetPassword.css';
 
 class CreateResetPassword extends Component {
   static propTypes = {
+    stripes: stripesShape.isRequired,
     handleSubmit: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
     submitting: PropTypes.bool,
     errors: PropTypes.arrayOf(PropTypes.object),
     formValues: PropTypes.object,
     submitSucceeded: PropTypes.bool,
+    token: PropTypes.string.isRequired,
   };
 
   static defaultProps = {
@@ -54,8 +60,26 @@ class CreateResetPassword extends Component {
     this.state = {
       passwordMasked: true,
     };
+    this.translationNamespaces = {
+      module: 'stripes-core',
+      smartComponents: 'stripes-smart-components',
+      page: 'stripes-core.createResetPassword',
+      errors: 'stripes-core.errors',
+      button: 'stripes-core.button',
+    };
+    this.passwordMatchErrorCode = 'password.match.error';
+    this.newPasswordField = props.stripes.connect(PasswordValidationField);
     this.validators = {
       confirmPassword: this.confirmPasswordFieldValidation,
+    };
+    this.inputColProps = {
+      xs:12,
+      sm:8,
+    };
+    this.passwordMeterColProps = {
+      xs:12,
+      sm:4,
+      className:styles.passwordStrength,
     };
   }
 
@@ -65,18 +89,39 @@ class CreateResetPassword extends Component {
     }));
   };
 
+  newPasswordFieldValidation = (errors) => {
+    this.validationHandler(
+      errors,
+      this.translationNamespaces.smartComponents,
+    );
+  };
+
   confirmPasswordFieldValidation = (value, { newPassword, confirmPassword } = {}) => {
-    const isConfirmPasswordInvalid = newPassword && confirmPassword && newPassword !== confirmPassword;
-    const { errors } = this.props;
+    const confirmPasswordValid = !(newPassword && confirmPassword && newPassword !== confirmPassword);
 
-    if (!isConfirmPasswordInvalid) {
-      remove(errors, this.passwordMatchError);
-      return;
+    if (!confirmPasswordValid) {
+      this.validationHandler(
+        [this.passwordMatchErrorCode],
+        this.translationNamespaces.errors,
+      );
     }
+  };
 
-    if (!some(errors, this.passwordMatchError)) {
-      errors.push(this.passwordMatchError);
-    }
+  validationHandler = (errors, translationNamespace) => {
+    const {
+      stripes: {
+        store: {
+          dispatch
+        }
+      }
+    } = this.props;
+
+    dispatch(setAuthError(errors.map((error) => {
+      return {
+        code: error,
+        translationNamespace,
+      };
+    })));
   };
 
   render() {
@@ -90,13 +135,17 @@ class CreateResetPassword extends Component {
         newPassword,
         confirmPassword,
       },
+      token,
     } = this.props;
     const { passwordMasked } = this.state;
     const submissionStatus = submitting || submitSucceeded;
     const buttonDisabled = !isEmpty(errors) || submissionStatus || !(newPassword && confirmPassword);
-    const buttonLabelId = `stripes-core.${submissionStatus ? 'settingPassword' : 'setPassword'}`;
     const passwordType = passwordMasked ? 'password' : 'text';
-    const passwordToggleLabelId = `stripes-core.button.${passwordMasked ? 'show' : 'hide'}Password`;
+    const buttonLabelId = `${this.translationNamespaces.module}.${submissionStatus ? 'settingPassword' : 'setPassword'}`;
+    const passwordToggleLabelId = `${this.translationNamespaces.button}.${passwordMasked ? 'show' : 'hide'}Password`;
+
+    // Todo don't have a back-end yet, should be parsed from token
+    const username = 'diku_admin';
 
     return (
       <div className={styles.wrapper}>
@@ -109,7 +158,7 @@ class CreateResetPassword extends Component {
           <Row center="xs">
             <Col xs={6}>
               <h1 className={styles.header}>
-                <FormattedMessage id={`${this.translateNamespace}.header`} />
+                <FormattedMessage id={`${this.translationNamespaces.page}.header`} />
               </h1>
             </Col>
           </Row>
@@ -122,24 +171,36 @@ class CreateResetPassword extends Component {
                 <Row center="xs">
                   <Col xs={6}>
                     <FieldLabel htmlFor="new-password">
-                      <FormattedMessage id={`${this.translateNamespace}.newPassword`} />
+                      <FormattedMessage id={`${this.translationNamespaces.page}.newPassword`} />
                     </FieldLabel>
                   </Col>
                 </Row>
-                <Row center="xs">
-                  <Col xs={6}>
-                    <Field
+                <Row
+                  center="xs"
+                  end="sm"
+                >
+                  <Col
+                    xs={6}
+                    sm={9}
+                  >
+                    <this.newPasswordField
                       id="new-password"
-                      component={TextField}
                       name="newPassword"
+                      autoComplete="new-password"
+                      component={PasswordStrength}
                       type={passwordType}
+                      username={username}
+                      inputClass={styles.input}
+                      hasClearIcon={false}
+                      autoFocus
+                      errors={errors}
                       marginBottom0
                       fullWidth
-                      inputClass={styles.input}
-                      validationEnabled={false}
-                      hasClearIcon={false}
-                      autoComplete="new-password"
-                      autoFocus
+                      token={token}
+                      inputColProps={this.inputColProps}
+                      passwordMeterColProps={this.passwordMeterColProps}
+                      validationHandler={this.newPasswordFieldValidation}
+                      validate={this.validators.newPassword}
                     />
                   </Col>
                 </Row>
@@ -148,7 +209,7 @@ class CreateResetPassword extends Component {
                 <Row center="xs">
                   <Col xs={6}>
                     <FieldLabel htmlFor="confirm-password">
-                      <FormattedMessage id={`${this.translateNamespace}.confirmPassword`} />
+                      <FormattedMessage id={`${this.translationNamespaces.page}.confirmPassword`} />
                     </FieldLabel>
                   </Col>
                 </Row>
