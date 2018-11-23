@@ -1,0 +1,70 @@
+/**
+ * Styling for login and sign up
+ */
+@import "@folio/stripes-components/lib/variables.css";
+
+.wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.centered {
+  position: relative;
+  max-width: 500px;
+  width: 100%;
+  padding: 30px 15px;
+}
+
+.form {
+  outline: 0;
+  text-align: center;
+}
+
+.form .formGroup:last-child {
+  margin-bottom: 0;
+}
+
+.formGroup {
+  margin-bottom: 10px;
+}
+
+.authErrorsWrapper {
+  margin-top: 10px;
+}
+
+input.input {
+  height: 60px;
+  font-size: var(--font-size-medium);
+  padding: 15px;
+}
+
+button.submitButton {
+  height: 60px;
+  max-height: 100%;
+  font-size: var(--font-size-large);
+}
+
+@media (max-height: 440px) {
+  .centered {
+    min-height: 330px;
+  }
+}
+
+@media (max-width: 640px) {
+  .centered {
+    min-height: 330px;
+  }
+
+  button.submitButton {
+    height: 44px;
+    font-size: var(--font-size-medium);
+  }
+
+  input.input {
+    height: 44px;
+    font-size: var(--font-size-medium);
+    padding: 8px;
+  }
+}
