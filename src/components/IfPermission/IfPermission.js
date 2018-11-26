@@ -1,14 +1,18 @@
+import React from 'react';
 import PropTypes from 'prop-types';
-import { withStripes } from '@folio/stripes-core/src/StripesContext';
+import { StripesContext } from '../../StripesContext';
 
-const IfPermission = (props) => (
-  props.stripes.hasPerm(props.perm) ? props.children : null
+const IfPermission = ({ children, perm }) => (
+  <StripesContext.Consumer>
+    {stripes => (
+      stripes.hasPerm(perm) ? children : null
+    )}
+  </StripesContext.Consumer>
 );
 
 IfPermission.propTypes = {
-  stripes: PropTypes.shape({
-    hasPerm: PropTypes.func,
-  }),
+  children: PropTypes.node,
+  perm: PropTypes.string.isRequired
 };
 
-export default withStripes(IfPermission);
+export default IfPermission;
