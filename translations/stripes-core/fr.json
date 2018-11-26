@@ -61,7 +61,5 @@
     "currentServicePoint": "Service point: {name}",
     "currentServicePointNotSelected": "Service point: None",
     "stripes-core.front.welcome": "Bienvenue, l'avenir des bibliothèques est OUVERT!",
-    "stripes-core.front.about": "Sur",
-    "mainnav.showAllApplicationsButtonLabel": "Apps",
-    "mainnav.showAllApplicationsButtonAriaLabel": "Show all applications"
+    "stripes-core.front.about": "Sur"
 }
