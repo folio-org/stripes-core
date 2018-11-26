@@ -1,16 +1,19 @@
+import React from 'react';
 import PropTypes from 'prop-types';
-import { withStripes } from '@folio/stripes-core/src/StripesContext';
+import { StripesContext } from '../../StripesContext';
 
-const IfInterface = (props) => (
-  props.stripes.hasInterface(props.name, props.version) ? props.children : null
+const IfInterface = ({ children, name, version }) => (
+  <StripesContext.Consumer>
+    {stripes => (
+      stripes.hasInterface(name, version) ? children : null
+    )}
+  </StripesContext.Consumer>
 );
 
 IfInterface.propTypes = {
+  children: PropTypes.node,
   name: PropTypes.string.isRequired,
-  stripes: PropTypes.shape({
-    hasInterface: PropTypes.func,
-  }),
   version: PropTypes.string,
 };
 
-export default withStripes(IfInterface);
+export default IfInterface;
