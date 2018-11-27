@@ -6,11 +6,6 @@ import CreateResetPasswordControl from './CreateResetPasswordControl';
 class CreateResetPasswordControlWrapper extends Component {
   static propTypes = {
     authFailure: PropTypes.arrayOf(PropTypes.object),
-    mutator: PropTypes.shape({
-      changePassword: PropTypes.shape({
-        POST: PropTypes.func.isRequired,
-      }).isRequired,
-    }).isRequired,
     stripes: PropTypes.object.isRequired,
   };
 
