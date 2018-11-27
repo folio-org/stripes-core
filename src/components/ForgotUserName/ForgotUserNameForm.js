@@ -15,11 +15,10 @@ import {
   Col,
 } from '@folio/stripes-components';
 
-import OrganizationLogo from '../OrganizationLogo/OrganizationLogo';
+import OrganizationLogo from '../OrganizationLogo';
 import AuthErrorsContainer from '../AuthErrorsContainer';
 
-import formStyles from '../Login/AuthForm.css';
-import errorContainerStyles from '../CreateResetPassword/CreateResetPassword.css';
+import formStyles from './ForgotUserNameForm.css';
 
 class ForgotUserName extends Component {
   static propTypes = {
@@ -95,7 +94,7 @@ class ForgotUserName extends Component {
                 <FormattedMessage id="stripes-core.button.continue" />
               </Button>
               <div
-                className={errorContainerStyles.authErrorsWrapper}
+                className={formStyles.authErrorsWrapper}
                 data-test-errors
               >
                 {hasErrorsContainer &&

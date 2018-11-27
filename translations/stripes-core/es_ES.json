@@ -61,7 +61,5 @@
     "currentServicePoint": "Punto de servicio: {name}",
     "currentServicePointNotSelected": "Punto de servicio: ninguno",
     "stripes-core.front.welcome": "Vacío",
-    "stripes-core.front.about": "Vacío",
-    "mainnav.showAllApplicationsButtonLabel": "Apps",
-    "mainnav.showAllApplicationsButtonAriaLabel": "Show all applications"
+    "stripes-core.front.about": "Vacío"
 }
