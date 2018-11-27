@@ -4,6 +4,7 @@
 ## 2.17.0 (IN PROGRESS)
 
 * Keep all stripes attributes up to date after login. Refs STCOR-273, STRIPES-578, STCOR-283.
+* Move `<IfInterface>` from `stripes-components`, STCOM-357
 * Move `<IfPermission>` from `stripes-components`, STCOM-357
 
 ## [2.16.0](https://github.com/folio-org/stripes-core/tree/v2.16.0) (2018-11-06)
