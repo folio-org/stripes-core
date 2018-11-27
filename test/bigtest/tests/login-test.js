@@ -30,6 +30,10 @@ describe('Login', () => {
       expect(login.forgotPassword.isPresent).to.be.true;
     });
 
+    it('should have forgot username link', () => {
+      expect(login.forgotUsername.isPresent).to.be.true;
+    });
+
     it('should have submit button', () => {
       expect(login.submit.isPresent).to.be.true;
     });

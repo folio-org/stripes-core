@@ -26,6 +26,7 @@
   "button.hidePassword": "Hide password",
   "button.showPassword": "Show password",
   "button.forgotPassword": "Forgot password?",
+  "button.forgotUsername": "Forgot username?",
   "button.continue": "Continue",
   "label.confirmDeleteEntry": "<strong>{name}</strong> will be <strong>removed</strong>",
   "label.editEntry": "Edit {entry}",

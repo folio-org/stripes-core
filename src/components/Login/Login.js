@@ -17,6 +17,7 @@ import {
   Button,
   Row,
   Col,
+  Headline,
 } from '@folio/stripes-components';
 
 import SSOLogin from '../SSOLogin';
@@ -24,7 +25,7 @@ import OrganizationLogo from '../OrganizationLogo';
 import AuthErrorsContainer from '../AuthErrorsContainer';
 import FieldLabel from '../CreateResetPassword/components/FieldLabel';
 
-import styles from '../CreateResetPassword/CreateResetPassword.css';
+import styles from './Login.css';
 
 class Login extends Component {
   static propTypes = {
@@ -79,9 +80,13 @@ class Login extends Component {
           </Row>
           <Row center="xs">
             <Col xs={6}>
-              <h1 className={styles.header}>
+              <Headline
+                size="xx-large"
+                tag="h1"
+                data-test-h1
+              >
                 <FormattedMessage id={`${this.translateNamespace}.title.login`} />
-              </h1>
+              </Headline>
             </Col>
           </Row>
           <Row>
@@ -92,9 +97,27 @@ class Login extends Component {
               <div data-test-new-username-field>
                 <Row center="xs">
                   <Col xs={6}>
-                    <FieldLabel htmlFor="username">
-                      <FormattedMessage id={`${this.translateNamespace}.username`} />
-                    </FieldLabel>
+                    <Row
+                      between="xs"
+                      bottom="xs"
+                    >
+                      <Col xs={3}>
+                        <FieldLabel htmlFor="password">
+                          <FormattedMessage id={`${this.translateNamespace}.username`} />
+                        </FieldLabel>
+                      </Col>
+                      <Col data-test-new-forgot-username-link>
+                        <Button
+                          href="/forgot-username"
+                          buttonClass={styles.link}
+                          type="button"
+                          buttonStyle="link"
+                          allowAnchorClick
+                        >
+                          <FormattedMessage id={`${this.translateNamespace}.button.forgotUsername`} />
+                        </Button>
+                      </Col>
+                    </Row>
                   </Col>
                 </Row>
                 <Row center="xs">
@@ -130,7 +153,7 @@ class Login extends Component {
                       </Col>
                       <Col data-test-new-forgot-password-link>
                         <Button
-                          href="/forgotPassword"
+                          href="/forgot-password"
                           buttonClass={styles.link}
                           type="button"
                           buttonStyle="link"
@@ -178,7 +201,7 @@ class Login extends Component {
               </Row>
               <Row center="xs">
                 <Col xs={6}>
-                  <div className={styles.AuthErrorsWrapper}>
+                  <div className={styles.authErrorsWrapper}>
                     { !isEmpty(authErrors) && <AuthErrorsContainer errors={authErrors} /> }
                   </div>
                   <div className={styles.formGroup}>

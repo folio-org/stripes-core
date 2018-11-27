@@ -20,7 +20,7 @@ describe('Crereate/Reset password page', () => {
   });
 
   beforeEach(function () {
-    return this.visit('/CreatePassword/test', () => {
+    return this.visit('/create-password/test', () => {
       expect(CreateResetPasswordPage.isPresent).to.be.true;
     });
   });

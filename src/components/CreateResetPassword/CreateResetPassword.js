@@ -24,7 +24,7 @@ import { setAuthError } from '../../okapiActions';
 
 import FieldLabel from './components/FieldLabel';
 import OrganizationLogo from '../OrganizationLogo';
-import AuthErrorsContainer from '../AuthErrorsContainer/AuthErrorsContainer';
+import AuthErrorsContainer from '../AuthErrorsContainer';
 
 import { stripesShape } from '../../Stripes';
 
