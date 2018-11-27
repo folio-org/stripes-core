@@ -39,7 +39,10 @@ export const stripesShape = PropTypes.shape({
     url: PropTypes.string.isRequired,
     tenant: PropTypes.string.isRequired,
     okapiReady: PropTypes.bool,
-    authFailure: PropTypes.bool,
+    authFailure:  PropTypes.oneOfType([
+      PropTypes.bool,
+      PropTypes.arrayOf(PropTypes.object)
+    ]),
     translations: PropTypes.object,
     token: PropTypes.string,
   }).isRequired,

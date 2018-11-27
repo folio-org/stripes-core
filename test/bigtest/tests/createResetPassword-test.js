@@ -8,6 +8,7 @@ import {
 
 import setupApplication from '../helpers/setup-application';
 import CreateResetPasswordInteractor from '../interactors/CreateResetPassword';
+
 import translations from '../../../translations/stripes-core/en';
 
 describe('Crereate/Reset password page', () => {
@@ -19,7 +20,7 @@ describe('Crereate/Reset password page', () => {
   });
 
   beforeEach(function () {
-    return this.visit('/CreatePassword/test', () => {
+    return this.visit('/create-password/test', () => {
       expect(CreateResetPasswordPage.isPresent).to.be.true;
     });
   });

@@ -5,11 +5,6 @@ import ForgotUserNameCtrl from './ForgotUserNameCtrl';
 
 class ForgotUserNameWrapper extends Component {
   static propTypes = {
-    mutator: PropTypes.shape({
-      searchUsername: PropTypes.shape({
-        POST: PropTypes.func.isRequired,
-      }).isRequired,
-    }).isRequired,
     stripes: PropTypes.object.isRequired,
   };
 

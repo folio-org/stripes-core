@@ -24,7 +24,7 @@ import { setAuthError } from '../../okapiActions';
 
 import FieldLabel from './components/FieldLabel';
 import OrganizationLogo from '../OrganizationLogo';
-import AuthErrorsContainer from '../AuthErrorsContainer/AuthErrorsContainer';
+import AuthErrorsContainer from '../AuthErrorsContainer';
 
 import { stripesShape } from '../../Stripes';
 
@@ -52,6 +52,11 @@ class CreateResetPassword extends Component {
   constructor(props) {
     super(props);
 
+    this.translateNamespace = 'stripes-core.createResetPassword';
+    this.passwordMatchError = {
+      code: 'password.match.error',
+      type: 'error',
+    };
     this.state = {
       passwordMasked: true,
     };
@@ -187,8 +192,8 @@ class CreateResetPassword extends Component {
                       username={username}
                       inputClass={styles.input}
                       hasClearIcon={false}
-                      errors={errors}
                       autoFocus
+                      errors={errors}
                       marginBottom0
                       fullWidth
                       token={token}
