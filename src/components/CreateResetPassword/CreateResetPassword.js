@@ -17,6 +17,7 @@ import {
   Row,
   Col,
   PasswordStrength,
+  Headline,
 } from '@folio/stripes-components';
 
 import PasswordValidationField from './components/PasswordValidationField';
@@ -151,15 +152,26 @@ class CreateResetPassword extends Component {
       <div className={styles.wrapper}>
         <div className={styles.container}>
           <Row center="xs">
-            <Col xs={6}>
+            <Col
+              xs={12}
+              sm={6}
+            >
               <OrganizationLogo />
             </Col>
           </Row>
           <Row center="xs">
-            <Col xs={6}>
-              <h1 className={styles.header}>
+            <Col
+              xs={12}
+              sm={6}
+            >
+              <Headline
+                margin="none"
+                size="xx-large"
+                tag="h1"
+                data-test-h1
+              >
                 <FormattedMessage id={`${this.translationNamespaces.page}.header`} />
-              </h1>
+              </Headline>
             </Col>
           </Row>
           <Row>
@@ -169,7 +181,10 @@ class CreateResetPassword extends Component {
             >
               <div data-test-new-password-field>
                 <Row center="xs">
-                  <Col xs={6}>
+                  <Col
+                    xs={12}
+                    sm={6}
+                  >
                     <FieldLabel htmlFor="new-password">
                       <FormattedMessage id={`${this.translationNamespaces.page}.newPassword`} />
                     </FieldLabel>
@@ -180,7 +195,7 @@ class CreateResetPassword extends Component {
                   end="sm"
                 >
                   <Col
-                    xs={6}
+                    xs={12}
                     sm={9}
                   >
                     <this.newPasswordField
@@ -207,7 +222,10 @@ class CreateResetPassword extends Component {
               </div>
               <div data-test-confirm-password-field>
                 <Row center="xs">
-                  <Col xs={6}>
+                  <Col
+                    xs={12}
+                    sm={6}
+                  >
                     <FieldLabel htmlFor="confirm-password">
                       <FormattedMessage id={`${this.translationNamespaces.page}.confirmPassword`} />
                     </FieldLabel>
@@ -218,7 +236,10 @@ class CreateResetPassword extends Component {
                   center="xs"
                   bottom="xs"
                 >
-                  <Col xs={6}>
+                  <Col
+                    xs={12}
+                    sm={6}
+                  >
                     <div className={styles.formGroup}>
                       <Field
                         id="confirm-password"
@@ -255,7 +276,10 @@ class CreateResetPassword extends Component {
                 </Row>
               </div>
               <Row center="xs">
-                <Col xs={6}>
+                <Col
+                  xs={12}
+                  sm={6}
+                >
                   <div className={styles.formGroup}>
                     <Button
                       buttonStyle="primary"
@@ -272,7 +296,10 @@ class CreateResetPassword extends Component {
                 </Col>
               </Row>
               <Row center="xs">
-                <Col xs={6}>
+                <Col
+                  xs={12}
+                  sm={6}
+                >
                   <div className={styles.authErrorsWrapper}>
                     { !isEmpty(errors) && <AuthErrorsContainer errors={errors} /> }
                   </div>

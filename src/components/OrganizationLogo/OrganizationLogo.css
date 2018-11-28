@@ -2,7 +2,7 @@
 
 .logo {
   max-width: 460px;
-  margin: -10% auto 30px;
+  margin: 0 auto 10px;
   text-align: center;
 
   & img {
@@ -19,12 +19,18 @@
 
 @media (--medium-up) {
   .logo {
-    margin-bottom: 45px;
+    margin-bottom: 20px;
     margin-top: 0;
 
     & img {
       max-height: 210px;
       max-width: 210px;
     }
+  }
+}
+
+@media only screen and (min-width: 1300px) {
+  .logo {
+    margin-bottom: 45px;
   }
 }
