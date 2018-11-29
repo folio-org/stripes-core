@@ -201,8 +201,8 @@ class AppList extends Component {
     }
 
     return (
-      <nav className={css.appList}>
-        <h3 className="sr-only"><FormattedMessage id="stripes-core.mainnav.applicationListLabel" /></h3>
+      <nav className={css.appList} aria-labelledby="main_app_list_label">
+        <h3 className="sr-only" id="main_app_list_label"><FormattedMessage id="stripes-core.mainnav.applicationListLabel" /></h3>
         <ul className={css.navItemsList}>
           {renderNavButtons()}
         </ul>

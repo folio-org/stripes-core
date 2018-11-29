@@ -6,14 +6,11 @@
   align-content: stretch;
   width: 100%;
   border-bottom: 1px solid var(--color-border);
+  background-color: #f7f7f7;
   flex: 0 0 auto;
   padding: 0 6px;
   z-index: 99999;
   position: relative;
-}
-
-.navSection {
-  background-color: #f7f7f7;
 }
 
 .nowrap {

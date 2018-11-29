@@ -186,26 +186,22 @@ class MainNav extends Component {
                   currentApp={selectedApp}
                 />
               </NavGroup>
-              <nav>
-                <h2 className="sr-only">
+              <nav aria-labelledby="main_navigation_label">
+                <h2 className="sr-only" id="main_navigation_label">
                   <FormattedMessage id="stripes-core.mainnav.topLevelLabel" />
                 </h2>
                 <NavGroup>
-                  <NavGroup>
-                    <NavDivider md="hide" />
-                    <AppList
-                      apps={apps}
-                      selectedApp={selectedApp}
-                      dropdownToggleId="app-list-dropdown-toggle"
-                    />
-                  </NavGroup>
-                  <NavGroup>
-                    <NavDivider md="hide" />
-                    <ProfileDropdown
-                      onLogout={this.logout}
-                      stripes={stripes}
-                    />
-                  </NavGroup>
+                  <NavDivider md="hide" />
+                  <AppList
+                    apps={apps}
+                    selectedApp={selectedApp}
+                    dropdownToggleId="app-list-dropdown-toggle"
+                  />
+                  <NavDivider md="hide" />
+                  <ProfileDropdown
+                    onLogout={this.logout}
+                    stripes={stripes}
+                  />
                 </NavGroup>
               </nav>
             </header>
