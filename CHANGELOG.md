@@ -1,7 +1,8 @@
 # Change history for stripes-core
 
 
-## 2.17.0 (IN PROGRESS)
+## [2.17.0](https://github.com/folio-org/stripes-core/tree/v2.17.0) (2018-11-29)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.16.0...v2.17.0)
 
 * Keep all stripes attributes up to date after login. Refs STCOR-273, STRIPES-578, STCOR-283.
 * Move `<IfInterface>` from `stripes-components`, STCOM-357
