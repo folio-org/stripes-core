@@ -187,8 +187,8 @@ class MainNav extends Component {
                 />
               </NavGroup>
               <nav>
-                <h2 className={css.navigationHeadline}>
-                  <FormattedMessage id="stripes-core.mainNavigation" />
+                <h2 className="sr-only">
+                  <FormattedMessage id="stripes-core.mainnav.topLevelLabel" />
                 </h2>
                 <NavGroup>
                   <NavGroup>
