@@ -1,6 +1,10 @@
 # Change history for stripes-core
 
 
+## 2.18.0 (IN PROGRESS)
+
+* Sort the settings. Fixes STCOR-286.
+
 ## [2.17.0](https://github.com/folio-org/stripes-core/tree/v2.17.0) (2018-11-29)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.16.0...v2.17.0)
 

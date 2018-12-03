@@ -46,7 +46,7 @@ class Settings extends React.Component {
 
     this.connectedModules = settingsModules
       .filter(x => stripes.hasPerm(`settings.${x.module.replace(/^@folio\//, '')}.enabled`))
-      .sort((x, y) => x.displayName.toLowerCase() > y.displayName.toLowerCase())
+      .sort((x, y) => x.displayName.toLowerCase().localeCompare(y.displayName.toLowerCase()))
       .map((m) => {
         const connect = connectFor(m.module, stripes.epics, stripes.logger);
         return {
