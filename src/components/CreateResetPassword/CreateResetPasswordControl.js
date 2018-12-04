@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-
 import { connect as reduxConnect } from 'react-redux';
 
-import CreateResetPassword from './CreateResetPassword';
 import processBadResponse from '../../processBadResponse';
-
 import { stripesShape } from '../../Stripes';
+
+import CreateResetPassword from './CreateResetPassword';
+import SuccessPage from './components/SuccessPage';
 
 class CreateResetPasswordControl extends Component {
   // Todo: don't have back end yet, should be changed
@@ -38,8 +38,12 @@ class CreateResetPasswordControl extends Component {
     authFailure: [],
   };
 
+  state = {
+    isSuccessfulPasswordChange: false,
+  };
+
   handleSuccessfulResponse = () => {
-    // Todo: don't have back-end yet, should be implemented
+    this.setState({ isSuccessfulPasswordChange: true });
   };
 
   // Todo: don't have back-end yet, should be changed
@@ -65,6 +69,12 @@ class CreateResetPasswordControl extends Component {
         }
       }
     } = this.props;
+
+    const { isSuccessfulPasswordChange } = this.state;
+
+    if (isSuccessfulPasswordChange) {
+      return <SuccessPage />;
+    }
 
     return (
       <CreateResetPassword
