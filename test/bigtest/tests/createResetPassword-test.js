@@ -20,7 +20,13 @@ describe('Crereate/Reset password page', () => {
   });
 
   beforeEach(function () {
-    return this.visit('/create-password/test', () => {
+    return this.visit({
+      pathname: '/create-password/test/actionIdTest',
+      state: {
+        isValidToken: true,
+        errorCodes: [],
+      }
+    }, () => {
       expect(CreateResetPasswordPage.isPresent).to.be.true;
     });
   });

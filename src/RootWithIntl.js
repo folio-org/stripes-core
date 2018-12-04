@@ -33,6 +33,7 @@ import {
   CheckEmailStatusPage,
   ForgotPasswordCtrl,
   ForgotUserNameCtrl,
+  CreateResetPasswordLoader,
 } from './components';
 import { stripesShape } from './Stripes';
 import { StripesContext } from './StripesContext';
@@ -120,8 +121,13 @@ class RootWithIntl extends React.Component {
                     </MainContainer> :
                     <Switch>
                       <TitledRoute
+                        name="changePassword"
+                        path="/change-password/:token"
+                        component={<CreateResetPasswordLoader stripes={stripes} />}
+                      />
+                      <TitledRoute
                         name="CreateResetPassword"
-                        path="/(create|reset)-password/:token"
+                        path="/(create|reset)-password/:token/:resetPasswordActionId"
                         component={<CreateResetPassword stripes={stripes} />}
                       />
                       <TitledRoute
