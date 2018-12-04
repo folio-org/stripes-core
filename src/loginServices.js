@@ -34,9 +34,18 @@ function getHeaders(tenant, token) {
 
 export function loadTranslations(store, locale) {
   const parentLocale = locale.split('-')[0];
+
+  // react-intl provides things like pt-BR.
+  // lokalise provides things like pt_BR.
+  // so we have to translate '-' to '_' because the translation libraries
+  // don't know how to talk to each other. sheesh.
+  const region = locale.replace('-', '_');
+
   return import(`react-intl/locale-data/${parentLocale}`)
     .then(intlData => addLocaleData(intlData.default || intlData))
-    .then(() => fetch(translations[parentLocale]))
+    // fetch the region-specific translations, e.g. pt-BR, if available.
+    // fall back to the generic locale, e.g. pt, if not available.
+    .then(() => fetch(translations[region] ? translations[region] : translations[parentLocale]))
     .then((response) => {
       if (response.ok) {
         response.json().then((stripesTranslations) => {
