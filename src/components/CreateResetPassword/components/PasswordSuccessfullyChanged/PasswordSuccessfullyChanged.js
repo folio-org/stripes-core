@@ -1,5 +1,6 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
+import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import {
@@ -9,11 +10,15 @@ import {
 
 import OrganizationLogo from '../../../OrganizationLogo';
 
-import styles from './SuccessPage.css';
+import styles from './PasswordSuccessfullyChanged.css';
 
-const SuccessPage = ({ handleClick }) => {
+const PasswordSuccessfullyChanged = ({ history }) => {
   const labelNamespace = 'stripes-core.label';
   const buttonNamespace = 'stripes-core.button';
+
+  const handleRedirectClick = () => {
+    history.push('/login');
+  };
 
   return (
     <div className={styles.wrap}>
@@ -38,7 +43,7 @@ const SuccessPage = ({ handleClick }) => {
           buttonStyle="primary"
           fullWidth
           marginBottom0
-          onClick={handleClick}
+          onClick={handleRedirectClick}
         >
           <FormattedMessage id={`${buttonNamespace}.redirect.login`} />
         </Button>
@@ -47,8 +52,10 @@ const SuccessPage = ({ handleClick }) => {
   );
 };
 
-SuccessPage.propTypes = {
-  handleClick: PropTypes.func.isRequired,
+PasswordSuccessfullyChanged.propTypes = {
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+  }).isRequired,
 };
 
-export default SuccessPage;
+export default withRouter(PasswordSuccessfullyChanged);

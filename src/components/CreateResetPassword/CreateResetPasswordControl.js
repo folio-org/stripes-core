@@ -6,10 +6,9 @@ import processBadResponse from '../../processBadResponse';
 import { stripesShape } from '../../Stripes';
 
 import CreateResetPassword from './CreateResetPassword';
-import SuccessPage from './components/SuccessPage';
+import PasswordSuccessfullyChanged from './components/PasswordSuccessfullyChanged';
 
 class CreateResetPasswordControl extends Component {
-  // Todo: don't have back end yet, should be changed
   static manifest = Object.freeze({
     changePassword: {
       type: 'okapi',
@@ -46,7 +45,6 @@ class CreateResetPasswordControl extends Component {
     this.setState({ isSuccessfulPasswordChange: true });
   };
 
-  // Todo: don't have back-end yet, should be changed
   handleSubmit = values => {
     const {
       mutator: { changePassword },
@@ -73,7 +71,7 @@ class CreateResetPasswordControl extends Component {
     const { isSuccessfulPasswordChange } = this.state;
 
     if (isSuccessfulPasswordChange) {
-      return <SuccessPage />;
+      return <PasswordSuccessfullyChanged />;
     }
 
     return (
