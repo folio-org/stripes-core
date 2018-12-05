@@ -5,6 +5,7 @@ import {
 } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
+import { find } from 'lodash';
 import ForgotUserNameForm from './ForgotUserNameForm';
 import { validateForgotUsernameForm } from '../../validators';
 
@@ -34,6 +35,7 @@ class ForgotUserNameCtrl extends Component {
   state = {
     isValidEmail: false,
     userExists: false,
+    userHasMultipleAccounts: false,
     hasErrorsContainer: false,
     userEmail: '',
   };
@@ -59,6 +61,22 @@ class ForgotUserNameCtrl extends Component {
       });
   };
 
+  handleUserIsTiedToMultipleAccountsError = () => {
+    this.setState({
+      userExists: false,
+      userHasMultipleAccounts: true,
+      hasErrorsContainer: true,
+    });
+  };
+
+  handleUserNotFoundError = () => {
+    this.setState({
+      userExists: false,
+      userHasMultipleAccounts: false,
+      hasErrorsContainer: true,
+    });
+  };
+
   handleSuccessfulResponse = (userEmail) => {
     this.setState({
       userExists: true,
@@ -66,11 +84,18 @@ class ForgotUserNameCtrl extends Component {
     });
   };
 
-  handleBadResponse = () => {
-    this.setState({
-      userExists: false,
-      hasErrorsContainer: true,
-    });
+  handleBadResponse = (res) => {
+    if (res.status === 422) {
+      res.json()
+        .then(({ errors }) => {
+          if (find(errors, err => err.code === 'user.found.multiple')) {
+            this.handleUserIsTiedToMultipleAccountsError();
+          }
+        })
+        .catch(this.handleUserNotFoundError);
+    } else {
+      this.handleUserNotFoundError();
+    }
   };
 
   resetState = () => {
@@ -78,6 +103,7 @@ class ForgotUserNameCtrl extends Component {
       {
         isValidEmail: true,
         userExists: false,
+        userHasMultipleAccounts: false,
         hasErrorsContainer: false,
       }
     );
@@ -86,6 +112,7 @@ class ForgotUserNameCtrl extends Component {
   render() {
     const {
       userExists,
+      userHasMultipleAccounts,
       isValidEmail,
       hasErrorsContainer,
       userEmail,
@@ -102,6 +129,7 @@ class ForgotUserNameCtrl extends Component {
     return (
       <ForgotUserNameForm
         isValid={isValidEmail}
+        userHasmultipleAccounts={userHasMultipleAccounts}
         hasErrorsContainer={hasErrorsContainer}
         onSubmit={this.handleSubmit}
       />

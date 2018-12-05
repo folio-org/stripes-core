@@ -24,9 +24,20 @@ class ForgotUserName extends Component {
   static propTypes = {
     dirty: PropTypes.bool.isRequired,
     isValid: PropTypes.bool.isRequired,
+    userHasMultipleAccounts: PropTypes.bool.isRequired,
     hasErrorsContainer: PropTypes.bool.isRequired,
     onSubmit: PropTypes.func.isRequired,
     handleSubmit: PropTypes.func.isRequired,
+  };
+
+  defineErrorMessage = () => {
+    const { userHasMultipleAccounts } = this.props;
+
+    if (userHasMultipleAccounts) {
+      return 'user.found.multiple.username';
+    }
+
+    return 'unable.locate.account';
   };
 
   render() {
@@ -102,7 +113,7 @@ class ForgotUserName extends Component {
                     <Col xs={12}>
                       <AuthErrorsContainer
                         errors={[{ code: isValid
-                          ? 'unable.locate.account'
+                          ? this.defineErrorMessage()
                           : 'email.invalid' }]}
                         data-test-container
                       />

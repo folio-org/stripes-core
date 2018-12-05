@@ -94,8 +94,10 @@
   "errors.fifth.failed.attempt.blocked": "For security purposes, your account has been locked. Please contact your FOLIO System Administrator to reset your password.",
   "errors.user.blocked": "For security purposes, your account has been locked. Please try again or contact your FOLIO System Administrator.",
   "errors.password.match.error": "Password does not match. Retype your password.",
-  "errors.email.invalid": "Please enter a valid email address",
-  "errors.unable.locate.account": "Unable to find your account. Please enter a valid email address or phone number",
+  "errors.email.invalid": "Please enter a valid email address.",
+  "errors.unable.locate.account": "Unable to find your account. Please enter a valid email address or phone number.",
+  "errors.user.found.multiple.password": "The information provided is tied to multiple Folio accounts. Please contact your Folio system administrator to reset your password.",
+  "errors.user.found.multiple.username": "This email or phone number is tied to multiple Folio accounts. Please contact your Folio system administrator.",
 
   "createResetPassword.header": "Choose a password",
   "createResetPassword.newPassword": "New Password",

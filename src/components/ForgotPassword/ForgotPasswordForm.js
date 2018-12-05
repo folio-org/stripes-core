@@ -23,10 +23,21 @@ import formStyles from './ForgotPasswordForm.css';
 class ForgotPassword extends Component {
   static propTypes = {
     isValid: PropTypes.bool.isRequired,
+    userHasMultipleAccounts: PropTypes.bool.isRequired,
     hasErrorsContainer: PropTypes.bool.isRequired,
     onSubmit: PropTypes.func.isRequired,
     dirty: PropTypes.bool.isRequired,
     handleSubmit: PropTypes.func.isRequired,
+  };
+
+  defineErrorMessage = () => {
+    const { userHasMultipleAccounts } = this.props;
+
+    if (userHasMultipleAccounts) {
+      return 'user.found.multiple.password';
+    }
+
+    return 'unable.locate.account';
   };
 
   render() {
@@ -102,7 +113,7 @@ class ForgotPassword extends Component {
                     <Col xs={12}>
                       <AuthErrorsContainer
                         errors={[{ code: isValid
-                          ? 'unable.locate.account'
+                          ? this.defineErrorMessage()
                           : 'email.invalid' }]}
                         data-test-container
                       />

@@ -4,6 +4,7 @@ import {
   Redirect,
 } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { find } from 'lodash';
 
 import ForgotPasswordForm from './ForgotPasswordForm';
 import { validateForgotUsernameForm } from '../../validators';
@@ -34,6 +35,7 @@ class ForgotPassword extends Component {
   state = {
     isValidEmail: false,
     userExists: false,
+    userHasMultipleAccounts: false,
     hasErrorsContainer: false,
     userEmail: '',
   };
@@ -53,11 +55,27 @@ class ForgotPassword extends Component {
       ? searchUsername
         .POST({ id: userInput })
         .then(() => this.handleSuccessfulResponse(userInput))
-        .catch(this.handleBadResponse)
+        .catch((err) => this.handleBadResponse(err))
       : this.setState({
         isValidEmail: false,
         hasErrorsContainer: true,
       });
+  };
+
+  handleUserIsTiedToMultipleAccountsError = () => {
+    this.setState({
+      userExists: false,
+      userHasMultipleAccounts: true,
+      hasErrorsContainer: true,
+    });
+  };
+
+  handleUserNotFoundError = () => {
+    this.setState({
+      userExists: false,
+      userHasMultipleAccounts: false,
+      hasErrorsContainer: true,
+    });
   };
 
   handleSuccessfulResponse = (userEmail) => {
@@ -67,17 +85,25 @@ class ForgotPassword extends Component {
     });
   };
 
-  handleBadResponse = () => {
-    this.setState({
-      userExists: false,
-      hasErrorsContainer: true,
-    });
+  handleBadResponse = (res) => {
+    if (res.status === 422) {
+      res.json()
+        .then(({ errors }) => {
+          if (find(errors, err => err.code === 'user.found.multiple')) {
+            this.handleUserIsTiedToMultipleAccountsError();
+          }
+        })
+        .catch(this.handleUserNotFoundError);
+    } else {
+      this.handleUserNotFoundError();
+    }
   };
 
   resetState = () => {
     this.setState({
       isValidEmail: true,
       userExists: false,
+      userHasMultipleAccounts: false,
       hasErrorsContainer: false,
     });
   };
@@ -85,6 +111,7 @@ class ForgotPassword extends Component {
   render() {
     const {
       userExists,
+      userHasMultipleAccounts,
       isValidEmail,
       hasErrorsContainer,
       userEmail,
@@ -101,6 +128,7 @@ class ForgotPassword extends Component {
     return (
       <ForgotPasswordForm
         isValid={isValidEmail}
+        userHasMultipleAccounts={userHasMultipleAccounts}
         hasErrorsContainer={hasErrorsContainer}
         onSubmit={this.handleSubmit}
       />
