@@ -5,9 +5,9 @@ import Headline from '@folio/stripes-components/lib/Headline';
 
 import OrganizationLogo from '../../../OrganizationLogo';
 
-import styles from './SuccessPage.css';
+import styles from './ChangePasswordConfirmation.css';
 
-const SuccessPage = () => {
+const ChangePasswordConfirmation = () => {
   const labelNamespace = 'stripes-core.label';
   // Todo: UIU-748, implement routing button to login page
   return (
@@ -33,4 +33,4 @@ const SuccessPage = () => {
   );
 };
 
-export default SuccessPage;
+export default ChangePasswordConfirmation;

@@ -8,17 +8,20 @@ import Headline from '@folio/stripes-components/lib/Headline';
 import { changePasswordErrorCodes } from '../../../../constants/changePasswordErrorCodes';
 import OrganizationLogo from '../../../OrganizationLogo';
 
-import styles from './ErrorPage.css';
+import styles from './ChangePasswordError.css';
 
-const ErrorPage = ({ errors }) => {
+const ChangePasswordError = ({ errors }) => {
   const labelNamespace = 'stripes-core.errors';
-  const isExpiredLink = includes(errors, changePasswordErrorCodes.expiredErrorCode) || includes(errors, changePasswordErrorCodes.usedErrorCode);
+  const isExpiredLink = includes(errors, changePasswordErrorCodes.EXPIRED_ERROR_CODE) || includes(errors, changePasswordErrorCodes.USED_ERROR_CODE);
   const errorCode = (isExpiredLink)
-    ? changePasswordErrorCodes.expiredErrorCode
-    : changePasswordErrorCodes.invalidErrorCode;
+    ? changePasswordErrorCodes.EXPIRED_ERROR_CODE
+    : changePasswordErrorCodes.INVALID_ERROR_CODE;
 
   return (
-    <div className={styles.wrap}>
+    <div
+      className={styles.wrap}
+      data-test-change-password-error
+    >
       <div className={styles.centered}>
         <OrganizationLogo />
         <Headline
@@ -26,6 +29,7 @@ const ErrorPage = ({ errors }) => {
           tag="p"
           bold={false}
           faded
+          data-test-message
         >
           <FormattedMessage id={`${labelNamespace}.${errorCode}`} />
         </Headline>
@@ -34,8 +38,8 @@ const ErrorPage = ({ errors }) => {
   );
 };
 
-ErrorPage.propTypes = {
+ChangePasswordError.propTypes = {
   errors: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
-export default ErrorPage;
+export default ChangePasswordError;

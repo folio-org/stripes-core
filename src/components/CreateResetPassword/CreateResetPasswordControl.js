@@ -8,8 +8,8 @@ import processBadResponse from '../../processBadResponse';
 import { stripesShape } from '../../Stripes';
 
 import CreateResetPassword from './CreateResetPassword';
-import ErrorPage from './components/ErrorPage';
-import SuccessPage from './components/SuccessPage';
+import ChangePasswordError from './components/ChangePasswordError';
+import ChangePasswordConfirmation from './components/ChangePasswordConfirmation';
 
 class CreateResetPasswordControl extends Component {
   static manifest = Object.freeze({
@@ -96,11 +96,11 @@ class CreateResetPasswordControl extends Component {
     const { isSuccessfulPasswordChange } = this.state;
 
     if (isSuccessfulPasswordChange) {
-      return <SuccessPage />;
+      return <ChangePasswordConfirmation />;
     }
 
     if (!isValidToken) {
-      return <ErrorPage errors={errorCodes} />;
+      return <ChangePasswordError errors={errorCodes} />;
     }
 
     return (
