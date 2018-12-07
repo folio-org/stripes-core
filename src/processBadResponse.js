@@ -27,7 +27,11 @@ function getProcessedErrors(errorMessage, response) {
 }
 
 export default function processBadResponse(store, response) {
-  response.json().then(({ errorMessage }) => {
-    store.dispatch(setAuthError(getProcessedErrors(errorMessage, response)));
-  });
+  response.json()
+    .then(responseBody => {
+      const { errorMessage } = responseBody;
+      const responsePayload = errorMessage || responseBody;
+
+      store.dispatch(setAuthError(getProcessedErrors(responsePayload, response)));
+    });
 }
