@@ -10,12 +10,16 @@ import TextFieldInteractor from '@folio/stripes-components/lib/TextField/tests/i
   toggleMaskButton = clickable('button');
 }
 
+@interactor class SubmitForm {
+  clickSubmit = clickable('button[type="submit"]');
+}
+
 @interactor class CreateResetPasswordInteractor {
   newPassword = new TextFieldInteractor('[data-test-new-password-field]');
   confirmPassword = new TextFieldInteractor('[data-test-confirm-password-field]');
-  message = scoped('div[class^="AuthErrorsContainer--"]');
   toggleMask = new ToggleMask('[data-test-change-password-toggle-mask-btn]');
-
+  submitForm = new SubmitForm('[data-test-submit]');
+  message = scoped('div[class^="AuthErrorsContainer--"]');
   submit = scoped('button[type="submit"]', {
     isDisabled: property('disabled'),
   });

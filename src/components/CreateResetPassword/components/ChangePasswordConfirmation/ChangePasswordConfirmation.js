@@ -11,12 +11,16 @@ const ChangePasswordConfirmation = () => {
   const labelNamespace = 'stripes-core.label';
   // Todo: UIU-748, implement routing button to login page
   return (
-    <div className={styles.wrap}>
+    <div
+      className={styles.wrap}
+      data-test-change-password-confirmation
+    >
       <div className={styles.centered}>
         <OrganizationLogo />
         <Headline
           size="xx-large"
           tag="h1"
+          data-test-h1
         >
           <FormattedMessage id={`${labelNamespace}.congratulations`} />
         </Headline>
@@ -25,6 +29,7 @@ const ChangePasswordConfirmation = () => {
           tag="p"
           bold={false}
           faded
+          data-test-message
         >
           <FormattedMessage id={`${labelNamespace}.changed.password`} />
         </Headline>

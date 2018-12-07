@@ -280,7 +280,10 @@ class CreateResetPassword extends Component {
                   xs={12}
                   sm={6}
                 >
-                  <div className={styles.formGroup}>
+                  <div
+                    className={styles.formGroup}
+                    data-test-submit
+                  >
                     <Button
                       buttonStyle="primary"
                       id="clickable-login"

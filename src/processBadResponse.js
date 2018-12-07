@@ -13,9 +13,13 @@ function getProcessedErrors(errorMessage, response) {
 
   if (status === 422) {
     try {
-      const { errors } = JSON.parse(errorMessage);
-
-      processedErrors.push(...errors);
+      if (typeof errorMessage === 'object') {
+        const { errors } = errorMessage;
+        processedErrors.push(...errors);
+      } else {
+        const { errors } = JSON.parse(errorMessage);
+        processedErrors.push(...errors);
+      }
     } catch (e) {
       processedErrors.push(getDefaultError());
     }

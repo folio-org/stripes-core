@@ -9,10 +9,11 @@ import {
 import setupApplication from '../helpers/setup-application';
 import CreateResetPasswordInteractor from '../interactors/CreateResetPassword';
 import ChangePasswordErrorPageInteractor from '../interactors/ChangePasswordErrorPage';
+import ChangePasswordConfirmationInteractor from '../interactors/ChangePasswordConfirmation';
 
 import translations from '../../../translations/stripes-core/en';
 
-describe('Crereate/Reset password page', () => {
+describe('Create/Reset password page', () => {
   const CreateResetPasswordPage = new CreateResetPasswordInteractor('form[class^="form--"]');
 
   setupApplication({
@@ -316,6 +317,158 @@ describe('Crereate/Reset password page', () => {
             });
           });
         });
+      });
+    });
+
+    describe('successful submission', () => {
+      const ChangePasswordConfirmation = new ChangePasswordConfirmationInteractor();
+      const {
+        newPassword,
+        confirmPassword,
+        submitForm,
+      } = CreateResetPasswordPage;
+      const {
+        heading,
+        message,
+      } = ChangePasswordConfirmation;
+
+      setupApplication({
+        disableAuth: false,
+        scenarios: [
+          'passwordLengthRule',
+          'changePasswordSuccess'
+        ],
+      });
+
+      beforeEach(async function () {
+        this.visit({
+          pathname: '/create-password/test/actionIdTest',
+          state: {
+            isValidToken: true,
+            errorCodes: [],
+          }
+        });
+        await newPassword.fillAndBlur('test');
+        await confirmPassword.fillAndBlur('test');
+        await submitForm.clickSubmit();
+      });
+
+      it('should display change password confirmation', () => {
+        expect(ChangePasswordConfirmation.isPresent).to.be.true;
+      });
+
+      it('should display a change password confirmation', () => {
+        expect(ChangePasswordConfirmation.isPresent).to.be.true;
+      });
+
+      it('should display a heading', () => {
+        expect(heading.isPresent).to.be.true;
+      });
+
+      it('should have an appropriate content', () => {
+        expect(heading.text).to.equal(translations['label.congratulations']);
+      });
+
+      it('should display a message', () => {
+        expect(message.isPresent).to.be.true;
+      });
+
+      it('should have an appropriate content', () => {
+        expect(message.text).to.equal(translations['label.changed.password']);
+      });
+    });
+
+    describe('non-successful submission: expired link', () => {
+      const ChangePasswordConfirmation = new ChangePasswordConfirmationInteractor();
+      const {
+        newPassword,
+        confirmPassword,
+        submitForm,
+        message,
+      } = CreateResetPasswordPage;
+
+      setupApplication({
+        disableAuth: false,
+        scenarios: [
+          'passwordLengthRule',
+          'changePasswordExpiredLinkFailure',
+        ],
+      });
+
+      beforeEach(async function () {
+        this.visit({
+          pathname: '/create-password/test/actionIdTest',
+          state: {
+            isValidToken: true,
+            errorCodes: [],
+          }
+        });
+        await newPassword.fillAndBlur('test');
+        await confirmPassword.fillAndBlur('test');
+        await submitForm.clickSubmit();
+      });
+
+      it('should not display change password confirmation', () => {
+        expect(ChangePasswordConfirmation.isPresent).to.be.false;
+      });
+
+      it('should display CreateResetPassword page', () => {
+        expect(CreateResetPasswordPage.isPresent).to.be.true;
+      });
+
+      it('should present an error message', () => {
+        expect(message.isPresent).to.be.true;
+      });
+
+      it('should have an appropriate text content', () => {
+        expect(message.text).to.equal(translations['errors.link.expired']);
+      });
+    });
+
+    describe('non-successful submission: invalid link', () => {
+      const ChangePasswordConfirmation = new ChangePasswordConfirmationInteractor();
+      const {
+        newPassword,
+        confirmPassword,
+        submitForm,
+        message,
+      } = CreateResetPasswordPage;
+
+      setupApplication({
+        disableAuth: false,
+        scenarios: [
+          'passwordLengthRule',
+          'changePasswordInvalidLinkFailure',
+        ],
+      });
+
+      beforeEach(async function () {
+        this.visit({
+          pathname: '/create-password/test/actionIdTest',
+          state: {
+            isValidToken: true,
+            errorCodes: [],
+          }
+        });
+        await newPassword.fillAndBlur('test');
+        await confirmPassword.fillAndBlur('test');
+        await submitForm.clickSubmit();
+      });
+
+      it('should not display change password confirmation', () => {
+        expect(ChangePasswordConfirmation.isPresent).to.be.false;
+      });
+
+      it('should display CreateResetPassword page', () => {
+        expect(CreateResetPasswordPage.isPresent).to.be.true;
+      });
+
+      it('should present an error message', () => {
+        expect(message.isPresent).to.be.true;
+      });
+
+      it('should have an appropriate text content', () => {
+        expect(message.text).to.equal(translations['errors.link.invalid']);
       });
     });
   });
