@@ -29,21 +29,21 @@ import styles from './Login.css';
 
 class Login extends Component {
   static propTypes = {
-    handleSubmit: PropTypes.func.isRequired,
-    onSubmit: PropTypes.func.isRequired,
-    submitting: PropTypes.bool,
+    ssoActive: PropTypes.bool,
     authErrors: PropTypes.arrayOf(PropTypes.object),
     formValues: PropTypes.object,
-    handleSSOLogin: PropTypes.func.isRequired,
-    ssoActive: PropTypes.any, // eslint-disable-line react/forbid-prop-types
+    submitting: PropTypes.bool,
     submitSucceeded: PropTypes.bool,
+    onSubmit: PropTypes.func.isRequired,
+    handleSubmit: PropTypes.func.isRequired,
+    handleSSOLogin: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
-    submitting: false,
     authErrors: [],
     formValues: {},
     ssoActive: false,
+    submitting: false,
     submitSucceeded: false,
   };
 
@@ -106,17 +106,6 @@ class Login extends Component {
                           <FormattedMessage id={`${this.translateNamespace}.username`} />
                         </FieldLabel>
                       </Col>
-                      <Col data-test-new-forgot-username-link>
-                        <Button
-                          href="/forgot-username"
-                          buttonClass={styles.link}
-                          type="button"
-                          buttonStyle="link"
-                          allowAnchorClick
-                        >
-                          <FormattedMessage id={`${this.translateNamespace}.button.forgotUsername`} />
-                        </Button>
-                      </Col>
                     </Row>
                   </Col>
                 </Row>
@@ -150,17 +139,6 @@ class Login extends Component {
                         <FieldLabel htmlFor="password">
                           <FormattedMessage id={`${this.translateNamespace}.password`} />
                         </FieldLabel>
-                      </Col>
-                      <Col data-test-new-forgot-password-link>
-                        <Button
-                          href="/forgot-password"
-                          buttonClass={styles.link}
-                          type="button"
-                          buttonStyle="link"
-                          allowAnchorClick
-                        >
-                          <FormattedMessage id={`${this.translateNamespace}.button.forgotPassword`} />
-                        </Button>
                       </Col>
                     </Row>
                   </Col>
@@ -197,6 +175,43 @@ class Login extends Component {
                       <FormattedMessage id={`${this.translateNamespace}.${buttonLabel}`} />
                     </Button>
                   </div>
+                </Col>
+              </Row>
+              <Row
+                className={styles.linksWrapper}
+                center="xs"
+              >
+                <Col xs={6}>
+                  <Row between="xs">
+                    <Col
+                      xs={5}
+                      data-test-new-forgot-password-link
+                    >
+                      <Button
+                        href="/forgot-password"
+                        buttonClass={styles.link}
+                        type="button"
+                        buttonStyle="link"
+                        allowAnchorClick
+                      >
+                        <FormattedMessage id={`${this.translateNamespace}.button.forgotPassword`} />
+                      </Button>
+                    </Col>
+                    <Col
+                      xs={5}
+                      data-test-new-forgot-username-link
+                    >
+                      <Button
+                        href="/forgot-username"
+                        buttonClass={styles.link}
+                        type="button"
+                        buttonStyle="link"
+                        allowAnchorClick
+                      >
+                        <FormattedMessage id={`${this.translateNamespace}.button.forgotUsername`} />
+                      </Button>
+                    </Col>
+                  </Row>
                 </Col>
               </Row>
               <Row center="xs">
