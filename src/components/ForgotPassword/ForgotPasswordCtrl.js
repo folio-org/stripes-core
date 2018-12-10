@@ -3,19 +3,27 @@ import {
   withRouter,
   Redirect,
 } from 'react-router-dom';
+import { connect as reduxConnect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { find } from 'lodash';
 
 import ForgotPasswordForm from './ForgotPasswordForm';
 import { validateForgotUsernameForm } from '../../validators';
+import processBadResponse from '../../processBadResponse';
+import { stripesShape } from '../../Stripes';
 
 class ForgotPassword extends Component {
   static propTypes = {
+    authFailure: PropTypes.arrayOf(PropTypes.object),
     mutator: PropTypes.shape({
       searchUsername: PropTypes.shape({
         POST: PropTypes.func.isRequired,
       }).isRequired,
     }).isRequired,
+    stripes: stripesShape.isRequired,
+  };
+
+  static defaultProps = {
+    authFailure: []
   };
 
   // Expect any MIME type to receive because of the empty body
@@ -33,10 +41,8 @@ class ForgotPassword extends Component {
   });
 
   state = {
-    isValidEmail: false,
+    isValidEmail: true,
     userExists: false,
-    userHasMultipleAccounts: false,
-    hasErrorsContainer: false,
     userEmail: '',
   };
 
@@ -47,6 +53,9 @@ class ForgotPassword extends Component {
       mutator: {
         searchUsername,
       },
+      stripes: {
+        store,
+      },
     } = this.props;
     const { userInput } = values;
     const isValidInput = validateForgotUsernameForm(userInput);
@@ -55,27 +64,10 @@ class ForgotPassword extends Component {
       ? searchUsername
         .POST({ id: userInput })
         .then(() => this.handleSuccessfulResponse(userInput))
-        .catch((err) => this.handleBadResponse(err))
+        .catch((response) => { processBadResponse(store, response); })
       : this.setState({
         isValidEmail: false,
-        hasErrorsContainer: true,
       });
-  };
-
-  handleUserIsTiedToMultipleAccountsError = () => {
-    this.setState({
-      userExists: false,
-      userHasMultipleAccounts: true,
-      hasErrorsContainer: true,
-    });
-  };
-
-  handleUserNotFoundError = () => {
-    this.setState({
-      userExists: false,
-      userHasMultipleAccounts: false,
-      hasErrorsContainer: true,
-    });
   };
 
   handleSuccessfulResponse = (userEmail) => {
@@ -85,35 +77,19 @@ class ForgotPassword extends Component {
     });
   };
 
-  handleBadResponse = (res) => {
-    if (res.status === 422) {
-      res.json()
-        .then(({ errors }) => {
-          if (find(errors, err => err.code === 'user.found.multiple')) {
-            this.handleUserIsTiedToMultipleAccountsError();
-          }
-        })
-        .catch(this.handleUserNotFoundError);
-    } else {
-      this.handleUserNotFoundError();
-    }
-  };
-
   resetState = () => {
     this.setState({
       isValidEmail: true,
       userExists: false,
-      userHasMultipleAccounts: false,
-      hasErrorsContainer: false,
     });
   };
 
   render() {
+    const { authFailure } = this.props;
+
     const {
       userExists,
-      userHasMultipleAccounts,
       isValidEmail,
-      hasErrorsContainer,
       userEmail,
     } = this.state;
 
@@ -128,12 +104,13 @@ class ForgotPassword extends Component {
     return (
       <ForgotPasswordForm
         isValid={isValidEmail}
-        userHasMultipleAccounts={userHasMultipleAccounts}
-        hasErrorsContainer={hasErrorsContainer}
+        errors={authFailure}
         onSubmit={this.handleSubmit}
       />
     );
   }
 }
 
-export default withRouter(ForgotPassword);
+const mapStateToProps = (state) => ({ authFailure: state.okapi.authFailure });
+
+export default withRouter(reduxConnect(mapStateToProps)(ForgotPassword));
