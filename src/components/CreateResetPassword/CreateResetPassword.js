@@ -125,6 +125,32 @@ class CreateResetPassword extends Component {
     })));
   };
 
+  parseJwt(token) {
+    const base64Url = token.split('.')[1];
+    let parsedToken;
+
+    try {
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      parsedToken = JSON.parse(window.atob(base64));
+    } catch (e) {
+      return;
+    }
+
+    // eslint-disable-next-line consistent-return
+    return parsedToken;
+  }
+
+  getUsernameFromToken(token) {
+    const parsedToken = this.parseJwt(token);
+    let username;
+
+    if (parsedToken) {
+      username = parsedToken.sub;
+    }
+
+    return username;
+  }
+
   render() {
     const {
       errors,
@@ -144,9 +170,7 @@ class CreateResetPassword extends Component {
     const passwordType = passwordMasked ? 'password' : 'text';
     const buttonLabelId = `${this.translationNamespaces.module}.${submissionStatus ? 'settingPassword' : 'setPassword'}`;
     const passwordToggleLabelId = `${this.translationNamespaces.button}.${passwordMasked ? 'show' : 'hide'}Password`;
-
-    // Todo don't have a back-end yet, should be parsed from token
-    const username = 'diku_admin';
+    const username = this.getUsernameFromToken(token);
 
     return (
       <div className={styles.wrapper}>
