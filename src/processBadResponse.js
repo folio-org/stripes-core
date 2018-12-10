@@ -1,31 +1,19 @@
-import { defaultErrors } from './constants';
+import { defaultErrorCodes } from './constants';
 import { setAuthError } from './okapiActions';
 
 const getDefaultError = () => (
   {
-    code: defaultErrors.DEFAULT_ERROR,
+    code: defaultErrorCodes.DEFAULT_ERROR,
     type: 'error',
   }
 );
 
 const getDefaultServerError = () => (
   {
-    code: defaultErrors.DEFAULT_SERVER_ERROR,
+    code: defaultErrorCodes.DEFAULT_SERVER_ERROR,
     type: 'error'
   }
 );
-
-const getProcessedServerErrors = (response) => {
-  const processedErrors = [];
-  const { status } = response;
-
-  // Todo: remove status = 400 when backend is ready
-  if (status >= 500 || status === 400) {
-    processedErrors.push(getDefaultServerError());
-  }
-
-  return processedErrors;
-};
 
 const getProcessedErrors = (errorMessage, response) => {
   const processedErrors = [];
@@ -43,13 +31,14 @@ const getProcessedErrors = (errorMessage, response) => {
     } catch (e) {
       processedErrors.push(getDefaultError());
     }
+  } else if (status >= 500) {
+    processedErrors.push(getDefaultServerError());
   } else {
     processedErrors.push(getDefaultError());
   }
 
   return processedErrors;
 };
-
 
 export default function processBadResponse(store, response) {
   response.json()
@@ -59,5 +48,5 @@ export default function processBadResponse(store, response) {
 
       store.dispatch(setAuthError(getProcessedErrors(responsePayload, response)));
     })
-    .catch(() => store.dispatch(setAuthError(getProcessedServerErrors(response))));
+    .catch(() => store.dispatch(setAuthError([getDefaultServerError()])));
 }

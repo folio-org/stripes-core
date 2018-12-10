@@ -117,7 +117,7 @@ describe('Forgot username form test', () => {
       });
     });
 
-    describe('forgot form submission behaviour when the record does not match any in the DB', () => {
+    describe('forgot form submission failed: no account found', () => {
       setupApplication({
         disableAuth: false,
         scenarios: ['forgotUsernameError'],
@@ -129,13 +129,59 @@ describe('Forgot username form test', () => {
         await submitButton.click();
       });
 
-      it('should display an error container if the input does not match not any record', () => {
+      it('should display an error container if the input does not match any record', () => {
         expect(errorsContainer.isPresent).to.be.true;
       });
 
       it('should should have an appropriate error text content', () => {
         expect(errorsContainer.text).to.equal(
           translations['errors.unable.locate.account']
+        );
+      });
+    });
+
+    describe('forgot form submission failed: multiple accounts found', () => {
+      setupApplication({
+        disableAuth: false,
+        scenarios: ['forgotUsernameMultipleRecords'],
+      });
+
+      beforeEach(async function () {
+        this.visit('/forgot-username');
+        await inputField.fillInput(nonExistingRecord);
+        await submitButton.click();
+      });
+
+      it('should display an error container if the input matches many accounts', () => {
+        expect(errorsContainer.isPresent).to.be.true;
+      });
+
+      it('should should have an appropriate error text content', () => {
+        expect(errorsContainer.text).to.equal(
+          translations['errors.user.found.multiple.username']
+        );
+      });
+    });
+
+    describe('forgot form submission failed: server error', () => {
+      setupApplication({
+        disableAuth: false,
+        scenarios: ['forgotUsernameServerError'],
+      });
+
+      beforeEach(async function () {
+        this.visit('/forgot-username');
+        await inputField.fillInput(nonExistingRecord);
+        await submitButton.click();
+      });
+
+      it('should display an error container if server error occured', () => {
+        expect(errorsContainer.isPresent).to.be.true;
+      });
+
+      it('should should have an appropriate error text content', () => {
+        expect(errorsContainer.text).to.equal(
+          translations['errors.server.default.error']
         );
       });
     });

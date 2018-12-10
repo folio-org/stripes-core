@@ -6,6 +6,7 @@ import {
   Form,
 } from 'redux-form';
 import { FormattedMessage } from 'react-intl';
+import { isEmpty } from 'lodash';
 
 import {
   TextField,
@@ -19,26 +20,25 @@ import OrganizationLogo from '../OrganizationLogo';
 import AuthErrorsContainer from '../AuthErrorsContainer';
 
 import formStyles from './ForgotUserNameForm.css';
+import { forgotFormErrorCodes } from '../../constants';
 
 class ForgotUserName extends Component {
   static propTypes = {
     dirty: PropTypes.bool.isRequired,
     isValid: PropTypes.bool.isRequired,
-    userHasMultipleAccounts: PropTypes.bool.isRequired,
-    hasErrorsContainer: PropTypes.bool.isRequired,
     onSubmit: PropTypes.func.isRequired,
     handleSubmit: PropTypes.func.isRequired,
+    errors: PropTypes.arrayOf(PropTypes.object),
   };
 
-  defineErrorMessage = () => {
-    const { userHasMultipleAccounts } = this.props;
+  isErrorsContainerPresent() {
+    const {
+      errors,
+      isValid,
+    } = this.props;
 
-    if (userHasMultipleAccounts) {
-      return 'user.found.multiple.username';
-    }
-
-    return 'unable.locate.account';
-  };
+    return !isEmpty(errors) || !isValid;
+  }
 
   render() {
     const {
@@ -46,8 +46,9 @@ class ForgotUserName extends Component {
       onSubmit,
       handleSubmit,
       isValid,
-      hasErrorsContainer,
+      errors
     } = this.props;
+    const hasErrorsContainer = this.isErrorsContainerPresent();
 
     return (
       <Fragment>
@@ -104,23 +105,24 @@ class ForgotUserName extends Component {
               >
                 <FormattedMessage id="stripes-core.button.continue" />
               </Button>
-              <div
-                className={formStyles.authErrorsWrapper}
-                data-test-errors
-              >
-                {hasErrorsContainer &&
-                  <Row center="xs">
-                    <Col xs={12}>
+              <Row center="xs">
+                <Col xs={12}>
+                  <div
+                    className={formStyles.authErrorsWrapper}
+                    data-test-errors
+                  >
+                    {hasErrorsContainer &&
                       <AuthErrorsContainer
-                        errors={[{ code: isValid
-                          ? this.defineErrorMessage()
-                          : 'email.invalid' }]}
+                        errors={!isValid
+                          ? [{ code: forgotFormErrorCodes.EMAIL_INVALID }]
+                          : errors
+                        }
                         data-test-container
                       />
-                    </Col>
-                  </Row>
-                }
-              </div>
+                    }
+                  </div>
+                </Col>
+              </Row>
             </Form>
           </div>
         </div>

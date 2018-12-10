@@ -98,7 +98,7 @@
   "errors.unable.locate.account": "Unable to find your account. Please enter a valid email address or phone number.",
   "errors.user.found.multiple.password": "The information provided is tied to multiple Folio accounts. Please contact your Folio system administrator to reset your password.",
   "errors.user.found.multiple.username": "This email or phone number is tied to multiple Folio accounts. Please contact your Folio system administrator.",
-  "errors.server.error": "System error. Unable to locate Folio account. Please try again.",
+  "errors.server.default.error": "System error. Unable to locate Folio account. Please try again.",
 
   "createResetPassword.header": "Choose a password",
   "createResetPassword.newPassword": "New Password",

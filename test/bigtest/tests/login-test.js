@@ -180,7 +180,7 @@ describe('Login', () => {
       });
 
       it('error message should have proper text upon failed submit', () => {
-        expect(login.message.text).to.equal(translations['errors.default.error']);
+        expect(login.message.text).to.equal(translations['errors.server.default.error']);
       });
     });
 

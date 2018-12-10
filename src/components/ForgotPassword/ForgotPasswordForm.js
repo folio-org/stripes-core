@@ -35,6 +35,15 @@ class ForgotPassword extends Component {
     errors: []
   };
 
+  isErrorsContainerPresent() {
+    const {
+      errors,
+      isValid,
+    } = this.props;
+
+    return !isEmpty(errors) || !isValid;
+  }
+
   render() {
     const {
       dirty,
@@ -43,6 +52,7 @@ class ForgotPassword extends Component {
       isValid,
       errors,
     } = this.props;
+    const hasErrorsContainer = this.isErrorsContainerPresent();
 
     return (
       <Fragment>
@@ -105,17 +115,15 @@ class ForgotPassword extends Component {
                     className={formStyles.authErrorsWrapper}
                     data-test-errors
                   >
-                    {!isEmpty(errors) &&
-                    <AuthErrorsContainer
-                      errors={errors}
-                      data-test-server-errors
-                    />}
-                    {!isValid &&
-                    <AuthErrorsContainer
-                      errors={[{ code: forgotFormErrorCodes.EMAIL_INVALID }]}
-                      data-test-validation-errors
-                    />
-                  }
+                    {hasErrorsContainer &&
+                      <AuthErrorsContainer
+                        errors={!isValid
+                          ? [{ code: forgotFormErrorCodes.EMAIL_INVALID }]
+                          : errors
+                        }
+                        data-test-container
+                      />
+                    }
                   </div>
                 </Col>
               </Row>

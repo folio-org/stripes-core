@@ -6,10 +6,10 @@ import {
 import { connect as reduxConnect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import ForgotPasswordForm from './ForgotPasswordForm';
 import { validateForgotUsernameForm } from '../../validators';
 import processBadResponse from '../../processBadResponse';
 import { stripesShape } from '../../Stripes';
+import ForgotPasswordForm from './ForgotPasswordForm';
 
 class ForgotPassword extends Component {
   static propTypes = {
@@ -46,7 +46,6 @@ class ForgotPassword extends Component {
     userEmail: '',
   };
 
-
   handleSubmit = values => {
     this.resetState();
     const {
@@ -64,7 +63,7 @@ class ForgotPassword extends Component {
       ? searchUsername
         .POST({ id: userInput })
         .then(() => this.handleSuccessfulResponse(userInput))
-        .catch((response) => { processBadResponse(store, response); })
+        .catch(response => { processBadResponse(store, response); })
       : this.setState({
         isValidEmail: false,
       });
@@ -111,6 +110,6 @@ class ForgotPassword extends Component {
   }
 }
 
-const mapStateToProps = (state) => ({ authFailure: state.okapi.authFailure });
+const mapStateToProps = state => ({ authFailure: state.okapi.authFailure });
 
 export default withRouter(reduxConnect(mapStateToProps)(ForgotPassword));
