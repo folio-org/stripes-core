@@ -3,7 +3,7 @@ export default (server) => {
     errors: [
       {
         type: 'error',
-        code: 'user.found.multiple.username'
+        code: 'forgotten.username.found.multiple.users'
       }
     ]
   }, 422);

@@ -16,11 +16,11 @@ import {
   Col,
 } from '@folio/stripes-components';
 
+import { forgotFormErrorCodes } from '../../constants';
 import OrganizationLogo from '../OrganizationLogo';
 import AuthErrorsContainer from '../AuthErrorsContainer';
 
 import formStyles from './ForgotUserNameForm.css';
-import { forgotFormErrorCodes } from '../../constants';
 
 class ForgotUserName extends Component {
   static propTypes = {
@@ -29,6 +29,10 @@ class ForgotUserName extends Component {
     onSubmit: PropTypes.func.isRequired,
     handleSubmit: PropTypes.func.isRequired,
     errors: PropTypes.arrayOf(PropTypes.object),
+  };
+
+  static defaultProps = {
+    errors: []
   };
 
   isErrorsContainerPresent() {
@@ -111,7 +115,7 @@ class ForgotUserName extends Component {
                     className={formStyles.authErrorsWrapper}
                     data-test-errors
                   >
-                    {hasErrorsContainer &&
+                    {hasErrorsContainer && (
                       <AuthErrorsContainer
                         errors={!isValid
                           ? [{ code: forgotFormErrorCodes.EMAIL_INVALID }]
@@ -119,7 +123,7 @@ class ForgotUserName extends Component {
                         }
                         data-test-container
                       />
-                    }
+                    )}
                   </div>
                 </Col>
               </Row>

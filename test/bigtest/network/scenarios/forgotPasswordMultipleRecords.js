@@ -3,7 +3,7 @@ export default (server) => {
     errors: [
       {
         type: 'error',
-        code: 'user.found.multiple.password'
+        code: 'forgotten.password.found.multiple.users'
       }
     ]
   }, 422);
