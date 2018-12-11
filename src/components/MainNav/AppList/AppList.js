@@ -224,7 +224,7 @@ class AppList extends Component {
             hasPadding={false}
           >
             {renderDropdownToggleButton()}
-            <DropdownMenu className="hello" data-role="menu" onToggle={toggleDropdown}>
+            <DropdownMenu data-role="menu" onToggle={toggleDropdown}>
               {focusTrap(focusDropdownToggleButton)}
               <AppListDropdown
                 listRef={dropdownListRef}
