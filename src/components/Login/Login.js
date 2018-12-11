@@ -188,11 +188,10 @@ class Login extends Component {
                       data-test-new-forgot-password-link
                     >
                       <Button
-                        href="/forgot-password"
+                        to="/forgot-password"
                         buttonClass={styles.link}
                         type="button"
                         buttonStyle="link"
-                        allowAnchorClick
                       >
                         <FormattedMessage id={`${this.translateNamespace}.button.forgotPassword`} />
                       </Button>
@@ -202,11 +201,10 @@ class Login extends Component {
                       data-test-new-forgot-username-link
                     >
                       <Button
-                        href="/forgot-username"
+                        to="/forgot-username"
                         buttonClass={styles.link}
                         type="button"
                         buttonStyle="link"
-                        allowAnchorClick
                       >
                         <FormattedMessage id={`${this.translateNamespace}.button.forgotUsername`} />
                       </Button>
