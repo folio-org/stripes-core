@@ -20,14 +20,15 @@ import {
   Headline,
 } from '@folio/stripes-components';
 
-import PasswordValidationField from './components/PasswordValidationField';
-import { setAuthError } from '../../okapiActions';
 
-import FieldLabel from './components/FieldLabel';
+import { setAuthError } from '../../okapiActions';
+import { stripesShape } from '../../Stripes';
+import { parseJWT } from '../../helpers';
+
 import OrganizationLogo from '../OrganizationLogo';
 import AuthErrorsContainer from '../AuthErrorsContainer';
-
-import { stripesShape } from '../../Stripes';
+import FieldLabel from './components/FieldLabel';
+import PasswordValidationField from './components/PasswordValidationField';
 
 import styles from './CreateResetPassword.css';
 
@@ -125,23 +126,8 @@ class CreateResetPassword extends Component {
     })));
   };
 
-  parseJwt(token) {
-    const base64Url = token.split('.')[1];
-    let parsedToken;
-
-    try {
-      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-      parsedToken = JSON.parse(window.atob(base64));
-    } catch (e) {
-      return;
-    }
-
-    // eslint-disable-next-line consistent-return
-    return parsedToken;
-  }
-
   getUsernameFromToken(token) {
-    const parsedToken = this.parseJwt(token);
+    const parsedToken = parseJWT(token);
     let username;
 
     if (parsedToken) {

@@ -1,41 +1,53 @@
+import { isObject } from 'lodash';
+
 import { setAuthError } from './okapiActions';
 
-function getDefaultError() {
-  return {
-    code: 'default.error',
-    type: 'error',
-  };
-}
+const defaultError = {
+  code: 'default.error',
+  type: 'error',
+};
 
-function getProcessedErrors(errorMessage, response) {
-  const processedErrors = [];
-  const { status } = response;
+const defaultServerError = {
+  code: 'default.server.error',
+  type: 'error',
+};
 
-  if (status === 422) {
-    try {
-      if (typeof errorMessage === 'object') {
-        const { errors } = errorMessage;
-        processedErrors.push(...errors);
-      } else {
-        const { errors } = JSON.parse(errorMessage);
-        processedErrors.push(...errors);
-      }
-    } catch (e) {
-      processedErrors.push(getDefaultError());
+const getLoginErrors = (payload) => {
+  try {
+    if (isObject(payload)) {
+      const { errors } = payload;
+
+      return errors;
+    } else {
+      const { errors } = JSON.parse(payload);
+
+      return errors || [defaultError];
     }
-  } else {
-    processedErrors.push(getDefaultError());
+  } catch (e) {
+    return [defaultError];
   }
+};
 
-  return processedErrors;
+function getProcessedErrors(response, status) {
+  switch (status) {
+    case 422:
+      return getLoginErrors(response);
+    case 500:
+      return [defaultServerError];
+    default:
+      return [defaultError];
+  }
 }
 
-export default function processBadResponse(store, response) {
-  response.json()
-    .then(responseBody => {
-      const { errorMessage } = responseBody;
-      const responsePayload = errorMessage || responseBody;
+export default async function processBadResponse(dispatch, response) {
+  let actionPayload;
 
-      store.dispatch(setAuthError(getProcessedErrors(responsePayload, response)));
-    });
+  try {
+    const responseBody = await response.json();
+    const responsePayload = responseBody.errorMessage || responseBody;
+    actionPayload = getProcessedErrors(responsePayload, response.status);
+  } catch (e) {
+    actionPayload = [defaultError];
+  }
+  dispatch(setAuthError(actionPayload));
 }

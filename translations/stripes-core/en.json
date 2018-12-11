@@ -101,6 +101,7 @@
   "errors.unable.locate.account": "Unable to find your account. Please enter a valid email address or phone number",
   "errors.link.invalid": "Your choose password link is invalid. Please verify that you are using the link included in your email or contact your Folio Administrator.",
   "errors.link.expired": "Your choose password link expired or has already been used. Please contact your Folio Administrator for a new link.",
+  "errors.default.server.error": "System error. Unable to locate Folio account. Please try again.",
 
   "createResetPassword.header": "Choose a password",
   "createResetPassword.newPassword": "New Password",

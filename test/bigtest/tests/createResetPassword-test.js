@@ -477,27 +477,100 @@ describe('Create/Reset password page', () => {
     const ChangePasswordErrorPage = new ChangePasswordErrorPageInteractor();
     const { message } = ChangePasswordErrorPage;
 
-    describe('default behavior', () => {
+    describe('invalid token', () => {
+      setupApplication({
+        disableAuth: false,
+        scenarios: [
+          'changePasswordValidateInvalidLink',
+        ],
+      });
+
       beforeEach(function () {
         return this.visit({
-          pathname: '/create-password/test/actionIdTest',
-          state: {
-            isValidToken: false,
-            errorCodes: [],
-          }
+          pathname: '/change-password/test/'
         }, () => {
           expect(ChangePasswordErrorPage.isPresent).to.be.true;
         });
       });
 
-      describe('expected behavior', () => {
-        it('should display an error message', () => {
-          expect(message.isPresent).to.be.true;
-        });
+      it('should display an error message', () => {
+        expect(message.isPresent).to.be.true;
+      });
 
-        it('should have an appropriate content', () => {
-          expect(message.text).to.equal(translations['errors.link.invalid']);
+      it('should have an appropriate content', () => {
+        expect(message.text).to.equal(translations['errors.link.invalid']);
+      });
+    });
+    describe('expired token', () => {
+      setupApplication({
+        disableAuth: false,
+        scenarios: [
+          'changePasswordValidateExpiredLink',
+        ],
+      });
+
+      beforeEach(function () {
+        return this.visit({
+          pathname: '/change-password/test/'
+        }, () => {
+          expect(ChangePasswordErrorPage.isPresent).to.be.true;
         });
+      });
+
+      it('should display an error message', () => {
+        expect(message.isPresent).to.be.true;
+      });
+
+      it('should have an appropriate content', () => {
+        expect(message.text).to.equal(translations['errors.link.expired']);
+      });
+    });
+    describe('used token', () => {
+      setupApplication({
+        disableAuth: false,
+        scenarios: [
+          'changePasswordValidateUsedLink',
+        ],
+      });
+
+      beforeEach(function () {
+        return this.visit({
+          pathname: '/change-password/test/'
+        }, () => {
+          expect(ChangePasswordErrorPage.isPresent).to.be.true;
+        });
+      });
+
+      it('should display an error message', () => {
+        expect(message.isPresent).to.be.true;
+      });
+
+      it('should have an appropriate content', () => {
+        expect(message.text).to.equal(translations['errors.link.expired']);
+      });
+    });
+    describe('system error', () => {
+      setupApplication({
+        disableAuth: false,
+        scenarios: [
+          'changePasswordValidateSystemError',
+        ],
+      });
+
+      beforeEach(function () {
+        return this.visit({
+          pathname: '/change-password/test/'
+        }, () => {
+          expect(ChangePasswordErrorPage.isPresent).to.be.true;
+        });
+      });
+
+      it('should display an error message', () => {
+        expect(message.isPresent).to.be.true;
+      });
+
+      it('should have an appropriate content', () => {
+        expect(message.text).to.equal(translations['errors.default.server.error']);
       });
     });
   });

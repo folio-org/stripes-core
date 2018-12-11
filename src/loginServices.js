@@ -213,17 +213,18 @@ function processSSOLoginResponse(resp) {
   }
 }
 
-function handleLoginError(store, resp) {
+function handleLoginError(dispatch, resp) {
   localforage.removeItem('okapiSess');
-  store.dispatch(change('login', 'password', ''));
-  processBadResponse(store, resp);
-  store.dispatch(setOkapiReady());
+  dispatch(change('login', 'password', ''));
+  processBadResponse(dispatch, resp);
+  dispatch(setOkapiReady());
 }
 
 function processOkapiSession(okapiUrl, store, tenant, resp) {
   const token = resp.headers.get('X-Okapi-Token');
+  const { dispatch } = store;
   if (resp.status >= 400) {
-    handleLoginError(store, resp);
+    handleLoginError(dispatch, resp);
   } else {
     resp.json().then(json => createOkapiSession(okapiUrl, store, tenant, token, json));
   }

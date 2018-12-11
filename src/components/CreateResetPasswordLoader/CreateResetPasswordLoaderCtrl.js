@@ -4,9 +4,12 @@ import {
   Redirect,
 } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { isArray } from 'lodash';
 
 import CreateResetPasswordLoader from './CreateResetPasswordLoader';
-import { changePasswordErrorCodes } from '../../constants/changePasswordErrorCodes';
+import {
+  defaultErrorCodes,
+} from '../../constants';
 import { stripesShape } from '../../Stripes';
 
 class CreateResetPasswordLoaderCtrl extends Component {
@@ -26,7 +29,7 @@ class CreateResetPasswordLoaderCtrl extends Component {
     actionId: 0,
   };
 
-  componentDidMount() {
+  async componentDidMount() {
     const {
       match: {
         params: {
@@ -41,69 +44,82 @@ class CreateResetPasswordLoaderCtrl extends Component {
       },
     } = this.props;
 
-    fetch(`${url}/bl-users/password-reset/validate`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-okapi-token': token,
-        'x-okapi-tenant': tenant,
-      },
-    })
-      .then(res => this.handleResponse(res))
-      .catch(err => this.handleBadResponse(err));
+    try {
+      const response = await fetch(`${url}/bl-users/password-reset/validate`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-okapi-token': token,
+          'x-okapi-tenant': tenant,
+        },
+      });
+
+      await this.handleResponse(response);
+    } catch (error) {
+      const defaultServerErrorCode = defaultErrorCodes.DEFAULT_SERVER_ERROR;
+
+      this.handleDefaultLinkError(defaultServerErrorCode);
+    }
   }
 
-  completeLoading = () => {
-    this.setState({ isLoaded: true });
-  };
-
-  handleDefaultLinkError = () => {
-    const invalidLinkErrorCode = changePasswordErrorCodes.INVALID_ERROR_CODE;
-
+  setInvalidLinkErrorCodes = (errors) => {
     this.setState({
       isValidToken: false,
-      errorCodes: [invalidLinkErrorCode],
+      errorCodes: errors.map(err => err.code),
+      isLoaded: true,
     });
-    this.completeLoading();
   };
 
-  handleInvalidLinkError = (response) => {
-    response.json()
-      .then(res => {
-        const { errors } = res;
-
-        this.setState({
-          isValidToken: false,
-          errorCodes: errors.map(err => err.code),
-        });
-        this.completeLoading();
-      });
+  setTokenIsValid = (payload) => {
+    this.setState({
+      isValidToken: true,
+      actionId: payload.resetPasswordActionId,
+      isLoaded: true,
+    });
   };
 
-  handleResponse = (response) => {
-    if (response.status === 200) {
-      response.json()
-        .then(res => {
-          const { resetPasswordActionId } = res;
+  handleDefaultLinkError = (errorCode) => {
+    this.setState({
+      isValidToken: false,
+      errorCodes: [errorCode],
+      isLoaded: true,
+    });
+  };
 
-          this.setState({
-            isValidToken: true,
-            actionId: resetPasswordActionId,
-          });
-          this.completeLoading();
-        });
+  handleInvalidLinkError = (parsedResponse) => {
+    const { errors } = parsedResponse;
+    const isValidResponseBody = isArray(errors);
+
+    if (isValidResponseBody) {
+      this.setInvalidLinkErrorCodes(errors);
     } else {
-      this.handleBadResponse(response);
+      const defaultServerErrorCode = defaultErrorCodes.DEFAULT_SERVER_ERROR;
+
+      this.handleDefaultLinkError(defaultServerErrorCode);
     }
   };
 
-  handleBadResponse = (response) => {
-    if (response.status === 422) {
-      this.handleInvalidLinkError(response);
-    } else {
-      this.handleDefaultLinkError();
+  async handleResponse(response) {
+    let parsedResponse;
+    const defaultServerErrorCode = defaultErrorCodes.DEFAULT_SERVER_ERROR;
+
+    try {
+      parsedResponse = await response.json();
+
+      switch (response.status) {
+        case 200:
+          this.setTokenIsValid(parsedResponse);
+          break;
+        case 422:
+          this.handleInvalidLinkError(parsedResponse);
+          break;
+        default:
+          this.handleDefaultLinkError(defaultServerErrorCode);
+      }
+    } catch (e) {
+      this.handleDefaultLinkError(defaultServerErrorCode);
     }
-  };
+  }
 
   render() {
     const {
