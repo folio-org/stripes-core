@@ -8,7 +8,6 @@ import PropTypes from 'prop-types';
 
 import { validateForgotUsernameForm } from '../../validators';
 import processBadResponse from '../../processBadResponse';
-import { stripesShape } from '../../Stripes';
 import ForgotUserNameForm from './ForgotUserNameForm';
 
 class ForgotUserNameCtrl extends Component {
@@ -19,7 +18,7 @@ class ForgotUserNameCtrl extends Component {
         POST: PropTypes.func.isRequired,
       }).isRequired,
     }).isRequired,
-    stripes: stripesShape.isRequired,
+    handleBadResponse: PropTypes.func.isRequired,
   };
 
     static defaultProps = {
@@ -40,77 +39,81 @@ class ForgotUserNameCtrl extends Component {
     },
   });
 
-  state = {
-    isValidEmail: true,
-    userExists: false,
-    userEmail: '',
-  };
+  constructor(props) {
+    super(props);
 
-    handleSubmit = values => {
-      this.resetState();
-      const {
-        mutator: {
-          searchUsername,
-        },
-        stripes: {
-          store,
-        },
-      } = this.props;
-      const { userInput } = values;
-      const isValidInput = validateForgotUsernameForm(userInput);
+    this.state = {
+      isValidEmail: true,
+      userExists: false,
+      userEmail: '',
+    };
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
 
-      return isValidInput
-        ? searchUsername
-          .POST({ id: userInput })
-          .then(() => this.handleSuccessfulResponse(userInput))
-          .catch(response => { processBadResponse(store, response); })
-        : this.setState({
-          isValidEmail: false,
-        });
+  async handleSubmit(values) {
+    this.resetState();
+    const {
+      mutator: {
+        searchUsername,
+      },
+      handleBadResponse,
+    } = this.props;
+    const { userInput } = values;
+    const isValidInput = validateForgotUsernameForm(userInput);
+
+    if (isValidInput) {
+      try {
+        await searchUsername.POST({ id: userInput });
+        this.handleSuccessfulResponse(userInput);
+      } catch (error) {
+        handleBadResponse(error);
+      }
+    } else {
+      this.setState({ isValidEmail: false });
+    }
+  }
+
+    handleSuccessfulResponse = (userEmail) => {
+      this.setState({
+        userExists: true,
+        userEmail,
+      });
     };
 
-  handleSuccessfulResponse = (userEmail) => {
-    this.setState({
-      userExists: true,
-      userEmail,
-    });
-  };
-
-  resetState = () => {
-    this.setState(
-      {
+    resetState = () => {
+      this.setState({
         isValidEmail: true,
         userExists: false,
+      });
+    };
+
+    render() {
+      const { authFailure } = this.props;
+      const {
+        userExists,
+        isValidEmail,
+        userEmail,
+      } = this.state;
+
+      if (userExists) {
+        return <Redirect to={{
+          pathname: '/check-email',
+          state: { userEmail },
+        }}
+        />;
       }
-    );
-  };
 
-  render() {
-    const { authFailure } = this.props;
-    const {
-      userExists,
-      isValidEmail,
-      userEmail,
-    } = this.state;
-
-    if (userExists) {
-      return <Redirect to={{
-        pathname: '/check-email',
-        state: { userEmail },
-      }}
-      />;
+      return (
+        <ForgotUserNameForm
+          isValid={isValidEmail}
+          errors={authFailure}
+          onSubmit={this.handleSubmit}
+        />
+      );
     }
-
-    return (
-      <ForgotUserNameForm
-        isValid={isValidEmail}
-        errors={authFailure}
-        onSubmit={this.handleSubmit}
-      />
-    );
-  }
 }
 
 const mapStateToProps = state => ({ authFailure: state.okapi.authFailure });
+const mapDispatchToProps = dispatch => ({ handleBadResponse: error => processBadResponse(dispatch, error) });
 
-export default withRouter(reduxConnect(mapStateToProps)(ForgotUserNameCtrl));
+export default withRouter(reduxConnect(mapStateToProps, mapDispatchToProps)(ForgotUserNameCtrl));

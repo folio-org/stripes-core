@@ -24,9 +24,9 @@ import formStyles from './ForgotPasswordForm.css';
 
 class ForgotPassword extends Component {
   static propTypes = {
+    dirty: PropTypes.bool.isRequired,
     isValid: PropTypes.bool.isRequired,
     onSubmit: PropTypes.func.isRequired,
-    dirty: PropTypes.bool.isRequired,
     handleSubmit: PropTypes.func.isRequired,
     errors: PropTypes.arrayOf(PropTypes.object),
   };
@@ -52,6 +52,7 @@ class ForgotPassword extends Component {
       isValid,
       errors,
     } = this.props;
+
     const hasErrorsContainer = this.isErrorsContainerPresent();
 
     return (
@@ -115,15 +116,15 @@ class ForgotPassword extends Component {
                     className={formStyles.authErrorsWrapper}
                     data-test-errors
                   >
-                    {hasErrorsContainer &&
+                    {hasErrorsContainer && (
                       <AuthErrorsContainer
                         errors={!isValid
                           ? [{ code: forgotFormErrorCodes.EMAIL_INVALID }]
                           : errors
-                        }
+                              }
                         data-test-container
                       />
-                    }
+                    )}
                   </div>
                 </Col>
               </Row>

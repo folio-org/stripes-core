@@ -158,7 +158,7 @@ describe('forgot password form test', () => {
 
       it('should should have an appropriate error text content', () => {
         expect(errorsContainer.text).to.equal(
-          translations['errors.user.found.multiple.password']
+          translations['errors.forgotten.password.found.multiple.users']
         );
       });
     });
@@ -181,7 +181,7 @@ describe('forgot password form test', () => {
 
       it('should should have an appropriate error text content', () => {
         expect(errorsContainer.text).to.equal(
-          translations['errors.server.default.error']
+          translations['errors.default.server.error']
         );
       });
     });

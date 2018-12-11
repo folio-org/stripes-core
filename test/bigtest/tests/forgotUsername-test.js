@@ -158,7 +158,7 @@ describe('Forgot username form test', () => {
 
       it('should should have an appropriate error text content', () => {
         expect(errorsContainer.text).to.equal(
-          translations['errors.user.found.multiple.username']
+          translations['errors.forgotten.username.found.multiple.users']
         );
       });
     });
@@ -181,7 +181,7 @@ describe('Forgot username form test', () => {
 
       it('should should have an appropriate error text content', () => {
         expect(errorsContainer.text).to.equal(
-          translations['errors.server.default.error']
+          translations['errors.default.server.error']
         );
       });
     });
