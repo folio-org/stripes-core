@@ -39,22 +39,22 @@ const PasswordSuccessfullyChanged = ({ history }) => {
           tag="p"
           bold={false}
           faded
-        >
-          <FormattedMessage id={`${labelNamespace}.changed.password`} />
-        </Headline>
-        <Button
-          buttonClass={styles.submitButton}
-          buttonStyle="primary"
-          fullWidth
-          marginBottom0
-          onClick={handleRedirectClick}
-        >
-          <FormattedMessage id={`${buttonNamespace}.redirect.login`} />
-        </Button>
           data-test-message
         >
           <FormattedMessage id={`${labelNamespace}.changed.password`} />
         </Headline>
+        <div data-test-redirect>
+          <Button
+            buttonClass={styles.submitButton}
+            buttonStyle="primary"
+            fullWidth
+            marginBottom0
+            data-test-redirect
+            onClick={handleRedirectClick}
+          >
+            <FormattedMessage id={`${buttonNamespace}.redirect.login`} />
+          </Button>
+        </div>
       </div>
     </div>
   );
