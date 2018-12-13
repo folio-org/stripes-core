@@ -20,15 +20,16 @@
 }
 
 .formGroup {
-  margin-bottom: 10px;
+  margin-bottom: 1rem;
 
   &:last-child {
     margin-bottom: 0;
   }
 }
 
+.linksWrapper,
 .authErrorsWrapper {
-  margin-top: 10px;
+  margin-top: 1rem;
 }
 
 input.input {
@@ -47,10 +48,9 @@ button.submitButton {
 .link {
   display: block;
   width: 100%;
-  text-align: right;
   font-size: var(--font-size-large);
   font-weight: var(--text-weight-headline-basis);
-  margin: 0 0 0.25rem;
+  margin: 0;
 }
 
 @media (--medium-up) {

@@ -21,12 +21,16 @@ const PasswordSuccessfullyChanged = ({ history }) => {
   };
 
   return (
-    <div className={styles.wrap}>
+    <div
+      className={styles.wrap}
+      data-test-change-password-confirmation
+    >
       <div className={styles.centered}>
         <OrganizationLogo />
         <Headline
           size="xx-large"
           tag="h1"
+          data-test-h1
         >
           <FormattedMessage id={`${labelNamespace}.congratulations`} />
         </Headline>
@@ -47,6 +51,10 @@ const PasswordSuccessfullyChanged = ({ history }) => {
         >
           <FormattedMessage id={`${buttonNamespace}.redirect.login`} />
         </Button>
+          data-test-message
+        >
+          <FormattedMessage id={`${labelNamespace}.changed.password`} />
+        </Headline>
       </div>
     </div>
   );

@@ -165,8 +165,8 @@ class ProfileDropdown extends Component {
     }
 
     return (
-      <main>
-        <header className={css.header}>
+      <div>
+        <div className={css.header}>
           <FormattedMessage id="stripes-core.loggedInAs" values={{ firstName: user.firstName, lastName: user.lastName }} />
           <br />
           {
@@ -174,7 +174,7 @@ class ProfileDropdown extends Component {
               <FormattedMessage id="stripes-core.currentServicePoint" values={{ name: user.curServicePoint.name }} /> :
               <FormattedMessage id="stripes-core.currentServicePointNotSelected" />
           }
-        </header>
+        </div>
         <hr className={css.divider} />
         <NavList>
           <NavListSection>
@@ -192,7 +192,7 @@ class ProfileDropdown extends Component {
           </NavListSection>
         </NavList>
         { perms }
-      </main>
+      </div>
     );
   }
 

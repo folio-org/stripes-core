@@ -114,7 +114,7 @@ class ToastNotification extends React.Component {
           buttonStyle="link"
           onClick={this.handleHide}
         >
-          <Icon icon="closeX" />
+          <Icon icon="times" />
         </Button>
       </Layout>
     );

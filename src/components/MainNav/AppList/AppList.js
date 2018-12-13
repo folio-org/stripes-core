@@ -4,7 +4,7 @@
 
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
-import { injectIntl, intlShape } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 
 import { Dropdown } from '@folio/stripes-components/lib/Dropdown';
 import DropdownMenu from '@folio/stripes-components/lib/DropdownMenu';
@@ -30,7 +30,6 @@ class AppList extends Component {
     ),
     dropdownId: PropTypes.string,
     dropdownToggleId: PropTypes.string.isRequired,
-    intl: intlShape,
     selectedApp: PropTypes.object,
   }
 
@@ -110,27 +109,39 @@ class AppList extends Component {
    */
   renderDropdownToggleButton() {
     const { open } = this.state;
-    const { dropdownToggleId, intl } = this.props;
-    const icon = <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8.4 2.4H5.1c-1.5 0-2.7 1.2-2.7 2.7v3.3c0 1.5 1.2 2.7 2.7 2.7h3.3c1.5 0 2.7-1.2 2.7-2.7V5.1c0-1.5-1.2-2.7-2.7-2.7zm.7 6c0 .4-.3.7-.7.7H5.1c-.4 0-.7-.3-.7-.7V5.1c0-.4.3-.7.7-.7h3.3c.4 0 .7.3.7.7v3.3zM18.9 2.4h-3.3c-1.5 0-2.7 1.2-2.7 2.7v3.3c0 1.5 1.2 2.7 2.7 2.7h3.3c1.5 0 2.7-1.2 2.7-2.7V5.1c0-1.5-1.2-2.7-2.7-2.7zm.7 6c0 .4-.3.7-.7.7h-3.3c-.4 0-.7-.3-.7-.7V5.1c0-.4.3-.7.7-.7h3.3c.4 0 .7.3.7.7v3.3zM8.4 12.9H5.1c-1.5 0-2.7 1.2-2.7 2.7v3.3c0 1.5 1.2 2.7 2.7 2.7h3.3c1.5 0 2.7-1.2 2.7-2.7v-3.3c0-1.5-1.2-2.7-2.7-2.7zm.7 6c0 .4-.3.7-.7.7H5.1c-.4 0-.7-.3-.7-.7v-3.3c0-.4.3-.7.7-.7h3.3c.4 0 .7.3.7.7v3.3zM18.9 12.9h-3.3c-1.5 0-2.7 1.2-2.7 2.7v3.3c0 1.5 1.2 2.7 2.7 2.7h3.3c1.5 0 2.7-1.2 2.7-2.7v-3.3c0-1.5-1.2-2.7-2.7-2.7zm.7 6c0 .4-.3.7-.7.7h-3.3c-.4 0-.7-.3-.7-.7v-3.3c0-.4.3-.7.7-.7h3.3c.4 0 .7.3.7.7v3.3z" /></svg>;
-    const label = <Icon iconPosition="end" icon={open ? 'up-caret' : 'down-caret'}>{intl.formatMessage({ id: 'stripes-core.mainnav.showAllApplicationsButtonLabel' })}</Icon>;
+    const { dropdownToggleId } = this.props;
+    const icon = (
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M8.4 2.4H5.1c-1.5 0-2.7 1.2-2.7 2.7v3.3c0 1.5 1.2 2.7 2.7 2.7h3.3c1.5 0 2.7-1.2 2.7-2.7V5.1c0-1.5-1.2-2.7-2.7-2.7zm.7 6c0 .4-.3.7-.7.7H5.1c-.4 0-.7-.3-.7-.7V5.1c0-.4.3-.7.7-.7h3.3c.4 0 .7.3.7.7v3.3zM18.9 2.4h-3.3c-1.5 0-2.7 1.2-2.7 2.7v3.3c0 1.5 1.2 2.7 2.7 2.7h3.3c1.5 0 2.7-1.2 2.7-2.7V5.1c0-1.5-1.2-2.7-2.7-2.7zm.7 6c0 .4-.3.7-.7.7h-3.3c-.4 0-.7-.3-.7-.7V5.1c0-.4.3-.7.7-.7h3.3c.4 0 .7.3.7.7v3.3zM8.4 12.9H5.1c-1.5 0-2.7 1.2-2.7 2.7v3.3c0 1.5 1.2 2.7 2.7 2.7h3.3c1.5 0 2.7-1.2 2.7-2.7v-3.3c0-1.5-1.2-2.7-2.7-2.7zm.7 6c0 .4-.3.7-.7.7H5.1c-.4 0-.7-.3-.7-.7v-3.3c0-.4.3-.7.7-.7h3.3c.4 0 .7.3.7.7v3.3zM18.9 12.9h-3.3c-1.5 0-2.7 1.2-2.7 2.7v3.3c0 1.5 1.2 2.7 2.7 2.7h3.3c1.5 0 2.7-1.2 2.7-2.7v-3.3c0-1.5-1.2-2.7-2.7-2.7zm.7 6c0 .4-.3.7-.7.7h-3.3c-.4 0-.7-.3-.7-.7v-3.3c0-.4.3-.7.7-.7h3.3c.4 0 .7.3.7.7v3.3z" />
+      </svg>
+    );
+    const label = (
+      <Icon iconPosition="end" icon={open ? 'caret-up' : 'caret-down'}>
+        <FormattedMessage id="stripes-core.mainnav.showAllApplicationsButtonLabel" />
+      </Icon>
+    );
 
     return (
       <Fragment>
-        <NavButton
-          label={label}
-          aria-label={intl.formatMessage({ id: 'stripes-core.mainnav.showAllApplicationsButtonAriaLabel' })}
-          aria-haspopup="true"
-          aria-expanded={open}
-          data-role="toggle"
-          className={css.navMobileToggle}
-          labelClassName={css.dropdownToggleLabel}
-          onClick={this.toggleDropdown}
-          selected={this.state.open}
-          icon={icon}
-          id={dropdownToggleId}
-          ref={this.dropdownToggleRef}
-          noSelectedBar
-        />
+        <FormattedMessage id="stripes-core.mainnav.showAllApplicationsButtonAriaLabel">
+          { ariaLabel => (
+            <NavButton
+              label={label}
+              aria-label={ariaLabel}
+              aria-haspopup="true"
+              aria-expanded={open}
+              data-role="toggle"
+              className={css.navMobileToggle}
+              labelClassName={css.dropdownToggleLabel}
+              onClick={this.toggleDropdown}
+              selected={this.state.open}
+              icon={icon}
+              id={dropdownToggleId}
+              ref={this.dropdownToggleRef}
+              noSelectedBar
+            />
+          )}
+        </FormattedMessage>
         {open && this.focusTrap(this.focusFirstItemInList)}
       </Fragment>
     );
@@ -198,7 +209,8 @@ class AppList extends Component {
     }
 
     return (
-      <nav className={css.appList}>
+      <nav className={css.appList} aria-labelledby="main_app_list_label">
+        <h3 className="sr-only" id="main_app_list_label"><FormattedMessage id="stripes-core.mainnav.applicationListLabel" /></h3>
         <ul className={css.navItemsList}>
           {renderNavButtons()}
         </ul>
@@ -228,4 +240,4 @@ class AppList extends Component {
   }
 }
 
-export default injectIntl(AppList);
+export default AppList;

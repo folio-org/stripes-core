@@ -9,6 +9,7 @@
   "title.forgotPassword": "Forgot password?",
   "title.forgotUsername": "Forgot username?",
   "title.checkEmail": "Check your email",
+  "title.changePassword": "Change password",
 
   "front.welcome": "Welcome, the Future Of Libraries Is OPEN!",
   "front.home": "Home",
@@ -80,7 +81,6 @@
   "loggingIn": "Logging in...",
   "settings": "Settings",
   "folioSettings": "FOLIO settings",
-  "mainNavigation": "Main Navigation",
   "loginViaSSO": "Login via SSO",
   "setPassword": "Set password",
   "settingPassword": "Setting password...",
@@ -88,6 +88,8 @@
   "mainnav.showAllApplicationsButtonLabel": "Apps",
   "mainnav.showAllApplicationsButtonAriaLabel": "Show all applications",
   "mainnav.currentAppAriaLabel": "Current open application: {appName} (Click to go home)",
+  "mainnav.topLevelLabel": "Primary",
+  "mainnav.applicationListLabel": "Application List",
 
   "errors.default.error": "Sorry, the information entered does not match our records.",
   "errors.username.incorrect": "Error verifying user existence: No user found by username {username}",
@@ -98,6 +100,9 @@
   "errors.password.match.error": "Password does not match. Retype your password.",
   "errors.email.invalid": "Please enter a valid email address",
   "errors.unable.locate.account": "Unable to find your account. Please enter a valid email address or phone number",
+  "errors.link.invalid": "Your choose password link is invalid. Please verify that you are using the link included in your email or contact your Folio Administrator.",
+  "errors.link.expired": "Your choose password link expired or has already been used. Please contact your Folio Administrator for a new link.",
+  "errors.default.server.error": "System error. Unable to locate Folio account. Please try again.",
 
   "createResetPassword.header": "Choose a password",
   "createResetPassword.newPassword": "New Password",
