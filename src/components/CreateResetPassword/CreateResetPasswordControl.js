@@ -55,7 +55,6 @@ class CreateResetPasswordControl extends Component {
   }
 
   handleSuccessfulResponse = () => {
-    // Todo: UIU-748
     this.setState({ isSuccessfulPasswordChange: true });
   };
 
