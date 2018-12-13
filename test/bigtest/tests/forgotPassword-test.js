@@ -7,7 +7,7 @@ import { expect } from 'chai';
 
 import translations from '../../../translations/stripes-core/en';
 import setupApplication from '../helpers/setup-application';
-import ForgotUsernameInteractor from '../interactors/ForgotPassword';
+import ForgotPasswordInteractor from '../interactors/ForgotPassword';
 
 describe('forgot password form test', () => {
   setupApplication({ disableAuth: false });
@@ -16,7 +16,7 @@ describe('forgot password form test', () => {
     this.visit('/forgot-password');
   });
 
-  const forgotUsernamePage = new ForgotUsernameInteractor();
+  const forgotPasswordPage = new ForgotPasswordInteractor();
   const {
     inputField,
     submitButton,
@@ -31,7 +31,7 @@ describe('forgot password form test', () => {
       notificationParagraph,
       cautionParagraph,
     },
-  } = forgotUsernamePage;
+  } = forgotPasswordPage;
   const invalidInput = 'asdfgh12345';
   const nonExistingRecord = '12345';
   const existingRecord = '127-699-8925';
