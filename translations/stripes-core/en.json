@@ -104,6 +104,7 @@
   "errors.link.expired": "Your choose password link expired or has already been used. Please contact your Folio Administrator for a new link.",
   "errors.forgotten.password.found.multiple.users": "The information provided is tied to multiple Folio accounts. Please contact your Folio system administrator to reset your password.",
   "errors.forgotten.username.found.multiple.users": "This email or phone number is tied to multiple Folio accounts. Please contact your Folio system administrator.",
+  "errors.forgotten.password.found.inactive": "Your account is currently locked. Please contact your FOLIO system administrator to reset your password",
   "errors.default.server.error": "System error. Unable to locate Folio account. Please try again.",
 
   "createResetPassword.header": "Choose a password",

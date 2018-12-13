@@ -175,13 +175,36 @@ describe('Forgot username form test', () => {
         await submitButton.click();
       });
 
-      it('should display an error container if server error occured', () => {
+      it('should display an error container if server error occurred', () => {
         expect(errorsContainer.isPresent).to.be.true;
       });
 
       it('should should have an appropriate error text content', () => {
         expect(errorsContainer.text).to.equal(
           translations['errors.default.server.error']
+        );
+      });
+    });
+
+    describe('forgot form submission failed: account locked', () => {
+      setupApplication({
+        disableAuth: false,
+        scenarios: ['forgotUsernameLockedAccount'],
+      });
+
+      beforeEach(async function () {
+        this.visit('/forgot-username');
+        await inputField.fillInput(nonExistingRecord);
+        await submitButton.click();
+      });
+
+      it('should display an error container if server error occurred', () => {
+        expect(errorsContainer.isPresent).to.be.true;
+      });
+
+      it('should should have an appropriate error text content', () => {
+        expect(errorsContainer.text).to.equal(
+          translations['errors.forgotten.password.found.inactive']
         );
       });
     });
