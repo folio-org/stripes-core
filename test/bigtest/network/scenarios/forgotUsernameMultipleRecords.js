@@ -2,8 +2,8 @@ export default (server) => {
   server.post('bl-users/forgotten/username', {
     errors: [
       {
-        code: 'unable.locate.account',
-        type: 'error'
+        type: 'error',
+        code: 'forgotten.username.found.multiple.users'
       }
     ]
   }, 422);

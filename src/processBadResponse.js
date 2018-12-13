@@ -1,14 +1,14 @@
 import { isObject } from 'lodash';
-
+import { defaultErrorCodes } from './constants';
 import { setAuthError } from './okapiActions';
 
 const defaultError = {
-  code: 'default.error',
+  code: defaultErrorCodes.DEFAULT_ERROR,
   type: 'error',
 };
 
 const defaultServerError = {
-  code: 'default.server.error',
+  code: defaultErrorCodes.DEFAULT_SERVER_ERROR,
   type: 'error',
 };
 

@@ -232,6 +232,7 @@ function handleLoginError(dispatch, resp) {
 function processOkapiSession(okapiUrl, store, tenant, resp) {
   const token = resp.headers.get('X-Okapi-Token');
   const { dispatch } = store;
+
   if (resp.status >= 400) {
     handleLoginError(dispatch, resp);
   } else {

@@ -3,19 +3,27 @@ import {
   withRouter,
   Redirect,
 } from 'react-router-dom';
+import { connect as reduxConnect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import ForgotUserNameForm from './ForgotUserNameForm';
 import { validateForgotUsernameForm } from '../../validators';
+import processBadResponse from '../../processBadResponse';
+import ForgotUserNameForm from './ForgotUserNameForm';
 
 class ForgotUserNameCtrl extends Component {
   static propTypes = {
+    authFailure: PropTypes.arrayOf(PropTypes.object),
     mutator: PropTypes.shape({
       searchUsername: PropTypes.shape({
         POST: PropTypes.func.isRequired,
       }).isRequired,
     }).isRequired,
+    handleBadResponse: PropTypes.func.isRequired,
   };
+
+    static defaultProps = {
+      authFailure: []
+    };
 
   // Expect any MIME type to receive because of the empty body
   // and no Content-Type header in response
@@ -31,82 +39,81 @@ class ForgotUserNameCtrl extends Component {
     },
   });
 
-  state = {
-    isValidEmail: false,
-    userExists: false,
-    hasErrorsContainer: false,
-    userEmail: '',
-  };
+  constructor(props) {
+    super(props);
 
-  handleSubmit = values => {
+    this.state = {
+      isValidEmail: true,
+      userExists: false,
+      userEmail: '',
+    };
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  async handleSubmit(values) {
     this.resetState();
     const {
       mutator: {
         searchUsername,
       },
+      handleBadResponse,
     } = this.props;
     const { userInput } = values;
     const isValidInput = validateForgotUsernameForm(userInput);
 
-    return isValidInput
-      ? searchUsername
-        .POST({ id: userInput })
-        .then(() => this.handleSuccessfulResponse(userInput))
-        .catch(this.handleBadResponse)
-      : this.setState({
-        isValidEmail: false,
-        hasErrorsContainer: true,
+    if (isValidInput) {
+      try {
+        await searchUsername.POST({ id: userInput });
+        this.handleSuccessfulResponse(userInput);
+      } catch (error) {
+        handleBadResponse(error);
+      }
+    } else {
+      this.setState({ isValidEmail: false });
+    }
+  }
+
+    handleSuccessfulResponse = (userEmail) => {
+      this.setState({
+        userExists: true,
+        userEmail,
       });
-  };
+    };
 
-  handleSuccessfulResponse = (userEmail) => {
-    this.setState({
-      userExists: true,
-      userEmail,
-    });
-  };
-
-  handleBadResponse = () => {
-    this.setState({
-      userExists: false,
-      hasErrorsContainer: true,
-    });
-  };
-
-  resetState = () => {
-    this.setState(
-      {
+    resetState = () => {
+      this.setState({
         isValidEmail: true,
         userExists: false,
-        hasErrorsContainer: false,
+      });
+    };
+
+    render() {
+      const { authFailure } = this.props;
+      const {
+        userExists,
+        isValidEmail,
+        userEmail,
+      } = this.state;
+
+      if (userExists) {
+        return <Redirect to={{
+          pathname: '/check-email',
+          state: { userEmail },
+        }}
+        />;
       }
-    );
-  };
 
-  render() {
-    const {
-      userExists,
-      isValidEmail,
-      hasErrorsContainer,
-      userEmail,
-    } = this.state;
-
-    if (userExists) {
-      return <Redirect to={{
-        pathname: '/check-email',
-        state: { userEmail },
-      }}
-      />;
+      return (
+        <ForgotUserNameForm
+          isValid={isValidEmail}
+          errors={authFailure}
+          onSubmit={this.handleSubmit}
+        />
+      );
     }
-
-    return (
-      <ForgotUserNameForm
-        isValid={isValidEmail}
-        hasErrorsContainer={hasErrorsContainer}
-        onSubmit={this.handleSubmit}
-      />
-    );
-  }
 }
 
-export default withRouter(ForgotUserNameCtrl);
+const mapStateToProps = state => ({ authFailure: state.okapi.authFailure });
+const mapDispatchToProps = dispatch => ({ handleBadResponse: error => processBadResponse(dispatch, error) });
+
+export default withRouter(reduxConnect(mapStateToProps, mapDispatchToProps)(ForgotUserNameCtrl));

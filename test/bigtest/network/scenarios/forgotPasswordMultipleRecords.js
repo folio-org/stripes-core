@@ -2,8 +2,8 @@ export default (server) => {
   server.post('bl-users/forgotten/password', {
     errors: [
       {
-        code: 'unable.locate.account',
-        type: 'error'
+        type: 'error',
+        code: 'forgotten.password.found.multiple.users'
       }
     ]
   }, 422);

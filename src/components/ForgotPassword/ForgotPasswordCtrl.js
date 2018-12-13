@@ -3,18 +3,26 @@ import {
   withRouter,
   Redirect,
 } from 'react-router-dom';
+import { connect as reduxConnect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import ForgotPasswordForm from './ForgotPasswordForm';
 import { validateForgotUsernameForm } from '../../validators';
+import processBadResponse from '../../processBadResponse';
+import ForgotPasswordForm from './ForgotPasswordForm';
 
-class ForgotPassword extends Component {
+class ForgotPasswordCtrl extends Component {
   static propTypes = {
+    authFailure: PropTypes.arrayOf(PropTypes.object),
     mutator: PropTypes.shape({
       searchUsername: PropTypes.shape({
         POST: PropTypes.func.isRequired,
       }).isRequired,
     }).isRequired,
+    handleBadResponse: PropTypes.func.isRequired,
+  };
+
+  static defaultProps = {
+    authFailure: []
   };
 
   // Expect any MIME type to receive because of the empty body
@@ -31,81 +39,82 @@ class ForgotPassword extends Component {
     },
   });
 
-  state = {
-    isValidEmail: false,
-    userExists: false,
-    hasErrorsContainer: false,
-    userEmail: '',
-  };
+  constructor(props) {
+    super(props);
 
+    this.state = {
+      isValidEmail: true,
+      userExists: false,
+      userEmail: '',
+    };
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
 
-  handleSubmit = values => {
+  async handleSubmit(values) {
     this.resetState();
     const {
       mutator: {
         searchUsername,
       },
+      handleBadResponse,
     } = this.props;
     const { userInput } = values;
     const isValidInput = validateForgotUsernameForm(userInput);
 
-    return isValidInput
-      ? searchUsername
-        .POST({ id: userInput })
-        .then(() => this.handleSuccessfulResponse(userInput))
-        .catch(this.handleBadResponse)
-      : this.setState({
-        isValidEmail: false,
-        hasErrorsContainer: true,
-      });
-  };
-
-  handleSuccessfulResponse = (userEmail) => {
-    this.setState({
-      userExists: true,
-      userEmail,
-    });
-  };
-
-  handleBadResponse = () => {
-    this.setState({
-      userExists: false,
-      hasErrorsContainer: true,
-    });
-  };
-
-  resetState = () => {
-    this.setState({
-      isValidEmail: true,
-      userExists: false,
-      hasErrorsContainer: false,
-    });
-  };
-
-  render() {
-    const {
-      userExists,
-      isValidEmail,
-      hasErrorsContainer,
-      userEmail,
-    } = this.state;
-
-    if (userExists) {
-      return <Redirect to={{
-        pathname: '/check-email',
-        state: { userEmail },
-      }}
-      />;
+    if (isValidInput) {
+      try {
+        await searchUsername.POST({ id: userInput });
+        this.handleSuccessfulResponse(userInput);
+      } catch (error) {
+        handleBadResponse(error);
+      }
+    } else {
+      this.setState({ isValidEmail: false });
     }
-
-    return (
-      <ForgotPasswordForm
-        isValid={isValidEmail}
-        hasErrorsContainer={hasErrorsContainer}
-        onSubmit={this.handleSubmit}
-      />
-    );
   }
+
+    handleSuccessfulResponse = (userEmail) => {
+      this.setState({
+        userExists: true,
+        userEmail,
+      });
+    };
+
+    resetState = () => {
+      this.setState({
+        isValidEmail: true,
+        userExists: false,
+      });
+    };
+
+    render() {
+      const { authFailure } = this.props;
+
+      const {
+        userExists,
+        isValidEmail,
+        userEmail,
+      } = this.state;
+
+      if (userExists) {
+        return <Redirect to={{
+          pathname: '/check-email',
+          state: { userEmail },
+        }}
+        />;
+      }
+
+      return (
+        <ForgotPasswordForm
+          isValid={isValidEmail}
+          errors={authFailure}
+          onSubmit={this.handleSubmit}
+        />
+      );
+    }
 }
 
-export default withRouter(ForgotPassword);
+const mapStateToProps = state => ({ authFailure: state.okapi.authFailure });
+const mapDispatchToProps = dispatch => ({ handleBadResponse: error => processBadResponse(dispatch, error) });
+
+export default withRouter(reduxConnect(mapStateToProps, mapDispatchToProps)(ForgotPasswordCtrl));
