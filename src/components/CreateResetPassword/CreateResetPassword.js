@@ -20,14 +20,15 @@ import {
   Headline,
 } from '@folio/stripes-components';
 
-import PasswordValidationField from './components/PasswordValidationField';
-import { setAuthError } from '../../okapiActions';
 
-import FieldLabel from './components/FieldLabel';
+import { setAuthError } from '../../okapiActions';
+import { stripesShape } from '../../Stripes';
+import { parseJWT } from '../../helpers';
+
 import OrganizationLogo from '../OrganizationLogo';
 import AuthErrorsContainer from '../AuthErrorsContainer';
-
-import { stripesShape } from '../../Stripes';
+import FieldLabel from './components/FieldLabel';
+import PasswordValidationField from './components/PasswordValidationField';
 
 import styles from './CreateResetPassword.css';
 
@@ -125,6 +126,17 @@ class CreateResetPassword extends Component {
     })));
   };
 
+  getUsernameFromToken(token) {
+    const parsedToken = parseJWT(token);
+    let username;
+
+    if (parsedToken) {
+      username = parsedToken.sub;
+    }
+
+    return username;
+  }
+
   render() {
     const {
       errors,
@@ -144,9 +156,7 @@ class CreateResetPassword extends Component {
     const passwordType = passwordMasked ? 'password' : 'text';
     const buttonLabelId = `${this.translationNamespaces.module}.${submissionStatus ? 'settingPassword' : 'setPassword'}`;
     const passwordToggleLabelId = `${this.translationNamespaces.button}.${passwordMasked ? 'show' : 'hide'}Password`;
-
-    // Todo don't have a back-end yet, should be parsed from token
-    const username = 'diku_admin';
+    const username = this.getUsernameFromToken(token);
 
     return (
       <div className={styles.wrapper}>
@@ -280,7 +290,10 @@ class CreateResetPassword extends Component {
                   xs={12}
                   sm={6}
                 >
-                  <div className={styles.formGroup}>
+                  <div
+                    className={styles.formGroup}
+                    data-test-submit
+                  >
                     <Button
                       buttonStyle="primary"
                       id="clickable-login"
