@@ -1,19 +1,20 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-
+import { withRouter } from 'react-router-dom';
 import { connect as reduxConnect } from 'react-redux';
 
-import CreateResetPassword from './CreateResetPassword';
 import processBadResponse from '../../processBadResponse';
-
 import { stripesShape } from '../../Stripes';
 
+import CreateResetPassword from './CreateResetPassword';
+import PasswordHasNotChanged from './components/PasswordHasNotChanged';
+import PasswordSuccessfullyChanged from './components/PasswordSuccessfullyChanged';
+
 class CreateResetPasswordControl extends Component {
-  // Todo: don't have back end yet, should be changed
   static manifest = Object.freeze({
     changePassword: {
       type: 'okapi',
-      path: 'bl-users/login',
+      path: 'bl-users/password-reset/reset',
       fetch: false,
       throwErrors: false,
     },
@@ -29,32 +30,57 @@ class CreateResetPasswordControl extends Component {
     match: PropTypes.shape({
       params: PropTypes.shape({
         token: PropTypes.string.isRequired,
+        resetPasswordActionId: PropTypes.string.isRequired,
+      }).isRequired,
+    }).isRequired,
+    location: PropTypes.shape({
+      state: PropTypes.shape({
+        isValidToken: PropTypes.bool.isRequired,
+        errorCodes: PropTypes.arrayOf(PropTypes.string).isRequired,
       }).isRequired,
     }).isRequired,
     stripes: stripesShape.isRequired,
+    handleBadResponse: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
     authFailure: [],
   };
 
+  constructor(props) {
+    super(props);
+
+    this.state = { isSuccessfulPasswordChange: false };
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
   handleSuccessfulResponse = () => {
-    // Todo: don't have back-end yet, should be implemented
+    // Todo: UIU-748
+    this.setState({ isSuccessfulPasswordChange: true });
   };
 
-  // Todo: don't have back-end yet, should be changed
-  handleSubmit = values => {
+  async handleSubmit(values) {
     const {
       mutator: { changePassword },
-      stripes: { store },
+      match: {
+        params: {
+          resetPasswordId,
+        },
+      },
+      handleBadResponse,
     } = this.props;
     const { newPassword } = values;
 
-    return changePassword
-      .POST({ password: newPassword })
-      .then(() => { this.handleSuccessfulResponse(); })
-      .catch((response) => { processBadResponse(store, response); });
-  };
+    try {
+      await changePassword.POST({
+        newPassword,
+        resetPasswordId,
+      });
+      this.handleSuccessfulResponse();
+    } catch (error) {
+      handleBadResponse(error);
+    }
+  }
 
   render() {
     const {
@@ -62,9 +88,25 @@ class CreateResetPasswordControl extends Component {
       match: {
         params: {
           token,
-        }
-      }
+        },
+      },
+      location: {
+        state: {
+          isValidToken,
+          errorCodes,
+        },
+      },
     } = this.props;
+
+    const { isSuccessfulPasswordChange } = this.state;
+
+    if (isSuccessfulPasswordChange) {
+      return <PasswordSuccessfullyChanged />;
+    }
+
+    if (!isValidToken) {
+      return <PasswordHasNotChanged errors={errorCodes} />;
+    }
 
     return (
       <CreateResetPassword
@@ -77,6 +119,7 @@ class CreateResetPasswordControl extends Component {
   }
 }
 
-const mapStateToProps = (state) => ({ authFailure: state.okapi.authFailure });
+const mapStateToProps = state => ({ authFailure: state.okapi.authFailure });
+const mapDispatchToProps = dispatch => ({ handleBadResponse: error => processBadResponse(dispatch, error) });
 
-export default reduxConnect(mapStateToProps)(CreateResetPasswordControl);
+export default withRouter(reduxConnect(mapStateToProps, mapDispatchToProps)(CreateResetPasswordControl));

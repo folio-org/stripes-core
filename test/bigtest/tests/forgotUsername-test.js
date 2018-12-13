@@ -175,7 +175,7 @@ describe('Forgot username form test', () => {
         await submitButton.click();
       });
 
-      it('should display an error container if server error occured', () => {
+      it('should display an error container if server error occurred', () => {
         expect(errorsContainer.isPresent).to.be.true;
       });
 
@@ -198,7 +198,7 @@ describe('Forgot username form test', () => {
         await submitButton.click();
       });
 
-      it('should display an error container if server error occured', () => {
+      it('should display an error container if server error occurred', () => {
         expect(errorsContainer.isPresent).to.be.true;
       });
 

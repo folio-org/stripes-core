@@ -52,6 +52,7 @@ class ForgotUserName extends Component {
       isValid,
       errors
     } = this.props;
+
     const hasErrorsContainer = this.isErrorsContainerPresent();
 
     return (

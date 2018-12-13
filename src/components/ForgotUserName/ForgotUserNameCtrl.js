@@ -69,9 +69,7 @@ class ForgotUserNameCtrl extends Component {
         handleBadResponse(error);
       }
     } else {
-      this.setState({
-        isValidEmail: false,
-      });
+      this.setState({ isValidEmail: false });
     }
   }
 

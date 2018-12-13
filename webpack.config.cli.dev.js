@@ -49,7 +49,9 @@ devConfig.module.rules.push({
         plugins: () => [
           postCssImport(),
           autoprefixer(),
-          postCssCustomProperties(),
+          postCssCustomProperties({
+            preserve: false
+          }),
           postCssCalc(),
           postCssNesting(),
           postCssCustomMedia(),
