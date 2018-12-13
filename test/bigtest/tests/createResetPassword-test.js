@@ -10,6 +10,7 @@ import setupApplication from '../helpers/setup-application';
 import CreateResetPasswordInteractor from '../interactors/CreateResetPassword';
 import ChangePasswordErrorPageInteractor from '../interactors/ChangePasswordErrorPage';
 import ChangePasswordConfirmationInteractor from '../interactors/ChangePasswordConfirmation';
+import LoginInteractor from '../interactors/login';
 
 import translations from '../../../translations/stripes-core/en';
 
@@ -320,7 +321,7 @@ describe('Create/Reset password page', () => {
       });
     });
 
-    describe('successful submission', () => {
+    describe.only('successful submission', () => {
       const ChangePasswordConfirmation = new ChangePasswordConfirmationInteractor();
       const {
         newPassword,
@@ -330,6 +331,7 @@ describe('Create/Reset password page', () => {
       const {
         heading,
         message,
+        redirect,
       } = ChangePasswordConfirmation;
 
       setupApplication({
@@ -357,10 +359,6 @@ describe('Create/Reset password page', () => {
         expect(ChangePasswordConfirmation.isPresent).to.be.true;
       });
 
-      it('should display a change password confirmation', () => {
-        expect(ChangePasswordConfirmation.isPresent).to.be.true;
-      });
-
       it('should display a heading', () => {
         expect(heading.isPresent).to.be.true;
       });
@@ -375,6 +373,26 @@ describe('Create/Reset password page', () => {
 
       it('should have an appropriate content', () => {
         expect(message.text).to.equal(translations['label.changed.password']);
+      });
+
+      it('should display a button', () => {
+        expect(redirect.isPresent).to.be.true;
+      });
+
+      describe('successful submission: redirect', () => {
+        beforeEach(async function () {
+          await redirect.clickContinue();
+        });
+
+        const login = new LoginInteractor('form[class^="form--"]');
+
+        it('should not display a passwordChanged view', () => {
+          expect(ChangePasswordConfirmation.isPresent).to.be.false;
+        });
+
+        it('should display a login page', () => {
+          expect(login.isPresent).to.be.true;
+        });
       });
     });
 
