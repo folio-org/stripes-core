@@ -25,7 +25,7 @@ describe('Create/Reset password page', () => {
   describe('valid token scenario', () => {
     beforeEach(function () {
       return this.visit({
-        pathname: '/create-password/test/actionIdTest',
+        pathname: '/change-password/test/actionIdTest',
         state: {
           isValidToken: true,
           errorCodes: [],
@@ -321,7 +321,7 @@ describe('Create/Reset password page', () => {
       });
     });
 
-    describe.only('successful submission', () => {
+    describe('successful submission', () => {
       const ChangePasswordConfirmation = new ChangePasswordConfirmationInteractor();
       const {
         newPassword,
@@ -344,7 +344,7 @@ describe('Create/Reset password page', () => {
 
       beforeEach(async function () {
         this.visit({
-          pathname: '/create-password/test/actionIdTest',
+          pathname: '/change-password/test/actionIdTest',
           state: {
             isValidToken: true,
             errorCodes: [],
@@ -415,7 +415,7 @@ describe('Create/Reset password page', () => {
 
       beforeEach(async function () {
         this.visit({
-          pathname: '/create-password/test/actionIdTest',
+          pathname: '/change-password/test/actionIdTest',
           state: {
             isValidToken: true,
             errorCodes: [],
@@ -462,7 +462,7 @@ describe('Create/Reset password page', () => {
 
       beforeEach(async function () {
         this.visit({
-          pathname: '/create-password/test/actionIdTest',
+          pathname: '/change-password/test/actionIdTest',
           state: {
             isValidToken: true,
             errorCodes: [],
@@ -495,17 +495,17 @@ describe('Create/Reset password page', () => {
     const ChangePasswordErrorPage = new ChangePasswordErrorPageInteractor();
     const { message } = ChangePasswordErrorPage;
 
-    describe('invalid token', () => {
+    describe('invalid token: default', () => {
       setupApplication({
         disableAuth: false,
         scenarios: [
-          'changePasswordValidateInvalidLink',
+          'changePasswordValidateClientError',
         ],
       });
 
       beforeEach(function () {
         return this.visit({
-          pathname: '/change-password/test/'
+          pathname: '/reset-password/test'
         }, () => {
           expect(ChangePasswordErrorPage.isPresent).to.be.true;
         });
@@ -519,6 +519,32 @@ describe('Create/Reset password page', () => {
         expect(message.text).to.equal(translations['errors.link.invalid']);
       });
     });
+
+    describe('invalid token', () => {
+      setupApplication({
+        disableAuth: false,
+        scenarios: [
+          'changePasswordValidateInvalidLink',
+        ],
+      });
+
+      beforeEach(function () {
+        return this.visit({
+          pathname: '/reset-password/test/'
+        }, () => {
+          expect(ChangePasswordErrorPage.isPresent).to.be.true;
+        });
+      });
+
+      it('should display an error message', () => {
+        expect(message.isPresent).to.be.true;
+      });
+
+      it('should have an appropriate content', () => {
+        expect(message.text).to.equal(translations['errors.link.invalid']);
+      });
+    });
+
     describe('expired token', () => {
       setupApplication({
         disableAuth: false,
@@ -529,7 +555,7 @@ describe('Create/Reset password page', () => {
 
       beforeEach(function () {
         return this.visit({
-          pathname: '/change-password/test/'
+          pathname: '/reset-password/test/'
         }, () => {
           expect(ChangePasswordErrorPage.isPresent).to.be.true;
         });
@@ -543,6 +569,7 @@ describe('Create/Reset password page', () => {
         expect(message.text).to.equal(translations['errors.link.expired']);
       });
     });
+
     describe('used token', () => {
       setupApplication({
         disableAuth: false,
@@ -553,7 +580,7 @@ describe('Create/Reset password page', () => {
 
       beforeEach(function () {
         return this.visit({
-          pathname: '/change-password/test/'
+          pathname: '/reset-password/test/'
         }, () => {
           expect(ChangePasswordErrorPage.isPresent).to.be.true;
         });
@@ -577,7 +604,7 @@ describe('Create/Reset password page', () => {
 
       beforeEach(function () {
         return this.visit({
-          pathname: '/change-password/test/'
+          pathname: '/reset-password/test/'
         }, () => {
           expect(ChangePasswordErrorPage.isPresent).to.be.true;
         });
