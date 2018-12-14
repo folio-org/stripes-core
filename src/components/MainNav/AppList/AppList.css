@@ -44,17 +44,17 @@
 }
 
 .navListDropdown > div {
-  padding: 10px 5px;
+  overflow-y: scroll;
 }
 
 .dropdownBody {
   width: 100%;
   outline: 0;
+  padding: 10px 5px;
 }
 
 .dropdownList {
   margin: 0;
-  overflow-y: auto;
   max-height: calc(100vh - var(--padding-for-header));
 }
 

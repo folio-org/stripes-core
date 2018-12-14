@@ -221,6 +221,7 @@ class AppList extends Component {
             open={open}
             id={dropdownId}
             onToggle={toggleDropdown}
+            hasPadding={false}
           >
             {renderDropdownToggleButton()}
             <DropdownMenu data-role="menu" onToggle={toggleDropdown}>
