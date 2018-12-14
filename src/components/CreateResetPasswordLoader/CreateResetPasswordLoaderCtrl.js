@@ -9,6 +9,7 @@ import { isArray } from 'lodash';
 import CreateResetPasswordLoader from './CreateResetPasswordLoader';
 import {
   defaultErrorCodes,
+  changePasswordErrorCodes,
 } from '../../constants';
 import { stripesShape } from '../../Stripes';
 
@@ -100,21 +101,25 @@ class CreateResetPasswordLoaderCtrl extends Component {
   };
 
   async handleResponse(response) {
-    let parsedResponse;
     const defaultServerErrorCode = defaultErrorCodes.DEFAULT_SERVER_ERROR;
+    const defaultInvalidErrorCode = changePasswordErrorCodes.INVALID_ERROR_CODE;
 
     try {
-      parsedResponse = await response.json();
+      let parsedResponse;
 
       switch (response.status) {
         case 200:
+          parsedResponse = await response.json();
           this.setTokenIsValid(parsedResponse);
           break;
         case 422:
+          parsedResponse = await response.json();
           this.handleInvalidLinkError(parsedResponse);
           break;
+        case 500:
+          throw new Error(response.status);
         default:
-          this.handleDefaultLinkError(defaultServerErrorCode);
+          this.handleDefaultLinkError(defaultInvalidErrorCode);
       }
     } catch (e) {
       this.handleDefaultLinkError(defaultServerErrorCode);
@@ -141,7 +146,7 @@ class CreateResetPasswordLoaderCtrl extends Component {
       return (
         <Redirect
           to={{
-            pathname: `/create-password/${token}/${actionId}`,
+            pathname: `/change-password/${token}/${actionId}`,
             state: {
               isValidToken,
               errorCodes,
