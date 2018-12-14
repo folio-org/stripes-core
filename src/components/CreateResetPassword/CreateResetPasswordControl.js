@@ -5,6 +5,7 @@ import { connect as reduxConnect } from 'react-redux';
 
 import processBadResponse from '../../processBadResponse';
 import { stripesShape } from '../../Stripes';
+import { setAuthError } from '../../okapiActions';
 
 import CreateResetPassword from './CreateResetPassword';
 import PasswordHasNotChanged from './components/PasswordHasNotChanged';
@@ -41,6 +42,7 @@ class CreateResetPasswordControl extends Component {
     }).isRequired,
     stripes: stripesShape.isRequired,
     handleBadResponse: PropTypes.func.isRequired,
+    clearAuthErrors: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -52,6 +54,10 @@ class CreateResetPasswordControl extends Component {
 
     this.state = { isSuccessfulPasswordChange: false };
     this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  componentWillUnmount() {
+    this.props.clearAuthErrors();
   }
 
   handleSuccessfulResponse = () => {
@@ -119,6 +125,9 @@ class CreateResetPasswordControl extends Component {
 }
 
 const mapStateToProps = state => ({ authFailure: state.okapi.authFailure });
-const mapDispatchToProps = dispatch => ({ handleBadResponse: error => processBadResponse(dispatch, error) });
+const mapDispatchToProps = dispatch => ({
+  handleBadResponse: error => processBadResponse(dispatch, error),
+  clearAuthErrors: () => dispatch(setAuthError([])),
+});
 
 export default withRouter(reduxConnect(mapStateToProps, mapDispatchToProps)(CreateResetPasswordControl));

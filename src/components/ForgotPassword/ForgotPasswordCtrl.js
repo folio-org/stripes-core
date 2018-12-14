@@ -8,6 +8,8 @@ import PropTypes from 'prop-types';
 
 import { validateForgotUsernameForm } from '../../validators';
 import processBadResponse from '../../processBadResponse';
+import { setAuthError } from '../../okapiActions';
+
 import ForgotPasswordForm from './ForgotPasswordForm';
 
 class ForgotPasswordCtrl extends Component {
@@ -19,6 +21,7 @@ class ForgotPasswordCtrl extends Component {
       }).isRequired,
     }).isRequired,
     handleBadResponse: PropTypes.func.isRequired,
+    clearAuthErrors: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -48,6 +51,10 @@ class ForgotPasswordCtrl extends Component {
       userEmail: '',
     };
     this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  componentWillUnmount() {
+    this.props.clearAuthErrors();
   }
 
   async handleSubmit(values) {
@@ -115,6 +122,9 @@ class ForgotPasswordCtrl extends Component {
 }
 
 const mapStateToProps = state => ({ authFailure: state.okapi.authFailure });
-const mapDispatchToProps = dispatch => ({ handleBadResponse: error => processBadResponse(dispatch, error) });
+const mapDispatchToProps = dispatch => ({
+  handleBadResponse: error => processBadResponse(dispatch, error),
+  clearAuthErrors: () => dispatch(setAuthError([])),
+});
 
 export default withRouter(reduxConnect(mapStateToProps, mapDispatchToProps)(ForgotPasswordCtrl));
