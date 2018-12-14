@@ -132,7 +132,6 @@
     "serialize-javascript": "^1.4.0",
     "style-loader": "^0.22.1",
     "tapable": "^1.0.0",
-    "typeface-source-sans-pro": "^0.0.54",
     "typescript": "^2.8.1",
     "uuid": "^3.0.0",
     "webpack": "^4.10.2",
