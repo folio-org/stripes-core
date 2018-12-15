@@ -1,17 +1,7 @@
 import { isObject } from 'lodash';
 
-import { defaultErrorCodes } from './constants';
+import { defaultErrors } from './constants';
 import { setAuthError } from './okapiActions';
-
-const defaultError = {
-  code: defaultErrorCodes.DEFAULT_ERROR,
-  type: 'error',
-};
-
-const defaultServerError = {
-  code: defaultErrorCodes.DEFAULT_SERVER_ERROR,
-  type: 'error',
-};
 
 const getLoginErrors = (payload) => {
   try {
@@ -22,10 +12,10 @@ const getLoginErrors = (payload) => {
     } else {
       const { errors } = JSON.parse(payload);
 
-      return errors || [defaultError];
+      return errors || [defaultErrors.DEFAULT_LOGIN_CLIENT_ERROR];
     }
   } catch (e) {
-    return [defaultError];
+    return [defaultErrors.DEFAULT_LOGIN_CLIENT_ERROR];
   }
 };
 
@@ -34,9 +24,9 @@ function getProcessedErrors(response, status) {
     case 422:
       return getLoginErrors(response);
     case 500:
-      return [defaultServerError];
+      return [defaultErrors.DEFAULT_LOGIN_SERVER_ERROR];
     default:
-      return [defaultError];
+      return [defaultErrors.DEFAULT_LOGIN_CLIENT_ERROR];
   }
 }
 
@@ -48,7 +38,7 @@ export default async function processBadResponse(dispatch, response) {
     const responsePayload = responseBody.errorMessage || responseBody;
     actionPayload = getProcessedErrors(responsePayload, response.status);
   } catch (e) {
-    actionPayload = [defaultError];
+    actionPayload = [defaultErrors.DEFAULT_LOGIN_CLIENT_ERROR];
   }
   dispatch(setAuthError(actionPayload));
 }

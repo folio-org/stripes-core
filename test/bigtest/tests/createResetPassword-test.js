@@ -489,6 +489,53 @@ describe('Create/Reset password page', () => {
         expect(message.text).to.equal(translations['errors.link.invalid']);
       });
     });
+
+    describe('non-successful submission: client error', () => {
+      const ChangePasswordConfirmation = new ChangePasswordConfirmationInteractor();
+      const {
+        newPassword,
+        confirmPassword,
+        submitForm,
+        message,
+      } = CreateResetPasswordPage;
+
+      setupApplication({
+        disableAuth: false,
+        scenarios: [
+          'passwordLengthRule',
+          'changePasswordClientError',
+        ],
+      });
+
+      beforeEach(async function () {
+        this.visit({
+          pathname: '/change-password/test/actionIdTest',
+          state: {
+            isValidToken: true,
+            errorCodes: [],
+          }
+        });
+        await newPassword.fillAndBlur('test');
+        await confirmPassword.fillAndBlur('test');
+        await submitForm.clickSubmit();
+      });
+
+      it('should not display change password confirmation', () => {
+        expect(ChangePasswordConfirmation.isPresent).to.be.false;
+      });
+
+      it('should display CreateResetPassword page', () => {
+        expect(CreateResetPasswordPage.isPresent).to.be.true;
+      });
+
+      it('should present an error message', () => {
+        expect(message.isPresent).to.be.true;
+      });
+
+      it('should have an appropriate text content', () => {
+        expect(message.text).to.equal(translations['errors.link.invalid']);
+      });
+    });
   });
 
   describe('invalid token scenario', () => {

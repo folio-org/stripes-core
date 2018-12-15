@@ -27,7 +27,8 @@ class CreateResetPasswordLoaderCtrl extends Component {
     isLoaded: false,
     isValidToken: false,
     errorCodes: [],
-    actionId: 0,
+    resetPasswordActionId: 0,
+    token: null,
   };
 
   async componentDidMount() {
@@ -74,7 +75,8 @@ class CreateResetPasswordLoaderCtrl extends Component {
   setTokenIsValid = (payload) => {
     this.setState({
       isValidToken: true,
-      actionId: payload.resetPasswordActionId,
+      resetPasswordActionId: payload.resetPasswordActionId,
+      token: payload.token,
       isLoaded: true,
     });
   };
@@ -131,22 +133,15 @@ class CreateResetPasswordLoaderCtrl extends Component {
       isLoaded,
       isValidToken,
       errorCodes,
-      actionId,
+      resetPasswordActionId,
+      token,
     } = this.state;
 
     if (isLoaded) {
-      const {
-        match: {
-          params: {
-            token,
-          },
-        },
-      } = this.props;
-
       return (
         <Redirect
           to={{
-            pathname: `/change-password/${token}/${actionId}`,
+            pathname: `/change-password/${token}/${resetPasswordActionId}`,
             state: {
               isValidToken,
               errorCodes,
