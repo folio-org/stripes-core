@@ -102,6 +102,7 @@
   "errors.unable.locate.account": "Unable to find your account. Please enter a valid email address or phone number.",
   "errors.link.invalid": "Your choose password link is invalid. Please verify that you are using the link included in your email or contact your Folio Administrator.",
   "errors.link.expired": "Your choose password link expired or has already been used. Please contact your Folio Administrator for a new link.",
+  "errors.link.used": "Your choose password link expired or has already been used. Please contact your Folio Administrator for a new link.",
   "errors.forgotten.password.found.multiple.users": "The information provided is tied to multiple Folio accounts. Please contact your Folio system administrator to reset your password.",
   "errors.forgotten.username.found.multiple.users": "This email or phone number is tied to multiple Folio accounts. Please contact your Folio system administrator.",
   "errors.forgotten.password.found.inactive": "Your account is currently locked. Please contact your FOLIO system administrator to reset your password",
