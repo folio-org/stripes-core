@@ -19,8 +19,10 @@ const getLoginErrors = (payload) => {
   }
 };
 
-function getProcessedErrors(response, status) {
+function getProcessedErrors(response, status, defaultClientError) {
   switch (status) {
+    case 400:
+      return [defaultClientError];
     case 422:
       return getLoginErrors(response);
     case 500:
@@ -30,13 +32,14 @@ function getProcessedErrors(response, status) {
   }
 }
 
-export default async function processBadResponse(dispatch, response) {
+export default async function processBadResponse(dispatch, response, defaultClientError) {
+  const clientError = defaultClientError || defaultErrors.DEFAULT_LOGIN_CLIENT_ERROR;
   let actionPayload;
 
   try {
     const responseBody = await response.json();
     const responsePayload = responseBody.errorMessage || responseBody;
-    actionPayload = getProcessedErrors(responsePayload, response.status);
+    actionPayload = getProcessedErrors(responsePayload, response.status, clientError);
   } catch (e) {
     actionPayload = [defaultErrors.DEFAULT_LOGIN_CLIENT_ERROR];
   }

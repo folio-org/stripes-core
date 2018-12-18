@@ -32,7 +32,6 @@ describe('forgot password form test', () => {
       cautionParagraph,
     },
   } = forgotPasswordPage;
-  const invalidInput = 'asdfgh12345';
   const nonExistingRecord = '12345';
   const existingRecord = '127-699-8925';
 
@@ -58,7 +57,7 @@ describe('forgot password form test', () => {
 
   describe('forgot form submit button test after filling the input', () => {
     beforeEach(async () => {
-      await inputField.fillInput(invalidInput);
+      await inputField.fillInput(existingRecord);
     });
 
     it.always('should have an enabled submit button', () => {
@@ -81,7 +80,7 @@ describe('forgot password form test', () => {
 
     it('should have the paragraph content equal to forgot username or password call to action label', () => {
       expect(callToActionParagraph.text).to.equal(
-        translations['label.forgotUsernameOrPasswordCallToAction']
+        translations['label.forgotPasswordCallToAction']
       );
     });
   });
@@ -99,24 +98,6 @@ describe('forgot password form test', () => {
   });
 
   describe('forgot form submission behaviour tests', () => {
-    describe('forgot form validation tests', () => {
-      beforeEach(async () => {
-        await inputField.fillInput(invalidInput);
-        await submitButton.click();
-      });
-
-      it('should display an error container if the input is not a valid email',
-        () => {
-          expect(errorsContainer.isPresent).to.be.true;
-        });
-
-      it('should have an appropriate error text content', () => {
-        expect(errorsContainer.text).to.equal(
-          translations['errors.email.invalid']
-        );
-      });
-    });
-
     describe('forgot form submission failed: no account found', () => {
       setupApplication({
         disableAuth: false,
@@ -136,6 +117,29 @@ describe('forgot password form test', () => {
       it('should should have an appropriate error text content', () => {
         expect(errorsContainer.text).to.equal(
           translations['errors.unable.locate.account']
+        );
+      });
+    });
+
+    describe('forgot form submission failed: no account found - default', () => {
+      setupApplication({
+        disableAuth: false,
+        scenarios: ['forgotPasswordClientError'],
+      });
+
+      beforeEach(async function () {
+        this.visit('/forgot-password');
+        await inputField.fillInput(nonExistingRecord);
+        await submitButton.click();
+      });
+
+      it('should display an error container if the input does not match any record', () => {
+        expect(errorsContainer.isPresent).to.be.true;
+      });
+
+      it('should should have an appropriate error text content', () => {
+        expect(errorsContainer.text).to.equal(
+          translations['errors.unable.locate.account.password']
         );
       });
     });

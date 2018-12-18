@@ -16,7 +16,6 @@ import {
   Col,
 } from '@folio/stripes-components';
 
-import { forgotFormErrorCodes } from '../../constants';
 import OrganizationLogo from '../OrganizationLogo';
 import AuthErrorsContainer from '../AuthErrorsContainer';
 
@@ -25,7 +24,6 @@ import formStyles from './ForgotPasswordForm.css';
 class ForgotPassword extends Component {
   static propTypes = {
     dirty: PropTypes.bool.isRequired,
-    isValid: PropTypes.bool.isRequired,
     onSubmit: PropTypes.func.isRequired,
     handleSubmit: PropTypes.func.isRequired,
     errors: PropTypes.arrayOf(PropTypes.object),
@@ -35,25 +33,13 @@ class ForgotPassword extends Component {
     errors: []
   };
 
-  isErrorsContainerPresent() {
-    const {
-      errors,
-      isValid,
-    } = this.props;
-
-    return !isEmpty(errors) || !isValid;
-  }
-
   render() {
     const {
       dirty,
       onSubmit,
       handleSubmit,
-      isValid,
       errors,
     } = this.props;
-
-    const hasErrorsContainer = this.isErrorsContainerPresent();
 
     return (
       <Fragment>
@@ -79,7 +65,7 @@ class ForgotPassword extends Component {
                 faded
                 data-test-p
               >
-                <FormattedMessage id="stripes-core.label.forgotUsernameOrPasswordCallToAction" />
+                <FormattedMessage id="stripes-core.label.forgotPasswordCallToAction" />
               </Headline>
               <div className={formStyles.formGroup}>
                 <Field
@@ -116,12 +102,9 @@ class ForgotPassword extends Component {
                     className={formStyles.authErrorsWrapper}
                     data-test-errors
                   >
-                    {hasErrorsContainer && (
+                    {!isEmpty(errors) && (
                       <AuthErrorsContainer
-                        errors={!isValid
-                          ? [{ code: forgotFormErrorCodes.EMAIL_INVALID }]
-                          : errors
-                              }
+                        errors={errors}
                         data-test-container
                       />
                     )}
