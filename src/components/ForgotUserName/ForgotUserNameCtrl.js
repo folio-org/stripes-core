@@ -9,6 +9,8 @@ import PropTypes from 'prop-types';
 import { validateForgotUsernameForm } from '../../validators';
 import processBadResponse from '../../processBadResponse';
 import { setAuthError } from '../../okapiActions';
+import { defaultErrors } from '../../constants';
+
 import ForgotUserNameForm from './ForgotUserNameForm';
 
 class ForgotUserNameCtrl extends Component {
@@ -65,63 +67,65 @@ class ForgotUserNameCtrl extends Component {
       handleBadResponse,
     } = this.props;
     const { userInput } = values;
+    const { FORGOTTEN_USERNAME_CLIENT_ERROR } = defaultErrors;
     const isValidInput = validateForgotUsernameForm(userInput);
 
     if (isValidInput) {
       try {
         await searchUsername.POST({ id: userInput });
+
         this.handleSuccessfulResponse(userInput);
       } catch (error) {
-        handleBadResponse(error);
+        handleBadResponse(error, FORGOTTEN_USERNAME_CLIENT_ERROR);
       }
     } else {
       this.setState({ isValidEmail: false });
     }
   }
 
-    handleSuccessfulResponse = (userEmail) => {
-      this.setState({
-        userExists: true,
-        userEmail,
-      });
-    };
+  handleSuccessfulResponse = (userEmail) => {
+    this.setState({
+      userExists: true,
+      userEmail,
+    });
+  };
 
-    resetState = () => {
-      this.setState({
-        isValidEmail: true,
-        userExists: false,
-      });
-    };
+  resetState = () => {
+    this.setState({
+      isValidEmail: true,
+      userExists: false,
+    });
+  };
 
-    render() {
-      const { authFailure } = this.props;
-      const {
-        userExists,
-        isValidEmail,
-        userEmail,
-      } = this.state;
+  render() {
+    const { authFailure } = this.props;
+    const {
+      userExists,
+      isValidEmail,
+      userEmail,
+    } = this.state;
 
-      if (userExists) {
-        return <Redirect to={{
-          pathname: '/check-email',
-          state: { userEmail },
-        }}
-        />;
-      }
-
-      return (
-        <ForgotUserNameForm
-          isValid={isValidEmail}
-          errors={authFailure}
-          onSubmit={this.handleSubmit}
-        />
-      );
+    if (userExists) {
+      return <Redirect to={{
+        pathname: '/check-email',
+        state: { userEmail },
+      }}
+      />;
     }
+
+    return (
+      <ForgotUserNameForm
+        isValid={isValidEmail}
+        errors={authFailure}
+        onSubmit={this.handleSubmit}
+      />
+    );
+  }
 }
 
 const mapStateToProps = state => ({ authFailure: state.okapi.authFailure });
 const mapDispatchToProps = dispatch => ({
-  handleBadResponse: error => processBadResponse(dispatch, error),
+  handleBadResponse: (error, defaultClientError) => processBadResponse(dispatch, error, defaultClientError),
   clearAuthErrors: () => dispatch(setAuthError([])),
 });
 

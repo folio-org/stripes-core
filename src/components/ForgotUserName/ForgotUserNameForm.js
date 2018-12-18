@@ -79,7 +79,7 @@ class ForgotUserName extends Component {
                 faded
                 data-test-p
               >
-                <FormattedMessage id="stripes-core.label.forgotUsernameOrPasswordCallToAction" />
+                <FormattedMessage id="stripes-core.label.forgotUsernameCallToAction" />
               </Headline>
               <div className={formStyles.formGroup}>
                 <Field

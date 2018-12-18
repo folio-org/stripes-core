@@ -81,7 +81,7 @@ describe('Forgot username form test', () => {
 
     it('should have the paragraph content equal to forgot username or password call to action label', () => {
       expect(callToActionParagraph.text).to.equal(
-        translations['label.forgotUsernameOrPasswordCallToAction']
+        translations['label.forgotUsernameCallToAction']
       );
     });
   });
@@ -121,6 +121,29 @@ describe('Forgot username form test', () => {
       setupApplication({
         disableAuth: false,
         scenarios: ['forgotUsernameError'],
+      });
+
+      beforeEach(async function () {
+        this.visit('/forgot-username');
+        await inputField.fillInput(nonExistingRecord);
+        await submitButton.click();
+      });
+
+      it('should display an error container if the input does not match any record', () => {
+        expect(errorsContainer.isPresent).to.be.true;
+      });
+
+      it('should should have an appropriate error text content', () => {
+        expect(errorsContainer.text).to.equal(
+          translations['errors.unable.locate.account']
+        );
+      });
+    });
+
+    describe('forgot form submission failed: no account found - default', () => {
+      setupApplication({
+        disableAuth: false,
+        scenarios: ['forgotUsernameClientError'],
       });
 
       beforeEach(async function () {
