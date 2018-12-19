@@ -40,7 +40,10 @@ class CreateResetPasswordControl extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { isSuccessfulPasswordChange: false };
+    this.state = {
+      isSuccessfulPasswordChange: false,
+      submitIsFailed: false,
+    };
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
@@ -59,9 +62,11 @@ class CreateResetPasswordControl extends Component {
         this.handleSuccessfulResponse();
         break;
       case 401:
+        this.setState({ submitIsFailed: true });
         setDefaultAuthError([defaultErrors.INVALID_LINK_ERROR]);
         break;
       default:
+        this.setState({ submitIsFailed: true });
         handleBadResponse(response);
     }
   };
@@ -108,6 +113,13 @@ class CreateResetPasswordControl extends Component {
     }
   }
 
+  clearErrorsAfterSubmit = (submissionCompleted) => {
+    if (submissionCompleted) {
+      this.setState({ submitIsFailed: false });
+      this.props.clearAuthErrors();
+    }
+  };
+
   render() {
     const {
       authFailure,
@@ -124,7 +136,10 @@ class CreateResetPasswordControl extends Component {
       },
     } = this.props;
 
-    const { isSuccessfulPasswordChange } = this.state;
+    const {
+      isSuccessfulPasswordChange,
+      submitIsFailed,
+    } = this.state;
 
     if (isSuccessfulPasswordChange) {
       return <PasswordSuccessfullyChanged />;
@@ -140,6 +155,8 @@ class CreateResetPasswordControl extends Component {
         errors={authFailure}
         stripes={this.props.stripes}
         onSubmit={this.handleSubmit}
+        onPasswordInputFocus={this.clearErrorsAfterSubmit}
+        submitIsFailed={submitIsFailed}
       />
     );
   }
