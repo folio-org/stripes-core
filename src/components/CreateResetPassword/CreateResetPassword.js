@@ -37,10 +37,11 @@ class CreateResetPassword extends Component {
     stripes: stripesShape.isRequired,
     handleSubmit: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
+    onPasswordInputFocus: PropTypes.func.isRequired,
     submitting: PropTypes.bool,
     errors: PropTypes.arrayOf(PropTypes.object),
     formValues: PropTypes.object,
-    submitSucceeded: PropTypes.bool,
+    submitIsFailed: PropTypes.bool,
     token: PropTypes.string.isRequired,
   };
 
@@ -48,7 +49,7 @@ class CreateResetPassword extends Component {
     submitting: false,
     errors: [],
     formValues: {},
-    submitSucceeded: false,
+    submitIsFailed: false,
   };
 
   constructor(props) {
@@ -143,7 +144,8 @@ class CreateResetPassword extends Component {
       handleSubmit,
       submitting,
       onSubmit,
-      submitSucceeded,
+      onPasswordInputFocus,
+      submitIsFailed,
       formValues: {
         newPassword,
         confirmPassword,
@@ -151,10 +153,10 @@ class CreateResetPassword extends Component {
       token,
     } = this.props;
     const { passwordMasked } = this.state;
-    const submissionStatus = submitting || submitSucceeded;
+    const submissionStatus = submitting || submitIsFailed;
     const buttonDisabled = !isEmpty(errors) || submissionStatus || !(newPassword && confirmPassword);
     const passwordType = passwordMasked ? 'password' : 'text';
-    const buttonLabelId = `${this.translationNamespaces.module}.${submissionStatus ? 'settingPassword' : 'setPassword'}`;
+    const buttonLabelId = `${this.translationNamespaces.module}.${submitting ? 'settingPassword' : 'setPassword'}`;
     const passwordToggleLabelId = `${this.translationNamespaces.button}.${passwordMasked ? 'show' : 'hide'}Password`;
     const username = this.getUsernameFromToken(token);
 
@@ -226,6 +228,7 @@ class CreateResetPassword extends Component {
                       passwordMeterColProps={this.passwordMeterColProps}
                       validationHandler={this.newPasswordFieldValidation}
                       validate={this.validators.newPassword}
+                      onFocus={() => onPasswordInputFocus(submitIsFailed)}
                     />
                   </Col>
                 </Row>
