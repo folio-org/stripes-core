@@ -26,7 +26,7 @@
     "about.onUrl": "No URL {url}",
     "about.legendKey": "Chave",
     "about.notEnabledModules": "Os módulos instalados que não estão disponíveis para este locatário são apresentados <span class='{className}'> em cinzento </span> .",
-    "about.moduleCount": "{count, number} {count, plural, one { módulo} other { módulos}}",
+    "about.moduleCount": "{count, number} {count, plural, one {módulo} other {módulos}}",
     "about.interfaceCount": "{count, number} {count, plural, one {interface} other {interfaces}}",
     "about.uiOrServiceDependencies": "Dependências de serviço/UI",
     "about.moduleDependsOn": "{module} depende de:",
