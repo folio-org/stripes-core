@@ -20,14 +20,15 @@ import {
   Headline,
 } from '@folio/stripes-components';
 
-import PasswordValidationField from './components/PasswordValidationField';
-import { setAuthError } from '../../okapiActions';
 
-import FieldLabel from './components/FieldLabel';
+import { setAuthError } from '../../okapiActions';
+import { stripesShape } from '../../Stripes';
+import { parseJWT } from '../../helpers';
+
 import OrganizationLogo from '../OrganizationLogo';
 import AuthErrorsContainer from '../AuthErrorsContainer';
-
-import { stripesShape } from '../../Stripes';
+import FieldLabel from './components/FieldLabel';
+import PasswordValidationField from './components/PasswordValidationField';
 
 import styles from './CreateResetPassword.css';
 
@@ -36,10 +37,11 @@ class CreateResetPassword extends Component {
     stripes: stripesShape.isRequired,
     handleSubmit: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
+    onPasswordInputFocus: PropTypes.func.isRequired,
     submitting: PropTypes.bool,
     errors: PropTypes.arrayOf(PropTypes.object),
     formValues: PropTypes.object,
-    submitSucceeded: PropTypes.bool,
+    submitIsFailed: PropTypes.bool,
     token: PropTypes.string.isRequired,
   };
 
@@ -47,7 +49,7 @@ class CreateResetPassword extends Component {
     submitting: false,
     errors: [],
     formValues: {},
-    submitSucceeded: false,
+    submitIsFailed: false,
   };
 
   constructor(props) {
@@ -125,13 +127,25 @@ class CreateResetPassword extends Component {
     })));
   };
 
+  getUsernameFromToken(token) {
+    const parsedToken = parseJWT(token);
+    let username;
+
+    if (parsedToken) {
+      username = parsedToken.sub;
+    }
+
+    return username;
+  }
+
   render() {
     const {
       errors,
       handleSubmit,
       submitting,
       onSubmit,
-      submitSucceeded,
+      onPasswordInputFocus,
+      submitIsFailed,
       formValues: {
         newPassword,
         confirmPassword,
@@ -139,14 +153,12 @@ class CreateResetPassword extends Component {
       token,
     } = this.props;
     const { passwordMasked } = this.state;
-    const submissionStatus = submitting || submitSucceeded;
+    const submissionStatus = submitting || submitIsFailed;
     const buttonDisabled = !isEmpty(errors) || submissionStatus || !(newPassword && confirmPassword);
     const passwordType = passwordMasked ? 'password' : 'text';
-    const buttonLabelId = `${this.translationNamespaces.module}.${submissionStatus ? 'settingPassword' : 'setPassword'}`;
+    const buttonLabelId = `${this.translationNamespaces.module}.${submitting ? 'settingPassword' : 'setPassword'}`;
     const passwordToggleLabelId = `${this.translationNamespaces.button}.${passwordMasked ? 'show' : 'hide'}Password`;
-
-    // Todo don't have a back-end yet, should be parsed from token
-    const username = 'diku_admin';
+    const username = this.getUsernameFromToken(token);
 
     return (
       <div className={styles.wrapper}>
@@ -216,6 +228,7 @@ class CreateResetPassword extends Component {
                       passwordMeterColProps={this.passwordMeterColProps}
                       validationHandler={this.newPasswordFieldValidation}
                       validate={this.validators.newPassword}
+                      onFocus={() => onPasswordInputFocus(submitIsFailed)}
                     />
                   </Col>
                 </Row>
@@ -280,7 +293,10 @@ class CreateResetPassword extends Component {
                   xs={12}
                   sm={6}
                 >
-                  <div className={styles.formGroup}>
+                  <div
+                    className={styles.formGroup}
+                    data-test-submit
+                  >
                     <Button
                       buttonStyle="primary"
                       id="clickable-login"

@@ -1,6 +1,12 @@
 # Change history for stripes-core
 
 
+## 2.18.0 (IN PROGRESS)
+
+* Sort the settings. Fixes STCOR-286.
+* Load region-specific translations if available. Fixes STCOR-261.
+* Updated webpack config to disable CSS variable preservation. Fixes STCOR-260.
+
 ## [2.17.1](https://github.com/folio-org/stripes-core/tree/v2.17.1) (2018-12-21)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v2.17.0...v2.17.1)
 

@@ -6,6 +6,7 @@ import {
   Form,
 } from 'redux-form';
 import { FormattedMessage } from 'react-intl';
+import { isEmpty } from 'lodash';
 
 import {
   TextField,
@@ -22,11 +23,14 @@ import formStyles from './ForgotPasswordForm.css';
 
 class ForgotPassword extends Component {
   static propTypes = {
-    isValid: PropTypes.bool.isRequired,
-    hasErrorsContainer: PropTypes.bool.isRequired,
-    onSubmit: PropTypes.func.isRequired,
     dirty: PropTypes.bool.isRequired,
+    onSubmit: PropTypes.func.isRequired,
     handleSubmit: PropTypes.func.isRequired,
+    errors: PropTypes.arrayOf(PropTypes.object),
+  };
+
+  static defaultProps = {
+    errors: []
   };
 
   render() {
@@ -34,8 +38,7 @@ class ForgotPassword extends Component {
       dirty,
       onSubmit,
       handleSubmit,
-      isValid,
-      hasErrorsContainer,
+      errors,
     } = this.props;
 
     return (
@@ -62,7 +65,7 @@ class ForgotPassword extends Component {
                 faded
                 data-test-p
               >
-                <FormattedMessage id="stripes-core.label.forgotUsernameOrPasswordCallToAction" />
+                <FormattedMessage id="stripes-core.label.forgotPasswordCallToAction" />
               </Headline>
               <div className={formStyles.formGroup}>
                 <Field
@@ -93,23 +96,21 @@ class ForgotPassword extends Component {
               >
                 <FormattedMessage id="stripes-core.button.continue" />
               </Button>
-              <div
-                className={formStyles.authErrorsWrapper}
-                data-test-errors
-              >
-                {hasErrorsContainer &&
-                  <Row center="xs">
-                    <Col xs={12}>
+              <Row center="xs">
+                <Col xs={12}>
+                  <div
+                    className={formStyles.authErrorsWrapper}
+                    data-test-errors
+                  >
+                    {!isEmpty(errors) && (
                       <AuthErrorsContainer
-                        errors={[{ code: isValid
-                          ? 'unable.locate.account'
-                          : 'email.invalid' }]}
+                        errors={errors}
                         data-test-container
                       />
-                    </Col>
-                  </Row>
-                }
-              </div>
+                    )}
+                  </div>
+                </Col>
+              </Row>
             </Form>
           </div>
         </div>

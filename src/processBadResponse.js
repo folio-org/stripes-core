@@ -1,33 +1,47 @@
+import { isObject } from 'lodash';
+
+import { defaultErrors } from './constants';
 import { setAuthError } from './okapiActions';
 
-function getDefaultError() {
-  return {
-    code: 'default.error',
-    type: 'error',
-  };
-}
+const getLoginErrors = (payload) => {
+  try {
+    if (isObject(payload)) {
+      const { errors } = payload;
 
-function getProcessedErrors(errorMessage, response) {
-  const processedErrors = [];
-  const { status } = response;
+      return errors;
+    } else {
+      const { errors } = JSON.parse(payload);
 
-  if (status === 422) {
-    try {
-      const { errors } = JSON.parse(errorMessage);
-
-      processedErrors.push(...errors);
-    } catch (e) {
-      processedErrors.push(getDefaultError());
+      return errors || [defaultErrors.DEFAULT_LOGIN_CLIENT_ERROR];
     }
-  } else {
-    processedErrors.push(getDefaultError());
+  } catch (e) {
+    return [defaultErrors.DEFAULT_LOGIN_CLIENT_ERROR];
   }
+};
 
-  return processedErrors;
+function getProcessedErrors(response, status, defaultClientError) {
+  switch (status) {
+    case 400:
+      return [defaultClientError];
+    case 422:
+      return getLoginErrors(response);
+    case 500:
+      return [defaultErrors.DEFAULT_LOGIN_SERVER_ERROR];
+    default:
+      return [defaultErrors.DEFAULT_LOGIN_CLIENT_ERROR];
+  }
 }
 
-export default function processBadResponse(store, response) {
-  response.json().then(({ errorMessage }) => {
-    store.dispatch(setAuthError(getProcessedErrors(errorMessage, response)));
-  });
+export default async function processBadResponse(dispatch, response, defaultClientError) {
+  const clientError = defaultClientError || defaultErrors.DEFAULT_LOGIN_CLIENT_ERROR;
+  let actionPayload;
+
+  try {
+    const responseBody = await response.json();
+    const responsePayload = responseBody.errorMessage || responseBody;
+    actionPayload = getProcessedErrors(responsePayload, response.status, clientError);
+  } catch (e) {
+    actionPayload = [defaultErrors.DEFAULT_LOGIN_CLIENT_ERROR];
+  }
+  dispatch(setAuthError(actionPayload));
 }

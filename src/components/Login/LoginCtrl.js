@@ -3,7 +3,12 @@ import PropTypes from 'prop-types';
 import { connect as reduxConnect } from 'react-redux';
 import { SubmissionError } from 'redux-form';
 
-import { requestLogin, requestSSOLogin } from '../../loginServices';
+import {
+  requestLogin,
+  requestSSOLogin,
+} from '../../loginServices';
+import { setAuthError } from '../../okapiActions';
+
 import Login from './Login';
 
 class LoginCtrl extends Component {
@@ -14,6 +19,7 @@ class LoginCtrl extends Component {
       username: PropTypes.string.isRequired,
       password: PropTypes.string.isRequired,
     }),
+    clearAuthErrors: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
@@ -31,6 +37,10 @@ class LoginCtrl extends Component {
     if (props.autoLogin && props.autoLogin.username) {
       this.handleSubmit(props.autoLogin);
     }
+  }
+
+  componentWillUnmount() {
+    this.props.clearAuthErrors();
   }
 
   handleSubmit(data) {
@@ -60,11 +70,12 @@ class LoginCtrl extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    authFailure: state.okapi.authFailure,
-    ssoEnabled: state.okapi.ssoEnabled,
-  };
-}
+const mapStateToProps = state => ({
+  authFailure: state.okapi.authFailure,
+  ssoEnabled: state.okapi.ssoEnabled,
+});
+const mapDispatchToProps = dispatch => ({
+  clearAuthErrors: () => dispatch(setAuthError([])),
+});
 
-export default reduxConnect(mapStateToProps)(LoginCtrl);
+export default reduxConnect(mapStateToProps, mapDispatchToProps)(LoginCtrl);

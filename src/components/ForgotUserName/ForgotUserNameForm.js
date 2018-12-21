@@ -6,6 +6,7 @@ import {
   Form,
 } from 'redux-form';
 import { FormattedMessage } from 'react-intl';
+import { isEmpty } from 'lodash';
 
 import {
   TextField,
@@ -15,6 +16,7 @@ import {
   Col,
 } from '@folio/stripes-components';
 
+import { forgotFormErrorCodes } from '../../constants';
 import OrganizationLogo from '../OrganizationLogo';
 import AuthErrorsContainer from '../AuthErrorsContainer';
 
@@ -24,10 +26,23 @@ class ForgotUserName extends Component {
   static propTypes = {
     dirty: PropTypes.bool.isRequired,
     isValid: PropTypes.bool.isRequired,
-    hasErrorsContainer: PropTypes.bool.isRequired,
     onSubmit: PropTypes.func.isRequired,
     handleSubmit: PropTypes.func.isRequired,
+    errors: PropTypes.arrayOf(PropTypes.object),
   };
+
+  static defaultProps = {
+    errors: []
+  };
+
+  isErrorsContainerPresent() {
+    const {
+      errors,
+      isValid,
+    } = this.props;
+
+    return !isEmpty(errors) || !isValid;
+  }
 
   render() {
     const {
@@ -35,8 +50,10 @@ class ForgotUserName extends Component {
       onSubmit,
       handleSubmit,
       isValid,
-      hasErrorsContainer,
+      errors
     } = this.props;
+
+    const hasErrorsContainer = this.isErrorsContainerPresent();
 
     return (
       <Fragment>
@@ -62,7 +79,7 @@ class ForgotUserName extends Component {
                 faded
                 data-test-p
               >
-                <FormattedMessage id="stripes-core.label.forgotUsernameOrPasswordCallToAction" />
+                <FormattedMessage id="stripes-core.label.forgotUsernameCallToAction" />
               </Headline>
               <div className={formStyles.formGroup}>
                 <Field
@@ -93,23 +110,24 @@ class ForgotUserName extends Component {
               >
                 <FormattedMessage id="stripes-core.button.continue" />
               </Button>
-              <div
-                className={formStyles.authErrorsWrapper}
-                data-test-errors
-              >
-                {hasErrorsContainer &&
-                  <Row center="xs">
-                    <Col xs={12}>
+              <Row center="xs">
+                <Col xs={12}>
+                  <div
+                    className={formStyles.authErrorsWrapper}
+                    data-test-errors
+                  >
+                    {hasErrorsContainer && (
                       <AuthErrorsContainer
-                        errors={[{ code: isValid
-                          ? 'unable.locate.account'
-                          : 'email.invalid' }]}
+                        errors={!isValid
+                          ? [{ code: forgotFormErrorCodes.EMAIL_INVALID }]
+                          : errors
+                        }
                         data-test-container
                       />
-                    </Col>
-                  </Row>
-                }
-              </div>
+                    )}
+                  </div>
+                </Col>
+              </Row>
             </Form>
           </div>
         </div>

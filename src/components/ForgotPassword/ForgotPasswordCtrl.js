@@ -3,18 +3,29 @@ import {
   withRouter,
   Redirect,
 } from 'react-router-dom';
+import { connect as reduxConnect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import ForgotPasswordForm from './ForgotPasswordForm';
-import { validateForgotUsernameForm } from '../../validators';
+import processBadResponse from '../../processBadResponse';
+import { setAuthError } from '../../okapiActions';
+import { defaultErrors } from '../../constants';
 
-class ForgotPassword extends Component {
+import ForgotPasswordForm from './ForgotPasswordForm';
+
+class ForgotPasswordCtrl extends Component {
   static propTypes = {
+    authFailure: PropTypes.arrayOf(PropTypes.object),
     mutator: PropTypes.shape({
       searchUsername: PropTypes.shape({
         POST: PropTypes.func.isRequired,
       }).isRequired,
     }).isRequired,
+    handleBadResponse: PropTypes.func.isRequired,
+    clearAuthErrors: PropTypes.func.isRequired,
+  };
+
+  static defaultProps = {
+    authFailure: []
   };
 
   // Expect any MIME type to receive because of the empty body
@@ -31,34 +42,39 @@ class ForgotPassword extends Component {
     },
   });
 
-  state = {
-    isValidEmail: false,
-    userExists: false,
-    hasErrorsContainer: false,
-    userEmail: '',
-  };
+  constructor(props) {
+    super(props);
 
+    this.state = {
+      userExists: false,
+      userEmail: '',
+    };
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
 
-  handleSubmit = values => {
+  componentWillUnmount() {
+    this.props.clearAuthErrors();
+  }
+
+  async handleSubmit(values) {
     this.resetState();
     const {
       mutator: {
         searchUsername,
       },
+      handleBadResponse,
     } = this.props;
     const { userInput } = values;
-    const isValidInput = validateForgotUsernameForm(userInput);
+    const { FORGOTTEN_PASSWORD_CLIENT_ERROR } = defaultErrors;
 
-    return isValidInput
-      ? searchUsername
-        .POST({ id: userInput })
-        .then(() => this.handleSuccessfulResponse(userInput))
-        .catch(this.handleBadResponse)
-      : this.setState({
-        isValidEmail: false,
-        hasErrorsContainer: true,
-      });
-  };
+    try {
+      await searchUsername.POST({ id: userInput });
+
+      this.handleSuccessfulResponse(userInput);
+    } catch (error) {
+      handleBadResponse(error, FORGOTTEN_PASSWORD_CLIENT_ERROR);
+    }
+  }
 
   handleSuccessfulResponse = (userEmail) => {
     this.setState({
@@ -67,26 +83,15 @@ class ForgotPassword extends Component {
     });
   };
 
-  handleBadResponse = () => {
-    this.setState({
-      userExists: false,
-      hasErrorsContainer: true,
-    });
-  };
-
   resetState = () => {
-    this.setState({
-      isValidEmail: true,
-      userExists: false,
-      hasErrorsContainer: false,
-    });
+    this.setState({ userExists: false });
   };
 
   render() {
+    const { authFailure } = this.props;
+
     const {
       userExists,
-      isValidEmail,
-      hasErrorsContainer,
       userEmail,
     } = this.state;
 
@@ -100,12 +105,17 @@ class ForgotPassword extends Component {
 
     return (
       <ForgotPasswordForm
-        isValid={isValidEmail}
-        hasErrorsContainer={hasErrorsContainer}
+        errors={authFailure}
         onSubmit={this.handleSubmit}
       />
     );
   }
 }
 
-export default withRouter(ForgotPassword);
+const mapStateToProps = state => ({ authFailure: state.okapi.authFailure });
+const mapDispatchToProps = dispatch => ({
+  handleBadResponse: (error, defaultClientError) => processBadResponse(dispatch, error, defaultClientError),
+  clearAuthErrors: () => dispatch(setAuthError([])),
+});
+
+export default withRouter(reduxConnect(mapStateToProps, mapDispatchToProps)(ForgotPasswordCtrl));
