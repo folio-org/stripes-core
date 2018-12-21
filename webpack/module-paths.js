@@ -49,6 +49,13 @@ function locateStripesModule(context, moduleName, alias, ...segments) {
     },
   ];
 
+  // If we are looking for any stripes-* modules, we should also check within the framework's node_modules
+  if (moduleName.startsWith('@folio/stripes')) {
+    tryPaths.unshift({
+      request: path.join(context, 'node_modules', '@folio', 'stripes', 'node_modules', moduleName, ...segments),
+    });
+  }
+
   // If we are looking for anything in stripes-core, then we are already there!
   if (moduleName === '@folio/stripes-core') {
     tryPaths.unshift({
