@@ -25,9 +25,9 @@ const CheckEmailStatusPage = (props) => {
   const notificationText = isEmail
     ? `${labelNamespace}.sent.email`
     : `${labelNamespace}.your.email`;
-  const hiddenUserEmail = isEmail
-    ? hideEmail(userEmail)
-    : null;
+  const userEmailMessage = isEmail
+    ? { hiddenUserEmail: hideEmail(userEmail) }
+    : {};
 
   return (
     <div
@@ -52,7 +52,7 @@ const CheckEmailStatusPage = (props) => {
         >
           <FormattedMessage
             id={notificationText}
-            {...(isEmail && { values: { hiddenUserEmail } })}
+            values={userEmailMessage}
           />
         </Headline>
         <Headline
