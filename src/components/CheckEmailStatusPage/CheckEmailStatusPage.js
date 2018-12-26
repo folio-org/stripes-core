@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import { withRouter } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
@@ -7,6 +7,7 @@ import Headline from '@folio/stripes-components/lib/Headline';
 
 import OrganizationLogo from '../OrganizationLogo/OrganizationLogo';
 import validateEmail from '../../validators/validateEmail/validateEmail';
+import { hideEmail } from '../../helpers';
 
 import styles from './CheckEmailStatusPage.css';
 
@@ -18,51 +19,53 @@ const CheckEmailStatusPage = (props) => {
       },
     },
   } = props;
+
   const isEmail = validateEmail(userEmail);
   const labelNamespace = 'stripes-core.label';
   const notificationText = isEmail
     ? `${labelNamespace}.sent.email`
     : `${labelNamespace}.your.email`;
+  const hiddenUserEmail = isEmail
+    ? hideEmail(userEmail)
+    : null;
 
   return (
-    <Fragment>
-      <div
-        className={styles.wrap}
-        data-test-status-page
-      >
-        <div className={styles.centered}>
-          <OrganizationLogo />
-          <Headline
-            size="xx-large"
-            tag="h1"
-            data-test-h1
-          >
-            <FormattedMessage id={`${labelNamespace}.check.email`} />
-          </Headline>
-          <Headline
-            size="x-large"
-            tag="p"
-            bold={false}
-            faded
-            data-test-p-notification
-          >
-            <FormattedMessage
-              id={notificationText}
-              {...(isEmail && { values: { userEmail } })}
-            />
-          </Headline>
-          <Headline
-            size="x-large"
-            tag="p"
-            bold={false}
-            faded
-            data-test-p-caution
-          >
-            <FormattedMessage id={`${labelNamespace}.caution.email`} />
-          </Headline>
-        </div>
+    <div
+      className={styles.wrap}
+      data-test-status-page
+    >
+      <div className={styles.centered}>
+        <OrganizationLogo />
+        <Headline
+          size="xx-large"
+          tag="h1"
+          data-test-h1
+        >
+          <FormattedMessage id={`${labelNamespace}.check.email`} />
+        </Headline>
+        <Headline
+          size="x-large"
+          tag="p"
+          bold={false}
+          faded
+          data-test-p-notification
+        >
+          <FormattedMessage
+            id={notificationText}
+            {...(isEmail && { values: { hiddenUserEmail } })}
+          />
+        </Headline>
+        <Headline
+          size="x-large"
+          tag="p"
+          bold={false}
+          faded
+          data-test-p-caution
+        >
+          <FormattedMessage id={`${labelNamespace}.caution.email`} />
+        </Headline>
       </div>
-    </Fragment>
+    </div>
   );
 };
 
