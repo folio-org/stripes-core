@@ -42,7 +42,7 @@
   "label.your.email": "An email has been sent to your email address",
   "label.check.email": "Check your email",
   "label.caution.email": "If you don't receive the email, check your spam, junk, social or other folders. Or contact your FOLIO system administrator",
-  "label.sent.email": "An email has been sent to {userEmail}",
+  "label.sent.email": "An email has been sent to {hiddenUserEmail}",
   "successfullyDeleted": "The {entry} <strong>{name}</strong> was successfully <strong>deleted</strong>.",
   "untitled": "Untitled",
   "label.congratulations": "Congratulations!",
