@@ -1,5 +1,6 @@
 /**
- * List of locales that requres RTL script direction
+ * List of locales that requires
+ * right-to-left (RTL) script direction
  */
 
 export default [

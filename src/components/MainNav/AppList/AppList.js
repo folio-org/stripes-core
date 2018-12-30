@@ -186,7 +186,6 @@ class AppList extends Component {
   }
 
   render() {
-    console.warn(this.props);
     const {
       renderNavButtons,
       renderDropdownToggleButton,
