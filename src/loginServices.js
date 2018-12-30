@@ -4,6 +4,7 @@ import localforage from 'localforage';
 import { change } from 'redux-form';
 import { addLocaleData } from 'react-intl';
 import { translations } from 'stripes-config';
+import isRTL from './helpers/isRTL';
 
 import {
   clearCurrentUser,
@@ -41,6 +42,11 @@ export function loadTranslations(store, locale) {
   // don't know how to talk to each other. sheesh.
   const region = locale.replace('-', '_');
 
+  // Update dir- and lang-attributes on the HTML element
+  // when the locale changes
+  document.documentElement.setAttribute('lang', parentLocale);
+  document.documentElement.setAttribute('dir', isRTL(parentLocale) ? 'rtl' : 'ltr');
+
   return import(`react-intl/locale-data/${parentLocale}`)
     .then(intlData => addLocaleData(intlData.default || intlData))
     // fetch the region-specific translations, e.g. pt-BR, if available.
@@ -67,8 +73,6 @@ export function getLocale(okapiUrl, store, tenant) {
             const { locale, timezone } = localeValues;
             if (locale) {
               loadTranslations(store, locale);
-              // set title of document using first 2 characters of locale.
-              document.documentElement.setAttribute('lang', locale.substr(0, 2));
             }
             if (timezone) store.dispatch(setTimezone(timezone));
           }
