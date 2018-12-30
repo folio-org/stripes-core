@@ -6,6 +6,12 @@
 
 import rightToLeftLocales from './RTL-locales';
 
-const isRTL = locale => rightToLeftLocales.indexOf(locale) >= 0;
+const isRTL = locale => {
+  // Locales will in some cases be formed like e.g. "ar-AR"
+  // But we only need the first part to check for RTL locales
+  const cleanLocale = locale.indexOf('-') >= 0 ? locale.split('-')[0] : locale;
+console.warn('clearn locale', cleanLocale);
+  return rightToLeftLocales.indexOf(cleanLocale) >= 0;
+};
 
 export default isRTL;
