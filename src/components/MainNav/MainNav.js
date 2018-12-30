@@ -196,6 +196,7 @@ class MainNav extends Component {
                     apps={apps}
                     selectedApp={selectedApp}
                     dropdownToggleId="app-list-dropdown-toggle"
+                    stripes={stripes}
                   />
                   <NavDivider md="hide" />
                   <ProfileDropdown

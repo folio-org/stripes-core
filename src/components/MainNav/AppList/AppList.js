@@ -13,6 +13,7 @@ import Icon from '@folio/stripes-components/lib/Icon';
 import AppListDropdown from './AppListDropdown';
 import NavButton from '../NavButton';
 import css from './AppList.css';
+import isRTL from '../../../helpers/isRTL';
 
 class AppList extends Component {
   static propTypes = {
@@ -31,6 +32,9 @@ class AppList extends Component {
     dropdownId: PropTypes.string,
     dropdownToggleId: PropTypes.string.isRequired,
     selectedApp: PropTypes.object,
+    stripes: PropTypes.shape({
+      locale: PropTypes.string.isRequired,
+    })
   }
 
   static contextTypes = {
@@ -182,6 +186,7 @@ class AppList extends Component {
   }
 
   render() {
+    console.warn(this.props);
     const {
       renderNavButtons,
       renderDropdownToggleButton,
@@ -193,11 +198,11 @@ class AppList extends Component {
       state: { open },
     } = this;
 
-    const { dropdownId, apps, dropdownToggleId } = this.props;
+    const { dropdownId, apps, dropdownToggleId, stripes: { locale } } = this.props;
 
     const tether = {
-      attachment: 'top right',
-      targetAttachment: 'bottom right',
+      attachment: isRTL(locale) ? 'top left' : 'top right',
+      targetAttachment: isRTL(locale) ? 'bottom left' : 'bottom right',
       constraints: [{
         to: 'target',
       }],
