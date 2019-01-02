@@ -5,6 +5,7 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
+import rtlDetect from 'rtl-detect';
 
 import { Dropdown } from '@folio/stripes-components/lib/Dropdown';
 import DropdownMenu from '@folio/stripes-components/lib/DropdownMenu';
@@ -13,7 +14,6 @@ import Icon from '@folio/stripes-components/lib/Icon';
 import AppListDropdown from './AppListDropdown';
 import NavButton from '../NavButton';
 import css from './AppList.css';
-import isRTL from '../../../helpers/isRTL';
 
 class AppList extends Component {
   static propTypes = {
@@ -200,8 +200,8 @@ class AppList extends Component {
     const { dropdownId, apps, dropdownToggleId, stripes: { locale } } = this.props;
 
     const tether = {
-      attachment: isRTL(locale) ? 'top left' : 'top right',
-      targetAttachment: isRTL(locale) ? 'bottom left' : 'bottom right',
+      attachment: rtlDetect.isRtlLang(locale) ? 'top left' : 'top right',
+      targetAttachment: rtlDetect.isRtlLang(locale) ? 'bottom left' : 'bottom right',
       constraints: [{
         to: 'target',
       }],

@@ -4,7 +4,7 @@ import localforage from 'localforage';
 import { change } from 'redux-form';
 import { addLocaleData } from 'react-intl';
 import { translations } from 'stripes-config';
-import isRTL from './helpers/isRTL';
+import rtlDetect from 'rtl-detect';
 
 import {
   clearCurrentUser,
@@ -45,7 +45,7 @@ export function loadTranslations(store, locale) {
   // Update dir- and lang-attributes on the HTML element
   // when the locale changes
   document.documentElement.setAttribute('lang', parentLocale);
-  document.documentElement.setAttribute('dir', isRTL(parentLocale) ? 'rtl' : 'ltr');
+  document.documentElement.setAttribute('dir', rtlDetect.getLangDir(locale));
 
   return import(`react-intl/locale-data/${parentLocale}`)
     .then(intlData => addLocaleData(intlData.default || intlData))
