@@ -18,6 +18,14 @@ import validations from '../../../userDropdownLinksService';
 
 class ProfileDropdown extends Component {
   static propTypes = {
+    intl: PropTypes.shape({
+      locale: PropTypes.string,
+    }).isRequired,
+    modules: PropTypes.shape({
+      app: PropTypes.array,
+      settings: PropTypes.array,
+    }),
+    onLogout: PropTypes.func.isRequired,
     stripes: PropTypes.shape({
       user: PropTypes.shape({
         user: PropTypes.object,
@@ -29,11 +37,6 @@ class ProfileDropdown extends Component {
       }),
       okapi: PropTypes.object,
     }).isRequired,
-    modules: PropTypes.shape({
-      app: PropTypes.array,
-      settings: PropTypes.array,
-    }),
-    onLogout: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
@@ -138,7 +141,7 @@ class ProfileDropdown extends Component {
   };
 
   getDropdownContent() {
-    const { stripes, onLogout } = this.props;
+    const { stripes, onLogout, intl: { locale } } = this.props;
     const user = this.getUserData();
     const currentPerms = stripes.user ? stripes.user.perms : undefined;
 
@@ -149,7 +152,7 @@ class ProfileDropdown extends Component {
     let perms = null;
     if (stripes.config && stripes.config.showPerms) {
       const items = [
-        `Locale: ${stripes.locale}`,
+        `Locale: ${locale}`,
         `Perms: ${Object.keys(currentPerms || {}).sort().join(', ')}`,
       ];
       perms = (
