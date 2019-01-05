@@ -31,10 +31,10 @@ class AppList extends Component {
     ),
     dropdownId: PropTypes.string,
     dropdownToggleId: PropTypes.string.isRequired,
+    intl: PropTypes.shape({
+      locale: PropTypes.string,
+    }).isRequired,
     selectedApp: PropTypes.object,
-    stripes: PropTypes.shape({
-      locale: PropTypes.string.isRequired,
-    })
   }
 
   static contextTypes = {
@@ -197,7 +197,7 @@ class AppList extends Component {
       state: { open },
     } = this;
 
-    const { dropdownId, apps, dropdownToggleId, stripes: { locale } } = this.props;
+    const { dropdownId, apps, dropdownToggleId, intl: { locale } } = this.props;
 
     const tether = {
       attachment: rtlDetect.isRtlLang(locale) ? 'top left' : 'top right',
