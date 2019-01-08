@@ -11,6 +11,7 @@ import { Dropdown } from '@folio/stripes-components/lib/Dropdown';
 import DropdownMenu from '@folio/stripes-components/lib/DropdownMenu';
 import Icon from '@folio/stripes-components/lib/Icon';
 
+import IntlConsumer from '../../IntlConsumer';
 import AppListDropdown from './AppListDropdown';
 import NavButton from '../NavButton';
 import css from './AppList.css';
@@ -31,9 +32,6 @@ class AppList extends Component {
     ),
     dropdownId: PropTypes.string,
     dropdownToggleId: PropTypes.string.isRequired,
-    intl: PropTypes.shape({
-      locale: PropTypes.string,
-    }).isRequired,
     selectedApp: PropTypes.object,
   }
 
@@ -197,15 +195,7 @@ class AppList extends Component {
       state: { open },
     } = this;
 
-    const { dropdownId, apps, dropdownToggleId, intl: { locale } } = this.props;
-
-    const tether = {
-      attachment: rtlDetect.isRtlLang(locale) ? 'top left' : 'top right',
-      targetAttachment: rtlDetect.isRtlLang(locale) ? 'bottom left' : 'bottom right',
-      constraints: [{
-        to: 'target',
-      }],
-    };
+    const { dropdownId, apps, dropdownToggleId } = this.props;
 
     // If no apps are installed
     if (!apps.length) {
@@ -213,34 +203,49 @@ class AppList extends Component {
     }
 
     return (
-      <nav className={css.appList} aria-labelledby="main_app_list_label">
-        <h3 className="sr-only" id="main_app_list_label"><FormattedMessage id="stripes-core.mainnav.applicationListLabel" /></h3>
-        <ul className={css.navItemsList}>
-          {renderNavButtons()}
-        </ul>
-        <div className={css.navListDropdownWrap}>
-          <Dropdown
-            tether={tether}
-            dropdownClass={css.navListDropdown}
-            open={open}
-            id={dropdownId}
-            onToggle={toggleDropdown}
-            hasPadding={false}
-          >
-            {renderDropdownToggleButton()}
-            <DropdownMenu data-role="menu" onToggle={toggleDropdown}>
-              {focusTrap(focusDropdownToggleButton)}
-              <AppListDropdown
-                listRef={dropdownListRef}
-                apps={apps}
-                dropdownToggleId={dropdownToggleId}
-                toggleDropdown={toggleDropdown}
-              />
-              {focusTrap(focusFirstItemInList)}
-            </DropdownMenu>
-          </Dropdown>
-        </div>
-      </nav>
+      <IntlConsumer>
+        { intl => {
+          const tether = {
+            attachment: rtlDetect.isRtlLang(intl.locale) ? 'top left' : 'top right',
+            targetAttachment: rtlDetect.isRtlLang(intl.locale) ? 'bottom left' : 'bottom right',
+            constraints: [{
+              to: 'target',
+            }],
+          };
+
+          return (
+            <nav className={css.appList} aria-labelledby="main_app_list_label">
+              <h3 className="sr-only" id="main_app_list_label"><FormattedMessage id="stripes-core.mainnav.applicationListLabel" /></h3>
+              <ul className={css.navItemsList}>
+                {renderNavButtons()}
+              </ul>
+              <div className={css.navListDropdownWrap}>
+                <Dropdown
+                  tether={tether}
+                  dropdownClass={css.navListDropdown}
+                  open={open}
+                  id={dropdownId}
+                  onToggle={toggleDropdown}
+                  hasPadding={false}
+                >
+                  {renderDropdownToggleButton()}
+                  <DropdownMenu data-role="menu" onToggle={toggleDropdown}>
+                    {focusTrap(focusDropdownToggleButton)}
+                    <AppListDropdown
+                      listRef={dropdownListRef}
+                      apps={apps}
+                      dropdownToggleId={dropdownToggleId}
+                      toggleDropdown={toggleDropdown}
+                    />
+                    {focusTrap(focusFirstItemInList)}
+                  </DropdownMenu>
+                </Dropdown>
+              </div>
+            </nav>
+          );
+        }
+      }
+      </IntlConsumer>
     );
   }
 }

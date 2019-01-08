@@ -164,7 +164,7 @@ class MainNav extends Component {
   }
 
   render() {
-    const { stripes, intl } = this.props;
+    const { stripes } = this.props;
 
     return (
       <LastVisitedContext.Consumer>
@@ -196,7 +196,6 @@ class MainNav extends Component {
                     apps={apps}
                     selectedApp={selectedApp}
                     dropdownToggleId="app-list-dropdown-toggle"
-                    intl={intl}
                   />
                   <NavDivider md="hide" />
                   <ProfileDropdown
