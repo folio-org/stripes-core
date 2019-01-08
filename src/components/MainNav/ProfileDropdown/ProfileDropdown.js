@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { isFunction, kebabCase } from 'lodash';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
@@ -15,12 +15,10 @@ import css from './ProfileDropdown.css';
 import { withModules } from '../../Modules';
 import { getHandlerComponent } from '../../../handlerService';
 import validations from '../../../userDropdownLinksService';
+import IntlConsumer from '../../IntlConsumer';
 
 class ProfileDropdown extends Component {
   static propTypes = {
-    intl: PropTypes.shape({
-      locale: PropTypes.string,
-    }).isRequired,
     modules: PropTypes.shape({
       app: PropTypes.array,
       settings: PropTypes.array,
@@ -141,7 +139,7 @@ class ProfileDropdown extends Component {
   };
 
   getDropdownContent() {
-    const { stripes, onLogout, intl: { locale } } = this.props;
+    const { stripes, onLogout } = this.props;
     const user = this.getUserData();
     const currentPerms = stripes.user ? stripes.user.perms : undefined;
 
@@ -151,19 +149,27 @@ class ProfileDropdown extends Component {
      */
     let perms = null;
     if (stripes.config && stripes.config.showPerms) {
-      const items = [
-        `Locale: ${locale}`,
-        `Perms: ${Object.keys(currentPerms || {}).sort().join(', ')}`,
-      ];
       perms = (
-        <section>
-          <hr className={css.divider} />
-          <List
-            items={items}
-            itemFormatter={(item, index) => (<li key={index}>{item}</li>)}
-            marginBottom0
-          />
-        </section>
+        <IntlConsumer>
+          { intl => {
+              const items = [
+                `Locale: ${intl.locale}`,
+                `Perms: ${Object.keys(currentPerms || {}).sort().join(', ')}`,
+              ];
+
+              return (
+                <section>
+                  <hr className={css.divider} />
+                  <List
+                    items={items}
+                    itemFormatter={(item, index) => (<li key={index}>{item}</li>)}
+                    marginBottom0
+                  />
+                </section>
+              );
+            }
+          }
+        </IntlConsumer>
       );
     }
 
@@ -203,7 +209,7 @@ class ProfileDropdown extends Component {
     const { dropdownOpen, HandlerComponent } = this.state;
 
     return (
-      <div>
+      <Fragment>
         { HandlerComponent && <HandlerComponent stripes={this.props.stripes} /> }
         <Dropdown open={dropdownOpen} id="profileDropdown" onToggle={this.toggleDropdown} pullRight hasPadding>
           <NavButton data-role="toggle" ariaLabel="My Profile" selected={dropdownOpen} icon={this.getProfileImage()} noSelectedBar />
@@ -211,7 +217,7 @@ class ProfileDropdown extends Component {
             {this.getDropdownContent()}
           </NavDropdownMenu>
         </Dropdown>
-      </div>
+      </Fragment>
     );
   }
 }

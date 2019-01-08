@@ -202,7 +202,6 @@ class MainNav extends Component {
                   <ProfileDropdown
                     onLogout={this.logout}
                     stripes={stripes}
-                    intl={intl}
                   />
                 </NavGroup>
               </nav>
