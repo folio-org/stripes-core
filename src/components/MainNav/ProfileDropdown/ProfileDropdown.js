@@ -151,7 +151,8 @@ class ProfileDropdown extends Component {
     if (stripes.config && stripes.config.showPerms) {
       perms = (
         <IntlConsumer>
-          { intl => {
+          {
+            intl => {
               const items = [
                 `Locale: ${intl.locale}`,
                 `Perms: ${Object.keys(currentPerms || {}).sort().join(', ')}`,
