@@ -73,5 +73,5 @@ export function updateLocation(module, curQuery, store, history, location) {
 
   history.push(url);
 
-  return params;
+  return !isEmpty(params) ? params : null;
 }
