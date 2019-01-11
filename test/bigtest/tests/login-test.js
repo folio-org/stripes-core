@@ -211,7 +211,7 @@ describe('Login', () => {
       });
 
       it('error message should have proper text upon failed submit', () => {
-        expect(login.message.text).to.equal(translations['errors.third.failed.attempt']);
+        expect(login.message.text).to.equal(translations['errors.password.incorrect.warn.user']);
       });
     });
 
@@ -242,7 +242,7 @@ describe('Login', () => {
       });
 
       it('error message should have proper text upon failed submit', () => {
-        expect(login.message.text).to.equal(translations['errors.fifth.failed.attempt.blocked']);
+        expect(login.message.text).to.equal(translations['errors.password.incorrect.block.user']);
       });
     });
 
@@ -305,7 +305,7 @@ describe('Login', () => {
 
       it('error message should have proper text upon failed submit', () => {
         expect(login.message.text).to.equal(
-          `${translations['errors.user.blocked']}${translations['errors.third.failed.attempt']}`
+          `${translations['errors.user.blocked']}${translations['errors.password.incorrect.warn.user']}`
         );
       });
     });
