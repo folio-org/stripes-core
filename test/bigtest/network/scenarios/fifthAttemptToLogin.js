@@ -4,7 +4,7 @@ export default (server) => {
       { errors: [
         {
           type: 'error',
-          code: 'fifth.failed.attempt.blocked',
+          code: 'password.incorrect.block.user',
         },
       ] }
     )

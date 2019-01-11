@@ -8,7 +8,7 @@ export default (server) => {
         },
         {
           type: 'error',
-          code: 'third.failed.attempt',
+          code: 'password.incorrect.warn.user',
         },
       ] }
     )
