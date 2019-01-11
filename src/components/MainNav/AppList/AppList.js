@@ -5,11 +5,13 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
+import rtlDetect from 'rtl-detect';
 
 import { Dropdown } from '@folio/stripes-components/lib/Dropdown';
 import DropdownMenu from '@folio/stripes-components/lib/DropdownMenu';
 import Icon from '@folio/stripes-components/lib/Icon';
 
+import IntlConsumer from '../../IntlConsumer';
 import AppListDropdown from './AppListDropdown';
 import NavButton from '../NavButton';
 import css from './AppList.css';
@@ -195,48 +197,55 @@ class AppList extends Component {
 
     const { dropdownId, apps, dropdownToggleId } = this.props;
 
-    const tether = {
-      attachment: 'top right',
-      targetAttachment: 'bottom right',
-      constraints: [{
-        to: 'target',
-      }],
-    };
-
     // If no apps are installed
     if (!apps.length) {
       return null;
     }
 
     return (
-      <nav className={css.appList} aria-labelledby="main_app_list_label">
-        <h3 className="sr-only" id="main_app_list_label"><FormattedMessage id="stripes-core.mainnav.applicationListLabel" /></h3>
-        <ul className={css.navItemsList}>
-          {renderNavButtons()}
-        </ul>
-        <div className={css.navListDropdownWrap}>
-          <Dropdown
-            tether={tether}
-            dropdownClass={css.navListDropdown}
-            open={open}
-            id={dropdownId}
-            onToggle={toggleDropdown}
-            hasPadding={false}
-          >
-            {renderDropdownToggleButton()}
-            <DropdownMenu data-role="menu" onToggle={toggleDropdown}>
-              {focusTrap(focusDropdownToggleButton)}
-              <AppListDropdown
-                listRef={dropdownListRef}
-                apps={apps}
-                dropdownToggleId={dropdownToggleId}
-                toggleDropdown={toggleDropdown}
-              />
-              {focusTrap(focusFirstItemInList)}
-            </DropdownMenu>
-          </Dropdown>
-        </div>
-      </nav>
+      <IntlConsumer>
+        { intl => {
+          const tether = {
+            attachment: rtlDetect.isRtlLang(intl.locale) ? 'top left' : 'top right',
+            targetAttachment: rtlDetect.isRtlLang(intl.locale) ? 'bottom left' : 'bottom right',
+            constraints: [{
+              to: 'target',
+            }],
+          };
+
+          return (
+            <nav className={css.appList} aria-labelledby="main_app_list_label">
+              <h3 className="sr-only" id="main_app_list_label"><FormattedMessage id="stripes-core.mainnav.applicationListLabel" /></h3>
+              <ul className={css.navItemsList}>
+                {renderNavButtons()}
+              </ul>
+              <div className={css.navListDropdownWrap}>
+                <Dropdown
+                  tether={tether}
+                  dropdownClass={css.navListDropdown}
+                  open={open}
+                  id={dropdownId}
+                  onToggle={toggleDropdown}
+                  hasPadding={false}
+                >
+                  {renderDropdownToggleButton()}
+                  <DropdownMenu data-role="menu" onToggle={toggleDropdown}>
+                    {focusTrap(focusDropdownToggleButton)}
+                    <AppListDropdown
+                      listRef={dropdownListRef}
+                      apps={apps}
+                      dropdownToggleId={dropdownToggleId}
+                      toggleDropdown={toggleDropdown}
+                    />
+                    {focusTrap(focusFirstItemInList)}
+                  </DropdownMenu>
+                </Dropdown>
+              </div>
+            </nav>
+          );
+        }
+      }
+      </IntlConsumer>
     );
   }
 }
