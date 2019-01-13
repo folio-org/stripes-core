@@ -110,5 +110,7 @@
     "errors.default.server.error": "系统错误。无法找到Folio帐户。请再试一次。",
     "createResetPassword.header": "选择一个密码",
     "createResetPassword.newPassword": "新密码",
-    "createResetPassword.confirmPassword": "确认密码"
+    "createResetPassword.confirmPassword": "确认密码",
+    "errors.password.incorrect.warn.user": "You have entered the wrong username or password for the third time. You have two more tries to login before your account will be locked.",
+    "errors.password.incorrect.block.user": "For security purposes, your account has been locked. Please contact your FOLIO System Administrator to reset your password."
 }
