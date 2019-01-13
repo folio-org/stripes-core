@@ -110,5 +110,7 @@
     "errors.default.server.error": "System error. Unable to locate Folio account. Please try again.",
     "createResetPassword.header": "Choose a password",
     "createResetPassword.newPassword": "New Password",
-    "createResetPassword.confirmPassword": "Confirm Password"
+    "createResetPassword.confirmPassword": "Confirm Password",
+    "errors.password.incorrect.warn.user": "You have entered the wrong username or password for the third time. You have two more tries to login before your account will be locked.",
+    "errors.password.incorrect.block.user": "For security purposes, your account has been locked. Please contact your FOLIO System Administrator to reset your password."
 }

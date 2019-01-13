@@ -110,5 +110,7 @@
     "errors.default.server.error": "Erro no sistema. Não é possível localizar a conta do Folio. Por favor, tente novamente.",
     "createResetPassword.header": "Escolha uma senha",
     "createResetPassword.newPassword": "Nova senha",
-    "createResetPassword.confirmPassword": "Confirme a senha"
+    "createResetPassword.confirmPassword": "Confirme a senha",
+    "errors.password.incorrect.warn.user": "Você digitou o nome de usuário ou a senha incorretos pela terceira vez. Você tem mais duas tentativas para fazer login antes que sua conta seja bloqueada.",
+    "errors.password.incorrect.block.user": "Por motivos de segurança, sua conta foi bloqueada. Entre em contato com o administrador do sistema FOLIO para redefinir sua senha."
 }
