@@ -99,15 +99,12 @@ module.exports = class StripesTranslationPlugin {
     logger.log('loading translations from directory', dir);
     const moduleTranslations = {};
 
+    let enTranslations = {};
     const enPath = path.join(dir, 'en.json');
-    try {
-      fs.accessSync(enPath, fs.constants.R_OK);
-    } catch (err) {
-      throw new StripesBuildError(`StripesTranslationPlugin: Unable to access ${moduleName}'s default translations at ${enPath}.`);
+    if (fs.existsSync(enPath)) {
+      const rawEnTranslations = StripesTranslationPlugin.loadFile(enPath);
+      enTranslations = StripesTranslationPlugin.prefixModuleKeys(moduleName, rawEnTranslations);
     }
-
-    let enTranslations = StripesTranslationPlugin.loadFile(enPath);
-    enTranslations = StripesTranslationPlugin.prefixModuleKeys(moduleName, enTranslations);
 
     for (const translationFile of fs.readdirSync(dir)) {
       const language = translationFile.replace('.json', '');
