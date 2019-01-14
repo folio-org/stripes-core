@@ -4,6 +4,8 @@ const _ = require('lodash');
 const webpack = require('webpack');
 const modulePaths = require('./module-paths');
 const logger = require('./logger')('stripesTranslationsPlugin');
+const StripesBuildError = require('./stripes-build-error');
+
 
 function prefixKeys(obj, prefix) {
   const res = {};
@@ -96,12 +98,23 @@ module.exports = class StripesTranslationPlugin {
   loadTranslationsDirectory(moduleName, dir) {
     logger.log('loading translations from directory', dir);
     const moduleTranslations = {};
+
+    const enPath = path.join(dir, 'en.json');
+    try {
+      fs.accessSync(enPath, fs.constants.R_OK);
+    } catch (err) {
+      throw new StripesBuildError(`StripesTranslationPlugin: Unable to access ${moduleName}'s default translations at ${enPath}.`);
+    }
+
+    let enTranslations = StripesTranslationPlugin.loadFile(enPath);
+    enTranslations = StripesTranslationPlugin.prefixModuleKeys(moduleName, enTranslations);
+
     for (const translationFile of fs.readdirSync(dir)) {
       const language = translationFile.replace('.json', '');
       // When filter is set, skip other languages. Otherwise loads all
       if (!this.languageFilter.length || this.languageFilter.includes(language)) {
         const translations = StripesTranslationPlugin.loadFile(path.join(dir, translationFile));
-        moduleTranslations[language] = StripesTranslationPlugin.prefixModuleKeys(moduleName, translations);
+        moduleTranslations[language] = Object.assign(enTranslations, StripesTranslationPlugin.prefixModuleKeys(moduleName, translations));
       }
     }
     return moduleTranslations;
