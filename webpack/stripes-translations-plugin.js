@@ -4,8 +4,6 @@ const _ = require('lodash');
 const webpack = require('webpack');
 const modulePaths = require('./module-paths');
 const logger = require('./logger')('stripesTranslationsPlugin');
-const StripesBuildError = require('./stripes-build-error');
-
 
 function prefixKeys(obj, prefix) {
   const res = {};
