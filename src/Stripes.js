@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { intlShape } from 'react-intl';
 import { isVersionCompatible } from './discoverServices';
 
 
@@ -58,10 +57,6 @@ export const stripesShape = PropTypes.shape({
   setTimezone: PropTypes.func.isRequired,
   plugins: PropTypes.object,
   setSinglePlugin: PropTypes.func.isRequired,
-  formatDate: PropTypes.func.isRequired,
-  formatTime: PropTypes.func.isRequired,
-  formatDateTime: PropTypes.func.isRequired,
-  formatAbsoluteDate: PropTypes.func.isRequired,
   bindings: PropTypes.object,
   setBindings: PropTypes.func.isRequired,
   discovery: PropTypes.shape({
@@ -82,7 +77,6 @@ export const stripesShape = PropTypes.shape({
     perms: PropTypes.object,
   }),
   connect: PropTypes.func.isRequired,
-  intl: intlShape,
 });
 
 
