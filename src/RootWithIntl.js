@@ -7,7 +7,6 @@ import {
 
 import { Provider } from 'react-redux';
 import { CookiesProvider } from 'react-cookie';
-import { intlShape } from 'react-intl';
 
 import { HotKeys } from '@folio/stripes-components/lib/HotKeys';
 import { connectFor } from '@folio/stripes-connect';
@@ -51,10 +50,6 @@ class RootWithIntl extends React.Component {
     history: {},
   };
 
-  static contextTypes = {
-    intl: intlShape.isRequired,
-  };
-
   render() {
     const {
       token,
@@ -62,9 +57,8 @@ class RootWithIntl extends React.Component {
       history,
     } = this.props;
 
-    const intl = this.context.intl;
     const connect = connectFor('@folio/core', this.props.stripes.epics, this.props.stripes.logger);
-    const stripes = this.props.stripes.clone({ intl, connect });
+    const stripes = this.props.stripes.clone({ connect });
 
     return (
       <StripesContext.Provider value={stripes}>
