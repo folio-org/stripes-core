@@ -2,7 +2,7 @@
     "front.welcome": "مرحبًا بكم، مستقبل المكتبات في الانفتاحية!",
     "front.home": "الرئيسية",
     "front.about": "إصدارات البرمجيات",
-    "button.new": "+ جديد",
+    "button.new": "جديد",
     "button.new_tooltip": "إضافة {entry}",
     "button.edit": "تحرير",
     "button.delete": "حذف",

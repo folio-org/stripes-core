@@ -2,7 +2,7 @@
     "front.welcome": "欢迎您，图书馆的未来是开放的！",
     "front.home": "主页",
     "front.about": "软件版本",
-    "button.new": "+新建",
+    "button.new": "新建",
     "button.new_tooltip": "添加{entry}",
     "button.edit": "编辑",
     "button.delete": "删除",

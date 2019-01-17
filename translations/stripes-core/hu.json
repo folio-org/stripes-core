@@ -2,7 +2,7 @@
     "front.welcome": "Üdvözöljük! A jövő könyvtára NYITVA ÁLL!",
     "front.home": "Főoldal",
     "front.about": "Szoftver verziók",
-    "button.new": "+ Új",
+    "button.new": "Új",
     "button.new_tooltip": "{entry} hozzáadása",
     "button.edit": "Szerkeszt",
     "button.delete": "Töröl",
