@@ -2,7 +2,7 @@
     "front.welcome": "Bem vindo. O futuro das Bibliotecas é LIVRE!",
     "front.home": "Início",
     "front.about": "Versões de software",
-    "button.new": "+ Novo",
+    "button.new": "Novo",
     "button.new_tooltip": "Adicionar {entry}",
     "button.edit": "Editar",
     "button.delete": "Excluir",
