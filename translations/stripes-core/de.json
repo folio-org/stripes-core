@@ -2,7 +2,7 @@
     "front.welcome": "Willkommen, die Zukunft der Bibliotheken ist OFFEN!",
     "front.home": "Startseite",
     "front.about": "Installationsdetails",
-    "button.new": "+ Neu",
+    "button.new": "Neu",
     "button.new_tooltip": "{entry} neu anlegen",
     "button.edit": "Bearbeiten",
     "button.delete": "Löschen",
