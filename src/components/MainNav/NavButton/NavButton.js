@@ -2,8 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import Link from 'react-router-dom/Link';
-import AppIcon from '@folio/stripes-components/lib/AppIcon';
 import Badge from '@folio/stripes-components/lib/Badge';
+
+import AppIcon from '../../AppIcon';
+
 import css from './NavButton.css';
 
 const propTypes = {
