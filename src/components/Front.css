@@ -12,7 +12,7 @@
 }
 
 h1.frontTitle {
-  font-size: 3vw;
+  font-size: var(--font-size-xx-large);
   text-align: center;
   padding: 15px;
   line-height: 125%;

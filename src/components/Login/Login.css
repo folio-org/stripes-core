@@ -72,7 +72,7 @@ button.submitButton {
 
 @media (--large-up) {
   .header {
-    font-size: 3.5rem;
+    font-size: var(--font-size-xx-large);
   }
 
   .toggleButtonWrapper {
