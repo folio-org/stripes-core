@@ -2,6 +2,7 @@
 
 ## 3.1.0 IN PROGRESS
 
+## [3.0.2](https://github.com/folio-org/stripes-core/tree/v3.0.2) (2019-01-24)
 * Add workspace path to stripes alias resolution. Part of STCOR-320.
 
 ## [3.0.1](https://github.com/folio-org/stripes-core/tree/v3.0.1) (2019-01-17)
