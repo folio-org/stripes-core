@@ -2,7 +2,7 @@
 
 ## 3.1.0 (IN PROGRESS)
 
-* Provide parallel support for okapi interface users-bl 3, 4.
+* Provide parallel support for okapi interface users-bl 3 and 4.
 
 ## [3.0.1](https://github.com/folio-org/stripes-core/tree/v3.0.1) (2019-01-17)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.0.0...v3.0.1)
