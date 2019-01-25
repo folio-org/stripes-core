@@ -44,7 +44,9 @@ const About = (props) => {
 
       return (
         <li key={key} style={style}>
-          {`${key} ${text}`}
+          {key}
+          {' '}
+          {text}
         </li>
       );
     };

@@ -1,5 +1,6 @@
 const path = require('path');
 const logger = require('./logger')();
+const StripesBuildError = require('./stripes-build-error');
 
 function tryResolve(modulePath, options) {
   try {
@@ -10,19 +11,21 @@ function tryResolve(modulePath, options) {
 }
 
 // Generates a resolvable alias for a module with preference given to the
-// stripes-core version followed by the platform's, if available
+// workspace's version followed by stripes-core's version followed by the platform's, if available
 function generateStripesAlias(moduleName) {
   let alias;
+  const workspaceModule = path.join(path.resolve(), '..', 'node_modules', moduleName);
   const platformModule = path.join(path.resolve(), 'node_modules', moduleName);
   const coreModule = path.join(__dirname, '..', 'node_modules', moduleName);
-  const fallbackModule = moduleName;
 
-  if (tryResolve(coreModule)) {
-    alias = coreModule;
+  if (tryResolve(workspaceModule)) {
+    alias = workspaceModule;
   } else if (tryResolve(platformModule)) {
     alias = platformModule;
+  } else if (tryResolve(coreModule)) {
+    alias = coreModule;
   } else {
-    alias = fallbackModule;
+    throw new StripesBuildError(`generateStripesAlias: Unable to locate a resolvable alias for ${moduleName} module`);
   }
   return alias;
 }
