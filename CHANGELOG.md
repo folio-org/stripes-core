@@ -1,6 +1,8 @@
 # Change history for stripes-core
 
-## 3.1.0 IN PROGRESS
+## 3.1.0 (IN PROGRESS)
+
+* Provide parallel support for okapi interface users-bl 3 and 4.
 
 ## [3.0.2](https://github.com/folio-org/stripes-core/tree/v3.0.2) (2019-01-24)
 * Add workspace path to stripes alias resolution. Part of STCOR-320.

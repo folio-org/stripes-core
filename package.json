@@ -25,7 +25,7 @@
   },
   "stripes": {
     "okapiInterfaces": {
-      "users-bl": "3.0",
+      "users-bl": "3.0 4.0",
       "authtoken": "1.0 2.0",
       "configuration": "2.0"
     },
