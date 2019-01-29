@@ -56,6 +56,9 @@ function locateStripesModule(context, moduleName, alias, ...segments) {
   if (moduleName.startsWith('@folio/stripes')) {
     tryPaths.unshift({
       request: path.join(context, 'node_modules', '@folio', 'stripes', 'node_modules', moduleName, ...segments),
+    }, {
+      // Yarn workspace fallback
+      request: path.join(context, '..', 'node_modules', '@folio', 'stripes', 'node_modules', moduleName, ...segments),
     });
   }
 
