@@ -1,11 +1,14 @@
 # Change history for stripes-core
 
-## 3.1.0 (IN PROGRESS)
+## [3.0.3](https://github.com/folio-org/stripes-core/tree/v3.0.3) (2019-01-29)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.0.2...v3.0.3)
 
 * Provide parallel support for okapi interface users-bl 3 and 4.
 * Consider framework's node_modules directory from within a Yarn workspace, fixes STCOR-323
 
 ## [3.0.2](https://github.com/folio-org/stripes-core/tree/v3.0.2) (2019-01-24)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.0.1...v3.0.2)
+
 * Add workspace path to stripes alias resolution. Part of STCOR-320.
 
 ## [3.0.1](https://github.com/folio-org/stripes-core/tree/v3.0.1) (2019-01-17)
