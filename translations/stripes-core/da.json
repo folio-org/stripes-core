@@ -2,7 +2,7 @@
     "front.welcome": "Velkommen, bibliotekernes fremtid er ÅBEN!",
     "front.home": "Hjem",
     "front.about": "Detaljer Installation",
-    "button.new": "New",
+    "button.new": "+ New",
     "button.new_tooltip": "Add {entry}",
     "button.edit": "Edit",
     "button.delete": "Delete",
