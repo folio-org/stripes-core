@@ -1,5 +1,4 @@
 export { default as About } from './About';
-export { default as AppIcon } from './AppIcon';
 export { default as AuthErrorsContainer } from './AuthErrorsContainer';
 export { default as CreateResetPassword } from './CreateResetPassword';
 export { default as HandlerManager } from './HandlerManager';
