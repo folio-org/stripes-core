@@ -10,7 +10,13 @@ import { withModules } from '../Modules';
 import { LastVisitedContext } from '../LastVisited';
 import { clearOkapiToken, clearCurrentUser } from '../../okapiActions';
 import { resetStore } from '../../mainActions';
-import { updateQueryResource, updateLocation, getCurrentModule, isQueryResourceModule } from '../../locationService';
+import {
+  updateQueryResource,
+  getLocationQuery,
+  updateLocation,
+  getCurrentModule,
+  isQueryResourceModule
+} from '../../locationService';
 
 import css from './MainNav.css';
 import NavDivider from './NavDivider';
@@ -73,7 +79,7 @@ class MainNav extends Component {
   }
 
   componentDidMount() {
-    let curQuery = null;
+    let curQuery = getLocationQuery(this.props.location);
     this._unsubscribe = this.store.subscribe(() => {
       const { history, location } = this.props;
       const module = this.curModule;
@@ -85,7 +91,6 @@ class MainNav extends Component {
 
   componentDidUpdate(prevProps) {
     const { modules, location } = this.props;
-
     this.curModule = getCurrentModule(modules, location);
     if (this.curModule && !isEqual(location, prevProps.location)) {
       updateQueryResource(location, this.curModule, this.store);
