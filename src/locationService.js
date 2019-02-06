@@ -2,7 +2,7 @@ import { snakeCase, isEqual, forOwn, isEmpty, unset } from 'lodash';
 import queryString from 'query-string';
 import { replaceQueryResource } from './locationActions';
 
-function getLocationQuery(location) {
+export function getLocationQuery(location) {
   return location.query ? location.query : queryString.parse(location.search);
 }
 
