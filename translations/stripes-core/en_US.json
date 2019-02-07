@@ -43,7 +43,7 @@
     "logout": "Log out",
     "settings": "Settings",
     "folioSettings": "FOLIO settings",
-    "mainNavigation": "Main Navigation",
+    "mainNavigation": "Main navigation",
     "loginViaSSO": "Login via SSO",
     "button.close": "Close",
     "login": "Log in",
@@ -112,5 +112,7 @@
     "createResetPassword.newPassword": "New password",
     "createResetPassword.confirmPassword": "Confirm password",
     "errors.password.incorrect.warn.user": "You have entered the wrong username or password for the third time. You have two more tries to login before your account will be locked.",
-    "errors.password.incorrect.block.user": "For security purposes, your account has been locked. Please contact your FOLIO System Administrator to reset your password."
+    "errors.password.incorrect.block.user": "For security purposes, your account has been locked. Please contact your FOLIO System Administrator to reset your password.",
+    "settingSystemInfo": "System information",
+    "settingChoose": "Choose settings"
 }
