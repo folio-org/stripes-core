@@ -88,20 +88,33 @@ class Settings extends React.Component {
 
     return (
       <Paneset>
-        <Pane defaultWidth="20%" paneTitle="Settings">
+        <Pane
+          defaultWidth="20%"
+          paneTitle={<FormattedMessage id="stripes-core.settings" />}
+        >
           <NavList>
-            <NavListSection activeLink={activeLink} label="Settings" className={css.navListSection}>
+            <NavListSection
+              activeLink={activeLink}
+              label={<FormattedMessage id="stripes-core.settings" />}
+              className={css.navListSection}
+            >
               {navLinks}
             </NavListSection>
           </NavList>
-          <NavListSection label="System information" activeLink={activeLink} className={css.navListSection}>
-            <NavListItem to="/settings/about"><FormattedMessage id="stripes-core.front.about" /></NavListItem>
+          <NavListSection
+            label={<FormattedMessage id="stripes-core.settingSystemInfo" />}
+            activeLink={activeLink}
+            className={css.navListSection}
+          >
+            <NavListItem to="/settings/about">
+              <FormattedMessage id="stripes-core.front.about" />
+            </NavListItem>
           </NavListSection>
         </Pane>
         <Switch>
           {routes}
           <Route path="/settings/about" component={() => <About stripes={stripes} />} key="about" />
-          <Route component={() => <div style={{ padding: '15px' }}>Choose settings</div>} />
+          <Route component={() => <div style={{ padding: '15px' }}><FormattedMessage id="stripes-core.settingChoose" /></div>} />
         </Switch>
       </Paneset>
     );

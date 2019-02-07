@@ -85,6 +85,8 @@
   "loginViaSSO": "Login via SSO",
   "setPassword": "Set password",
   "settingPassword": "Setting password...",
+  "settingSystemInfo": "System information",
+  "settingChoose": "Choose settings",
 
   "mainnav.showAllApplicationsButtonLabel": "Apps",
   "mainnav.showAllApplicationsButtonAriaLabel": "Show all applications",
