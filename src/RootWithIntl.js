@@ -33,6 +33,7 @@ import {
   ForgotPasswordCtrl,
   ForgotUserNameCtrl,
   CreateResetPasswordLoader,
+  AppCtxMenuProvider,
 } from './components';
 import { stripesShape } from './Stripes';
 import { StripesContext } from './StripesContext';
@@ -73,45 +74,47 @@ class RootWithIntl extends React.Component {
                   { token || disableAuth ?
                     <MainContainer>
                       <OverlayContainer />
-                      <MainNav stripes={stripes} />
-                      <HandlerManager
-                        event={events.LOGIN}
-                        stripes={stripes}
-                      />
-                      { (stripes.okapi !== 'object' || stripes.discovery.isFinished) && (
-                        <ModuleContainer id="content">
-                          <Switch>
-                            <TitledRoute
-                              name="home"
-                              path="/"
-                              key="root"
-                              exact
-                              component={<Front stripes={stripes} />}
-                            />
-                            <TitledRoute
-                              name="ssoRedirect"
-                              path="/sso-landing"
-                              key="sso-landing"
-                              component={<SSORedirect stripes={stripes} />}
-                            />
-                            <TitledRoute
-                              name="settings"
-                              path="/settings"
-                              component={<Settings stripes={stripes} />}
-                            />
-                            {getModuleRoutes(stripes)}
-                            <TitledRoute
-                              name="notFound"
-                              component={(
-                                <div>
-                                  <h2>Uh-oh!</h2>
-                                  <p>This route does not exist.</p>
-                                </div>
-                              )}
-                            />
-                          </Switch>
-                        </ModuleContainer>
-                      )}
+                      <AppCtxMenuProvider>
+                        <MainNav stripes={stripes} />
+                        <HandlerManager
+                          event={events.LOGIN}
+                          stripes={stripes}
+                        />
+                        { (stripes.okapi !== 'object' || stripes.discovery.isFinished) && (
+                          <ModuleContainer id="content">
+                            <Switch>
+                              <TitledRoute
+                                name="home"
+                                path="/"
+                                key="root"
+                                exact
+                                component={<Front stripes={stripes} />}
+                              />
+                              <TitledRoute
+                                name="ssoRedirect"
+                                path="/sso-landing"
+                                key="sso-landing"
+                                component={<SSORedirect stripes={stripes} />}
+                              />
+                              <TitledRoute
+                                name="settings"
+                                path="/settings"
+                                component={<Settings stripes={stripes} />}
+                              />
+                              {getModuleRoutes(stripes)}
+                              <TitledRoute
+                                name="notFound"
+                                component={(
+                                  <div>
+                                    <h2>Uh-oh!</h2>
+                                    <p>This route does not exist.</p>
+                                  </div>
+                                )}
+                              />
+                            </Switch>
+                          </ModuleContainer>
+                        )}
+                      </AppCtxMenuProvider>
                     </MainContainer> :
                     <Switch>
                       <TitledRoute

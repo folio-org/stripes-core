@@ -18,6 +18,7 @@ import NavGroup from './NavGroup';
 import CurrentApp from './CurrentApp';
 import ProfileDropdown from './ProfileDropdown';
 import AppList from './AppList';
+import { AppContextDropdown } from '../AppContextDropdown';
 
 import settingsIcon from './settings.svg';
 
@@ -181,6 +182,7 @@ class MainNav extends Component {
                     <polygon style={{ fill: '#999' }} points="13 24.8 1.2 13.5 3.2 11.3 13 20.6 22.8 11.3 24.8 13.5 " />
                   </svg>
                 </a>
+                <AppContextDropdown />
                 <CurrentApp
                   id="ModuleMainHeading"
                   currentApp={selectedApp}

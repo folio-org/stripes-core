@@ -25,14 +25,16 @@ const propTypes = {
   ]),
   onClick: PropTypes.func,
   selected: PropTypes.bool,
+  showIcon: PropTypes.bool,
   noSelectedBar: PropTypes.bool,
 };
 
 const defaultProps = {
   noSelectedBar: false,
+  showIcon: true,
 };
 
-const NavButton = React.forwardRef(({ ariaLabel, label, title, selected, onClick, href, icon, noSelectedBar, className, labelClassName, badge, id, iconKey, iconData, ...rest }, ref) => {
+const NavButton = React.forwardRef(({ ariaLabel, label, title, selected, onClick, href, icon, noSelectedBar, className, labelClassName, badge, id, iconKey, iconData, showIcon, ...rest }, ref) => {
   /**
    * Root classes
    */
@@ -46,7 +48,10 @@ const NavButton = React.forwardRef(({ ariaLabel, label, title, selected, onClick
   /**
    * Icon
    */
-  const displayIcon = (<span className={css.icon}>{icon || <AppIcon alt="" app={iconKey} icon={iconData} focusable={false} />}</span>);
+  let renderedIcon = null;
+  if (showIcon) {
+    renderedIcon = (<span className={css.icon}>{icon || <AppIcon alt="" app={iconKey} icon={iconData} focusable={false} />}</span>);
+  }
 
   let Element = 'span';
   let clickableProps = {};
@@ -75,7 +80,7 @@ const NavButton = React.forwardRef(({ ariaLabel, label, title, selected, onClick
     <Element ref={ref} id={id} aria-label={ariaLabel || title} className={rootClasses} {...rest} {...clickableProps}>
       <span className={classNames(css.inner, { [css.isInteractable]: href || onClick })}>
         { badge && (<Badge color="red" className={css.badge}>{badge}</Badge>) }
-        { displayIcon }
+        { renderedIcon }
         { label && <span className={classNames(css.label, labelClassName)}>{label}</span>}
       </span>
     </Element>

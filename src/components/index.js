@@ -1,5 +1,6 @@
 export { default as About } from './About';
 export { default as AuthErrorsContainer } from './AuthErrorsContainer';
+export { AppCtxMenuProvider } from './AppContextDropdown';
 export { default as CreateResetPassword } from './CreateResetPassword';
 export { default as HandlerManager } from './HandlerManager';
 export { LastVisitedContext, withLastVisited } from './LastVisited';
