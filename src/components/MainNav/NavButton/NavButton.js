@@ -14,6 +14,7 @@ const propTypes = {
   label: PropTypes.node,
   title: PropTypes.string,
   className: PropTypes.string,
+  hideIcon: PropTypes.bool,
   id: PropTypes.string,
   iconKey: PropTypes.string,
   iconData: PropTypes.object, // Alternative way of passing icon data
@@ -27,16 +28,15 @@ const propTypes = {
   ]),
   onClick: PropTypes.func,
   selected: PropTypes.bool,
-  showIcon: PropTypes.bool,
   noSelectedBar: PropTypes.bool,
 };
 
 const defaultProps = {
   noSelectedBar: false,
-  showIcon: true,
+  hideIcon: false,
 };
 
-const NavButton = React.forwardRef(({ ariaLabel, label, title, selected, onClick, href, icon, noSelectedBar, className, labelClassName, badge, id, iconKey, iconData, showIcon, ...rest }, ref) => {
+const NavButton = React.forwardRef(({ ariaLabel, label, title, selected, onClick, href, icon, noSelectedBar, className, labelClassName, badge, id, iconKey, iconData, hideIcon, ...rest }, ref) => {
   /**
    * Root classes
    */
@@ -51,7 +51,7 @@ const NavButton = React.forwardRef(({ ariaLabel, label, title, selected, onClick
    * Icon
    */
   let renderedIcon = null;
-  if (showIcon) {
+  if (!hideIcon) {
     renderedIcon = (<span className={css.icon}>{icon || <AppIcon alt="" app={iconKey} icon={iconData} focusable={false} />}</span>);
   }
 
