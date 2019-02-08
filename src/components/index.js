@@ -2,7 +2,7 @@ export { default as About } from './About';
 export { default as AuthErrorsContainer } from './AuthErrorsContainer';
 export { default as CreateResetPassword } from './CreateResetPassword';
 export { default as HandlerManager } from './HandlerManager';
-export { default as AppCtxMenuProvider} from './MainNav/CurrentApp/AppCtxMenuProvider';
+export { default as AppCtxMenuProvider } from './MainNav/CurrentApp/AppCtxMenuProvider';
 export { LastVisitedContext, withLastVisited } from './LastVisited';
 export { default as Login } from './Login';
 export { default as MainContainer } from './MainContainer';
