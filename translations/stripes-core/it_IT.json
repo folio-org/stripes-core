@@ -40,7 +40,7 @@
     "about.settingsModuleCount": "{count, number} impostazioni {count, plural, un {module} altri {modules}}",
     "about.pluginModuleCount": "{count, number}{count, plural, one {modulo} other {moduli}} plugin",
     "loggedInAs": "Logged in as {firstName} {lastName}",
-    "logout": "Log out",
+    "logout": "Esci",
     "settings": "Impostazioni",
     "folioSettings": "Impostazioni di FOLIO",
     "mainNavigation": "Navigazione principale",
