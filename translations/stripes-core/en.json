@@ -20,6 +20,7 @@
   "button.delete": "Delete",
   "button.deleteEntry": "Delete {entry}",
   "button.saveAndClose": "Save and close",
+  "button.save": "Save",
   "button.cancel": "Cancel",
   "button.close": "Close",
   "button.back": "Back",
