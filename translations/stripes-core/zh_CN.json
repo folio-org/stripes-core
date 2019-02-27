@@ -114,5 +114,6 @@
     "errors.password.incorrect.warn.user": "您第三次输入了错误的用户名或密码。在您的帐户被锁定之前，您还有两次尝试登录。",
     "errors.password.incorrect.block.user": "出于安全考虑，您的帐户已被锁定。请联系您的FOLIO系统管理员以重置密码。",
     "settingSystemInfo": "系统信息",
-    "settingChoose": "选择设置"
+    "settingChoose": "选择设置",
+    "button.save": "Save"
 }
