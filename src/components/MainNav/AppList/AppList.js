@@ -180,7 +180,7 @@ class AppList extends Component {
    * Insert hidden input to help trap focus
    */
   focusTrap(onFocus) {
-    return <input aria-hidden="true" className={css.focusTrap} onFocus={onFocus} />;
+    return <input aria-hidden="true" className="sr-only" onFocus={onFocus} />;
   }
 
   render() {
