@@ -1,6 +1,7 @@
 # Change history for stripes-core
 
 ## 3.0.4 In Progress
+* Fixed bug where additional scrollbars would appear when opening the app dropdown (STCOM-461)
 
 * Set current query to a correct value during initial page load. Fixes STCOR-339.
 
