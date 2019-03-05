@@ -1,9 +1,14 @@
+/* This component is exported from stripes-core for
+* use in modules to expose a context menu of module-specific functions
+* to be rendered in FOLIO's main navigation.
+*/
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import { withAppCtxMenu } from './AppCtxMenuContext';
 
-class AppContextMenu extends React.Component {
+class AppContextMenu extends React.PureComponent {
   static propTypes = {
     open: PropTypes.bool,
     children: PropTypes.func,

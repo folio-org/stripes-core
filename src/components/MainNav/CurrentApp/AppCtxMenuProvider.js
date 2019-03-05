@@ -1,3 +1,9 @@
+/* This component wraps the FOLIO UI in order to catch
+* occurrences of AppContextMenu rendered within a
+* UI module. It supplies an open/close state, a toggle handler, and registration/
+* deregistration functions used by AppContextMenu via context.
+*/
+
 import React from 'react';
 import PropTypes from 'prop-types';
 import { AppCtxMenuContext } from './AppCtxMenuContext';

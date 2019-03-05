@@ -1,27 +1,18 @@
+/* This component is rendered in the stripes-core MainNav
+* It will either render a home link (CurrentApp) or an AppContextDropdown if the
+* dropdown is used by the current ui-module.
+*/
+
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Headline } from '@folio/stripes-components';
 import AppContextDropdown from './AppContextDropdown';
 import { withAppCtxMenu } from './AppCtxMenuContext';
-import AppIcon from '../../AppIcon';
-import NavButton from '../NavButton';
 import CurrentApp from './CurrentApp';
-import css from './CurrentAppGroup.css';
 
 const CurrentAppGroup = ({ displayDropdownButton, selectedApp }) => {
   if (displayDropdownButton) {
     return (
-      <div className={css.currentAppGroupContainer}>
-        <AppContextDropdown
-          icon={<AppIcon alt="" app={selectedApp.displayName.toLowerCase()} icon={selectedApp.iconData} focusable={false} />}
-        />
-        <NavButton
-          hideIcon
-          className={css.currentAppGroupSegment}
-          href={selectedApp.home}
-          label={<Headline tag="h1" size="small" margin="none">{selectedApp.displayName}</Headline>}
-        />
-      </div>
+      <AppContextDropdown selectedApp={selectedApp} />
     );
   }
 

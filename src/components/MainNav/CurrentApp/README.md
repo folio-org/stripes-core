@@ -7,17 +7,23 @@ FOLIO UI modules can populate a module-specific context menu by using the provid
 Ideally the AppContextMenu component is placed at the highest level within a module, so that the dropdown will render outside of any routing that's taking place.
 */
 import { AppContextMenu } from '@folio/stripes/core';
+import { NavList, NavListItem, NavListSection } from '@folio/stripes/components';
+import packageInfo from '../package'; // package.json for "home" link
 
     <AppContextMenu>
-      {(handleToggle) => (
-        <React.Fragment>
-          <button type="button" onClick={handleToggle}>User Application Shortcuts</button>
-          {/*
-           Additional menu items...
-          */}
-        </React.Fragment>
-      )}
-    </AppContextMenu>
+    {(handleToggle) => (
+      <NavList>
+        <NavListSection>
+          <NavListItem to={packageInfo.stripes.home} onClick={handleToggle}>
+            Users Application Home
+          </NavListItem>
+          <NavListItem onClick={() => { shortcutModalToggle(handleToggle); }}>
+            Keyboard Shortcuts
+          </NavListItem>
+        </NavListSection>
+      </NavList>
+    )}
+  </AppContextMenu>
 ```
 
 The `handleToggle` renderProp is used to close the menu upon clicking an item.
