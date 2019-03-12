@@ -115,5 +115,6 @@
     "errors.password.incorrect.block.user": "For security purposes, your account has been locked. Please contact your FOLIO System Administrator to reset your password.",
     "settingSystemInfo": "System information",
     "settingChoose": "Choose settings",
-    "button.save": "Save"
+    "button.save": "Save",
+    "mainnav.appContextMenu": "Application context dropdown"
 }

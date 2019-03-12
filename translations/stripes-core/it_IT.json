@@ -39,7 +39,7 @@
     "about.appModuleCount": "{count, number} app {count, plural, un {module} altri {modules}}",
     "about.settingsModuleCount": "{count, number} impostazioni {count, plural, un {module} altri {modules}}",
     "about.pluginModuleCount": "{count, number}{count, plural, one {modulo} other {moduli}} plugin",
-    "loggedInAs": "Logged in as {firstName} {lastName}",
+    "loggedInAs": "Connesso come {firstName} {lastName}",
     "logout": "Esci",
     "settings": "Impostazioni",
     "folioSettings": "Impostazioni di FOLIO",
@@ -115,5 +115,6 @@
     "errors.password.incorrect.block.user": "For security purposes, your account has been locked. Please contact your FOLIO System Administrator to reset your password.",
     "settingSystemInfo": "System information",
     "settingChoose": "Choose settings",
-    "button.save": "Save"
+    "button.save": "Save",
+    "mainnav.appContextMenu": "Application context dropdown"
 }
