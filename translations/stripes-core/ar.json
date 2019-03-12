@@ -115,5 +115,6 @@
     "errors.password.incorrect.block.user": "لأسباب أمنية، حسابك تم إغلاقه. يرجى الاتصال بمسؤول نظام فوليو الخاص بك لإعادة تعيين كلمة المرور.",
     "settingSystemInfo": "معلومات النظام",
     "settingChoose": "اختر الإعدادات",
-    "button.save": "حفظ"
+    "button.save": "حفظ",
+    "mainnav.appContextMenu": "القائمة المنسدلة لسياق التطبيق"
 }

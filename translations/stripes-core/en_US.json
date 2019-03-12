@@ -90,7 +90,6 @@
     "mainnav.currentAppAriaLabel": "Current open application: {appName} (Click to go home)",
     "mainnav.topLevelLabel": "Primary",
     "mainnav.applicationListLabel": "Application List",
-    "mainnav.appContextMenu": "Application context dropdown",
     "errors.default.error": "Sorry, the information entered does not match our records.",
     "errors.username.incorrect": "Error verifying user existence: No user found by username {username}",
     "errors.password.incorrect": "Bad credentials",
@@ -116,5 +115,6 @@
     "errors.password.incorrect.block.user": "For security purposes, your account has been locked. Please contact your FOLIO System Administrator to reset your password.",
     "settingSystemInfo": "System information",
     "settingChoose": "Choose settings",
-    "button.save": "Save"
+    "button.save": "Save",
+    "mainnav.appContextMenu": "Application context dropdown"
 }

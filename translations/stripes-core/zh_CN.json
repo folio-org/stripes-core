@@ -115,5 +115,6 @@
     "errors.password.incorrect.block.user": "出于安全考虑，您的帐户已被锁定。请联系您的FOLIO系统管理员以重置密码。",
     "settingSystemInfo": "系统信息",
     "settingChoose": "选择设置",
-    "button.save": "Save"
+    "button.save": "Save",
+    "mainnav.appContextMenu": "Application context dropdown"
 }
