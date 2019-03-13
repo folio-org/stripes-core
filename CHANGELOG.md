@@ -1,6 +1,7 @@
 # Change history for stripes-core
 
-## 3.0.4 (IN PROGRESS)
+## [3.0.4](https://github.com/folio-org/stripes-core/tree/v3.0.4) (2019-03-13)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.0.3...v3.0.4)
 
 * Make stripes dependencies more strict with ~ instead of ^. Refs STRIPES-608.
 
