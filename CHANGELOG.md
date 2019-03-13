@@ -1,8 +1,10 @@
 # Change history for stripes-core
 
-## 3.0.4 (IN PROGRESS)
-
-* Make stripes dependencies more strict with ~ instead of ^.
+## 3.0.4 In Progress
+* Expose 'current app' contextual dropdown to modules. (STCOR-309)
+* Fixed bug where additional scrollbars would appear when opening the app dropdown (STCOM-461)
+* Set current query to a correct value during initial page load. Fixes STCOR-339.
+* Make stripes dependencies more strict with ~ instead of ^. Refs STRIPES-608.
 
 ## [3.0.3](https://github.com/folio-org/stripes-core/tree/v3.0.3) (2019-01-29)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.0.2...v3.0.3)

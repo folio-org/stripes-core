@@ -7,6 +7,11 @@ const DuplicatePackageCheckerPlugin = require('duplicate-package-checker-webpack
 // Module names that must not have duplicates
 const duplicatesNotAllowed = [
   'react',
+  'stripes-core',
+  'stripes-components',
+  'stripes-smart-components',
+  'stripes-form',
+  'stripes-connect',
 ];
 
 // Module names that are acceptable to have duplicates

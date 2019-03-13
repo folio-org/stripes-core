@@ -2,8 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import Link from 'react-router-dom/Link';
-import AppIcon from '@folio/stripes-components/lib/AppIcon';
 import Badge from '@folio/stripes-components/lib/Badge';
+
+import AppIcon from '../../AppIcon';
+
 import css from './NavButton.css';
 
 const propTypes = {
@@ -12,6 +14,7 @@ const propTypes = {
   label: PropTypes.node,
   title: PropTypes.string,
   className: PropTypes.string,
+  hideIcon: PropTypes.bool,
   id: PropTypes.string,
   iconKey: PropTypes.string,
   iconData: PropTypes.object, // Alternative way of passing icon data
@@ -30,9 +33,10 @@ const propTypes = {
 
 const defaultProps = {
   noSelectedBar: false,
+  hideIcon: false,
 };
 
-const NavButton = React.forwardRef(({ ariaLabel, label, title, selected, onClick, href, icon, noSelectedBar, className, labelClassName, badge, id, iconKey, iconData, ...rest }, ref) => {
+const NavButton = React.forwardRef(({ ariaLabel, label, title, selected, onClick, href, icon, noSelectedBar, className, labelClassName, badge, id, iconKey, iconData, hideIcon, ...rest }, ref) => {
   /**
    * Root classes
    */
@@ -46,7 +50,7 @@ const NavButton = React.forwardRef(({ ariaLabel, label, title, selected, onClick
   /**
    * Icon
    */
-  const displayIcon = (<span className={css.icon}>{icon || <AppIcon alt="" app={iconKey} icon={iconData} focusable={false} />}</span>);
+  const renderedIcon = (<span className={css.icon}>{icon || <AppIcon alt="" app={iconKey} icon={iconData} focusable={false} />}</span>);
 
   let Element = 'span';
   let clickableProps = {};
@@ -75,7 +79,7 @@ const NavButton = React.forwardRef(({ ariaLabel, label, title, selected, onClick
     <Element ref={ref} id={id} aria-label={ariaLabel || title} className={rootClasses} {...rest} {...clickableProps}>
       <span className={classNames(css.inner, { [css.isInteractable]: href || onClick })}>
         { badge && (<Badge color="red" className={css.badge}>{badge}</Badge>) }
-        { displayIcon }
+        { renderedIcon }
         { label && <span className={classNames(css.label, labelClassName)}>{label}</span>}
       </span>
     </Element>

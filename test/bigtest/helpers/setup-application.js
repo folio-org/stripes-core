@@ -26,7 +26,8 @@ export default function setupApplication({
   permissions = {},
   stripesConfig,
   mirageOptions,
-  scenarios
+  scenarios,
+  currentUser = {},
 } = {}) {
   beforeEach(async function () {
     const initialState = {};
@@ -35,7 +36,7 @@ export default function setupApplication({
     if (disableAuth) {
       initialState.okapi = {
         token: 'test',
-        currentUser: {
+        currentUser: assign({
           id: 'test',
           username: 'testuser',
           firstName: 'Test',
@@ -43,7 +44,7 @@ export default function setupApplication({
           email: 'user@folio.org',
           addresses: [],
           servicePoints: []
-        },
+        }, currentUser),
         currentPerms: permissions
       };
     }

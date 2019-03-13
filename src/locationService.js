@@ -2,7 +2,7 @@ import { snakeCase, isEqual, forOwn, isEmpty, unset } from 'lodash';
 import queryString from 'query-string';
 import { replaceQueryResource } from './locationActions';
 
-function getLocationQuery(location) {
+export function getLocationQuery(location) {
   return location.query ? location.query : queryString.parse(location.search);
 }
 
@@ -45,7 +45,6 @@ export function updateQueryResource(location, module, store) {
   const locationQuery = getLocationQuery(location);
 
   if (isEqual(stateQuery, locationQuery)) return;
-
   store.dispatch(replaceQueryResource(module, locationQuery));
 }
 
@@ -56,7 +55,9 @@ export function updateLocation(module, curQuery, store, history, location) {
   const cleanStateQuery = removeEmpty(stateQuery);
   const cleanLocationQuery = removeEmpty(locationQuery);
 
-  if (isEqual(cleanStateQuery, cleanLocationQuery)) return curQuery;
+  if (isEqual(cleanStateQuery, cleanLocationQuery)) {
+    return cleanLocationQuery;
+  }
 
   const params = removeEmpty(Object.assign({}, locationQuery, stateQuery));
 

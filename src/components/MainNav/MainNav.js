@@ -10,12 +10,18 @@ import { withModules } from '../Modules';
 import { LastVisitedContext } from '../LastVisited';
 import { clearOkapiToken, clearCurrentUser } from '../../okapiActions';
 import { resetStore } from '../../mainActions';
-import { updateQueryResource, updateLocation, getCurrentModule, isQueryResourceModule } from '../../locationService';
+import {
+  updateQueryResource,
+  getLocationQuery,
+  updateLocation,
+  getCurrentModule,
+  isQueryResourceModule
+} from '../../locationService';
 
 import css from './MainNav.css';
 import NavDivider from './NavDivider';
 import NavGroup from './NavGroup';
-import CurrentApp from './CurrentApp';
+import { CurrentAppGroup } from './CurrentApp';
 import ProfileDropdown from './ProfileDropdown';
 import AppList from './AppList';
 
@@ -73,7 +79,7 @@ class MainNav extends Component {
   }
 
   componentDidMount() {
-    let curQuery = null;
+    let curQuery = getLocationQuery(this.props.location);
     this._unsubscribe = this.store.subscribe(() => {
       const { history, location } = this.props;
       const module = this.curModule;
@@ -85,7 +91,6 @@ class MainNav extends Component {
 
   componentDidUpdate(prevProps) {
     const { modules, location } = this.props;
-
     this.curModule = getCurrentModule(modules, location);
     if (this.curModule && !isEqual(location, prevProps.location)) {
       updateQueryResource(location, this.curModule, this.store);
@@ -181,10 +186,7 @@ class MainNav extends Component {
                     <polygon style={{ fill: '#999' }} points="13 24.8 1.2 13.5 3.2 11.3 13 20.6 22.8 11.3 24.8 13.5 " />
                   </svg>
                 </a>
-                <CurrentApp
-                  id="ModuleMainHeading"
-                  currentApp={selectedApp}
-                />
+                <CurrentAppGroup selectedApp={selectedApp} />
               </NavGroup>
               <nav aria-labelledby="main_navigation_label">
                 <h2 className="sr-only" id="main_navigation_label">
