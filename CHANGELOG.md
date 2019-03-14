@@ -1,10 +1,19 @@
 # Change history for stripes-core
 
-## 3.0.4 In Progress
+## [3.1.0](https://github.com/folio-org/stripes-core/tree/v3.1.0) (2019-03-14)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.0.4...v3.1.0)
+
+* Provide `<AppIcon>`. (STCOM-411)
+* Localize Settings and System Information strings. (STCOR-313)
 * Expose 'current app' contextual dropdown to modules. (STCOR-309)
 * Fixed bug where additional scrollbars would appear when opening the app dropdown (STCOM-461)
 * Set current query to a correct value during initial page load. Fixes STCOR-339.
+
+## [3.0.4](https://github.com/folio-org/stripes-core/tree/v3.0.4) (2019-03-13)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.0.3...v3.0.4)
+
 * Make stripes dependencies more strict with ~ instead of ^. Refs STRIPES-608.
+
 
 ## [3.0.3](https://github.com/folio-org/stripes-core/tree/v3.0.3) (2019-01-29)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.0.2...v3.0.3)
