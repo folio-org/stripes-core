@@ -1,6 +1,6 @@
 import React from 'react';
 import Route from 'react-router-dom/Route';
-import { connectFor } from '@folio/stripes-connect';
+// import { connectFor } from '@folio/stripes-connect';
 import ErrorBoundary from '@folio/stripes-components/lib/ErrorBoundary';
 import ModulesContext from './ModulesContext';
 import { StripesContext } from './StripesContext';
@@ -8,6 +8,7 @@ import AddContext from './AddContext';
 import TitleManager from './components/TitleManager';
 import { getHandlerComponents } from './handlerService';
 import events from './events';
+import { rootConnectFor as connectFor } from './components/Root';
 
 function getModuleRoutes(stripes) {
   return (

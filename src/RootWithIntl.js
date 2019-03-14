@@ -9,8 +9,8 @@ import { Provider } from 'react-redux';
 import { CookiesProvider } from 'react-cookie';
 
 import { HotKeys } from '@folio/stripes-components/lib/HotKeys';
-import { connectFor } from '@folio/stripes-connect';
-
+// import { connectFor } from '@folio/stripes-connect';
+import { rootConnectFor as connectFor } from './components/Root';
 import getModuleRoutes from './moduleRoutes';
 import events from './events';
 

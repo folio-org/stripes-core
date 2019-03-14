@@ -25,3 +25,4 @@ export { default as ForgotPasswordCtrl } from './ForgotPassword';
 export { default as ForgotUserNameCtrl } from './ForgotUserName';
 export { default as CheckEmailStatusPage } from './CheckEmailStatusPage';
 export { default as CreateResetPasswordLoader } from './CreateResetPasswordLoader';
+export { rootConnect, rootConnectFor } from './Root/RootConnect';
