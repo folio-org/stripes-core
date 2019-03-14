@@ -8,6 +8,7 @@
 * Expose 'current app' contextual dropdown to modules. (STCOR-309)
 * Fixed bug where additional scrollbars would appear when opening the app dropdown (STCOM-461)
 * Set current query to a correct value during initial page load. Fixes STCOR-339.
+* Use stripes-components 5.1.x. (STCOR-352) 
 
 ## [3.0.4](https://github.com/folio-org/stripes-core/tree/v3.0.4) (2019-03-13)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.0.3...v3.0.4)
