@@ -9,7 +9,8 @@ import { ApolloProvider } from 'react-apollo';
 import ErrorBoundary from '@folio/stripes-components/lib/ErrorBoundary';
 import { metadata } from 'stripes-config';
 
-import { RootContext } from './RootContext';
+import { ConnectContext } from '@folio/stripes-connect';
+// import { RootContext } from './RootContext';
 import initialReducers from '../../initialReducers';
 import enhanceReducer from '../../enhanceReducer';
 import createApolloClient from '../../createApolloClient';
@@ -121,7 +122,7 @@ class Root extends Component {
 
     return (
       <ErrorBoundary>
-        <RootContext.Provider value={{ addReducer: this.addReducer, addEpic: this.addEpic, store }}>
+        <ConnectContext.Provider value={{ addReducer: this.addReducer, addEpic: this.addEpic, store }}>
           <ApolloProvider client={createApolloClient(okapi)}>
             <IntlProvider
               locale={locale}
@@ -138,7 +139,7 @@ class Root extends Component {
               />
             </IntlProvider>
           </ApolloProvider>
-        </RootContext.Provider>
+        </ConnectContext.Provider>
       </ErrorBoundary>
     );
   }
