@@ -115,5 +115,6 @@
     "errors.password.incorrect.block.user": "Por motivos de segurança, a sua conta foi bloqueada. Por favor, tente novamente ou entre em contacto com o administrador do sistema FOLIO para redefinir a sua palavra-passe.",
     "settingSystemInfo": "System information",
     "settingChoose": "Choose settings",
-    "button.save": "Save"
+    "button.save": "Save",
+    "mainnav.appContextMenu": "Application context dropdown"
 }
