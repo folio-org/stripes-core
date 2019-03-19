@@ -35,6 +35,9 @@ class ProfileDropdown extends Component {
       }),
       okapi: PropTypes.object,
     }).isRequired,
+    history: PropTypes.shape({
+      push: PropTypes.func.isRequired,
+    }).isRequired,
   };
 
   static contextTypes = {
@@ -131,7 +134,7 @@ class ProfileDropdown extends Component {
   }
 
   navigateByUrl(link) {
-    this.context.router.history.push(link.route);
+    this.props.history.push(link.route);
   }
 
   onHome = () => {

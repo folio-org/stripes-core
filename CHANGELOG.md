@@ -1,5 +1,9 @@
 # Change history for stripes-core
 
+## 3.2.0 (IN PROGRESS)
+
+* Don't use react-router's private history API. Refs STRIPES-614. 
+
 ## [3.1.0](https://github.com/folio-org/stripes-core/tree/v3.1.0) (2019-03-14)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.0.4...v3.1.0)
 
