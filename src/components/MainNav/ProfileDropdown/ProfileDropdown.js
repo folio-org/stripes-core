@@ -1,5 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { isFunction, kebabCase } from 'lodash';
+import { compose } from 'redux';
+import { withRouter } from 'react-router';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import { Dropdown } from '@folio/stripes-components/lib/Dropdown';
@@ -34,6 +36,9 @@ class ProfileDropdown extends Component {
         showHomeLink: PropTypes.bool,
       }),
       okapi: PropTypes.object,
+    }).isRequired,
+    history: PropTypes.shape({
+      push: PropTypes.func.isRequired,
     }).isRequired,
   };
 
@@ -131,7 +136,7 @@ class ProfileDropdown extends Component {
   }
 
   navigateByUrl(link) {
-    this.context.router.history.push(link.route);
+    this.props.history.push(link.route);
   }
 
   onHome = () => {
@@ -223,4 +228,7 @@ class ProfileDropdown extends Component {
   }
 }
 
-export default withModules(ProfileDropdown);
+export default compose(
+  withRouter,
+  withModules,
+)(ProfileDropdown);
