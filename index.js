@@ -1,6 +1,7 @@
 export { RootContext } from './src/components/Root/RootContext';
 export { stripesShape } from './src/Stripes';
 export { withStripes } from './src/StripesContext';
+export { default as stripesConnect } from './src/stripesConnect';
 
 export { default as Pluggable } from './src/Pluggable';
 export { setServicePoints, setCurServicePoint } from './src/loginServices';
