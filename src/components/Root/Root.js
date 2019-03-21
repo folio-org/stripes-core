@@ -9,8 +9,11 @@ import { ApolloProvider } from 'react-apollo';
 import ErrorBoundary from '@folio/stripes-components/lib/ErrorBoundary';
 import { metadata } from 'stripes-config';
 
+/* ConnectContext - formerly known as RootContext, now comes from stripes-connect, so stripes-connect
+* is providing the infrastructure for store connectivity to the system. This eliminates a circular
+* dependency between stripes-connect and stripes-core. STCON-76
+*/
 import { ConnectContext } from '@folio/stripes-connect';
-// import { RootContext } from './RootContext';
 import initialReducers from '../../initialReducers';
 import enhanceReducer from '../../enhanceReducer';
 import createApolloClient from '../../createApolloClient';
