@@ -1,4 +1,3 @@
-export { RootContext } from './src/components/Root/RootContext';
 export { stripesShape } from './src/Stripes';
 export { withStripes } from './src/StripesContext';
 
@@ -12,3 +11,4 @@ export { default as HandlerManager } from './src/components/HandlerManager';
 export { default as coreEvents } from './src/events';
 export { default as IntlConsumer } from './src/components/IntlConsumer';
 export { default as AppIcon } from './src/components/AppIcon';
+export { ConnectContext as RootContext, withConnect as withRoot } from '@folio/stripes-connect';
