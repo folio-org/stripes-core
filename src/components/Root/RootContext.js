@@ -1,21 +1,6 @@
-import React from 'react';
+/* The context that lived here mainly provided a courier for redux-centric elements.
+* it now is provided by stripes-connect. This is a temporary location of the export while some modules still import withRoot
+* directly from this file.
+*/
 
-export const RootContext = React.createContext();
-
-function getDisplayName(WrappedComponent) {
-  return WrappedComponent.displayName || WrappedComponent.name || 'Component';
-}
-
-export function withRoot(WrappedComponent) {
-  class WithRoot extends React.Component {
-    render() {
-      return (
-        <RootContext.Consumer>
-          {root => <WrappedComponent {...this.props} root={root} /> }
-        </RootContext.Consumer>
-      );
-    }
-  }
-  WithRoot.displayName = `WithRoot(${getDisplayName(WrappedComponent)})`;
-  return WithRoot;
-}
+export { ConnectContext as RootContext, withConnect as withRoot } from '@folio/stripes-connect';
