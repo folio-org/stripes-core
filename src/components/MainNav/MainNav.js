@@ -113,7 +113,7 @@ class MainNav extends Component {
     this.store.dispatch(clearCurrentUser());
     this.store.dispatch(resetStore());
     localforage.removeItem('okapiSess');
-    this.context.router.history.push('/');
+    this.props.history.push('/');
   }
 
   getAppList(lastVisited) {

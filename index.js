@@ -1,5 +1,6 @@
 export { stripesShape } from './src/Stripes';
 export { withStripes } from './src/StripesContext';
+export { default as stripesConnect } from './src/stripesConnect';
 
 export { default as Pluggable } from './src/Pluggable';
 export { setServicePoints, setCurServicePoint } from './src/loginServices';
@@ -12,3 +13,4 @@ export { default as coreEvents } from './src/events';
 export { default as IntlConsumer } from './src/components/IntlConsumer';
 export { default as AppIcon } from './src/components/AppIcon';
 export { ConnectContext as RootContext, withConnect as withRoot } from '@folio/stripes-connect';
+export { Route, Switch, Redirect } from './src/components/NestedRouter';
