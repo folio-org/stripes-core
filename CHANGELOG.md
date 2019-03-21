@@ -1,6 +1,7 @@
 # Change history for stripes-core
 
-## 3.2.0 (IN PROGRESS)
+## 3.2.0 [3.2.0](https://github.com/folio-org/stripes-core/tree/v3.2.0) (2019-03-21)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.1.0...v3.2.0)
 
 * Don't use react-router's private history API. Refs STRIPES-614. 
 * Expose `stripesConnect()` HOC so that modules no longer have to solely depend on couriered `connect()`.
