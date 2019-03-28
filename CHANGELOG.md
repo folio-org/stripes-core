@@ -1,5 +1,9 @@
 # Change history for stripes-core
 
+## 3.3.0 (IN PROGRESS)
+
+* Provide React 16.8, the one with hooks! Refs STRIPES-599.
+
 ## 3.2.0 [3.2.0](https://github.com/folio-org/stripes-core/tree/v3.2.0) (2019-03-21)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.1.0...v3.2.0)
 
