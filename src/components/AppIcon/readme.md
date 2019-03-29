@@ -7,7 +7,7 @@ AppIcon supports different ways of loading icons.
 
 ***1. Use context (recommended)***
 ```js
-  import { AppIcon } from '@folio/stripes-core/src/components';
+  import { AppIcon } from '@folio/stripes/core';
 
   // Note: Make sure that the AppIcon has "stripes" in context as it relies on stripes.metadata.
   <AppIcon app="users" size="small" />
