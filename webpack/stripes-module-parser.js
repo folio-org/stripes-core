@@ -172,7 +172,7 @@ function parseAllModules(enabledModules, context, aliases) {
     }
 
     // Interim measure to allow ui-notes to offer both an app and a plugin
-    // until STRIPES-148 is complete. See STRIPES-357
+    // until STCOR-148 is complete. See STCOR-357
     if (parsedModule.config.module === '@folio/notes') {
       const notesConfig = Object.assign({}, parsedModule.config);
       notesConfig.getModule = new Function([], `return require('${moduleName}/src/plugin').default;`); // eslint-disable-line no-new-func
