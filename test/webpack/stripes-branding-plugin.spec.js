@@ -1,7 +1,7 @@
 const expect = require('chai').expect;
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
+const FaviconsWebpackPlugin = require('webapp-webpack-plugin');
 const defaultBranding = require('../../default-assets/branding');
 const StripesBrandingPlugin = require('../../webpack/stripes-branding-plugin');
 
