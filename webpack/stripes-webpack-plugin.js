@@ -19,7 +19,7 @@ module.exports = class StripesWebpackPlugin {
       new StripesConfigPlugin(this.stripesConfig),
       new StripesBrandingPlugin({
         tenantBranding: this.stripesConfig.branding,
-        buildAllFavicons: isProduction,
+        enableFavicons: isProduction,
       }),
       new StripesTranslationsPlugin(this.stripesConfig),
       new StripesDuplicatesPlugin(),

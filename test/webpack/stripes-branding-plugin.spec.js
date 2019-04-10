@@ -56,44 +56,22 @@ describe('The stripes-branding-plugin', function () {
   });
 
   describe('apply method', function () {
-    it('applies the FaviconsWebpackPlugin', function () {
+    it('applies the FaviconsWebpackPlugin when "enableFavicons" is true', function () {
       this.sandbox.spy(FaviconsWebpackPlugin.prototype, 'apply');
-      const sut = new StripesBrandingPlugin();
+      const sut = new StripesBrandingPlugin({ enableFavicons: true });
       sut.apply(compilerStub);
 
       expect(FaviconsWebpackPlugin.prototype.apply).to.have.been.calledOnce;
       expect(FaviconsWebpackPlugin.prototype.apply).to.be.calledWith(compilerStub);
     });
-  });
 
-  describe('_getFaviconOptions method', function () {
-    it('enables all favicons when "buildAllFavicons" is true', function () {
-      const sut = new StripesBrandingPlugin({ buildAllFavicons: true });
-      const options = sut._getFaviconOptions();
-      expect(options).to.be.a('object').with.property('icons').that.includes({
-        android: true,
-        appleIcon: true,
-        appleStartup: true,
-        coast: true,
-        favicons: true,
-        firefox: true,
-        windows: true,
-        yandex: true,
-      });
-    });
-    it('enables only standard favicons when "buildAllFavicons" is false', function () {
-      const sut = new StripesBrandingPlugin({ buildAllFavicons: false });
-      const options = sut._getFaviconOptions();
-      expect(options).to.be.a('object').with.property('icons').that.includes({
-        android: false,
-        appleIcon: false,
-        appleStartup: false,
-        coast: false,
-        favicons: true,
-        firefox: false,
-        windows: false,
-        yandex: false,
-      });
+    it('applies the FaviconsWebpackPlugin when "enableFavicons" is false', function () {
+      this.sandbox.spy(FaviconsWebpackPlugin.prototype, 'apply');
+      const sut = new StripesBrandingPlugin({ enableFavicons: false });
+      sut.apply(compilerStub);
+
+      expect(FaviconsWebpackPlugin.prototype.apply).to.not.have.been.calledOnce;
+      expect(FaviconsWebpackPlugin.prototype.apply).to.not.be.calledWith(compilerStub);
     });
   });
 
