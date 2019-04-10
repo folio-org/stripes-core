@@ -2,8 +2,21 @@
 // The virtual module contains require()'s needed for webpack to pull images into the bundle.
 
 const path = require('path');
+const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
 const defaultBranding = require('../default-assets/branding');
 const logger = require('./logger')('stripesBrandingPlugin');
+
+// Minimal favicon settings for favicons-webpack-plugin
+const standardFaviconsOnly = {
+  android: false,
+  appleIcon: false,
+  appleStartup: false,
+  coast: false,
+  favicons: true,
+  firefox: false,
+  windows: false,
+  yandex: false,
+};
 
 // Complete favicon settings for favicons-webpack-plugin
 const allFavicons = {
@@ -23,17 +36,13 @@ module.exports = class StripesBrandingPlugin {
     // TODO: Validate incoming tenantBranding paths
     const tenantBranding = (options && options.tenantBranding) ? options.tenantBranding : {};
     this.branding = Object.assign({}, defaultBranding, tenantBranding);
-    this.enableFavicons = options && options.enableFavicons;
+    this.buildAllFavicons = options && options.buildAllFavicons;
   }
 
   apply(compiler) {
-    // Skip favicon in development mode due to memory issues (STCOR-296)
-    if (this.enableFavicons) {
-      const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
-      // FaviconsWebpackPlugin will inject the necessary html via HtmlWebpackPlugin
-      const faviconOptions = this._getFaviconOptions();
-      new FaviconsWebpackPlugin(faviconOptions).apply(compiler);
-    }
+    // FaviconsWebpackPlugin will inject the necessary html via HtmlWebpackPlugin
+    const faviconOptions = this._getFaviconOptions();
+    new FaviconsWebpackPlugin(faviconOptions).apply(compiler);
 
     // Hook into stripesConfigPlugin to supply branding config
     compiler.hooks.stripesConfigPluginBeforeWrite.tap('StripesBrandingPlugin', (config) => {
@@ -45,7 +54,7 @@ module.exports = class StripesBrandingPlugin {
   _getFaviconOptions() {
     const faviconOptions = {
       logo: StripesBrandingPlugin._initFavicon(this.branding.favicon.src),
-      icons: allFavicons,
+      icons: this.buildAllFavicons ? allFavicons : standardFaviconsOnly,
     };
     logger.log('favicon options', faviconOptions);
     return faviconOptions;
