@@ -19,6 +19,9 @@ const devConfig = Object.assign({}, base, cli, {
   mode: 'development',
 });
 
+// Override filename to remove the hash in development due to memory issues (STCOR-296)
+devConfig.output.filename = 'bundle.js';
+
 devConfig.entry.unshift('webpack-hot-middleware/client');
 
 devConfig.plugins = devConfig.plugins.concat([
