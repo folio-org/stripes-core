@@ -28,7 +28,14 @@ module.exports = {
       template: `${__dirname}/index.html`,
     }),
     new webpack.EnvironmentPlugin(['NODE_ENV']),
-    new LodashModuleReplacementPlugin()
+    // https://github.com/lodash/lodash-webpack-plugin#feature-sets
+    // Replace lodash feature sets of modules with noop.
+    // Any needed feature sets should be enabled here:
+    new LodashModuleReplacementPlugin({
+      'collections': true,
+      'flattening': true,
+      'paths': true
+    })
   ],
   module: {
     rules: [
