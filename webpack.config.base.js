@@ -30,7 +30,7 @@ module.exports = {
     new webpack.EnvironmentPlugin(['NODE_ENV']),
     // https://github.com/lodash/lodash-webpack-plugin#feature-sets
     // Replace lodash feature sets of modules with noop.
-    // Any needed feature sets should be enabled here:
+    // Feature sets that are truly not needed can be disabled here (listed largest to smallest):
     new LodashModuleReplacementPlugin({
       'shorthands': true,
       'cloning': true,

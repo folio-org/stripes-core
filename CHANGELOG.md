@@ -1,11 +1,16 @@
 # Change history for stripes-core
 
-## 3.3.0 [3.3.0](https://github.com/folio-org/stripes-core/tree/v3.3.0) (2019-03-28)
+## 3.3.1 (IN-PROGRESS)
+
+* Resolve memory leaks and improve performance in dev re-builds. Refs STCOR-296.
+* Reduce lodash footprint using [lodash-webpack-plugin](https://www.npmjs.com/package/lodash-webpack-plugin) and [babel-plugin-lodash](https://www.npmjs.com/package/babel-plugin-lodash). Refs STCOR-285.
+
+## [3.3.0](https://github.com/folio-org/stripes-core/tree/v3.3.0) (2019-03-28)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.2.0...v3.3.0)
 
 * Provide React 16.8, the one with hooks! Refs STRIPES-599.
 
-## 3.2.0 [3.2.0](https://github.com/folio-org/stripes-core/tree/v3.2.0) (2019-03-21)
+## [3.2.0](https://github.com/folio-org/stripes-core/tree/v3.2.0) (2019-03-21)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.1.0...v3.2.0)
 
 * Don't use react-router's private history API. Refs STRIPES-614.
