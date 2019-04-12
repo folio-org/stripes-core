@@ -32,9 +32,22 @@ module.exports = {
     // Replace lodash feature sets of modules with noop.
     // Any needed feature sets should be enabled here:
     new LodashModuleReplacementPlugin({
+      'shorthands': true,
+      'cloning': true,
+      'currying': true,
+      'caching': true,
       'collections': true,
+      'exotics': true,
+      'guards': true,
+      'metadata': true, // (requires currying)
+      'deburring': true,
+      'unicode': true,
+      'chaining': true,
+      'memoizing': true,
+      'coercions': true,
       'flattening': true,
-      'paths': true
+      'paths': true,
+      'placeholders': true // (requires currying)
     })
   ],
   module: {
