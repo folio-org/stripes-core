@@ -60,8 +60,6 @@
     "title.ssoLanding": "Aterrizaje SSO",
     "currentServicePoint": "Punto de servicio: {name}",
     "currentServicePointNotSelected": "Punto de servicio: ninguno",
-    "stripes-core.front.welcome": "Vacío",
-    "stripes-core.front.about": "Vacío",
     "title.CreateResetPassword": "Choose a password",
     "title.forgotPassword": "Forgot password?",
     "title.forgotUsername": "Forgot username?",

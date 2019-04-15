@@ -60,8 +60,6 @@
     "title.ssoLanding": "SSO登陆",
     "currentServicePoint": "服务点：{name}",
     "currentServicePointNotSelected": "服务点：无",
-    "stripes-core.front.welcome": "空白",
-    "stripes-core.front.about": "空",
     "title.CreateResetPassword": "选择一个密码",
     "title.forgotPassword": "忘了密码?",
     "title.forgotUsername": "忘记了用户名？",
