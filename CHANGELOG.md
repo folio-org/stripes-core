@@ -4,6 +4,7 @@
 
 * Resolve memory leaks and improve performance in dev re-builds. Refs STCOR-296.
 * Reduce lodash footprint using [lodash-webpack-plugin](https://www.npmjs.com/package/lodash-webpack-plugin) and [babel-plugin-lodash](https://www.npmjs.com/package/babel-plugin-lodash). Refs STCOR-285.
+* Minor style updates for 'My profile' icon (UX-282)
 
 ## [3.3.0](https://github.com/folio-org/stripes-core/tree/v3.3.0) (2019-03-28)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.2.0...v3.3.0)
