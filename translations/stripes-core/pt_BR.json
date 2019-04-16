@@ -60,8 +60,6 @@
     "title.ssoLanding": "Destino de SSO",
     "currentServicePoint": "Ponto de serviço: {name}",
     "currentServicePointNotSelected": "Ponto de serviço: Nenhum",
-    "stripes-core.front.welcome": "",
-    "stripes-core.front.about": "",
     "title.CreateResetPassword": "Escolha uma senha",
     "title.forgotPassword": "Esqueceu a senha?",
     "title.forgotUsername": "Esqueceu o nome de usuário?",

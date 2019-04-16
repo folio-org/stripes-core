@@ -60,8 +60,6 @@
     "title.ssoLanding": "SSO beállítások",
     "currentServicePoint": "Szolgáltatási pont: {név}",
     "currentServicePointNotSelected": "Szolgáltatási pont: nincs",
-    "stripes-core.front.welcome": "",
-    "stripes-core.front.about": "",
     "title.CreateResetPassword": "Choose a password",
     "title.forgotPassword": "Forgot password?",
     "title.forgotUsername": "Forgot username?",

@@ -60,8 +60,6 @@
     "title.ssoLanding": "SSO Landing",
     "currentServicePoint": "Service point: {name}",
     "currentServicePointNotSelected": "Service point: None",
-    "stripes-core.front.welcome": "Bienvenue, l'avenir des bibliothèques est OUVERT!",
-    "stripes-core.front.about": "Sur",
     "title.CreateResetPassword": "Choose a password",
     "title.forgotPassword": "Forgot password?",
     "title.forgotUsername": "Forgot username?",
