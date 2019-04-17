@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { withStripes } from './StripesContext';
 import { stripesShape } from './Stripes';
 
-export default function stripesConnect(WrappedComponent) {
+export default function stripesConnect(WrappedComponent, options) {
   class ConnectedComponent extends Component {
     static propTypes = {
       stripes: stripesShape.isRequired
@@ -10,7 +10,7 @@ export default function stripesConnect(WrappedComponent) {
 
     constructor(props) {
       super(props);
-      this.connectedComponent = props.stripes.connect(WrappedComponent);
+      this.connectedComponent = props.stripes.connect(WrappedComponent, options);
     }
 
     render() {
