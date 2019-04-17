@@ -60,8 +60,6 @@
     "title.ssoLanding": "هبوط تسجيل الدخول الأحادي SSO",
     "currentServicePoint": "نقطة الخدمة: {name}",
     "currentServicePointNotSelected": "نقطة الخدمة: لا يوجد",
-    "stripes-core.front.welcome": "فارغ",
-    "stripes-core.front.about": "فارغ",
     "title.CreateResetPassword": "اختر كلمة مرور",
     "title.forgotPassword": "هل نسيت كلمة المرور؟",
     "title.forgotUsername": "هل نسيت اسم المستخدم؟",
