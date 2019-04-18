@@ -11,7 +11,8 @@ before(function () {
 
 beforeEach(function () {
   // The Sinon sandbox allows for easy cleanup of spies and stubs
-  this.sandbox = sinon.sandbox.create();
+  // ...as of v5, sinon's export is a default sandbox
+  this.sandbox = sinon;
 });
 
 afterEach(function () {
