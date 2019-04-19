@@ -8,7 +8,6 @@ import '@folio/stripes-components/lib/global.css';
 import startMirage from '../network/start';
 
 import App from '../../../src/App';
-import * as actions from '../../../src/okapiActions';
 
 import {
   withModules,
@@ -54,7 +53,8 @@ export default function setupApplication({
       mountId: 'testing-root',
 
       props: {
-        initialState
+        initialState,
+        defaultTranslations: translations
       },
 
       setup: () => {
@@ -63,24 +63,9 @@ export default function setupApplication({
 
         withModules(modules);
         withConfig({ logCategories: '', ...stripesConfig });
-
-        assign(actions, {
-          _setTranslations: null,
-          setTranslations: incoming => {
-            return {
-              type: 'SET_TRANSLATIONS',
-              translations: assign(incoming, translations)
-            };
-          }
-        });
       },
 
       teardown: () => {
-        assign(actions, {
-          setTranslations: actions._setTranslations,
-          _setTranslations: null
-        });
-
         clearConfig();
         clearModules();
         localforage.clear();

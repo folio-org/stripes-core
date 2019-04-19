@@ -33,7 +33,7 @@ function getHeaders(tenant, token) {
   };
 }
 
-export function loadTranslations(store, locale) {
+export function loadTranslations(store, locale, defaultTranslations = {}) {
   const parentLocale = locale.split('-')[0];
 
   // react-intl provides things like pt-BR.
@@ -51,11 +51,12 @@ export function loadTranslations(store, locale) {
     .then(intlData => addLocaleData(intlData.default || intlData))
     // fetch the region-specific translations, e.g. pt-BR, if available.
     // fall back to the generic locale, e.g. pt, if not available.
+    // default translations can be passed in if certain strings are not available.
     .then(() => fetch(translations[region] ? translations[region] : translations[parentLocale]))
     .then((response) => {
       if (response.ok) {
         response.json().then((stripesTranslations) => {
-          store.dispatch(setTranslations(stripesTranslations));
+          store.dispatch(setTranslations(Object.assign(stripesTranslations, defaultTranslations)));
           store.dispatch(setLocale(locale));
         });
       }
