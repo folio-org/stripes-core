@@ -142,7 +142,9 @@ class MainNav extends Component {
         name,
         ...entry,
       };
-    }).filter(app => app);
+    })
+      .filter(app => app)
+      .sort((a, b) => a.displayName.localeCompare(b.displayName));
 
     /**
      * Add Settings to apps array manually
