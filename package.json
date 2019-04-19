@@ -4,6 +4,7 @@
   "description": "The starting point for Stripes applications",
   "license": "Apache-2.0",
   "repository": "folio-org/stripes-core",
+  "sideEffects": ["*.css"],
   "publishConfig": {
     "registry": "https://repository.folio.org/repository/npm-folio/"
   },
