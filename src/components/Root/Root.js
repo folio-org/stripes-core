@@ -50,10 +50,10 @@ class Root extends Component {
   }
 
   componentDidMount() {
-    const { okapi, store, locale } = this.props;
+    const { okapi, store, locale, defaultTranslations } = this.props;
     if (this.withOkapi) checkOkapiSession(okapi.url, store, okapi.tenant);
     // TODO: remove this after we load locale and translations at start from a public endpoint
-    loadTranslations(store, locale);
+    loadTranslations(store, locale, defaultTranslations);
   }
 
   shouldComponentUpdate(nextProps) {
@@ -86,7 +86,7 @@ class Root extends Component {
   }
 
   render() {
-    const { logger, store, epics, config, okapi, actionNames, token, disableAuth, currentUser, currentPerms, locale, timezone, plugins, bindings, discovery, translations, history, serverDown } = this.props;
+    const { logger, store, epics, config, okapi, actionNames, token, disableAuth, currentUser, currentPerms, locale, defaultTranslations, timezone, plugins, bindings, discovery, translations, history, serverDown } = this.props;
 
     if (serverDown) {
       return <div>Error: server is down.</div>;
@@ -109,7 +109,7 @@ class Root extends Component {
       locale,
       timezone,
       metadata,
-      setLocale: (localeValue) => { loadTranslations(store, localeValue); },
+      setLocale: (localeValue) => { loadTranslations(store, localeValue, defaultTranslations); },
       setTimezone: (timezoneValue) => { store.dispatch(setTimezone(timezoneValue)); },
       plugins: plugins || {},
       setSinglePlugin: (key, value) => { store.dispatch(setSinglePlugin(key, value)); },
@@ -167,6 +167,7 @@ Root.propTypes = {
   currentUser: PropTypes.object,
   epics: PropTypes.object,
   locale: PropTypes.string,
+  defaultTranslations: PropTypes.object,
   timezone: PropTypes.string,
   translations: PropTypes.object,
   modules: PropTypes.shape({
