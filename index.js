@@ -18,7 +18,3 @@ export { default as HandlerManager } from './src/components/HandlerManager';
 export { default as IntlConsumer } from './src/components/IntlConsumer';
 export { default as AppIcon } from './src/components/AppIcon';
 export { Route, Switch, Redirect } from './src/components/NestedRouter';
-
-/* test scaffolding */
-export { default as setupStripesCore } from './test/bigtest/helpers/setup-application';
-export { default as startMirage } from './test/bigtest/network/start';
