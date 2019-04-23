@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import hoistNonReactStatics from 'hoist-non-react-statics';
 
 export const StripesContext = React.createContext();
 
@@ -22,5 +23,6 @@ export function withStripes(WrappedComponent) {
     }
   }
   WithStripes.displayName = `WithStripes(${getDisplayName(WrappedComponent)})`;
-  return WithStripes;
+
+  return hoistNonReactStatics(WithStripes, WrappedComponent);
 }
