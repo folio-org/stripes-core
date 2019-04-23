@@ -49,7 +49,7 @@
     "login": "Accedi",
     "username": "Username",
     "password": "Password",
-    "loggingIn": "Logging in...",
+    "loggingIn": "Accedendo",
     "button.back": "Indietro",
     "button.confirm": "Confermare",
     "title.home": "Home",
@@ -111,7 +111,7 @@
     "createResetPassword.confirmPassword": "Conferma password",
     "errors.password.incorrect.warn.user": "Hai inserito uno username o password errati per la terza volta. Hai ancora due tentativi di accesso prima che il tuo account venga bloccato.",
     "errors.password.incorrect.block.user": "For security purposes, your account has been locked. Please contact your FOLIO System Administrator to reset your password.",
-    "settingSystemInfo": "System information",
+    "settingSystemInfo": "Informazioni di sistema",
     "settingChoose": "Choose settings",
     "button.save": "Save",
     "mainnav.appContextMenu": "Application context dropdown"

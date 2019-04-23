@@ -6,6 +6,8 @@
 * Reduce lodash footprint using [lodash-webpack-plugin](https://www.npmjs.com/package/lodash-webpack-plugin) and [babel-plugin-lodash](https://www.npmjs.com/package/babel-plugin-lodash). Refs STCOR-285.
 * Minor style updates for 'My profile' icon (UX-282)
 * Turned off sideEffects to enable tree-shaking for production builds. Refs STRIPES-564 and STRIPES-581.
+* Turn off sideEffects to enable tree-shaking for production builds. Refs STRIPES-564 and STRIPES-581.
+* Expose setupStripesCore and startMirage as default exports so they can be imported directly from @folio/stripes-core/test. Refs STRIPES-565.
 
 ## [3.3.0](https://github.com/folio-org/stripes-core/tree/v3.3.0) (2019-03-28)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.2.0...v3.3.0)
