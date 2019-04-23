@@ -1,4 +1,5 @@
 import React from 'react';
+import hoistNonReactStatics from 'hoist-non-react-statics';
 
 export const AppCtxMenuContext = React.createContext();
 
@@ -12,5 +13,5 @@ export function withAppCtxMenu(Component) {
       </AppCtxMenuContext.Consumer>
     );
   };
-  return WrappedComponent;
+  return hoistNonReactStatics(WrappedComponent, Component);
 }
