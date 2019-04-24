@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import hoistNonReactStatics from 'hoist-non-react-statics';
 import { withStripes } from './StripesContext';
 import { stripesShape } from './Stripes';
 
@@ -18,5 +19,5 @@ export default function stripesConnect(WrappedComponent, options) {
     }
   }
 
-  return withStripes(ConnectedComponent);
+  return withStripes(hoistNonReactStatics(ConnectedComponent, WrappedComponent));
 }
