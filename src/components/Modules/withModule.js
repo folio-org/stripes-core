@@ -1,4 +1,5 @@
 import React from 'react';
+import hoistNonReactStatics from 'hoist-non-react-statics';
 import ModulesContext from '../../ModulesContext';
 
 const getDisplayName = (WrappedComponent) => {
@@ -33,6 +34,6 @@ export default function withModule(moduleName) {
       }
     }
     WithModule.displayName = `WithModule(${getDisplayName(WrappedComponent)})`;
-    return WithModule;
+    return hoistNonReactStatics(WithModule, WrappedComponent);
   };
 }
