@@ -1,6 +1,6 @@
 {
   "name": "@folio/stripes-core",
-  "version": "3.3.0",
+  "version": "3.4.0",
   "description": "The starting point for Stripes applications",
   "license": "Apache-2.0",
   "repository": "folio-org/stripes-core",
@@ -68,8 +68,8 @@
   },
   "dependencies": {
     "@folio/react-intl-safe-html": "^1.0.2",
-    "@folio/stripes-components": "~5.1.0",
-    "@folio/stripes-connect": "~5.0.0",
+    "@folio/stripes-components": "~5.2.0",
+    "@folio/stripes-connect": "~5.1.0",
     "@folio/stripes-logger": "~1.0.0",
     "apollo-cache-inmemory": "^1.1.1",
     "apollo-client": "^2.0.3",

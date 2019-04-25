@@ -1,11 +1,11 @@
 # Change history for stripes-core
 
-## 3.3.1 (IN-PROGRESS)
+## [3.4.0](https://github.com/folio-org/stripes-core/tree/v3.4.0) (2019-04-25)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.3.0...v3.4.0)
 
 * Resolve memory leaks and improve performance in dev re-builds. Refs STCOR-296.
 * Reduce lodash footprint using [lodash-webpack-plugin](https://www.npmjs.com/package/lodash-webpack-plugin) and [babel-plugin-lodash](https://www.npmjs.com/package/babel-plugin-lodash). Refs STCOR-285.
 * Minor style updates for 'My profile' icon (UX-282)
-* Turned off sideEffects to enable tree-shaking for production builds. Refs STRIPES-564 and STRIPES-581.
 * Turn off sideEffects to enable tree-shaking for production builds. Refs STRIPES-564 and STRIPES-581.
 * Expose setupStripesCore and startMirage as default exports so they can be imported directly from @folio/stripes-core/test. Refs STRIPES-565.
 
