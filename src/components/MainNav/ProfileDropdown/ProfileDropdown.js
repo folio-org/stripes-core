@@ -132,7 +132,12 @@ class ProfileDropdown extends Component {
     const user = this.getUserData();
 
     /* Note: This is not yet available - only prepared for here */
-    return (<Avatar alt={user.name} ariaLabel={user.name} />);
+    return (
+      <Avatar
+        alt={user.name}
+        ariaLabel={user.name}
+        className={css.avatar}
+      />);
   }
 
   navigateByUrl(link) {

@@ -14,7 +14,6 @@ const propTypes = {
   label: PropTypes.node,
   title: PropTypes.string,
   className: PropTypes.string,
-  hideIcon: PropTypes.bool,
   id: PropTypes.string,
   iconKey: PropTypes.string,
   iconData: PropTypes.object, // Alternative way of passing icon data
@@ -33,10 +32,9 @@ const propTypes = {
 
 const defaultProps = {
   noSelectedBar: false,
-  hideIcon: false,
 };
 
-const NavButton = React.forwardRef(({ ariaLabel, label, title, selected, onClick, href, icon, noSelectedBar, className, labelClassName, badge, id, iconKey, iconData, hideIcon, ...rest }, ref) => {
+const NavButton = React.forwardRef(({ ariaLabel, label, title, selected, onClick, href, icon, noSelectedBar, className, labelClassName, badge, id, iconKey, iconData, ...rest }, ref) => {
   /**
    * Root classes
    */

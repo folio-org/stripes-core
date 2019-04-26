@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { compose } from 'redux';
 import { withRouter } from 'react-router';
+import hoistNonReactStatics from 'hoist-non-react-statics';
 
 import { withModules } from '../Modules';
 import LastVisitedContext from './LastVisitedContext';
@@ -65,7 +66,7 @@ function withLastVisited(WrappedComponent) {
     }
   }
 
-  return LastVisited;
+  return hoistNonReactStatics(LastVisited, WrappedComponent);
 }
 
 export default compose(
