@@ -45,6 +45,7 @@ button.navButton {
 
 .icon {
   margin: 0 4px;
+  display: flex;
 
   & svg {
     fill: var(--color-icon);
