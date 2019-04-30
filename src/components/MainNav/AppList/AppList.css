@@ -20,6 +20,11 @@
   display: none;
 }
 
+.dropdownToggleIcon {
+  height: var(--control-min-size-desktop);
+  width: var(--control-min-size-desktop);
+}
+
 /**
  * Nav List
  */
