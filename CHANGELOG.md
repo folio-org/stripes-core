@@ -1,5 +1,11 @@
 # Change history for stripes-core
 
+## [3.5.0](https://github.com/folio-org/stripes-core/tree/v3.5.0) (2019-05-12)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.4.0...v3.5.0)
+
+* Dependency updates. STRIPES-611.
+* `<AppIcon>` style tweaks prevent GIGANTIC icons.
+
 ## [3.4.0](https://github.com/folio-org/stripes-core/tree/v3.4.0) (2019-04-25)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.3.0...v3.4.0)
 
