@@ -170,15 +170,6 @@ function parseAllModules(enabledModules, context, aliases) {
     if (moduleParser.warnings.length) {
       warnings = warnings.concat(moduleParser.warnings);
     }
-
-    // Interim measure to allow ui-notes to offer both an app and a plugin
-    // until STCOR-148 is complete. See STCOR-357
-    if (parsedModule.config.module === '@folio/notes') {
-      const notesConfig = Object.assign({}, parsedModule.config);
-      notesConfig.getModule = new Function([], `return require('${moduleName}/src/plugin').default;`); // eslint-disable-line no-new-func
-      notesConfig.pluginType = 'notes';
-      allModuleConfigs.plugin = appendOrSingleton(allModuleConfigs.plugin, notesConfig);
-    }
   });
 
   return {
