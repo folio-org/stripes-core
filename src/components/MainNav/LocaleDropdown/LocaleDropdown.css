@@ -1,0 +1,22 @@
+/**
+ * My profile
+ */
+
+@import "@folio/stripes-components/lib/variables.css";
+
+/* Logged in as */
+.header {
+  color: var(--color-text-p2);
+}
+
+/* Divider */
+.divider {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-width: 0 0 1px;
+}
+
+/* Avatar */
+.avatar {
+  border: 0;
+  box-shadow: inset 0 0 0 1px var(--color-border);
+}

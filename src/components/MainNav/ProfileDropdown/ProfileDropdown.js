@@ -148,6 +148,10 @@ class ProfileDropdown extends Component {
     this.navigateByUrl({ route: '/' });
   };
 
+  onChangeLocale = () => {
+    this.navigateByUrl({ route: '/settings/developer/locale' });
+  }
+
   getDropdownContent() {
     const { stripes, onLogout } = this.props;
     const user = this.getUserData();
@@ -195,6 +199,10 @@ class ProfileDropdown extends Component {
               <FormattedMessage id="stripes-core.currentServicePointNotSelected" />
           }
         </div>
+        <hr className={css.divider} />
+        <NavListItem id="clickable-change-locale" type="button" onClick={this.onChangeLocale}>
+          Change locale
+        </NavListItem>
         <hr className={css.divider} />
         <NavList>
           <NavListSection>

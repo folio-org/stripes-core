@@ -22,6 +22,7 @@ import css from './MainNav.css';
 import NavDivider from './NavDivider';
 import NavGroup from './NavGroup';
 import { CurrentAppGroup } from './CurrentApp';
+import LocaleDropdown from './LocaleDropdown';
 import ProfileDropdown from './ProfileDropdown';
 import AppList from './AppList';
 
@@ -198,6 +199,10 @@ class MainNav extends Component {
                     apps={apps}
                     selectedApp={selectedApp}
                     dropdownToggleId="app-list-dropdown-toggle"
+                  />
+                  <NavDivider md="hide" />
+                  <LocaleDropdown
+                    stripes={stripes}
                   />
                   <NavDivider md="hide" />
                   <ProfileDropdown
