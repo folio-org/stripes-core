@@ -4,6 +4,8 @@
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.5.0...v3.5.1)
 
 * Remove special-case build rules for ui-notes. Its plugin functionality will be included in a separate module.
+* Updated settings icon (STRIPES-624)
+* Added pane placeholder for settings that renders when no sub-settings has been selected (UX-300)
 
 ## [3.5.0](https://github.com/folio-org/stripes-core/tree/v3.5.0) (2019-05-12)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.4.0...v3.5.0)
@@ -19,7 +21,6 @@
 * Minor style updates for 'My profile' icon (UX-282)
 * Turn off sideEffects to enable tree-shaking for production builds. Refs STRIPES-564 and STRIPES-581.
 * Expose setupStripesCore and startMirage as default exports so they can be imported directly from @folio/stripes-core/test. Refs STRIPES-565.
-* Updated settings icon (STRIPES-624)
 
 
 ## [3.3.0](https://github.com/folio-org/stripes-core/tree/v3.3.0) (2019-03-28)
