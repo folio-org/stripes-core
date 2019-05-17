@@ -77,6 +77,7 @@ class Settings extends React.Component {
             <AddContext context={{ stripes: moduleStripes }}>
               <Component {...props2} stripes={moduleStripes} showSettings />
             </AddContext>
+            {props2.match.isExact ? <div className={css.panePlaceholder} /> : null}
           </StripesContext.Provider>
         )}
       />);

@@ -1,3 +1,10 @@
+@import "@folio/stripes-components/lib/variables";
+
 .navListSection {
   margin-bottom: 20px;
+}
+
+.panePlaceholder {
+  background-color: var(--color-fill);
+  flex: 1;
 }
