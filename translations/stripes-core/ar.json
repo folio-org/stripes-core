@@ -25,7 +25,7 @@
     "about.forTenant": "للمستأجر {tenant}",
     "about.onUrl": "على URL {url}",
     "about.legendKey": "مفتاح",
-    "about.notEnabledModules": "الوحدات المثبتة غير المفعلة لهذا المستأجر يتم عرضها <span class='{className}'>باللون الرمادي</span>",
+    "about.notEnabledModules": "الأنظمة الفرعية المثبتة غير المفعلة لهذا المستأجر يتم عرضها <span class='{className}'>باللون الرمادي</span>",
     "about.moduleCount": "{count, number} {count, plural, one {وحدة} other {وحدات}}",
     "about.interfaceCount": "{count, number} {count, plural, one {واجهة} other {واجهات}}",
     "about.uiOrServiceDependencies": "تبعيات واجهة المستخدم/الخدمة",
