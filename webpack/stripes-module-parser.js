@@ -49,8 +49,16 @@ class StripesModuleParser {
     if (!Array.isArray(actsAs)) {
       if (typeof actsAs === 'string') actsAs = [actsAs];
       else if (typeof stripes.type === 'string') {
+        this.warnings.push(`Module ${this.moduleName} uses deprecated "type" property. Prefer "actsAs".`);
         actsAs = [stripes.type];
-        if (stripes.hasSettings) actsAs.push('settings');
+        if (stripes.hasSettings) {
+          this.warnings.push(`Module ${this.moduleName} uses deprecated "hasSettings" property. Instead, add "settings" to the "actsAs" array and render your settings component when your main component is passed the prop 'actAs="settings"'.`);
+          actsAs.push('settings');
+        }
+        if (stripes.handlerName) {
+          this.warnings.push(`Module ${this.moduleName} uses deprecated "handlerName" property. Instead, add "handler" to the "actsAs" array and render your handler component when your main component is passed the prop 'actAs="handler"'.`);
+          actsAs.push('settings');
+        }
       } else {
         throw new StripesBuildError(`Included module ${this.moduleName} does not specify stripes.actsAs in package.json`);
       }
