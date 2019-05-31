@@ -44,7 +44,7 @@ function getModuleRoutes(stripes) {
                       <div id={`${name}-module-display`} data-module={module.module} data-version={module.version}>
                         <ErrorBoundary>
                           <TitleManager page={displayName}>
-                            <Current {...props} connect={connect} stripes={moduleStripes} />
+                            <Current {...props} connect={connect} stripes={moduleStripes} actAs="app" />
                           </TitleManager>
                         </ErrorBoundary>
                       </div>

@@ -20,7 +20,7 @@ const Pluggable = (props) => {
 
     if (best) {
       const Child = props.stripes.connect(best.getModule());
-      return <Child {...props} />;
+      return <Child {...props} actAs="plugin" />;
     }
   }
 

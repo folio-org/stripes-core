@@ -19,13 +19,6 @@ import { stripesShape } from '../../Stripes';
 
 import css from './Settings.css';
 
-const getSettingsModules = (modules) => (
-  [].concat(
-    (modules.app || []).filter(m => m.hasSettings),
-    (modules.settings || []),
-  )
-);
-
 class Settings extends React.Component {
   static propTypes = {
     stripes: stripesShape.isRequired,
@@ -42,7 +35,7 @@ class Settings extends React.Component {
     super(props);
 
     const { stripes, modules } = props;
-    const settingsModules = getSettingsModules(modules);
+    const settingsModules = modules.settings || [];
 
     this.connectedModules = settingsModules
       .filter(x => stripes.hasPerm(`settings.${x.module.replace(/^@folio\//, '')}.enabled`))
@@ -75,7 +68,7 @@ class Settings extends React.Component {
         render={(props2) => (
           <StripesContext.Provider value={moduleStripes}>
             <AddContext context={{ stripes: moduleStripes }}>
-              <Component {...props2} stripes={moduleStripes} showSettings />
+              <Component {...props2} stripes={moduleStripes} showSettings actAs="settings" />
             </AddContext>
             {props2.match.isExact ? <div className={css.panePlaceholder} /> : null}
           </StripesContext.Provider>
