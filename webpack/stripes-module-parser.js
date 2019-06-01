@@ -186,7 +186,7 @@ function parseAllModules(enabledModules, context, aliases) {
     const moduleParser = new StripesModuleParser(moduleName, overrideConfig, context, aliases);
     const parsedModule = moduleParser.parseModule();
     parsedModule.actsAs.forEach(type => {
-      allModuleConfigs[type] = appendOrSingleton(allModuleConfigs[parsedModule.actsAs], parsedModule.config);
+      allModuleConfigs[type] = appendOrSingleton(allModuleConfigs[type], parsedModule.config);
     });
     allMetadata[parsedModule.name] = parsedModule.metadata;
     if (moduleParser.warnings.length) {
