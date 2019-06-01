@@ -230,6 +230,7 @@ describe('parseAllModules function', function () {
     it('returns config grouped by stripes type', function () {
       const result = this.sut(enabledModules, context, aliases);
       expect(result.config).to.be.an('object').with.property('app').that.is.an('array');
+      expect(result.config.app.length).to.equal(3);
       expect(result.config.app[0]).to.be.an('object').with.keys(
         'module', 'getModule', 'description', 'version', 'displayName', 'route', 'welcomePageEntries',
       );
@@ -257,15 +258,11 @@ describe('parseAllModules function', function () {
       this.sut = parseAllModules;
     });
 
-    it('actsAs settings and plugin produces the expected config of 1 settings, 1 plugin and 0 apps', function () {
-      const modules = {
-        '@folio/myprofile': {},
-      };
-
-      const result = this.sut(modules, context, aliases);
+    it('actsAs settings and plugin produces the expected settings and plugin configs and no app config', function () {
+      const result = this.sut(enabledModules, context, aliases);
       expect(result.config.app).to.be.an('array').with.lengthOf(0);
-      expect(result.config.settings).to.be.an('array').with.lengthOf(1);
-      expect(result.config.plugin).to.be.an('array').with.lengthOf(1);
+      expect(result.config.settings).to.be.an('array').with.lengthOf(3);
+      expect(result.config.plugin).to.be.an('array').with.lengthOf(3);
     });
   });
 });
