@@ -51,7 +51,7 @@ class StripesModuleParser {
       else if (typeof stripes.type === 'string') {
         this.warnings.push(`Module ${this.moduleName} uses deprecated "type" property. Prefer "actsAs".`);
         actsAs = [stripes.type];
-        if (stripes.hasSettings) {
+        if (stripes.hasSettings && stripes.type !== 'settings') {
           this.warnings.push(`Module ${this.moduleName} uses deprecated "hasSettings" property. Instead, add "settings" to the "actsAs" array and render your settings component when your main component is passed the prop 'actAs="settings"'.`);
           actsAs.push('settings');
         }
