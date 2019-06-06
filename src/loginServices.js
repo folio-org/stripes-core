@@ -11,6 +11,7 @@ import {
   setCurrentPerms,
   setLocale,
   setTimezone,
+  setCurrency,
   setPlugins,
   setBindings,
   setTranslations,
@@ -71,11 +72,12 @@ export function getLocale(okapiUrl, store, tenant) {
         response.json().then((json) => {
           if (json.configs.length) {
             const localeValues = JSON.parse(json.configs[0].value);
-            const { locale, timezone } = localeValues;
+            const { locale, timezone, currency } = localeValues;
             if (locale) {
               loadTranslations(store, locale);
             }
             if (timezone) store.dispatch(setTimezone(timezone));
+            if (currency) store.dispatch(setCurrency(currency));
           }
         });
       }

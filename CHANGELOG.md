@@ -3,6 +3,7 @@
 ## 3.6.0 (IN PROGRESS)
 
 * New settings icon.
+* Provide `setCurrency` on the stripes object, à la `setLocale` and `setTimezone`. Refs UIU-1040.
 
 ## [3.5.1](https://github.com/folio-org/stripes-core/tree/v3.5.1) (2019-05-13)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.5.0...v3.5.1)

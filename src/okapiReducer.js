@@ -12,6 +12,8 @@ export default function okapiReducer(state = {}, action) {
       return Object.assign({}, state, { locale: action.locale });
     case 'SET_TIMEZONE':
       return Object.assign({}, state, { timezone: action.timezone });
+    case 'SET_CURRENCY':
+      return Object.assign({}, state, { currency: action.currency });
     case 'SET_PLUGINS':
       return Object.assign({}, state, { plugins: action.plugins });
     case 'SET_SINGLE_PLUGIN':

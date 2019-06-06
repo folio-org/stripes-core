@@ -32,6 +32,13 @@ function setTimezone(timezone) {
   };
 }
 
+function setCurrency(currency) {
+  return {
+    type: 'SET_CURRENCY',
+    currency,
+  };
+}
+
 function setPlugins(plugins) {
   return {
     type: 'SET_PLUGINS',
