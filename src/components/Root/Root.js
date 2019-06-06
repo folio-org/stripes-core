@@ -208,7 +208,7 @@ Root.defaultProps = {
   // TODO: remove after locale is accessible from a global config / public url
   locale: 'en-US',
   timezone: 'UTC',
-  curreny: 'USD',
+  currency: 'USD',
   okapiReady: false,
   serverDown: false,
 };

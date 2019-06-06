@@ -134,6 +134,7 @@ export {
   setCurrentPerms,
   setLocale,
   setTimezone,
+  setCurrency,
   setPlugins,
   setSinglePlugin,
   setBindings,
