@@ -4,6 +4,9 @@ const modulePaths = require('./module-paths');
 const StripesBuildError = require('./stripes-build-error');
 const logger = require('./logger')('stripesModuleParser');
 
+// These config keys do not get exported with type-specific config
+const TOP_LEVEL_ONLY = ['permissions', 'icons', 'okapiInterfaces', 'permissionSets', 'actsAs', 'type', 'hasSettings'];
+
 function appendOrSingleton(maybeArray, newValue) {
   const singleton = [newValue];
   if (Array.isArray(maybeArray)) return maybeArray.concat(singleton);
@@ -36,9 +39,34 @@ class StripesModuleParser {
 
   // Wrapper to source data and transform into collections (config and metadata)
   parseModule() {
+    const stripes = this.packageJson.stripes;
+    if (!_.isObject(stripes)) {
+      throw new StripesBuildError(`Included module ${this.moduleName} does not have a "stripes" key in package.json`);
+    }
+
+    // Upgrade string actsAs to singleton array and provide compatibility for deprecated options
+    let actsAs = stripes.actsAs;
+    if (!Array.isArray(actsAs)) {
+      if (typeof actsAs === 'string') actsAs = [actsAs];
+      else if (typeof stripes.type === 'string') {
+        this.warnings.push(`Module ${this.moduleName} uses deprecated "type" property. Prefer "actsAs".`);
+        actsAs = [stripes.type];
+        if (stripes.hasSettings && stripes.type !== 'settings') {
+          this.warnings.push(`Module ${this.moduleName} uses deprecated "hasSettings" property. Instead, add "settings" to the "actsAs" array and render your settings component when your main component is passed the prop 'actAs="settings"'.`);
+          actsAs.push('settings');
+        }
+        if (stripes.handlerName) {
+          this.warnings.push(`Module ${this.moduleName} uses deprecated "handlerName" property. Instead, add "handler" to the "actsAs" array and render your handler component when your main component is passed the prop 'actAs="handler"'.`);
+          actsAs.push('settings');
+        }
+      } else {
+        throw new StripesBuildError(`Included module ${this.moduleName} does not specify stripes.actsAs in package.json`);
+      }
+    }
+
     return {
       name: this.nameOnly,
-      type: this.packageJson.stripes.type,
+      actsAs,
       config: this.config || this.parseStripesConfig(this.moduleName, this.packageJson),
       metadata: this.metadata || this.parseStripesMetadata(this.packageJson),
     };
@@ -50,20 +78,12 @@ class StripesModuleParser {
   parseStripesConfig(moduleName, packageJson) {
     const { stripes, description, version } = packageJson;
 
-    if (!_.isObject(stripes)) {
-      throw new StripesBuildError(`Included module ${moduleName} does not have a "stripes" key in package.json`);
-    }
-    if (!_.isString(stripes.type)) {
-      throw new StripesBuildError(`Included module ${moduleName} does not specify stripes.type in package.json`);
-    }
-
-    const stripeConfig = Object.assign({}, stripes, this.overrideConfig, {
+    const stripeConfig = _.omit(Object.assign({}, stripes, this.overrideConfig, {
       module: moduleName,
       getModule: new Function([], `return require('${moduleName}').default;`), // eslint-disable-line no-new-func
       description,
       version,
-    });
-    delete stripeConfig.type;
+    }), TOP_LEVEL_ONLY);
     logger.log('config:', stripeConfig);
     return stripeConfig;
   }
@@ -165,7 +185,9 @@ function parseAllModules(enabledModules, context, aliases) {
   _.forOwn(enabledModules, (overrideConfig, moduleName) => {
     const moduleParser = new StripesModuleParser(moduleName, overrideConfig, context, aliases);
     const parsedModule = moduleParser.parseModule();
-    allModuleConfigs[parsedModule.type] = appendOrSingleton(allModuleConfigs[parsedModule.type], parsedModule.config);
+    parsedModule.actsAs.forEach(type => {
+      allModuleConfigs[type] = appendOrSingleton(allModuleConfigs[type], parsedModule.config);
+    });
     allMetadata[parsedModule.name] = parsedModule.metadata;
     if (moduleParser.warnings.length) {
       warnings = warnings.concat(moduleParser.warnings);
