@@ -4,6 +4,7 @@
 
 * Allow modules to be ingested by stripes-core as more than one type -- the `type` property of the `stripes` section is now replaced by `actsAs` which can be a module type string or an array of them. Also removes redundant copies of the icons, Okapi interfaces, and permissions in the `modules.<type>` structure exposed by the `ModulesContext` as they are kept elsewhere. (STCOR-148)
 * New settings icon.
+* Provide `setCurrency` on the stripes object, à la `setLocale` and `setTimezone`. Refs UIU-1040.
 
 ## [3.5.1](https://github.com/folio-org/stripes-core/tree/v3.5.1) (2019-05-13)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.5.0...v3.5.1)

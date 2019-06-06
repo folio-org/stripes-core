@@ -17,7 +17,7 @@ import { ConnectContext } from '@folio/stripes-connect';
 import initialReducers from '../../initialReducers';
 import enhanceReducer from '../../enhanceReducer';
 import createApolloClient from '../../createApolloClient';
-import { setSinglePlugin, setBindings, setOkapiToken, setTimezone } from '../../okapiActions';
+import { setSinglePlugin, setBindings, setOkapiToken, setTimezone, setCurrency } from '../../okapiActions';
 import { loadTranslations, checkOkapiSession } from '../../loginServices';
 import { getQueryResourceKey, getCurrentModule } from '../../locationService';
 import Stripes from '../../Stripes';
@@ -86,7 +86,7 @@ class Root extends Component {
   }
 
   render() {
-    const { logger, store, epics, config, okapi, actionNames, token, disableAuth, currentUser, currentPerms, locale, defaultTranslations, timezone, plugins, bindings, discovery, translations, history, serverDown } = this.props;
+    const { logger, store, epics, config, okapi, actionNames, token, disableAuth, currentUser, currentPerms, locale, defaultTranslations, timezone, currency, plugins, bindings, discovery, translations, history, serverDown } = this.props;
 
     if (serverDown) {
       return <div>Error: server is down.</div>;
@@ -108,9 +108,11 @@ class Root extends Component {
       actionNames,
       locale,
       timezone,
+      currency,
       metadata,
       setLocale: (localeValue) => { loadTranslations(store, localeValue, defaultTranslations); },
       setTimezone: (timezoneValue) => { store.dispatch(setTimezone(timezoneValue)); },
+      setCurrency: (currencyValue) => { store.dispatch(setCurrency(currencyValue)); },
       plugins: plugins || {},
       setSinglePlugin: (key, value) => { store.dispatch(setSinglePlugin(key, value)); },
       bindings,
@@ -131,6 +133,7 @@ class Root extends Component {
               locale={locale}
               key={locale}
               timeZone={timezone}
+              currency={currency}
               messages={translations}
               textComponent={Fragment}
             >
@@ -169,6 +172,7 @@ Root.propTypes = {
   locale: PropTypes.string,
   defaultTranslations: PropTypes.object,
   timezone: PropTypes.string,
+  currency: PropTypes.string,
   translations: PropTypes.object,
   modules: PropTypes.shape({
     app: PropTypes.array,
@@ -204,6 +208,7 @@ Root.defaultProps = {
   // TODO: remove after locale is accessible from a global config / public url
   locale: 'en-US',
   timezone: 'UTC',
+  currency: 'USD',
   okapiReady: false,
   serverDown: false,
 };
@@ -215,6 +220,7 @@ function mapStateToProps(state) {
     currentPerms: state.okapi.currentPerms,
     locale: state.okapi.locale,
     timezone: state.okapi.timezone,
+    currency: state.okapi.currency,
     translations: state.okapi.translations,
     plugins: state.okapi.plugins,
     bindings: state.okapi.bindings,
