@@ -5,7 +5,7 @@ const StripesBuildError = require('./stripes-build-error');
 const logger = require('./logger')('stripesModuleParser');
 
 // These config keys do not get exported with type-specific config
-const TOP_LEVEL_ONLY = ['permissions', 'icons', 'okapiInterfaces', 'permissionSets', 'actsAs', 'type', 'hasSettings'];
+const TOP_LEVEL_ONLY = ['permissions', 'icons', 'permissionSets', 'actsAs', 'type', 'hasSettings'];
 
 function appendOrSingleton(maybeArray, newValue) {
   const singleton = [newValue];
@@ -63,6 +63,8 @@ class StripesModuleParser {
         throw new StripesBuildError(`Included module ${this.moduleName} does not specify stripes.actsAs in package.json`);
       }
     }
+
+    console.log('config', this.config || this.parseStripesConfig(this.moduleName, this.packageJson));
 
     return {
       name: this.nameOnly,
