@@ -64,8 +64,6 @@ class StripesModuleParser {
       }
     }
 
-    console.log('config', this.config || this.parseStripesConfig(this.moduleName, this.packageJson));
-
     return {
       name: this.nameOnly,
       actsAs,
