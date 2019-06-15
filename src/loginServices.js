@@ -5,6 +5,7 @@ import { change } from 'redux-form';
 import { addLocaleData } from 'react-intl';
 import { translations } from 'stripes-config';
 import rtlDetect from 'rtl-detect';
+import moment from 'moment';
 
 import {
   clearCurrentUser,
@@ -47,6 +48,17 @@ export function loadTranslations(store, locale, defaultTranslations = {}) {
   // when the locale changes
   document.documentElement.setAttribute('lang', parentLocale);
   document.documentElement.setAttribute('dir', rtlDetect.getLangDir(locale));
+
+  // Set locale for Moment.js (en is not importable as it is not stored separately)
+  if (parentLocale === 'en') moment.locale(parentLocale);
+  else {
+    import(`moment/locale/${parentLocale}`).then(() => {
+      moment.locale(parentLocale);
+    }).catch(e => {
+      // eslint-disable-next-line no-console
+      console.error(`Error loading locale ${parentLocale} for Moment.js`, e);
+    });
+  }
 
   return import(`react-intl/locale-data/${parentLocale}`)
     .then(intlData => addLocaleData(intlData.default || intlData))

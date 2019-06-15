@@ -1,5 +1,9 @@
 # Change history for stripes-core
 
+## [3.7.0] (in progress)
+
+* Pass locale to Moment.js so weekdays, etc. are translated. (STCOM-512)
+
 ## [3.6.0](https://github.com/folio-org/stripes-core/tree/v3.6.0) (2019-06-07)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.5.1...v3.6.0)
 
