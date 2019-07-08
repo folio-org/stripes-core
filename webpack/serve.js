@@ -27,6 +27,9 @@ const cachePlugin = new HardSourceWebpackPlugin({
 });
 
 module.exports = function serve(stripesConfig, options) {
+  if (typeof stripesConfig.okapi !== 'object') throw new Error('Missing Okapi config');
+  if (typeof stripesConfig.okapi.url !== 'string') throw new Error('Missing Okapi URL');
+  if (stripesConfig.okapi.url.endsWith('/')) throw new Error('Trailing slash in Okapi URL will prevent Stripes from functioning');
   return new Promise((resolve) => {
     logger.log('starting serve...');
     const app = express();
