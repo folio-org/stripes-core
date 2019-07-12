@@ -25,11 +25,7 @@ describe('Create/Reset password page', () => {
   describe('valid token scenario', () => {
     beforeEach(function () {
       return this.visit({
-        pathname: '/change-password/test/actionIdTest',
-        state: {
-          isValidToken: true,
-          errorCodes: [],
-        }
+        pathname: '/change-password/test',
       }, () => {
         expect(CreateResetPasswordPage.isPresent).to.be.true;
       });
@@ -343,13 +339,7 @@ describe('Create/Reset password page', () => {
       });
 
       beforeEach(async function () {
-        this.visit({
-          pathname: '/change-password/test/actionIdTest',
-          state: {
-            isValidToken: true,
-            errorCodes: [],
-          }
-        });
+        await this.visit('/change-password/test');
         await newPassword.fillAndBlur('test');
         await confirmPassword.fillAndBlur('test');
         await submitForm.clickSubmit();
@@ -408,19 +398,12 @@ describe('Create/Reset password page', () => {
       setupApplication({
         disableAuth: false,
         scenarios: [
-          'passwordLengthRule',
           'changePasswordExpiredLinkFailure',
         ],
       });
 
       beforeEach(async function () {
-        this.visit({
-          pathname: '/change-password/test/actionIdTest',
-          state: {
-            isValidToken: true,
-            errorCodes: [],
-          }
-        });
+        await this.visit('/change-password/test');
         await newPassword.fillAndBlur('test');
         await confirmPassword.fillAndBlur('test');
         await submitForm.clickSubmit();
@@ -461,13 +444,7 @@ describe('Create/Reset password page', () => {
       });
 
       beforeEach(async function () {
-        this.visit({
-          pathname: '/change-password/test/actionIdTest',
-          state: {
-            isValidToken: true,
-            errorCodes: [],
-          }
-        });
+        this.visit('/change-password/test');
         await newPassword.fillAndBlur('test');
         await confirmPassword.fillAndBlur('test');
         await submitForm.clickSubmit();
@@ -501,20 +478,11 @@ describe('Create/Reset password page', () => {
 
       setupApplication({
         disableAuth: false,
-        scenarios: [
-          'passwordLengthRule',
-          'changePasswordClientError',
-        ],
+        scenarios: ['changePasswordClientError']
       });
 
       beforeEach(async function () {
-        this.visit({
-          pathname: '/change-password/test/actionIdTest',
-          state: {
-            isValidToken: true,
-            errorCodes: [],
-          }
-        });
+        this.visit('/change-password/test');
         await newPassword.fillAndBlur('test');
         await confirmPassword.fillAndBlur('test');
         await submitForm.clickSubmit();
@@ -552,7 +520,7 @@ describe('Create/Reset password page', () => {
 
       beforeEach(function () {
         return this.visit({
-          pathname: '/reset-password/test'
+          pathname: '/change-password/test'
         }, () => {
           expect(ChangePasswordErrorPage.isPresent).to.be.true;
         });
@@ -577,7 +545,7 @@ describe('Create/Reset password page', () => {
 
       beforeEach(function () {
         return this.visit({
-          pathname: '/reset-password/test/'
+          pathname: '/change-password/test/'
         }, () => {
           expect(ChangePasswordErrorPage.isPresent).to.be.true;
         });
@@ -602,7 +570,7 @@ describe('Create/Reset password page', () => {
 
       beforeEach(function () {
         return this.visit({
-          pathname: '/reset-password/test/'
+          pathname: '/change-password/test/'
         }, () => {
           expect(ChangePasswordErrorPage.isPresent).to.be.true;
         });
@@ -627,7 +595,7 @@ describe('Create/Reset password page', () => {
 
       beforeEach(function () {
         return this.visit({
-          pathname: '/reset-password/test/'
+          pathname: '/change-password/test/'
         }, () => {
           expect(ChangePasswordErrorPage.isPresent).to.be.true;
         });
@@ -651,7 +619,7 @@ describe('Create/Reset password page', () => {
 
       beforeEach(function () {
         return this.visit({
-          pathname: '/reset-password/test/'
+          pathname: '/change-password/test/'
         }, () => {
           expect(ChangePasswordErrorPage.isPresent).to.be.true;
         });
