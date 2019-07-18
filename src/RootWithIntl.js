@@ -118,7 +118,7 @@ class RootWithIntl extends React.Component {
                     <Switch>
                       <TitledRoute
                         name="CreateResetPassword"
-                        path="/change-password/:token"
+                        path="/reset-password/:token"
                         component={<CreateResetPassword stripes={stripes} />}
                       />
                       <TitledRoute
