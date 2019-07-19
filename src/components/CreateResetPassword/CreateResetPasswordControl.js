@@ -11,6 +11,7 @@ import { defaultErrors } from '../../constants';
 import CreateResetPassword from './CreateResetPassword';
 import PasswordHasNotChanged from './components/PasswordHasNotChanged';
 import PasswordSuccessfullyChanged from './components/PasswordSuccessfullyChanged';
+import OrganizationLogo from '../OrganizationLogo';
 
 class CreateResetPasswordControl extends Component {
   static propTypes = {
@@ -18,13 +19,6 @@ class CreateResetPasswordControl extends Component {
     match: PropTypes.shape({
       params: PropTypes.shape({
         token: PropTypes.string.isRequired,
-        resetPasswordActionId: PropTypes.string.isRequired,
-      }).isRequired,
-    }).isRequired,
-    location: PropTypes.shape({
-      state: PropTypes.shape({
-        isValidToken: PropTypes.bool.isRequired,
-        errorCodes: PropTypes.arrayOf(PropTypes.string).isRequired,
       }).isRequired,
     }).isRequired,
     stripes: stripesShape.isRequired,
@@ -43,8 +37,15 @@ class CreateResetPasswordControl extends Component {
     this.state = {
       isSuccessfulPasswordChange: false,
       submitIsFailed: false,
+      isValidToken: false,
+      isLoading: true,
     };
-    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  async componentDidMount() {
+    await this.makeCall();
+
+    this.setState({ isLoading: false });
   }
 
   componentWillUnmount() {
@@ -56,26 +57,33 @@ class CreateResetPasswordControl extends Component {
       handleBadResponse,
       setDefaultAuthError,
     } = this.props;
+    const { isValidToken } = this.state;
 
     switch (response.status) {
       case 204:
-        this.handleSuccessfulResponse();
+        this.setState(
+          isValidToken
+            ? { isSuccessfulPasswordChange: true }
+            : { isValidToken: true }
+        );
         break;
       case 401:
-        this.setState({ submitIsFailed: true });
-        setDefaultAuthError([defaultErrors.INVALID_LINK_ERROR]);
+        this.setState({
+          submitIsFailed: true,
+        });
+        setDefaultAuthError(defaultErrors.INVALID_LINK_ERROR);
         break;
+      case 500:
+        throw new Error(response.status);
       default:
-        this.setState({ submitIsFailed: true });
+        this.setState({
+          submitIsFailed: true,
+        });
         handleBadResponse(response);
     }
   };
 
-  handleSuccessfulResponse = () => {
-    this.setState({ isSuccessfulPasswordChange: true });
-  };
-
-  async handleSubmit(values) {
+  makeCall = async (body) => {
     const {
       stripes: {
         okapi: {
@@ -85,33 +93,37 @@ class CreateResetPasswordControl extends Component {
       },
       match: {
         params: {
-          resetPasswordActionId,
           token,
         },
       },
       handleBadResponse,
     } = this.props;
-    const { newPassword } = values;
+    const { isValidToken } = this.state;
+
+    const path = `${url}/bl-users/password-reset/${isValidToken ? 'reset' : 'validate'}`;
 
     try {
-      const response = await fetch(`${url}/bl-users/password-reset/reset`, {
+      const response = await fetch(path, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'x-okapi-token': token,
           'x-okapi-tenant': tenant,
         },
-        body: JSON.stringify({
-          newPassword,
-          resetPasswordActionId,
-        }),
+        ...(body && { body: JSON.stringify(body) }),
       });
 
       this.handleResponse(response);
     } catch (error) {
       handleBadResponse(error);
     }
-  }
+  };
+
+  handleSubmit = async (values) => {
+    const { newPassword } = values;
+
+    await this.makeCall({ newPassword });
+  };
 
   clearErrorsAfterSubmit = (submissionCompleted) => {
     if (submissionCompleted) {
@@ -128,25 +140,30 @@ class CreateResetPasswordControl extends Component {
           token,
         },
       },
-      location: {
-        state: {
-          isValidToken,
-          errorCodes,
-        },
-      },
+      clearAuthErrors,
     } = this.props;
 
     const {
       isSuccessfulPasswordChange,
       submitIsFailed,
+      isValidToken,
+      isLoading,
     } = this.state;
 
     if (isSuccessfulPasswordChange) {
       return <PasswordSuccessfullyChanged />;
     }
 
+    if (isLoading) {
+      return (
+        <div>
+          <OrganizationLogo />
+        </div>
+      );
+    }
+
     if (!isValidToken) {
-      return <PasswordHasNotChanged errors={errorCodes} />;
+      return <PasswordHasNotChanged errors={authFailure} />;
     }
 
     return (
@@ -157,6 +174,7 @@ class CreateResetPasswordControl extends Component {
         onSubmit={this.handleSubmit}
         onPasswordInputFocus={this.clearErrorsAfterSubmit}
         submitIsFailed={submitIsFailed}
+        clearAuthErrors={clearAuthErrors}
       />
     );
   }

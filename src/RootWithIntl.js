@@ -32,7 +32,6 @@ import {
   CheckEmailStatusPage,
   ForgotPasswordCtrl,
   ForgotUserNameCtrl,
-  CreateResetPasswordLoader,
   AppCtxMenuProvider,
 } from './components';
 import { stripesShape } from './Stripes';
@@ -118,13 +117,8 @@ class RootWithIntl extends React.Component {
                     </MainContainer> :
                     <Switch>
                       <TitledRoute
-                        name="changePassword"
-                        path="/reset-password/:token"
-                        component={<CreateResetPasswordLoader stripes={stripes} />}
-                      />
-                      <TitledRoute
                         name="CreateResetPassword"
-                        path="/change-password/:token/:resetPasswordActionId"
+                        path="/reset-password/:token"
                         component={<CreateResetPassword stripes={stripes} />}
                       />
                       <TitledRoute
