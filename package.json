@@ -34,15 +34,6 @@
       {
         "permissionName": "settings.enabled",
         "displayName": "UI: settings area is enabled"
-      },
-      {
-        "permissionName": "reset-password-link.reset",
-        "displayName": "Reset password: user can reset password by link",
-        "subPermissions": [
-          "validation.rules.collection.get",
-          "users-bl.password-reset-link.reset"
-        ],
-        "visible": true
       }
     ]
   },
