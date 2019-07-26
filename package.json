@@ -4,7 +4,9 @@
   "description": "The starting point for Stripes applications",
   "license": "Apache-2.0",
   "repository": "folio-org/stripes-core",
-  "sideEffects": ["*.css"],
+  "sideEffects": [
+    "*.css"
+  ],
   "publishConfig": {
     "registry": "https://repository.folio.org/repository/npm-folio/"
   },
@@ -135,6 +137,8 @@
     "rxjs": "^5.4.3",
     "serialize-javascript": "^1.4.0",
     "style-loader": "^0.22.1",
+    "svgo": "^1.2.2",
+    "svgo-loader": "^2.2.1",
     "tapable": "^1.0.0",
     "typescript": "^2.8.1",
     "uuid": "^3.0.0",

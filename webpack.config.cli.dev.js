@@ -67,4 +67,11 @@ devConfig.module.rules.push({
   ],
 });
 
+devConfig.module.rules.push(
+  {
+    test: /\.svg$/,
+    use: [{ loader: 'file-loader?name=img/[path][name].[hash].[ext]' }]
+  },
+);
+
 module.exports = devConfig;
