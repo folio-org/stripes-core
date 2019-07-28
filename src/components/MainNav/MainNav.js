@@ -133,7 +133,9 @@ class MainNav extends Component {
       const entryRoot = entry.route.split('/')[1];
       const active = pathRoot === entryRoot;
 
-      const href = lastVisited[name] || entry.home || entry.route;
+      const last = lastVisited[name];
+      const home = entry.home || entry.route;
+      const href = (active || !last) ? home : lastVisited[name];
 
       return {
         id,
