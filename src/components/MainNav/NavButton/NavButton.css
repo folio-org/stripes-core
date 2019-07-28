@@ -2,45 +2,31 @@
 
 .navButton {
   composes: interactionStylesControl from "@folio/stripes-components/lib/sharedStyles/interactionStyles.css";  /* stylelint-disable-line */
-  padding: 0 5px;
-  height: 44px;
+  padding: 0 var(--gutter-static-one-third);
+  height: var(--control-min-size-touch);
   outline: 0;
-  color: var(--color-text);
-  font-size: var(--font-size-small);
+  color: #FFF;
+  font-size: var(--font-size-medium);
 
   &::-moz-focus-inner {
     border: 0;
   }
 
-  /* Is selected */
-  &.selected {
-    &::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      right: 5px;
-      left: 5px;
-      height: 4px;
-      background-color: var(--primary);
-      border-bottom-left-radius: 3px;
-      border-bottom-right-radius: 3px;
-    }
+  &.selected .label,
+  &:focus .label,
+  &:hover .label {
+    opacity: 1;
   }
-}
 
-.navButton:not(:active).selected .icon svg {
-  fill: var(--primary);
+  &.selected .inner:before {
+    background-color: var(--primary);
+  }
 }
 
 /* To make sure we overwrite default link colors */
 a.navButton,
 button.navButton {
-  color: var(--color-text);
-}
-
-/* No active bar - primarily used for popover icons with no label */
-.navButton.noSelectedBar::before {
-  display: none;
+  color: #FFF;
 }
 
 .icon {
@@ -48,7 +34,7 @@ button.navButton {
   display: flex;
 
   & svg {
-    fill: var(--color-icon);
+    fill: currentColor;
   }
 }
 
@@ -66,14 +52,15 @@ button.navButton {
 }
 
 .label {
-  margin: 0 4px;
+  margin: 0 var(--gutter-static-one-third);
   font-weight: 600;
   display: flex;
   align-items: center;
+  opacity: 0.8;
 }
 
 .inner {
-  padding: 4px 0;
+  padding: var(--gutter-static-one-third);
   position: relative;
 }
 
