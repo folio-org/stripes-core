@@ -5,7 +5,7 @@
   --main-nav-button-label-spacing: 6px;
   --main-nav-button-min-height: var(--control-min-size-touch);
   --main-nav-button-color: rgba(255, 255, 255, 0.75);
-  --main-nav-button-active-color: #FFF;
+  --main-nav-button-active-color: #fff;
 }
 
 .navButton {
@@ -19,7 +19,7 @@
     border: 0;
   }
 
-  &.selected .inner:before {
+  &.selected .inner::before {
     background-color: var(--primary);
   }
 }
@@ -95,6 +95,6 @@ button.navButton {
  * AppIcon
  */
 
-.appIcon > span:after {
+.appIcon > span::after {
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
 }

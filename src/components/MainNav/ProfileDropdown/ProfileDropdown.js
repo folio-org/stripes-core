@@ -228,8 +228,8 @@ class ProfileDropdown extends Component {
               <NavButton
                 data-role="toggle"
                 ariaLabel={intl.formatMessage({ id: 'stripes-core.mainnav.myProfileAriaLabel' })}
-                selected={dropdownOpen} 
-                icon={this.getProfileImage()} 
+                selected={dropdownOpen}
+                icon={this.getProfileImage()}
               />
               <NavDropdownMenu data-role="menu" onToggle={this.toggleDropdown}>
                 {this.getDropdownContent()}

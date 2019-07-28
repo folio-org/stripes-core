@@ -3,11 +3,12 @@
 :root {
   --main-nav-min-height: 50px;
   --main-nav-background-color: #383838;
+  --main-nav-text-color: #fff;
 }
 
 .navRoot {
   background-color: var(--main-nav-background-color);
-  color: #FFF;
+  color: var(--main-nav-text-color);
   display: flex;
   justify-content: space-between;
   align-content: stretch;

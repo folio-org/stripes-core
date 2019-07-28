@@ -4,13 +4,14 @@
 
 :root {
   --main-nav-current-app-label-font-weight: 900;
+  --main-nav-current-app-label-color: #fff;
   --main-nav-current-app-negative-margin: calc(var(--gutter-static-two-thirds) * -1);
 }
 
 button.button,
 a.button {
   font-weight: var(--main-nav-current-app-label-font-weight);
-  color: #FFF;
+  color: var(--main-nav-current-app-label-color);
 }
 
 [dir="ltr"] .button {
