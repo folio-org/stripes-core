@@ -220,15 +220,24 @@ class ProfileDropdown extends Component {
     const { dropdownOpen, HandlerComponent } = this.state;
 
     return (
-      <Fragment>
-        { HandlerComponent && <HandlerComponent stripes={this.props.stripes} /> }
-        <Dropdown open={dropdownOpen} id="profileDropdown" onToggle={this.toggleDropdown} pullRight hasPadding>
-          <NavButton data-role="toggle" ariaLabel="My Profile" selected={dropdownOpen} icon={this.getProfileImage()} noSelectedBar />
-          <NavDropdownMenu data-role="menu" onToggle={this.toggleDropdown}>
-            {this.getDropdownContent()}
-          </NavDropdownMenu>
-        </Dropdown>
-      </Fragment>
+      <IntlConsumer>
+        {intl => (
+          <Fragment>
+            { HandlerComponent && <HandlerComponent stripes={this.props.stripes} /> }
+            <Dropdown open={dropdownOpen} id="profileDropdown" onToggle={this.toggleDropdown} pullRight hasPadding>
+              <NavButton
+                data-role="toggle"
+                ariaLabel={intl.formatMessage({ id: 'stripes-core.mainnav.myProfileAriaLabel' })} 
+                selected={dropdownOpen} 
+                icon={this.getProfileImage()} 
+              />
+              <NavDropdownMenu data-role="menu" onToggle={this.toggleDropdown}>
+                {this.getDropdownContent()}
+              </NavDropdownMenu>
+            </Dropdown>
+          </Fragment>
+        )}
+      </IntlConsumer>
     );
   }
 }
