@@ -1,21 +1,22 @@
 @import '@folio/stripes-components/lib/variables.css';
 
+:root {
+  --main-nav-button-font-size: 1.05rem;
+  --main-nav-button-label-spacing: 6px;
+  --main-nav-button-min-height: var(--control-min-size-touch);
+  --main-nav-button-color: rgba(255, 255, 255, 0.75);
+  --main-nav-button-active-color: #FFF;
+}
+
 .navButton {
   composes: interactionStylesControl from "@folio/stripes-components/lib/sharedStyles/interactionStyles.css";  /* stylelint-disable-line */
-  padding: 0 var(--gutter-static-one-third);
-  height: var(--control-min-size-touch);
+  padding: 0 var(--gutter-static-two-thirds);
+  min-height: var(--main-nav-button-min-height);
+  font-size: var(--main-nav-button-font-size);
   outline: 0;
-  color: #FFF;
-  font-size: var(--font-size-medium);
 
   &::-moz-focus-inner {
     border: 0;
-  }
-
-  &.selected .label,
-  &:focus .label,
-  &:hover .label {
-    opacity: 1;
   }
 
   &.selected .inner:before {
@@ -26,11 +27,16 @@
 /* To make sure we overwrite default link colors */
 a.navButton,
 button.navButton {
-  color: #FFF;
+  color: var(--main-nav-button-color);
+
+  &.selected,
+  &:focus,
+  &:hover {
+    color: var(--main-nav-button-active-color);
+  }
 }
 
 .icon {
-  margin: 0 4px;
   display: flex;
 
   & svg {
@@ -52,20 +58,26 @@ button.navButton {
 }
 
 .label {
-  margin: 0 var(--gutter-static-one-third);
   font-weight: 600;
   display: flex;
   align-items: center;
-  opacity: 0.8;
+}
+
+[dir="ltr"] .label {
+  margin-left: var(--main-nav-button-label-spacing);
+}
+
+[dir="rtl"] .label {
+  margin-right: var(--main-nav-button-label-spacing);
 }
 
 .inner {
-  padding: var(--gutter-static-one-third);
   position: relative;
+  padding: var(--gutter-static-one-third) 0;
 }
 
 .isInteractable {
-  composes: interactionStyles from "@folio/stripes-components/lib/sharedStyles/interactionStyles.css";  /* stylelint-disable-line */
+  composes: interactionStyles boxOffsetStartSmall boxOffsetEndSmall from "@folio/stripes-components/lib/sharedStyles/interactionStyles.css";  /* stylelint-disable-line */
 }
 
 /**

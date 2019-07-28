@@ -1,15 +1,21 @@
 @import '@folio/stripes-components/lib/variables.css';
 
+:root {
+  --main-nav-min-height: 50px;
+}
+
 .navRoot {
   background-color: #383838;
   color: #FFF;
   display: flex;
   justify-content: space-between;
   align-content: stretch;
+  align-items: center;
   width: 100%;
   border-bottom: 1px solid var(--color-border);
   flex: 0 0 auto;
-  padding: 0 6px;
+  padding: 0 var(--gutter-static-one-third);
+  min-height: var(--main-nav-min-height);
   z-index: 99999;
   position: relative;
 }

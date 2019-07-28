@@ -2,6 +2,19 @@
  * CurrentApp
  */
 
+button.button,
+a.button {
+  color: #FFF;
+}
+
+[dir="ltr"] .button {
+  margin-left: calc(var(--gutter-static-two-thirds) * -1);
+}
+
+[dir="rtl"] .button {
+  margin-right: calc(var(--gutter-static-two-thirds) * -1);
+}
+
 .button__inner {
   padding: 0;
 }
