@@ -38,14 +38,22 @@ const CurrentApp = ({ currentApp, id, intl, badge }) => {
 
   return (
     <NavButton
-      label={<Headline tag="h1" size="x-large" margin="none">{displayName}</Headline>}
+      label={
+        <Headline
+          tag="h1"
+          size="x-large"
+          margin="none"
+          className={css.button__label}
+        >
+          {displayName}
+        </Headline>
+      }
       id={id}
       ariaLabel={ariaLabel}
       badge={badge}
       iconKey={name}
       className={css.button}
       innerClassName={css.button__inner}
-      labelClassName={css.button__label}
       href={href}
       iconData={iconData}
     />

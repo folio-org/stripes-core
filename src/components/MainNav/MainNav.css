@@ -2,17 +2,17 @@
 
 :root {
   --main-nav-min-height: 50px;
+  --main-nav-background-color: #383838;
 }
 
 .navRoot {
-  background-color: #383838;
+  background-color: var(--main-nav-background-color);
   color: #FFF;
   display: flex;
   justify-content: space-between;
   align-content: stretch;
   align-items: center;
   width: 100%;
-  border-bottom: 1px solid var(--color-border);
   flex: 0 0 auto;
   padding: 0 var(--gutter-static-one-third);
   min-height: var(--main-nav-min-height);

@@ -94,6 +94,14 @@
   display: none;
 }
 
+[dir=ltr] .navItem:not(:first-child) {
+  margin-left: var(--gutter-static-two-thirds);
+}
+
+[dir=rtl] .navItem:not(:first-child) {
+  margin-right: var(--gutter-static-two-thirds);
+}
+
 /**
  * Responsive
  */

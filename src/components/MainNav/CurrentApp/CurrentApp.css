@@ -2,19 +2,29 @@
  * CurrentApp
  */
 
+:root {
+  --main-nav-current-app-label-font-weight: 900;
+  --main-nav-current-app-negative-margin: calc(var(--gutter-static-two-thirds) * -1);
+}
+
 button.button,
 a.button {
+  font-weight: var(--main-nav-current-app-label-font-weight);
   color: #FFF;
 }
 
 [dir="ltr"] .button {
-  margin-left: calc(var(--gutter-static-two-thirds) * -1);
+  margin-left: var(--main-nav-current-app-negative-margin);
 }
 
 [dir="rtl"] .button {
-  margin-right: calc(var(--gutter-static-two-thirds) * -1);
+  margin-right: var(--main-nav-current-app-negative-margin);
 }
 
 .button__inner {
   padding: 0;
+}
+
+.button .button__label {
+  font-weight: var(--main-nav-current-app-label-font-weight);
 }

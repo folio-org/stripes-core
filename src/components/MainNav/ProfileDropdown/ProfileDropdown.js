@@ -227,7 +227,7 @@ class ProfileDropdown extends Component {
             <Dropdown open={dropdownOpen} id="profileDropdown" onToggle={this.toggleDropdown} pullRight hasPadding>
               <NavButton
                 data-role="toggle"
-                ariaLabel={intl.formatMessage({ id: 'stripes-core.mainnav.myProfileAriaLabel' })} 
+                ariaLabel={intl.formatMessage({ id: 'stripes-core.mainnav.myProfileAriaLabel' })}
                 selected={dropdownOpen} 
                 icon={this.getProfileImage()} 
               />
