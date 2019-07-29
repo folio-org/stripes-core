@@ -9,7 +9,7 @@
     "button.deleteEntry": "删除{entry}",
     "button.saveAndClose": "保存并关闭",
     "button.cancel": "取消",
-    "label.confirmDeleteEntry": "<strong> {name} </strong>将<strong>删除</strong>",
+    "label.confirmDeleteEntry": "<strong> {name} </strong>将<strong>移除</strong>",
     "label.editEntry": "编辑{entry}",
     "label.createEntry": "创建{entry}",
     "label.missingRequiredField": "请填入以继续",
@@ -28,7 +28,7 @@
     "about.notEnabledModules": "未为此租户启用的已安装模块显示为<span class='{className}'>灰色</span>。",
     "about.moduleCount": "{count, number} {count, plural, one {module} other {modules}}",
     "about.interfaceCount": "{count, number} {count, plural, one {interface} other {interfaces}}",
-    "about.uiOrServiceDependencies": "UI /服务依赖性",
+    "about.uiOrServiceDependencies": "UI /服务依赖项",
     "about.moduleDependsOn": "{module}取决于：",
     "about.newerModuleAvailable": "{required}({available}可用)",
     "about.noDependencies": "{base}声明没有依赖项",
@@ -114,5 +114,13 @@
     "settingSystemInfo": "系统信息",
     "settingChoose": "选择设置",
     "button.save": "保存",
-    "mainnav.appContextMenu": "Application context dropdown"
+    "mainnav.appContextMenu": "应用程序上下文下拉列表",
+    "errors.password.length.invalid": "密码长度必须至少为8个符号。",
+    "errors.password.alphabetical.invalid": "密码必须包含小写和大写字母。",
+    "errors.password.number.invalid": "密码必须至少包含一个数字字符。",
+    "errors.password.specialCharacter.invalid": "密码必须至少包含一个特殊字符。",
+    "errors.password.usernameDuplicate.invalid": "密码不得包含您的用户名。",
+    "errors.password.keyboardSequence.invalid": "密码不得包含键盘顺序字符。",
+    "errors.password.repeatingSymbols.invalid": "密码不得包含连续的相同字符。",
+    "errors.password.whiteSpace.invalid": "密码不得包含空格。"
 }
