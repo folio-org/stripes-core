@@ -114,5 +114,13 @@
     "settingSystemInfo": "System information",
     "settingChoose": "Choose settings",
     "button.save": "Save",
-    "mainnav.appContextMenu": "Application context dropdown"
+    "mainnav.appContextMenu": "Application context dropdown",
+    "errors.password.length.invalid": "The password length must be minimum 8 symbols.",
+    "errors.password.alphabetical.invalid": "The password must contain both lowercase and uppercase letters.",
+    "errors.password.number.invalid": "The password must contain at least one numeric character.",
+    "errors.password.specialCharacter.invalid": "The password must contain at least one special character.",
+    "errors.password.usernameDuplicate.invalid": " The password must not contain your username.",
+    "errors.password.keyboardSequence.invalid": "The password must not contain a keyboard sequence.",
+    "errors.password.repeatingSymbols.invalid": "The password must not contain the same character in a row.",
+    "errors.password.whiteSpace.invalid": "The password must not contain whitespaces."
 }
