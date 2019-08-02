@@ -8,12 +8,6 @@
   --main-nav-current-app-negative-margin: calc(var(--gutter-static-two-thirds) * -1);
 }
 
-button.button,
-a.button {
-  font-weight: var(--main-nav-current-app-label-font-weight);
-  color: var(--main-nav-current-app-label-color);
-}
-
 [dir="ltr"] .button {
   margin-left: var(--main-nav-current-app-negative-margin);
 }
@@ -22,10 +16,11 @@ a.button {
   margin-right: var(--main-nav-current-app-negative-margin);
 }
 
-.button__inner {
+.button .button__inner {
   padding: 0;
 }
 
 .button .button__label {
   font-weight: var(--main-nav-current-app-label-font-weight);
+  color: var(--main-nav-current-app-label-color);
 }
