@@ -58,7 +58,7 @@ button.navButton {
 }
 
 .label {
-  font-weight: 600;
+  font-weight: var(--text-weight-bold);
   display: flex;
   align-items: center;
 }
