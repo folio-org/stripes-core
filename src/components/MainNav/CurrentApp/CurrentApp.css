@@ -6,16 +6,21 @@
 
 .button {
   opacity: 1;
+  padding: 0 var(--gutter-static-two-thirds);
 }
 
 .button .button__inner {
-  padding: 0 var(--gutter-static-one-third);
+  padding: 0;
 }
 
 [dir="ltr"] .button .button__label {
-  margin-left: var(--gutter-static-two-thirds);
+  margin-left: var(--gutter-static-one-third);
 }
 
 [dir="rtl"] .button .button__label {
-  margin-right: var(--gutter-static-two-thirds);
+  margin-right: var(--gutter-static-one-third);
+}
+
+.button .button__label__inner {
+  font-size: 1.86rem;
 }

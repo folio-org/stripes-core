@@ -41,9 +41,9 @@ const CurrentApp = ({ currentApp, id, intl, badge }) => {
       label={
         <Headline
           tag="h1"
-          size="x-large"
           margin="none"
           weight="black"
+          className={css.button__label__inner}
         >
           {displayName}
         </Headline>

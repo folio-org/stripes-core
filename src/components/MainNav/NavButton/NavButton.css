@@ -3,6 +3,7 @@
 :root {
   --main-nav-button-font-size: 1rem;
   --main-nav-button-label-spacing: 6px;
+  --main-nav-button-padding: 0.52rem;
   --main-nav-button-min-height: var(--control-min-size-touch);
   --main-nav-button-color: #fff;
 }
@@ -31,6 +32,10 @@
       background-color: var(--primary);
     }
   }
+}
+
+.isInteractable {
+  composes: interactionStyles from "@folio/stripes-components/lib/sharedStyles/interactionStyles.css";  /* stylelint-disable-line */
 }
 
 /* To make sure we overwrite default link colors */
@@ -76,11 +81,12 @@ button.navButton {
 
 .inner {
   position: relative;
-  padding: var(--gutter-static-one-third) 0;
+  padding: var(--main-nav-button-padding) 0;
 }
 
-.isInteractable {
-  composes: interactionStyles boxOffsetStartSmall boxOffsetEndSmall from "@folio/stripes-components/lib/sharedStyles/interactionStyles.css";  /* stylelint-disable-line */
+.navButton .inner::before {
+  left: calc(var(--main-nav-button-padding) * -1);
+  right: calc(var(--main-nav-button-padding) * -1);
 }
 
 /**
