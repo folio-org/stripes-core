@@ -43,7 +43,7 @@ const CurrentApp = ({ currentApp, id, intl, badge }) => {
           tag="h1"
           size="x-large"
           margin="none"
-          className={css.button__label}
+          weight="black"
         >
           {displayName}
         </Headline>
@@ -54,6 +54,7 @@ const CurrentApp = ({ currentApp, id, intl, badge }) => {
       iconKey={name}
       className={css.button}
       innerClassName={css.button__inner}
+      labelClassName={css.button__label}
       href={href}
       iconData={iconData}
     />

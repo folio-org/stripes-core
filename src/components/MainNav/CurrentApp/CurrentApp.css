@@ -2,25 +2,20 @@
  * CurrentApp
  */
 
-:root {
-  --main-nav-current-app-label-font-weight: 900;
-  --main-nav-current-app-label-color: #fff;
-  --main-nav-current-app-negative-margin: calc(var(--gutter-static-two-thirds) * -1);
-}
+@import "@folio/stripes-components/lib/variables.css";
 
-[dir="ltr"] .button {
-  margin-left: var(--main-nav-current-app-negative-margin);
-}
-
-[dir="rtl"] .button {
-  margin-right: var(--main-nav-current-app-negative-margin);
+.button {
+  opacity: 1;
 }
 
 .button .button__inner {
-  padding: 0;
+  padding: 0 var(--gutter-static-one-third);
 }
 
-.button .button__label {
-  font-weight: var(--main-nav-current-app-label-font-weight);
-  color: var(--main-nav-current-app-label-color);
+[dir="ltr"] .button .button__label {
+  margin-left: var(--gutter-static-two-thirds);
+}
+
+[dir="rtl"] .button .button__label {
+  margin-right: var(--gutter-static-two-thirds);
 }

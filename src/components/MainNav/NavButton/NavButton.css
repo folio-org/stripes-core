@@ -1,26 +1,34 @@
 @import '@folio/stripes-components/lib/variables.css';
 
 :root {
-  --main-nav-button-font-size: 1.05rem;
+  --main-nav-button-font-size: 1rem;
   --main-nav-button-label-spacing: 6px;
   --main-nav-button-min-height: var(--control-min-size-touch);
-  --main-nav-button-color: rgba(255, 255, 255, 0.75);
-  --main-nav-button-active-color: #fff;
+  --main-nav-button-color: #fff;
 }
 
 .navButton {
   composes: interactionStylesControl from "@folio/stripes-components/lib/sharedStyles/interactionStyles.css";  /* stylelint-disable-line */
-  padding: 0 var(--gutter-static-two-thirds);
+  padding: 0 var(--gutter-static-one-third);
   min-height: var(--main-nav-button-min-height);
   font-size: var(--main-nav-button-font-size);
   outline: 0;
+  opacity: 0.75;
 
   &::-moz-focus-inner {
     border: 0;
   }
 
-  &.selected .inner::before {
-    background-color: var(--primary);
+  &:hover,
+  &:focus {
+    opacity: 1;
+  }
+
+  &.selected {
+    opacity: 1;
+    & .inner::before {
+      background-color: var(--primary);
+    }
   }
 }
 
@@ -28,12 +36,6 @@
 a.navButton,
 button.navButton {
   color: var(--main-nav-button-color);
-
-  &.selected,
-  &:focus,
-  &:hover {
-    color: var(--main-nav-button-active-color);
-  }
 }
 
 .icon {

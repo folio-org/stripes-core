@@ -1,13 +1,16 @@
 @import '@folio/stripes-components/lib/variables.css';
 
 :root {
-  --main-nav-min-height: 50px;
+  --main-nav-min-height-desktop: 56px;
+  --main-nav-min-height-mobile: 48px;
+  --main-nav-border-bottom-color: #131313;
   --main-nav-background-color: #383838;
   --main-nav-text-color: #fff;
 }
 
 .navRoot {
   background-color: var(--main-nav-background-color);
+  border-bottom: 1px solid var(--main-nav-border-bottom-color);
   color: var(--main-nav-text-color);
   display: flex;
   justify-content: space-between;
@@ -16,7 +19,7 @@
   width: 100%;
   flex: 0 0 auto;
   padding: 0 var(--gutter-static-one-third);
-  min-height: var(--main-nav-min-height);
+  min-height: var(--main-nav-min-height-desktop);
   z-index: 99999;
   position: relative;
 }
@@ -41,5 +44,9 @@
 @media (--medium-down) {
   .brandingLabel {
     display: none;
+  }
+
+  .navRoot {
+    min-height: var(--main-nav-min-height-mobile);
   }
 }
