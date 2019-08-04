@@ -26,6 +26,7 @@
 
   &.selected {
     opacity: 1;
+
     & .inner::before {
       background-color: var(--primary);
     }
