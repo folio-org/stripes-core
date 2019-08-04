@@ -14,11 +14,11 @@
 }
 
 [dir="ltr"] .button .button__label {
-  margin-left: var(--gutter-static-one-third);
+  margin-left: 0.6rem;
 }
 
 [dir="rtl"] .button .button__label {
-  margin-right: var(--gutter-static-one-third);
+  margin-right: 0.6rem;
 }
 
 .button .button__label__inner {
