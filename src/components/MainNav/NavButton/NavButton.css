@@ -3,7 +3,7 @@
 :root {
   --main-nav-button-font-size: 1rem;
   --main-nav-button-label-spacing: 6px;
-  --main-nav-button-padding: 0.52rem;
+  --main-nav-button-padding: 0.53rem;
   --main-nav-button-min-height: var(--control-min-size-touch);
   --main-nav-button-color: #fff;
 }
