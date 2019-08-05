@@ -114,5 +114,13 @@
     "settingSystemInfo": "معلومات النظام",
     "settingChoose": "اختر الإعدادات",
     "button.save": "حفظ",
-    "mainnav.appContextMenu": "القائمة المنسدلة لسياق التطبيق"
+    "mainnav.appContextMenu": "القائمة المنسدلة لسياق التطبيق",
+    "errors.password.length.invalid": "الحد الأدنى لطول كلمة المرور هو 8 أحرف.",
+    "errors.password.alphabetical.invalid": "يجب أن تحتوي كلمة المرور على أحرف صغيرة وأخرى كبيرة.",
+    "errors.password.number.invalid": "يجب أن تحتوي كلمة المرور على رقم واحد على الأقل.",
+    "errors.password.specialCharacter.invalid": "يجب أن تحتوي كلمة المرور على حرف خاص واحد على الأقل.",
+    "errors.password.usernameDuplicate.invalid": "يجب ألا تحتوي كلمة المرور على اسم المستخدم الخاص بك.",
+    "errors.password.keyboardSequence.invalid": "يجب ألا تحتوي كلمة المرور على حروف متسلسلة في لوحة المفاتيح.",
+    "errors.password.repeatingSymbols.invalid": "يجب ألا تحتوي كلمة المرور على تسلسل متتالٍ لنفس الحرف",
+    "errors.password.whiteSpace.invalid": "يجب ألا تحتوي كلمة المرور على مسافات."
 }

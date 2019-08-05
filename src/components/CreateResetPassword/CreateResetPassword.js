@@ -23,12 +23,10 @@ import {
 
 import { setAuthError } from '../../okapiActions';
 import { stripesShape } from '../../Stripes';
-import { parseJWT } from '../../helpers';
 
 import OrganizationLogo from '../OrganizationLogo';
 import AuthErrorsContainer from '../AuthErrorsContainer';
 import FieldLabel from './components/FieldLabel';
-import PasswordValidationField from './components/PasswordValidationField';
 
 import styles from './CreateResetPassword.css';
 
@@ -37,12 +35,12 @@ class CreateResetPassword extends Component {
     stripes: stripesShape.isRequired,
     handleSubmit: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
+    clearAuthErrors: PropTypes.func.isRequired,
     onPasswordInputFocus: PropTypes.func.isRequired,
     submitting: PropTypes.bool,
     errors: PropTypes.arrayOf(PropTypes.object),
     formValues: PropTypes.object,
     submitIsFailed: PropTypes.bool,
-    token: PropTypes.string.isRequired,
   };
 
   static defaultProps = {
@@ -54,12 +52,6 @@ class CreateResetPassword extends Component {
 
   constructor(props) {
     super(props);
-
-    this.translateNamespace = 'stripes-core.createResetPassword';
-    this.passwordMatchError = {
-      code: 'password.match.error',
-      type: 'error',
-    };
     this.state = {
       passwordMasked: true,
     };
@@ -71,7 +63,6 @@ class CreateResetPassword extends Component {
       button: 'stripes-core.button',
     };
     this.passwordMatchErrorCode = 'password.match.error';
-    this.newPasswordField = props.stripes.connect(PasswordValidationField);
     this.validators = {
       confirmPassword: this.confirmPasswordFieldValidation,
     };
@@ -92,21 +83,17 @@ class CreateResetPassword extends Component {
     }));
   };
 
-  newPasswordFieldValidation = (errors) => {
-    this.validationHandler(
-      errors,
-      this.translationNamespaces.smartComponents,
-    );
-  };
-
   confirmPasswordFieldValidation = (value, { newPassword, confirmPassword } = {}) => {
     const confirmPasswordValid = !(newPassword && confirmPassword && newPassword !== confirmPassword);
+    const { clearAuthErrors } = this.props;
 
     if (!confirmPasswordValid) {
       this.validationHandler(
         [this.passwordMatchErrorCode],
         this.translationNamespaces.errors,
       );
+    } else {
+      clearAuthErrors();
     }
   };
 
@@ -127,17 +114,6 @@ class CreateResetPassword extends Component {
     })));
   };
 
-  getUsernameFromToken(token) {
-    const parsedToken = parseJWT(token);
-    let username;
-
-    if (parsedToken) {
-      username = parsedToken.sub;
-    }
-
-    return username;
-  }
-
   render() {
     const {
       errors,
@@ -150,7 +126,6 @@ class CreateResetPassword extends Component {
         newPassword,
         confirmPassword,
       },
-      token,
     } = this.props;
     const { passwordMasked } = this.state;
     const submissionStatus = submitting || submitIsFailed;
@@ -158,7 +133,6 @@ class CreateResetPassword extends Component {
     const passwordType = passwordMasked ? 'password' : 'text';
     const buttonLabelId = `${this.translationNamespaces.module}.${submitting ? 'settingPassword' : 'setPassword'}`;
     const passwordToggleLabelId = `${this.translationNamespaces.button}.${passwordMasked ? 'show' : 'hide'}Password`;
-    const username = this.getUsernameFromToken(token);
 
     return (
       <div className={styles.wrapper}>
@@ -210,24 +184,20 @@ class CreateResetPassword extends Component {
                     xs={12}
                     sm={9}
                   >
-                    <this.newPasswordField
+                    <Field
                       id="new-password"
                       name="newPassword"
                       autoComplete="new-password"
                       component={PasswordStrength}
-                      type={passwordType}
-                      username={username}
                       inputClass={styles.input}
+                      type={passwordType}
                       hasClearIcon={false}
                       autoFocus
                       errors={errors}
                       marginBottom0
                       fullWidth
-                      token={token}
                       inputColProps={this.inputColProps}
                       passwordMeterColProps={this.passwordMeterColProps}
-                      validationHandler={this.newPasswordFieldValidation}
-                      validate={this.validators.newPassword}
                       onFocus={() => onPasswordInputFocus(submitIsFailed)}
                     />
                   </Col>

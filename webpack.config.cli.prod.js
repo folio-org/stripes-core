@@ -59,6 +59,25 @@ prodConfig.module.rules.push({
   ],
 });
 
+prodConfig.module.rules.push(
+  {
+    test: /\.svg$/,
+    use: [
+      { loader: 'file-loader?name=img/[path][name].[hash].[ext]' },
+      {
+        loader: 'svgo-loader',
+        options: {
+          plugins: [
+            { removeTitle: true },
+            { convertColors: { shorthex: false } },
+            { convertPathData: false }
+          ]
+        }
+      }
+    ]
+  },
+);
+
 // Remove all data-test or data-test-* attributes
 const babelLoaderConfig = prodConfig.module.rules.find(rule => rule.loader === 'babel-loader');
 

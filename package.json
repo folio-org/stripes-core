@@ -1,10 +1,12 @@
 {
   "name": "@folio/stripes-core",
-  "version": "3.6.0",
+  "version": "3.7.0",
   "description": "The starting point for Stripes applications",
   "license": "Apache-2.0",
   "repository": "folio-org/stripes-core",
-  "sideEffects": ["*.css"],
+  "sideEffects": [
+    "*.css"
+  ],
   "publishConfig": {
     "registry": "https://repository.folio.org/repository/npm-folio/"
   },
@@ -26,7 +28,7 @@
   },
   "stripes": {
     "okapiInterfaces": {
-      "users-bl": "3.0 4.0",
+      "users-bl": "5.0",
       "authtoken": "1.0 2.0",
       "configuration": "2.0"
     },
@@ -34,15 +36,6 @@
       {
         "permissionName": "settings.enabled",
         "displayName": "UI: settings area is enabled"
-      },
-      {
-        "permissionName": "reset-password-link.reset",
-        "displayName": "Reset password: user can reset password by link",
-        "subPermissions": [
-          "validation.rules.collection.get",
-          "users-bl.password-reset-link.reset"
-        ],
-        "visible": true
       }
     ]
   },
@@ -68,8 +61,8 @@
   },
   "dependencies": {
     "@folio/react-intl-safe-html": "^1.0.2",
-    "@folio/stripes-components": "~5.4.0",
-    "@folio/stripes-connect": "~5.2.0",
+    "@folio/stripes-components": "~5.5.0",
+    "@folio/stripes-connect": "~5.3.0",
     "@folio/stripes-logger": "~1.0.0",
     "apollo-cache-inmemory": "^1.1.1",
     "apollo-client": "^2.0.3",
@@ -144,6 +137,8 @@
     "rxjs": "^5.4.3",
     "serialize-javascript": "^1.4.0",
     "style-loader": "^0.22.1",
+    "svgo": "^1.2.2",
+    "svgo-loader": "^2.2.1",
     "tapable": "^1.0.0",
     "typescript": "^2.8.1",
     "uuid": "^3.0.0",

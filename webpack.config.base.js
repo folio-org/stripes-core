@@ -55,7 +55,7 @@ module.exports = {
       babelLoaderRule,
       typescriptLoaderRule,
       {
-        test: /\.(jpg|jpeg|gif|png|ico|svg)$/,
+        test: /\.(jpg|jpeg|gif|png|ico)$/,
         loader: 'file-loader?name=img/[path][name].[hash].[ext]',
       },
       {
