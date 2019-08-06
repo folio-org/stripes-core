@@ -5,7 +5,7 @@
 @import "@folio/stripes-components/lib/variables.css";
 
 .button {
-  opacity: 1;
+  opacity: 1 !important;
   padding: 0 var(--gutter-static-two-thirds);
 }
 
