@@ -82,6 +82,7 @@
   .hideOnSmallScreens {
     display: none;
   }
+
   .skeletonHeader {
     height: 48px;
   }
