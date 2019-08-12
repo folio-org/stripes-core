@@ -1,54 +1,54 @@
 @import '@folio/stripes-components/lib/variables.css';
 
+:root {
+  --main-nav-button-font-size: 1rem;
+  --main-nav-button-label-spacing: 6px;
+  --main-nav-button-padding: 0.53rem;
+  --main-nav-button-min-height: var(--control-min-size-touch);
+  --main-nav-button-color: #fff;
+}
+
 .navButton {
   composes: interactionStylesControl from "@folio/stripes-components/lib/sharedStyles/interactionStyles.css";  /* stylelint-disable-line */
-  padding: 0 5px;
-  height: 44px;
+  padding: 0 var(--gutter-static-one-third);
+  min-height: var(--main-nav-button-min-height);
+  font-size: var(--main-nav-button-font-size);
   outline: 0;
-  color: var(--color-text);
-  font-size: var(--font-size-small);
+  opacity: 0.75;
 
   &::-moz-focus-inner {
     border: 0;
   }
 
-  /* Is selected */
+  &:hover,
+  &:focus {
+    opacity: 1;
+  }
+
   &.selected {
-    &::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      right: 5px;
-      left: 5px;
-      height: 4px;
+    opacity: 1;
+
+    & .inner::before {
       background-color: var(--primary);
-      border-bottom-left-radius: 3px;
-      border-bottom-right-radius: 3px;
     }
   }
 }
 
-.navButton:not(:active).selected .icon svg {
-  fill: var(--primary);
+.isInteractable {
+  composes: interactionStyles from "@folio/stripes-components/lib/sharedStyles/interactionStyles.css";  /* stylelint-disable-line */
 }
 
 /* To make sure we overwrite default link colors */
 a.navButton,
 button.navButton {
-  color: var(--color-text);
-}
-
-/* No active bar - primarily used for popover icons with no label */
-.navButton.noSelectedBar::before {
-  display: none;
+  color: var(--main-nav-button-color);
 }
 
 .icon {
-  margin: 0 4px;
   display: flex;
 
   & svg {
-    fill: var(--color-icon);
+    fill: currentColor;
   }
 }
 
@@ -66,19 +66,27 @@ button.navButton {
 }
 
 .label {
-  margin: 0 4px;
-  font-weight: 600;
+  font-weight: var(--text-weight-bold);
   display: flex;
   align-items: center;
 }
 
-.inner {
-  padding: 4px 0;
-  position: relative;
+[dir="ltr"] .label {
+  margin-left: var(--main-nav-button-label-spacing);
 }
 
-.isInteractable {
-  composes: interactionStyles from "@folio/stripes-components/lib/sharedStyles/interactionStyles.css";  /* stylelint-disable-line */
+[dir="rtl"] .label {
+  margin-right: var(--main-nav-button-label-spacing);
+}
+
+.inner {
+  position: relative;
+  padding: var(--main-nav-button-padding) 0;
+}
+
+.navButton .inner::before {
+  left: calc(var(--main-nav-button-padding) * -1);
+  right: calc(var(--main-nav-button-padding) * -1);
 }
 
 /**
@@ -90,4 +98,12 @@ button.navButton {
   top: 0;
   right: -1px;
   z-index: 5;
+}
+
+/**
+ * AppIcon
+ */
+
+.appIcon > span::after {
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
 }

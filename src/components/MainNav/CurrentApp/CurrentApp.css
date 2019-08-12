@@ -1,0 +1,26 @@
+/**
+ * CurrentApp
+ */
+
+@import "@folio/stripes-components/lib/variables.css";
+
+.button {
+  opacity: 1 !important;
+  padding: 0 var(--gutter-static-two-thirds);
+}
+
+.button .button__inner {
+  padding: 0;
+}
+
+[dir="ltr"] .button .button__label {
+  margin-left: 0.6rem;
+}
+
+[dir="rtl"] .button .button__label {
+  margin-right: 0.6rem;
+}
+
+.button .button__label__inner {
+  font-size: 1.86rem;
+}

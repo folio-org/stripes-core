@@ -84,7 +84,7 @@ class AppList extends Component {
           label={app.displayName}
           id={app.id}
           selected={app.active}
-          href={app.active ? null : app.href}
+          href={app.href}
           aria-label={app.displayName}
           iconKey={app.name}
           iconData={app.iconData}

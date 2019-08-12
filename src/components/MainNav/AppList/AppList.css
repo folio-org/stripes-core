@@ -71,7 +71,7 @@
 .dropdownListItemLabel {
   padding: 0 4px;
   min-width: 200px;
-  font-weight: 600;
+  font-weight: var(--text-weight-bold);
 }
 
 [dir="rtl"] .dropdownListItemLabel {
@@ -92,6 +92,14 @@
 **/
 .navItem {
   display: none;
+}
+
+[dir=ltr] .navItem:not(:last-child) {
+  margin-right: var(--gutter-static-two-thirds);
+}
+
+[dir=rtl] .navItem:not(:last-child) {
+  margin-left: var(--gutter-static-two-thirds);
 }
 
 /**
