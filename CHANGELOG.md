@@ -3,6 +3,7 @@
 ## 3.8.0 (IN PROGRESS)
 
 * Receive React as a peerDependency (provide by `stripes`). One dep to rule them all. Refs UIIN-678.
+* Updated MainNav design to improve color contrast (STCOR-378)
 
 ## [3.7.0](https://github.com/folio-org/stripes-core/tree/v3.7.0) (2019-07-22)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.6.0...v3.7.0)
