@@ -122,5 +122,6 @@
     "errors.password.usernameDuplicate.invalid": "يجب ألا تحتوي كلمة المرور على اسم المستخدم الخاص بك.",
     "errors.password.keyboardSequence.invalid": "يجب ألا تحتوي كلمة المرور على حروف متسلسلة في لوحة المفاتيح.",
     "errors.password.repeatingSymbols.invalid": "يجب ألا تحتوي كلمة المرور على تسلسل متتالٍ لنفس الحرف",
-    "errors.password.whiteSpace.invalid": "يجب ألا تحتوي كلمة المرور على مسافات."
+    "errors.password.whiteSpace.invalid": "يجب ألا تحتوي كلمة المرور على مسافات.",
+    "mainnav.myProfileAriaLabel": "ملفي الشخصي"
 }

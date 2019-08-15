@@ -122,5 +122,6 @@
     "errors.password.usernameDuplicate.invalid": "A senha não deve conter seu nome de usuário.",
     "errors.password.keyboardSequence.invalid": "A senha não deve conter uma seqüência do teclado.",
     "errors.password.repeatingSymbols.invalid": "A senha não deve conter o mesmo caractere em uma linha.",
-    "errors.password.whiteSpace.invalid": "A senha não deve conter espaços em branco."
+    "errors.password.whiteSpace.invalid": "A senha não deve conter espaços em branco.",
+    "mainnav.myProfileAriaLabel": "Meu perfil"
 }
