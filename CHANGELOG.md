@@ -1,6 +1,7 @@
 # Change history for stripes-core
 
-## 3.8.0 (IN PROGRESS)
+## [3.8.0](https://github.com/folio-org/stripes-core/tree/v3.8.0) (2019-08-21)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.7.0...v3.8.0)
 
 * Receive React as a peerDependency (provide by `stripes`). One dep to rule them all. Refs UIIN-678.
 * Updated MainNav design to improve color contrast (STCOR-378)
