@@ -10,6 +10,10 @@ import NavButton from '../NavButton';
 import css from './CurrentApp.css';
 
 const propTypes = {
+  config: PropTypes.shape({
+    platformName: PropTypes.string,
+    platformDescription: PropTypes.string,
+  }),
   currentApp: PropTypes.shape(
     {
       displayName: PropTypes.string,
@@ -27,12 +31,13 @@ const propTypes = {
   ]),
 };
 
-const defaultProps = {
-  currentApp: { displayName: 'FOLIO', description: 'FOLIO platform' },
-};
+const CurrentApp = ({ config, currentApp, id, intl, badge }) => {
+  const actualCurrentApp = currentApp || {
+    displayName: config.platformName || 'FOLIO',
+    description: config.platformDescription || 'FOLIO platform',
+  };
 
-const CurrentApp = ({ currentApp, id, intl, badge }) => {
-  const { displayName, iconData, name, home, route } = currentApp;
+  const { displayName, iconData, name, home, route } = actualCurrentApp;
   const href = home || route;
   const ariaLabel = href ? intl.formatMessage({ id: 'stripes-core.mainnav.currentAppAriaLabel' }, { appName: displayName }) : displayName;
 
@@ -62,6 +67,5 @@ const CurrentApp = ({ currentApp, id, intl, badge }) => {
 };
 
 CurrentApp.propTypes = propTypes;
-CurrentApp.defaultProps = defaultProps;
 
 export default injectIntl(CurrentApp);
