@@ -188,7 +188,7 @@ class MainNav extends Component {
                     <polygon style={{ fill: '#999' }} points="13 24.8 1.2 13.5 3.2 11.3 13 20.6 22.8 11.3 24.8 13.5 " />
                   </svg>
                 </a>
-                <CurrentAppGroup selectedApp={selectedApp} />
+                <CurrentAppGroup selectedApp={selectedApp} config={stripes.config} />
               </NavGroup>
               <nav aria-labelledby="main_navigation_label">
                 <h2 className="sr-only" id="main_navigation_label">

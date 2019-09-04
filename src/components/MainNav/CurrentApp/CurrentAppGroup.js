@@ -9,7 +9,7 @@ import AppContextDropdown from './AppContextDropdown';
 import { withAppCtxMenu } from './AppCtxMenuContext';
 import CurrentApp from './CurrentApp';
 
-const CurrentAppGroup = ({ displayDropdownButton, selectedApp }) => {
+const CurrentAppGroup = ({ displayDropdownButton, selectedApp, config }) => {
   if (displayDropdownButton) {
     return (
       <AppContextDropdown selectedApp={selectedApp} />
@@ -19,12 +19,14 @@ const CurrentAppGroup = ({ displayDropdownButton, selectedApp }) => {
   return (
     <CurrentApp
       id="ModuleMainHeading"
+      config={config}
       currentApp={selectedApp}
     />
   );
 };
 
 CurrentAppGroup.propTypes = {
+  config: PropTypes.object.isRequired,
   displayDropdownButton: PropTypes.bool,
   selectedApp: PropTypes.shape(
     {

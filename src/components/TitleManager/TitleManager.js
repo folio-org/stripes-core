@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Titled } from 'react-titled';
+import { withStripes } from '../../StripesContext';
 
 const APP = 'FOLIO';
 
@@ -9,6 +10,11 @@ class TitleManager extends React.Component {
     children: PropTypes.node,
     page: PropTypes.string,
     record: PropTypes.string,
+    stripes: PropTypes.shape({
+      config: PropTypes.shape({
+        platformName: PropTypes.string,
+      }),
+    }).isRequired,
   }
 
   renderTitle = (currentTitle) => {
@@ -20,7 +26,7 @@ class TitleManager extends React.Component {
     if (page) tokens[0] = page;
     if (record) tokens[1] = record;
 
-    tokens[2] = APP;
+    tokens[2] = (this.props.stripes.config || {}).platformName || APP;
 
     return tokens
       .filter(t => t)
@@ -36,4 +42,4 @@ class TitleManager extends React.Component {
   }
 }
 
-export default TitleManager;
+export default withStripes(TitleManager);
