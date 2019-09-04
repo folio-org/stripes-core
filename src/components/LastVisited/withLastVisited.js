@@ -37,6 +37,7 @@ function withLastVisited(WrappedComponent) {
         const module = this.getCurrentModule(location);
         if (!module) return;
 
+        // When switching modules, clear the record cache to keep memory from growing unbounded. Refs UIIN-687.
         if (this.previousModule && this.previousModule !== module.module) {
           this.props.stripes.store.dispatch({
             type: '@@stripes-connect/PRUNE',
