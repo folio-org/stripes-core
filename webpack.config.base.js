@@ -1,4 +1,5 @@
 // Common Webpack configuration for building Stripes
+const fs = require("fs");
 const webpack = require('webpack');
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -25,7 +26,7 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: `${__dirname}/index.html`,
+      template: fs.existsSync('index.html') ? 'index.html' : `${__dirname}/index.html`,
     }),
     new webpack.EnvironmentPlugin(['NODE_ENV']),
     // https://github.com/lodash/lodash-webpack-plugin#feature-sets
