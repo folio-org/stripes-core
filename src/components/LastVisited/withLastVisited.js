@@ -29,12 +29,31 @@ function withLastVisited(WrappedComponent) {
       });
 
       this.cachePreviousUrl = this.cachePreviousUrl.bind(this);
+      this.previousModules = [];
       this.lastVisited = {};
       this.previous = {};
 
       history.listen((location) => {
         const module = this.getCurrentModule(location);
         if (!module) return;
+
+        // When switching modules, clear the record cache older than previous module to keep memory from growing unbounded. Refs UIIN-687.
+        if (this.previousModules.length > 1) {
+          if (this.previousModules.indexOf(module.module) < 0) {
+            this.props.stripes.store.dispatch({
+              type: '@@stripes-connect/PRUNE',
+              meta: {
+                resource: 'records',
+                module: this.previousModules[0],
+              }
+            });
+          }
+
+          // Remove the oldest module from future pruning
+          this.previousModules.shift();
+        }
+
+        this.previousModules.push(module.module);
         const name = module.module.replace(/^@folio\//, '');
         this.previous[name] = this.lastVisited[name];
         this.lastVisited[name] = `${location.pathname}${location.search}`;

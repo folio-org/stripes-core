@@ -71,7 +71,7 @@ class RootWithIntl extends React.Component {
               <Provider store={stripes.store}>
                 <Router history={history}>
                   { token || disableAuth ?
-                    <MainContainer>
+                    <MainContainer stripes={stripes}>
                       <OverlayContainer />
                       <AppCtxMenuProvider>
                         <MainNav stripes={stripes} />
