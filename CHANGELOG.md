@@ -1,5 +1,13 @@
 # Change history for stripes-core
 
+## [3.9.0](https://github.com/folio-org/stripes-core/tree/v3.9.0) (2019-09-09)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.8.0...v3.9.0)
+
+* Use `stripes.config.js` to configure app name and caption in the UI (STCOR-385)
+* Use `stripes.config.js` to configure page title (STCOR-386)
+* Allow a platform to provide its own `index.html` file.
+* Call `PRUNE` redux reducer when navigating among application to reduce memory consumption (UIIN-687)
+
 ## [3.8.0](https://github.com/folio-org/stripes-core/tree/v3.8.0) (2019-08-21)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.7.0...v3.8.0)
 
