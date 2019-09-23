@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Switch from 'react-router-dom/Switch';
-import Route from 'react-router-dom/Route';
+import { Route, Switch } from 'react-router-dom';
 import { connectFor } from '@folio/stripes-connect';
 import { withRouter } from 'react-router';
 import NavList from '@folio/stripes-components/lib/NavList';

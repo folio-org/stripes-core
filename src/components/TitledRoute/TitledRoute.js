@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
-import Route from 'react-router-dom/Route';
+import { Route } from 'react-router-dom';
 
 import ErrorBoundary from '@folio/stripes-components/lib/ErrorBoundary';
 

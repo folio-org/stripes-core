@@ -53,10 +53,6 @@ class MainNav extends Component {
     })
   };
 
-  static contextTypes = {
-    router: PropTypes.object.isRequired,
-  }
-
   static childContextTypes = {
     // It seems wrong that we have to tell this generic component what specific properties to put in the context
     stripes: PropTypes.object,

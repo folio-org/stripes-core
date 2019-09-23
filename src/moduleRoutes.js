@@ -1,5 +1,5 @@
 import React from 'react';
-import Route from 'react-router-dom/Route';
+import { Route } from 'react-router-dom';
 import { connectFor } from '@folio/stripes-connect';
 import ErrorBoundary from '@folio/stripes-components/lib/ErrorBoundary';
 import ModulesContext from './ModulesContext';

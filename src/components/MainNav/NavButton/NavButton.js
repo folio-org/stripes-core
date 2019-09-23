@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import Link from 'react-router-dom/Link';
+import { Link } from 'react-router-dom';
 import Badge from '@folio/stripes-components/lib/Badge';
 
 import AppIcon from '../../AppIcon';

@@ -35,10 +35,6 @@ class AppList extends Component {
     selectedApp: PropTypes.object,
   }
 
-  static contextTypes = {
-    router: PropTypes.object.isRequired,
-  }
-
   constructor(props) {
     super(props);
 
