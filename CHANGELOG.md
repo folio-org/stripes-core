@@ -1,5 +1,9 @@
 # Change history for stripes-core
 
+## 3.1.0 (IN PROGRESS)
+
+* Update react-router and move it to a peerDependency (STCOM-581, STCOR-390)
+
 ## [3.9.0](https://github.com/folio-org/stripes-core/tree/v3.9.0) (2019-09-09)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.8.0...v3.9.0)
 
