@@ -96,6 +96,7 @@
   "mainnav.applicationListLabel": "Application List",
   "mainnav.appContextMenu": "Application context dropdown",
   "mainnav.myProfileAriaLabel": "My profile",
+  "mainnav.skipMainNavigation": "Skip Main Navigation",
 
   "errors.default.error": "Sorry, the information entered does not match our records.",
   "errors.username.incorrect": "Error verifying user existence: No user found by username {username}",

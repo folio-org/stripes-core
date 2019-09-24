@@ -5,6 +5,7 @@
  */
 
 import React from 'react';
+import { FormattedMessage } from 'react-intl';
 import NavButton from '../../NavButton';
 import css from './SkipLink.css';
 
@@ -16,14 +17,18 @@ const SkipIcon = () => (
 );
 
 const SkipLink = () => (
-  <div className={css.skipLink}>
-    <NavButton
-      icon={<SkipIcon />}
-      href="#ModuleContainer"
-      aria-label="Skip Main Navigation"
-      className={css.skipLink__button}
-    />
-  </div>
+  <FormattedMessage id="stripes-core.mainnav.skipMainNavigation">
+    {label => (
+      <div className={css.skipLink}>
+        <NavButton
+          icon={<SkipIcon />}
+          href="#ModuleContainer"
+          aria-label={label}
+          className={css.skipLink__button}
+        />
+      </div>
+    )}
+  </FormattedMessage>
 );
 
 export default SkipLink;
