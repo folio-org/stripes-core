@@ -1,0 +1,14 @@
+/**
+ * AppList -> ResizeContainer
+ */
+
+.resizeContainerWrapper {
+  flex: 1;
+  display: flex;
+  min-width: 0;
+}
+
+.resizeContainerInner {
+  overflow: hidden;
+  flex: 1;
+}

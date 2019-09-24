@@ -12,7 +12,7 @@ import DropdownMenu from '@folio/stripes-components/lib/DropdownMenu';
 import Icon from '@folio/stripes-components/lib/Icon';
 
 import IntlConsumer from '../../IntlConsumer';
-import AppListDropdown from './AppListDropdown';
+import { ResizeContainer, AppListDropdown } from './components';
 import NavButton from '../NavButton';
 import css from './AppList.css';
 
@@ -41,8 +41,6 @@ class AppList extends Component {
 
   constructor(props) {
     super(props);
-
-    this.maxRenderedNavButtons = 12;
 
     this.state = {
       open: false,
@@ -78,20 +76,36 @@ class AppList extends Component {
    * in the app header on desktop
    */
   renderNavButtons() {
-    return this.props.apps.filter((a, i) => i < this.maxRenderedNavButtons).map(app => (
-      <li className={css.navItem} key={app.id}>
-        <NavButton
-          label={app.displayName}
-          id={app.id}
-          selected={app.active}
-          to={app.href}
-          aria-label={app.displayName}
-          iconKey={app.name}
-          iconData={app.iconData}
-          role="button"
-        />
-      </li>
-    ));
+    const { apps } = this.props;
+    return (
+      <ResizeContainer
+        items={apps}
+      >
+        {({ visibleItems }) => {
+          const items = visibleItems.map(app => (
+            <li className={css.navItem} key={app.id}>
+              <NavButton
+                label={app.displayName}
+                id={app.id}
+                selected={app.active}
+                to={app.href}
+                aria-label={app.displayName}
+                iconKey={app.name}
+                iconData={app.iconData}
+                role="button"
+              />
+            </li>
+          ));
+
+          return (
+            <ul className={css.navItemsList}>
+              {items}
+            </ul>
+          );
+        }
+      }
+      </ResizeContainer>
+    );
   }
 
   /**
@@ -216,9 +230,7 @@ class AppList extends Component {
           return (
             <nav className={css.appList} aria-labelledby="main_app_list_label">
               <h3 className="sr-only" id="main_app_list_label"><FormattedMessage id="stripes-core.mainnav.applicationListLabel" /></h3>
-              <ul className={css.navItemsList}>
-                {renderNavButtons()}
-              </ul>
+              {renderNavButtons()}
               <div className={css.navListDropdownWrap}>
                 <Dropdown
                   tether={tether}
