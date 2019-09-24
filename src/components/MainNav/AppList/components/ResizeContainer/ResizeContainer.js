@@ -8,6 +8,7 @@ import css from './ResizeContainer.css';
 const ResizeContainer = ({ children, items }) => {
   const renderProps = {
     visibleItems: items,
+    hiddenItems: items,
   };
 
   return (

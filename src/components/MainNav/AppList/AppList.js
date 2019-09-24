@@ -46,12 +46,6 @@ class AppList extends Component {
       open: false,
     };
 
-    this.renderDropdownToggleButton = this.renderDropdownToggleButton.bind(this);
-    this.renderNavButtons = this.renderNavButtons.bind(this);
-    this.toggleDropdown = this.toggleDropdown.bind(this);
-    this.focusDropdownToggleButton = this.focusDropdownToggleButton.bind(this);
-    this.focusFirstItemInList = this.focusFirstItemInList.bind(this);
-
     this.dropdownListRef = React.createRef();
     this.dropdownToggleRef = React.createRef();
   }
@@ -75,14 +69,15 @@ class AppList extends Component {
    * Get the nav buttons that is displayed
    * in the app header on desktop
    */
-  renderNavButtons() {
-    const { apps } = this.props;
+  renderNavButtons = (items) => {
+    if (!items || !items.length) {
+      return null;
+    }
+
     return (
-      <ResizeContainer
-        items={apps}
-      >
-        {({ visibleItems }) => {
-          const items = visibleItems.map(app => (
+      <ul className={css.navItemsList}>
+        {
+          items.map(app => (
             <li className={css.navItem} key={app.id}>
               <NavButton
                 label={app.displayName}
@@ -95,23 +90,16 @@ class AppList extends Component {
                 role="button"
               />
             </li>
-          ));
-
-          return (
-            <ul className={css.navItemsList}>
-              {items}
-            </ul>
-          );
+          ))
         }
-      }
-      </ResizeContainer>
+      </ul>
     );
   }
 
   /**
    * When dropdown is toggled
    */
-  toggleDropdown() {
+  toggleDropdown = () => {
     this.setState(state => ({ open: !state.open }), () => {
       // Re-focus dropdown toggle on close
       if (!this.state.open) {
@@ -123,7 +111,7 @@ class AppList extends Component {
   /**
    * The button that toggles the dropdown
    */
-  renderDropdownToggleButton() {
+  renderDropdownToggleButton = () => {
     const { open } = this.state;
     const { dropdownToggleId } = this.props;
     const icon = (
@@ -163,43 +151,11 @@ class AppList extends Component {
     );
   }
 
-
   /**
-   * Focus management
+   * App list dropdown
    */
-  focusFirstItemInList() {
-    if (this.dropdownListRef && this.dropdownListRef.current) {
-      // Applies focus to the <a> inside the first <li> in the list
-      this.dropdownListRef.current.firstChild.firstChild.focus();
-    }
-  }
-
-  focusSelectedItem() {
-    const selectedApp = this.props.selectedApp;
-    if (selectedApp) {
-      const activeElement = document.getElementById(`app-list-item-${selectedApp.id}`);
-      if (activeElement) {
-        activeElement.focus();
-      }
-    }
-  }
-
-  focusDropdownToggleButton() {
-    if (this.dropdownToggleRef && this.dropdownToggleRef.current) {
-      this.dropdownToggleRef.current.focus();
-    }
-  }
-
-  /**
-   * Insert hidden input to help trap focus
-   */
-  focusTrap(onFocus) {
-    return <input aria-hidden="true" className="sr-only" onFocus={onFocus} />;
-  }
-
-  render() {
+  renderNavDropdown = (items) => {
     const {
-      renderNavButtons,
       renderDropdownToggleButton,
       toggleDropdown,
       focusTrap,
@@ -209,10 +165,9 @@ class AppList extends Component {
       state: { open },
     } = this;
 
-    const { dropdownId, apps, dropdownToggleId } = this.props;
+    const { dropdownId, dropdownToggleId } = this.props;
 
-    // If no apps are installed
-    if (!apps.length) {
+    if (!items || !items.length) {
       return null;
     }
 
@@ -228,36 +183,93 @@ class AppList extends Component {
           };
 
           return (
+            <div className={css.navListDropdownWrap}>
+              <Dropdown
+                tether={tether}
+                dropdownClass={css.navListDropdown}
+                open={open}
+                id={dropdownId}
+                onToggle={toggleDropdown}
+                hasPadding={false}
+              >
+                {renderDropdownToggleButton()}
+                <DropdownMenu data-role="menu" onToggle={toggleDropdown}>
+                  {focusTrap(focusDropdownToggleButton)}
+                  <AppListDropdown
+                    listRef={dropdownListRef}
+                    apps={items}
+                    dropdownToggleId={dropdownToggleId}
+                    toggleDropdown={toggleDropdown}
+                  />
+                  {focusTrap(focusFirstItemInList)}
+                </DropdownMenu>
+              </Dropdown>
+            </div>
+          );
+        }}
+      </IntlConsumer>
+    );
+  }
+
+
+  /**
+   * Focus management
+   */
+  focusFirstItemInList = () => {
+    if (this.dropdownListRef && this.dropdownListRef.current) {
+      // Applies focus to the <a> inside the first <li> in the list
+      this.dropdownListRef.current.firstChild.firstChild.focus();
+    }
+  }
+
+  focusSelectedItem = () => {
+    const selectedApp = this.props.selectedApp;
+    if (selectedApp) {
+      const activeElement = document.getElementById(`app-list-item-${selectedApp.id}`);
+      if (activeElement) {
+        activeElement.focus();
+      }
+    }
+  }
+
+  focusDropdownToggleButton = () => {
+    if (this.dropdownToggleRef && this.dropdownToggleRef.current) {
+      this.dropdownToggleRef.current.focus();
+    }
+  }
+
+  /**
+   * Insert hidden input to help trap focus
+   */
+  focusTrap(onFocus) {
+    return <input aria-hidden="true" className="sr-only" onFocus={onFocus} />;
+  }
+
+  render() {
+    const { apps } = this.props;
+
+    // If no apps are installed
+    if (!apps.length) {
+      return null;
+    }
+
+    return (
+      <ResizeContainer
+        items={apps}
+      >
+        {({ visibleItems, hiddenItems }) => {
+          console.log('Visible items', visibleItems);
+          console.log('hidden items', hiddenItems);
+          return (
             <nav className={css.appList} aria-labelledby="main_app_list_label">
               <h3 className="sr-only" id="main_app_list_label"><FormattedMessage id="stripes-core.mainnav.applicationListLabel" /></h3>
-              {renderNavButtons()}
-              <div className={css.navListDropdownWrap}>
-                <Dropdown
-                  tether={tether}
-                  dropdownClass={css.navListDropdown}
-                  open={open}
-                  id={dropdownId}
-                  onToggle={toggleDropdown}
-                  hasPadding={false}
-                >
-                  {renderDropdownToggleButton()}
-                  <DropdownMenu data-role="menu" onToggle={toggleDropdown}>
-                    {focusTrap(focusDropdownToggleButton)}
-                    <AppListDropdown
-                      listRef={dropdownListRef}
-                      apps={apps}
-                      dropdownToggleId={dropdownToggleId}
-                      toggleDropdown={toggleDropdown}
-                    />
-                    {focusTrap(focusFirstItemInList)}
-                  </DropdownMenu>
-                </Dropdown>
-              </div>
+              {this.renderNavButtons(visibleItems)}
+              {this.renderNavDropdown(hiddenItems)}
             </nav>
           );
         }
       }
-      </IntlConsumer>
+      </ResizeContainer>
     );
   }
 }
