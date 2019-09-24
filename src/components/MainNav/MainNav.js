@@ -20,7 +20,6 @@ import {
 
 import css from './MainNav.css';
 import NavDivider from './NavDivider';
-import NavGroup from './NavGroup';
 import { CurrentAppGroup } from './CurrentApp';
 import ProfileDropdown from './ProfileDropdown';
 import AppList from './AppList';
@@ -182,27 +181,25 @@ class MainNav extends Component {
 
           return (
             <header className={css.navRoot}>
-              <NavGroup>
+              <div className={css.startSection}>
                 <SkipLink />
                 <CurrentAppGroup selectedApp={selectedApp} config={stripes.config} />
-              </NavGroup>
-              <nav aria-labelledby="main_navigation_label">
+              </div>
+              <nav aria-labelledby="main_navigation_label" className={css.endSection}>
                 <h2 className="sr-only" id="main_navigation_label">
                   <FormattedMessage id="stripes-core.mainnav.topLevelLabel" />
                 </h2>
-                <NavGroup>
-                  <NavDivider md="hide" />
-                  <AppList
-                    apps={apps}
-                    selectedApp={selectedApp}
-                    dropdownToggleId="app-list-dropdown-toggle"
-                  />
-                  <NavDivider md="hide" />
-                  <ProfileDropdown
-                    onLogout={this.logout}
-                    stripes={stripes}
-                  />
-                </NavGroup>
+                <NavDivider md="hide" />
+                <AppList
+                  apps={apps}
+                  selectedApp={selectedApp}
+                  dropdownToggleId="app-list-dropdown-toggle"
+                />
+                <NavDivider md="hide" />
+                <ProfileDropdown
+                  onLogout={this.logout}
+                  stripes={stripes}
+                />
               </nav>
             </header>
           );

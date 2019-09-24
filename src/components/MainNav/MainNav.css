@@ -28,13 +28,18 @@
   white-space: nowrap;
 }
 
+.startSection,
+.endSection {
+  display: flex;
+  align-items: center;
+}
 
+.endSection {
+  flex: 1;
+  justify-content: flex-end;
+}
 
 @media (--medium-down) {
-  .brandingLabel {
-    display: none;
-  }
-
   .navRoot {
     min-height: var(--main-nav-min-height-mobile);
   }
