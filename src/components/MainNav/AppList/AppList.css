@@ -43,6 +43,10 @@
  * Nav Dropdown
  */
 
+.navListDropdownWrap {
+  margin: 0 var(--gutter-static-two-thirds);
+}
+
 .navListDropdownWrap,
 .navListDropdown {
   display: block;
@@ -91,7 +95,13 @@
 **/
 
 .navItem {
-  display: inline-block;
+  display: flex;
+  visibility: hidden;
+  flex-shrink: 0;
+
+  &.visible {
+    visibility: visible;
+  }
 }
 
 [dir=ltr] .navItem:not(:last-child) {

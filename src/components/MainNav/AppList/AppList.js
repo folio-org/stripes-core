@@ -3,6 +3,7 @@
  */
 
 import React, { Component, Fragment } from 'react';
+import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import rtlDetect from 'rtl-detect';
@@ -70,6 +71,8 @@ class AppList extends Component {
    * in the app header on desktop
    */
   renderNavButtons = (items) => {
+    const { selectedApp } = this.props;
+
     if (!items || !items.length) {
       return null;
     }
@@ -78,16 +81,16 @@ class AppList extends Component {
       <ul className={css.navItemsList}>
         {
           items.map(app => (
-            <li className={css.navItem} key={app.id}>
+            <li className={classnames(css.navItem, { [css.visible]: app.visible })} key={app.id} ref={app.ref} aria-hidden={!app.visible}>
               <NavButton
-                label={app.displayName}
-                id={app.id}
-                selected={app.active}
-                to={app.href}
                 aria-label={app.displayName}
-                iconKey={app.name}
                 iconData={app.iconData}
+                iconKey={app.name}
+                id={app.id}
+                label={app.displayName}
                 role="button"
+                selected={selectedApp && selectedApp.id === app.id}
+                to={app.href}
               />
             </li>
           ))
@@ -254,20 +257,16 @@ class AppList extends Component {
     }
 
     return (
-      <ResizeContainer
-        items={apps}
-      >
-        {({ visibleItems, hiddenItems }) => {
-          console.log('Visible items', visibleItems);
-          console.log('hidden items', hiddenItems);
-          return (
-            <nav className={css.appList} aria-labelledby="main_app_list_label">
-              <h3 className="sr-only" id="main_app_list_label"><FormattedMessage id="stripes-core.mainnav.applicationListLabel" /></h3>
-              {this.renderNavButtons(visibleItems)}
-              {this.renderNavDropdown(hiddenItems)}
-            </nav>
-          );
-        }
+      <ResizeContainer items={apps}>
+        {({ visibleItems, hiddenItems }) => (
+          <nav className={css.appList} aria-labelledby="main_app_list_label">
+            <h3 className="sr-only" id="main_app_list_label">
+              <FormattedMessage id="stripes-core.mainnav.applicationListLabel" />
+            </h3>
+            {this.renderNavButtons(visibleItems)}
+            {this.renderNavDropdown(hiddenItems)}
+          </nav>
+        )
       }
       </ResizeContainer>
     );

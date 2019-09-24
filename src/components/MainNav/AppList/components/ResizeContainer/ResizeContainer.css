@@ -6,6 +6,11 @@
   flex: 1;
   display: flex;
   min-width: 0;
+  visibility: hidden;
+  
+  &.ready {
+    visibility: visible;
+  }
 }
 
 .resizeContainerInner {
