@@ -28,18 +28,7 @@
   white-space: nowrap;
 }
 
-.skipLink {
-  position: absolute;
-  display: block;
-  padding: 6px 4px 0;
-  top: -100px;
-  transition: top 0.15s linear;
 
-  &:focus {
-    position: relative;
-    top: 0;
-  }
-}
 
 @media (--medium-down) {
   .brandingLabel {
