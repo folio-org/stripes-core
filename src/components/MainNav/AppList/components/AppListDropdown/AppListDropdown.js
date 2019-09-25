@@ -13,7 +13,7 @@ import NavListItemStyles from '@folio/stripes-components/lib/NavListItem/NavList
 import AppIcon from '../../../../AppIcon';
 import css from '../../AppList.css';
 
-const AppListDropdown = ({ toggleDropdown, apps, listRef }) => (
+const AppListDropdown = ({ toggleDropdown, apps, listRef, selectedApp }) => (
   <div className={css.dropdownBody}>
     <ul
       ref={listRef}
@@ -33,7 +33,7 @@ const AppListDropdown = ({ toggleDropdown, apps, listRef }) => (
                 key={index}
                 onClick={toggleDropdown}
                 to={app.href}
-                isActive={app.active}
+                isActive={selectedApp && selectedApp.id === app.id}
                 className={classnames(css.dropdownListItem, { [NavListItemStyles.odd]: isOddRow })}
                 aria-label={app.displayName}
                 id={`app-list-item-${app.id}`}
@@ -59,6 +59,9 @@ const AppListDropdown = ({ toggleDropdown, apps, listRef }) => (
 AppListDropdown.propTypes = {
   apps: PropTypes.arrayOf(PropTypes.object).isRequired,
   listRef: PropTypes.oneOfType([PropTypes.object, PropTypes.node]),
+  selectedApp: PropTypes.shape({
+    id: PropTypes.string,
+  }),
   toggleDropdown: PropTypes.func.isRequired,
 };
 

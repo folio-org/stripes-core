@@ -168,7 +168,7 @@ class AppList extends Component {
       state: { open },
     } = this;
 
-    const { dropdownId, dropdownToggleId } = this.props;
+    const { dropdownId, dropdownToggleId, selectedApp } = this.props;
 
     if (!items || !items.length) {
       return null;
@@ -199,9 +199,10 @@ class AppList extends Component {
                 <DropdownMenu data-role="menu" onToggle={toggleDropdown}>
                   {focusTrap(focusDropdownToggleButton)}
                   <AppListDropdown
-                    listRef={dropdownListRef}
                     apps={items}
                     dropdownToggleId={dropdownToggleId}
+                    listRef={dropdownListRef}
+                    selectedApp={selectedApp}
                     toggleDropdown={toggleDropdown}
                   />
                   {focusTrap(focusFirstItemInList)}
