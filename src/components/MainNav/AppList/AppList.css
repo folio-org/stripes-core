@@ -34,7 +34,7 @@
 .navItemsList {
   list-style: none;
   margin: 0;
-  padding: 0;
+  padding: 0 var(--gutter-static-two-thirds);
   display: flex;
   justify-content: flex-end;
 }
