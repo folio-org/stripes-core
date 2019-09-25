@@ -8,7 +8,7 @@ import debounce from 'lodash/debounce';
 import PropTypes from 'prop-types';
 import css from './ResizeContainer.css';
 
-const ResizeContainer = ({ className, children, items: allItems }) => {
+const ResizeContainer = ({ className, children, hideAllWidth, items: allItems }) => {
   const wrapperRef = useRef(null);
   const [ready, setReady] = useState(false);
   const [hiddenItems, setHiddenItems] = useState([]);
@@ -20,12 +20,13 @@ const ResizeContainer = ({ className, children, items: allItems }) => {
    * Determine visible items on mount and resize
    */
   const determineVisibleItems = callback => {
+    const shouldHideAll = window.innerWidth <= hideAllWidth;
     const isRTL = document.documentElement.dir === 'rtl';
     const wrapperRect = wrapperRef.current.getBoundingClientRect();
     const { left, right } = wrapperRect;
     const offset = 100;
 
-    const newItems = items.map((item, index) => {
+    const newItems = shouldHideAll ? items.map(item => Object.assign(item, { visible: false })) : items.map(item => {
       const rect = item.ref.current.getBoundingClientRect();
       const visible = isRTL ? right >= (rect.right + offset) : (left + offset) <= rect.left;
 
@@ -62,7 +63,7 @@ const ResizeContainer = ({ className, children, items: allItems }) => {
   }, []);
 
   /**
-   * Update hidden items every time items array updates
+   * Update hidden items every time the items array updates
    */
   useEffect(() => {
     setHiddenItems(items.filter(item => !item.visible));
@@ -84,6 +85,7 @@ const ResizeContainer = ({ className, children, items: allItems }) => {
 ResizeContainer.propTypes = {
   className: PropTypes.string,
   children: PropTypes.func,
+  hideAllWidth: PropTypes.number,
   items: PropTypes.arrayOf(PropTypes.object),
 };
 

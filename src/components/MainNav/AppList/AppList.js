@@ -257,7 +257,7 @@ class AppList extends Component {
     }
 
     return (
-      <ResizeContainer items={apps}>
+      <ResizeContainer items={apps} hideAllWidth={767}>
         {({ visibleItems, hiddenItems }) => (
           <nav className={css.appList} aria-labelledby="main_app_list_label">
             <h3 className="sr-only" id="main_app_list_label">
