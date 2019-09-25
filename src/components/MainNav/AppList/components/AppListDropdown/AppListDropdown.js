@@ -4,6 +4,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import sortBy from 'lodash/sortBy';
 import classnames from 'classnames';
 
 import NavListItem from '@folio/stripes-components/lib/NavListItem';
@@ -20,7 +21,7 @@ const AppListDropdown = ({ toggleDropdown, apps, listRef }) => (
       role="menu"
     >
       {
-        apps.map((app, index) => {
+        sortBy(apps, app => app.displayName.toLowerCase()).map((app, index) => {
           const isOddRow = !(index % 2);
 
           return (
