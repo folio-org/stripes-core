@@ -189,7 +189,6 @@ class MainNav extends Component {
                 <h2 className="sr-only" id="main_navigation_label">
                   <FormattedMessage id="stripes-core.mainnav.topLevelLabel" />
                 </h2>
-                <NavDivider md="hide" />
                 <AppList
                   apps={apps}
                   selectedApp={selectedApp}
