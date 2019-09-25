@@ -4,7 +4,6 @@
 
 import React, { useEffect, useState, useRef, createRef } from 'react';
 import classnames from 'classnames';
-import differenceWith from 'lodash/differenceWith';
 import debounce from 'lodash/debounce';
 import PropTypes from 'prop-types';
 import css from './ResizeContainer.css';
@@ -21,13 +20,14 @@ const ResizeContainer = ({ className, children, items: allItems }) => {
    * Determine visible items on mount and resize
    */
   const determineVisibleItems = callback => {
+    const isRTL = document.documentElement.dir === 'rtl';
     const wrapperRect = wrapperRef.current.getBoundingClientRect();
     const { left, right } = wrapperRect;
     const offset = 100;
 
-    const newItems = items.map(item => {
+    const newItems = items.map((item, index) => {
       const rect = item.ref.current.getBoundingClientRect();
-      const visible = (left + offset) <= rect.left;
+      const visible = isRTL ? right >= (rect.right + offset) : (left + offset) <= rect.left;
 
       return Object.assign(item, {
         visible
