@@ -23,7 +23,7 @@ const ResizeContainer = ({ className, children, items: allItems }) => {
   const determineVisibleItems = callback => {
     const wrapperRect = wrapperRef.current.getBoundingClientRect();
     const { left, right } = wrapperRect;
-    const offset = 75;
+    const offset = 100;
 
     const newItems = items.map(item => {
       const rect = item.ref.current.getBoundingClientRect();
