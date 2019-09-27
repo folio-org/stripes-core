@@ -248,8 +248,8 @@ function handleLoginError(dispatch, resp) {
   dispatch(setOkapiReady());
 }
 
-function processOkapiSession(okapiUrl, store, tenant, resp, origToken) {
-  const token = resp.headers.get('X-Okapi-Token') || origToken || store.getState().okapi.token;
+function processOkapiSession(okapiUrl, store, tenant, resp, ssoToken) {
+  const token = resp.headers.get('X-Okapi-Token') || ssoToken;
   const { dispatch } = store;
 
   if (resp.status >= 400) {
