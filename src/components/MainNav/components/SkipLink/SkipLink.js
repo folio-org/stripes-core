@@ -19,14 +19,12 @@ const SkipIcon = () => (
 const SkipLink = () => (
   <FormattedMessage id="stripes-core.mainnav.skipMainNavigation">
     {label => (
-      <div className={css.skipLink}>
-        <NavButton
-          icon={<SkipIcon />}
-          href="#ModuleContainer"
-          aria-label={label}
-          className={css.skipLink__button}
-        />
-      </div>
+      <NavButton
+        icon={<SkipIcon />}
+        href="#ModuleContainer"
+        aria-label={label}
+        className={css.skipLink}
+      />
     )}
   </FormattedMessage>
 );

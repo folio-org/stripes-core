@@ -7,7 +7,7 @@
   display: flex;
   min-width: 0;
   visibility: hidden;
-  
+
   &.ready {
     visibility: visible;
   }
