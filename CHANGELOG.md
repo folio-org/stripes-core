@@ -1,5 +1,10 @@
 # Change history for stripes-core
 
+## [3.7.1](https://github.com/folio-org/stripes-core/tree/v3.7.1) (2019-09-27)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.7.0...v3.7.1)
+
+* Don't overwrite existing token with empty one when returning from SSO. (STCOR-391)
+
 ## [3.7.0](https://github.com/folio-org/stripes-core/tree/v3.7.0) (2019-07-22)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.6.0...v3.7.0)
 
