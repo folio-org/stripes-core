@@ -248,8 +248,8 @@ function handleLoginError(dispatch, resp) {
   dispatch(setOkapiReady());
 }
 
-function processOkapiSession(okapiUrl, store, tenant, resp) {
-  const token = resp.headers.get('X-Okapi-Token');
+function processOkapiSession(okapiUrl, store, tenant, resp, ssoToken) {
+  const token = resp.headers.get('X-Okapi-Token') || ssoToken;
   const { dispatch } = store;
 
   if (resp.status >= 400) {
@@ -282,7 +282,7 @@ export function requestLogin(okapiUrl, store, tenant, data) {
 export function requestUserWithPerms(okapiUrl, store, tenant, token) {
   fetch(`${okapiUrl}/bl-users/_self?expandPermissions=true&fullPermissions=true`,
     { headers: getHeaders(tenant, token) })
-    .then(resp => processOkapiSession(okapiUrl, store, tenant, resp));
+    .then(resp => processOkapiSession(okapiUrl, store, tenant, resp, token));
 }
 
 export function requestSSOLogin(okapiUrl, tenant) {
