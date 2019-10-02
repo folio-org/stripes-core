@@ -36,7 +36,7 @@ const AppListDropdown = ({ toggleDropdown, apps, listRef, selectedApp }) => (
                 isActive={selectedApp && selectedApp.id === app.id}
                 className={classnames(css.dropdownListItem, { [NavListItemStyles.odd]: isOddRow })}
                 aria-label={app.displayName}
-                id={`app-list-item-${app.id}`}
+                id={`app-list-dropdown-item-${app.id}`}
                 role="menuitem"
               >
                 <AppIcon

@@ -86,7 +86,7 @@ class AppList extends Component {
                 aria-label={app.displayName}
                 iconData={app.iconData}
                 iconKey={app.name}
-                id={app.id}
+                id={`app-list-item-${app.id}`}
                 label={app.displayName}
                 role="button"
                 selected={selectedApp && selectedApp.id === app.id}
