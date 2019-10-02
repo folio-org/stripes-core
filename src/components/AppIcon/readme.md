@@ -50,6 +50,7 @@ app | string | The lowercased name of an app, e.g. "users" or "inventory". It wi
 children | node | Add content next to the icon - e.g. a label | undefined
 className | string | For adding custom class to component | undefined
 icon | object | Icon in form of an object. E.g. { src, alt } | undefined
+iconAligment | string | Sets the vertical alignment of the icon. Can be set to either "center" or "baseline". Setting it to "baseline" will align the icon relative to the first line of the label text (useful if the label spans over several lines). Setting it to "center" will render the icon vertically centered. | center
 iconAriaHidden | bool | Applies aria-hidden to the icon element. Since `<AppIcon>`'s mostly are rendered in proximity of a label or inside an element with a label (e.g. a button), we set aria-hidden to true per default to avoid screen readers reading the alt attribute of the icon img | true
 iconKey | string | A specific icon-key for apps with multiple icons. Defaults to "app" which corresponds to the required default app-icon of an app. | app
 size | string | Determines the size of the icon. (small, medium, large) | medium
