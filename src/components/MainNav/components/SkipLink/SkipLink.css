@@ -2,7 +2,7 @@
  * SkipLink
  */
 
-.skipLink {
+a.skipLink {
   position: absolute;
   top: -100px;
   transition: top 0.15s linear;
