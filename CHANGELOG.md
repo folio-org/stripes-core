@@ -1,5 +1,10 @@
 # Change history for stripes-core
 
+## [3.10.2](https://github.com/folio-org/stripes-core/tree/v3.10.2) (2019-10-02)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.10.1...v3.10.2)
+
+* No changes
+
 ## [3.10.1](https://github.com/folio-org/stripes-core/tree/v3.10.1) (2019-09-27)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.10.0...v3.10.1)
 
