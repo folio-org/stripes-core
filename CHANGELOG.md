@@ -1,8 +1,28 @@
 # Change history for stripes-core
 
-## 3.1.0 (IN PROGRESS)
+## 3.11.0 (IN PROGRESS)
 
 * Update react-router and move it to a peerDependency (STCOM-581, STCOR-390)
+
+## [3.10.3](https://github.com/folio-org/stripes-core/tree/v3.10.3) (2019-10-02)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.10.2...v3.10.3)
+
+* Ineffectually bump `react-router` to help publish a new `latest` release (STCOR-393)
+
+## [3.10.2](https://github.com/folio-org/stripes-core/tree/v3.10.2) (2019-10-02)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.10.1...v3.10.2)
+
+* No changes
+
+## [3.10.1](https://github.com/folio-org/stripes-core/tree/v3.10.1) (2019-09-27)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.10.0...v3.10.1)
+
+* Don't overwrite existing token with empty one when returning from SSO. (STCOR-391)
+
+## [3.10.0](https://github.com/folio-org/stripes-core/tree/v3.10.0) (2019-09-25)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.9.0...v3.10.0)
+
+* stripes-components v5.8.0 and translations updates.
 
 ## [3.9.0](https://github.com/folio-org/stripes-core/tree/v3.9.0) (2019-09-09)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.8.0...v3.9.0)
