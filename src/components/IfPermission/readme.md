@@ -1,12 +1,26 @@
 # IfPermission
 
-Yields the child elements only if the permission named in the `perm` prop is present for the  current user.
+A wrapper component that facilitates conditional rendering based on the existence of a permission.
 
-## Usage
+Supports children in the form of React nodes or as a render-prop function.
+
+## Usage (children as nodes)
 
 ```
 <IfPermission perm="users.edit">
   <button onClick={this.onClickEditUser}>Edit</button>
+</IfPermission>
+```
+
+## Usage (children as function)
+
+```
+<IfPermission perm="users.edit">
+  {({ hasPermission }) => hasPermission ?
+    <button onClick={this.onClickEditUser}>Edit</button>
+    :
+    <span>You do not have permission to edit this user!</span>
+  }
 </IfPermission>
 ```
 
@@ -16,16 +30,3 @@ A single property is supported:
 
 * `perm`: a short string containing the name of the permission that is required.
 
-## Advanced Conditional Rendering
-
-If your situation requires conditional rendering in case the user does not have the required permission, use the `stripes` object's `hasPerm()` function directly instead of the `<IfPermission>` component in your JSX, like so:
-
-```
-<div>
-  {
-    this.props.stripes.hasPerm('user.examplePerm') ?
-      <Button>You have permission!</Button> :
-      <div>You don't have permission!</div>
-  }
-</div>
-```
