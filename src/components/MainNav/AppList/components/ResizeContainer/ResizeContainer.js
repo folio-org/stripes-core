@@ -8,7 +8,7 @@ import debounce from 'lodash/debounce';
 import PropTypes from 'prop-types';
 import css from './ResizeContainer.css';
 
-const ResizeContainer = ({ className, children, hideAllWidth, items: allItems }) => {
+const ResizeContainer = ({ className, children, hideAllWidth, offset, items: allItems }) => {
   const wrapperRef = useRef(null);
   const [ready, setReady] = useState(false);
   const [hiddenItems, setHiddenItems] = useState([]);
@@ -24,7 +24,6 @@ const ResizeContainer = ({ className, children, hideAllWidth, items: allItems })
     const isRTL = document.documentElement.dir === 'rtl';
     const wrapperRect = wrapperRef.current.getBoundingClientRect();
     const { left, right } = wrapperRect;
-    const offset = 100;
 
     const newItems = shouldHideAll ? items.map(item => Object.assign(item, { visible: false })) : items.map(item => {
       const rect = item.ref.current.getBoundingClientRect();
@@ -42,23 +41,15 @@ const ResizeContainer = ({ className, children, hideAllWidth, items: allItems })
     }
   };
 
-  /**
-   * On resize
-   */
-  const handleResize = () => {
-    determineVisibleItems();
-  };
-
-  /**
-   * On mount
-   */
   useEffect(() => {
-    window.addEventListener('resize', debounce(handleResize, 150), true);
-
+    // On mount
     determineVisibleItems(() => setReady(true));
 
+    // On resize
+    window.addEventListener('resize', debounce(determineVisibleItems, 150), true);
+
     return () => {
-      window.removeEventListener('resize', handleResize, true);
+      window.removeEventListener('resize', determineVisibleItems, true);
     };
   }, []);
 
@@ -70,7 +61,11 @@ const ResizeContainer = ({ className, children, hideAllWidth, items: allItems })
   }, [items]);
 
   return (
-    <div ref={wrapperRef} className={classnames(css.resizeContainerWrapper, { [css.ready]: ready }, className)}>
+    <div
+      ref={wrapperRef}
+      className={classnames(css.resizeContainerWrapper, { [css.ready]: ready }, className)}
+      data-test-resize-container
+    >
       <div className={css.resizeContainerInner}>
         {children({
           visibleItems: items,
@@ -83,10 +78,15 @@ const ResizeContainer = ({ className, children, hideAllWidth, items: allItems })
 };
 
 ResizeContainer.propTypes = {
-  className: PropTypes.string,
   children: PropTypes.func,
+  className: PropTypes.string,
   hideAllWidth: PropTypes.number,
   items: PropTypes.arrayOf(PropTypes.object),
+  offset: PropTypes.number,
+};
+
+ResizeContainer.defaultProps = {
+  offset: 100,
 };
 
 export default ResizeContainer;
