@@ -2,7 +2,7 @@
  * ResizeContainer interactor
  */
 
-import { interactor, findAll, isPresent, find, text, property, attribute } from '@bigtest/interactor';
+import { interactor, findAll } from '@bigtest/interactor';
 
 export default interactor(class AppIconInteractor {
   static defaultScope = '[data-test-resize-container]';
