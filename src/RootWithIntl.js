@@ -34,12 +34,15 @@ import {
   ForgotUserNameCtrl,
   AppCtxMenuProvider,
 } from './components';
-import { stripesShape } from './Stripes';
 import { StripesContext } from './StripesContext';
 
 class RootWithIntl extends React.Component {
   static propTypes = {
-    stripes: stripesShape.isRequired,
+    stripes: PropTypes.shape({
+      epics: PropTypes.object,
+      logger: PropTypes.object.isRequired,
+      clone: PropTypes.func.isRequired,
+    }).isRequired,
     token: PropTypes.string,
     disableAuth: PropTypes.bool.isRequired,
     history: PropTypes.shape({}),
