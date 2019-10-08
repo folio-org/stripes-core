@@ -68,7 +68,7 @@ const ResizeContainerMock = ({ items, wrapperWidth, itemWidth, hideAllWidth, off
   );
 };
 
-describe.only('ResizeContainer', () => {
+describe('ResizeContainer', () => {
   const resizeContainer = new ResizeContainerInteractor();
 
   beforeEach(async () => {
