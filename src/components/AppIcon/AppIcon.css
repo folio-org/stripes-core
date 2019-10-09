@@ -58,6 +58,17 @@
 }
 
 /**
+ * Icon alignment
+ */
+.icon-alignment-center {
+  align-items: center;
+}
+
+.icon-alignment-baseline {
+  align-items: baseline;
+}
+
+/**
  * Sizes
  */
 .large .icon {
