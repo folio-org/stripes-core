@@ -64,7 +64,7 @@
   "dependencies": {
     "@folio/react-intl-safe-html": "^1.0.2",
     "@folio/stripes-components": "~5.8.0",
-    "@folio/stripes-connect": "~5.4.0",
+    "@folio/stripes-connect": "~5.4.2",
     "@folio/stripes-logger": "~1.0.0",
     "apollo-cache-inmemory": "^1.1.1",
     "apollo-client": "^2.0.3",
