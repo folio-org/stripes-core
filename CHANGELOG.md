@@ -1,5 +1,9 @@
 # Change history for stripes-core
 
+## 3.10.4 IN PROGRESS
+
+* Clear registered epics during BigTest app `teardown`. Part of STRIPES-659.
+
 ## [3.10.3](https://github.com/folio-org/stripes-core/tree/v3.10.3) (2019-10-02)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.10.2...v3.10.3)
 

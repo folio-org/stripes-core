@@ -1,6 +1,7 @@
 import { beforeEach } from '@bigtest/mocha';
 import { setupAppForTesting, visit, location } from '@bigtest/react';
 import localforage from 'localforage';
+import { reset } from '@folio/stripes-connect';
 
 // load these styles for our tests
 import '@folio/stripes-components/lib/global.css';
@@ -68,6 +69,7 @@ export default function setupApplication({
       teardown: () => {
         clearConfig();
         clearModules();
+        reset();
         localforage.clear();
         this.server.shutdown();
         this.server = null;
