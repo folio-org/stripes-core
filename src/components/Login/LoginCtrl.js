@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect as reduxConnect } from 'react-redux';
-import { SubmissionError } from 'redux-form';
 
 import {
   requestLogin,
@@ -44,13 +43,7 @@ class LoginCtrl extends Component {
   }
 
   handleSubmit(data) {
-    return requestLogin(this.okapiUrl, this.store, this.tenant, data).then((response) => {
-      if (response.status >= 400) {
-        // On login failure: Throw submission error
-        // which triggers redux-form submitFailed prop
-        throw new SubmissionError();
-      }
-    });
+    return requestLogin(this.okapiUrl, this.store, this.tenant, data);
   }
 
   handleSSOLogin() {
@@ -59,10 +52,12 @@ class LoginCtrl extends Component {
 
   render() {
     const { authFailure, ssoEnabled } = this.props;
+
     return (
       <Login
         onSubmit={this.handleSubmit}
         authErrors={authFailure}
+        initialValues={{ password: '' }}
         handleSSOLogin={this.handleSSOLogin}
         ssoActive={ssoEnabled}
       />

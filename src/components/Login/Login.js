@@ -1,15 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
-
-import {
-  reduxForm,
-  Field,
-  Form,
-  formValueSelector,
-} from 'redux-form';
-
+import { Field } from 'react-final-form';
+import stripesFinalForm from '@folio/stripes-final-form';
 import isEmpty from 'lodash/isEmpty';
 
 import {
@@ -31,17 +24,17 @@ class Login extends Component {
   static propTypes = {
     ssoActive: PropTypes.bool,
     authErrors: PropTypes.arrayOf(PropTypes.object),
-    formValues: PropTypes.object,
     submitting: PropTypes.bool,
     submitSucceeded: PropTypes.bool,
-    onSubmit: PropTypes.func.isRequired,
     handleSubmit: PropTypes.func.isRequired,
     handleSSOLogin: PropTypes.func.isRequired,
+    values: PropTypes.object,
+    form: PropTypes.object,
   };
 
   static defaultProps = {
     authErrors: [],
-    formValues: {},
+    values: {},
     ssoActive: false,
     submitting: false,
     submitSucceeded: false,
@@ -53,19 +46,22 @@ class Login extends Component {
     this.translateNamespace = 'stripes-core';
   }
 
+  login = (data) => {
+    const { handleSubmit, form } = this.props;
+    handleSubmit(data).then(() => form.change('password', undefined));
+  }
+
   render() {
     const {
-      handleSubmit,
       submitting,
       authErrors,
       handleSSOLogin,
       ssoActive,
-      onSubmit,
-      formValues,
       submitSucceeded,
+      values,
     } = this.props;
 
-    const { username } = formValues;
+    const { username } = values;
     const submissionStatus = submitting || submitSucceeded;
     const buttonDisabled = submissionStatus || !(username);
     const buttonLabel = submissionStatus ? 'loggingIn' : 'login';
@@ -90,9 +86,9 @@ class Login extends Component {
             </Col>
           </Row>
           <Row>
-            <Form
+            <form
               className={styles.form}
-              onSubmit={handleSubmit(onSubmit)}
+              onSubmit={this.login}
             >
               <div data-test-new-username-field>
                 <Row center="xs">
@@ -150,6 +146,7 @@ class Login extends Component {
                       component={TextField}
                       name="password"
                       type="password"
+                      value=""
                       marginBottom0
                       fullWidth
                       inputClass={styles.input}
@@ -222,7 +219,7 @@ class Login extends Component {
                   </div>
                 </Col>
               </Row>
-            </Form>
+            </form>
           </Row>
         </div>
       </div>
@@ -230,15 +227,9 @@ class Login extends Component {
   }
 }
 
-const LoginForm = reduxForm({
-  form: 'login',
+export default stripesFinalForm({
+  navigationCheck: false,
+  subscription: {
+    values: true,
+  },
 })(Login);
-const selector = formValueSelector('login');
-
-export default connect(state => ({
-  formValues: selector(
-    state,
-    'username',
-    'password',
-  )
-}))(LoginForm);

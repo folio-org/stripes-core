@@ -1,10 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
-import {
-  reduxForm,
-  Field,
-  Form,
-} from 'redux-form';
+import { Field } from 'react-final-form';
+import stripesFinalForm from '@folio/stripes-final-form';
 import { FormattedMessage } from 'react-intl';
 import { isEmpty } from 'lodash';
 
@@ -22,11 +19,10 @@ import AuthErrorsContainer from '../AuthErrorsContainer';
 
 import formStyles from './ForgotUserNameForm.css';
 
-class ForgotUserName extends Component {
+class ForgotUserNameForm extends Component {
   static propTypes = {
-    dirty: PropTypes.bool.isRequired,
+    pristine: PropTypes.bool.isRequired,
     isValid: PropTypes.bool.isRequired,
-    onSubmit: PropTypes.func.isRequired,
     handleSubmit: PropTypes.func.isRequired,
     errors: PropTypes.arrayOf(PropTypes.object),
   };
@@ -46,8 +42,7 @@ class ForgotUserName extends Component {
 
   render() {
     const {
-      dirty,
-      onSubmit,
+      pristine,
       handleSubmit,
       isValid,
       errors
@@ -60,10 +55,10 @@ class ForgotUserName extends Component {
         <div className={formStyles.wrap}>
           <div className={formStyles.centered}>
             <OrganizationLogo />
-            <Form
+            <form
               className={formStyles.form}
               data-form="forgot"
-              onSubmit={handleSubmit(onSubmit)}
+              onSubmit={handleSubmit}
             >
               <Headline
                 size="xx-large"
@@ -75,7 +70,7 @@ class ForgotUserName extends Component {
               <Headline
                 size="large"
                 tag="p"
-                bold={false}
+                weight="regular"
                 faded
                 data-test-p
               >
@@ -103,7 +98,7 @@ class ForgotUserName extends Component {
                 name="continue-button"
                 type="submit"
                 buttonClass={formStyles.submitButton}
-                disabled={!dirty}
+                disabled={pristine}
                 fullWidth
                 marginBottom0
                 data-test-submit
@@ -128,7 +123,7 @@ class ForgotUserName extends Component {
                   </div>
                 </Col>
               </Row>
-            </Form>
+            </form>
           </div>
         </div>
       </Fragment>
@@ -136,7 +131,6 @@ class ForgotUserName extends Component {
   }
 }
 
-const ForgotUserNameForm = reduxForm(
-  { form: 'forgot-user-name' }
-)(ForgotUserName);
-export default ForgotUserNameForm;
+export default stripesFinalForm({
+  navigationCheck: false,
+})(ForgotUserNameForm);

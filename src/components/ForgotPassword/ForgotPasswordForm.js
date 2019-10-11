@@ -1,10 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
-import {
-  reduxForm,
-  Field,
-  Form,
-} from 'redux-form';
+import { Field } from 'react-final-form';
+import stripesFinalForm from '@folio/stripes-final-form';
 import { FormattedMessage } from 'react-intl';
 import { isEmpty } from 'lodash';
 
@@ -21,10 +18,9 @@ import AuthErrorsContainer from '../AuthErrorsContainer';
 
 import formStyles from './ForgotPasswordForm.css';
 
-class ForgotPassword extends Component {
+class ForgotPasswordForm extends Component {
   static propTypes = {
-    dirty: PropTypes.bool.isRequired,
-    onSubmit: PropTypes.func.isRequired,
+    pristine: PropTypes.bool.isRequired,
     handleSubmit: PropTypes.func.isRequired,
     errors: PropTypes.arrayOf(PropTypes.object),
   };
@@ -35,8 +31,7 @@ class ForgotPassword extends Component {
 
   render() {
     const {
-      dirty,
-      onSubmit,
+      pristine,
       handleSubmit,
       errors,
     } = this.props;
@@ -46,10 +41,10 @@ class ForgotPassword extends Component {
         <div className={formStyles.wrap}>
           <div className={formStyles.centered}>
             <OrganizationLogo />
-            <Form
+            <form
               className={formStyles.form}
               data-form="forgot"
-              onSubmit={handleSubmit(onSubmit)}
+              onSubmit={handleSubmit}
             >
               <Headline
                 size="xx-large"
@@ -61,7 +56,7 @@ class ForgotPassword extends Component {
               <Headline
                 size="large"
                 tag="p"
-                bold={false}
+                weight="regular"
                 faded
                 data-test-p
               >
@@ -89,7 +84,7 @@ class ForgotPassword extends Component {
                 name="continue-button"
                 type="submit"
                 buttonClass={formStyles.submitButton}
-                disabled={!dirty}
+                disabled={pristine}
                 fullWidth
                 marginBottom0
                 data-test-submit
@@ -111,7 +106,7 @@ class ForgotPassword extends Component {
                   </div>
                 </Col>
               </Row>
-            </Form>
+            </form>
           </div>
         </div>
       </Fragment>
@@ -119,7 +114,6 @@ class ForgotPassword extends Component {
   }
 }
 
-const ForgotPasswordForm = reduxForm(
-  { form: 'forgot-password' }
-)(ForgotPassword);
-export default ForgotPasswordForm;
+export default stripesFinalForm({
+  navigationCheck: false,
+})(ForgotPasswordForm);
