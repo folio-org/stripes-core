@@ -57,7 +57,6 @@ class LoginCtrl extends Component {
       <Login
         onSubmit={this.handleSubmit}
         authErrors={authFailure}
-        initialValues={{ password: '' }}
         handleSSOLogin={this.handleSSOLogin}
         ssoActive={ssoEnabled}
       />
