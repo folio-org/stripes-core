@@ -46,7 +46,7 @@ const CheckEmailStatusPage = (props) => {
         <Headline
           size="x-large"
           tag="p"
-          bold={false}
+          weight="regular"
           faded
           data-test-p-notification
         >
@@ -58,7 +58,7 @@ const CheckEmailStatusPage = (props) => {
         <Headline
           size="x-large"
           tag="p"
-          bold={false}
+          weight="regular"
           faded
           data-test-p-caution
         >
