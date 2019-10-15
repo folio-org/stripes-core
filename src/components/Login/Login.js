@@ -71,7 +71,7 @@ class Login extends Component {
                 <Row>
                   <form
                     className={styles.form}
-                    onSubmit={data => handleSubmit(data).then(() => form.change('password', ''))}
+                    onSubmit={data => handleSubmit(data).then(() => form.change('password', undefined))}
                   >
                     <div data-test-new-username-field>
                       <Row center="xs">
