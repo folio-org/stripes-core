@@ -1,8 +1,10 @@
 # Change history for stripes-core
 
-## 3.10.4 IN PROGRESS
+## [3.10.4](https://github.com/folio-org/stripes-core/tree/v3.10.4) (2019-10-15)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.10.3...v3.10.4)
 
 * Clear registered epics during BigTest app `teardown`. Part of STRIPES-659.
+* Revert PR #711, "Calling PRUNE Redux reducer", which inadvertently broke navigation. (STCOR-392)
 
 ## [3.10.3](https://github.com/folio-org/stripes-core/tree/v3.10.3) (2019-10-02)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.10.2...v3.10.3)
