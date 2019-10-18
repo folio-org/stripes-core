@@ -3,6 +3,9 @@ const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 const path = require('path');
 const nodeObjectHash = require('node-object-hash');
 const express = require('express');
+const https = require('https');
+const fs = require('fs');
+
 const webpackDevMiddleware = require('webpack-dev-middleware');
 const webpackHotMiddleware = require('webpack-hot-middleware');
 const connectHistoryApiFallback = require('connect-history-api-fallback');
@@ -25,6 +28,38 @@ const cachePlugin = new HardSourceWebpackPlugin({
     return nodeObjectHash().hash(webpackConfig);
   },
 });
+
+const serveHttps = (app, host, port) => {
+  https
+    .createServer({
+      key: fs.readFileSync('./key.pem'),
+      cert: fs.readFileSync('./cert.pem'),
+      passphrase: ''
+    }, app)
+    .listen(port, host, (err) => {
+      if (err) {
+        console.log(err);
+        return;
+      }
+      console.log(`Listening securely at https://${host}:${port}`);
+    });
+};
+
+const serveHttp = (app, host, port) => {
+  const sslMsg = 'If you want to serve via HTTPS, create a certificate\n' +
+    'with the PEM pass phrase "folio" for the Common Name "localhost" with the following command:\n\n' +
+    '    openssl req - x509 - newkey rsa: 4096 - keyout key.pem - out cert.pem - days 365\n\n' +
+    'and copy it into the directory you ran this command ("stripes serve") from.';
+  console.log(sslMsg);
+
+  app.listen(port, host, (err) => {
+    if (err) {
+      console.log(err);
+      return;
+    }
+    console.log(`Listening at http://${host}:${port}`);
+  });
+};
 
 module.exports = function serve(stripesConfig, options) {
   if (typeof stripesConfig.okapi !== 'object') throw new Error('Missing Okapi config');
@@ -80,12 +115,10 @@ module.exports = function serve(stripesConfig, options) {
 
     app.use(webpackHotMiddleware(compiler));
 
-    app.listen(port, host, (err) => {
-      if (err) {
-        console.log(err);
-        return;
-      }
-      console.log(`Listening at http://${host}:${port}`);
-    });
+    if (fs.existsSync('./key.pem') && fs.existsSync('./cert.pem')) {
+      serveHttps(app, host, port);
+    } else {
+      serveHttp(app, host, port);
+    }
   });
 };
