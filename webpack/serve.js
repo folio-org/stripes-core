@@ -47,9 +47,10 @@ const serveHttps = (app, host, port) => {
 
 const serveHttp = (app, host, port) => {
   const sslMsg = 'If you want to serve via HTTPS, create a certificate\n' +
-    'with the PEM pass phrase "folio" for the Common Name "localhost" with the following command:\n\n' +
-    '    openssl req - x509 - newkey rsa: 4096 - keyout key.pem - out cert.pem - days 365\n\n' +
-    'and copy it into the directory you ran this command ("stripes serve") from.';
+    'with the PEM pass phrase "folio" for the Common Name ' +
+    '"localhost" with the following command:\n\n' +
+    '    openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365\n\n' +
+    'and copy it into the directory where you ran this command.';
   console.log(sslMsg);
 
   app.listen(port, host, (err) => {
