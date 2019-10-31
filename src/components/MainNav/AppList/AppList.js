@@ -260,7 +260,7 @@ class AppList extends Component {
     return (
       <ResizeContainer items={apps} hideAllWidth={767}>
         {({ visibleItems, hiddenItems }) => (
-          <nav className={css.appList} aria-labelledby="main_app_list_label">
+          <nav className={css.appList} aria-labelledby="main_app_list_label" data-test-app-list>
             <h3 className="sr-only" id="main_app_list_label">
               <FormattedMessage id="stripes-core.mainnav.applicationListLabel" />
             </h3>
