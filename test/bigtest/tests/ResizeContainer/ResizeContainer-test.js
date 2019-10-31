@@ -6,6 +6,7 @@ import React, { useEffect } from 'react';
 import times from 'lodash/times';
 import { beforeEach, it, describe } from '@bigtest/mocha';
 import { expect } from 'chai';
+import setupApplication from '../../helpers/setup-application';
 import { mount } from '../../helpers/render-helpers';
 
 import ResizeContainer from '../../../../src/components/MainNav/AppList/components/ResizeContainer';
@@ -33,15 +34,9 @@ const EXPECTED_VISIBLE_ITEMS = WRAPPER_WIDTH / ITEM_WIDTH;
 const EXPECTED_HIDDEN_ITEMS = ITEMS.length - EXPECTED_VISIBLE_ITEMS;
 
 const ResizeContainerMock = ({ items, wrapperWidth, itemWidth, hideAllWidth, offset, withRTL }) => {
-  useEffect(() => {
-    if (withRTL) {
-      document.documentElement.dir = 'rtl';
-    }
-  }, []);
-
   return (
     <div style={{ maxWidth: wrapperWidth, backgroundColor: 'green', height: 100 }}>
-      <ResizeContainer items={items} hideAllWidth={hideAllWidth} offset={offset}>
+      <ResizeContainer className="my-test-interactor" isRTL={withRTL} items={items} hideAllWidth={hideAllWidth} offset={offset}>
         {({ visibleItems }) => (
           <div style={{ display: 'flex', flex: 1, minWidth: 0, justifyContent: 'flex-end' }}>
             {visibleItems.map(item => (
@@ -69,7 +64,9 @@ const ResizeContainerMock = ({ items, wrapperWidth, itemWidth, hideAllWidth, off
 };
 
 describe('ResizeContainer', () => {
-  const resizeContainer = new ResizeContainerInteractor();
+  const resizeContainer = new ResizeContainerInteractor('.my-test-interactor');
+
+  setupApplication();
 
   beforeEach(async () => {
     await mount(

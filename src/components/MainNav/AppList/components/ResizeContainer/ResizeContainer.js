@@ -8,7 +8,7 @@ import debounce from 'lodash/debounce';
 import PropTypes from 'prop-types';
 import css from './ResizeContainer.css';
 
-const ResizeContainer = ({ className, children, hideAllWidth, offset, items: allItems }) => {
+const ResizeContainer = ({ className, children, isRTL, hideAllWidth, offset, items: allItems }) => {
   const wrapperRef = useRef(null);
   const [ready, setReady] = useState(false);
   const [hiddenItems, setHiddenItems] = useState([]);
@@ -21,13 +21,13 @@ const ResizeContainer = ({ className, children, hideAllWidth, offset, items: all
    */
   const determineVisibleItems = callback => {
     const shouldHideAll = window.innerWidth <= hideAllWidth;
-    const isRTL = document.documentElement.dir === 'rtl';
+    const rtl = isRTL || document.documentElement.dir === 'rtl';
     const wrapperRect = wrapperRef.current.getBoundingClientRect();
     const { left, right } = wrapperRect;
 
     const newItems = shouldHideAll ? items.map(item => Object.assign(item, { visible: false })) : items.map(item => {
       const rect = item.ref.current.getBoundingClientRect();
-      const visible = isRTL ? right >= (rect.right + offset) : (left + offset) <= rect.left;
+      const visible = rtl ? right >= (rect.right + offset) : (left + offset) <= rect.left;
 
       return Object.assign(item, {
         visible
@@ -80,6 +80,7 @@ const ResizeContainer = ({ className, children, hideAllWidth, offset, items: all
 ResizeContainer.propTypes = {
   children: PropTypes.func,
   className: PropTypes.string,
+  isRTL: PropTypes.bool,
   hideAllWidth: PropTypes.number,
   items: PropTypes.arrayOf(PropTypes.object),
   offset: PropTypes.number,
