@@ -1,5 +1,11 @@
 # Change history for stripes-core
 
+## 3.10.4 IN PROGRESS
+
+* Clear registered epics during BigTest app `teardown`. Part of STRIPES-659.
+* Refactor login form to final-form. Part of STCOR-395.
+* Add WebPack support for handlebars-loader.
+
 ## [3.10.3](https://github.com/folio-org/stripes-core/tree/v3.10.3) (2019-10-02)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.10.2...v3.10.3)
 

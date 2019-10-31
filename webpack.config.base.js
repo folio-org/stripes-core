@@ -67,6 +67,10 @@ module.exports = {
         test: /\.(woff2?)$/,
         loader: 'file-loader?name=fonts/[name].[hash].[ext]',
       },
+      {
+        test: /\.handlebars$/,
+        loader: 'handlebars-loader',
+      },
     ],
   },
 };
