@@ -5,8 +5,8 @@
 import React from 'react';
 import { beforeEach, it, describe } from '@bigtest/mocha';
 import { expect } from 'chai';
-import setupApplication from '../../helpers/setup-application';
-import { mount } from '../../helpers/render-helpers';
+import setupApplication from '../../../../../test/bigtest/helpers/setup-application';
+import { mount } from '../../../../../test/bigtest/helpers/render-helpers';
 
 import AppList from '../AppList';
 import AppListInteractor from './interactor';
@@ -24,5 +24,5 @@ describe.only('AppList', () => {
 
   it('Someething', () => {
     expect(true).to.be.true;
-  })
+  });
 });
