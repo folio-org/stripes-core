@@ -15,7 +15,7 @@ import AppListInteractor from './interactor';
 import apps from './apps';
 import selectedApp from './selectedApp';
 
-describe.only('AppList', () => {
+describe('AppList', () => {
   const appList = new AppListInteractor();
 
   beforeEach(async () => {
@@ -81,7 +81,7 @@ describe.only('AppList', () => {
     });
   });
 
-  
+
   describe('Clicking an item inside the app list dropdown', () => {
     beforeEach(async () => {
       await mountWithContext(
