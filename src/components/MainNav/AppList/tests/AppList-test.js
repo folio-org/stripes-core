@@ -3,10 +3,9 @@
  */
 
 import React from 'react';
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter } from 'react-router-dom';
 import { beforeEach, it, describe } from '@bigtest/mocha';
 import { expect } from 'chai';
-import setupApplication from '../../../../../test/bigtest/helpers/setup-application';
 import { mountWithContext } from '../../../../../test/bigtest/helpers/render-helpers';
 
 import AppList from '../AppList';

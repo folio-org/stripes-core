@@ -2,7 +2,7 @@
  * ResizeContainer tests
  */
 /* eslint-disable react/prop-types */
-import React, { useEffect } from 'react';
+import React from 'react';
 import times from 'lodash/times';
 import { beforeEach, it, describe } from '@bigtest/mocha';
 import { expect } from 'chai';
