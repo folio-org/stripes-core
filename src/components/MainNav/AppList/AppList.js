@@ -73,16 +73,13 @@ class AppList extends Component {
   renderNavButtons = (items) => {
     const { selectedApp } = this.props;
 
-    if (!items || !items.length) {
-      return null;
-    }
-
     return (
       <ul className={css.navItemsList}>
         {
           items.map(app => (
             <li className={classnames(css.navItem, { [css.visible]: app.visible })} key={app.id} ref={app.ref} aria-hidden={!app.visible}>
               <NavButton
+                data-test-app-list-item
                 aria-label={app.displayName}
                 iconData={app.iconData}
                 iconKey={app.name}
@@ -133,6 +130,7 @@ class AppList extends Component {
         <FormattedMessage id="stripes-core.mainnav.showAllApplicationsButtonAriaLabel">
           { ariaLabel => (
             <NavButton
+              data-test-app-list-apps-toggle
               label={label}
               aria-label={ariaLabel}
               aria-haspopup="true"

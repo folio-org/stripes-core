@@ -14,7 +14,7 @@ import AppIcon from '../../../../AppIcon';
 import css from '../../AppList.css';
 
 const AppListDropdown = ({ toggleDropdown, apps, listRef, selectedApp }) => (
-  <div className={css.dropdownBody}>
+  <div className={css.dropdownBody} data-test-app-list-dropdown>
     <ul
       ref={listRef}
       className={css.dropdownList}
@@ -30,6 +30,8 @@ const AppListDropdown = ({ toggleDropdown, apps, listRef, selectedApp }) => (
               key={app.id}
             >
               <NavListItem
+                data-test-app-list-dropdown-item
+                data-test-app-list-dropdown-current-item={selectedApp && selectedApp.id === app.id}
                 key={index}
                 onClick={toggleDropdown}
                 to={app.href}
