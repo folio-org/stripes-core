@@ -22,22 +22,26 @@ const ResizeContainer = ({ className, children, isRTL, hideAllWidth, offset, ite
   const determineVisibleItems = callback => {
     const shouldHideAll = window.innerWidth <= hideAllWidth;
     const rtl = isRTL || document.documentElement.dir === 'rtl';
-    const wrapperRect = wrapperRef.current.getBoundingClientRect();
-    const { left, right } = wrapperRect;
+    const wrapperEl = wrapperRef.current;
 
-    const newItems = shouldHideAll ? items.map(item => Object.assign(item, { visible: false })) : items.map(item => {
-      const rect = item.ref.current.getBoundingClientRect();
-      const visible = rtl ? right >= (rect.right + offset) : (left + offset) <= rect.left;
+    if (wrapperEl) {
+      const wrapperRect = wrapperEl.getBoundingClientRect();
+      const { left, right } = wrapperRect;
 
-      return Object.assign(item, {
-        visible
+      const newItems = shouldHideAll ? items.map(item => Object.assign(item, { visible: false })) : items.map(item => {
+        const rect = item.ref.current.getBoundingClientRect();
+        const visible = rtl ? right >= (rect.right + offset) : (left + offset) <= rect.left;
+
+        return Object.assign(item, {
+          visible
+        });
       });
-    });
 
-    setItems(newItems);
+      setItems(newItems);
 
-    if (typeof callback === 'function') {
-      callback();
+      if (typeof callback === 'function') {
+        callback();
+      }
     }
   };
 
