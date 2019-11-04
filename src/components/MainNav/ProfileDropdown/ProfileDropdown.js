@@ -5,6 +5,7 @@ import { withRouter } from 'react-router';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import { Dropdown } from '@folio/stripes-components/lib/Dropdown';
+import DropdownMenu from '@folio/stripes-components/lib/DropdownMenu';
 import NavList from '@folio/stripes-components/lib/NavList';
 import Avatar from '@folio/stripes-components/lib/Avatar';
 import NavListSection from '@folio/stripes-components/lib/NavListSection';
@@ -67,7 +68,6 @@ class ProfileDropdown extends Component {
 
   setInitialState(callback) {
     this.setState({
-      dropdownOpen: false,
       HandlerComponent: null,
     }, callback);
   }
@@ -216,29 +216,40 @@ class ProfileDropdown extends Component {
     );
   }
 
+  renderProfileTrigger = ({ getTriggerProps, open }) => (
+    <FormattedMessage id="stripes-core.mainnav.myProfileAriaLabel">
+      {label => (
+        <NavButton
+          ariaLabel={label}
+          selected={open}
+          className={css.button}
+          icon={this.getProfileImage()}
+          {...getTriggerProps()}
+        />)}
+    </FormattedMessage>
+
+  );
+
+  renderProfileMenu = ({ open }) => (
+    <DropdownMenu data-role="menu" open={open}>
+      {this.getDropdownContent()}
+    </DropdownMenu>
+  );
+
   render() {
-    const { dropdownOpen, HandlerComponent } = this.state;
+    const { HandlerComponent } = this.state;
 
     return (
-      <IntlConsumer>
-        {intl => (
-          <Fragment>
-            { HandlerComponent && <HandlerComponent stripes={this.props.stripes} /> }
-            <Dropdown open={dropdownOpen} id="profileDropdown" onToggle={this.toggleDropdown} pullRight hasPadding>
-              <NavButton
-                data-role="toggle"
-                ariaLabel={intl.formatMessage({ id: 'stripes-core.mainnav.myProfileAriaLabel' })}
-                selected={dropdownOpen}
-                className={css.button}
-                icon={this.getProfileImage()}
-              />
-              <NavDropdownMenu data-role="menu" onToggle={this.toggleDropdown}>
-                {this.getDropdownContent()}
-              </NavDropdownMenu>
-            </Dropdown>
-          </Fragment>
-        )}
-      </IntlConsumer>
+      <Fragment>
+        { HandlerComponent && <HandlerComponent stripes={this.props.stripes} /> }
+        <Dropdown
+          id="profileDropdown"
+          renderTrigger={this.renderProfileTrigger}
+          renderMenu={this.renderProfileMenu}
+          usePortal={false}
+          placement="bottom-end"
+        />
+      </Fragment>
     );
   }
 }
