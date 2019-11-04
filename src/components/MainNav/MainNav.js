@@ -173,15 +173,12 @@ class MainNav extends Component {
   render() {
     const { stripes } = this.props;
 
-
-
     return (
       <LastVisitedContext.Consumer>
         {({ lastVisited }) => {
           const apps = this.getAppList(lastVisited);
           const selectedApp = apps.find(entry => entry.active);
-          console.log(JSON.stringify(apps));
-          console.log(JSON.stringify(selectedApp));
+
           return (
             <header className={css.navRoot}>
               <div className={css.startSection}>
