@@ -139,7 +139,7 @@
     "rtl-detect": "^1.0.2",
     "rxjs": "^5.4.3",
     "serialize-javascript": "^1.4.0",
-    "style-loader": "^0.22.1",
+    "style-loader": "^1.0.0",
     "svgo": "^1.2.2",
     "svgo-loader": "^2.2.1",
     "tapable": "^1.0.0",
