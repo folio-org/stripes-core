@@ -46,11 +46,8 @@ const ResizeContainer = ({ className, children, isRTL, hideAllWidth, offset, ite
   };
 
   useEffect(() => {
-    // Determine visible items on mount with a small delay
-    // to make sure everything is loaded so we can get an accurate measurement
-    setTimeout(() => {
-      determineVisibleItems(() => setReady(true));
-    }, 100);
+    // Determine visible items on mount
+    determineVisibleItems(() => setReady(true));
 
     // On resize
     window.addEventListener('resize', debounce(determineVisibleItems, 150), true);
