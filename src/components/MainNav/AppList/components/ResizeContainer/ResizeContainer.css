@@ -7,7 +7,7 @@
   display: flex;
   min-width: 0;
   opacity: 0;
-  transition: opacity 0.2s ease-in-out .07s;
+  transition: opacity 0.2s ease-in-out 0.07s;
 
   &.ready {
     opacity: 1;
