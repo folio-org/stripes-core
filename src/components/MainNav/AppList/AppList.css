@@ -97,7 +97,7 @@
 .navItem {
   display: flex;
   flex-shrink: 0;
-  transition: opacity 0.1s, visibility 0.1s, width 0.07s;
+  transition: opacity 0.1s, visibility 0.1s, width 0.07s ease-in-out;
   padding: 0 var(--gutter-static-one-third);
 
   &.hidden {
@@ -108,14 +108,6 @@
     padding: 0;
   }
 }
-/* 
-[dir=ltr] .navItem:not(:last-child) a {
-  margin-right: var(--gutter-static-two-thirds);
-}
-
-[dir=rtl] .navItem:not(:last-child) a {
-  margin-left: var(--gutter-static-two-thirds);
-} */
 
 /**
  * Responsive
