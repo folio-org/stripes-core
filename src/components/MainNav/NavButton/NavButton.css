@@ -63,6 +63,7 @@ button.navButton {
   display: flex;
   align-items: center;
   position: relative;
+  flex-shrink: 0;
 }
 
 .label {

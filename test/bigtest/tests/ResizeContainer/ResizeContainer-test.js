@@ -35,30 +35,36 @@ const EXPECTED_HIDDEN_ITEMS = ITEMS.length - EXPECTED_VISIBLE_ITEMS;
 
 const ResizeContainerMock = ({ items, wrapperWidth, itemWidth, hideAllWidth, offset, withRTL }) => {
   return (
-    <div style={{ maxWidth: wrapperWidth, backgroundColor: 'green', height: 100 }}>
-      <ResizeContainer className="my-test-interactor" isRTL={withRTL} items={items} hideAllWidth={hideAllWidth} offset={offset}>
-        {({ visibleItems }) => (
-          <div style={{ display: 'flex', flex: 1, minWidth: 0, justifyContent: 'flex-end' }}>
-            {visibleItems.map(item => (
-              <span
-                {...{ [item.visible ? 'data-test-resize-container-visible-item' : 'data-test-resize-container-hidden-item']: true }}
-                key={item.id}
-                ref={item.ref}
-                style={{
-                  width: itemWidth,
-                  flexShrink: 0,
-                  backgroundColor: 'yellow',
-                  height: 50,
-                  visibility: item.visible ? 'visible' : 'hidden'
-                }}
-              >
-                {item.visible ? `Visible Item ${item.id}` : 'Not visible'}
-              </span>
-            ))}
-          </div>
-        )
-      }
-      </ResizeContainer>
+    <div dir={withRTL ? 'rtl' : 'ltr'}>
+      <div style={{ maxWidth: wrapperWidth, backgroundColor: 'green', height: 100 }}>
+        <ResizeContainer className="my-test-interactor" items={items} hideAllWidth={hideAllWidth} offset={offset}>
+          {({ items: allItems, hiddenItems }) => (
+            <div style={{ display: 'flex', flex: 1, minWidth: 0, justifyContent: 'flex-end' }}>
+              {allItems.map(item => {
+                const isHidden = hiddenItems.includes(item.id);
+
+                return (
+                  <span
+                    {...{ [!isHidden ? 'data-test-resize-container-visible-item' : 'data-test-resize-container-hidden-item']: true }}
+                    key={item.id}
+                    ref={item.ref}
+                    style={{
+                      width: itemWidth,
+                      flexShrink: 0,
+                      backgroundColor: 'yellow',
+                      height: 50,
+                      visibility: !isHidden ? 'visible' : 'hidden'
+                    }}
+                  >
+                    {!isHidden ? `Visible Item ${item.id}` : 'Not visible'}
+                  </span>
+                );
+              })}
+            </div>
+          )
+        }
+        </ResizeContainer>
+      </div>
     </div>
   );
 };

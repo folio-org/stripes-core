@@ -8,61 +8,75 @@ import debounce from 'lodash/debounce';
 import PropTypes from 'prop-types';
 import css from './ResizeContainer.css';
 
-const ResizeContainer = ({ className, children, isRTL, hideAllWidth, offset, items: allItems }) => {
+const ResizeContainer = ({ className, children, hideAllWidth, offset, items: allItems }) => {
   const wrapperRef = useRef(null);
   const [ready, setReady] = useState(false);
   const [hiddenItems, setHiddenItems] = useState([]);
-  const [items, setItems] = useState(() => allItems.map(item => Object.assign(item, {
+  const [cachedItemWidths, setCachedItemWidths] = useState({});
+
+  // Assign a ref for each item on mount
+  const [cachedItems] = useState(() => allItems.map(item => Object.assign(item, {
     ref: createRef(null),
   })));
 
   /**
-   * Determine visible items on mount and resize
+   * Determine hidden items on mount and resize
    */
-  const determineVisibleItems = callback => {
+  const updateHiddenItems = debounce(() => {
     const shouldHideAll = window.innerWidth <= hideAllWidth;
-    const rtl = isRTL || document.documentElement.dir === 'rtl';
     const wrapperEl = wrapperRef.current;
 
     if (wrapperEl) {
-      const wrapperRect = wrapperEl.getBoundingClientRect();
-      const { left, right } = wrapperRect;
+      const wrapperWidth = wrapperEl.clientWidth;
 
-      const newItems = shouldHideAll ? items.map(item => Object.assign(item, { visible: false })) : items.map(item => {
-        const rect = item.ref.current.getBoundingClientRect();
-        const visible = rtl ? right >= (rect.right + offset) : (left + offset) <= rect.left;
+      const newHiddenItems =
+      // Set all items as hidden
+      shouldHideAll ? cachedItems.map(item => item.id) :
 
-        return Object.assign(item, {
-          visible
-        });
-      });
+      // Find items that should be hidden
+        cachedItems.reduce((acc, item) => {
+          const itemWidth = cachedItemWidths[item.id];
+          const shouldBeHidden = (itemWidth + acc.accWidth + offset) > wrapperWidth;
+          const hidden = shouldBeHidden ? acc.hidden.concat(item.id) : acc.hidden;
 
-      setItems(newItems);
+          return {
+            hidden,
+            accWidth: acc.accWidth + itemWidth,
+          };
+        }, {
+          hidden: [],
+          accWidth: 0,
+        }).hidden;
 
-      if (typeof callback === 'function') {
-        callback();
+      setHiddenItems(newHiddenItems);
+
+      // We are hiding the content until we are finished setting hidden items (if any)
+      // Setting ready will make the contents visible for the user
+      if (!ready) {
+        setReady(true);
       }
     }
-  };
+  }, 150);
 
   useEffect(() => {
-    // Determine visible items on mount
-    determineVisibleItems(() => setReady(true));
-
-    // On resize
-    window.addEventListener('resize', debounce(determineVisibleItems, 150), true);
+    // Cache menu item widths on mount since it's unlikely they will change
+    setCachedItemWidths(cachedItems.reduce((a, b) => Object.assign(a, { [b.id]: b.ref.current.clientWidth }), {}));
 
     return () => {
-      window.removeEventListener('resize', determineVisibleItems, true);
+      window.removeEventListener('resize', updateHiddenItems, true);
     };
   }, []);
 
-  /**
-   * Update hidden items every time the items array updates
-   */
+  // Wait until widths has been cached before determining hidden items
   useEffect(() => {
-    setHiddenItems(items.filter(item => !item.visible));
-  }, [items]);
+    if (Object.keys(cachedItemWidths).length) {
+      // Determine hidden items
+      updateHiddenItems();
+
+      // On resize
+      window.addEventListener('resize', updateHiddenItems, true);
+    }
+  }, [cachedItemWidths]);
 
   return (
     <div
@@ -72,8 +86,9 @@ const ResizeContainer = ({ className, children, isRTL, hideAllWidth, offset, ite
     >
       <div className={css.resizeContainerInner}>
         {children({
-          visibleItems: items,
           hiddenItems,
+          itemWidths: cachedItemWidths,
+          items: cachedItems,
           ready
         })}
       </div>
@@ -84,14 +99,13 @@ const ResizeContainer = ({ className, children, isRTL, hideAllWidth, offset, ite
 ResizeContainer.propTypes = {
   children: PropTypes.func,
   className: PropTypes.string,
-  isRTL: PropTypes.bool,
   hideAllWidth: PropTypes.number,
   items: PropTypes.arrayOf(PropTypes.object),
   offset: PropTypes.number,
 };
 
 ResizeContainer.defaultProps = {
-  offset: 100,
+  offset: 200,
 };
 
 export default ResizeContainer;
