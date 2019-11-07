@@ -60,7 +60,7 @@ const CurrentApp = ({ config, currentApp, id, intl, badge }) => {
       className={css.button}
       innerClassName={css.button__inner}
       labelClassName={css.button__label}
-      href={href}
+      to={href}
       iconData={iconData}
     />
   );

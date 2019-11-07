@@ -34,7 +34,7 @@
   }
 }
 
-.isInteractable {
+.isInteractive {
   composes: interactionStyles from "@folio/stripes-components/lib/sharedStyles/interactionStyles.css";  /* stylelint-disable-line */
 }
 
@@ -63,6 +63,7 @@ button.navButton {
   display: flex;
   align-items: center;
   position: relative;
+  flex-shrink: 0;
 }
 
 .label {

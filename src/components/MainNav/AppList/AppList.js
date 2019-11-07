@@ -3,6 +3,7 @@
  */
 
 import React, { Component, Fragment } from 'react';
+import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import rtlDetect from 'rtl-detect';
@@ -12,7 +13,7 @@ import DropdownMenu from '@folio/stripes-components/lib/DropdownMenu';
 import Icon from '@folio/stripes-components/lib/Icon';
 
 import IntlConsumer from '../../IntlConsumer';
-import AppListDropdown from './AppListDropdown';
+import { ResizeContainer, AppListDropdown } from './components';
 import NavButton from '../NavButton';
 import css from './AppList.css';
 
@@ -42,17 +43,9 @@ class AppList extends Component {
   constructor(props) {
     super(props);
 
-    this.maxRenderedNavButtons = 12;
-
     this.state = {
       open: false,
     };
-
-    this.renderDropdownToggleButton = this.renderDropdownToggleButton.bind(this);
-    this.renderNavButtons = this.renderNavButtons.bind(this);
-    this.toggleDropdown = this.toggleDropdown.bind(this);
-    this.focusDropdownToggleButton = this.focusDropdownToggleButton.bind(this);
-    this.focusFirstItemInList = this.focusFirstItemInList.bind(this);
 
     this.dropdownListRef = React.createRef();
     this.dropdownToggleRef = React.createRef();
@@ -77,27 +70,46 @@ class AppList extends Component {
    * Get the nav buttons that is displayed
    * in the app header on desktop
    */
-  renderNavButtons() {
-    return this.props.apps.filter((a, i) => i < this.maxRenderedNavButtons).map(app => (
-      <li className={css.navItem} key={app.id}>
-        <NavButton
-          label={app.displayName}
-          id={app.id}
-          selected={app.active}
-          href={app.href}
-          aria-label={app.displayName}
-          iconKey={app.name}
-          iconData={app.iconData}
-          role="button"
-        />
-      </li>
-    ));
+  renderNavButtons = (items, hiddenItemIds, itemWidths) => {
+    const { selectedApp } = this.props;
+
+    return (
+      <ul className={css.navItemsList}>
+        {
+          items.map(app => {
+            const hidden = hiddenItemIds.includes(app.id);
+
+            return (
+              <li
+                className={classnames(css.navItem, { [css.hidden]: hidden })}
+                key={app.id}
+                ref={app.ref}
+                aria-hidden={hidden}
+                style={{ width: itemWidths[app.id] }}
+              >
+                <NavButton
+                  data-test-app-list-item
+                  aria-label={app.displayName}
+                  iconData={app.iconData}
+                  iconKey={app.name}
+                  id={`app-list-item-${app.id}`}
+                  label={app.displayName}
+                  role="button"
+                  selected={selectedApp && selectedApp.id === app.id}
+                  to={app.href}
+                />
+              </li>
+            );
+          })
+        }
+      </ul>
+    );
   }
 
   /**
    * When dropdown is toggled
    */
-  toggleDropdown() {
+  toggleDropdown = () => {
     this.setState(state => ({ open: !state.open }), () => {
       // Re-focus dropdown toggle on close
       if (!this.state.open) {
@@ -109,7 +121,7 @@ class AppList extends Component {
   /**
    * The button that toggles the dropdown
    */
-  renderDropdownToggleButton() {
+  renderDropdownToggleButton = () => {
     const { open } = this.state;
     const { dropdownToggleId } = this.props;
     const icon = (
@@ -128,6 +140,7 @@ class AppList extends Component {
         <FormattedMessage id="stripes-core.mainnav.showAllApplicationsButtonAriaLabel">
           { ariaLabel => (
             <NavButton
+              data-test-app-list-apps-toggle
               label={label}
               aria-label={ariaLabel}
               aria-haspopup="true"
@@ -149,43 +162,11 @@ class AppList extends Component {
     );
   }
 
-
   /**
-   * Focus management
+   * App list dropdown
    */
-  focusFirstItemInList() {
-    if (this.dropdownListRef && this.dropdownListRef.current) {
-      // Applies focus to the <a> inside the first <li> in the list
-      this.dropdownListRef.current.firstChild.firstChild.focus();
-    }
-  }
-
-  focusSelectedItem() {
-    const selectedApp = this.props.selectedApp;
-    if (selectedApp) {
-      const activeElement = document.getElementById(`app-list-item-${selectedApp.id}`);
-      if (activeElement) {
-        activeElement.focus();
-      }
-    }
-  }
-
-  focusDropdownToggleButton() {
-    if (this.dropdownToggleRef && this.dropdownToggleRef.current) {
-      this.dropdownToggleRef.current.focus();
-    }
-  }
-
-  /**
-   * Insert hidden input to help trap focus
-   */
-  focusTrap(onFocus) {
-    return <input aria-hidden="true" className="sr-only" onFocus={onFocus} />;
-  }
-
-  render() {
+  renderNavDropdown = (items, hiddenItemIds) => {
     const {
-      renderNavButtons,
       renderDropdownToggleButton,
       toggleDropdown,
       focusTrap,
@@ -195,10 +176,9 @@ class AppList extends Component {
       state: { open },
     } = this;
 
-    const { dropdownId, apps, dropdownToggleId } = this.props;
+    const { dropdownId, dropdownToggleId, selectedApp } = this.props;
 
-    // If no apps are installed
-    if (!apps.length) {
+    if (!hiddenItemIds.length) {
       return null;
     }
 
@@ -214,38 +194,92 @@ class AppList extends Component {
           };
 
           return (
-            <nav className={css.appList} aria-labelledby="main_app_list_label">
-              <h3 className="sr-only" id="main_app_list_label"><FormattedMessage id="stripes-core.mainnav.applicationListLabel" /></h3>
-              <ul className={css.navItemsList}>
-                {renderNavButtons()}
-              </ul>
-              <div className={css.navListDropdownWrap}>
-                <Dropdown
-                  tether={tether}
-                  dropdownClass={css.navListDropdown}
-                  open={open}
-                  id={dropdownId}
-                  onToggle={toggleDropdown}
-                  hasPadding={false}
-                >
-                  {renderDropdownToggleButton()}
-                  <DropdownMenu data-role="menu" onToggle={toggleDropdown}>
-                    {focusTrap(focusDropdownToggleButton)}
-                    <AppListDropdown
-                      listRef={dropdownListRef}
-                      apps={apps}
-                      dropdownToggleId={dropdownToggleId}
-                      toggleDropdown={toggleDropdown}
-                    />
-                    {focusTrap(focusFirstItemInList)}
-                  </DropdownMenu>
-                </Dropdown>
-              </div>
+            <div className={css.navListDropdownWrap}>
+              <Dropdown
+                tether={tether}
+                dropdownClass={css.navListDropdown}
+                open={open}
+                id={dropdownId}
+                onToggle={toggleDropdown}
+                hasPadding={false}
+              >
+                {renderDropdownToggleButton()}
+                <DropdownMenu data-role="menu" onToggle={toggleDropdown}>
+                  {focusTrap(focusDropdownToggleButton)}
+                  <AppListDropdown
+                    apps={items.filter(item => hiddenItemIds.includes(item.id))}
+                    dropdownToggleId={dropdownToggleId}
+                    listRef={dropdownListRef}
+                    selectedApp={selectedApp}
+                    toggleDropdown={toggleDropdown}
+                  />
+                  {focusTrap(focusFirstItemInList)}
+                </DropdownMenu>
+              </Dropdown>
+            </div>
+          );
+        }}
+      </IntlConsumer>
+    );
+  }
+
+
+  /**
+   * Focus management
+   */
+  focusFirstItemInList = () => {
+    if (this.dropdownListRef && this.dropdownListRef.current) {
+      // Applies focus to the <a> inside the first <li> in the list
+      this.dropdownListRef.current.firstChild.firstChild.focus();
+    }
+  }
+
+  focusSelectedItem = () => {
+    const selectedApp = this.props.selectedApp;
+    if (selectedApp) {
+      const activeElement = document.getElementById(`app-list-item-${selectedApp.id}`);
+      if (activeElement) {
+        activeElement.focus();
+      }
+    }
+  }
+
+  focusDropdownToggleButton = () => {
+    if (this.dropdownToggleRef && this.dropdownToggleRef.current) {
+      this.dropdownToggleRef.current.focus();
+    }
+  }
+
+  /**
+   * Insert hidden input to help trap focus
+   */
+  focusTrap(onFocus) {
+    return <input aria-hidden="true" className="sr-only" onFocus={onFocus} />;
+  }
+
+  render() {
+    const { apps } = this.props;
+
+    // If no apps are installed
+    if (!apps.length) {
+      return null;
+    }
+
+    return (
+      <ResizeContainer items={apps} hideAllWidth={767}>
+        {({ items, hiddenItems, itemWidths }) => {
+          return (
+            <nav className={css.appList} aria-labelledby="main_app_list_label" data-test-app-list>
+              <h3 className="sr-only" id="main_app_list_label">
+                <FormattedMessage id="stripes-core.mainnav.applicationListLabel" />
+              </h3>
+              {this.renderNavButtons(items, hiddenItems, itemWidths)}
+              {this.renderNavDropdown(items, hiddenItems)}
             </nav>
           );
         }
       }
-      </IntlConsumer>
+      </ResizeContainer>
     );
   }
 }

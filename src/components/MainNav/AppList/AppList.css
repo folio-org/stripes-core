@@ -10,6 +10,9 @@
 
 .appList {
   display: flex;
+  justify-content: flex-end;
+  flex: 1;
+  min-width: 0;
 }
 
 /**
@@ -33,11 +36,16 @@
   margin: 0;
   padding: 0;
   display: flex;
+  justify-content: flex-end;
 }
 
 /**
  * Nav Dropdown
  */
+
+.navListDropdownWrap {
+  margin: 0 var(--gutter-static-two-thirds);
+}
 
 .navListDropdownWrap,
 .navListDropdown {
@@ -45,11 +53,11 @@
 }
 
 .navListDropdown {
-  z-index: 200;
+  z-index: 99999;
 }
 
 .navListDropdown > div {
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 .dropdownBody {
@@ -78,11 +86,6 @@
   text-align: right;
 }
 
-.dropdownListItemDescription {
-  color: var(--label-color);
-  display: none;
-}
-
 .dropdownHeader {
   padding: 10px 10px 5px;
 }
@@ -90,16 +93,20 @@
 /**
  * Nav Item
 **/
+
 .navItem {
-  display: none;
-}
+  display: flex;
+  flex-shrink: 0;
+  transition: opacity 0.1s, visibility 0.1s, width 0.07s ease-in-out;
+  padding: 0 var(--gutter-static-one-third);
 
-[dir=ltr] .navItem:not(:last-child) {
-  margin-right: var(--gutter-static-two-thirds);
-}
-
-[dir=rtl] .navItem:not(:last-child) {
-  margin-left: var(--gutter-static-two-thirds);
+  &.hidden {
+    width: 0 !important;
+    overflow: hidden;
+    visibility: hidden;
+    opacity: 0;
+    padding: 0;
+  }
 }
 
 /**
@@ -117,52 +124,7 @@
 }
 
 @media (--medium-up) {
-  .dropdownListItemDescription {
-    display: block;
-  }
-
   .dropdownToggleLabel {
     display: flex;
-  }
-}
-
-@media (--large-up) {
-  .navItemsList {
-    display: flex;
-  }
-}
-
-/**
- * Adjust visible nav items with CSS for now
- * Should be made dynamic later on
-**/
-
-@media screen and (min-width: 768px) {
-  .navItem:nth-child(-n+3) {
-    display: block;
-  }
-}
-
-@media screen and (min-width: 980px) {
-  .navItem:nth-child(-n+5) {
-    display: block;
-  }
-}
-
-@media screen and (min-width: 1200px) {
-  .navItem:nth-child(-n+6) {
-    display: block;
-  }
-}
-
-@media screen and (min-width: 1500px) {
-  .navItem:nth-child(-n+9) {
-    display: block;
-  }
-}
-
-@media screen and (min-width: 1700px) {
-  .navItem:nth-child(-n+11) {
-    display: block;
   }
 }

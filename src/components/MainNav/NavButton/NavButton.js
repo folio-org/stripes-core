@@ -29,6 +29,7 @@ const propTypes = {
   onClick: PropTypes.func,
   selected: PropTypes.bool,
   noSelectedBar: PropTypes.bool,
+  to: PropTypes.string,
 };
 
 const defaultProps = {
@@ -37,20 +38,21 @@ const defaultProps = {
 
 const NavButton = React.forwardRef(({
   ariaLabel,
-  label,
-  title,
-  selected,
-  onClick,
+  badge,
+  className,
   href,
   icon,
-  innerClassName,
-  noSelectedBar,
-  className,
-  labelClassName,
-  badge,
-  id,
-  iconKey,
   iconData,
+  iconKey,
+  id,
+  innerClassName,
+  label,
+  labelClassName,
+  noSelectedBar,
+  onClick,
+  selected,
+  title,
+  to,
   ...rest
 }, ref) => {
   /**
@@ -82,14 +84,25 @@ const NavButton = React.forwardRef(({
 
   let Element = 'span';
   let clickableProps = {};
+  const isInteractive = href || onClick || to;
 
   /**
-   * Is link (use react-router link)
+   * Is link
    */
   if (href) {
+    Element = 'a';
+    clickableProps = {
+      href,
+    };
+  }
+
+  /**
+   * Is router link (use react-router link)
+   */
+  if (to) {
     Element = Link;
     clickableProps = {
-      to: href,
+      to,
     };
   }
 
@@ -105,7 +118,7 @@ const NavButton = React.forwardRef(({
 
   return (
     <Element ref={ref} id={id} aria-label={ariaLabel || title} className={rootClasses} {...rest} {...clickableProps}>
-      <span className={classNames(css.inner, { [css.isInteractable]: href || onClick }, innerClassName)}>
+      <span className={classNames(css.inner, { [css.isInteractive]: isInteractive }, innerClassName)}>
         { badge && (<Badge color="red" className={css.badge}>{badge}</Badge>) }
         { renderedIcon }
         { label && <span className={classNames(css.label, labelClassName)}>{label}</span>}
