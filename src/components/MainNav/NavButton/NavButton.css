@@ -34,7 +34,7 @@
   }
 }
 
-.isInteractable {
+.isInteractive {
   composes: interactionStyles from "@folio/stripes-components/lib/sharedStyles/interactionStyles.css";  /* stylelint-disable-line */
 }
 
