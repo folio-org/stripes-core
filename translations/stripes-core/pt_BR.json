@@ -123,5 +123,6 @@
     "errors.password.keyboardSequence.invalid": "A senha não deve conter uma seqüência do teclado.",
     "errors.password.repeatingSymbols.invalid": "A senha não deve conter o mesmo caractere em uma linha.",
     "errors.password.whiteSpace.invalid": "A senha não deve conter espaços em branco.",
-    "mainnav.myProfileAriaLabel": "Meu perfil"
+    "mainnav.myProfileAriaLabel": "Meu perfil",
+    "mainnav.skipMainNavigation": "Pular navegação principal"
 }
