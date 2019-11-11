@@ -3,6 +3,7 @@
  */
 
 import React, { useEffect, useState, useRef, createRef } from 'react';
+import get from 'lodash/get';
 import classnames from 'classnames';
 import debounce from 'lodash/debounce';
 import PropTypes from 'prop-types';
@@ -15,9 +16,9 @@ const ResizeContainer = ({ className, children, hideAllWidth, offset, items: all
   const [cachedItemWidths, setCachedItemWidths] = useState({});
 
   // Assign a ref for each item on mount
-  const [cachedItems] = useState(() => allItems.map(item => Object.assign(item, {
-    ref: createRef(null),
-  })));
+  const [refs] = useState(() => allItems.reduce((acc, app) => {
+    return Object.assign(acc, { [app.id]: createRef(null) });
+  }, {}));
 
   /**
    * Determine hidden items on mount and resize
@@ -31,13 +32,13 @@ const ResizeContainer = ({ className, children, hideAllWidth, offset, items: all
 
       const newHiddenItems =
       // Set all items as hidden
-      shouldHideAll ? cachedItems.map(item => item.id) :
+      shouldHideAll ? Object.keys(refs) :
 
       // Find items that should be hidden
-        cachedItems.reduce((acc, item) => {
-          const itemWidth = cachedItemWidths[item.id];
+        Object.keys(refs).reduce((acc, id) => {
+          const itemWidth = cachedItemWidths[id];
           const shouldBeHidden = (itemWidth + acc.accWidth + offset) > wrapperWidth;
-          const hidden = shouldBeHidden ? acc.hidden.concat(item.id) : acc.hidden;
+          const hidden = shouldBeHidden ? acc.hidden.concat(id) : acc.hidden;
 
           return {
             hidden,
@@ -60,7 +61,7 @@ const ResizeContainer = ({ className, children, hideAllWidth, offset, items: all
 
   useEffect(() => {
     // Cache menu item widths on mount since it's unlikely they will change
-    setCachedItemWidths(cachedItems.reduce((a, b) => Object.assign(a, { [b.id]: b.ref.current.clientWidth }), {}));
+    setCachedItemWidths(Object.keys(refs).reduce((acc, id) => Object.assign(acc, { [id]: get(refs, `${id}.current.clientWidth`) }), {}));
 
     return () => {
       window.removeEventListener('resize', updateHiddenItems, true);
@@ -88,8 +89,8 @@ const ResizeContainer = ({ className, children, hideAllWidth, offset, items: all
         {children({
           hiddenItems,
           itemWidths: cachedItemWidths,
-          items: cachedItems,
-          ready
+          ready,
+          refs
         })}
       </div>
     </div>
