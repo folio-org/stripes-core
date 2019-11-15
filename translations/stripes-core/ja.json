@@ -123,5 +123,6 @@
     "errors.password.keyboardSequence.invalid": "The password must not contain a keyboard sequence.",
     "errors.password.repeatingSymbols.invalid": "The password must not contain the same character in a row.",
     "errors.password.whiteSpace.invalid": "The password must not contain whitespaces.",
-    "mainnav.myProfileAriaLabel": "My profile"
+    "mainnav.myProfileAriaLabel": "My profile",
+    "mainnav.skipMainNavigation": "Skip Main Navigation"
 }

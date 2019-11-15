@@ -12,7 +12,6 @@ import NavListSection from '@folio/stripes-components/lib/NavListSection';
 import NavListItem from '@folio/stripes-components/lib/NavListItem';
 import List from '@folio/stripes-components/lib/List';
 
-import NavDropdownMenu from '../NavDropdownMenu';
 import NavButton from '../NavButton';
 import css from './ProfileDropdown.css';
 import { withModules } from '../../Modules';
