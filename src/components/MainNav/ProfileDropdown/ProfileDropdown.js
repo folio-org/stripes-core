@@ -231,7 +231,7 @@ class ProfileDropdown extends Component {
   );
 
   renderProfileMenu = ({ open }) => (
-    <DropdownMenu data-role="menu" open={open}>
+    <DropdownMenu open={open}>
       {this.getDropdownContent()}
     </DropdownMenu>
   );
