@@ -6,10 +6,11 @@
   flex: 1;
   display: flex;
   min-width: 0;
-  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out 0.07s;
 
   &.ready {
-    visibility: visible;
+    opacity: 1;
   }
 }
 

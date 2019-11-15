@@ -70,27 +70,37 @@ class AppList extends Component {
    * Get the nav buttons that is displayed
    * in the app header on desktop
    */
-  renderNavButtons = (items) => {
-    const { selectedApp } = this.props;
+  renderNavButtons = (refs, hiddenItemIds, itemWidths) => {
+    const { selectedApp, apps } = this.props;
 
     return (
       <ul className={css.navItemsList}>
         {
-          items.map(app => (
-            <li className={classnames(css.navItem, { [css.visible]: app.visible })} key={app.id} ref={app.ref} aria-hidden={!app.visible}>
-              <NavButton
-                data-test-app-list-item
-                aria-label={app.displayName}
-                iconData={app.iconData}
-                iconKey={app.name}
-                id={`app-list-item-${app.id}`}
-                label={app.displayName}
-                role="button"
-                selected={selectedApp && selectedApp.id === app.id}
-                to={app.href}
-              />
-            </li>
-          ))
+          apps.map(app => {
+            const hidden = hiddenItemIds.includes(app.id);
+
+            return (
+              <li
+                className={classnames(css.navItem, { [css.hidden]: hidden })}
+                key={app.id}
+                ref={refs[app.id]}
+                aria-hidden={hidden}
+                style={{ width: itemWidths[app.id] }}
+              >
+                <NavButton
+                  data-test-app-list-item
+                  aria-label={app.displayName}
+                  iconData={app.iconData}
+                  iconKey={app.name}
+                  id={`app-list-item-${app.id}`}
+                  label={app.displayName}
+                  role="button"
+                  selected={selectedApp && selectedApp.id === app.id}
+                  to={app.href}
+                />
+              </li>
+            );
+          })
         }
       </ul>
     );
@@ -155,7 +165,7 @@ class AppList extends Component {
   /**
    * App list dropdown
    */
-  renderNavDropdown = (items) => {
+  renderNavDropdown = (hiddenItemIds) => {
     const {
       renderDropdownToggleButton,
       toggleDropdown,
@@ -166,9 +176,9 @@ class AppList extends Component {
       state: { open },
     } = this;
 
-    const { dropdownId, dropdownToggleId, selectedApp } = this.props;
+    const { apps, dropdownId, dropdownToggleId, selectedApp } = this.props;
 
-    if (!items || !items.length) {
+    if (!hiddenItemIds.length) {
       return null;
     }
 
@@ -197,7 +207,7 @@ class AppList extends Component {
                 <DropdownMenu data-role="menu" onToggle={toggleDropdown}>
                   {focusTrap(focusDropdownToggleButton)}
                   <AppListDropdown
-                    apps={items}
+                    apps={apps.filter(item => hiddenItemIds.includes(item.id))}
                     dropdownToggleId={dropdownToggleId}
                     listRef={dropdownListRef}
                     selectedApp={selectedApp}
@@ -257,15 +267,17 @@ class AppList extends Component {
 
     return (
       <ResizeContainer items={apps} hideAllWidth={767}>
-        {({ visibleItems, hiddenItems }) => (
-          <nav className={css.appList} aria-labelledby="main_app_list_label" data-test-app-list>
-            <h3 className="sr-only" id="main_app_list_label">
-              <FormattedMessage id="stripes-core.mainnav.applicationListLabel" />
-            </h3>
-            {this.renderNavButtons(visibleItems)}
-            {this.renderNavDropdown(hiddenItems)}
-          </nav>
-        )
+        {({ refs, hiddenItems, itemWidths }) => {
+          return (
+            <nav className={css.appList} aria-labelledby="main_app_list_label" data-test-app-list>
+              <h3 className="sr-only" id="main_app_list_label">
+                <FormattedMessage id="stripes-core.mainnav.applicationListLabel" />
+              </h3>
+              {this.renderNavButtons(refs, hiddenItems, itemWidths)}
+              {this.renderNavDropdown(hiddenItems)}
+            </nav>
+          );
+        }
       }
       </ResizeContainer>
     );

@@ -6,7 +6,6 @@ import React from 'react';
 import times from 'lodash/times';
 import { beforeEach, it, describe } from '@bigtest/mocha';
 import { expect } from 'chai';
-import setupApplication from '../../helpers/setup-application';
 import { mount } from '../../helpers/render-helpers';
 
 import ResizeContainer from '../../../../src/components/MainNav/AppList/components/ResizeContainer';
@@ -24,49 +23,53 @@ const ITEM_OFFSET = 0;
 // This would be determined by the window width in a real app
 const WRAPPER_WIDTH = 800;
 
-const ITEMS = times(10).map(no => ({
-  id: no,
-  ref: null // Ref gets added for each item by ResizeContainer
-}));
+const ITEMS = times(10).map(id => ({ id: id.toString() }));
 
 // Since we have no offset and fixed wrapper/item width, we can predict the expected outcome
 const EXPECTED_VISIBLE_ITEMS = WRAPPER_WIDTH / ITEM_WIDTH;
 const EXPECTED_HIDDEN_ITEMS = ITEMS.length - EXPECTED_VISIBLE_ITEMS;
 
+/**
+ * A mock ResizeContainer component that mimics a real app example
+ */
 const ResizeContainerMock = ({ items, wrapperWidth, itemWidth, hideAllWidth, offset, withRTL }) => {
   return (
-    <div style={{ maxWidth: wrapperWidth, backgroundColor: 'green', height: 100 }}>
-      <ResizeContainer className="my-test-interactor" isRTL={withRTL} items={items} hideAllWidth={hideAllWidth} offset={offset}>
-        {({ visibleItems }) => (
-          <div style={{ display: 'flex', flex: 1, minWidth: 0, justifyContent: 'flex-end' }}>
-            {visibleItems.map(item => (
-              <span
-                {...{ [item.visible ? 'data-test-resize-container-visible-item' : 'data-test-resize-container-hidden-item']: true }}
-                key={item.id}
-                ref={item.ref}
-                style={{
-                  width: itemWidth,
-                  flexShrink: 0,
-                  backgroundColor: 'yellow',
-                  height: 50,
-                  visibility: item.visible ? 'visible' : 'hidden'
-                }}
-              >
-                {item.visible ? `Visible Item ${item.id}` : 'Not visible'}
-              </span>
-            ))}
-          </div>
-        )
-      }
-      </ResizeContainer>
+    <div dir={withRTL ? 'rtl' : 'ltr'}>
+      <div style={{ maxWidth: wrapperWidth, backgroundColor: 'green', height: 100 }}>
+        <ResizeContainer className="my-test-interactor" items={items} hideAllWidth={hideAllWidth} offset={offset}>
+          {({ refs, hiddenItems }) => (
+            <div style={{ display: 'flex', flex: 1, minWidth: 0, justifyContent: 'flex-end' }}>
+              {items.map(item => {
+                const isHidden = hiddenItems.includes(item.id);
+
+                return (
+                  <span
+                    {...{ [!isHidden ? 'data-test-resize-container-visible-item' : 'data-test-resize-container-hidden-item']: true }}
+                    key={item.id}
+                    ref={refs[item.id]}
+                    style={{
+                      width: itemWidth,
+                      flexShrink: 0,
+                      backgroundColor: 'yellow',
+                      height: 50,
+                      visibility: !isHidden ? 'visible' : 'hidden'
+                    }}
+                  >
+                    {!isHidden ? `Visible Item ${item.id}` : 'Not visible'}
+                  </span>
+                );
+              })}
+            </div>
+          )
+        }
+        </ResizeContainer>
+      </div>
     </div>
   );
 };
 
 describe('ResizeContainer', () => {
   const resizeContainer = new ResizeContainerInteractor('.my-test-interactor');
-
-  setupApplication();
 
   beforeEach(async () => {
     await mount(

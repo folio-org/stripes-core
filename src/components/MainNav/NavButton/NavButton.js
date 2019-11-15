@@ -84,7 +84,7 @@ const NavButton = React.forwardRef(({
 
   let Element = 'span';
   let clickableProps = {};
-  const isInteractable = href || onClick || to;
+  const isInteractive = href || onClick || to;
 
   /**
    * Is link
@@ -118,7 +118,7 @@ const NavButton = React.forwardRef(({
 
   return (
     <Element ref={ref} id={id} aria-label={ariaLabel || title} className={rootClasses} {...rest} {...clickableProps}>
-      <span className={classNames(css.inner, { [css.isInteractable]: isInteractable }, innerClassName)}>
+      <span className={classNames(css.inner, { [css.isInteractive]: isInteractive }, innerClassName)}>
         { badge && (<Badge color="red" className={css.badge}>{badge}</Badge>) }
         { renderedIcon }
         { label && <span className={classNames(css.label, labelClassName)}>{label}</span>}

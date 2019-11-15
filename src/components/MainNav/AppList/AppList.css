@@ -57,7 +57,7 @@
 }
 
 .navListDropdown > div {
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 .dropdownBody {
@@ -96,23 +96,17 @@
 
 .navItem {
   display: flex;
-  visibility: hidden;
-  opacity: 0;
   flex-shrink: 0;
-  transition: opacity 0.2s, visibility 0.3s;
+  transition: opacity 0.1s, visibility 0.1s, width 0.07s ease-in-out;
+  padding: 0 var(--gutter-static-one-third);
 
-  &.visible {
-    visibility: visible;
-    opacity: 1;
+  &.hidden {
+    width: 0 !important;
+    overflow: hidden;
+    visibility: hidden;
+    opacity: 0;
+    padding: 0;
   }
-}
-
-[dir=ltr] .navItem:not(:last-child) {
-  margin-right: var(--gutter-static-two-thirds);
-}
-
-[dir=rtl] .navItem:not(:last-child) {
-  margin-left: var(--gutter-static-two-thirds);
 }
 
 /**

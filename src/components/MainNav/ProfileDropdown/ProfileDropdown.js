@@ -8,6 +8,7 @@ import { Dropdown } from '@folio/stripes-components/lib/Dropdown';
 import NavList from '@folio/stripes-components/lib/NavList';
 import Avatar from '@folio/stripes-components/lib/Avatar';
 import NavListSection from '@folio/stripes-components/lib/NavListSection';
+import Icon from '@folio/stripes-components/lib/Icon';
 import NavListItem from '@folio/stripes-components/lib/NavListItem';
 import List from '@folio/stripes-components/lib/List';
 
@@ -218,6 +219,7 @@ class ProfileDropdown extends Component {
 
   render() {
     const { dropdownOpen, HandlerComponent } = this.state;
+    const user = this.getUserData();
 
     return (
       <IntlConsumer>
@@ -231,6 +233,14 @@ class ProfileDropdown extends Component {
                 selected={dropdownOpen}
                 className={css.button}
                 icon={this.getProfileImage()}
+                label={user.curServicePoint ? (
+                  <Fragment>
+                    <span className={css.button__label}>
+                      {user.curServicePoint.name}
+                    </span>
+                    <Icon icon={dropdownOpen ? 'caret-up' : 'caret-down'} />
+                  </Fragment>
+                ) : null}
               />
               <NavDropdownMenu data-role="menu" onToggle={this.toggleDropdown}>
                 {this.getDropdownContent()}
