@@ -3,8 +3,8 @@
  */
 
 import { interactor, isPresent, find, text, property, attribute } from '@bigtest/interactor';
-import { selectorFromClassnameString } from '../helpers/render-helpers';
-import css from '../../../src/components/AppIcon/AppIcon.css';
+import { selectorFromClassnameString } from '../../../../test/bigtest/helpers/render-helpers';
+import css from '../AppIcon.css';
 
 const iconClassSelector = selectorFromClassnameString(`.${css.appIcon}`);
 
