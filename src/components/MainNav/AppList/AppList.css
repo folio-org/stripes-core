@@ -63,7 +63,6 @@
 .dropdownBody {
   width: 100%;
   outline: 0;
-  padding: var(--gutter-static-one-third) var(--gutter-static);
 }
 
 .dropdownList {

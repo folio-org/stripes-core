@@ -107,22 +107,9 @@ class AppList extends Component {
   }
 
   /**
-   * When dropdown is toggled
-   */
-  toggleDropdown = () => {
-    this.setState(state => ({ open: !state.open }), () => {
-      // Re-focus dropdown toggle on close
-      if (!this.state.open) {
-        this.focusDropdownToggleButton();
-      }
-    });
-  }
-
-  /**
    * The button that toggles the dropdown
    */
-  renderDropdownToggleButton = () => {
-    const { open } = this.state;
+  renderDropdownToggleButton = ({ open, getTriggerProps }) => {
     const { dropdownToggleId } = this.props;
     const icon = (
       <svg className={css.dropdownToggleIcon} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -143,16 +130,13 @@ class AppList extends Component {
               data-test-app-list-apps-toggle
               label={label}
               aria-label={ariaLabel}
-              aria-haspopup="true"
-              aria-expanded={open}
-              data-role="toggle"
               className={css.navMobileToggle}
               labelClassName={css.dropdownToggleLabel}
               onClick={this.toggleDropdown}
               selected={this.state.open}
               icon={icon}
+              {...getTriggerProps()}
               id={dropdownToggleId}
-              ref={this.dropdownToggleRef}
               noSelectedBar
             />
           )}
@@ -173,7 +157,6 @@ class AppList extends Component {
       focusDropdownToggleButton,
       focusFirstItemInList,
       dropdownListRef,
-      state: { open },
     } = this;
 
     const { apps, dropdownId, dropdownToggleId, selectedApp } = this.props;
@@ -185,36 +168,27 @@ class AppList extends Component {
     return (
       <IntlConsumer>
         { intl => {
-          const tether = {
-            attachment: rtlDetect.isRtlLang(intl.locale) ? 'top left' : 'top right',
-            targetAttachment: rtlDetect.isRtlLang(intl.locale) ? 'bottom left' : 'bottom right',
-            constraints: [{
-              to: 'target',
-            }],
-          };
-
           return (
             <div className={css.navListDropdownWrap}>
               <Dropdown
-                tether={tether}
+                placement={rtlDetect.isRtlLang(intl.locale) ? 'bottom-start' : 'bottom-end'}
                 dropdownClass={css.navListDropdown}
-                open={open}
                 id={dropdownId}
-                onToggle={toggleDropdown}
-                hasPadding={false}
+                renderTrigger={renderDropdownToggleButton}
+                usePortal={false}
               >
-                {renderDropdownToggleButton()}
-                <DropdownMenu data-role="menu" onToggle={toggleDropdown}>
-                  {focusTrap(focusDropdownToggleButton)}
-                  <AppListDropdown
-                    apps={apps.filter(item => hiddenItemIds.includes(item.id))}
-                    dropdownToggleId={dropdownToggleId}
-                    listRef={dropdownListRef}
-                    selectedApp={selectedApp}
-                    toggleDropdown={toggleDropdown}
-                  />
-                  {focusTrap(focusFirstItemInList)}
-                </DropdownMenu>
+                { ({ onToggle }) => (
+                  <DropdownMenu onToggle={onToggle}>
+                    <AppListDropdown
+                      apps={apps.filter(item => hiddenItemIds.includes(item.id))}
+                      dropdownToggleId={dropdownToggleId}
+                      listRef={dropdownListRef}
+                      selectedApp={selectedApp}
+                      toggleDropdown={onToggle}
+                    />
+                  </DropdownMenu>
+                )
+                }
               </Dropdown>
             </div>
           );
