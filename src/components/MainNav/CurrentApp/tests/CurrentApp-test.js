@@ -3,7 +3,6 @@
  */
 
 import React from 'react';
-import { NavList, NavListItem, NavListSection } from '@folio/stripes/components';
 import { beforeEach, it, describe } from '@bigtest/mocha';
 import { expect } from 'chai';
 import setupApplication from '../../../../../test/bigtest/helpers/setup-application';
@@ -15,16 +14,7 @@ const DummyAppWithContextMenu = () => (
     <AppContextMenu>
       {() => (
         <div data-test-context-menu>
-          <NavList>
-            <NavListSection>
-              <NavListItem>
-                Users Application Home
-              </NavListItem>
-              <NavListItem>
-                Keyboard Shortcuts
-              </NavListItem>
-            </NavListSection>
-          </NavList>
+          App context menu content..
         </div>
       )}
     </AppContextMenu>
@@ -33,7 +23,7 @@ const DummyAppWithContextMenu = () => (
 
 const DummyAppWithoutContextMenu = () => <div />;
 
-describe.only('CurrentApp', () => {
+describe('CurrentApp', () => {
   const currentApp = new CurrentAppInteractor();
 
   setupApplication({
@@ -91,16 +81,6 @@ describe.only('CurrentApp', () => {
     it('Should have an aria-label equal to: "Current open application: {displayName} (Click to go home)"', () => {
       expect(currentApp.homeButton.ariaLabel).to.equal('Current open application: Dummy app without context menu (Click to go home)');
     });
-
-    // describe('Clicking the context menu toggle button', () => {
-    //   beforeEach(async () => {
-    //     await currentApp.contextMenuToggleButton.click();
-    //   });
-
-    //   it('Should open the app context menu dropdown', () => {
-    //     expect(currentApp.contextMenu.isPresent).to.equal(true);
-    //   });
-    // });
   });
 
   describe('When on the initial route (no active app)', () => {
