@@ -141,7 +141,6 @@ class AppList extends Component {
             />
           )}
         </FormattedMessage>
-        {open && this.focusTrap(this.focusFirstItemInList)}
       </Fragment>
     );
   }
@@ -152,10 +151,6 @@ class AppList extends Component {
   renderNavDropdown = (hiddenItemIds) => {
     const {
       renderDropdownToggleButton,
-      toggleDropdown,
-      focusTrap,
-      focusDropdownToggleButton,
-      focusFirstItemInList,
       dropdownListRef,
     } = this;
 
@@ -166,69 +161,29 @@ class AppList extends Component {
     }
 
     return (
-      <IntlConsumer>
-        { intl => {
-          return (
-            <div className={css.navListDropdownWrap}>
-              <Dropdown
-                placement={rtlDetect.isRtlLang(intl.locale) ? 'bottom-start' : 'bottom-end'}
-                dropdownClass={css.navListDropdown}
-                id={dropdownId}
-                renderTrigger={renderDropdownToggleButton}
-                usePortal={false}
-              >
-                { ({ onToggle }) => (
-                  <DropdownMenu onToggle={onToggle}>
-                    <AppListDropdown
-                      apps={apps.filter(item => hiddenItemIds.includes(item.id))}
-                      dropdownToggleId={dropdownToggleId}
-                      listRef={dropdownListRef}
-                      selectedApp={selectedApp}
-                      toggleDropdown={onToggle}
-                    />
-                  </DropdownMenu>
-                )
-                }
-              </Dropdown>
-            </div>
-          );
-        }}
-      </IntlConsumer>
+      <div className={css.navListDropdownWrap}>
+        <Dropdown
+          placement="bottom-end"
+          dropdownClass={css.navListDropdown}
+          id={dropdownId}
+          renderTrigger={renderDropdownToggleButton}
+          usePortal={false}
+        >
+          { ({ onToggle }) => (
+            <DropdownMenu onToggle={onToggle}>
+              <AppListDropdown
+                apps={apps.filter(item => hiddenItemIds.includes(item.id))}
+                dropdownToggleId={dropdownToggleId}
+                listRef={dropdownListRef}
+                selectedApp={selectedApp}
+                toggleDropdown={onToggle}
+              />
+            </DropdownMenu>
+          )
+          }
+        </Dropdown>
+      </div>
     );
-  }
-
-
-  /**
-   * Focus management
-   */
-  focusFirstItemInList = () => {
-    if (this.dropdownListRef && this.dropdownListRef.current) {
-      // Applies focus to the <a> inside the first <li> in the list
-      this.dropdownListRef.current.firstChild.firstChild.focus();
-    }
-  }
-
-  focusSelectedItem = () => {
-    const selectedApp = this.props.selectedApp;
-    if (selectedApp) {
-      const activeElement = document.getElementById(`app-list-item-${selectedApp.id}`);
-      if (activeElement) {
-        activeElement.focus();
-      }
-    }
-  }
-
-  focusDropdownToggleButton = () => {
-    if (this.dropdownToggleRef && this.dropdownToggleRef.current) {
-      this.dropdownToggleRef.current.focus();
-    }
-  }
-
-  /**
-   * Insert hidden input to help trap focus
-   */
-  focusTrap(onFocus) {
-    return <input aria-hidden="true" className="sr-only" onFocus={onFocus} />;
   }
 
   render() {
