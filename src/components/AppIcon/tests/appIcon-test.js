@@ -64,7 +64,7 @@ describe('AppIcon', () => {
     });
 
     it('Should render an <img>', () => {
-      expect(appIcon.hasImg).to.be.true;
+      expect(appIcon.hasImg).to.equal(true);
     });
 
     it('Should render an img with an alt-attribute', () => {
@@ -83,7 +83,7 @@ describe('AppIcon', () => {
     });
 
     it('Should render an <img>', () => {
-      expect(appIcon.hasImg).to.be.true;
+      expect(appIcon.hasImg).to.equal(true);
     });
 
     it('Should render an img with an alt-attribute', () => {
