@@ -245,6 +245,8 @@ class ProfileDropdown extends Component {
           id="profileDropdown"
           renderTrigger={this.renderProfileTrigger}
           renderMenu={this.renderProfileMenu}
+          open={this.state.dropdownOpen}
+          onToggle={this.toggleDropdown}
           usePortal={false}
           placement="bottom-end"
         />
