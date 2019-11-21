@@ -47,21 +47,28 @@ class AppList extends Component {
       open: false,
     };
 
+    this.focusHandlers = {
+      open: (trigger, menu, firstItem) => {
+        if (this.props.selectedApp) {
+          this.focusSelectedItem();
+          // If not; focus first item in the list
+        } else if (firstItem) firstItem.focus();
+      }
+    };
+
     this.dropdownListRef = React.createRef();
     this.dropdownToggleRef = React.createRef();
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  /**
+   * focus management
+   */
+  focusSelectedItem = () => {
     const selectedApp = this.props.selectedApp;
-
-    // Set focus on dropdown when it opens
-    if (this.state.open && !prevState.open) {
-      // If there's an active app
-      if (selectedApp) {
-        this.focusSelectedItem();
-        // If not; focus first item in the list
-      } else {
-        this.focusFirstItemInList();
+    if (selectedApp) {
+      const activeElement = document.getElementById(`app-list-dropdown-item-${selectedApp.id}`);
+      if (activeElement) {
+        activeElement.focus();
       }
     }
   }
@@ -168,6 +175,7 @@ class AppList extends Component {
           id={dropdownId}
           renderTrigger={renderDropdownToggleButton}
           usePortal={false}
+          focusHandlers={this.focusHandlers}
         >
           { ({ onToggle }) => (
             <DropdownMenu onToggle={onToggle}>
