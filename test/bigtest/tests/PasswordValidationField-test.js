@@ -73,7 +73,7 @@ describe('PasswordValidationField', () => {
     expect(field.isPresent).to.be.true;
   });
 
-  describe('with an invalid password', () => {
+  describe.skip('with an invalid password', () => {
     beforeEach(async () => {
       await field.fillAndBlur('test');
     });
