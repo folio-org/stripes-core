@@ -50,7 +50,12 @@ class AppList extends Component {
     this.focusHandlers = {
       open: (trigger, menu, firstItem) => {
         if (this.props.selectedApp) {
-          this.focusSelectedItem();
+          /* the selected app may not be in the list...
+           * if focusing the selected item fails, focus
+           * the first item... */
+          if (!this.focusSelectedItem()) {
+            firstItem.focus();
+          }
           // If not; focus first item in the list
         } else if (firstItem) firstItem.focus();
       }
@@ -69,7 +74,9 @@ class AppList extends Component {
       const activeElement = document.getElementById(`app-list-dropdown-item-${selectedApp.id}`);
       if (activeElement) {
         activeElement.focus();
+        return true;
       }
+      return false;
     }
   }
 
