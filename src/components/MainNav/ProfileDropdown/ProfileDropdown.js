@@ -247,14 +247,8 @@ class ProfileDropdown extends Component {
           renderMenu={this.renderProfileMenu}
           open={this.state.dropdownOpen}
           onToggle={this.toggleDropdown}
-          usePortal
           placement="bottom-end"
-          modifiers={{
-            preventOverflow: {
-              boundariesElement: 'window',
-              padding: 10,
-            }
-          }}
+          relativePosition
         />
       </Fragment>
     );
