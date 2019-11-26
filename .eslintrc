@@ -1,4 +1,15 @@
 {
   "extends": "@folio/eslint-config-stripes",
-  "parser": "babel-eslint"
+  "parser": "babel-eslint",
+  "overrides": [
+    {
+      "files": [ "src/**/tests/*", "test/**/*" ],
+      "rules": { 
+        "func-names": "off",
+        "no-unused-expressions": "off",
+        "max-len": "off",
+        "one-var": "off"
+      }
+    }
+  ]
 }

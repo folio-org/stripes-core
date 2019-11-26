@@ -6,13 +6,11 @@ import React, { Component, Fragment } from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
-import rtlDetect from 'rtl-detect';
 
 import { Dropdown } from '@folio/stripes-components/lib/Dropdown';
 import DropdownMenu from '@folio/stripes-components/lib/DropdownMenu';
 import Icon from '@folio/stripes-components/lib/Icon';
 
-import IntlConsumer from '../../IntlConsumer';
 import { ResizeContainer, AppListDropdown } from './components';
 import NavButton from '../NavButton';
 import css from './AppList.css';
@@ -76,8 +74,8 @@ class AppList extends Component {
         activeElement.focus();
         return true;
       }
-      return false;
     }
+    return false;
   }
 
   /**
