@@ -249,6 +249,7 @@ class ProfileDropdown extends Component {
           onToggle={this.toggleDropdown}
           placement="bottom-end"
           relativePosition
+          usePortal={false}
         />
       </Fragment>
     );
