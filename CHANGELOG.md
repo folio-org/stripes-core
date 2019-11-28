@@ -5,6 +5,7 @@
 * Clear registered epics during BigTest app `teardown`. Part of STRIPES-659.
 * Refactor login form to final-form. Part of STCOR-395.
 * Add WebPack support for handlebars-loader.
+* Handle the issue with tests upon the loading of translations by downgrading the fake-xml-http-request which updated recently. Fixes FOLIO-2369.
 
 ## [3.10.3](https://github.com/folio-org/stripes-core/tree/v3.10.3) (2019-10-02)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.10.2...v3.10.3)
