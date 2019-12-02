@@ -11,7 +11,7 @@ import FakeXMLHttpRequest from 'fake-xml-http-request';
  *
  */
 
-function open(method, url, async, username, password) {
+FakeXMLHttpRequest.prototype.open = function(method, url, async, username, password) {
   this.method = method;
   this.url = url;
   this.async = typeof async == "boolean" ? async : true;
