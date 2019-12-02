@@ -119,7 +119,7 @@
     "errors.password.alphabetical.invalid": "A senha deve conter letras minúsculas e maiúsculas.",
     "errors.password.number.invalid": "A senha deve conter pelo menos um caractere numérico.",
     "errors.password.specialCharacter.invalid": "A senha deve conter pelo menos um caractere especial.",
-    "errors.password.usernameDuplicate.invalid": "A senha não deve conter seu nome de usuário.",
+    "errors.password.usernameDuplicate.invalid": " A senha não deve conter seu nome de usuário.",
     "errors.password.keyboardSequence.invalid": "A senha não deve conter uma seqüência do teclado.",
     "errors.password.repeatingSymbols.invalid": "A senha não deve conter o mesmo caractere em uma linha.",
     "errors.password.whiteSpace.invalid": "A senha não deve conter espaços em branco.",
