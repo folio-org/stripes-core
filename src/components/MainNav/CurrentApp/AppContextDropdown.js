@@ -20,7 +20,13 @@ class AppContextDropdown extends React.Component {
     } = this.props;
 
     const toggle = (
-      <Button buttonStyle="noStyle" marginBottom0 style={{ height: '40px' }} data-role="toggle">
+      <Button
+        data-test-context-menu-toggle-button
+        buttonStyle="noStyle"
+        marginBottom0
+        style={{ height: '40px' }}
+        data-role="toggle"
+      >
         <Icon icon={open ? 'caret-up' : 'caret-down'} iconPosition="end">
           <AppIcon app={selectedApp.displayName.toLowerCase()}>
             <Headline tag="h1" size="small" margin="none">

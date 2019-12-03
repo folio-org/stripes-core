@@ -7,10 +7,10 @@ import React from 'react';
 import { beforeEach, it, describe } from '@bigtest/mocha';
 import { expect } from 'chai';
 
-import { mount } from '../../helpers/render-helpers';
+import { mount } from '../../../../test/bigtest/helpers/render-helpers';
 
-import AppIcon from '../../../../src/components/AppIcon';
-import AppIconInteractor from '../../interactors/AppIcon';
+import AppIcon from '../AppIcon';
+import AppIconInteractor from './interactor';
 import png from './users-app-icon.png';
 import svg from './users-app-icon.svg';
 
@@ -64,7 +64,7 @@ describe('AppIcon', () => {
     });
 
     it('Should render an <img>', () => {
-      expect(appIcon.hasImg).to.be.true;
+      expect(appIcon.hasImg).to.equal(true);
     });
 
     it('Should render an img with an alt-attribute', () => {
@@ -83,7 +83,7 @@ describe('AppIcon', () => {
     });
 
     it('Should render an <img>', () => {
-      expect(appIcon.hasImg).to.be.true;
+      expect(appIcon.hasImg).to.equal(true);
     });
 
     it('Should render an img with an alt-attribute', () => {

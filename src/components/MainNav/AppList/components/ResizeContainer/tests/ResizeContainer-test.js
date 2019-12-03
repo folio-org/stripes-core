@@ -6,9 +6,9 @@ import React from 'react';
 import times from 'lodash/times';
 import { beforeEach, it, describe } from '@bigtest/mocha';
 import { expect } from 'chai';
-import { mount } from '../../helpers/render-helpers';
+import { mount } from '../../../../../../../test/bigtest/helpers/render-helpers';
 
-import ResizeContainer from '../../../../src/components/MainNav/AppList/components/ResizeContainer';
+import ResizeContainer from '../ResizeContainer';
 import ResizeContainerInteractor from './interactor';
 
 // The width of each item
