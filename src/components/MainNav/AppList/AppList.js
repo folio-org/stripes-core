@@ -6,13 +6,11 @@ import React, { Component, Fragment } from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
-import rtlDetect from 'rtl-detect';
 
 import { Dropdown } from '@folio/stripes-components/lib/Dropdown';
 import DropdownMenu from '@folio/stripes-components/lib/DropdownMenu';
 import Icon from '@folio/stripes-components/lib/Icon';
 
-import IntlConsumer from '../../IntlConsumer';
 import { ResizeContainer, AppListDropdown } from './components';
 import NavButton from '../NavButton';
 import css from './AppList.css';
@@ -47,23 +45,37 @@ class AppList extends Component {
       open: false,
     };
 
+    this.focusHandlers = {
+      open: (trigger, menu, firstItem) => {
+        if (this.props.selectedApp) {
+          /* the selected app may not be in the list...
+           * if focusing the selected item fails, focus
+           * the first item... */
+          if (!this.focusSelectedItem()) {
+            firstItem.focus();
+          }
+          // If not; focus first item in the list
+        } else if (firstItem) firstItem.focus();
+      }
+    };
+
     this.dropdownListRef = React.createRef();
     this.dropdownToggleRef = React.createRef();
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  /**
+   * focus management
+   */
+  focusSelectedItem = () => {
     const selectedApp = this.props.selectedApp;
-
-    // Set focus on dropdown when it opens
-    if (this.state.open && !prevState.open) {
-      // If there's an active app
-      if (selectedApp) {
-        this.focusSelectedItem();
-        // If not; focus first item in the list
-      } else {
-        this.focusFirstItemInList();
+    if (selectedApp) {
+      const activeElement = document.getElementById(`app-list-dropdown-item-${selectedApp.id}`);
+      if (activeElement) {
+        activeElement.focus();
+        return true;
       }
     }
+    return false;
   }
 
   /**
@@ -107,22 +119,9 @@ class AppList extends Component {
   }
 
   /**
-   * When dropdown is toggled
-   */
-  toggleDropdown = () => {
-    this.setState(state => ({ open: !state.open }), () => {
-      // Re-focus dropdown toggle on close
-      if (!this.state.open) {
-        this.focusDropdownToggleButton();
-      }
-    });
-  }
-
-  /**
    * The button that toggles the dropdown
    */
-  renderDropdownToggleButton = () => {
-    const { open } = this.state;
+  renderDropdownToggleButton = ({ open, getTriggerProps }) => {
     const { dropdownToggleId } = this.props;
     const icon = (
       <svg className={css.dropdownToggleIcon} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -143,21 +142,17 @@ class AppList extends Component {
               data-test-app-list-apps-toggle
               label={label}
               aria-label={ariaLabel}
-              aria-haspopup="true"
-              aria-expanded={open}
-              data-role="toggle"
               className={css.navMobileToggle}
               labelClassName={css.dropdownToggleLabel}
               onClick={this.toggleDropdown}
               selected={this.state.open}
               icon={icon}
+              {...getTriggerProps()}
               id={dropdownToggleId}
-              ref={this.dropdownToggleRef}
               noSelectedBar
             />
           )}
         </FormattedMessage>
-        {open && this.focusTrap(this.focusFirstItemInList)}
       </Fragment>
     );
   }
@@ -168,12 +163,7 @@ class AppList extends Component {
   renderNavDropdown = (hiddenItemIds) => {
     const {
       renderDropdownToggleButton,
-      toggleDropdown,
-      focusTrap,
-      focusDropdownToggleButton,
-      focusFirstItemInList,
       dropdownListRef,
-      state: { open },
     } = this;
 
     const { apps, dropdownId, dropdownToggleId, selectedApp } = this.props;
@@ -183,78 +173,30 @@ class AppList extends Component {
     }
 
     return (
-      <IntlConsumer>
-        { intl => {
-          const tether = {
-            attachment: rtlDetect.isRtlLang(intl.locale) ? 'top left' : 'top right',
-            targetAttachment: rtlDetect.isRtlLang(intl.locale) ? 'bottom left' : 'bottom right',
-            constraints: [{
-              to: 'target',
-            }],
-          };
-
-          return (
-            <div className={css.navListDropdownWrap}>
-              <Dropdown
-                tether={tether}
-                dropdownClass={css.navListDropdown}
-                open={open}
-                id={dropdownId}
-                onToggle={toggleDropdown}
-                hasPadding={false}
-              >
-                {renderDropdownToggleButton()}
-                <DropdownMenu data-role="menu" onToggle={toggleDropdown}>
-                  {focusTrap(focusDropdownToggleButton)}
-                  <AppListDropdown
-                    apps={apps.filter(item => hiddenItemIds.includes(item.id))}
-                    dropdownToggleId={dropdownToggleId}
-                    listRef={dropdownListRef}
-                    selectedApp={selectedApp}
-                    toggleDropdown={toggleDropdown}
-                  />
-                  {focusTrap(focusFirstItemInList)}
-                </DropdownMenu>
-              </Dropdown>
-            </div>
-          );
-        }}
-      </IntlConsumer>
+      <div className={css.navListDropdownWrap}>
+        <Dropdown
+          placement="bottom-end"
+          dropdownClass={css.navListDropdown}
+          id={dropdownId}
+          renderTrigger={renderDropdownToggleButton}
+          usePortal={false}
+          focusHandlers={this.focusHandlers}
+        >
+          { ({ onToggle }) => (
+            <DropdownMenu onToggle={onToggle}>
+              <AppListDropdown
+                apps={apps.filter(item => hiddenItemIds.includes(item.id))}
+                dropdownToggleId={dropdownToggleId}
+                listRef={dropdownListRef}
+                selectedApp={selectedApp}
+                toggleDropdown={onToggle}
+              />
+            </DropdownMenu>
+          )
+          }
+        </Dropdown>
+      </div>
     );
-  }
-
-
-  /**
-   * Focus management
-   */
-  focusFirstItemInList = () => {
-    if (this.dropdownListRef && this.dropdownListRef.current) {
-      // Applies focus to the <a> inside the first <li> in the list
-      this.dropdownListRef.current.firstChild.firstChild.focus();
-    }
-  }
-
-  focusSelectedItem = () => {
-    const selectedApp = this.props.selectedApp;
-    if (selectedApp) {
-      const activeElement = document.getElementById(`app-list-item-${selectedApp.id}`);
-      if (activeElement) {
-        activeElement.focus();
-      }
-    }
-  }
-
-  focusDropdownToggleButton = () => {
-    if (this.dropdownToggleRef && this.dropdownToggleRef.current) {
-      this.dropdownToggleRef.current.focus();
-    }
-  }
-
-  /**
-   * Insert hidden input to help trap focus
-   */
-  focusTrap(onFocus) {
-    return <input aria-hidden="true" className="sr-only" onFocus={onFocus} />;
   }
 
   render() {

@@ -33,6 +33,50 @@ describe('AppList', () => {
     expect(appList.itemsCount).to.equal(apps.length);
   });
 
+  describe('opening the appList with a selected app', () => {
+    beforeEach(async () => {
+      await mountWithContext(
+        // Simulate very small screen
+        <div style={{ width: 150, background: 'yellow' }}>
+          <BrowserRouter>
+            <AppList
+              apps={apps}
+              selectedApp={selectedApp}
+              dropdownToggleId="xyz"
+            />
+          </BrowserRouter>
+        </div>
+      );
+      await appList.dropdownToggle.click();
+    });
+
+    it('focuses the corresponding item for the selected app', () => {
+      expect(document.activeElement).to.not.equal(null);
+    });
+
+    describe('if the selected app is not present in the list', () => {
+      beforeEach(async () => {
+        await mountWithContext(
+          // Simulate very small screen
+          <div style={{ width: 150, background: 'yellow' }}>
+            <BrowserRouter>
+              <AppList
+                apps={apps}
+                selectedApp={{ id: 'test-fake-module', route: '/dummy' }}
+                dropdownToggleId="xyz"
+              />
+            </BrowserRouter>
+          </div>
+        );
+        await appList.dropdownToggle.click();
+      });
+
+      it('focuses the first item in the list', () => {
+        expect(document.activeElement.id).to.equal(appList.dropdownMenu.items(0).id);
+      });
+    });
+  });
+
   describe('If there is no apps to show', () => {
     beforeEach(async () => {
       await mountWithContext(
@@ -78,29 +122,15 @@ describe('AppList', () => {
     it('Should focus the first item in the dropdown if there is no current app', () => {
       expect(appList.dropdownMenu.items(0).isFocused).to.equal(true);
     });
-  });
 
+    describe('Clicking an item inside the app list dropdown', () => {
+      beforeEach(async () => {
+        await appList.dropdownMenu.items(0).click();
+      });
 
-  describe('Clicking an item inside the app list dropdown', () => {
-    beforeEach(async () => {
-      await mountWithContext(
-        // Simulate very small screen
-        <div style={{ width: 150, background: 'yellow' }}>
-          <BrowserRouter>
-            <AppList
-              apps={apps}
-              selectedApp={selectedApp}
-              dropdownToggleId="xyz"
-            />
-          </BrowserRouter>
-        </div>
-      );
-      await appList.dropdownToggle.click();
-      await appList.dropdownMenu.items(0).click();
-    });
-
-    it('Should close the app dropdown and focus the dropdown toggle', () => {
-      expect(appList.dropdownToggle.isFocused).to.equal(true);
+      it('Should close the app dropdown and focus the dropdown toggle', () => {
+        expect(appList.dropdownToggle.isFocused).to.equal(true);
+      });
     });
   });
 });
