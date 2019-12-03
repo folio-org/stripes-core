@@ -53,6 +53,28 @@ describe('AppList', () => {
     it('focuses the corresponding item for the selected app', () => {
       expect(document.activeElement).to.not.equal(null);
     });
+
+    describe('if the selected app is not present in the list', () => {
+      beforeEach(async () => {
+        await mountWithContext(
+          // Simulate very small screen
+          <div style={{ width: 150, background: 'yellow' }}>
+            <BrowserRouter>
+              <AppList
+                apps={apps}
+                selectedApp={{ id: 'test-fake-module', route: '/dummy' }}
+                dropdownToggleId="xyz"
+              />
+            </BrowserRouter>
+          </div>
+        );
+        await appList.dropdownToggle.click();
+      });
+
+      it('focuses the first item in the list', () => {
+        expect(document.activeElement.id).to.equal(appList.dropdownMenu.items(0).id);
+      });
+    });
   });
 
   describe('If there is no apps to show', () => {
