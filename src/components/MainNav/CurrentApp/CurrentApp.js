@@ -43,6 +43,7 @@ const CurrentApp = ({ config, currentApp, id, intl, badge }) => {
 
   return (
     <NavButton
+      data-test-current-app-home-button
       label={
         <Headline
           tag="h1"
