@@ -1,11 +1,26 @@
 # Change history for stripes-core
 
-## 3.10.4 IN PROGRESS
+## [3.11.0](https://github.com/folio-org/stripes-core/tree/v3.11.0) (2019-12-04)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.10.2...v3.10.3)
 
 * Clear registered epics during BigTest app `teardown`. Part of STRIPES-659.
 * Refactor login form to final-form. Part of STCOR-395.
+* Show current service point in navbar. Refs STCOR-396.
+* Adjust `<MainNav>` visible nav items based on window-width. Refs STCOR-377.
 * Add WebPack support for handlebars-loader.
-* Handle the issue with tests upon the loading of translations by downgrading the fake-xml-http-request which updated recently. Fixes FOLIO-2369.
+* Monkey-patch `FakeXMLHttpRequest` to avoid breaking changes in its `v2.1.1` release. Refs FOLIO-2369.
+* Use updated `<Dropdown>` component in app navigation menus.
+
+## [3.10.5](https://github.com/folio-org/stripes-core/tree/v3.10.5) (2019-12-04)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.10.4...v3.10.5)
+
+* Monkey-patch `FakeXMLHttpRequest` to avoid breaking changes in its `v2.1.1` release. Refs FOLIO-2369.
+
+## [3.10.4](https://github.com/folio-org/stripes-core/tree/v3.10.4) (2019-10-15)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.10.3...v3.10.4)
+
+* Clear registered epics during BigTest app `teardown`. Part of STRIPES-659.
+* Revert PR #711, "Calling PRUNE Redux reducer", which inadvertently broke navigation. (STCOR-392)
 
 ## [3.10.3](https://github.com/folio-org/stripes-core/tree/v3.10.3) (2019-10-02)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.10.2...v3.10.3)
