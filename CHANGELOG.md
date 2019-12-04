@@ -1,5 +1,10 @@
 # Change history for stripes-core
 
+## [3.10.5](https://github.com/folio-org/stripes-core/tree/v3.10.5) (2019-12-04)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.10.4...v3.10.5)
+
+* Monkey-patch `FakeXMLHttpRequest` to avoid breaking changes in its `v2.1.1` release. Refs FOLIO-2369.
+
 ## [3.10.4](https://github.com/folio-org/stripes-core/tree/v3.10.4) (2019-10-15)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.10.3...v3.10.4)
 
