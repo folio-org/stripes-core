@@ -144,6 +144,7 @@ class ProfileDropdown extends Component {
   }
 
   onHome = () => {
+    this.toggleDropdown();
     this.navigateByUrl({ route: '/' });
   };
 
