@@ -81,7 +81,7 @@ class Login extends Component {
                             bottom="xs"
                           >
                             <Col xs={3}>
-                              <FieldLabel htmlFor="password">
+                              <FieldLabel htmlFor="input-username">
                                 <FormattedMessage id="stripes-core.username" />
                               </FieldLabel>
                             </Col>
@@ -96,7 +96,7 @@ class Login extends Component {
                             type="text"
                             component={TextField}
                             inputClass={styles.input}
-                            autoComplete="username"
+                            autoComplete="on"
                             autoCapitalize="none"
                             validationEnabled={false}
                             hasClearIcon={false}
@@ -115,7 +115,7 @@ class Login extends Component {
                             bottom="xs"
                           >
                             <Col xs={3}>
-                              <FieldLabel htmlFor="password">
+                              <FieldLabel htmlFor="input-password">
                                 <FormattedMessage id="stripes-core.password" />
                               </FieldLabel>
                             </Col>
@@ -135,7 +135,7 @@ class Login extends Component {
                             inputClass={styles.input}
                             validationEnabled={false}
                             hasClearIcon={false}
-                            autoComplete="password"
+                            autoComplete="on"
                           />
                         </Col>
                       </Row>

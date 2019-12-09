@@ -187,7 +187,6 @@ class CreateResetPassword extends Component {
                     <Field
                       id="new-password"
                       name="newPassword"
-                      autoComplete="new-password"
                       component={PasswordStrength}
                       inputClass={styles.input}
                       type={passwordType}
@@ -234,7 +233,6 @@ class CreateResetPassword extends Component {
                         inputClass={styles.input}
                         validationEnabled={false}
                         hasClearIcon={false}
-                        autoComplete="confirm-password"
                         validate={this.validators.confirmPassword}
                       />
                     </div>
