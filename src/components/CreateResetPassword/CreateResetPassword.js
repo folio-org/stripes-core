@@ -234,7 +234,7 @@ class CreateResetPassword extends Component {
                         inputClass={styles.input}
                         validationEnabled={false}
                         hasClearIcon={false}
-                        autoComplete="confirm-password"
+                        autoComplete="new-password"
                         validate={this.validators.confirmPassword}
                       />
                     </div>

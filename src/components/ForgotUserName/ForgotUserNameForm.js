@@ -86,7 +86,7 @@ class ForgotUserNameForm extends Component {
                     inputClass={formStyles.input}
                     validationEnabled={false}
                     hasClearIcon={false}
-                    autoComplete="email-or-phone"
+                    autoComplete="on"
                     autoCapitalize="none"
                     autoFocus
                   />
