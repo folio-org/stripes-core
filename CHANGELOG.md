@@ -1,9 +1,11 @@
 # Change history for stripes-core
 
-## [3.11.1] (In Progress)
+## [3.11.1](https://github.com/folio-org/stripes-core/tree/v3.11.1) (2019-12-10)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.11.0...v3.11.1)
 
-* Set to `autocomplete` attribute valid values. Refs UIU-1374.
-* Bump `serialize-javascript` to `v2.1.2` to avoid an XSS vulnerability (https://github.com/yahoo/serialize-javascript/security/advisories/GHSA-h9rv-jmmf-4pgx). 
+* Correctly dismiss the `Home` dropdown menu after clicking it.
+* Correct label and autocomplete values on login-related forms. Refs STCOM-632
+* Bump `serialize-javascript` to `v2.1.2` to avoid an XSS vulnerability (https://github.com/yahoo/serialize-javascript/security/advisories/GHSA-h9rv-jmmf-4pgx).
 
 ## [3.11.0](https://github.com/folio-org/stripes-core/tree/v3.11.0) (2019-12-04)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.10.2...v3.10.3)
