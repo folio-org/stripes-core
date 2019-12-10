@@ -96,7 +96,7 @@ class Login extends Component {
                             type="text"
                             component={TextField}
                             inputClass={styles.input}
-                            autoComplete="on"
+                            autoComplete="username"
                             autoCapitalize="none"
                             validationEnabled={false}
                             hasClearIcon={false}
@@ -135,7 +135,7 @@ class Login extends Component {
                             inputClass={styles.input}
                             validationEnabled={false}
                             hasClearIcon={false}
-                            autoComplete="on"
+                            autoComplete="current-password"
                           />
                         </Col>
                       </Row>
