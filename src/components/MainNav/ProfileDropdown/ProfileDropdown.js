@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { isFunction, kebabCase } from 'lodash';
+import get from 'lodash/get';
 import { compose } from 'redux';
 import { withRouter } from 'react-router';
 import PropTypes from 'prop-types';
@@ -10,6 +11,7 @@ import NavList from '@folio/stripes-components/lib/NavList';
 import Avatar from '@folio/stripes-components/lib/Avatar';
 import NavListSection from '@folio/stripes-components/lib/NavListSection';
 import NavListItem from '@folio/stripes-components/lib/NavListItem';
+import Icon from '@folio/stripes-components/lib/Icon';
 import List from '@folio/stripes-components/lib/List';
 
 import NavButton from '../NavButton';
@@ -216,19 +218,31 @@ class ProfileDropdown extends Component {
     );
   }
 
-  renderProfileTrigger = ({ getTriggerProps, open }) => (
-    <FormattedMessage id="stripes-core.mainnav.myProfileAriaLabel">
-      {label => (
-        <NavButton
-          ariaLabel={label}
-          selected={open}
-          className={css.button}
-          icon={this.getProfileImage()}
-          {...getTriggerProps()}
-        />)}
-    </FormattedMessage>
+  renderProfileTrigger = ({ getTriggerProps, open }) => {
+    const servicePointName = get(this.getUserData(), 'curServicePoint.name', null);
 
-  );
+    return (
+      <FormattedMessage id="stripes-core.mainnav.myProfileAriaLabel">
+        {label => (
+          <NavButton
+            ariaLabel={label}
+            selected={open}
+            className={css.button}
+            icon={this.getProfileImage()}
+            label={servicePointName ? (
+              <Fragment>
+                <span className={css.button__label}>
+                  {servicePointName}
+                </span>
+                <Icon icon={open ? 'caret-up' : 'caret-down'} />
+              </Fragment>
+            ) : null}
+            {...getTriggerProps()}
+          />)
+        }
+      </FormattedMessage>
+    );
+  }
 
   renderProfileMenu = ({ open }) => (
     <DropdownMenu open={open}>
