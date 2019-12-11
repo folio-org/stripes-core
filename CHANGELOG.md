@@ -3,6 +3,7 @@
 ## [3.11.1] (In Progress)
 
 * Set to `autocomplete` attribute valid values. Refs UIU-1374.
+* Bump `serialize-javascript` to `v2.1.2` to avoid an XSS vulnerability (https://github.com/yahoo/serialize-javascript/security/advisories/GHSA-h9rv-jmmf-4pgx). 
 
 ## [3.11.0](https://github.com/folio-org/stripes-core/tree/v3.11.0) (2019-12-04)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.10.2...v3.10.3)
