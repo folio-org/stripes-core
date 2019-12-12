@@ -178,7 +178,7 @@ function createOkapiSession(okapiUrl, store, tenant, token, data) {
 
 // Validate stored token by attempting to fetch /users
 function validateUser(okapiUrl, store, tenant, session) {
-  fetch(`${okapiUrl}/users`, { headers: getHeaders(tenant, session.token) }).then((resp) => {
+  return fetch(`${okapiUrl}/users`, { headers: getHeaders(tenant, session.token) }).then((resp) => {
     if (resp.status >= 400) {
       store.dispatch(clearCurrentUser());
       store.dispatch(clearOkapiToken());
@@ -191,24 +191,32 @@ function validateUser(okapiUrl, store, tenant, session) {
     }
   }).catch(() => {
     store.dispatch(setServerDown());
+    throw 'failed';
   });
 }
 
 function isSSOEnabled(okapiUrl, store, tenant) {
-  fetch(`${okapiUrl}/saml/check`, { headers: { 'X-Okapi-Tenant': tenant, 'Accept': 'application/json' } })
+  return fetch(`${okapiUrl}/saml/check`, { headers: { 'X-Okapi-Tenant': tenant, 'Accept': 'application/json' } })
     .then((response) => {
       if (response.status >= 400) {
         store.dispatch(checkSSO(false));
+        store.dispatch(setOkapiReady());
+        throw 'failed';
       } else {
-        response.json().then((json) => {
-          store.dispatch(checkSSO(json.active));
-        });
+        store.dispatch(setOkapiReady());
+
+        return response.json();
       }
-      store.dispatch(setOkapiReady());
+    })
+    .then((json) => {
+      store.dispatch(checkSSO(json.active));
+
+      if (!json.active) throw 'failed';
     })
     .catch(() => {
       store.dispatch(checkSSO(false));
       store.dispatch(setOkapiReady());
+      throw 'failed';
     });
 }
 
@@ -258,12 +266,12 @@ function processOkapiSession(okapiUrl, store, tenant, resp, ssoToken) {
   return resp;
 }
 
-export function checkOkapiSession(okapiUrl, store, tenant) {
+export function checkOkapiSession(okapiUrl, store, tenant, cb) {
   localforage.getItem('okapiSess').then((sess) => {
     if (sess !== null) {
-      validateUser(okapiUrl, store, tenant, sess);
+      validateUser(okapiUrl, store, tenant, sess).catch(cb);
     } else {
-      isSSOEnabled(okapiUrl, store, tenant);
+      isSSOEnabled(okapiUrl, store, tenant).catch(cb);
     }
   });
 }

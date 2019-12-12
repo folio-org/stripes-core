@@ -51,9 +51,12 @@ class Root extends Component {
 
   componentDidMount() {
     const { okapi, store, locale, defaultTranslations } = this.props;
-    if (this.withOkapi) checkOkapiSession(okapi.url, store, okapi.tenant);
-    // TODO: remove this after we load locale and translations at start from a public endpoint
-    loadTranslations(store, locale, defaultTranslations);
+    if (this.withOkapi) {
+      checkOkapiSession(okapi.url, store, okapi.tenant, () => loadTranslations(store, locale || 'en-US', defaultTranslations));
+    } else {
+      // TODO: remove this after we load locale and translations at start from a public endpoint
+      loadTranslations(store, locale, defaultTranslations);
+    }
   }
 
   shouldComponentUpdate(nextProps) {
@@ -92,7 +95,7 @@ class Root extends Component {
       return <div>Error: server is down.</div>;
     }
 
-    if (!translations) {
+    if (!locale || !translations) {
       // We don't know the locale, so we use English as backup
       return (<SystemSkeleton />);
     }
@@ -206,7 +209,7 @@ Root.propTypes = {
 Root.defaultProps = {
   history: createBrowserHistory(),
   // TODO: remove after locale is accessible from a global config / public url
-  locale: 'en-US',
+  locale: '',
   timezone: 'UTC',
   currency: 'USD',
   okapiReady: false,
