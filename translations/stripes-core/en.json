@@ -99,7 +99,7 @@
   "mainnav.skipMainNavigation": "Skip Main Navigation",
 
   "errors.default.error": "Sorry, the information entered does not match our records.",
-  "errors.username.incorrect": "Error verifying user existence: No user found by username {username}",
+  "errors.username.incorrect": "This FOLIO account cannot be located. Please contact your FOLIO systems administrator. ",
   "errors.password.incorrect": "Bad credentials",
   "errors.password.incorrect.warn.user": "You have entered the wrong username or password for the third time. You have two more tries to login before your account will be locked.",
   "errors.password.incorrect.block.user": "For security purposes, your account has been locked. Please contact your FOLIO System Administrator to reset your password.",
