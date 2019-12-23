@@ -7,7 +7,6 @@ import {
 } from '@bigtest/mocha';
 
 import setupApplication from '../helpers/setup-application';
-import parseMessageFromJsx from '../helpers/parseMessageFromJsx';
 import LoginInteractor from '../interactors/login';
 
 import translations from '../../../translations/stripes-core/en';
@@ -115,10 +114,7 @@ describe('Login', () => {
       });
 
       it('error message should have proper text upon failed submit', () => {
-        expect(login.message.text).to.equal(parseMessageFromJsx(
-          translations['errors.username.incorrect'],
-          { username: 'username' }
-        ));
+        expect(login.message.text).to.equal(translations['errors.username.incorrect']);
       });
     });
 
