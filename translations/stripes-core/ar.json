@@ -59,7 +59,7 @@
     "title.notFound": "لم يتم العثور عليه",
     "title.ssoLanding": "هبوط تسجيل الدخول الأحادي SSO",
     "currentServicePoint": "نقطة الخدمة: {name}",
-    "currentServicePointNotSelected": "نقطة الخدمة: لا يوجد",
+    "currentServicePointNotSelected": "نقطة الخدمة: لا توجد",
     "title.CreateResetPassword": "اختر كلمة مرور",
     "title.forgotPassword": "هل نسيت كلمة المرور؟",
     "title.forgotUsername": "هل نسيت اسم المستخدم؟",
