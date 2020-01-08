@@ -18,9 +18,9 @@
     "lodash"
   ],
   "presets": [
-    ["env", { "modules": false }],
-    ["flow", { "all": true }],
-    "react",
-    "typescript"
+    ["@babel/env", { "modules": false }],
+    ["@babel/flow", { "all": true }],
+    "@babel/react",
+    "@babel/typescript"
   ]
 }
