@@ -1,5 +1,5 @@
 import { okapi } from 'stripes-config';
-import { Response } from '@bigtest/mirage';
+import { Response } from 'miragejs';
 
 // typical mirage config export
 export default function configure() {
