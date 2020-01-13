@@ -2,8 +2,6 @@
 
 ## 3.12.0 (IN PROGRESS)
 
-* Update Mirage library. Part of STCOR-407.
-
 ## [3.11.1](https://github.com/folio-org/stripes-core/tree/v3.11.1) (2019-12-10)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.11.0...v3.11.1)
 

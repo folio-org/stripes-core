@@ -10,7 +10,7 @@ import { expect } from 'chai';
 import TextFieldInteractor from '@folio/stripes-components/lib/TextField/tests/interactor';
 
 import { when } from '@bigtest/convergence';
-import { Response } from 'miragejs';
+import { Response } from '@bigtest/mirage';
 
 import setupApplication from '../helpers/setup-application-components';
 import mount from '../helpers/mount';

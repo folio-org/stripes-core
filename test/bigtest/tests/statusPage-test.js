@@ -2,7 +2,7 @@ import { beforeEach, describe, it } from '@bigtest/mocha';
 import { expect } from 'chai';
 
 import translations from '../../../translations/stripes-core/en';
-import setupApplication from '../helpers/setup-core-application';
+import setupApplication from '../helpers/setup-application';
 import StatusPageInteractor from '../interactors/StatusPage';
 
 describe('Forgot username form test', () => {
@@ -31,7 +31,7 @@ describe('Forgot username form test', () => {
       expect(heading.isPresent).to.be.true;
     });
 
-    it(`should have the header with an appropriate text content
+    it(`should have the header with an appropriate text content 
       equal to check email label in english translation`, () => {
       expect(heading.text).to.equal(translations['label.check.email']);
     });
@@ -40,7 +40,7 @@ describe('Forgot username form test', () => {
       expect(notificationParagraph.isPresent).to.be.true;
     });
 
-    it(`should have the paragraph with an appropriate text content
+    it(`should have the paragraph with an appropriate text content 
       equal to sent email precautions label in english translation`, () => {
       expect(notificationParagraph.text).to.equal(
         translations['label.your.email']
@@ -51,7 +51,7 @@ describe('Forgot username form test', () => {
       expect(cautionParagraph.isPresent).to.be.true;
     });
 
-    it(`should have the paragraph with an appropriate text content
+    it(`should have the paragraph with an appropriate text content 
       equal to check email precautions label in english translation`, () => {
       expect(cautionParagraph.text).to.equal(
         translations['label.caution.email']

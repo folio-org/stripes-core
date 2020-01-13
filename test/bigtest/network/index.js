@@ -1,4 +1,4 @@
-import camelCase from 'lodash/camelCase';
+import { camelize } from '@bigtest/mirage';
 
 // auto-import all mirage submodules
 const req = require.context('./', true, /\.js$/);
@@ -8,7 +8,7 @@ const modules = req.keys().reduce((acc, modulePath) => {
   const moduleName = moduleParts[2];
 
   if (moduleName) {
-    const moduleKey = camelCase(moduleName.replace('.js', ''));
+    const moduleKey = camelize(moduleName.replace('.js', ''));
 
     return Object.assign(acc, {
       [moduleType]: {
