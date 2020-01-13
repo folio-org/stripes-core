@@ -13,10 +13,7 @@ let BigTestMirageServer;
 const importMirageServer = () => {
   if (!MirageJsServer) {
     const { Server } = require('miragejs');
-    console.log('import mirage...');
     MirageJsServer = Server;
-  } else {
-    console.log('mirage imported');
   }
 
   return MirageJsServer;
