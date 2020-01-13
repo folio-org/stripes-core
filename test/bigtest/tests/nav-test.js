@@ -3,7 +3,7 @@ import { expect } from 'chai';
 
 import React, { Component } from 'react';
 
-import setupApplication from '../helpers/setup-application';
+import setupApplication from '../helpers/setup-core-application';
 import AppInteractor from '../interactors/app';
 
 describe('Nav', () => {

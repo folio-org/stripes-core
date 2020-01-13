@@ -6,7 +6,7 @@ import {
 import { expect } from 'chai';
 
 import translations from '../../../translations/stripes-core/en';
-import setupApplication from '../helpers/setup-application';
+import setupApplication from '../helpers/setup-core-application';
 import ForgotPasswordInteractor from '../interactors/ForgotPassword';
 
 describe('forgot password form test', () => {
