@@ -7,14 +7,36 @@ const environment = process.env.NODE_ENV || 'test';
 
 let start = () => {};
 
+let MirageJsServer;
+let BigTestMirageServer;
+
+const importMirageServer = () => {
+  if (!MirageJsServer) {
+    const { Server } = require('miragejs');
+    console.log('import mirage...');
+    MirageJsServer = Server;
+  } else {
+    console.log('mirage imported');
+  }
+
+  return MirageJsServer;
+};
+
+const importBigTestMirageServer = () => {
+  if (!BigTestMirageServer) {
+    const { default: Server } = require('@bigtest/mirage');
+    require('./force-fetch-polyfill');
+    require('./patch-fake-xml-http-request');
+
+    BigTestMirageServer = Server;
+  }
+
+  return BigTestMirageServer;
+};
+
+
 if (environment !== 'production') {
-  const { Server: MirageJsServer } = require('miragejs');
-  const { default: BigTestMirageServer } = require('@bigtest/mirage');
-
   const { default: coreModules } = require('./index');
-  require('./force-fetch-polyfill');
-  require('./patch-fake-xml-http-request');
-
   const createServer = (Server, options, configName) => {
     const {
       baseConfig: coreConfig,
@@ -51,8 +73,8 @@ if (environment !== 'production') {
     // The BigTest mirage implementation is set as a default
     // for backward compatibility.
     const server = (serverType === 'miragejs') ?
-      createServer(MirageJsServer, options, 'routes') :
-      createServer(BigTestMirageServer, options, 'baseConfig');
+      createServer(importMirageServer(), options, 'routes') :
+      createServer(importBigTestMirageServer(), options, 'baseConfig');
 
     // mirage conditionally includes factories, we want to include
     // all of them unconditionally
