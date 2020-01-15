@@ -1,6 +1,6 @@
 {
   "name": "@folio/stripes-core",
-  "version": "3.11.1",
+  "version": "3.12.0",
   "description": "The starting point for Stripes applications",
   "license": "Apache-2.0",
   "repository": "folio-org/stripes-core",
@@ -42,7 +42,6 @@
   "devDependencies": {
     "@bigtest/convergence": "^0.10.0",
     "@bigtest/interactor": "^0.7.2",
-    "@bigtest/mirage": "^0.0.1",
     "@bigtest/mocha": "^0.5.1",
     "@bigtest/react": "^0.1.2",
     "@folio/eslint-config-stripes": "^3.2.0",
@@ -62,9 +61,10 @@
     "stylelint-junit-formatter": "^0.2.1"
   },
   "dependencies": {
+    "@bigtest/mirage": "^0.0.1",
     "@folio/react-intl-safe-html": "^1.0.2",
-    "@folio/stripes-components": "~5.9.0",
-    "@folio/stripes-connect": "~5.4.3",
+    "@folio/stripes-components": "~5.10.0",
+    "@folio/stripes-connect": "~5.5.0",
     "@folio/stripes-logger": "~1.0.0",
     "apollo-cache-inmemory": "^1.1.1",
     "apollo-client": "^2.0.3",
@@ -104,6 +104,7 @@
     "lodash": "^4.17.11",
     "lodash-webpack-plugin": "^0.11.5",
     "mini-css-extract-plugin": "^0.4.0",
+    "miragejs": "^0.1.32",
     "moment": "^2.19.1",
     "moment-timezone": "^0.5.14",
     "node-object-hash": "^1.2.0",
