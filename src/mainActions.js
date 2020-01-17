@@ -1,12 +1,20 @@
+const RESET_STORE = 'RESET_STORE';
+const DESTROY_STORE = 'DESTROY_STORE';
+
+const actionTypes = {
+  RESET_STORE,
+  DESTROY_STORE,
+};
+
 function resetStore() {
   return {
-    type: 'RESET_STORE',
+    type: RESET_STORE,
   };
 }
 
 function destroyStore() {
   return {
-    type: 'DESTROY_STORE',
+    type: DESTROY_STORE,
   };
 }
 
@@ -14,4 +22,8 @@ function destroyStore() {
 // export, to remain consistent with okapiActions.js
 //
 // eslint-disable-next-line import/prefer-default-export
-export { resetStore, destroyStore };
+export {
+  resetStore,
+  destroyStore,
+  actionTypes,
+};
