@@ -28,7 +28,7 @@ module.exports = {
   options: {
     cacheDirectory: true,
     presets: [
-      ['@babel/preset-env'],
+      ['@babel/preset-env', { targets: '> 0.25%, not dead' }],
       ['@babel/preset-flow', { all: true }],
       ['@babel/preset-react'],
       ['@babel/preset-typescript'],
@@ -38,12 +38,8 @@ module.exports = {
       ['@babel/plugin-proposal-class-properties', { 'loose': true }],
       '@babel/plugin-proposal-export-namespace-from',
       '@babel/plugin-proposal-function-sent',
-      '@babel/plugin-proposal-json-strings',
-      '@babel/plugin-proposal-nullish-coalescing-operator',
       '@babel/plugin-proposal-numeric-separator',
-      '@babel/plugin-proposal-optional-chaining',
       '@babel/plugin-proposal-throw-expressions',
-      '@babel/plugin-syntax-dynamic-import',
       '@babel/plugin-syntax-import-meta',
       ['react-hot-loader/babel'],
     ]
