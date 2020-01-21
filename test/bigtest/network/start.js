@@ -1,38 +1,77 @@
 /* eslint global-require: off, import/no-mutable-exports: off */
 import merge from 'lodash/merge';
 import flow from 'lodash/flow';
+import camelCase from 'lodash/camelCase';
 
 const environment = process.env.NODE_ENV || 'test';
 
 let start = () => {};
 
+let MirageJsServer;
+let BigTestMirageServer;
+
+const importMirageServer = () => {
+  if (!MirageJsServer) {
+    const { Server } = require('miragejs');
+    MirageJsServer = Server;
+  }
+
+  return MirageJsServer;
+};
+
+const importBigTestMirageServer = () => {
+  if (!BigTestMirageServer) {
+    const { default: Server } = require('@bigtest/mirage');
+    require('./force-fetch-polyfill');
+    require('./patch-fake-xml-http-request');
+
+    BigTestMirageServer = Server;
+  }
+
+  return BigTestMirageServer;
+};
+
+
 if (environment !== 'production') {
-  const { default: Mirage, camelize } = require('@bigtest/mirage');
   const { default: coreModules } = require('./index');
-  require('./force-fetch-polyfill');
-  require('./patch-fake-xml-http-request');
+  const createServer = (Server, options, configName) => {
+    const {
+      baseConfig: coreConfig,
+      ...coreOpts
+    } = coreModules;
+
+    const {
+      baseConfig = () => {},
+      ...opts
+    } = options;
+
+    return new Server(merge({
+      [configName]: flow(coreConfig, baseConfig),
+      environment
+    }, coreOpts, opts));
+  };
 
   start = (scenarioNames, options = {}) => {
     const {
       scenarios: coreScenarios = {},
       factories: coreFactories = {},
       fixtures: coreFixtures = {},
-      baseConfig: coreConfig,
-      ...coreOpts
     } = coreModules;
 
     const {
+      serverType,
       scenarios = {},
       factories = {},
       fixtures = {},
-      baseConfig = () => {},
-      ...opts
     } = options;
 
-    const server = new Mirage(merge({
-      baseConfig: flow(coreConfig, baseConfig),
-      environment
-    }, coreOpts, opts));
+    // 'serverType' option can be used to control which mirage
+    // server implementation will be used.
+    // The BigTest mirage implementation is set as a default
+    // for backward compatibility.
+    const server = (serverType === 'miragejs') ?
+      createServer(importMirageServer(), options, 'routes') :
+      createServer(importBigTestMirageServer(), options, 'baseConfig');
 
     // mirage conditionally includes factories, we want to include
     // all of them unconditionally
@@ -54,7 +93,7 @@ if (environment !== 'production') {
     // so instead of providing all scenarios we run specific scenarios
     // after the mirage server is initialized.
     [].concat(scenarioNames || defaultScenario).filter(Boolean).forEach(name => {
-      const key = camelize(name);
+      const key = camelCase(name);
       const scenario = scenarios[key] || coreScenarios[key];
       if (scenario) scenario(server);
     });

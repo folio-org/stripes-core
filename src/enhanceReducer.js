@@ -4,12 +4,23 @@
 // information from the store.
 
 function enhanceReducer(reducer) {
-  return (state, action) => (action.type !== 'RESET_STORE' ? reducer(state, action) :
-    {
-      okapi: state.okapi,
-      discovery: state.discovery,
+  return (state, action) => {
+    const { okapi, discovery } = state;
+
+    switch (action.type) {
+      case 'RESET_STORE':
+        return {
+          okapi,
+          discovery,
+        };
+      case 'DESTROY_STORE':
+        return {
+          okapi: {},
+        };
+      default:
+        return reducer(state, action);
     }
-  );
+  };
 }
 
 export default enhanceReducer;

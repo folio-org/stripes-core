@@ -6,7 +6,7 @@ import {
   beforeEach,
 } from '@bigtest/mocha';
 
-import setupApplication from '../helpers/setup-application';
+import setupApplication from '../helpers/setup-core-application';
 import CreateResetPasswordInteractor from '../interactors/CreateResetPassword';
 import ChangePasswordErrorPageInteractor from '../interactors/ChangePasswordErrorPage';
 import ChangePasswordConfirmationInteractor from '../interactors/ChangePasswordConfirmation';

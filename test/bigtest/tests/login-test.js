@@ -6,7 +6,7 @@ import {
   beforeEach
 } from '@bigtest/mocha';
 
-import setupApplication from '../helpers/setup-application';
+import setupApplication from '../helpers/setup-core-application';
 import LoginInteractor from '../interactors/login';
 
 import translations from '../../../translations/stripes-core/en';
