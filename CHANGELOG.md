@@ -3,6 +3,7 @@
 ## 3.12.0 (IN PROGRESS)
 
 * Update Mirage library. Part of STCOR-407.
+* Link `Change password` in `ProfileDropdown` shows up depending user's permissions. Refs STCOR-409.
 
 ## [3.11.1](https://github.com/folio-org/stripes-core/tree/v3.11.1) (2019-12-10)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.11.0...v3.11.1)
