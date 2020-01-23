@@ -44,7 +44,10 @@ describe('Profile dropdown', () => {
     },
     stripesConfig: {
       showHomeLink: true,
-      hasAllPerms: true,
+      hasAllPerms: false,
+      permissions: {
+        'ui-myprofile.settings.change-password': false,
+      }
     }
   });
 
