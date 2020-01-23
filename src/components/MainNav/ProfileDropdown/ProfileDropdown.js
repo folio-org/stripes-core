@@ -89,9 +89,15 @@ class ProfileDropdown extends Component {
 
   createLink(link, index, module) {
     const { stripes } = this.props;
-    const { check } = link;
-    const hasChangePasswordPerms = stripes.hasPerm('ui-myprofile.settings.change-password');
-    const checkfn = !check ? undefined : (hasChangePasswordPerms && (module.getModule()[check] || validations[check]));
+    const { check, route } = link;
+    const checkingFoo = module.getModule()[check] || validations[check];
+    let checkfn;
+
+    if (route === '/settings/myprofile/password') {
+      checkfn = !check ? undefined : (stripes.hasPerm('ui-myprofile.settings.change-password') && checkingFoo);
+    } else {
+      checkfn = !check ? undefined : checkingFoo;
+    }
 
     if (!check || (isFunction(checkfn) && checkfn(stripes))) {
       return this.renderNavLink(link, index, module);
