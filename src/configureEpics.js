@@ -6,11 +6,19 @@ import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/throttleTime';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/take';
+import 'rxjs/add/operator/takeUntil';
 import 'rxjs/add/operator/switchMap';
+
+import { actionTypes } from './mainActions';
 
 export default function configureEpics(...initialEpics) {
   const epic$ = new BehaviorSubject(combineEpics(...initialEpics));
-  const rootEpic = (action$, store) => epic$.mergeMap(epic => epic(action$, store));
+  const rootEpic = (action$, store) => {
+    return epic$
+      .mergeMap(epic => epic(action$, store))
+      .takeUntil(action$.ofType(actionTypes.DESTROY_STORE));
+  };
+
   const middleware = createEpicMiddleware(rootEpic);
 
   return {
