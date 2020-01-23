@@ -90,13 +90,13 @@ class ProfileDropdown extends Component {
   createLink(link, index, module) {
     const { stripes } = this.props;
     const { check, route } = link;
-    const checkingFoo = module.getModule()[check] || validations[check];
+    const isLocalLoginCheck = module.getModule()[check] || validations[check];
     let checkfn;
 
     if (route === '/settings/myprofile/password') {
-      checkfn = !check ? undefined : (stripes.hasPerm('ui-myprofile.settings.change-password') && checkingFoo);
+      checkfn = check ? (stripes.hasPerm('ui-myprofile.settings.change-password') && isLocalLoginCheck) : null;
     } else {
-      checkfn = !check ? undefined : checkingFoo;
+      checkfn = check ? isLocalLoginCheck : null;
     }
 
     if (!check || (isFunction(checkfn) && checkfn(stripes))) {
