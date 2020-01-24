@@ -12,7 +12,7 @@ class DummyApp extends Component {
   }
 }
 
-describe.only('Profile dropdown', () => {
+describe('Profile dropdown', () => {
   const dropdown = new DropdownInteractor('#profileDropdown');
   const loginInteractor = new Interactor('[data-test-new-username-field]');
 
@@ -28,10 +28,6 @@ describe.only('Profile dropdown', () => {
         {
           route: '/dummy',
           caption: 'stripes-core.label.okay'
-        },
-        {
-          route: '/settings/myprofile/password',
-          caption: 'stripes-core.title.changePassword'
         },
       ]
     }
