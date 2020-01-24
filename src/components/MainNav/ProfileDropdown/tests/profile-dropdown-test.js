@@ -29,6 +29,10 @@ describe('Profile dropdown', () => {
           route: '/dummy',
           caption: 'stripes-core.label.okay'
         },
+        {
+          route: '/settings/myprofile/password',
+          caption: 'stripes-core.title.changePassword'
+        },
       ]
     }
   }];
