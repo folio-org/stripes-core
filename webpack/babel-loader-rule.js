@@ -41,7 +41,7 @@ module.exports = {
       '@babel/plugin-proposal-numeric-separator',
       '@babel/plugin-proposal-throw-expressions',
       '@babel/plugin-syntax-import-meta',
-      ['react-hot-loader/babel'],
+      [require.resolve('react-hot-loader/babel')],
     ]
   },
 };
