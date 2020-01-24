@@ -1,4 +1,5 @@
-import 'babel-polyfill';
+import 'core-js/stable';
+import 'regenerator-runtime/runtime';
 
 // require all modules ending in "-test" from the src directory and
 const requireSrcTest = require.context('../../src/', true, /(.*?)\/tests\/(.*?)-test/);
