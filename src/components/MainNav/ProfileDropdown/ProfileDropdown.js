@@ -99,9 +99,11 @@ class ProfileDropdown extends Component {
       checkfn = check ? isLocalLoginCheck : null;
     }
 
-    return !check || (isFunction(checkfn) && checkfn(stripes))
-      ? this.renderNavLink(link, index, module)
-      : null;
+    if (!check || (isFunction(checkfn) && checkfn(stripes))) {
+      return this.renderNavLink(link, index, module);
+    }
+
+    return null;
   }
 
   onNavItemClicked(link, module) {

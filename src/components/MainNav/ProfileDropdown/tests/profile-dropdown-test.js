@@ -12,7 +12,7 @@ class DummyApp extends Component {
   }
 }
 
-describe('Profile dropdown', () => {
+describe.only('Profile dropdown', () => {
   const dropdown = new DropdownInteractor('#profileDropdown');
   const loginInteractor = new Interactor('[data-test-new-username-field]');
 
@@ -44,12 +44,15 @@ describe('Profile dropdown', () => {
     },
     stripesConfig: {
       showHomeLink: true,
-      hasAllPerms: true,
+      hasAllPerms: false,
+      permissions: {
+        'ui-myprofile.settings.change-password': true,
+      },
     }
   });
 
   beforeEach(function () {
-    this.visit('/');
+    this.visit('/dummy');
   });
 
   it('renders', () => {
