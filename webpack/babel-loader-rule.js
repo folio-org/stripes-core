@@ -28,13 +28,20 @@ module.exports = {
   options: {
     cacheDirectory: true,
     presets: [
-      [require.resolve('babel-preset-env'), { modules: false }],
-      [require.resolve('babel-preset-stage-2')],
-      [require.resolve('babel-preset-react')],
+      ['@babel/preset-env', { targets: '> 0.25%, not dead' }],
+      ['@babel/preset-flow', { all: true }],
+      ['@babel/preset-react'],
+      ['@babel/preset-typescript'],
     ],
     plugins: [
-      [require.resolve('babel-plugin-transform-decorators-legacy')],
-      [require.resolve('react-hot-loader/babel')]
+      ['@babel/plugin-proposal-decorators', { 'legacy': true }],
+      ['@babel/plugin-proposal-class-properties', { 'loose': true }],
+      '@babel/plugin-proposal-export-namespace-from',
+      '@babel/plugin-proposal-function-sent',
+      '@babel/plugin-proposal-numeric-separator',
+      '@babel/plugin-proposal-throw-expressions',
+      '@babel/plugin-syntax-import-meta',
+      [require.resolve('react-hot-loader/babel')],
     ]
   },
 };
