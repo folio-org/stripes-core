@@ -29,6 +29,10 @@ describe('Profile dropdown', () => {
           route: '/dummy',
           caption: 'stripes-core.label.okay'
         },
+        {
+          route: '/settings/myprofile/password',
+          caption: 'stripes-core.title.changePassword'
+        },
       ]
     }
   }];
@@ -40,11 +44,15 @@ describe('Profile dropdown', () => {
     },
     stripesConfig: {
       showHomeLink: true,
+      hasAllPerms: false,
+      permissions: {
+        'ui-myprofile.settings.change-password': true,
+      },
     }
   });
 
   beforeEach(function () {
-    this.visit('/');
+    this.visit('/dummy');
   });
 
   it('renders', () => {
@@ -57,17 +65,7 @@ describe('Profile dropdown', () => {
     });
 
     it('displays the appropriate number of links', () => {
-      expect(dropdown.menu.items().length).to.equal(3);
-    });
-
-    describe('clicking a userlink', () => {
-      beforeEach(async () => {
-        await dropdown.menu.items(1).click();
-      });
-
-      it('changes the url', function () {
-        expect(this.location.pathname).to.equal('/dummy');
-      });
+      expect(dropdown.menu.items().length).to.equal(4);
     });
 
     describe('clicking the home link', () => {
@@ -80,9 +78,29 @@ describe('Profile dropdown', () => {
       });
     });
 
-    describe('clicking logout', () => {
+    describe('clicking a userlink', () => {
+      beforeEach(async () => {
+        await dropdown.menu.items(1).click();
+      });
+
+      it('changes the url', function () {
+        expect(this.location.pathname).to.equal('/dummy');
+      });
+    });
+
+    describe('clicking a Change Password link', () => {
       beforeEach(async () => {
         await dropdown.menu.items(2).click();
+      });
+
+      it('changes the url', function () {
+        expect(this.location.pathname).to.equal('/settings/myprofile/password');
+      });
+    });
+
+    describe('clicking logout', () => {
+      beforeEach(async () => {
+        await dropdown.menu.items(3).click();
       });
 
       it('changes the url', () => {
