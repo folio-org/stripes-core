@@ -5,6 +5,7 @@
 * Update Mirage library. Part of STCOR-407.
 * Adjust Route propTypes to accept lazy loaded components. Refs STCOR-408.
 * Link `Change password` in `ProfileDropdown` shows up depending user's permissions. Refs STCOR-409.
+* Increase test coverage to 80% in `<SSOLogin>` component. Refs STCOR-376.
 
 ## [3.11.1](https://github.com/folio-org/stripes-core/tree/v3.11.1) (2019-12-10)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.11.0...v3.11.1)
