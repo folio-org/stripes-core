@@ -5,8 +5,8 @@ import { beforeEach, it, describe } from '@bigtest/mocha';
 
 import ButtonInteractor from '@folio/stripes-components/lib/Button/tests/interactor';
 
-import { mount } from '../../../../test/bigtest/helpers/render-helpers';
-import SSOLogin from '../SSOLogin';
+import { mount } from '../helpers/render-helpers';
+import SSOLogin from '../../../src/components/SSOLogin';
 
 describe('Login via SSO', () => {
   const ssoLoginButton = new ButtonInteractor('[data-test-sso-login-button]');
