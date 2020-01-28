@@ -16,6 +16,7 @@ function SSOLogin(props) {
   return (
     <div className={styles.formGroup}>
       <Button
+        data-test-sso-login-button
         buttonStyle="primary"
         type="button"
         buttonClass={styles.submitButton}
@@ -24,7 +25,7 @@ function SSOLogin(props) {
       >
         <FormattedMessage id="stripes-core.loginViaSSO" />
       </Button>
-      <form id="ssoForm" />
+      <div id="ssoForm" />
     </div>
   );
 }
