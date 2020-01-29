@@ -25,7 +25,7 @@ function SSOLogin(props) {
       >
         <FormattedMessage id="stripes-core.loginViaSSO" />
       </Button>
-      <div id="ssoForm" />
+      <form id="ssoForm" />
     </div>
   );
 }
