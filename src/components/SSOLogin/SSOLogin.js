@@ -16,6 +16,7 @@ function SSOLogin(props) {
   return (
     <div className={styles.formGroup}>
       <Button
+        data-test-sso-login-button
         buttonStyle="primary"
         type="button"
         buttonClass={styles.submitButton}
