@@ -34,6 +34,9 @@ const compilerStub = {
     compilation: {
       tap: () => {},
     },
+    afterCompile: {
+      tapPromise: () => {},
+    },
     emit: {
       tapAsync: () => {},
     }
