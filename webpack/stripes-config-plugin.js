@@ -31,16 +31,19 @@ module.exports = class StripesConfigPlugin {
     this.mergedConfig = Object.assign({}, this.options, { modules: config });
     this.metadata = metadata;
     this.warnings = warnings;
-
     // Prep the virtual module now, we will write to it when ready
     this.virtualModule = new VirtualModulesPlugin();
     this.virtualModule.apply(compiler);
 
-    // Establish hook for other plugins to update the config
+    // Establish hook for other plugins to update the config, providing existing config as context
     if (compiler.hooks.stripesConfigPluginBeforeWrite) {
       throw new StripesBuildError('StripesConfigPlugin hook already in use');
     }
     compiler.hooks.stripesConfigPluginBeforeWrite = new SyncHook(['config']);
+    compiler.hooks.stripesConfigPluginBeforeWrite.tap(
+      { name: 'StripesConfigPlugin', context: true },
+      context => Object.assign(context, { config, metadata, warnings })
+    );
 
     // Wait until after other plugins to generate virtual stripes-config
     compiler.hooks.afterPlugins.tap('StripesConfigPlugin', (theCompiler) => this.afterPlugins(theCompiler));

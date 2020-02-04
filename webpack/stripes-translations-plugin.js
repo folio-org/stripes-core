@@ -40,28 +40,37 @@ module.exports = class StripesTranslationPlugin {
       new webpack.ContextReplacementPlugin(/moment[/\\]locale/, filterRegex).apply(compiler);
     }
 
-    // Gather all translations available in each module
-    const allTranslations = this.gatherAllTranslations();
-    const fileData = this.generateFileNames(allTranslations);
-    const allFiles = _.mapValues(fileData, data => data.browserPath);
 
     // Hook into stripesConfigPlugin to supply paths to translation files
-    compiler.hooks.stripesConfigPluginBeforeWrite.tap('StripesTranslationsPlugin', (config) => {
+    // and gather additional modules from stripes.stripesDeps
+    compiler.hooks.stripesConfigPluginBeforeWrite.tap({ name:'StripesTranslationsPlugin', context: true }, (context, config) => {
+      Object.values(context.config).forEach(moduleType => moduleType.forEach(moduleConfig => {
+        if (Array.isArray(moduleConfig.stripesDeps)) {
+          moduleConfig.stripesDeps.forEach(dep => {
+            this.modules[dep] = { dependencyOf: moduleConfig.module };
+          });
+        }
+      }));
+      // Gather all translations available in each module
+      const allTranslations = this.gatherAllTranslations();
+      const fileData = this.generateFileNames(allTranslations);
+      const allFiles = _.mapValues(fileData, data => data.browserPath);
+
       config.translations = allFiles;
       logger.log('stripesConfigPluginBeforeWrite', config.translations);
-    });
 
-    // Emit merged translations to the output directory
-    compiler.hooks.emit.tapAsync('StripesTranslationsPlugin', (compilation, callback) => {
-      Object.keys(allTranslations).forEach((language) => {
-        logger.log(`emitting translations for ${language} --> ${fileData[language].emitPath}`);
-        const content = JSON.stringify(allTranslations[language]);
-        compilation.assets[fileData[language].emitPath] = {
-          source: () => content,
-          size: () => content.length,
-        };
+      // Emit merged translations to the output directory
+      compiler.hooks.emit.tapAsync('StripesTranslationsPlugin', (compilation, callback) => {
+        Object.keys(allTranslations).forEach((language) => {
+          logger.log(`emitting translations for ${language} --> ${fileData[language].emitPath}`);
+          const content = JSON.stringify(allTranslations[language]);
+          compilation.assets[fileData[language].emitPath] = {
+            source: () => content,
+            size: () => content.length,
+          };
+        });
+        callback();
       });
-      callback();
     });
   }
 
@@ -69,7 +78,9 @@ module.exports = class StripesTranslationPlugin {
   gatherAllTranslations() {
     const allTranslations = {};
     for (const mod of Object.keys(this.modules)) {
-      const modPackageJsonPath = modulePaths.locateStripesModule(this.context, mod, this.aliases, 'package.json');
+      // translations from module dependencies may need to be located relative to their dependent (eg. in yarn workspaces)
+      const locateContext = this.modules[mod].dependencyOf || this.context;
+      const modPackageJsonPath = modulePaths.locateStripesModule(locateContext, mod, this.aliases, 'package.json');
       if (modPackageJsonPath) {
         const moduleName = StripesTranslationPlugin.getModuleName(mod);
         const modTranslationDir = modPackageJsonPath.replace('package.json', `translations/${moduleName}`);
