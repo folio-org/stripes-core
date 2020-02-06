@@ -3,7 +3,7 @@ export { ConnectContext as RootContext, withConnect as withRoot } from '@folio/s
 
 /* internal utilities */
 export { stripesShape } from './src/Stripes';
-export { withStripes } from './src/StripesContext';
+export { withStripes, useStripes } from './src/StripesContext';
 export { default as stripesConnect } from './src/stripesConnect';
 export { default as Pluggable } from './src/Pluggable';
 export { setServicePoints, setCurServicePoint } from './src/loginServices';
