@@ -88,7 +88,7 @@
     "mainnav.topLevelLabel": "Principale",
     "mainnav.applicationListLabel": "Elenco delle App",
     "errors.default.error": "Siamo spiacenti, le informazioni inserite non corrispondono ai nostri record.",
-    "errors.username.incorrect": "Errore durante la verifica dell'utente: Nessun utente trovato per username {username}",
+    "errors.username.incorrect": "Questo account non è stato trovatp. Contattate il vostro amministratore di sistema FOLIO.",
     "errors.password.incorrect": "Credenziali errate",
     "errors.user.blocked": "Per motivi di sicurezza, il tuo account è stato bloccato. Riprova o contatta il tuo amministratore di sistema FOLIO.",
     "errors.password.match.error": "La password non corrisponde. Riscrivi la tua password.",
