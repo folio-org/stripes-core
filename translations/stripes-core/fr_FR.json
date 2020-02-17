@@ -88,7 +88,7 @@
     "mainnav.topLevelLabel": "Principal",
     "mainnav.applicationListLabel": "Liste d'applications",
     "errors.default.error": "Désolé, l'information saisie ne correspond pas à nos dossiers.",
-    "errors.username.incorrect": "Erreur de vérification de l'existence de l'adhérent: Aucun adhérent trouvé portant le nom {username}",
+    "errors.username.incorrect": "Ce compte FOLIO est introuvable. Veuillez contacter votre administrateur système FOLIO.",
     "errors.password.incorrect": "Identifiants incorrects",
     "errors.user.blocked": "Pour des raisons de sécurité, votre compte a été verrouillé. Veuillez réessayer ou contacter votre administrateur système FOLIO.",
     "errors.password.match.error": "Le mot de passe ne correspond pas. Resaisir votre mot de passe.",
