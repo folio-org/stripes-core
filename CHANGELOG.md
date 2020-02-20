@@ -1,5 +1,8 @@
 # Change history for stripes-core
 
+## 3.11.2 (IN PROGRESS)
+* Add missing Event class for emulating browser events in tests. Refs UIDEXP-20.
+
 ## [3.11.1](https://github.com/folio-org/stripes-core/tree/v3.11.1) (2019-12-10)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.11.0...v3.11.1)
 

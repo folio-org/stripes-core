@@ -11,6 +11,20 @@ import FakeXMLHttpRequest from 'fake-xml-http-request';
  *
  */
 
+var _Event = function Event(type, bubbles, cancelable, target) {
+  this.type = type;
+  this.bubbles = bubbles;
+  this.cancelable = cancelable;
+  this.target = target;
+};
+
+_Event.prototype = {
+  stopPropagation: function () {},
+  preventDefault: function () {
+    this.defaultPrevented = true;
+  }
+};
+
 FakeXMLHttpRequest.prototype.open = function(method, url, async, username, password) {
   this.method = method;
   this.url = url;
