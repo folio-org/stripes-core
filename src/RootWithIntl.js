@@ -36,7 +36,7 @@ import {
   AppCtxMenuProvider,
 } from './components';
 import { StripesContext } from './StripesContext';
-import ToastContext from './ToastContext';
+import CalloutContext from './CalloutContext';
 
 class RootWithIntl extends React.Component {
   static propTypes = {
@@ -73,7 +73,7 @@ class RootWithIntl extends React.Component {
 
     return (
       <StripesContext.Provider value={stripes}>
-        <ToastContext.Provider value={this.callout}>
+        <CalloutContext.Provider value={this.callout.current}>
           <ModuleTranslator>
             <TitleManager>
               <HotKeys
@@ -171,7 +171,7 @@ class RootWithIntl extends React.Component {
               </HotKeys>
             </TitleManager>
           </ModuleTranslator>
-        </ToastContext.Provider>
+        </CalloutContext.Provider>
         <Callout ref={this.callout} />
       </StripesContext.Provider>
     );
