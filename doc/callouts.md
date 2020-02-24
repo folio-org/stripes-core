@@ -46,7 +46,7 @@ this.context.sendCallout({ message: 'New record created with a class!' });
 Usage with hooks is a bit more straightforward, since we just need to use the `useContext` hook.
 
 ```
-const callout  = useContext(ToastContext);
+const callout  = useContext(CalloutContext);
 
 ...
 
