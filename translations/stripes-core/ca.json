@@ -7,7 +7,7 @@
     "button.edit": "Edita",
     "button.delete": "Suprimiu",
     "button.deleteEntry": "Afegiu {entry}",
-    "button.saveAndClose": "Deseu i tanqueu",
+    "button.saveAndClose": "Desa i tanca",
     "button.cancel": "Cancel·leu",
     "label.confirmDeleteEntry": "<strong> {name} </strong> serà <strong> eliminat </strong>",
     "label.editEntry": "Editeu {entry}",
