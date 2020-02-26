@@ -6,11 +6,23 @@ const connectErrorEpic = action$ => action$
 
     if (!meta.throwErrors) return undefined;
 
-    // eslint-disable-next-line prefer-template,no-alert
-    window.alert(`ERROR: in module ${meta.module}, operation ${op}`
-      + ` on resource '${meta.resource}' failed`
-      + (action.payload.status ? ` with HTTP status ${e.status}` : '')
-      + (e.message ? `, saying: ${e.message}` : ''));
+    if (e.status === 401 && e.message === 'Invalid token') {
+      return {
+        type: 'SET_AUTH_FAILURE',
+        message: [
+          {
+            type: 'error',
+            code: 'user.timeout'
+          }
+        ]
+      };
+    } else {
+      // eslint-disable-next-line prefer-template,no-alert
+      window.alert(`ERROR: in module ${meta.module}, operation ${op}`
+        + ` on resource '${meta.resource}' failed`
+        + (action.payload.status ? ` with HTTP status ${e.status}` : '')
+        + (e.message ? `, saying: ${e.message}` : ''));
+    }
 
     // TODO: When we have a more complete notification system and present our errors
     // through it this will better follow the redux-observable pattern of emitting
