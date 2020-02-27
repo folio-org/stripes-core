@@ -3,10 +3,12 @@ const connectErrorEpic = action$ => action$
   .map((action) => {
     const { meta, payload: e } = action;
     const op = action.type === '@@stripes-connect/FETCH_ERROR' ? 'GET' : e.type;
+    const status = e.status || e.httpStatus;
+    const message = e.message;
 
     if (!meta.throwErrors) return undefined;
 
-    if (e.status === 401 && e.message === 'Invalid token') {
+    if (status === 401 && message.indexOf('Invalid token')) {
       return {
         type: 'SET_AUTH_FAILURE',
         message: [

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { isEqual, filter } from 'lodash';
+import { isEqual, find } from 'lodash';
 import { compose } from 'redux';
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 import { withRouter } from 'react-router';
@@ -86,8 +86,8 @@ class MainNav extends Component {
       const state = this.store.getState();
 
       // If user has timed out, force them to log in again.
-      if (state.okapi && state.okapi.authFailure
-        && filter(state.okapi.authFailure, { type: 'error', code: 'user.timeout' }).length) {
+      if (state?.okapi?.token && state.okapi.authFailure
+        && find(state.okapi.authFailure, { type: 'error', code: 'user.timeout' })) {
         this.returnToLogin();
       }
       if (module && isQueryResourceModule(module, location)) {
