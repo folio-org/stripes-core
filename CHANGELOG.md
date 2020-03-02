@@ -8,6 +8,7 @@
 * Increase test coverage to 80% in `<SSOLogin>` component. Refs STCOR-376.
 * Gather translations and icons from `stripesDeps` listed in the `stripes` section of package.json. (STCOR-414)
 * Add missing Event class for emulating browser events in tests. Refs UIDEXP-20.
+* Added `CalloutContext` context for rendering cross-route/component callouts.
 
 ## [3.11.1](https://github.com/folio-org/stripes-core/tree/v3.11.1) (2019-12-10)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.11.0...v3.11.1)
