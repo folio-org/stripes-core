@@ -27,20 +27,24 @@ module.exports = class StripesConfigPlugin {
   apply(compiler) {
     const enabledModules = this.options.modules;
     logger.log('enabled modules:', enabledModules);
-    const { config, metadata, warnings } = stripesModuleParser.parseAllModules(enabledModules, compiler.context, compiler.options.resolve.alias);
+    const { config, metadata, icons, stripesDeps, warnings } = stripesModuleParser.parseAllModules(enabledModules, compiler.context, compiler.options.resolve.alias);
     this.mergedConfig = Object.assign({}, this.options, { modules: config });
     this.metadata = metadata;
+    this.icons = icons;
     this.warnings = warnings;
-
     // Prep the virtual module now, we will write to it when ready
     this.virtualModule = new VirtualModulesPlugin();
     this.virtualModule.apply(compiler);
 
-    // Establish hook for other plugins to update the config
+    // Establish hook for other plugins to update the config, providing existing config as context
     if (compiler.hooks.stripesConfigPluginBeforeWrite) {
       throw new StripesBuildError('StripesConfigPlugin hook already in use');
     }
     compiler.hooks.stripesConfigPluginBeforeWrite = new SyncHook(['config']);
+    compiler.hooks.stripesConfigPluginBeforeWrite.tap(
+      { name: 'StripesConfigPlugin', context: true },
+      context => Object.assign(context, { config, metadata, icons, stripesDeps, warnings })
+    );
 
     // Wait until after other plugins to generate virtual stripes-config
     compiler.hooks.afterPlugins.tap('StripesConfigPlugin', (theCompiler) => this.afterPlugins(theCompiler));
@@ -61,7 +65,8 @@ module.exports = class StripesConfigPlugin {
       const branding = ${stripesSerialize.serializeWithRequire(pluginData.branding)};
       const translations = ${serialize(pluginData.translations, { space: 2 })};
       const metadata = ${stripesSerialize.serializeWithRequire(this.metadata)};
-      export { okapi, config, modules, branding, translations, metadata };
+      const icons = ${stripesSerialize.serializeWithRequire(this.icons)};
+      export { okapi, config, modules, branding, translations, metadata, icons };
     `;
 
     logger.log('writing virtual module...', stripesVirtualModule);

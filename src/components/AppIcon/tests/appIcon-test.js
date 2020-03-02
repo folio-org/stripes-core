@@ -3,7 +3,6 @@
  */
 
 import React from 'react';
-
 import { beforeEach, it, describe } from '@bigtest/mocha';
 import { expect } from 'chai';
 
@@ -34,18 +33,16 @@ describe('AppIcon', () => {
 
   // This is a mock of the Stripes context that's available in an Folio app
   const stripesMock = {
-    metadata: {
+    icons: {
       users: {
-        icons: {
-          app: {
-            alt: 'Create, view and manage users',
+        app: {
+          alt: 'Create, view and manage users',
+          src: svg,
+          high: {
             src: svg,
-            high: {
-              src: svg,
-            },
-            low: {
-              src: png,
-            }
+          },
+          low: {
+            src: png,
           }
         }
       }
@@ -68,7 +65,7 @@ describe('AppIcon', () => {
     });
 
     it('Should render an img with an alt-attribute', () => {
-      expect(appIcon.img.alt).to.equal(stripesMock.metadata.users.icons.app.alt);
+      expect(appIcon.img.alt).to.equal(stripesMock.icons.users.app.alt);
     });
   });
 
