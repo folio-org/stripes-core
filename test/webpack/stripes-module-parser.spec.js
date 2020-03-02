@@ -224,7 +224,7 @@ describe('parseAllModules function', function () {
 
     it('returns config and metadata collections', function () {
       const result = this.sut(enabledModules, context, aliases);
-      expect(result).to.be.an('object').with.all.keys('config', 'metadata', 'warnings');
+      expect(result).to.be.an('object').with.all.keys('config', 'metadata', 'stripesDeps', 'icons', 'warnings');
     });
 
     it('returns config grouped by stripes type', function () {
@@ -264,5 +264,24 @@ describe('parseAllModules function', function () {
       expect(result.config.settings).to.be.an('array').with.lengthOf(3);
       expect(result.config.plugin).to.be.an('array').with.lengthOf(3);
     });
+  });
+});
+
+describe('integration', function () {
+  const result = parseAllModules({ '@folio/app1': {}, '@folio/app2': {} }, __dirname, aliases);
+  it('sees the right number of apps', function () {
+    expect(result.config.app).to.be.an('array').with.lengthOf(2);
+  });
+  it('sees the right number of deps', function () {
+    expect(Object.keys(result.stripesDeps)).to.be.an('array').with.lengthOf(2);
+  });
+  it('lists deps sorted by version', function () {
+    expect(result.stripesDeps['@folio/stripes-dep1'][1].version).to.equal('3.4.5');
+  });
+  it('has icons from the right number of packages', function () {
+    expect(Object.keys(result.icons)).to.be.an('array').with.lengthOf(3);
+  });
+  it('uses icon from the latest version', function () {
+    expect(result.icons['@folio/stripes-dep1'].thing.title).to.equal('Thingy');
   });
 });
