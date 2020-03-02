@@ -27,9 +27,10 @@ module.exports = class StripesConfigPlugin {
   apply(compiler) {
     const enabledModules = this.options.modules;
     logger.log('enabled modules:', enabledModules);
-    const { config, metadata, warnings } = stripesModuleParser.parseAllModules(enabledModules, compiler.context, compiler.options.resolve.alias);
+    const { config, metadata, icons, warnings } = stripesModuleParser.parseAllModules(enabledModules, compiler.context, compiler.options.resolve.alias);
     this.mergedConfig = Object.assign({}, this.options, { modules: config });
     this.metadata = metadata;
+    this.icons = icons;
     this.warnings = warnings;
     // Prep the virtual module now, we will write to it when ready
     this.virtualModule = new VirtualModulesPlugin();
@@ -64,7 +65,8 @@ module.exports = class StripesConfigPlugin {
       const branding = ${stripesSerialize.serializeWithRequire(pluginData.branding)};
       const translations = ${serialize(pluginData.translations, { space: 2 })};
       const metadata = ${stripesSerialize.serializeWithRequire(this.metadata)};
-      export { okapi, config, modules, branding, translations, metadata };
+      const icons = ${stripesSerialize.serializeWithRequire(this.icons)};
+      export { okapi, config, modules, branding, translations, metadata, icons };
     `;
 
     logger.log('writing virtual module...', stripesVirtualModule);

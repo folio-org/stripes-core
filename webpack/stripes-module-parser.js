@@ -1,5 +1,6 @@
 const path = require('path');
 const _ = require('lodash');
+const semver = require('semver');
 const modulePaths = require('./module-paths');
 const StripesBuildError = require('./stripes-build-error');
 const logger = require('./logger')('stripesModuleParser');
@@ -12,6 +13,39 @@ function appendOrSingleton(maybeArray, newValue) {
   if (Array.isArray(maybeArray)) return maybeArray.concat(singleton);
   return singleton;
 }
+// Construct and validate expected icon file paths
+function buildIconFilePaths(name, root, module, warnings) {
+  const iconDir = 'icons';
+  const defaultKey = 'high';
+  const iconVariants = {
+    high: `${name}.svg`,
+    low: `${name}.png`,
+    // bw: `${name}-bw.png`, example
+  };
+
+  return _.reduce(iconVariants, (iconPaths, file, key) => {
+    const iconFilePath = path.join(root, iconDir, file);
+    const isFound = modulePaths.tryResolve(iconFilePath);
+    if (!isFound) {
+      warnings.push(`Module ${module} defines icon "${name}" but is missing file "${iconDir}/${file}"`);
+    }
+    iconPaths[key] = {
+      src: isFound ? iconFilePath : '',
+    };
+    if (key === defaultKey) {
+      iconPaths.src = isFound ? iconFilePath : '';
+    }
+    return iconPaths;
+  }, {});
+}
+
+function iconPropsFromConfig(icon) {
+  return {
+    alt: icon.alt,
+    title: icon.title,
+  };
+}
+
 
 // Handles the parsing of one Stripes module's configuration and metadata
 class StripesModuleParser {
@@ -119,10 +153,7 @@ class StripesModuleParser {
       return {};
     }
     return _.reduce(icons, (iconMetadata, icon) => {
-      iconMetadata[icon.name] = {
-        alt: icon.alt,
-        title: icon.title,
-      };
+      iconMetadata[icon.name] = iconPropsFromConfig(icon);
       // The icon's name will be used in the event fileName is not specified
       Object.assign(iconMetadata[icon.name], this.buildIconFilePaths(icon.fileName || icon.name));
       return iconMetadata;
@@ -131,28 +162,7 @@ class StripesModuleParser {
 
   // Construct and validate expected icon file paths
   buildIconFilePaths(name) {
-    const iconDir = 'icons';
-    const defaultKey = 'high';
-    const iconVariants = {
-      high: `${name}.svg`,
-      low: `${name}.png`,
-      // bw: `${name}-bw.png`, example
-    };
-
-    return _.reduce(iconVariants, (iconPaths, file, key) => {
-      const iconFilePath = path.join(this.modulePath, iconDir, file);
-      const isFound = modulePaths.tryResolve(iconFilePath);
-      if (!isFound) {
-        this.warnings.push(`Module ${this.moduleName} defines icon "${name}" but is missing file "${iconDir}/${file}"`);
-      }
-      iconPaths[key] = {
-        src: isFound ? iconFilePath : '',
-      };
-      if (key === defaultKey) {
-        iconPaths.src = isFound ? iconFilePath : '';
-      }
-      return iconPaths;
-    }, {});
+    return buildIconFilePaths(name, this.modulePath, this.moduleName, this.warnings);
   }
 
   getWelcomePageEntries(entries, icons) {
@@ -180,23 +190,82 @@ function parseAllModules(enabledModules, context, aliases) {
     app: [],
   };
   const allMetadata = {};
+  const unsortedStripesDeps = {};
+  let icons = {};
   let warnings = [];
 
   _.forOwn(enabledModules, (overrideConfig, moduleName) => {
     const moduleParser = new StripesModuleParser(moduleName, overrideConfig, context, aliases);
     const parsedModule = moduleParser.parseModule();
+
+    // config
     parsedModule.actsAs.forEach(type => {
       allModuleConfigs[type] = appendOrSingleton(allModuleConfigs[type], parsedModule.config);
     });
+
+    // metadata
     allMetadata[parsedModule.name] = parsedModule.metadata;
+
+    // stripesDeps
+    const config = parsedModule.config;
+    if (Array.isArray(config.stripesDeps)) {
+      config.stripesDeps.forEach(dep => {
+        // locate dep relative to the module that depends on it
+        const depContext = modulePaths.locateStripesModule(context, config.module, aliases, 'package.json');
+        const packageJsonPath = modulePaths.locateStripesModule(depContext, dep, aliases, 'package.json');
+        if (!packageJsonPath) {
+          throw new StripesBuildError(`StripesModuleParser: Unable to locate ${dep}'s package.json (dependency of ${config.module})`);
+        }
+        const packageJson = require(packageJsonPath);
+        const resolvedPath = packageJsonPath.replace('/package.json', '');
+        unsortedStripesDeps[dep] = appendOrSingleton(unsortedStripesDeps[dep], {
+          name: dep,
+          dependencyOf: config.module,
+          resolvedPath,
+          version: packageJson.version,
+          ...(packageJson.stripes && packageJson.stripes.icons ? { icons: packageJson.stripes.icons } : {})
+        });
+      });
+    }
+
+    // icons
+    icons[parsedModule.config.module] = parsedModule.metadata.icons;
+
+    // warnings
     if (moduleParser.warnings.length) {
       warnings = warnings.concat(moduleParser.warnings);
     }
   });
 
+  // stripesDeps are then sorted so that resources will be gathered from the newest version where they are available
+  const stripesDeps = Object.fromEntries(Object.entries(unsortedStripesDeps)
+    .map(ent => [ent[0], ent[1].sort((a, b) => semver.compare(a.version, b.version))]));
+
+  // icons from deps
+  const anyHasIcon = vers => vers.reduce((acc, dep) => (acc || ('icons' in dep)), false);
+  const mergeIcons = vers => vers.reduce((depIcons, ver) => {
+    if ('icons' in ver) {
+      ver.icons.forEach(icon => {
+        depIcons[icon.name] = {
+          ...iconPropsFromConfig(icon),
+          ...buildIconFilePaths(icon.fileName || icon.name, ver.resolvedPath, ver.name, warnings)
+        };
+      });
+    }
+    return depIcons;
+  }, {});
+  icons = {
+    ...icons,
+    ...Object.fromEntries(Object.entries(stripesDeps)
+      .filter(ent => anyHasIcon(ent[1])) // only include deps with icons
+      .map(ent => [ent[0], mergeIcons(ent[1])]))
+  };
+
   return {
     config: allModuleConfigs,
     metadata: allMetadata,
+    stripesDeps,
+    icons,
     warnings,
   };
 }

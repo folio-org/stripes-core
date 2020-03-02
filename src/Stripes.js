@@ -54,6 +54,7 @@ export const stripesShape = PropTypes.shape({
   timezone: PropTypes.string,
   currency: PropTypes.string,
   metadata: PropTypes.object,
+  icons: PropTypes.object,
   setLocale: PropTypes.func.isRequired,
   setTimezone: PropTypes.func.isRequired,
   setCurrency: PropTypes.func.isRequired,
