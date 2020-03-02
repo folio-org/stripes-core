@@ -269,9 +269,6 @@ describe('parseAllModules function', function () {
 
 describe('integration', function () {
   const result = parseAllModules({ '@folio/app1': {}, '@folio/app2': {} }, __dirname, aliases);
-  it('works', function () {
-    console.dir(result, { depth: null });
-  });
   it('sees the right number of apps', function () {
     expect(result.config.app).to.be.an('array').with.lengthOf(2);
   });
