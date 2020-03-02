@@ -238,8 +238,10 @@ function parseAllModules(enabledModules, context, aliases) {
   });
 
   // stripesDeps are then sorted so that resources will be gathered from the newest version where they are available
-  const stripesDeps = Object.fromEntries(Object.entries(unsortedStripesDeps)
-    .map(ent => [ent[0], ent[1].sort((a, b) => semver.compare(a.version, b.version))]));
+  const stripesDeps = {};
+  for (const [key, value] of Object.entries(unsortedStripesDeps)) {
+    stripesDeps[key] = value.sort((a, b) => semver.compare(a.version, b.version));
+  }
 
   // icons from deps
   const anyHasIcon = vers => vers.reduce((acc, dep) => (acc || ('icons' in dep)), false);
@@ -254,12 +256,11 @@ function parseAllModules(enabledModules, context, aliases) {
     }
     return depIcons;
   }, {});
-  icons = {
-    ...icons,
-    ...Object.fromEntries(Object.entries(stripesDeps)
-      .filter(ent => anyHasIcon(ent[1])) // only include deps with icons
-      .map(ent => [ent[0], mergeIcons(ent[1])]))
-  };
+  for (const [key, value] of Object.entries(stripesDeps)) {
+    if (anyHasIcon(value)) {
+      icons[key] = mergeIcons(value);
+    }
+  }
 
   return {
     config: allModuleConfigs,
