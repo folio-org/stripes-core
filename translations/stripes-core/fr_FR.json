@@ -91,7 +91,7 @@
     "errors.username.incorrect": "Ce compte FOLIO est introuvable. Veuillez contacter votre administrateur système FOLIO.",
     "errors.password.incorrect": "Identifiants incorrects",
     "errors.user.blocked": "Pour des raisons de sécurité, votre compte a été verrouillé. Veuillez réessayer ou contacter votre administrateur système FOLIO.",
-    "errors.password.match.error": "Le mot de passe ne correspond pas. Resaisir votre mot de passe.",
+    "errors.password.match.error": "Le mot de passe ne correspond pas. Ressaisir votre mot de passe.",
     "errors.password.lastTenPasswords.invalid": "Mot de passe précédemment utilisé. Merci de saisir un nouveau mot de passe.",
     "errors.email.invalid": "Merci de saisir une adresse e-mail correcte.",
     "errors.unable.locate.account": "Impossible de trouver votre compte. Merci de saisir une adresse email ou un numéro de téléphone correct.",
