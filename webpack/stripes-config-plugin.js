@@ -27,7 +27,7 @@ module.exports = class StripesConfigPlugin {
   apply(compiler) {
     const enabledModules = this.options.modules;
     logger.log('enabled modules:', enabledModules);
-    const { config, metadata, icons, warnings } = stripesModuleParser.parseAllModules(enabledModules, compiler.context, compiler.options.resolve.alias);
+    const { config, metadata, icons, stripesDeps, warnings } = stripesModuleParser.parseAllModules(enabledModules, compiler.context, compiler.options.resolve.alias);
     this.mergedConfig = Object.assign({}, this.options, { modules: config });
     this.metadata = metadata;
     this.icons = icons;
@@ -43,7 +43,7 @@ module.exports = class StripesConfigPlugin {
     compiler.hooks.stripesConfigPluginBeforeWrite = new SyncHook(['config']);
     compiler.hooks.stripesConfigPluginBeforeWrite.tap(
       { name: 'StripesConfigPlugin', context: true },
-      context => Object.assign(context, { config, metadata, warnings })
+      context => Object.assign(context, { config, metadata, icons, stripesDeps, warnings })
     );
 
     // Wait until after other plugins to generate virtual stripes-config

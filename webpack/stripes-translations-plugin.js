@@ -44,13 +44,12 @@ module.exports = class StripesTranslationPlugin {
     // Hook into stripesConfigPlugin to supply paths to translation files
     // and gather additional modules from stripes.stripesDeps
     compiler.hooks.stripesConfigPluginBeforeWrite.tap({ name:'StripesTranslationsPlugin', context: true }, (context, config) => {
-      Object.values(context.config).forEach(moduleType => moduleType.forEach(moduleConfig => {
-        if (Array.isArray(moduleConfig.stripesDeps)) {
-          moduleConfig.stripesDeps.forEach(dep => {
-            this.modules[dep] = { dependencyOf: moduleConfig.module };
-          });
-        }
-      }));
+      // Add stripesDeps
+      for (const [key, value] of Object.entries(context.stripesDeps)) {
+        // TODO: merge translations from all versions of stripesDeps
+        this.modules[key] = value[value.length - 1];
+      }
+
       // Gather all translations available in each module
       const allTranslations = this.gatherAllTranslations();
       const fileData = this.generateFileNames(allTranslations);
@@ -79,7 +78,7 @@ module.exports = class StripesTranslationPlugin {
     const allTranslations = {};
     for (const mod of Object.keys(this.modules)) {
       // translations from module dependencies may need to be located relative to their dependent (eg. in yarn workspaces)
-      const locateContext = this.modules[mod].dependencyOf || this.context;
+      const locateContext = this.modules[mod].resolvedPath || this.context;
       const modPackageJsonPath = modulePaths.locateStripesModule(locateContext, mod, this.aliases, 'package.json');
       if (modPackageJsonPath) {
         const moduleName = StripesTranslationPlugin.getModuleName(mod);

@@ -23,10 +23,10 @@ const compilerStub = {
     },
     stripesConfigPluginBeforeWrite: {
       tap: (str, cb) => cb({
-        config: {
-          app: [{
-            module: 'some-module',
-            stripesDeps: ['stripes-dependency']
+        stripesDeps: {
+          'stripes-dependency': [{
+            name: 'stripes-dependency',
+            resolvedPath: '.'
           }]
         }
       }, {}),
