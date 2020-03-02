@@ -104,7 +104,7 @@
   "errors.password.incorrect.warn.user": "You have entered the wrong username or password for the third time. You have two more tries to login before your account will be locked.",
   "errors.password.incorrect.block.user": "For security purposes, your account has been locked. Please contact your FOLIO System Administrator to reset your password.",
   "errors.user.blocked": "For security purposes, your account has been locked. Please try again or contact your FOLIO System Administrator.",
-  "errors.user.timeout": "Your session has timed out. Please log in again.",
+  "errors.user.timeout": "Your session has expired. Please login again to resume your session.",
   "errors.password.match.error": "Password does not match. Retype your password.",
   "errors.password.lastTenPasswords.invalid": "Previously used password. Please enter a new password.",
   "errors.email.invalid": "Please enter a valid email address.",
