@@ -2,6 +2,8 @@
 *.swp
 *.swo
 node_modules
+!test/webpack/node_modules/@folio/app2/node_modules/
+!test/webpack/node_modules/
 npm-debug.log
 static
 README.html

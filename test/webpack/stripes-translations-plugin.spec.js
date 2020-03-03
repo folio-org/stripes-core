@@ -22,7 +22,14 @@ const compilerStub = {
       tapAsync: () => {},
     },
     stripesConfigPluginBeforeWrite: {
-      tap: () => {},
+      tap: (str, cb) => cb({
+        stripesDeps: {
+          'stripes-dependency': [{
+            name: 'stripes-dependency',
+            resolvedPath: '.'
+          }]
+        }
+      }, {}),
     },
     contextModuleFactory: {
       tap: () => {},
@@ -77,6 +84,12 @@ describe('The stripes-translations-plugin', function () {
       this.sut = new StripesTranslationsPlugin(this.stripesConfig);
       this.sut.apply(compilerStub);
       expect(compilerStub.hooks.emit.tapAsync).to.be.calledWith('StripesTranslationsPlugin');
+    });
+
+    it('includes modules from nominated dependencies', function () {
+      this.sut = new StripesTranslationsPlugin(this.stripesConfig);
+      this.sut.apply(compilerStub);
+      expect(this.sut.modules).to.be.an('object').with.property('stripes-dependency');
     });
 
     it('generates an emit function with all translations', function () {

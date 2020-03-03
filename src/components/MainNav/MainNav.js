@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { isEqual } from 'lodash';
+import { isEqual, find } from 'lodash';
 import { compose } from 'redux';
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 import { withRouter } from 'react-router';
@@ -83,6 +83,13 @@ class MainNav extends Component {
     this._unsubscribe = this.store.subscribe(() => {
       const { history, location } = this.props;
       const module = this.curModule;
+      const state = this.store.getState();
+
+      // If user has timed out, force them to log in again.
+      if (state?.okapi?.token && state.okapi.authFailure
+        && find(state.okapi.authFailure, { type: 'error', code: 'user.timeout' })) {
+        this.returnToLogin();
+      }
       if (module && isQueryResourceModule(module, location)) {
         curQuery = updateLocation(module, curQuery, this.store, history, location);
       }
@@ -108,11 +115,17 @@ class MainNav extends Component {
     });
   }
 
-  logout() {
+  // Return the user to the login screen, but after logging in they will return to their previous activity.
+  returnToLogin() {
     this.store.dispatch(clearOkapiToken());
     this.store.dispatch(clearCurrentUser());
     this.store.dispatch(resetStore());
     localforage.removeItem('okapiSess');
+  }
+
+  // return the user to the login screen, but after logging in they will be brought to the default screen.
+  logout() {
+    this.returnToLogin();
     this.props.history.push('/');
   }
 
