@@ -191,7 +191,7 @@ function parseAllModules(enabledModules, context, aliases) {
   };
   const allMetadata = {};
   const unsortedStripesDeps = {};
-  let icons = {};
+  const icons = {};
   let warnings = [];
 
   _.forOwn(enabledModules, (overrideConfig, moduleName) => {

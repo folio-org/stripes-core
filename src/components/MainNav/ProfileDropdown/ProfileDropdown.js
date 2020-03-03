@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { isFunction, kebabCase } from 'lodash';
 import get from 'lodash/get';
 import { compose } from 'redux';
@@ -29,15 +29,16 @@ class ProfileDropdown extends Component {
     }),
     onLogout: PropTypes.func.isRequired,
     stripes: PropTypes.shape({
-      user: PropTypes.shape({
-        user: PropTypes.object,
-        perms: PropTypes.object,
-      }),
       config: PropTypes.shape({
         showPerms: PropTypes.bool,
         showHomeLink: PropTypes.bool,
       }),
+      hasPerm: PropTypes.bool,
       okapi: PropTypes.object,
+      user: PropTypes.shape({
+        user: PropTypes.object,
+        perms: PropTypes.object,
+      }),
     }).isRequired,
     history: PropTypes.shape({
       push: PropTypes.func.isRequired,
@@ -237,12 +238,12 @@ class ProfileDropdown extends Component {
             className={css.button}
             icon={this.getProfileImage()}
             label={servicePointName ? (
-              <Fragment>
+              <>
                 <span className={css.button__label}>
                   {servicePointName}
                 </span>
                 <Icon icon={open ? 'caret-up' : 'caret-down'} />
-              </Fragment>
+              </>
             ) : null}
             {...getTriggerProps()}
           />)
@@ -261,7 +262,7 @@ class ProfileDropdown extends Component {
     const { HandlerComponent } = this.state;
 
     return (
-      <Fragment>
+      <>
         { HandlerComponent && <HandlerComponent stripes={this.props.stripes} /> }
         <Dropdown
           id="profileDropdown"
@@ -273,7 +274,7 @@ class ProfileDropdown extends Component {
           relativePosition
           usePortal={false}
         />
-      </Fragment>
+      </>
     );
   }
 }

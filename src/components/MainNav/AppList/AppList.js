@@ -2,7 +2,7 @@
  * App List
  */
 
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
@@ -135,7 +135,7 @@ class AppList extends Component {
     );
 
     return (
-      <Fragment>
+      <>
         <FormattedMessage id="stripes-core.mainnav.showAllApplicationsButtonAriaLabel">
           { ariaLabel => (
             <NavButton
@@ -153,7 +153,7 @@ class AppList extends Component {
             />
           )}
         </FormattedMessage>
-      </Fragment>
+      </>
     );
   }
 
