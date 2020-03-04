@@ -1,11 +1,18 @@
 # Change history for stripes-core
 
-## 3.12.0 (IN PROGRESS)
+## [3.12.0](https://github.com/folio-org/stripes-core/tree/v3.12.0) (2020-03-03)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.11.2...v3.12.0)
 
+* Upgrade babel to v7.x. Refs STCOR-381.
 * Update Mirage library. Part of STCOR-407.
 * Adjust Route propTypes to accept lazy loaded components. Refs STCOR-408.
 * Link `Change password` in `ProfileDropdown` shows up depending user's permissions. Refs STCOR-409.
 * Increase test coverage to 80% in `<SSOLogin>` component. Refs STCOR-376.
+
+## [3.11.2](https://github.com/folio-org/stripes-core/tree/v3.11.2) (2020-02-20)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.11.1...v3.11.2)
+
+* Add missing Event class for emulating browser events in tests. Refs UIDEXP-20.
 
 ## [3.11.1](https://github.com/folio-org/stripes-core/tree/v3.11.1) (2019-12-10)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.11.0...v3.11.1)
@@ -14,7 +21,7 @@
 * Correct label and autocomplete values on login-related forms. Refs STCOM-632
 * Bump `serialize-javascript` to `v2.1.2` to avoid an XSS vulnerability (https://github.com/yahoo/serialize-javascript/security/advisories/GHSA-h9rv-jmmf-4pgx).
 * Restore the current service point label to the profile dropdown button. Fixes STCOR-404.
-* Improve accessibility, add attribute `aria-label` to `nav` tag in Settings. Refs UICAL-85.   
+* Improve accessibility, add attribute `aria-label` to `nav` tag in Settings. Refs UICAL-85.
 
 ## [3.11.0](https://github.com/folio-org/stripes-core/tree/v3.11.0) (2019-12-04)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.10.2...v3.10.3)
