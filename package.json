@@ -75,7 +75,7 @@
     "@babel/register": "^7.0.0",
     "@bigtest/mirage": "^0.0.1",
     "@folio/react-intl-safe-html": "^1.0.2",
-    "@folio/stripes-components": "~5.10.0",
+    "@folio/stripes-components": "~5.9.0",
     "@folio/stripes-connect": "~5.5.0",
     "@folio/stripes-logger": "~1.0.0",
     "apollo-cache-inmemory": "^1.1.1",

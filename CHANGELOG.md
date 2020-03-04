@@ -3,6 +3,7 @@
 ## [3.12.0](https://github.com/folio-org/stripes-core/tree/v3.12.0) (2020-03-03)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v3.11.2...v3.12.0)
 
+* Upgrade babel to v7.x. Refs STCOR-381.
 * Update Mirage library. Part of STCOR-407.
 * Adjust Route propTypes to accept lazy loaded components. Refs STCOR-408.
 * Link `Change password` in `ProfileDropdown` shows up depending user's permissions. Refs STCOR-409.
