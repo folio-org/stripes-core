@@ -1,5 +1,3 @@
-
-
 export default function okapiReducer(state = {}, action) {
   switch (action.type) {
     case 'SET_OKAPI_TOKEN':

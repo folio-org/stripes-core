@@ -1,14 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-// import ReactDOM from 'react-dom';
 import RootCloseWrapper from 'react-overlays/lib/RootCloseWrapper';
 import css from './NavDropdownMenu.css';
 
 const propTypes = {
-  pullRight: PropTypes.bool,
-  size: PropTypes.string,
-  open: PropTypes.bool,
+  bsClass: PropTypes.string,
+  bsRole: PropTypes.string,
   children: PropTypes.element.isRequired,
+  labelledBy: PropTypes.string,
+  onClose: PropTypes.func,
+  onSelect: PropTypes.func,
+  onToggle: PropTypes.func,
+  open: PropTypes.bool,
+  pullRight: PropTypes.bool,
+  rootCloseEvent: PropTypes.func,
+  size: PropTypes.string,
 };
 
 class NavDropdownMenu extends React.Component {

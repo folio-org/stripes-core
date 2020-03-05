@@ -1,6 +1,13 @@
 {
   "extends": "@folio/eslint-config-stripes",
   "parser": "babel-eslint",
+  "rules": {
+    "global-require": "off",
+    "import/no-cycle": [ 2, { "maxDepth": 1 } ],
+    "import/no-dynamic-require": "off",
+    "import/no-extraneous-dependencies": "off",
+    "prefer-object-spread": "off"
+  },
   "overrides": [
     {
       "files": [ "src/**/tests/*", "test/**/*" ],
