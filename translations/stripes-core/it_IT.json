@@ -121,5 +121,6 @@
     "errors.password.repeatingSymbols.invalid": "La password non deve contenere caratteri ripetuti in sequenza (es. rossi, o palla, o 1125)",
     "errors.password.whiteSpace.invalid": "La password non deve contenere spazi bianchi.",
     "mainnav.myProfileAriaLabel": "Il mio profilo",
-    "mainnav.skipMainNavigation": "Skip Main Navigation"
+    "mainnav.skipMainNavigation": "Skip Main Navigation",
+    "errors.user.timeout": "Your session has expired. Please login again to resume your session."
 }

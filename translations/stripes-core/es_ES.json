@@ -121,5 +121,6 @@
     "errors.password.repeatingSymbols.invalid": "The password must not contain the same character in a row.",
     "errors.password.whiteSpace.invalid": "The password must not contain whitespaces.",
     "mainnav.myProfileAriaLabel": "Mi perfil",
-    "mainnav.skipMainNavigation": "Saltar navegación principal"
+    "mainnav.skipMainNavigation": "Saltar navegación principal",
+    "errors.user.timeout": "Your session has expired. Please login again to resume your session."
 }

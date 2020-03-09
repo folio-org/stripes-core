@@ -121,5 +121,6 @@
     "errors.password.repeatingSymbols.invalid": "Пароль не должен содержать один и тот же символ в строке.",
     "errors.password.whiteSpace.invalid": "Пароль не должен содержать пробелов.",
     "mainnav.myProfileAriaLabel": "Мой профиль",
-    "mainnav.skipMainNavigation": "Skip Main Navigation"
+    "mainnav.skipMainNavigation": "Skip Main Navigation",
+    "errors.user.timeout": "Your session has expired. Please login again to resume your session."
 }
