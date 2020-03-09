@@ -121,5 +121,6 @@
     "errors.password.repeatingSymbols.invalid": "يجب ألا تحتوي كلمة المرور على تسلسل متتالٍ لنفس الحرف",
     "errors.password.whiteSpace.invalid": "يجب ألا تحتوي كلمة المرور على مسافات.",
     "mainnav.myProfileAriaLabel": "ملفي الشخصي",
-    "mainnav.skipMainNavigation": "تخطي التصفح الرئيسي"
+    "mainnav.skipMainNavigation": "تخطي التصفح الرئيسي",
+    "errors.user.timeout": "لقد انتهت صلاحية الجلسة. يرجى إعادة تسجيل الدخول مرة أخرى لمتابعة الجلسة."
 }

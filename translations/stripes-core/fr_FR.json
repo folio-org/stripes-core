@@ -121,5 +121,6 @@
     "errors.password.repeatingSymbols.invalid": "Le mot de passe ne doit pas contenir le même caractère à la suite.",
     "errors.password.whiteSpace.invalid": "Le mot de passe ne doit pas contenir d'espaces.",
     "mainnav.myProfileAriaLabel": "Mon profil",
-    "mainnav.skipMainNavigation": "Passer la navigation principale"
+    "mainnav.skipMainNavigation": "Passer la navigation principale",
+    "errors.user.timeout": "Votre session a expiré. Veuillez vous reconnecter pour reprendre votre session."
 }
