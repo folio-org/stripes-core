@@ -27,14 +27,14 @@ fs.readFile(filename, 'utf8', (err, data) => { // eslint-disable-line consistent
 
   const json = JSON.parse(data);
   const stripes = json.stripes || {};
-  const interfaces = stripes.okapiInterfaces || [];
-  const optional = stripes.optionalOkapiInterfaces || [];
   const md = {
     id: `${json.name.replace(/^@/, '').replace('/', '_')}-${json.version}`,
     name: json.description,
     permissionSets: stripes.permissionSets || [],
   };
   if (strict) {
+    const interfaces = stripes.okapiInterfaces || [];
+    const optional = stripes.optionalOkapiInterfaces || [];
     md.requires = [].concat(
       Object.keys(interfaces).map(key => ({ id: key, version: interfaces[key] })),
       Object.keys(optional).map(key => ({ id: key, version: optional[key], optional: true })),
