@@ -20,6 +20,7 @@ if (!filename) {
   process.exit(1);
 }
 
+console.warn('*** WARNING: package2md.js is deprecated. Use `stripes mod descriptor --full` instead');
 fs.readFile(filename, 'utf8', (err, data) => { // eslint-disable-line consistent-return
   if (err) {
     return console.log(`${argv1}: cannot read file '${filename}': ${err}`);
