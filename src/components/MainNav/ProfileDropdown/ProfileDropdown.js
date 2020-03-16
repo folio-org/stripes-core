@@ -33,7 +33,7 @@ class ProfileDropdown extends Component {
         showPerms: PropTypes.bool,
         showHomeLink: PropTypes.bool,
       }),
-      hasPerm: PropTypes.bool,
+      hasPerm: PropTypes.func,
       okapi: PropTypes.object,
       user: PropTypes.shape({
         user: PropTypes.object,
