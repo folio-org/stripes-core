@@ -1,7 +1,10 @@
 # Change history for stripes-core
 
-## 4.1.0 (IN PROGRESS)
+## [4.1.0](https://github.com/folio-org/stripes-core/tree/v4.1.0) (2020-03-16)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v4.0.0...v4.1.0)
 
+* Security update `eslint` to `6.2.1`. Refs STCOR-412.
+* Support `stripes.optionalOkapiInterfaces`. Refs OKAPI-509.
 * Correctly configure react-hot-loader.
 
 ## [4.0.0](https://github.com/folio-org/stripes-core/tree/v4.0.0) (2020-03-04)
