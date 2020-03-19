@@ -197,7 +197,7 @@ Root.propTypes = {
   history: PropTypes.shape({
     action: PropTypes.string.isRequired,
     length: PropTypes.number.isRequired,
-    location: PropTypes.string,
+    location: PropTypes.object.isRequired,
     push: PropTypes.func.isRequired,
     replace: PropTypes.func.isRequired,
   }),
