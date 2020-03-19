@@ -12,7 +12,7 @@ import { withStripes } from '../../StripesContext';
 class TitledRoute extends React.Component {
   static propTypes = {
     component: PropTypes.element,
-    computedMatch: PropTypes.element,
+    computedMatch: PropTypes.object,
     name: PropTypes.string
   };
 
