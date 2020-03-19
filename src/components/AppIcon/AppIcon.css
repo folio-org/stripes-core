@@ -37,6 +37,7 @@
   transition: none;
   border-radius: 25%;
   background-color: var(--color-icon) !important;
+  color: var(--bg);
 
   &::after {
     content: "";
