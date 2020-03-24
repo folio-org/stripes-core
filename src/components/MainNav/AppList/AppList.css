@@ -63,6 +63,7 @@
 .dropdownBody {
   width: 100%;
   outline: 0;
+  padding: var(--gutter-static) 0;
 }
 
 .dropdownList {
@@ -76,17 +77,13 @@
 }
 
 .dropdownListItemLabel {
-  padding: 0 4px;
+  padding: 0 var(--gutter-static-one-third);
   min-width: 200px;
   font-weight: var(--text-weight-bold);
 }
 
 [dir="rtl"] .dropdownListItemLabel {
   text-align: right;
-}
-
-.dropdownHeader {
-  padding: 10px 10px 5px;
 }
 
 /**

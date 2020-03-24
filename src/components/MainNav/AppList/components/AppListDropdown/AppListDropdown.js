@@ -8,54 +8,46 @@ import sortBy from 'lodash/sortBy';
 import classnames from 'classnames';
 
 import NavListItem from '@folio/stripes-components/lib/NavListItem';
+import NavListSection from '@folio/stripes-components/lib/NavListSection';
 import NavListItemStyles from '@folio/stripes-components/lib/NavListItem/NavListItem.css';
 
 import AppIcon from '../../../../AppIcon';
 import css from '../../AppList.css';
 
 const AppListDropdown = ({ toggleDropdown, apps, listRef, selectedApp }) => (
-  <div className={css.dropdownBody} data-test-app-list-dropdown>
-    <ul
-      ref={listRef}
-      className={css.dropdownList}
-      role="menu"
-    >
-      {
-        sortBy(apps, app => app.displayName.toLowerCase()).map((app, index) => {
-          const isOddRow = !(index % 2);
-
-          return (
-            <li
-              role="none"
-              key={app.id}
-            >
-              <NavListItem
-                data-test-app-list-dropdown-item
-                data-test-app-list-dropdown-current-item={selectedApp && selectedApp.id === app.id}
-                key={index}
-                onClick={toggleDropdown}
-                to={app.href}
-                isActive={selectedApp && selectedApp.id === app.id}
-                className={classnames(css.dropdownListItem, { [NavListItemStyles.odd]: isOddRow })}
-                aria-label={app.displayName}
-                id={`app-list-dropdown-item-${app.id}`}
-                role="menuitem"
-              >
-                <AppIcon
-                  app={app.name}
-                  size="small"
-                  icon={app.iconData}
-                />
-                <span className={css.dropdownListItemLabel}>
-                  {app.displayName}
-                </span>
-              </NavListItem>
-            </li>
-          );
-        })
-      }
-    </ul>
-  </div>
+  <NavListSection
+    role="menu"
+    className={css.dropdownBody}
+    ref={listRef}
+    data-test-app-list-dropdown
+    striped
+  >
+    {
+      sortBy(apps, app => app.displayName.toLowerCase()).map(app => (
+        <NavListItem
+          key={app.id}
+          data-test-app-list-dropdown-item
+          data-test-app-list-dropdown-current-item={selectedApp && selectedApp.id === app.id}
+          onClick={toggleDropdown}
+          to={app.href}
+          isActive={selectedApp && selectedApp.id === app.id}
+          className={css.dropdownListItem}
+          aria-label={app.displayName}
+          id={`app-list-dropdown-item-${app.id}`}
+          role="menuitem"
+        >
+          <AppIcon
+            app={app.name}
+            size="small"
+            icon={app.iconData}
+          />
+          <span className={css.dropdownListItemLabel}>
+            {app.displayName}
+          </span>
+        </NavListItem>
+      ))
+    }
+  </NavListSection>
 );
 
 AppListDropdown.propTypes = {
