@@ -1,13 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 
 import ModulesContext, { originalModules } from '../../ModulesContext';
 
 class ModuleTranslator extends React.Component {
   static propTypes = {
     children: PropTypes.node,
-    intl: intlShape,
+    intl: PropTypes.object,
   }
 
   constructor(props) {

@@ -4,7 +4,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import Headline from '@folio/stripes-components/lib/Headline';
 import NavButton from '../NavButton';
 import css from './CurrentApp.css';
@@ -24,7 +24,7 @@ const propTypes = {
     },
   ),
   id: PropTypes.string,
-  intl: intlShape,
+  intl: PropTypes.object,
   badge: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.number,
