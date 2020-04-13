@@ -122,5 +122,5 @@
     "errors.password.whiteSpace.invalid": "密码不得包含空格。",
     "mainnav.myProfileAriaLabel": "我的个人资料",
     "mainnav.skipMainNavigation": "跳过主导航",
-    "errors.user.timeout": "Your session has expired. Please login again to resume your session."
+    "errors.user.timeout": "会话已过期。请再次登录以恢复会话。"
 }
