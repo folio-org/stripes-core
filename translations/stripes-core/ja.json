@@ -82,7 +82,7 @@
     "label.changed.password": "You've successfully changed your password.",
     "setPassword": "Set password",
     "settingPassword": "Setting password...",
-    "mainnav.showAllApplicationsButtonLabel": "App",
+    "mainnav.showAllApplicationsButtonLabel": "アプリ",
     "mainnav.showAllApplicationsButtonAriaLabel": "Show all applications",
     "mainnav.currentAppAriaLabel": "Current open application: {appName} (Click to go home)",
     "mainnav.topLevelLabel": "Primary",
