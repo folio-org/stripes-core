@@ -88,7 +88,7 @@
     "mainnav.topLevelLabel": "主要",
     "mainnav.applicationListLabel": "应用程序清单",
     "errors.default.error": "对不起, 输入的信息与我们的记录不符。",
-    "errors.username.incorrect": "验证用户存在时出错: 通过用户名 {username} 找不到用户",
+    "errors.username.incorrect": "找不到使用者 {username}，請洽館員。",
     "errors.password.incorrect": "凭据错误",
     "errors.user.blocked": "出于安全考虑，您的帐户已被锁定。请重试或联系您的FOLIO系统管理员。",
     "errors.password.match.error": "密码不匹配。重新输入您的密码。",
