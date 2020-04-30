@@ -137,6 +137,15 @@ class Root extends Component {
               currency={currency}
               messages={translations}
               textComponent={Fragment}
+              // The filtering that follows in onError was added as part of resolving UIU-488.
+              // We should remove it by May 15 2020 per STCOR-424.
+              onError={error => {
+                if (/React.Intl.*Missing.message.*\.permission\..*using.default.message/.test(error)) {
+                  return;
+                }
+
+                console.error(error); // eslint-disable-line
+              }}
             >
               <RootWithIntl
                 stripes={stripes}
