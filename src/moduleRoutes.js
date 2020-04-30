@@ -24,7 +24,15 @@ function getModuleRoutes(stripes) {
           if (!stripes.hasPerm(perm)) return null;
 
           const connect = connectFor(module.module, stripes.epics, stripes.logger);
-          const Current = connect(module.getModule());
+
+          let Current;
+          try {
+            Current = connect(module.getModule());
+          } catch (error) {
+            console.error(error); // eslint-disable-line
+            throw Error(error);
+          }
+
           const moduleStripes = stripes.clone({ connect });
 
           return (
