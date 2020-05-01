@@ -2,7 +2,6 @@ import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
-import SafeHTMLMessage from '@folio/react-intl-safe-html';
 import stripesConnect from '@folio/stripes-connect/package';
 import stripesComponents from '@folio/stripes-components/package';
 import stripesLogger from '@folio/stripes-logger/package';
@@ -171,10 +170,12 @@ const About = (props) => {
           <Headline size="small">
             <FormattedMessage id="stripes-core.about.legendKey" />
           </Headline>
-          <SafeHTMLMessage
+          <FormattedMessage
             id="stripes-core.about.notEnabledModules"
-            values={{ className: css.isEmptyMessage }}
             tagName="p"
+            values={{
+              span: (...chunks) => <span className={css.isEmptyMessage}>{chunks}</span>
+            }}
           />
           <br />
           <Headline>{numInterfacesMsg}</Headline>
@@ -202,14 +203,18 @@ const About = (props) => {
             <FormattedMessage id="stripes-core.about.legendKey" />
           </Headline>
           <p>
-            <SafeHTMLMessage
+            <FormattedMessage
               id="stripes-core.about.key.absentInterfaces"
-              values={{ className: css.absent }}
+              values={{
+                span: (...chunks) => <span className={css.absent}>{chunks}</span>
+              }}
             />
             <br />
-            <SafeHTMLMessage
+            <FormattedMessage
               id="stripes-core.about.key.incompatibleIntf"
-              values={{ className: css.incompatible }}
+              values={{
+                span: (...chunks) => <span className={css.incompatible}>{chunks}</span>
+              }}
             />
             <br />
             <FormattedMessage id="stripes-core.about.key.compatible" />
