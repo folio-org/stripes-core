@@ -1,5 +1,9 @@
 # Change history for stripes-core
 
+## 4.2.0 (IN PROGRESS)
+
+* Provide `useCurrentApp` hook.
+
 ## [4.1.0](https://github.com/folio-org/stripes-core/tree/v4.1.0) (2020-03-16)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v4.0.0...v4.1.0)
 

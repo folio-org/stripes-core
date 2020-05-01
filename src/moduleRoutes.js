@@ -1,5 +1,5 @@
-import React from 'react';
-import Route from 'react-router-dom/Route';
+import React, { useContext } from 'react';
+import { Route, useLocation } from 'react-router-dom';
 import { connectFor } from '@folio/stripes-connect';
 import ErrorBoundary from '@folio/stripes-components/lib/ErrorBoundary';
 import ModulesContext from './ModulesContext';
@@ -8,6 +8,7 @@ import AddContext from './AddContext';
 import TitleManager from './components/TitleManager';
 import { getHandlerComponents } from './handlerService';
 import events from './events';
+import { isQueryResourceModule } from './locationService';
 
 function getModuleRoutes(stripes) {
   return (
@@ -60,3 +61,13 @@ function getModuleRoutes(stripes) {
 }
 
 export default getModuleRoutes;
+
+export const useModules = () => useContext(ModulesContext);
+
+export const useCurrentApp = () => {
+  const modules = useModules();
+  const location = useLocation();
+
+  const { app, settings } = modules;
+  return app.concat(settings).find(m => isQueryResourceModule(m, location));
+};
