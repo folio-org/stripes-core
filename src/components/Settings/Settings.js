@@ -41,12 +41,19 @@ class Settings extends React.Component {
       .filter(x => stripes.hasPerm(`settings.${x.module.replace(/^@folio\//, '')}.enabled`))
       .sort((x, y) => x.displayName.toLowerCase().localeCompare(y.displayName.toLowerCase()))
       .map((m) => {
-        const connect = connectFor(m.module, stripes.epics, stripes.logger);
-        return {
-          module: m,
-          Component: connect(m.getModule()),
-          moduleStripes: stripes.clone({ connect }),
-        };
+        try {
+          const connect = connectFor(m.module, stripes.epics, stripes.logger);
+          const module = m.getModule();
+
+          return {
+            module: m,
+            Component: connect(module),
+            moduleStripes: stripes.clone({ connect }),
+          };
+        } catch (error) {
+          console.error(error); // eslint-disable-line
+          throw Error(error);
+        }
       });
   }
 
