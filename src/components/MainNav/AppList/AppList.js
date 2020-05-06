@@ -82,21 +82,20 @@ class AppList extends Component {
    * Get the nav buttons that is displayed
    * in the app header on desktop
    */
-  renderNavButtons = (refs, hiddenItemIds, itemWidths) => {
+  renderNavButtons = (hiddenItemIds, itemWidths) => {
     const { selectedApp, apps } = this.props;
 
     return (
       <ul className={css.navItemsList}>
         {
           apps.map(app => {
-            const hidden = hiddenItemIds.includes(app.id);
+            const isHidden = hiddenItemIds.includes(app.id);
 
             return (
               <li
-                className={classnames(css.navItem, { [css.hidden]: hidden })}
+                className={classnames(css.navItem, { [css.hidden]: isHidden })}
                 key={app.id}
-                ref={refs[app.id]}
-                aria-hidden={hidden}
+                aria-hidden={isHidden}
                 style={{ width: itemWidths[app.id] }}
               >
                 <NavButton
@@ -209,13 +208,13 @@ class AppList extends Component {
 
     return (
       <ResizeContainer items={apps} hideAllWidth={767}>
-        {({ refs, hiddenItems, itemWidths }) => {
+        {({ hiddenItems, itemWidths }) => {
           return (
             <nav className={css.appList} aria-labelledby="main_app_list_label" data-test-app-list>
               <h3 className="sr-only" id="main_app_list_label">
                 <FormattedMessage id="stripes-core.mainnav.applicationListLabel" />
               </h3>
-              {this.renderNavButtons(refs, hiddenItems, itemWidths)}
+              {this.renderNavButtons(hiddenItems, itemWidths)}
               {this.renderNavDropdown(hiddenItems)}
             </nav>
           );
