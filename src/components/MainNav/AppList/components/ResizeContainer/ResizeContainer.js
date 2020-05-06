@@ -11,6 +11,7 @@ import css from './ResizeContainer.css';
 class ResizeContainer extends React.Component {
   static propTypes = {
     children: PropTypes.func,
+    currentAppId: PropTypes.string,
     className: PropTypes.string,
     hideAllWidth: PropTypes.number,
     items: PropTypes.arrayOf(PropTypes.object),
@@ -36,6 +37,14 @@ class ResizeContainer extends React.Component {
   componentDidMount() {
     this.initialize();
     window.addEventListener('resize', this.onResize, true);
+  }
+
+  componentDidUpdate(prevProps) {
+    // Update hidden items when the current app ID changes
+    // to make sure that no items are hidden behind the current app label
+    if (this.props.currentAppId && this.props.currentAppId !== prevProps.currentAppId) {
+      this.updateHiddenItems();
+    }
   }
 
   componentWillUnmount() {
