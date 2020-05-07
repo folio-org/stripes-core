@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { isEqual, find } from 'lodash';
 import { compose } from 'redux';
-import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import { withRouter } from 'react-router';
 import localforage from 'localforage';
 
@@ -29,7 +29,7 @@ import settingsIcon from './settings.svg';
 
 class MainNav extends Component {
   static propTypes = {
-    intl: intlShape,
+    intl: PropTypes.object,
     stripes: PropTypes.shape({
       config: PropTypes.shape({
         showPerms: PropTypes.bool,
