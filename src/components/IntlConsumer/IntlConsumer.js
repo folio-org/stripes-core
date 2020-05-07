@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 
 const IntlConsumer = ({ intl, children }) => (
   children(intl)
@@ -7,7 +7,7 @@ const IntlConsumer = ({ intl, children }) => (
 
 IntlConsumer.propTypes = {
   children: PropTypes.func,
-  intl: intlShape,
+  intl: PropTypes.object,
 };
 
 export default injectIntl(IntlConsumer);
