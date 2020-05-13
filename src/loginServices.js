@@ -1,7 +1,6 @@
 import _ from 'lodash';
 import 'isomorphic-fetch';
 import localforage from 'localforage';
-import { addLocaleData } from 'react-intl';
 import { translations } from 'stripes-config';
 import rtlDetect from 'rtl-detect';
 import moment from 'moment';
@@ -59,12 +58,7 @@ export function loadTranslations(store, locale, defaultTranslations = {}) {
     });
   }
 
-  return import(`react-intl/locale-data/${parentLocale}`)
-    .then(intlData => addLocaleData(intlData.default || intlData))
-    // fetch the region-specific translations, e.g. pt-BR, if available.
-    // fall back to the generic locale, e.g. pt, if not available.
-    // default translations can be passed in if certain strings are not available.
-    .then(() => fetch(translations[region] ? translations[region] : translations[parentLocale]))
+  return fetch(translations[region] ? translations[region] : translations[parentLocale])
     .then((response) => {
       if (response.ok) {
         response.json().then((stripesTranslations) => {
