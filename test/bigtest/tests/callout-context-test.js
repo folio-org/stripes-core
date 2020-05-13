@@ -82,8 +82,8 @@ describe('CalloutContext', () => {
   });
 
   describe('navigating to the Context app that shows an error Callout', () => {
-    beforeEach(async () => {
-      await app.nav('Context').click();
+    beforeEach(function () {
+      this.visit('/context');
     });
 
     it('shows a error callout', () => {
