@@ -1,5 +1,9 @@
 # Change history for stripes-core
 
+## 5.0.0 (IN PROGRESS)
+
+* Provide `react-intl` as a dev-dep. Refs STRIPES-672.
+
 ## 4.2.0 (IN PROGRESS)
 
 * Pin `moment` at `~2.24.0`. Refs STRIPES-678.
