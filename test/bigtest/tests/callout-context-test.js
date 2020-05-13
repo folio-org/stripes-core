@@ -86,7 +86,7 @@ describe('CalloutContext', () => {
       this.visit('/context');
     });
 
-    it('shows a error callout', () => {
+    it.only('shows a error callout', () => {
       expect(callout.errorCalloutIsPresent).to.be.true;
     });
 
