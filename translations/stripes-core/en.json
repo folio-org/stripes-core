@@ -125,6 +125,7 @@
   "errors.password.keyboardSequence.invalid": "The password must not contain a keyboard sequence.",
   "errors.password.repeatingSymbols.invalid": "The password must not contain the same character in a row.",
   "errors.password.whiteSpace.invalid": "The password must not contain whitespaces.",
+  "errors.password.consecutiveWhitespaces.invalid": "The password must not contain consecutive white space characters.",
 
   "createResetPassword.header": "Choose a password",
   "createResetPassword.newPassword": "New Password",
