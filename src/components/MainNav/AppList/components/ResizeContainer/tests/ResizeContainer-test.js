@@ -37,7 +37,7 @@ const ResizeContainerMock = ({ items, wrapperWidth, itemWidth, hideAllWidth, off
     <div dir={withRTL ? 'rtl' : 'ltr'}>
       <div style={{ maxWidth: wrapperWidth, backgroundColor: 'green', height: 100 }}>
         <ResizeContainer className="my-test-interactor" items={items} hideAllWidth={hideAllWidth} offset={offset}>
-          {({ refs, hiddenItems }) => (
+          {({ hiddenItems }) => (
             <div style={{ display: 'flex', flex: 1, minWidth: 0, justifyContent: 'flex-end' }}>
               {items.map(item => {
                 const isHidden = hiddenItems.includes(item.id);
@@ -46,16 +46,19 @@ const ResizeContainerMock = ({ items, wrapperWidth, itemWidth, hideAllWidth, off
                   <span
                     {...{ [!isHidden ? 'data-test-resize-container-visible-item' : 'data-test-resize-container-hidden-item']: true }}
                     key={item.id}
-                    ref={refs[item.id]}
                     style={{
-                      width: itemWidth,
                       flexShrink: 0,
-                      backgroundColor: 'yellow',
                       height: 50,
                       visibility: !isHidden ? 'visible' : 'hidden'
                     }}
                   >
-                    {!isHidden ? `Visible Item ${item.id}` : 'Not visible'}
+                    <button
+                      id={`app-list-item-${item.id}`}
+                      type="button"
+                      style={{ width: itemWidth, backgroundColor: 'yellow' }}
+                    >
+                      {!isHidden ? `Visible Item ${item.id}` : 'Not visible'}
+                    </button>
                   </span>
                 );
               })}
