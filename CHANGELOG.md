@@ -3,6 +3,8 @@
 ## 5.0.0 (IN PROGRESS)
 
 * Provide `react-intl` as a dev-dep. Refs STRIPES-672.
+* Moved `<OverlayContainer>` into the main content area to fix an aXe warning. Refs STCOR-419.
+
 
 ## 4.2.0 (IN PROGRESS)
 
