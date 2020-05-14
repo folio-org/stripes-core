@@ -73,6 +73,7 @@ class RootWithIntl extends React.Component {
 
     return (
       <StripesContext.Provider value={stripes}>
+        <Callout ref={this.callout} />
         <CalloutContext.Provider value={this.callout}>
           <ModuleTranslator>
             <TitleManager>
@@ -172,7 +173,6 @@ class RootWithIntl extends React.Component {
             </TitleManager>
           </ModuleTranslator>
         </CalloutContext.Provider>
-        <Callout ref={this.callout} />
       </StripesContext.Provider>
     );
   }
