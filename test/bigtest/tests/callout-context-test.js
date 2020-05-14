@@ -12,7 +12,7 @@ import AppInteractor from '../interactors/app';
 
 const HookApp = () => {
   const callout = useContext(CalloutContext);
-  callout.sendCallout({ message: 'Hook', type: 'success' });
+  callout.current.sendCallout({ message: 'Hook', type: 'success' });
   return <h1>Hook App</h1>;
 };
 
@@ -20,7 +20,7 @@ class ContextApp extends Component {
   static contextType = CalloutContext;
 
   componentDidMount() {
-    this.context.sendCallout({ message: 'Context', type: 'error' });
+    this.context.current.sendCallout({ message: 'Context', type: 'error' });
   }
 
   render() {
@@ -30,7 +30,7 @@ class ContextApp extends Component {
 
 const CalloutFreeApp = () => <h1>No Callouts!</h1>;
 
-describe('CalloutContext', () => {
+describe.only('CalloutContext', () => {
   const app = new AppInteractor();
   const callout = new CalloutInteractor();
 
@@ -86,7 +86,17 @@ describe('CalloutContext', () => {
       this.visit('/context');
     });
 
-    it.only('shows a error callout', () => {
+    it('shows a error callout', () => {
+      expect(callout.errorCalloutIsPresent).to.be.true;
+    });
+  });
+
+  describe('navigating to the Context app that shows an error Callout', () => {
+    beforeEach(async () => {
+      await app.nav('Context').click();
+    });
+
+    it('shows a error callout', () => {
       expect(callout.errorCalloutIsPresent).to.be.true;
     });
 
