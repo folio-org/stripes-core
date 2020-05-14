@@ -73,7 +73,7 @@ class RootWithIntl extends React.Component {
 
     return (
       <StripesContext.Provider value={stripes}>
-        <CalloutContext.Provider value={this.callout.current}>
+        <CalloutContext.Provider value={this.callout}>
           <ModuleTranslator>
             <TitleManager>
               <HotKeys

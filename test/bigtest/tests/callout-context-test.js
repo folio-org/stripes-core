@@ -12,7 +12,7 @@ import AppInteractor from '../interactors/app';
 
 const HookApp = () => {
   const callout = useContext(CalloutContext);
-  callout.sendCallout({ message: 'Hook', type: 'success' });
+  callout.current.sendCallout({ message: 'Hook', type: 'success' });
   return <h1>Hook App</h1>;
 };
 
@@ -20,7 +20,7 @@ class ContextApp extends Component {
   static contextType = CalloutContext;
 
   componentDidMount() {
-    this.context.sendCallout({ message: 'Context', type: 'error' });
+    this.context.current.sendCallout({ message: 'Context', type: 'error' });
   }
 
   render() {
@@ -30,7 +30,7 @@ class ContextApp extends Component {
 
 const CalloutFreeApp = () => <h1>No Callouts!</h1>;
 
-describe('CalloutContext', () => {
+describe.only('CalloutContext', () => {
   const app = new AppInteractor();
   const callout = new CalloutInteractor();
 
@@ -98,6 +98,26 @@ describe('CalloutContext', () => {
       it('continues to show the previous error callout', () => {
         expect(callout.errorCalloutIsPresent).to.be.true;
       });
+    });
+  });
+
+  describe('loading the Context app directly via URL', () => {
+    beforeEach(function () {
+      this.visit('/context');
+    });
+
+    it('shows a error callout', () => {
+      expect(callout.errorCalloutIsPresent).to.be.true;
+    });
+  });
+
+  describe('loading the Hook app directly via URL', () => {
+    beforeEach(function () {
+      this.visit('/hook');
+    });
+
+    it('shows a success callout', () => {
+      expect(callout.successCalloutIsPresent).to.be.true;
     });
   });
 });

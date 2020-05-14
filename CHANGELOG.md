@@ -3,6 +3,7 @@
 ## 5.0.0 (IN PROGRESS)
 
 * Provide `react-intl` as a dev-dep. Refs STRIPES-672.
+* BREAKING: Changed `CalloutContext` to provide `context` rather than `context.current`. Refs CHAL-300
 
 ## 4.2.0 (IN PROGRESS)
 
