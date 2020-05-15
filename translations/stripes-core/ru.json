@@ -25,15 +25,15 @@
     "about.forTenant": "Для арендатора {tenant}",
     "about.onUrl": "На URL-адрес {url}",
     "about.legendKey": "Ключ",
-    "about.notEnabledModules": "Установленные модули, которые не доступны для этого арендатора, отображаются <span> серым цветом </span>.",
+    "about.notEnabledModules": "Установленные модули, которые не доступны для этого арендатора, отображаются <span class='{className}'> серым цветом </span>.",
     "about.moduleCount": "{count, number} {count, plural, one {module} other {modules}}",
     "about.interfaceCount": "{count, number} {count, plural, one {interface} other {interfaces}}",
     "about.uiOrServiceDependencies": "UI / сервисные зависимости",
     "about.moduleDependsOn": "{module} зависит от:",
     "about.newerModuleAvailable": "{запросить} ({доступно} доступно)",
     "about.noDependencies": "В {базе} не существует связей",
-    "about.key.absentInterfaces": "Интерфейсы, которые необходимы, но отсутствуют, выделены <span>жирным красным</span>.",
-    "about.key.incompatibleIntf": "Интерфейсы, которые необходимы, но присутствуют только в несовместимой версии, выделены <span>оранжевым</span>.",
+    "about.key.absentInterfaces": "Интерфейсы, которые необходимы, но отсутствуют, выделены <span class='{className}'>жирным красным</span>.",
+    "about.key.incompatibleIntf": "Интерфейсы, которые необходимы, но присутствуют только в несовместимой версии, выделены <span class='{className}'>оранжевым</span>.",
     "about.key.compatible": "Интерфейсы, присутствующие в совместимой версии, отображаются обычным шрифтом.",
     "about.moduleTypeCount": "{count, number} {type} {count, plural, one {module} other {modules}}",
     "about.appModuleCount": "{count, number} app {count, plural, one {module} other {modules}}",
@@ -122,5 +122,6 @@
     "errors.password.whiteSpace.invalid": "Пароль не должен содержать пробелов.",
     "mainnav.myProfileAriaLabel": "Мой профиль",
     "mainnav.skipMainNavigation": "Skip Main Navigation",
-    "errors.user.timeout": "Your session has expired. Please login again to resume your session."
+    "errors.user.timeout": "Your session has expired. Please login again to resume your session.",
+    "errors.password.consecutiveWhitespaces.invalid": "Пароль не должен содержать последовательных пробелов."
 }

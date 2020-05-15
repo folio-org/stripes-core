@@ -25,15 +25,15 @@
     "about.forTenant": "Für Mandanten {tenant}",
     "about.onUrl": "An der URL {url}",
     "about.legendKey": "Legende",
-    "about.notEnabledModules": "Installierte Module, die für diesen Mandanten nicht aktiviert sind, erscheinen <span>in grau</span>.",
+    "about.notEnabledModules": "Installierte Module, die für diesen Mandanten nicht aktiviert sind, erscheinen <span class='{className}'>in grau</span>.",
     "about.moduleCount": "{count, number} {count, plural, one {Modul} other {Module}}",
     "about.interfaceCount": "{count, number} {count, plural, one {Interface} other {Interfaces}}",
     "about.uiOrServiceDependencies": "Abhängigkeiten",
     "about.moduleDependsOn": "{module} hängt ab von:",
     "about.newerModuleAvailable": "{required} ({available} verfügbar)",
     "about.noDependencies": "{base} deklariert keine Abhängigkeiten",
-    "about.key.absentInterfaces": "Interfaces, die erforderlich sind, aber fehlen, werden <span>fett und rot</span> hervorgehoben.",
-    "about.key.incompatibleIntf": "Interfaces, die erforderlich sind, aber nur in inkompatibler Version bereitstehen, werden <span>orange</span> hervorgehoben.",
+    "about.key.absentInterfaces": "Interfaces, die erforderlich sind, aber fehlen, werden <span class='{className}'>fett und rot</span> hervorgehoben.",
+    "about.key.incompatibleIntf": "Interfaces, die erforderlich sind, aber nur in inkompatibler Version bereitstehen, werden <span class='{className}'>orange</span> hervorgehoben.",
     "about.key.compatible": "Interfaces, die in kompatibler Version bereitstehen, erscheinen in normaler Schrift.",
     "about.moduleTypeCount": "{count, number} {type}-{count, plural, one {Modul} other {Module}}",
     "about.appModuleCount": "{count, number} {count, plural, one {Appmodul} other {Appmodule}}",
@@ -122,5 +122,6 @@
     "errors.password.whiteSpace.invalid": "The password must not contain whitespaces.",
     "mainnav.myProfileAriaLabel": "My profile",
     "mainnav.skipMainNavigation": "Skip Main Navigation",
-    "errors.user.timeout": "Your session has expired. Please login again to resume your session."
+    "errors.user.timeout": "Your session has expired. Please login again to resume your session.",
+    "errors.password.consecutiveWhitespaces.invalid": "The password must not contain consecutive white space characters."
 }
