@@ -84,7 +84,6 @@ class RootWithIntl extends React.Component {
                   <Router history={history}>
                     { token || disableAuth ?
                       <MainContainer>
-                        <OverlayContainer />
                         <AppCtxMenuProvider>
                           <MainNav stripes={stripes} />
                           <HandlerManager
@@ -93,6 +92,7 @@ class RootWithIntl extends React.Component {
                           />
                           { (stripes.okapi !== 'object' || stripes.discovery.isFinished) && (
                             <ModuleContainer id="content">
+                              <OverlayContainer />
                               <Switch>
                                 <TitledRoute
                                   name="home"
