@@ -3,6 +3,5 @@
   pointer-events: none;
   z-index: 9999;
   width: 100vw;
-  top: 0;
-  bottom: 0;
+  height: 100vw;
 }
