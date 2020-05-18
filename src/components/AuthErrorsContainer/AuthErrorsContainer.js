@@ -21,7 +21,12 @@ export default class AuthErrorsContainer extends Component {
     const values = parameters.reduce((res, { key, value }) => ({ ...res, [key]: value }), {});
 
     return (
-      <li key={`${code}-${type}`}>
+      <li
+        key={`${code}-${type}`}
+        aria-invalid
+        aria-live="assertive"
+        role="alert"
+      >
         <FormattedMessage
           id={`${translationNamespace}.${code}`}
           values={values}
@@ -35,7 +40,10 @@ export default class AuthErrorsContainer extends Component {
     const messages = errors.map(this.getErrorMessage);
 
     return (
-      <ul className={styles.AuthErrorsList}>
+      <ul
+        className={styles.AuthErrorsList}
+        tabIndex="0" // eslint-disable-line jsx-a11y/no-noninteractive-tabindex
+      >
         {messages}
       </ul>
     );
