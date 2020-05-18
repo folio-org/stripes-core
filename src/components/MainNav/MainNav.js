@@ -184,7 +184,7 @@ class MainNav extends Component {
   }
 
   render() {
-    const { stripes } = this.props;
+    const { stripes, intl } = this.props;
 
     return (
       <LastVisitedContext.Consumer>
@@ -198,10 +198,7 @@ class MainNav extends Component {
                 <SkipLink />
                 <CurrentAppGroup selectedApp={selectedApp} config={stripes.config} />
               </div>
-              <nav aria-labelledby="main_navigation_label" className={css.endSection}>
-                <h2 className="sr-only" id="main_navigation_label">
-                  <FormattedMessage id="stripes-core.mainnav.topLevelLabel" />
-                </h2>
+              <nav aria-label={intl.formatMessage({ id: 'stripes-core.mainnav.topLevelLabel' })} className={css.endSection}>
                 <AppList
                   apps={apps}
                   selectedApp={selectedApp}
