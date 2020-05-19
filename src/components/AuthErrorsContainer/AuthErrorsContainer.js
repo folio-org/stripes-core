@@ -40,10 +40,7 @@ export default class AuthErrorsContainer extends Component {
     const messages = errors.map(this.getErrorMessage);
 
     return (
-      <ul
-        className={styles.AuthErrorsList}
-        tabIndex="0" // eslint-disable-line jsx-a11y/no-noninteractive-tabindex
-      >
+      <ul className={styles.AuthErrorsList}>
         {messages}
       </ul>
     );
