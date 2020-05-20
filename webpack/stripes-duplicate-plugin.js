@@ -11,7 +11,6 @@ const duplicatesNotAllowed = [
   'react-intl',
   'react-router',
   'react-router-dom',
-  'redux',
   'stripes',
   'stripes-core',
   'stripes-components',
