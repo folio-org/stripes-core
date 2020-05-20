@@ -21,15 +21,23 @@ const duplicatesNotAllowed = [
   'stripes-smart-components',
 ];
 
-function StripesDuplicatePlugin() {}
+module.exports = class StripesDuplicatePlugin {
+  constructor(options) {
+    this.config = options.config || {};
+  }
 
-StripesDuplicatePlugin.prototype.apply = (compiler) => {
-  // This will error when duplicates of specific modules are found
-  new DuplicatePackageCheckerPlugin({
-    exclude: instance => !duplicatesNotAllowed.includes(instance.name),
-    verbose: true,
-    emitError: true,
-  }).apply(compiler);
+  apply(compiler) {
+    // This will surface duplicates as warnings if configured to
+    if (this.config.warnAboutAllDuplicatePackages) {
+      new DuplicatePackageCheckerPlugin().apply(compiler);
+    }
+
+
+    // This will error when duplicates of specific modules are found
+    new DuplicatePackageCheckerPlugin({
+      exclude: instance => !duplicatesNotAllowed.includes(instance.name),
+      verbose: true,
+      emitError: true,
+    }).apply(compiler);
+  }
 };
-
-module.exports = StripesDuplicatePlugin;
