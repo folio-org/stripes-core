@@ -1,13 +1,14 @@
 # Change history for stripes-core
 
-## 5.0.0 (IN PROGRESS)
+## [5.0.0](https://github.com/folio-org/stripes-core/tree/v5.0.0) (2020-05-19)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v4.1.0...v5.0.0)
 
+* `PropTypes` corrections for `history.location` et al.
+* Style tweaks for `<NavList>`, apps menu.
+* Suppress `react-intl` warnings about missing permissions translations. Refs STCOR-424.
+* Support loan-storage v7. Refs STCOR-425.
 * Provide `react-intl` as a dev-dep. Refs STRIPES-672.
 * Moved `<OverlayContainer>` into the main content area to fix an aXe warning. Refs STCOR-419.
-
-
-## 4.2.0 (IN PROGRESS)
-
 * Pin `moment` at `~2.24.0`. Refs STRIPES-678.
 
 ## [4.1.0](https://github.com/folio-org/stripes-core/tree/v4.1.0) (2020-03-16)
