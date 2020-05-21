@@ -123,5 +123,5 @@
     "mainnav.myProfileAriaLabel": "Mon profil",
     "mainnav.skipMainNavigation": "Passer la navigation principale",
     "errors.user.timeout": "Votre session a expiré. Veuillez vous reconnecter pour reprendre votre session.",
-    "errors.password.consecutiveWhitespaces.invalid": "The password must not contain consecutive white space characters."
+    "errors.password.consecutiveWhitespaces.invalid": "Le mot de passe ne doit pas contenir de caractères blancs consécutifs."
 }
