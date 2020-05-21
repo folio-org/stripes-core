@@ -23,7 +23,6 @@ export default class AuthErrorsContainer extends Component {
     return (
       <li
         key={`${code}-${type}`}
-        aria-invalid
         aria-live="assertive"
         role="alert"
       >
