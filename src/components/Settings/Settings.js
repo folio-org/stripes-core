@@ -16,6 +16,7 @@ import { StripesContext } from '../../StripesContext';
 import AddContext from '../../AddContext';
 import { withModules } from '../Modules';
 import { stripesShape } from '../../Stripes';
+import AppIcon from '../AppIcon';
 
 import css from './Settings.css';
 
@@ -59,14 +60,22 @@ class Settings extends React.Component {
 
   render() {
     const { stripes, location } = this.props;
-    const navLinks = this.connectedModules.map(({ module }) => (
-      <NavListItem
-        key={module.route}
-        to={`/settings${module.route}`}
-      >
-        {module.displayName}
-      </NavListItem>
-    ));
+    const navLinks = this.connectedModules.map(({ module }) => {
+      const iconData = module.module.replace(/^@[a-z0-9_]+\//, '');
+      return (
+        <NavListItem
+          key={module.route}
+          to={`/settings${module.route}`}
+        >
+          <AppIcon
+            alt={module.displayName}
+            app={iconData}
+            className={css.appIcon}
+          />
+          {module.displayName}
+        </NavListItem>
+      );
+    });
 
     const routes = this.connectedModules.map(({ module, Component, moduleStripes }) => {
       return (<Route

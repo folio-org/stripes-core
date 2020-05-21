@@ -1,5 +1,9 @@
 # Change history for stripes-core
 
+## 5.1.0 (IN PROGRESS)
+
+* Show app icons in the settings navigation. It's pretty.
+
 ## [5.0.0](https://github.com/folio-org/stripes-core/tree/v5.0.0) (2020-05-19)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v4.1.0...v5.0.0)
 
