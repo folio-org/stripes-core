@@ -1,7 +1,7 @@
 .overlayContainer {
-  position: fixed;
+  position: absolute;
   pointer-events: none;
   z-index: 9999;
-  width: 100vw;
-  height: 100vw;
+  width: 100%;
+  height: 100%;
 }
