@@ -70,9 +70,11 @@ class Settings extends React.Component {
           <AppIcon
             alt={module.displayName}
             app={iconData}
-            className={css.appIcon}
-          />
-          {module.displayName}
+            size="small"
+            iconClassName={css.appIcon}
+          >
+            {module.displayName}
+          </AppIcon>
         </NavListItem>
       );
     });
