@@ -7,7 +7,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import classNames from 'classnames';
+import classnames from 'classnames';
 import { withStripes } from '../../StripesContext';
 import css from './AppIcon.css';
 
@@ -24,6 +24,7 @@ const AppIcon = ({
   tag,
   app,
   iconKey,
+  iconClassName,
   stripes,
 }) => {
   const getIcon = () => {
@@ -84,7 +85,7 @@ const AppIcon = ({
   /**
    * Root CSS styles
    */
-  const rootStyles = classNames(
+  const rootStyles = classnames(
     /* Base app icon styling */
     css.appIcon,
     /* Icon size */
@@ -105,7 +106,7 @@ const AppIcon = ({
    */
   return (
     <Element className={rootStyles} style={style}>
-      <span className={css.icon} aria-hidden={iconAriaHidden}>
+      <span className={classnames(css.icon, iconClassName)} aria-hidden={iconAriaHidden}>
         {getIcon()}
       </span>
       { children && <span className={css.label}>{children}</span> }
@@ -122,6 +123,7 @@ AppIcon.propTypes = {
     alt: PropTypes.string,
     src: PropTypes.string.isRequired,
   }),
+  iconClassName: PropTypes.string,
   iconAriaHidden: PropTypes.bool,
   iconAlignment: PropTypes.oneOf(['center', 'baseline']),
   iconKey: PropTypes.string,

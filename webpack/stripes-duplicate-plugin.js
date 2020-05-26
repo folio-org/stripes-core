@@ -7,31 +7,37 @@ const DuplicatePackageCheckerPlugin = require('duplicate-package-checker-webpack
 // Module names that must not have duplicates
 const duplicatesNotAllowed = [
   'react',
+  'react-dom',
+  'react-intl',
+  'react-router',
+  'react-router-dom',
+  'rxjs',
+  'stripes',
   'stripes-core',
   'stripes-components',
-  'stripes-smart-components',
-  'stripes-form',
   'stripes-connect',
+  'stripes-final-form',
+  'stripes-form',
+  'stripes-smart-components',
 ];
 
-// Module names that are acceptable to have duplicates
-const duplicatesAllowed = [
-];
+module.exports = class StripesDuplicatePlugin {
+  constructor(options) {
+    this.config = options.config || {};
+  }
 
-function StripesDuplicatePlugin() {}
+  apply(compiler) {
+    // This will surface duplicates as warnings if configured to
+    if (this.config.warnAboutAllDuplicatePackages) {
+      new DuplicatePackageCheckerPlugin().apply(compiler);
+    }
 
-StripesDuplicatePlugin.prototype.apply = (compiler) => {
-  // This will surface duplicates as warnings
-  new DuplicatePackageCheckerPlugin({
-    exclude: instance => duplicatesAllowed.includes(instance.name),
-  }).apply(compiler);
 
-  // This will error when duplicates of specific modules are found
-  new DuplicatePackageCheckerPlugin({
-    exclude: instance => !duplicatesNotAllowed.includes(instance.name),
-    verbose: true,
-    emitError: true,
-  }).apply(compiler);
+    // This will error when duplicates of specific modules are found
+    new DuplicatePackageCheckerPlugin({
+      exclude: instance => !duplicatesNotAllowed.includes(instance.name),
+      verbose: true,
+      emitError: true,
+    }).apply(compiler);
+  }
 };
-
-module.exports = StripesDuplicatePlugin;

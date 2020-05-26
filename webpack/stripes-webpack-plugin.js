@@ -22,7 +22,7 @@ module.exports = class StripesWebpackPlugin {
         buildAllFavicons: isProduction,
       }),
       new StripesTranslationsPlugin(this.stripesConfig),
-      new StripesDuplicatesPlugin(),
+      new StripesDuplicatesPlugin(this.stripesConfig),
     ];
 
     logger.log('Applying Stripes plugins...');
