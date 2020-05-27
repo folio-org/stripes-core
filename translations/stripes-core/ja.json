@@ -83,7 +83,7 @@
     "setPassword": "Set password",
     "settingPassword": "Setting password...",
     "mainnav.showAllApplicationsButtonLabel": "アプリ",
-    "mainnav.showAllApplicationsButtonAriaLabel": "Show all applications",
+    "mainnav.showAllApplicationsButtonAriaLabel": "All applications",
     "mainnav.currentAppAriaLabel": "Current open application: {appName} (Click to go home)",
     "mainnav.topLevelLabel": "Primary",
     "mainnav.applicationListLabel": "Application List",

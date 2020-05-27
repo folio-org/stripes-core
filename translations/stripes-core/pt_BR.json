@@ -83,7 +83,7 @@
     "setPassword": "Configurar senha",
     "settingPassword": "Configurando senha ...",
     "mainnav.showAllApplicationsButtonLabel": "Aplicativos",
-    "mainnav.showAllApplicationsButtonAriaLabel": "Mostrar todos os aplicativos",
+    "mainnav.showAllApplicationsButtonAriaLabel": "Todas as aplicações",
     "mainnav.currentAppAriaLabel": "Aplicativo aberto atual: {appName} (Clique para ir para o início)",
     "mainnav.topLevelLabel": "Primário",
     "mainnav.applicationListLabel": "Lista de aplicativos",
