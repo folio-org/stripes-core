@@ -134,25 +134,23 @@ class AppList extends Component {
     );
 
     return (
-      <>
-        <FormattedMessage id="stripes-core.mainnav.showAllApplicationsButtonAriaLabel">
-          { ariaLabel => (
-            <NavButton
-              data-test-app-list-apps-toggle
-              label={label}
-              aria-label={ariaLabel}
-              className={css.navMobileToggle}
-              labelClassName={css.dropdownToggleLabel}
-              onClick={this.toggleDropdown}
-              selected={this.state.open}
-              icon={icon}
-              {...getTriggerProps()}
-              id={dropdownToggleId}
-              noSelectedBar
-            />
-          )}
-        </FormattedMessage>
-      </>
+      <FormattedMessage id="stripes-core.mainnav.showAllApplicationsButtonAriaLabel">
+        { ariaLabel => (
+          <NavButton
+            data-test-app-list-apps-toggle
+            label={label}
+            aria-label={ariaLabel}
+            className={css.navMobileToggle}
+            labelClassName={css.dropdownToggleLabel}
+            onClick={this.toggleDropdown}
+            selected={this.state.open}
+            icon={icon}
+            {...getTriggerProps()}
+            id={dropdownToggleId}
+            noSelectedBar
+          />
+        )}
+      </FormattedMessage>
     );
   }
 
@@ -210,13 +208,10 @@ class AppList extends Component {
       <ResizeContainer items={apps} hideAllWidth={767} currentAppId={selectedApp && selectedApp.id}>
         {({ hiddenItems, itemWidths }) => {
           return (
-            <nav className={css.appList} aria-labelledby="main_app_list_label" data-test-app-list>
-              <h3 className="sr-only" id="main_app_list_label">
-                <FormattedMessage id="stripes-core.mainnav.applicationListLabel" />
-              </h3>
+            <div className={css.appList} data-test-app-list>
               {this.renderNavButtons(hiddenItems, itemWidths)}
               {this.renderNavDropdown(hiddenItems)}
-            </nav>
+            </div>
           );
         }
       }
