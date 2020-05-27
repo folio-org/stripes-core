@@ -83,7 +83,7 @@
     "setPassword": "Définir le mot de passe",
     "settingPassword": "Définition du mot de passe ...",
     "mainnav.showAllApplicationsButtonLabel": "Applications",
-    "mainnav.showAllApplicationsButtonAriaLabel": "Afficher toutes les applications",
+    "mainnav.showAllApplicationsButtonAriaLabel": "Toutes les applications",
     "mainnav.currentAppAriaLabel": "Application actuellement ouverte: {appName} (Cliquer pour retourner à l'accueil)",
     "mainnav.topLevelLabel": "Principal",
     "mainnav.applicationListLabel": "Liste d'applications",
