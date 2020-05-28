@@ -21,15 +21,16 @@ export default class AuthErrorsContainer extends Component {
     const values = parameters.reduce((res, { key, value }) => ({ ...res, [key]: value }), {});
 
     return (
-      <li
-        key={`${code}-${type}`}
-        aria-live="assertive"
-        role="alert"
-      >
-        <FormattedMessage
-          id={`${translationNamespace}.${code}`}
-          values={values}
-        />
+      <li key={`${code}-${type}`}>
+        <span
+          aria-live="assertive"
+          role="alert"
+        >
+          <FormattedMessage
+            id={`${translationNamespace}.${code}`}
+            values={values}
+          />
+        </span>
       </li>
     );
   }
