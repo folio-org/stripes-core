@@ -47,6 +47,20 @@ export function loadTranslations(store, locale, defaultTranslations = {}) {
   document.documentElement.setAttribute('lang', parentLocale);
   document.documentElement.setAttribute('dir', rtlDetect.getLangDir(locale));
 
+  // check whether we need polyfills for browsers without full Intl.* support
+  if (!Intl.PluralRules) {
+    require('@formatjs/intl-pluralrules/polyfill');
+    require(`@formatjs/intl-pluralrules/dist/locale-data/${parentLocale}`);
+  }
+  if (!Intl.RelativeTimeFormat) {
+    require('@formatjs/intl-relativetimeformat/polyfill');
+    require(`@formatjs/intl-relativetimeformat/dist/locale-data/${parentLocale}`);
+  }
+  if (!Intl.DisplayNames) {
+    require('@formatjs/intl-displaynames/polyfill');
+    require(`@formatjs/intl-displaynames/dist/locale-data/${parentLocale}`);
+  }
+
   // Set locale for Moment.js (en is not importable as it is not stored separately)
   if (parentLocale === 'en') moment.locale(parentLocale);
   else {
