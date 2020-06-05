@@ -44,7 +44,7 @@ export default class AuthErrorsContainer extends Component {
 
   render() {
     const { errors } = this.props;
-    const hasErrors = Array.isArray(errors) && errors.length;
+    const hasErrors = Array.isArray(errors) && !!errors.length;
 
     return (
       <MessageBanner
