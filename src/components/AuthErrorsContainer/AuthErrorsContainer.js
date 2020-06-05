@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { MessageBanner } from '@folio/stripes-components';
 
 import { FormattedMessage } from 'react-intl';
 
@@ -22,15 +23,10 @@ export default class AuthErrorsContainer extends Component {
 
     return (
       <li key={`${code}-${type}`}>
-        <span
-          aria-live="assertive"
-          role="alert"
-        >
-          <FormattedMessage
-            id={`${translationNamespace}.${code}`}
-            values={values}
-          />
-        </span>
+        <FormattedMessage
+          id={`${translationNamespace}.${code}`}
+          values={values}
+        />
       </li>
     );
   }
@@ -40,17 +36,25 @@ export default class AuthErrorsContainer extends Component {
     const messages = errors.map(this.getErrorMessage);
 
     return (
-      <ul className={styles.AuthErrorsList}>
+      <ul>
         {messages}
       </ul>
     );
   }
 
   render() {
+    const { errors } = this.props;
+    const hasErrors = Array.isArray(errors) && errors.length;
+
     return (
-      <div className={styles.AuthErrorsContainer}>
+      <MessageBanner
+        show={hasErrors}
+        type="error"
+        aria-live="assertive"
+        className={styles.AuthErrorsContainer}
+      >
         {this.renderErrors()}
-      </div>
+      </MessageBanner>
     );
   }
 }

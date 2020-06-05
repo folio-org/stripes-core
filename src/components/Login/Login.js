@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import { Field, Form } from 'react-final-form';
-import isEmpty from 'lodash/isEmpty';
 
 import {
   TextField,
@@ -195,7 +194,7 @@ class Login extends Component {
                     <Row center="xs">
                       <Col xs={6}>
                         <div className={styles.authErrorsWrapper}>
-                          { !isEmpty(authErrors) && <AuthErrorsContainer errors={authErrors} /> }
+                          <AuthErrorsContainer errors={authErrors} />
                         </div>
                         <div className={styles.formGroup}>
                           { ssoActive && <SSOLogin handleSSOLogin={handleSSOLogin} /> }
