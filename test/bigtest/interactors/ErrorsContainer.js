@@ -7,7 +7,7 @@ import {
 class ErrorsContainerInteractor {
   static defaultScope = ('[data-test-errors]');
 
-  errorsContainer = scoped('[class^="AuthErrorsContainer--"]');
+  errorsContainer = scoped('[data-test-message-banner]');
 }
 
 export default ErrorsContainerInteractor;
