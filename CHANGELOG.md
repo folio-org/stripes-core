@@ -1,6 +1,7 @@
 # Change history for stripes-core
 
-## 5.1.0 (IN PROGRESS)
+## [5.0.1](https://github.com/folio-org/stripes-core/tree/v5.0.1) (2020-06-08)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v5.0.0...v5.0.1)
 
 * Show app icons in the settings navigation. It's pretty.
 * Make accessible errors at `Login` page. Refs STCOR-430.
