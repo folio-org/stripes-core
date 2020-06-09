@@ -1,17 +1,17 @@
-import React, { Component } from 'react';
+/**
+ * AuthErrorsContainer
+ */
+
+import React from 'react';
 import PropTypes from 'prop-types';
-import { MessageBanner } from '@folio/stripes-components';
-
 import { FormattedMessage } from 'react-intl';
-
+import { MessageBanner } from '@folio/stripes-components';
 import styles from './AuthErrorsContainer.css';
 
-export default class AuthErrorsContainer extends Component {
-  static propTypes = {
-    errors: PropTypes.arrayOf(PropTypes.object).isRequired,
-  };
+const AuthErrorsContainer = ({ errors }) => {
+  const hasErrors = Array.isArray(errors) && !!errors.length;
 
-  getErrorMessage(error) {
+  const getErrorMessage = (error) => {
     const {
       code,
       type = 'error',
@@ -29,32 +29,26 @@ export default class AuthErrorsContainer extends Component {
         />
       </li>
     );
-  }
+  };
 
-  renderErrors() {
-    const { errors } = this.props;
-    const messages = errors.map(this.getErrorMessage);
+  return (
+    <MessageBanner
+      show={hasErrors}
+      type="error"
+      aria-live="assertive"
+      className={styles.AuthErrorsContainer}
+    >
+      { hasErrors && (
+        <ul>
+          {errors.map(getErrorMessage)}
+        </ul>
+      )}
+    </MessageBanner>
+  );
+};
 
-    return (
-      <ul>
-        {messages}
-      </ul>
-    );
-  }
+AuthErrorsContainer.propTypes = {
+  errors: PropTypes.arrayOf(PropTypes.object),
+};
 
-  render() {
-    const { errors } = this.props;
-    const hasErrors = Array.isArray(errors) && !!errors.length;
-
-    return (
-      <MessageBanner
-        show={hasErrors}
-        type="error"
-        aria-live="assertive"
-        className={styles.AuthErrorsContainer}
-      >
-        {this.renderErrors()}
-      </MessageBanner>
-    );
-  }
-}
+export default AuthErrorsContainer;
