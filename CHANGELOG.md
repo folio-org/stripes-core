@@ -1,5 +1,9 @@
 # Change history for stripes-core
 
+## 5.0.2 (IN PROGRESS)
+
+* Support `users-bl` `v6.0` (some unused endpoints were removed). Refs STCOR-436, STRIPES-685.
+
 ## [5.0.1](https://github.com/folio-org/stripes-core/tree/v5.0.1) (2020-06-08)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v5.0.0...v5.0.1)
 
