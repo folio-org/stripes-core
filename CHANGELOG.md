@@ -1,7 +1,9 @@
 # Change history for stripes-core
 
-## 5.0.2 (IN PROGRESS)
+## [5.0.2](https://github.com/folio-org/stripes-core/tree/v5.0.2) (2020-06-12)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v5.0.1...v5.0.2)
 
+* Better a11y for login errors. Refs STCOR-430.
 * Support `users-bl` `v6.0` (some unused endpoints were removed). Refs STCOR-436, STRIPES-685.
 
 ## [5.0.1](https://github.com/folio-org/stripes-core/tree/v5.0.1) (2020-06-08)
