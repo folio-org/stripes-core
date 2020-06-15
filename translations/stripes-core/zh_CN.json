@@ -83,7 +83,7 @@
     "setPassword": "设置密码",
     "settingPassword": "正在设置密码...",
     "mainnav.showAllApplicationsButtonLabel": "应用",
-    "mainnav.showAllApplicationsButtonAriaLabel": "显示所有应用程序",
+    "mainnav.showAllApplicationsButtonAriaLabel": "所有应用程序",
     "mainnav.currentAppAriaLabel": "当前打开的应用程序： {appName} （点击返回）",
     "mainnav.topLevelLabel": "主要",
     "mainnav.applicationListLabel": "应用程序清单",
@@ -123,5 +123,5 @@
     "mainnav.myProfileAriaLabel": "我的个人资料",
     "mainnav.skipMainNavigation": "跳过主导航",
     "errors.user.timeout": "会话已过期。请再次登录以恢复会话。",
-    "errors.password.consecutiveWhitespaces.invalid": "The password must not contain consecutive white space characters."
+    "errors.password.consecutiveWhitespaces.invalid": "密码不能包含连续的空格字符。"
 }
