@@ -1,5 +1,9 @@
 # Change history for stripes-core
 
+## 5.1.0 (IN PROGRESS)
+
+* Abandon legacy context! Refs STCOR-390.
+
 ## [5.0.2](https://github.com/folio-org/stripes-core/tree/v5.0.2) (2020-06-12)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v5.0.1...v5.0.2)
 

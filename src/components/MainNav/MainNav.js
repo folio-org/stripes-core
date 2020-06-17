@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { isEqual, find } from 'lodash';
 import { compose } from 'redux';
-import { FormattedMessage, injectIntl } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import { withRouter } from 'react-router';
 import localforage from 'localforage';
 
@@ -53,15 +53,6 @@ class MainNav extends Component {
     })
   };
 
-  static contextTypes = {
-    router: PropTypes.object.isRequired,
-  }
-
-  static childContextTypes = {
-    // It seems wrong that we have to tell this generic component what specific properties to put in the context
-    stripes: PropTypes.object,
-  };
-
   constructor(props) {
     super(props);
     this.state = {
@@ -70,12 +61,6 @@ class MainNav extends Component {
     this.store = props.stripes.store;
     this.logout = this.logout.bind(this);
     this.getAppList = this.getAppList.bind(this);
-  }
-
-  getChildContext() {
-    return {
-      stripes: this.props.stripes,
-    };
   }
 
   componentDidMount() {
