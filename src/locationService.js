@@ -29,7 +29,7 @@ export function isQueryResourceModule(module, location) {
   if (!module) return false;
 
   const path = location.pathname;
-  const re = new RegExp(`^${module.route}|^/settings${module.route}`, 'i');
+  const re = new RegExp(`^${module.route}$|^/settings${module.route}$`, 'i');
 
   return module.queryResource && path.match(re);
 }
