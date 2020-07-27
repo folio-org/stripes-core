@@ -15,7 +15,8 @@ import {
   getLocationQuery,
   updateLocation,
   getCurrentModule,
-  isQueryResourceModule
+  isQueryResourceModule,
+  getQueryResourceState,
 } from '../../locationService';
 
 import css from './MainNav.css';
@@ -65,6 +66,8 @@ class MainNav extends Component {
 
   componentDidMount() {
     let curQuery = getLocationQuery(this.props.location);
+    const prevQueryState = {};
+
     this._unsubscribe = this.store.subscribe(() => {
       const { history, location } = this.props;
       const module = this.curModule;
@@ -75,8 +78,16 @@ class MainNav extends Component {
         && find(state.okapi.authFailure, { type: 'error', code: 'user.timeout' })) {
         this.returnToLogin();
       }
+
       if (module && isQueryResourceModule(module, location)) {
-        curQuery = updateLocation(module, curQuery, this.store, history, location);
+        const { moduleName } = module;
+        const queryState = getQueryResourceState(module, this.store);
+
+        // only update location if query state has changed
+        if (!isEqual(queryState, prevQueryState[moduleName])) {
+          curQuery = updateLocation(module, curQuery, this.store, history, location);
+          prevQueryState[moduleName] = queryState;
+        }
       }
     });
   }
