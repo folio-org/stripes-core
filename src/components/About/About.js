@@ -2,6 +2,7 @@ import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
+import stripesPlatform from '@folio/stripes';
 import stripesConnect from '@folio/stripes-connect/package';
 import stripesComponents from '@folio/stripes-components/package';
 import stripesLogger from '@folio/stripes-logger/package';
@@ -117,6 +118,7 @@ const About = (props) => {
           </Headline>
           <span
             id="platform-versions"
+            data-stripes={stripesPlatform.version}
             data-stripes-core={stripesCore.version}
             data-stripes-connect={stripesConnect.version}
             data-stripes-components={stripesComponents.version}
@@ -126,6 +128,10 @@ const About = (props) => {
           <List
             listStyle="bullets"
             items={[
+              {
+                key: 'stripesPlatform',
+                value: `stripes ${stripesPlatform.version}`,
+              },
               {
                 key: 'stripes-core',
                 value: `stripes-core ${stripesCore.version}`,
