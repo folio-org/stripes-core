@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import 'isomorphic-fetch';
 import localforage from 'localforage';
 import { translations } from 'stripes-config';
 import rtlDetect from 'rtl-detect';

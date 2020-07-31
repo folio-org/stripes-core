@@ -1,4 +1,3 @@
-import 'isomorphic-fetch';
 import { some } from 'lodash';
 
 /*
