@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useMemo } from 'react';
 import { Route, useLocation } from 'react-router-dom';
 import { connectFor } from '@folio/stripes-connect';
 import ErrorBoundary from '@folio/stripes-components/lib/ErrorBoundary';
@@ -76,6 +76,10 @@ export const useCurrentApp = () => {
   const modules = useModules();
   const location = useLocation();
 
-  const { app, settings } = modules;
-  return app.concat(settings).find(m => isQueryResourceModule(m, location));
+  const memoizedApp = useMemo(() => {
+    const { app, settings } = modules;
+    return app.concat(settings).find(m => isQueryResourceModule(m, location));
+  }, [location, modules]);
+
+  return memoizedApp;
 };
