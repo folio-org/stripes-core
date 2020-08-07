@@ -1,8 +1,36 @@
 # Change history for stripes-core
 
-## 4.2.0 (IN PROGRESS)
+## 6.0.0 (IN PROGRESS)
 
+* Abandon legacy context! Refs STCOR-390.
+* Increment `react-router` to `^5.2`.
+* Update location only if `resourceQuery` actually changes. Fixes STCOR-440.
 * Provide `useCurrentApp` hook.
+
+## [5.0.2](https://github.com/folio-org/stripes-core/tree/v5.0.2) (2020-06-12)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v5.0.1...v5.0.2)
+
+* Better a11y for login errors. Refs STCOR-430.
+* Support `users-bl` `v6.0` (some unused endpoints were removed). Refs STCOR-436, STRIPES-685.
+
+## [5.0.1](https://github.com/folio-org/stripes-core/tree/v5.0.1) (2020-06-08)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v5.0.0...v5.0.1)
+
+* Show app icons in the settings navigation. It's pretty.
+* Make accessible errors at `Login` page. Refs STCOR-430.
+* Stop filtering "missing permission" warnings from `react-intl`. Refs STCOR-424.
+* Provide polyfills related to `react-intl` for consumption by Electron in Nightmare tests. Refs STCOR-435, STRIPES-672.
+
+## [5.0.0](https://github.com/folio-org/stripes-core/tree/v5.0.0) (2020-05-19)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v4.1.0...v5.0.0)
+
+* `PropTypes` corrections for `history.location` et al.
+* Style tweaks for `<NavList>`, apps menu.
+* Suppress `react-intl` warnings about missing permissions translations. Refs STCOR-424.
+* Support loan-storage v7. Refs STCOR-425.
+* Provide `react-intl` as a dev-dep. Refs STRIPES-672.
+* Moved `<OverlayContainer>` into the main content area to fix an aXe warning. Refs STCOR-419.
+* Pin `moment` at `~2.24.0`. Refs STRIPES-678.
 
 ## [4.1.0](https://github.com/folio-org/stripes-core/tree/v4.1.0) (2020-03-16)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v4.0.0...v4.1.0)

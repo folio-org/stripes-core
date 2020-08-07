@@ -4,3 +4,7 @@
   background-color: var(--color-fill);
   flex: 1;
 }
+
+.appIcon {
+  margin-top: -1px;
+}

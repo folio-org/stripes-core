@@ -1,7 +1,5 @@
 import _ from 'lodash';
-import 'isomorphic-fetch';
 import localforage from 'localforage';
-import { addLocaleData } from 'react-intl';
 import { translations } from 'stripes-config';
 import rtlDetect from 'rtl-detect';
 import moment from 'moment';
@@ -48,6 +46,20 @@ export function loadTranslations(store, locale, defaultTranslations = {}) {
   document.documentElement.setAttribute('lang', parentLocale);
   document.documentElement.setAttribute('dir', rtlDetect.getLangDir(locale));
 
+  // check whether we need polyfills for browsers without full Intl.* support
+  if (!Intl.PluralRules) {
+    require('@formatjs/intl-pluralrules/polyfill');
+    require(`@formatjs/intl-pluralrules/dist/locale-data/${parentLocale}`);
+  }
+  if (!Intl.RelativeTimeFormat) {
+    require('@formatjs/intl-relativetimeformat/polyfill');
+    require(`@formatjs/intl-relativetimeformat/dist/locale-data/${parentLocale}`);
+  }
+  if (!Intl.DisplayNames) {
+    require('@formatjs/intl-displaynames/polyfill');
+    require(`@formatjs/intl-displaynames/dist/locale-data/${parentLocale}`);
+  }
+
   // Set locale for Moment.js (en is not importable as it is not stored separately)
   if (parentLocale === 'en') moment.locale(parentLocale);
   else {
@@ -59,12 +71,7 @@ export function loadTranslations(store, locale, defaultTranslations = {}) {
     });
   }
 
-  return import(`react-intl/locale-data/${parentLocale}`)
-    .then(intlData => addLocaleData(intlData.default || intlData))
-    // fetch the region-specific translations, e.g. pt-BR, if available.
-    // fall back to the generic locale, e.g. pt, if not available.
-    // default translations can be passed in if certain strings are not available.
-    .then(() => fetch(translations[region] ? translations[region] : translations[parentLocale]))
+  return fetch(translations[region] ? translations[region] : translations[parentLocale])
     .then((response) => {
       if (response.ok) {
         response.json().then((stripesTranslations) => {

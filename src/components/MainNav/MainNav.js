@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { isEqual, find } from 'lodash';
 import { compose } from 'redux';
-import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import { withRouter } from 'react-router';
 import localforage from 'localforage';
 
@@ -15,7 +15,8 @@ import {
   getLocationQuery,
   updateLocation,
   getCurrentModule,
-  isQueryResourceModule
+  isQueryResourceModule,
+  getQueryResourceState,
 } from '../../locationService';
 
 import css from './MainNav.css';
@@ -29,7 +30,7 @@ import settingsIcon from './settings.svg';
 
 class MainNav extends Component {
   static propTypes = {
-    intl: intlShape,
+    intl: PropTypes.object,
     stripes: PropTypes.shape({
       config: PropTypes.shape({
         showPerms: PropTypes.bool,
@@ -53,15 +54,6 @@ class MainNav extends Component {
     })
   };
 
-  static contextTypes = {
-    router: PropTypes.object.isRequired,
-  }
-
-  static childContextTypes = {
-    // It seems wrong that we have to tell this generic component what specific properties to put in the context
-    stripes: PropTypes.object,
-  };
-
   constructor(props) {
     super(props);
     this.state = {
@@ -72,14 +64,10 @@ class MainNav extends Component {
     this.getAppList = this.getAppList.bind(this);
   }
 
-  getChildContext() {
-    return {
-      stripes: this.props.stripes,
-    };
-  }
-
   componentDidMount() {
     let curQuery = getLocationQuery(this.props.location);
+    const prevQueryState = {};
+
     this._unsubscribe = this.store.subscribe(() => {
       const { history, location } = this.props;
       const module = this.curModule;
@@ -90,8 +78,16 @@ class MainNav extends Component {
         && find(state.okapi.authFailure, { type: 'error', code: 'user.timeout' })) {
         this.returnToLogin();
       }
+
       if (module && isQueryResourceModule(module, location)) {
-        curQuery = updateLocation(module, curQuery, this.store, history, location);
+        const { moduleName } = module;
+        const queryState = getQueryResourceState(module, this.store);
+
+        // only update location if query state has changed
+        if (!isEqual(queryState, prevQueryState[moduleName])) {
+          curQuery = updateLocation(module, curQuery, this.store, history, location);
+          prevQueryState[moduleName] = queryState;
+        }
       }
     });
   }
@@ -184,7 +180,7 @@ class MainNav extends Component {
   }
 
   render() {
-    const { stripes } = this.props;
+    const { stripes, intl } = this.props;
 
     return (
       <LastVisitedContext.Consumer>
@@ -198,10 +194,7 @@ class MainNav extends Component {
                 <SkipLink />
                 <CurrentAppGroup selectedApp={selectedApp} config={stripes.config} />
               </div>
-              <nav aria-labelledby="main_navigation_label" className={css.endSection}>
-                <h2 className="sr-only" id="main_navigation_label">
-                  <FormattedMessage id="stripes-core.mainnav.topLevelLabel" />
-                </h2>
+              <nav aria-label={intl.formatMessage({ id: 'stripes-core.mainnav.topLevelLabel' })} className={css.endSection}>
                 <AppList
                   apps={apps}
                   selectedApp={selectedApp}

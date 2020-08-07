@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Field, Form } from 'react-final-form';
 import { FormattedMessage } from 'react-intl';
-import { isEmpty } from 'lodash';
 
 import {
   TextField,
@@ -29,23 +28,12 @@ class ForgotUserNameForm extends Component {
     errors: []
   };
 
-  isErrorsContainerPresent() {
-    const {
-      errors,
-      isValid,
-    } = this.props;
-
-    return !isEmpty(errors) || !isValid;
-  }
-
   render() {
     const {
       onSubmit,
       isValid,
       errors
     } = this.props;
-
-    const hasErrorsContainer = this.isErrorsContainerPresent();
 
     return (
       <Form
@@ -110,15 +98,13 @@ class ForgotUserNameForm extends Component {
                       className={formStyles.authErrorsWrapper}
                       data-test-errors
                     >
-                      {hasErrorsContainer && (
-                        <AuthErrorsContainer
-                          errors={!isValid
-                            ? [{ code: forgotFormErrorCodes.EMAIL_INVALID }]
-                            : errors
-                          }
-                          data-test-container
-                        />
-                      )}
+                      <AuthErrorsContainer
+                        errors={!isValid
+                          ? [{ code: forgotFormErrorCodes.EMAIL_INVALID }]
+                          : errors
+                        }
+                        data-test-container
+                      />
                     </div>
                   </Col>
                 </Row>

@@ -34,10 +34,6 @@ class AppList extends Component {
     selectedApp: PropTypes.object,
   }
 
-  static contextTypes = {
-    router: PropTypes.object.isRequired,
-  }
-
   constructor(props) {
     super(props);
 
@@ -82,21 +78,20 @@ class AppList extends Component {
    * Get the nav buttons that is displayed
    * in the app header on desktop
    */
-  renderNavButtons = (refs, hiddenItemIds, itemWidths) => {
+  renderNavButtons = (hiddenItemIds, itemWidths) => {
     const { selectedApp, apps } = this.props;
 
     return (
       <ul className={css.navItemsList}>
         {
           apps.map(app => {
-            const hidden = hiddenItemIds.includes(app.id);
+            const isHidden = hiddenItemIds.includes(app.id);
 
             return (
               <li
-                className={classnames(css.navItem, { [css.hidden]: hidden })}
+                className={classnames(css.navItem, { [css.hidden]: isHidden })}
                 key={app.id}
-                ref={refs[app.id]}
-                aria-hidden={hidden}
+                aria-hidden={isHidden}
                 style={{ width: itemWidths[app.id] }}
               >
                 <NavButton
@@ -135,25 +130,23 @@ class AppList extends Component {
     );
 
     return (
-      <>
-        <FormattedMessage id="stripes-core.mainnav.showAllApplicationsButtonAriaLabel">
-          { ariaLabel => (
-            <NavButton
-              data-test-app-list-apps-toggle
-              label={label}
-              aria-label={ariaLabel}
-              className={css.navMobileToggle}
-              labelClassName={css.dropdownToggleLabel}
-              onClick={this.toggleDropdown}
-              selected={this.state.open}
-              icon={icon}
-              {...getTriggerProps()}
-              id={dropdownToggleId}
-              noSelectedBar
-            />
-          )}
-        </FormattedMessage>
-      </>
+      <FormattedMessage id="stripes-core.mainnav.showAllApplicationsButtonAriaLabel">
+        { ariaLabel => (
+          <NavButton
+            data-test-app-list-apps-toggle
+            label={label}
+            aria-label={ariaLabel}
+            className={css.navMobileToggle}
+            labelClassName={css.dropdownToggleLabel}
+            onClick={this.toggleDropdown}
+            selected={this.state.open}
+            icon={icon}
+            {...getTriggerProps()}
+            id={dropdownToggleId}
+            noSelectedBar
+          />
+        )}
+      </FormattedMessage>
     );
   }
 
@@ -200,7 +193,7 @@ class AppList extends Component {
   }
 
   render() {
-    const { apps } = this.props;
+    const { apps, selectedApp } = this.props;
 
     // If no apps are installed
     if (!apps.length) {
@@ -208,16 +201,13 @@ class AppList extends Component {
     }
 
     return (
-      <ResizeContainer items={apps} hideAllWidth={767}>
-        {({ refs, hiddenItems, itemWidths }) => {
+      <ResizeContainer items={apps} hideAllWidth={767} currentAppId={selectedApp && selectedApp.id}>
+        {({ hiddenItems, itemWidths }) => {
           return (
-            <nav className={css.appList} aria-labelledby="main_app_list_label" data-test-app-list>
-              <h3 className="sr-only" id="main_app_list_label">
-                <FormattedMessage id="stripes-core.mainnav.applicationListLabel" />
-              </h3>
-              {this.renderNavButtons(refs, hiddenItems, itemWidths)}
+            <div className={css.appList} data-test-app-list>
+              {this.renderNavButtons(hiddenItems, itemWidths)}
               {this.renderNavDropdown(hiddenItems)}
-            </nav>
+            </div>
           );
         }
       }

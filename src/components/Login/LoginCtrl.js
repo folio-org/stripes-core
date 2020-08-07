@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect as reduxConnect } from 'react-redux';
 
+import { ConnectContext } from '@folio/stripes-connect';
 import {
   requestLogin,
   requestSSOLogin,
 } from '../../loginServices';
 import { setAuthError } from '../../okapiActions';
-
 import Login from './Login';
 
 class LoginCtrl extends Component {
@@ -21,13 +21,10 @@ class LoginCtrl extends Component {
     clearAuthErrors: PropTypes.func.isRequired,
   };
 
-  static contextTypes = {
-    store: PropTypes.object,
-  };
+  static contextType = ConnectContext;
 
-  constructor(props, context) {
+  constructor(props) {
     super(props);
-    this.store = context.store;
     this.handleSubmit = this.handleSubmit.bind(this);
     this.sys = require('stripes-config'); // eslint-disable-line global-require
     this.okapiUrl = this.sys.okapi.url;
@@ -43,7 +40,7 @@ class LoginCtrl extends Component {
   }
 
   handleSubmit(data) {
-    return requestLogin(this.okapiUrl, this.store, this.tenant, data);
+    return requestLogin(this.okapiUrl, this.context.store, this.tenant, data);
   }
 
   handleSSOLogin() {

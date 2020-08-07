@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Field, Form } from 'react-final-form';
 import { FormattedMessage } from 'react-intl';
-import { isEmpty } from 'lodash';
 
 import {
   TextField,
@@ -96,12 +95,10 @@ class ForgotPasswordForm extends Component {
                       className={formStyles.authErrorsWrapper}
                       data-test-errors
                     >
-                      {!isEmpty(errors) && (
                       <AuthErrorsContainer
                         errors={errors}
                         data-test-container
                       />
-                      )}
                     </div>
                   </Col>
                 </Row>

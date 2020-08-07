@@ -45,10 +45,6 @@ class ProfileDropdown extends Component {
     }).isRequired,
   };
 
-  static contextTypes = {
-    router: PropTypes.object.isRequired,
-  };
-
   constructor(props) {
     super(props);
 

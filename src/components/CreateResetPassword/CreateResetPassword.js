@@ -287,7 +287,7 @@ class CreateResetPassword extends Component {
                   sm={6}
                 >
                   <div className={styles.authErrorsWrapper}>
-                    { !isEmpty(errors) && <AuthErrorsContainer errors={errors} /> }
+                    <AuthErrorsContainer errors={errors} />
                   </div>
                 </Col>
               </Row>

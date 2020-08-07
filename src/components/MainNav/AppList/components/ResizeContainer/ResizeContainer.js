@@ -2,40 +2,97 @@
  * AppList -> ResizeContainer
  */
 
-import React, { useEffect, useState, useRef, createRef } from 'react';
-import get from 'lodash/get';
+import React from 'react';
 import classnames from 'classnames';
 import debounce from 'lodash/debounce';
 import PropTypes from 'prop-types';
 import css from './ResizeContainer.css';
 
-const ResizeContainer = ({ className, children, hideAllWidth, offset, items: allItems }) => {
-  const wrapperRef = useRef(null);
-  const [ready, setReady] = useState(false);
-  const [hiddenItems, setHiddenItems] = useState([]);
-  const [cachedItemWidths, setCachedItemWidths] = useState({});
+class ResizeContainer extends React.Component {
+  static propTypes = {
+    children: PropTypes.func,
+    currentAppId: PropTypes.string,
+    className: PropTypes.string,
+    hideAllWidth: PropTypes.number,
+    items: PropTypes.arrayOf(PropTypes.object),
+    offset: PropTypes.number,
+  }
 
-  // Assign a ref for each item on mount
-  const [refs] = useState(() => allItems.reduce((acc, app) => {
-    return Object.assign(acc, { [app.id]: createRef(null) });
-  }, {}));
+  static defaultProps = {
+    offset: 200,
+  }
+
+  constructor(props) {
+    super(props);
+
+    this.wrapperRef = React.createRef(null);
+  }
+
+  state = {
+    ready: false,
+    cachedItemWidths: [],
+    hiddenItems: [],
+  }
+
+  componentDidMount() {
+    this.initialize();
+    window.addEventListener('resize', this.onResize, true);
+  }
+
+  componentDidUpdate(prevProps) {
+    // Update hidden items when the current app ID changes
+    // to make sure that no items are hidden behind the current app label
+    if (this.props.currentAppId && this.props.currentAppId !== prevProps.currentAppId) {
+      this.updateHiddenItems();
+    }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.onResize, true);
+  }
+
+  initialize = () => {
+    const { items } = this.props;
+
+    if (!items.length) {
+      return;
+    }
+
+    // Save widths of items since they will probably not change unless the local is changed
+    this.setState({
+      cachedItemWidths: items.reduce((acc, { id }) => Object.assign(acc, {
+        [id]: document.getElementById(`app-list-item-${id}`).parentNode.offsetWidth,
+      }), {})
+    }, () => {
+      // Determine which items should be visible and hidden
+      this.updateHiddenItems(() => {
+        // We are hiding the content until we are finished setting hidden items (if any)
+        // Setting ready will make the contents visible for the user
+        this.setState({
+          ready: true
+        });
+      });
+    });
+  }
 
   /**
    * Determine hidden items on mount and resize
    */
-  const updateHiddenItems = debounce(() => {
+  updateHiddenItems = (callback) => {
+    const { hideAllWidth, offset } = this.props;
+    const { cachedItemWidths } = this.state;
     const shouldHideAll = window.innerWidth <= hideAllWidth;
-    const wrapperEl = wrapperRef.current;
+    const wrapperEl = this.wrapperRef.current;
 
     if (wrapperEl) {
       const wrapperWidth = wrapperEl.clientWidth;
 
       const newHiddenItems =
       // Set all items as hidden
-      shouldHideAll ? Object.keys(refs) :
+      shouldHideAll ? Object.keys(cachedItemWidths) :
 
-      // Find items that should be hidden
-        Object.keys(refs).reduce((acc, id) => {
+        // Find items that should be hidden
+        Object.keys(cachedItemWidths).reduce((acc, id) => {
           const itemWidth = cachedItemWidths[id];
           const shouldBeHidden = (itemWidth + acc.accWidth + offset) > wrapperWidth;
           const hidden = shouldBeHidden ? acc.hidden.concat(id) : acc.hidden;
@@ -49,64 +106,36 @@ const ResizeContainer = ({ className, children, hideAllWidth, offset, items: all
           accWidth: 0,
         }).hidden;
 
-      setHiddenItems(newHiddenItems);
-
-      // We are hiding the content until we are finished setting hidden items (if any)
-      // Setting ready will make the contents visible for the user
-      if (!ready) {
-        setReady(true);
-      }
+      this.setState({
+        hiddenItems: newHiddenItems
+      }, callback);
     }
-  }, 150);
+  }
 
-  useEffect(() => {
-    // Cache menu item widths on mount since it's unlikely they will change
-    setCachedItemWidths(Object.keys(refs).reduce((acc, id) => Object.assign(acc, { [id]: get(refs, `${id}.current.clientWidth`) }), {}));
+  onResize = debounce(() => {
+    this.updateHiddenItems();
+  }, 150)
 
-    return () => {
-      window.removeEventListener('resize', updateHiddenItems, true);
-    };
-  }, []);
+  render() {
+    const { ready, cachedItemWidths, hiddenItems } = this.state;
+    const { className, children } = this.props;
 
-  // Wait until widths has been cached before determining hidden items
-  useEffect(() => {
-    if (Object.keys(cachedItemWidths).length) {
-      // Determine hidden items
-      updateHiddenItems();
-
-      // On resize
-      window.addEventListener('resize', updateHiddenItems, true);
-    }
-  }, [cachedItemWidths]);
-
-  return (
-    <div
-      ref={wrapperRef}
-      className={classnames(css.resizeContainerWrapper, { [css.ready]: ready }, className)}
-      data-test-resize-container
-    >
-      <div className={css.resizeContainerInner}>
-        {children({
-          hiddenItems,
-          itemWidths: cachedItemWidths,
-          ready,
-          refs
-        })}
+    return (
+      <div
+        ref={this.wrapperRef}
+        className={classnames(css.resizeContainerWrapper, { [css.ready]: ready }, className)}
+        data-test-resize-container
+      >
+        <div className={css.resizeContainerInner}>
+          {children({
+            hiddenItems,
+            itemWidths: cachedItemWidths,
+            ready,
+          })}
+        </div>
       </div>
-    </div>
-  );
-};
-
-ResizeContainer.propTypes = {
-  children: PropTypes.func,
-  className: PropTypes.string,
-  hideAllWidth: PropTypes.number,
-  items: PropTypes.arrayOf(PropTypes.object),
-  offset: PropTypes.number,
-};
-
-ResizeContainer.defaultProps = {
-  offset: 200,
-};
+    );
+  }
+}
 
 export default ResizeContainer;
