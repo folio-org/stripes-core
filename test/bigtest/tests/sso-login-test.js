@@ -1,12 +1,12 @@
 import React from 'react';
-import { IntlProvider } from 'react-intl';
 import { expect } from 'chai';
 import { beforeEach, it, describe } from '@bigtest/mocha';
-
 import ButtonInteractor from '@folio/stripes-components/lib/Button/tests/interactor';
 
 import { mount } from '../helpers/render-helpers';
+import Harness from '../helpers/Harness';
 import SSOLogin from '../../../src/components/SSOLogin';
+import translations from '../../../translations/stripes-core/en';
 
 describe('Login via SSO', () => {
   const ssoLoginButton = new ButtonInteractor('[data-test-sso-login-button]');
@@ -14,9 +14,9 @@ describe('Login via SSO', () => {
 
   beforeEach(async () => {
     await mount(
-      <IntlProvider locale="en">
+      <Harness>
         <SSOLogin handleSSOLogin={() => { clicked = true; }} />
-      </IntlProvider>
+      </Harness>
     );
   });
 
@@ -26,7 +26,7 @@ describe('Login via SSO', () => {
   });
 
   it('text should be rendered as label of button', () => {
-    expect(ssoLoginButton.text).to.equal('stripes-core.loginViaSSO');
+    expect(ssoLoginButton.text).to.equal(translations.loginViaSSO);
   });
 
   describe('clicking the SSO Login button', () => {
