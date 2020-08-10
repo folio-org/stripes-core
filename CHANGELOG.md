@@ -5,7 +5,6 @@
 * Abandon legacy context! Refs STCOR-390.
 * Increment `react-router` to `^5.2`.
 * Update location only if `resourceQuery` actually changes. Fixes STCOR-440.
-* Provide `useCurrentApp` hook.
 
 ## [5.0.2](https://github.com/folio-org/stripes-core/tree/v5.0.2) (2020-06-12)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v5.0.1...v5.0.2)

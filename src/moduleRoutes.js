@@ -1,14 +1,15 @@
-import React, { useContext, useMemo } from 'react';
-import { Route, useLocation } from 'react-router-dom';
+import React from 'react';
+import Route from 'react-router-dom/Route';
+
 import { connectFor } from '@folio/stripes-connect';
 import ErrorBoundary from '@folio/stripes-components/lib/ErrorBoundary';
+
 import ModulesContext from './ModulesContext';
 import { StripesContext } from './StripesContext';
 import AddContext from './AddContext';
 import TitleManager from './components/TitleManager';
 import { getHandlerComponents } from './handlerService';
 import events from './events';
-import { isQueryResourceModule } from './locationService';
 
 function getModuleRoutes(stripes) {
   return (
@@ -70,16 +71,22 @@ function getModuleRoutes(stripes) {
 
 export default getModuleRoutes;
 
-export const useModules = () => useContext(ModulesContext);
-
-export const useCurrentApp = () => {
-  const modules = useModules();
-  const location = useLocation();
-
-  const memoizedApp = useMemo(() => {
-    const { app, settings } = modules;
-    return app.concat(settings).find(m => isQueryResourceModule(m, location));
-  }, [location, modules]);
-
-  return memoizedApp;
-};
+// this might be handy at some point:
+//
+// import React, { useContext, useMemo } from 'react';
+// import { Route, useLocation } from 'react-router-dom';
+// import { isQueryResourceModule } from './locationService';
+//
+// export const useModules = () => useContext(ModulesContext);
+//
+// export const useCurrentApp = () => {
+//   const modules = useModules();
+//   const location = useLocation();
+//
+//   const memoizedApp = useMemo(() => {
+//     const { app, settings } = modules;
+//     return app.concat(settings).find(m => isQueryResourceModule(m, location));
+//   }, [location, modules]);
+//
+//   return memoizedApp;
+// };
