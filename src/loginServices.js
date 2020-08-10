@@ -46,19 +46,36 @@ export function loadTranslations(store, locale, defaultTranslations = {}) {
   document.documentElement.setAttribute('lang', parentLocale);
   document.documentElement.setAttribute('dir', rtlDetect.getLangDir(locale));
 
-  // check whether we need polyfills for browsers without full Intl.* support
+  // polyfills for browsers without full Intl.* support
+  //
+  // this turns out not to work well since we don't do code-splitting and
+  // you can't do conditional requires at run-time without that. the end
+  // result is a massive increase in bundle-size (from 9.5 MB to ~24 MB)
+  // if we include all the locale-data, so we don't.
+  //
+  // given that our only officially supported browser is Chrome,
+  // AND it already supports Intl.DisplayNames,
+  // AND Intl.DisplayNames is the biggest resource hog
+  // AND we don't need Intl.DisplayNames for our end-to-end tests (STCOR-435)
+  //
+
+  // 98 KB stat; 73 KB parsed; 7 KB GZipped
   if (!Intl.PluralRules) {
     require('@formatjs/intl-pluralrules/polyfill');
     require(`@formatjs/intl-pluralrules/dist/locale-data/${parentLocale}`);
   }
+
+  // 4.6 MB stat; 3.9 MB parsed; 176 KB GZipped
   if (!Intl.RelativeTimeFormat) {
     require('@formatjs/intl-relativetimeformat/polyfill');
     require(`@formatjs/intl-relativetimeformat/dist/locale-data/${parentLocale}`);
   }
-  if (!Intl.DisplayNames) {
-    require('@formatjs/intl-displaynames/polyfill');
-    require(`@formatjs/intl-displaynames/dist/locale-data/${parentLocale}`);
-  }
+
+  // 27.5 MB stat; 22.8 MB parsed; 4.0 MB GZipped
+  // if (!Intl.DisplayNames) {
+  //   require('@formatjs/intl-displaynames/polyfill');
+  //   require(`@formatjs/intl-displaynames/dist/locale-data/${parentLocale}`);
+  // }
 
   // Set locale for Moment.js (en is not importable as it is not stored separately)
   if (parentLocale === 'en') moment.locale(parentLocale);
