@@ -24,6 +24,30 @@ import {
 } from './okapiActions';
 import processBadResponse from './processBadResponse';
 
+// export supported locales, i.e. the languages we provide translations for
+export const supportedLocales = [
+  'ar',
+  'zh-CN',
+  'zh-TW',
+  'da-DK',
+  'en-GB',
+  'en-SE',
+  'en-US',
+  'fr-FR',
+  'de-DE',
+  'he',
+  'hu-HU',
+  'ja',
+  'it-IT',
+  'pt-BR',
+  'pt-PT',
+  'ru',
+  'es',
+  'es-419',
+  'es-ES',
+  'ur',
+];
+
 function getHeaders(tenant, token) {
   return {
     'X-Okapi-Tenant': tenant,
