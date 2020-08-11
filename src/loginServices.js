@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import localforage from 'localforage';
 import { translations } from 'stripes-config';
+import { discoverServices } from './discoverServices';
 import rtlDetect from 'rtl-detect';
 import moment from 'moment';
 
@@ -149,6 +150,7 @@ function loadResources(okapiUrl, store, tenant) {
   getLocale(okapiUrl, store, tenant);
   getPlugins(okapiUrl, store, tenant);
   getBindings(okapiUrl, store, tenant);
+  if (!store.getState().okapi.withoutOkapi) discoverServices(store);
 }
 
 function createOkapiSession(okapiUrl, store, tenant, token, data) {

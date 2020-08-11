@@ -7,7 +7,6 @@ import connectErrorEpic from './connectErrorEpic';
 import configureEpics from './configureEpics';
 import configureLogger from './configureLogger';
 import configureStore from './configureStore';
-import { discoverServices } from './discoverServices';
 import gatherActions from './gatherActions';
 import { destroyStore } from './mainActions';
 
@@ -32,7 +31,6 @@ export default class StripesCore extends Component {
 
     this.epics = configureEpics(connectErrorEpic);
     this.store = configureStore(initialState, this.logger, this.epics);
-    if (!okapi.withoutOkapi) discoverServices(this.store);
     this.actionNames = gatherActions();
   }
 
