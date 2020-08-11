@@ -1,9 +1,9 @@
 import _ from 'lodash';
 import localforage from 'localforage';
 import { translations } from 'stripes-config';
-import { discoverServices } from './discoverServices';
 import rtlDetect from 'rtl-detect';
 import moment from 'moment';
+import { discoverServices } from './discoverServices';
 
 import {
   clearCurrentUser,
