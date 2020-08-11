@@ -5,6 +5,8 @@
 * Abandon legacy context! Refs STCOR-390.
 * Increment `react-router` to `^5.2`.
 * Update location only if `resourceQuery` actually changes. Fixes STCOR-440.
+* Do not provide `Intl.DisplayNames` polyfill; Chrome already handles it, and it's huuuuuge. Refs STCOR-442.
+* Export the list of supported locales so there is one true source for this. Refs STCOR-443.
 * Get OKAPI version and tenant module info after login. Refs STRIPES-671.
 
 ## [5.0.2](https://github.com/folio-org/stripes-core/tree/v5.0.2) (2020-06-12)
