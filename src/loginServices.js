@@ -3,6 +3,7 @@ import localforage from 'localforage';
 import { translations } from 'stripes-config';
 import rtlDetect from 'rtl-detect';
 import moment from 'moment';
+import { discoverServices } from './discoverServices';
 
 import {
   clearCurrentUser,
@@ -190,6 +191,7 @@ function loadResources(okapiUrl, store, tenant) {
   getLocale(okapiUrl, store, tenant);
   getPlugins(okapiUrl, store, tenant);
   getBindings(okapiUrl, store, tenant);
+  if (!store.getState().okapi.withoutOkapi) discoverServices(store);
 }
 
 function createOkapiSession(okapiUrl, store, tenant, token, data) {
