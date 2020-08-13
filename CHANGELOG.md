@@ -8,6 +8,7 @@
 * Do not provide `Intl.DisplayNames` polyfill; Chrome already handles it, and it's huuuuuge. Refs STCOR-442.
 * Export the list of supported locales so there is one true source for this. Refs STCOR-443.
 * Get OKAPI version and tenant module info after login. Refs STRIPES-671.
+* Mock okapi session in local storage for testing. Refs STCOR-444.
 
 ## [5.0.2](https://github.com/folio-org/stripes-core/tree/v5.0.2) (2020-06-12)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v5.0.1...v5.0.2)
