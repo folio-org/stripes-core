@@ -3,6 +3,27 @@ import localforage from 'localforage';
 import { translations } from 'stripes-config';
 import rtlDetect from 'rtl-detect';
 import moment from 'moment';
+
+// polyfills for browsers without full Intl.* support. We include only the
+// polyfill and en data, since that's all we need to keep NightmareJS and
+// its Electron tests happy; adding all the locale data would bloat the bundle
+// from <10 MB to >40 MB. The en data only adds ~470 KB.
+
+import '@formatjs/intl-pluralrules/polyfill';
+import '@formatjs/intl-pluralrules/dist/locale-data/en';
+// import '@formatjs/intl-pluralrules/polyfill-locales;
+// 0.62 MB stat; 0.43 MB parsed; 0.048 MB GZipped
+
+import '@formatjs/intl-relativetimeformat/polyfill';
+import '@formatjs/intl-relativetimeformat/dist/locale-data/en';
+// import '@formatjs/intl-relativetimeformat/polyfill-locales;
+// 2.3MB stat; 1.8 MB parsed; 0.8 MB GZipped
+
+import '@formatjs/intl-displaynames/polyfill';
+import '@formatjs/intl-displaynames/dist/locale-data/en';
+// import '@formatjs/intl-displaynames/polyfill-locales;
+// 13.7 MB stat; 10.7 MB parsed; 1.9 MB GZipped
+
 import { discoverServices } from './discoverServices';
 
 import {
@@ -70,37 +91,6 @@ export function loadTranslations(store, locale, defaultTranslations = {}) {
   // when the locale changes
   document.documentElement.setAttribute('lang', parentLocale);
   document.documentElement.setAttribute('dir', rtlDetect.getLangDir(locale));
-
-  // polyfills for browsers without full Intl.* support
-  //
-  // this turns out not to work well since we don't do code-splitting and
-  // you can't do conditional requires at run-time without that. the end
-  // result is a massive increase in bundle-size (from 9.5 MB to ~24 MB)
-  // if we include all the locale-data, so we don't.
-  //
-  // given that our only officially supported browser is Chrome,
-  // AND it already supports Intl.DisplayNames,
-  // AND Intl.DisplayNames is the biggest resource hog
-  // AND we don't need Intl.DisplayNames for our end-to-end tests (STCOR-435)
-  //
-
-  // 98 KB stat; 73 KB parsed; 7 KB GZipped
-  if (!Intl.PluralRules) {
-    require('@formatjs/intl-pluralrules/polyfill');
-    require(`@formatjs/intl-pluralrules/dist/locale-data/${parentLocale}`);
-  }
-
-  // 4.6 MB stat; 3.9 MB parsed; 176 KB GZipped
-  if (!Intl.RelativeTimeFormat) {
-    require('@formatjs/intl-relativetimeformat/polyfill');
-    require(`@formatjs/intl-relativetimeformat/dist/locale-data/${parentLocale}`);
-  }
-
-  // 27.5 MB stat; 22.8 MB parsed; 4.0 MB GZipped
-  // if (!Intl.DisplayNames) {
-  //   require('@formatjs/intl-displaynames/polyfill');
-  //   require(`@formatjs/intl-displaynames/dist/locale-data/${parentLocale}`);
-  // }
 
   // Set locale for Moment.js (en is not importable as it is not stored separately)
   if (parentLocale === 'en') moment.locale(parentLocale);
