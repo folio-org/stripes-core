@@ -28,6 +28,7 @@ export default function setupApplication({
   mirageOptions = {},
   scenarios,
   currentUser = {},
+  userLoggedIn = false,
 } = {}) {
   beforeEach(async function () {
     const initialState = {};
@@ -61,6 +62,14 @@ export default function setupApplication({
       setup: () => {
         this.server = startMirage(scenarios, mirageOptions);
         this.server.logging = false;
+
+        if (userLoggedIn) {
+          localforage.setItem('okapiSess', {
+            token: initialState.okapi.token,
+            user: initialState.okapi.currentUser,
+            perms: initialState.okapi.currentPerms,
+          });
+        }
 
         withModules(modules);
         withConfig({ logCategories: '', ...stripesConfig });
