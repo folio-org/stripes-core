@@ -4,7 +4,7 @@ import Button from '@folio/stripes-components/lib/Button';
 import Icon from '@folio/stripes-components/lib/Icon';
 import Layout from '@folio/stripes-components/lib/Layout';
 import classNames from 'classnames';
-import { Transition } from 'react-overlays';
+import { Transition } from 'react-transition-group';
 import css from './Toast.css';
 
 const propTypes = {
