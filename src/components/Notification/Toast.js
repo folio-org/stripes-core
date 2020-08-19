@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { Portal } from 'react';
 import PropTypes from 'prop-types';
-import Portal from 'react-overlays/Portal';
 import ToastNotification from './ToastNotification';
 import css from './Toast.css';
 

@@ -136,7 +136,6 @@
     "react-cookie": "^2.1.4",
     "react-final-form": "^6.3.0",
     "react-hot-loader": "^4.3.10",
-    "react-overlays": "3.2.0",
     "react-redux": "^5.0.2",
     "react-titled": "^1.0.0",
     "react-transform-catch-errors": "^1.0.2",
