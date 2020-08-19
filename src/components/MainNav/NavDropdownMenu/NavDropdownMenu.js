@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { createRef } from 'react';
 import PropTypes from 'prop-types';
-import RootCloseWrapper from 'react-overlays/lib/RootCloseWrapper';
+import RootCloseWrapper from '@folio/stripes-components/util/RootCloseWrapper';
 import css from './NavDropdownMenu.css';
 
 const propTypes = {
@@ -22,6 +22,7 @@ class NavDropdownMenu extends React.Component {
     super(props);
 
     this.ddContainer = null;
+    this.closeWrapperRef = createRef(null);
   }
 
   getItemsAndActiveIndex() {
@@ -89,7 +90,7 @@ class NavDropdownMenu extends React.Component {
 
     if (this.props.open) {
       return (
-        <RootCloseWrapper onRootClose={onToggle}>
+        <RootCloseWrapper onRootClose={onToggle} ref={this.closeWrapperRef}>
           {menu}
         </RootCloseWrapper>
       );
