@@ -1,15 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Switch from 'react-router-dom/Switch';
-import Route from 'react-router-dom/Route';
-import { connectFor } from '@folio/stripes-connect';
+import { FormattedMessage } from 'react-intl';
 import { withRouter } from 'react-router';
+import {
+  Switch,
+  Route,
+} from 'react-router-dom';
+
+import { connectFor } from '@folio/stripes-connect';
 import NavList from '@folio/stripes-components/lib/NavList';
 import NavListItem from '@folio/stripes-components/lib/NavListItem';
 import NavListSection from '@folio/stripes-components/lib/NavListSection';
 import Paneset from '@folio/stripes-components/lib/Paneset';
 import Pane from '@folio/stripes-components/lib/Pane';
-import { FormattedMessage } from 'react-intl';
 
 import About from '../About';
 import { StripesContext } from '../../StripesContext';
