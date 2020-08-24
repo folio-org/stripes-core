@@ -33,21 +33,18 @@ const About = (props) => {
       const available = interfaces[key];
       let style = {};
       let text = required;
+      let alert = '';
 
       if (!available) {
         style = { color: 'red', fontWeight: 'bold' };
+        alert = '!';
       } else if (!isVersionCompatible(available, required)) {
         style = { color: 'orange' };
+        alert = '*';
         text = <FormattedMessage id="stripes-core.about.newerModuleAvailable" values={{ required, available }} />;
       }
 
-      return (
-        <li key={key} style={style}>
-          {key}
-          {' '}
-          {text}
-        </li>
-      );
+      return <li key={key} style={style}>{key} {text}{alert}</li>;
     };
 
     return (
