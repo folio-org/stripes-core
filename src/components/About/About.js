@@ -174,7 +174,7 @@ const About = (props) => {
             id="stripes-core.about.notEnabledModules"
             tagName="p"
             values={{
-              span: (...chunks) => <span className={css.isEmptyMessage}>{chunks}</span>
+              span: chunks => <span className={css.isEmptyMessage}>{chunks}</span>
             }}
           />
           <br />
@@ -206,14 +206,14 @@ const About = (props) => {
             <FormattedMessage
               id="stripes-core.about.key.absentInterfaces"
               values={{
-                span: (...chunks) => <span className={css.absent}>{chunks}</span>
+                span: chunks => <span className={css.absent}>{chunks}</span>
               }}
             />
             <br />
             <FormattedMessage
               id="stripes-core.about.key.incompatibleIntf"
               values={{
-                span: (...chunks) => <span className={css.incompatible}>{chunks}</span>
+                span: chunks => <span className={css.incompatible}>{chunks}</span>
               }}
             />
             <br />
