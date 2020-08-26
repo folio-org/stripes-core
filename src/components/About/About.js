@@ -37,10 +37,10 @@ const About = (props) => {
 
       if (!available) {
         style = { color: 'red', fontWeight: 'bold' };
-        alert = '!';
+        alert = ' unavailable';
       } else if (!isVersionCompatible(available, required)) {
         style = { color: 'orange' };
-        alert = '*';
+        alert = ' incompatible';
         text = <FormattedMessage id="stripes-core.about.newerModuleAvailable" values={{ required, available }} />;
       }
 
