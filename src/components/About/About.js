@@ -56,7 +56,7 @@ const About = (props) => {
           <FormattedMessage id="stripes-core.about.moduleDependsOn" values={{ module: `${m.module} ${m.version || ''}` }} />
         </Headline>
         <List
-          items={Object.keys(okapiInterfaces)}
+          items={Object.keys(okapiInterfaces).sort()}
           itemFormatter={itemFormatter}
           listStyle="bullets"
         />
@@ -80,9 +80,12 @@ const About = (props) => {
       default:
         headlineMsg = <FormattedMessage id="stripes-core.about.moduleTypeCount" values={{ count: list.length, type: caption }} />;
     }
+
+    list.sort();
+
     return (
       <div key={caption}>
-        <Headline>{headlineMsg}</Headline>
+        <Headline>headline: {headlineMsg}</Headline>
         <div data-test-stripes-core-about-module={caption}>
           <List
             listStyle="bullets"
