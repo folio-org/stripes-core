@@ -85,7 +85,7 @@ const About = (props) => {
 
     return (
       <div key={caption}>
-        <Headline>headline: {headlineMsg}</Headline>
+        <Headline>{headlineMsg}</Headline>
         <div data-test-stripes-core-about-module={caption}>
           <List
             listStyle="bullets"
