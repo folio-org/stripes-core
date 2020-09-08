@@ -1,6 +1,7 @@
 // Top level Webpack configuration for building static files for
 // production deployment from the command line
 
+const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const postCssImport = require('postcss-import');
@@ -11,6 +12,7 @@ const postCssNesting = require('postcss-nesting');
 const postCssCustomMedia = require('postcss-custom-media');
 const postCssMediaMinMax = require('postcss-media-minmax');
 const postCssColorFunction = require('postcss-color-function');
+const { generateStripesAlias } = require('./webpack/module-paths');
 
 const base = require('./webpack.config.base');
 const cli = require('./webpack.config.cli');
@@ -46,7 +48,8 @@ prodConfig.module.rules.push({
           postCssImport(),
           autoprefixer(),
           postCssCustomProperties({
-            preserve: false
+            preserve: false,
+            importFrom: [path.join(generateStripesAlias('@folio/stripes-components'), 'lib/variables.css')]
           }),
           postCssCalc(),
           postCssNesting(),
