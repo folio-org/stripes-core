@@ -37,11 +37,10 @@ import styles from './CreateResetPassword.css';
 class CreateResetPassword extends Component {
   static propTypes = {
     stripes: stripesShape.isRequired,
-    onSubmit: PropTypes.func.isRequired,
+    handleSubmit: PropTypes.func.isRequired,
     clearAuthErrors: PropTypes.func.isRequired,
     onPasswordInputFocus: PropTypes.func.isRequired,
     submitting: PropTypes.bool,
-    errors: PropTypes.arrayOf(PropTypes.object),
     submitIsFailed: PropTypes.bool,
     form: PropTypes.shape({
       getState: PropTypes.func.isRequired,
@@ -50,7 +49,6 @@ class CreateResetPassword extends Component {
 
   static defaultProps = {
     submitting: false,
-    errors: [],
     submitIsFailed: false,
   };
 
@@ -121,14 +119,14 @@ class CreateResetPassword extends Component {
   render() {
     const {
       submitting,
-      onSubmit,
+      handleSubmit,
       onPasswordInputFocus,
       submitIsFailed,
       form,
+      stripes
     } = this.props;
 
-    const errors = this.props.stripes.okapi.authFailure;
-
+    const errors = stripes.okapi.authFailure;
     const { newPassword, confirmPassword } = form.getState().values;
     const { passwordMasked } = this.state;
     const submissionStatus = submitting || submitIsFailed;
@@ -166,7 +164,7 @@ class CreateResetPassword extends Component {
           <Row>
             <form
               className={styles.form}
-              onSubmit={onSubmit}
+              onSubmit={handleSubmit}
             >
               <div data-test-new-password-field>
                 <Row center="xs">
