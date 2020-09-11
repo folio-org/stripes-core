@@ -1,14 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-// import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
-// import {
-//   reduxForm,
-//
-//   Form,
-//   formValueSelector,
-// } from 'redux-form';
 import {
   Field
 } from 'react-final-form';
