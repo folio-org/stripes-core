@@ -5,7 +5,7 @@ import { FormattedMessage } from 'react-intl';
 import {
   Field
 } from 'react-final-form';
-import stripesFinalForm from '@folio/stripes/final-form';
+import stripesFinalForm from '@folio/stripes-final-form';
 import isEmpty from 'lodash/isEmpty';
 
 import {
