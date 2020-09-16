@@ -121,6 +121,7 @@ class CreateResetPassword extends Component {
 
     const errors = stripes.okapi.authFailure;
     const { newPassword, confirmPassword } = form.getState().values;
+
     const { passwordMasked } = this.state;
     const submissionStatus = submitting || submitIsFailed;
     const buttonDisabled = !isEmpty(errors) || submissionStatus || !(newPassword && confirmPassword);
