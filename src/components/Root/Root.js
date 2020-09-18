@@ -137,6 +137,7 @@ class Root extends Component {
               currency={currency}
               messages={translations}
               textComponent={Fragment}
+              onError={config?.suppressIntlErrors ? () => {} : undefined}
             >
               <RootWithIntl
                 stripes={stripes}
