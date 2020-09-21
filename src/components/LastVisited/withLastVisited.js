@@ -6,7 +6,7 @@ import hoistNonReactStatics from 'hoist-non-react-statics';
 
 import { withModules } from '../Modules';
 import LastVisitedContext from './LastVisitedContext';
-import { moduleName } from '../../constants';
+import { packageName } from '../../constants';
 
 function withLastVisited(WrappedComponent) {
   class LastVisited extends React.Component {
@@ -36,7 +36,7 @@ function withLastVisited(WrappedComponent) {
       history.listen((location) => {
         const module = this.getCurrentModule(location);
         if (!module) return;
-        const name = module.module.replace(moduleName.MODULE_SCOPE_REGEX, '');
+        const name = module.module.replace(packageName.PACKAGE_SCOPE_REGEX, '');
         this.previous[name] = this.lastVisited[name];
         this.lastVisited[name] = `${location.pathname}${location.search}`;
         this.currentName = name;

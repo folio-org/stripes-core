@@ -20,7 +20,7 @@ import AddContext from '../../AddContext';
 import { withModules } from '../Modules';
 import { stripesShape } from '../../Stripes';
 import AppIcon from '../AppIcon';
-import { moduleName } from '../../constants';
+import { packageName } from '../../constants';
 
 import css from './Settings.css';
 
@@ -43,7 +43,7 @@ class Settings extends React.Component {
     const settingsModules = modules.settings || [];
 
     this.connectedModules = settingsModules
-      .filter(x => stripes.hasPerm(`settings.${x.module.replace(moduleName.MODULE_SCOPE_REGEX, '')}.enabled`))
+      .filter(x => stripes.hasPerm(`settings.${x.module.replace(packageName.PACKAGE_SCOPE_REGEX, '')}.enabled`))
       .sort((x, y) => x.displayName.toLowerCase().localeCompare(y.displayName.toLowerCase()))
       .map((m) => {
         try {
@@ -65,7 +65,7 @@ class Settings extends React.Component {
   render() {
     const { stripes, location } = this.props;
     const navLinks = this.connectedModules.map(({ module }) => {
-      const iconData = module.module.replace(moduleName.MODULE_SCOPE_REGEX, '');
+      const iconData = module.module.replace(packageName.PACKAGE_SCOPE_REGEX, '');
       return (
         <NavListItem
           key={module.route}
