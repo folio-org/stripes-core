@@ -80,6 +80,7 @@
     "@folio/stripes-components": "~8.0.0",
     "@folio/stripes-connect": "~6.0.0",
     "@folio/stripes-logger": "~1.0.0",
+    "@folio/stripes-final-form": "~4.0.0",
     "@formatjs/intl-displaynames": "^2.2.3",
     "@formatjs/intl-pluralrules": "^2.2.1",
     "@formatjs/intl-relativetimeformat": "^5.2.3",

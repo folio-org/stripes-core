@@ -1,14 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import {
-  reduxForm,
-  Field,
-  Form,
-  formValueSelector,
-} from 'redux-form';
+  Field
+} from 'react-final-form';
+import stripesFinalForm from '@folio/stripes-final-form';
 import isEmpty from 'lodash/isEmpty';
 
 import {
@@ -34,19 +31,17 @@ class CreateResetPassword extends Component {
   static propTypes = {
     stripes: stripesShape.isRequired,
     handleSubmit: PropTypes.func.isRequired,
-    onSubmit: PropTypes.func.isRequired,
     clearAuthErrors: PropTypes.func.isRequired,
     onPasswordInputFocus: PropTypes.func.isRequired,
     submitting: PropTypes.bool,
-    errors: PropTypes.arrayOf(PropTypes.object),
-    formValues: PropTypes.object,
     submitIsFailed: PropTypes.bool,
+    form: PropTypes.shape({
+      getState: PropTypes.func.isRequired,
+    }).isRequired,
   };
 
   static defaultProps = {
     submitting: false,
-    errors: [],
-    formValues: {},
     submitIsFailed: false,
   };
 
@@ -116,17 +111,17 @@ class CreateResetPassword extends Component {
 
   render() {
     const {
-      errors,
-      handleSubmit,
       submitting,
-      onSubmit,
+      handleSubmit,
       onPasswordInputFocus,
       submitIsFailed,
-      formValues: {
-        newPassword,
-        confirmPassword,
-      },
+      form,
+      stripes
     } = this.props;
+
+    const errors = stripes.okapi.authFailure;
+    const { newPassword, confirmPassword } = form.getState().values;
+
     const { passwordMasked } = this.state;
     const submissionStatus = submitting || submitIsFailed;
     const buttonDisabled = !isEmpty(errors) || submissionStatus || !(newPassword && confirmPassword);
@@ -161,9 +156,9 @@ class CreateResetPassword extends Component {
             </Col>
           </Row>
           <Row>
-            <Form
+            <form
               className={styles.form}
-              onSubmit={handleSubmit(onSubmit)}
+              onSubmit={handleSubmit}
             >
               <div data-test-new-password-field>
                 <Row center="xs">
@@ -291,7 +286,7 @@ class CreateResetPassword extends Component {
                   </div>
                 </Col>
               </Row>
-            </Form>
+            </form>
           </Row>
         </div>
       </div>
@@ -299,15 +294,7 @@ class CreateResetPassword extends Component {
   }
 }
 
-const CreateResetPasswordForm = reduxForm({
-  form: 'CreateResetPassword',
+export default stripesFinalForm({
+  navigationCheck: true,
 })(CreateResetPassword);
-const selector = formValueSelector('CreateResetPassword');
 
-export default connect(state => ({
-  formValues: selector(
-    state,
-    'newPassword',
-    'confirmPassword',
-  )
-}))(CreateResetPasswordForm);
