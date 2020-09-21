@@ -13,6 +13,7 @@
 * Update `react-intl` to `v5`. Refs STCOR-449.
 * Add `suppressIntlErrors` option to stripes.config.js.
 * Refactor `CreateResetPassword` to use final-form instead of redux-form. Refs STCOR-441
+* Add `okapiKy` helpers (see [docs/okapiKy.md](docs/okapiKy.md)).
 
 ## [5.0.2](https://github.com/folio-org/stripes-core/tree/v5.0.2) (2020-06-12)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v5.0.1...v5.0.2)
