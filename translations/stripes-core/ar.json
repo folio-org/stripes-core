@@ -83,7 +83,7 @@
     "setPassword": "تعيين كلمة المرور",
     "settingPassword": "جاري تعيين كلمة المرور ...",
     "mainnav.showAllApplicationsButtonLabel": "التطبيقات",
-    "mainnav.showAllApplicationsButtonAriaLabel": "عرض كل التطبيقات",
+    "mainnav.showAllApplicationsButtonAriaLabel": "كل التطبيقات",
     "mainnav.currentAppAriaLabel": "التطبيق الحالي المفتوح: {appName} (انقر للذهاب إلى الصفحة الرئيسية)",
     "mainnav.topLevelLabel": "الرئيسي",
     "mainnav.applicationListLabel": "قائمة التطبيقات",
