@@ -1,7 +1,6 @@
 const packageName = {
-  // Expects scoped name that begins with @ followed by
-  // alphanumberic characters and _ or -, ending with / (ex: @folio/ OR @library_of_congress/)
-  PACKAGE_SCOPE_REGEX: /^@[a-z0-9_-]+\//,
+  // Expects to follow the scoping rules defined by nodejs: https://docs.npmjs.com/files/package.json#name
+  PACKAGE_SCOPE_REGEX: /^@[a-z\d][\w-.]{0,214}\//,
 };
 
 export default packageName;
