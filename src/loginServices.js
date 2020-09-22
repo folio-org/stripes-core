@@ -58,7 +58,7 @@ export const supportedLocales = [
   'fr-FR',
   'de-DE',
   'he',
-  'hi_IN',
+  'hi-IN',
   'hu-HU',
   'ja',
   'ko',
