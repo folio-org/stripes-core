@@ -7,7 +7,6 @@ import { packageName } from '../../../src/constants';
 
 describe('The package-name-rule', function () {
   describe('Test package scope name regex rules', function () {
-
     it('accepts @folio scoped name', function () {
       const result = '@folio/test-core'.match(packageName.PACKAGE_SCOPE_REGEX);
       expect(result[0]).to.equal('@folio/');
