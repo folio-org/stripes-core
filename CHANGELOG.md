@@ -12,9 +12,10 @@
 * Handle `react-router-dom` deprecation warnings. Refs STCOR-448.
 * Update `react-intl` to `v5`. Refs STCOR-449.
 * Add `suppressIntlErrors` option to stripes.config.js.
-* Refactor `CreateResetPassword` to use final-form instead of redux-form. Refs STCOR-441
+* Refactor `CreateResetPassword` to use final-form instead of redux-form. Refs STCOR-441.
 * Add `okapiKy` helpers (see [docs/okapiKy.md](docs/okapiKy.md)).
 * Apps menu - The options in the "Apps" menu do not voice as actionable (able to be activated). Refs STCOR-453.
+* Adjust package scope name filter to align with NPM rules (https://docs.npmjs.com/files/package.json#name) instead of assuming @folio/. Refs https://issues.folio.org/browse/STCOR-456.
 
 ## [5.0.2](https://github.com/folio-org/stripes-core/tree/v5.0.2) (2020-06-12)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v5.0.1...v5.0.2)
