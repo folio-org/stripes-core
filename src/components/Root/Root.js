@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { createBrowserHistory } from 'history';
 import { IntlProvider } from 'react-intl';
 import queryString from 'query-string';
-import { ApolloProvider } from 'react-apollo';
+import { ApolloProvider } from '@apollo/client';
 import ErrorBoundary from '@folio/stripes-components/lib/ErrorBoundary';
 import { metadata, icons } from 'stripes-config';
 
