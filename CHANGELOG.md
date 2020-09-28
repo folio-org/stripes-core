@@ -1,5 +1,10 @@
 # Change history for stripes-core
 
+## [5.0.3](https://github.com/folio-org/stripes-core/tree/v5.0.3) (2020-09-28)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v5.0.2...v5.0.3)
+
+* Adjust package scope name filter to align with NPM rules (https://docs.npmjs.com/files/package.json#name) instead of assuming @folio/. Refs https://issues.folio.org/browse/STCOR-456.
+
 ## [5.0.2](https://github.com/folio-org/stripes-core/tree/v5.0.2) (2020-06-12)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v5.0.1...v5.0.2)
 
