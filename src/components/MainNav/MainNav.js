@@ -24,6 +24,7 @@ import { CurrentAppGroup } from './CurrentApp';
 import ProfileDropdown from './ProfileDropdown';
 import AppList from './AppList';
 import { SkipLink } from './components';
+import { packageName } from '../../constants';
 
 import settingsIcon from './settings.svg';
 
@@ -133,7 +134,7 @@ class MainNav extends Component {
     const { stripes, location: { pathname }, modules, intl: { formatMessage } } = this.props;
 
     const apps = modules.app.map((entry) => {
-      const name = entry.module.replace(/^@[a-z0-9_]+\//, '');
+      const name = entry.module.replace(packageName.PACKAGE_SCOPE_REGEX, '');
       const perm = `module.${name}.enabled`;
 
       if (!stripes.hasPerm(perm)) {

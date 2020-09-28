@@ -7,6 +7,7 @@ import { StripesContext } from './StripesContext';
 import AddContext from './AddContext';
 import TitleManager from './components/TitleManager';
 import { getHandlerComponents } from './handlerService';
+import { packageName } from './constants';
 import events from './events';
 
 function getModuleRoutes(stripes) {
@@ -18,7 +19,7 @@ function getModuleRoutes(stripes) {
         }
 
         return modules.app.map((module) => {
-          const name = module.module.replace(/^@folio\//, '');
+          const name = module.module.replace(packageName.PACKAGE_SCOPE_REGEX, '');
           const displayName = module.displayName;
           const perm = `module.${name}.enabled`;
           if (!stripes.hasPerm(perm)) return null;
