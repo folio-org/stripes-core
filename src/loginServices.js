@@ -24,6 +24,8 @@ import '@formatjs/intl-displaynames/dist/locale-data/en';
 // import '@formatjs/intl-displaynames/polyfill-locales;
 // 13.7 MB stat; 10.7 MB parsed; 1.9 MB GZipped
 
+import { parseJwt } from '@folio/stripes-util';
+
 import { discoverServices } from './discoverServices';
 
 import {
@@ -219,22 +221,19 @@ function createOkapiSession(okapiUrl, store, tenant, token, data) {
   loadResources(okapiUrl, store, tenant);
 }
 
-// Validate stored token by attempting to fetch /users
+// Validate stored token by, uh, validating the stored token
 function validateUser(okapiUrl, store, tenant, session) {
-  fetch(`${okapiUrl}/users`, { headers: getHeaders(tenant, session.token) }).then((resp) => {
-    if (resp.status >= 400) {
-      store.dispatch(clearCurrentUser());
-      store.dispatch(clearOkapiToken());
-      store.dispatch(setOkapiReady());
-      localforage.removeItem('okapiSess');
-    } else {
-      const { token, user, perms } = session;
-      store.dispatch(setSessionData({ token, user, perms }));
-      loadResources(okapiUrl, store, tenant);
-    }
-  }).catch(() => {
-    store.dispatch(setServerDown());
-  });
+  try {
+    const { token, user, perms } = session;
+    parseJwt(token);
+    store.dispatch(setSessionData({ token, user, perms }));
+    loadResources(okapiUrl, store, tenant);
+  } catch (e) {
+    store.dispatch(clearCurrentUser());
+    store.dispatch(clearOkapiToken());
+    store.dispatch(setOkapiReady());
+    localforage.removeItem('okapiSess');
+  }
 }
 
 function isSSOEnabled(okapiUrl, store, tenant) {
