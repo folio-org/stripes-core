@@ -16,7 +16,6 @@
 * Add `okapiKy` helpers (see [docs/okapiKy.md](docs/okapiKy.md)).
 * Apps menu - The options in the "Apps" menu do not voice as actionable (able to be activated). Refs STCOR-453.
 * Adjust package scope name filter to align with NPM rules (https://docs.npmjs.com/files/package.json#name) instead of assuming @folio/. Refs https://issues.folio.org/browse/STCOR-456.
-* Move inter-stripes deps to peers. Refs STCOR-463.
 * Move `moment` to `peerDependencies`. Refs STCOR-464.
 
 ## [5.0.2](https://github.com/folio-org/stripes-core/tree/v5.0.2) (2020-06-12)
