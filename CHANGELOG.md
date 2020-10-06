@@ -1,6 +1,7 @@
 # Change history for stripes-core
 
-## 6.0.0 (IN PROGRESS)
+## [6.0.0](https://github.com/folio-org/stripes-core/tree/v6.0.0) (2020-10-06)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v5.0.2...v6.0.0)
 
 * Abandon legacy context! Refs STCOR-390.
 * Increment `react-router` to `^5.2`.
@@ -15,7 +16,7 @@
 * Refactor `CreateResetPassword` to use final-form instead of redux-form. Refs STCOR-441.
 * Add `okapiKy` helpers (see [docs/okapiKy.md](docs/okapiKy.md)).
 * Apps menu - The options in the "Apps" menu do not voice as actionable (able to be activated). Refs STCOR-453.
-* Adjust package scope name filter to align with NPM rules (https://docs.npmjs.com/files/package.json#name) instead of assuming @folio/. Refs https://issues.folio.org/browse/STCOR-456.
+* Adjust package scope name filter to align with NPM rules instead of assuming `@folio/`. Refs STCOR-456.
 * Move `moment` to `peerDependencies`. Refs STCOR-464.
 
 ## [5.0.2](https://github.com/folio-org/stripes-core/tree/v5.0.2) (2020-06-12)
