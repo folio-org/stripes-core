@@ -88,7 +88,7 @@
     "mainnav.topLevelLabel": "الرئيسي",
     "mainnav.applicationListLabel": "قائمة التطبيقات",
     "errors.default.error": "عذرًا ، المعلومات التي تم إدخالها لا تتطابق مع سجلاتنا.",
-    "errors.username.incorrect": "خطأ في التحقق من وجود المستخدم: لم يتم العثور على أي مستخدم عن طريق اسم المستخدم {username}",
+    "errors.username.incorrect": "تعذر تحديد موقع حساب فوليو هذا. يرجى الاتصال بمدير أنظمة فوليو الخاص بك.",
     "errors.password.incorrect": "بيانات غير صحيحة",
     "errors.user.blocked": "لأسباب أمنية، حسابك تم إغلاقه. يرجى إعادة المحاولة مرة أخرى أو الاتصال بمسؤول نظام فوليو الخاص بك.",
     "errors.password.match.error": "كلمة المرور غير متطابقة. أعد كتابة كلمة المرور الخاصة بك.",
