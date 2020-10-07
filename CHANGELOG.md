@@ -1,5 +1,9 @@
 # Change history for stripes-core
 
+## 6.1.0 IN PROGRESS
+
+* Validate token using a request that does not require permissions. Refs STCOR-452.
+
 ## [6.0.0](https://github.com/folio-org/stripes-core/tree/v6.0.0) (2020-10-06)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v5.0.2...v6.0.0)
 
@@ -18,7 +22,7 @@
 * Apps menu - The options in the "Apps" menu do not voice as actionable (able to be activated). Refs STCOR-453.
 * Adjust package scope name filter to align with NPM rules instead of assuming `@folio/`. Refs STCOR-456.
 * Move `moment` to `peerDependencies`. Refs STCOR-464.
-* Refactor `CreateReasetPassword` to use vanilla `react-final-form` instead of `stripes-final-form` wrapper. Refs STCOR-466.
+* Refactor `CreateResetPassword` to use vanilla `react-final-form` instead of `stripes-final-form` wrapper. Refs STCOR-466.
 
 ## [5.0.2](https://github.com/folio-org/stripes-core/tree/v5.0.2) (2020-06-12)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v5.0.1...v5.0.2)
