@@ -14,6 +14,8 @@
 * Add `suppressIntlErrors` option to stripes.config.js.
 * Refactor `CreateResetPassword` to use final-form instead of redux-form. Refs STCOR-441
 * Add `okapiKy` helpers (see [docs/okapiKy.md](docs/okapiKy.md)).
+* Apps menu - The options in the "Apps" menu do not voice as actionable (able to be activated). Refs STCOR-453.
+* Settings > Software version: Remove references to color. Refs STCOR-451.
 
 ## [5.0.2](https://github.com/folio-org/stripes-core/tree/v5.0.2) (2020-06-12)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v5.0.1...v5.0.2)

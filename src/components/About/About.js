@@ -6,9 +6,12 @@ import stripesConnect from '@folio/stripes-connect/package';
 import stripesComponents from '@folio/stripes-components/package';
 import stripesLogger from '@folio/stripes-logger/package';
 
-import Pane from '@folio/stripes-components/lib/Pane';
-import Headline from '@folio/stripes-components/lib/Headline';
-import List from '@folio/stripes-components/lib/List';
+import {
+  Pane,
+  Headline,
+  List,
+  MessageBanner,
+} from '@folio/stripes-components';
 import { isVersionCompatible } from '../../discoverServices';
 import AboutEnabledModules from './AboutEnabledModules';
 import { withModules } from '../Modules';
@@ -29,20 +32,10 @@ const About = (props) => {
     }
 
     const itemFormatter = (key) => {
-      const required = okapiInterfaces[key];
-      const available = interfaces[key];
-      let style = {};
-      let text = required;
-
-      if (!available) {
-        style = { color: 'red', fontWeight: 'bold' };
-      } else if (!isVersionCompatible(available, required)) {
-        style = { color: 'orange' };
-        text = <FormattedMessage id="stripes-core.about.newerModuleAvailable" values={{ required, available }} />;
-      }
+      const text = okapiInterfaces[key];
 
       return (
-        <li key={key} style={style}>
+        <li key={key}>
           {key}
           {' '}
           {text}
@@ -97,6 +90,73 @@ const About = (props) => {
     );
   }
 
+  function renderWarningBanner(interfaces) {
+    const modulesArray = Object.keys(props.modules).map(key => props.modules[key]);
+
+    const missingModules = _.flattenDeep(modulesArray.map(module => {
+      return module.map(item => {
+        const okapiInterfaces = item.okapiInterfaces;
+        return Object.keys(okapiInterfaces).map(key => {
+          const required = okapiInterfaces[key];
+          const available = interfaces[key];
+
+          if (!available) {
+            return `${key} ${required}`;
+          } else {
+            return null;
+          }
+        });
+      });
+    }));
+
+    const incompatibleModule = _.flattenDeep(modulesArray.map(module => {
+      return module.map(item => {
+        const okapiInterfaces = item.okapiInterfaces;
+        return Object.keys(okapiInterfaces).map(key => {
+          const required = okapiInterfaces[key];
+          const available = interfaces[key];
+
+          if (available && !isVersionCompatible(available, required)) {
+            return `${key} ${required}`;
+          } else {
+            return null;
+          }
+        });
+      });
+    }));
+
+    const missingModulesMsg = <FormattedMessage id="stripes-core.about.missingModuleCount" values={{ count: _.compact(missingModules).length }} />;
+    const incompatibleModuleMsg = <FormattedMessage id="stripes-core.about.incompatibleModuleCount" values={{ count: _.compact(incompatibleModule).length }} />;
+
+    return (
+      <div className={css.warningContainer}>
+        <MessageBanner
+          type="warning"
+          show={_.compact(missingModules).length}
+          dismissable
+        >
+          <Headline>{missingModulesMsg}</Headline>
+          <List
+            listStyle="bullets"
+            items={missingModules}
+          />
+        </MessageBanner>
+
+        <MessageBanner
+          type="warning"
+          show={_.compact(incompatibleModule).length}
+          dismissable
+        >
+          <Headline>{incompatibleModuleMsg}</Headline>
+          <List
+            listStyle="bullets"
+            items={incompatibleModule}
+          />
+        </MessageBanner>
+      </div>
+    );
+  }
+
   const modules = _.get(props.stripes, ['discovery', 'modules']) || {};
   const interfaces = _.get(props.stripes, ['discovery', 'interfaces']) || {};
   const nm = Object.keys(modules).length;
@@ -110,6 +170,7 @@ const About = (props) => {
       defaultWidth="fill"
       paneTitle={<FormattedMessage id="stripes-core.about.paneTitle" />}
     >
+      {renderWarningBanner(interfaces)}
       <div className={css.versionsContainer}>
         <div className={css.versionsColumn}>
           <Headline size="large">
@@ -202,26 +263,6 @@ const About = (props) => {
           {renderDependencies(Object.assign({}, stripesCore.stripes || {}, { module: 'stripes-core' }), interfaces)}
           <br />
           {Object.keys(props.modules).map(key => listModules(key, props.modules[key], interfaces))}
-          <Headline size="small">
-            <FormattedMessage id="stripes-core.about.legendKey" />
-          </Headline>
-          <p>
-            <FormattedMessage
-              id="stripes-core.about.key.absentInterfaces"
-              values={{
-                span: chunks => <span className={css.absent}>{chunks}</span>
-              }}
-            />
-            <br />
-            <FormattedMessage
-              id="stripes-core.about.key.incompatibleIntf"
-              values={{
-                span: chunks => <span className={css.incompatible}>{chunks}</span>
-              }}
-            />
-            <br />
-            <FormattedMessage id="stripes-core.about.key.compatible" />
-          </p>
         </div>
       </div>
     </Pane>
