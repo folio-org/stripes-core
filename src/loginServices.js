@@ -63,6 +63,7 @@ export const supportedLocales = [
   'ja',
   'ko',
   'it-IT',
+  'pl',
   'pt-BR',
   'pt-PT',
   'ru',
@@ -218,9 +219,9 @@ function createOkapiSession(okapiUrl, store, tenant, token, data) {
   loadResources(okapiUrl, store, tenant);
 }
 
-// Validate stored token by attempting to fetch /users
+// Validate stored token by attempting to fetch /bl-users/_self
 function validateUser(okapiUrl, store, tenant, session) {
-  fetch(`${okapiUrl}/users`, { headers: getHeaders(tenant, session.token) }).then((resp) => {
+  fetch(`${okapiUrl}/bl-users/_self`, { headers: getHeaders(tenant, session.token) }).then((resp) => {
     if (resp.status >= 400) {
       store.dispatch(clearCurrentUser());
       store.dispatch(clearOkapiToken());
