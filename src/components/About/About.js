@@ -90,14 +90,14 @@ const About = (props) => {
     );
   }
 
-  function renderWarningBanner(interfaces) {
+  function renderWarningBanner(interfacesList) {
     const modulesArray = Object.keys(props.modules).map(key => props.modules[key]);
     const missingModules = _.flattenDeep(modulesArray.map(module => {
       return module.map(item => {
         const okapiInterfaces = item.okapiInterfaces;
         return okapiInterfaces && Object.keys(okapiInterfaces).map(key => {
           const required = okapiInterfaces[key];
-          const available = interfaces[key];
+          const available = interfacesList[key];
 
           if (!available) {
             return `${key} ${required}`;
@@ -113,7 +113,7 @@ const About = (props) => {
         const okapiInterfaces = item.okapiInterfaces;
         return okapiInterfaces && Object.keys(okapiInterfaces).map(key => {
           const required = okapiInterfaces[key];
-          const available = interfaces[key];
+          const available = interfacesList[key];
 
           if (available && !isVersionCompatible(available, required)) {
             return `${key} ${required}`;
