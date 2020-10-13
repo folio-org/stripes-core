@@ -92,11 +92,10 @@ const About = (props) => {
 
   function renderWarningBanner(interfaces) {
     const modulesArray = Object.keys(props.modules).map(key => props.modules[key]);
-
     const missingModules = _.flattenDeep(modulesArray.map(module => {
       return module.map(item => {
         const okapiInterfaces = item.okapiInterfaces;
-        return Object.keys(okapiInterfaces).map(key => {
+        return okapiInterfaces && Object.keys(okapiInterfaces).map(key => {
           const required = okapiInterfaces[key];
           const available = interfaces[key];
 
@@ -112,7 +111,7 @@ const About = (props) => {
     const incompatibleModule = _.flattenDeep(modulesArray.map(module => {
       return module.map(item => {
         const okapiInterfaces = item.okapiInterfaces;
-        return Object.keys(okapiInterfaces).map(key => {
+        return okapiInterfaces && Object.keys(okapiInterfaces).map(key => {
           const required = okapiInterfaces[key];
           const available = interfaces[key];
 
