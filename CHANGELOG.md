@@ -4,6 +4,7 @@
 
 * Validate token using a request that does not require permissions. Refs STCOR-452.
 * Update `serialize-javascript` to avoid CVE-2020-7660. Refs STCOR-467.
+* Pass a string, not a `<FormattedMessage>`, to `<NavButton>`. Refs STCOR-472.
 
 ## [6.0.0](https://github.com/folio-org/stripes-core/tree/v6.0.0) (2020-10-06)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v5.0.2...v6.0.0)
