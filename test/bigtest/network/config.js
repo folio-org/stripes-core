@@ -18,7 +18,6 @@ export default function configure() {
     configs: []
   });
 
-  this.get('/users', {});
   this.get('/bl-users/_self', {});
   this.post('/bl-users/password-reset/validate', {}, 204);
   this.post('/bl-users/password-reset/reset', {}, 401);
