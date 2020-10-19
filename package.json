@@ -170,7 +170,6 @@
     "react-router-dom": "^5.2.0"
   },
   "resolutions": {
-    "moment": "~2.24.0",
-    "terser": "5.3.5"
+    "moment": "~2.24.0"
   }
 }
