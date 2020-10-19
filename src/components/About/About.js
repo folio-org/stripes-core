@@ -10,10 +10,9 @@ import {
   Pane,
   Headline,
   List,
-  MessageBanner,
 } from '@folio/stripes-components';
-import { isVersionCompatible } from '../../discoverServices';
 import AboutEnabledModules from './AboutEnabledModules';
+import WarningBanner from './WarningBanner';
 import { withModules } from '../Modules';
 
 import stripesCore from '../../../package';
@@ -90,72 +89,6 @@ const About = (props) => {
     );
   }
 
-  function renderWarningBanner(interfacesList) {
-    const modulesArray = Object.keys(props.modules).map(key => props.modules[key]);
-    const missingModules = _.flattenDeep(modulesArray.map(module => {
-      return module.map(item => {
-        const okapiInterfaces = item.okapiInterfaces;
-        return okapiInterfaces && Object.keys(okapiInterfaces).map(key => {
-          const required = okapiInterfaces[key];
-          const available = interfacesList[key];
-
-          if (!available) {
-            return `${key} ${required}`;
-          } else {
-            return null;
-          }
-        });
-      });
-    }));
-
-    const incompatibleModule = _.flattenDeep(modulesArray.map(module => {
-      return module.map(item => {
-        const okapiInterfaces = item.okapiInterfaces;
-        return okapiInterfaces && Object.keys(okapiInterfaces).map(key => {
-          const required = okapiInterfaces[key];
-          const available = interfacesList[key];
-
-          if (available && !isVersionCompatible(available, required)) {
-            return `${key} ${required}`;
-          } else {
-            return null;
-          }
-        });
-      });
-    }));
-
-    const missingModulesMsg = <FormattedMessage id="stripes-core.about.missingModuleCount" values={{ count: _.compact(missingModules).length }} />;
-    const incompatibleModuleMsg = <FormattedMessage id="stripes-core.about.incompatibleModuleCount" values={{ count: _.compact(incompatibleModule).length }} />;
-
-    return (
-      <div className={css.warningContainer}>
-        <MessageBanner
-          type="warning"
-          show={_.compact(missingModules).length}
-          dismissable
-        >
-          <Headline>{missingModulesMsg}</Headline>
-          <List
-            listStyle="bullets"
-            items={missingModules}
-          />
-        </MessageBanner>
-
-        <MessageBanner
-          type="warning"
-          show={_.compact(incompatibleModule).length}
-          dismissable
-        >
-          <Headline>{incompatibleModuleMsg}</Headline>
-          <List
-            listStyle="bullets"
-            items={incompatibleModule}
-          />
-        </MessageBanner>
-      </div>
-    );
-  }
-
   const modules = _.get(props.stripes, ['discovery', 'modules']) || {};
   const interfaces = _.get(props.stripes, ['discovery', 'interfaces']) || {};
   const nm = Object.keys(modules).length;
@@ -169,7 +102,10 @@ const About = (props) => {
       defaultWidth="fill"
       paneTitle={<FormattedMessage id="stripes-core.about.paneTitle" />}
     >
-      {renderWarningBanner(interfaces)}
+      <WarningBanner
+        interfaces={interfaces}
+        modules={props.modules}
+      />
       <div className={css.versionsContainer}>
         <div className={css.versionsColumn}>
           <Headline size="large">
