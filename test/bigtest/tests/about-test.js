@@ -6,7 +6,7 @@ import React, { Component } from 'react';
 import setupApplication from '../helpers/setup-core-application';
 import AboutInteractor from '../interactors/about';
 
-describe('About', () => {
+describe.only('About', () => {
   const about = new AboutInteractor();
 
   class DummyApp extends Component {
