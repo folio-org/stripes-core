@@ -35,14 +35,16 @@ const WarningBanner = ({
     }
   }, []);
 
-  const missingModulesMsg = <FormattedMessage id="stripes-core.about.missingModuleCount" values={{ count: _.compact(missingModules).length }} />;
-  const incompatibleModuleMsg = <FormattedMessage id="stripes-core.about.incompatibleModuleCount" values={{ count: _.compact(incompatibleModule).length }} />;
+  const missingModulesCount = _.compact(missingModules).length;
+  const incompatibleModulesCount = _.compact(incompatibleModule).length;
+  const missingModulesMsg = <FormattedMessage id="stripes-core.about.missingModuleCount" values={{ count: missingModulesCount }} />;
+  const incompatibleModuleMsg = <FormattedMessage id="stripes-core.about.incompatibleModuleCount" values={{ count: incompatibleModulesCount }} />;
 
   return (
     <div className={css.warningContainer}>
       <MessageBanner
         type="warning"
-        show={_.compact(missingModules).length}
+        show={missingModulesCount}
         dismissable
       >
         <Headline>{missingModulesMsg}</Headline>
@@ -54,7 +56,7 @@ const WarningBanner = ({
 
       <MessageBanner
         type="warning"
-        show={_.compact(incompatibleModule).length}
+        show={incompatibleModulesCount}
         dismissable
       >
         <Headline>{incompatibleModuleMsg}</Headline>
