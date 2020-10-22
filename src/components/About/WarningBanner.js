@@ -23,7 +23,7 @@ const WarningBanner = ({
     if (!interfaces[curr]) {
       return [...prev, `${curr} ${allInterfaces[curr]}`];
     } else {
-      return null;
+      return prev;
     }
   }, []);
 
@@ -31,7 +31,7 @@ const WarningBanner = ({
     if (interfaces[curr] && !isVersionCompatible(interfaces[curr], allInterfaces[curr])) {
       return [...prev, `${curr} ${allInterfaces[curr]}`];
     } else {
-      return null;
+      return prev;
     }
   }, []);
 
