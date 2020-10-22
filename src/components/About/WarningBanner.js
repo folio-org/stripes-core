@@ -16,28 +16,24 @@ const WarningBanner = ({
   interfaces,
   modules,
 }) => {
-  const [missingModules, setMissingModules] = useState([]);
-  const [incompatibleModule, setIncompatibleModule] = useState([]);
+  const modulesArray = _.flatten(_.values(modules));
+  const allInterfaces = modulesArray.reduce((prev, curr) => Object.assign(prev, curr.okapiInterfaces), {});
 
-  useEffect(() => {
-    const modulesArray = _.flatten(_.values(modules));
+  const missingModules = Object.keys(allInterfaces).reduce((prev, curr) => {
+    if (!interfaces[curr]) {
+      return [...prev, `${curr} ${allInterfaces[curr]}`];
+    } else {
+      return null;
+    }
+  }, []);
 
-    modulesArray.forEach(module => {
-      const okapiInterfaces = module.okapiInterfaces;
-      if (okapiInterfaces) {
-        Object.keys(okapiInterfaces).forEach(key => {
-          const required = okapiInterfaces[key];
-          const available = interfaces[key];
-
-          if (!available) {
-            setMissingModules((prevState) => [...prevState, `${key} ${required}`]);
-          } else if (available && !isVersionCompatible(available, required)) {
-            setIncompatibleModule((prevState) => [...prevState, `${key} ${required}`]);
-          }
-        });
-      }
-    });
-  }, [modules, interfaces]);
+  const incompatibleModule = Object.keys(allInterfaces).reduce((prev, curr) => {
+    if (interfaces[curr] && !isVersionCompatible(interfaces[curr], allInterfaces[curr])) {
+      return [...prev, `${curr} ${allInterfaces[curr]}`];
+    } else {
+      return null;
+    }
+  }, []);
 
   const missingModulesMsg = <FormattedMessage id="stripes-core.about.missingModuleCount" values={{ count: _.compact(missingModules).length }} />;
   const incompatibleModuleMsg = <FormattedMessage id="stripes-core.about.incompatibleModuleCount" values={{ count: _.compact(incompatibleModule).length }} />;
