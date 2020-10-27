@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 
@@ -16,27 +16,36 @@ const WarningBanner = ({
   interfaces,
   modules,
 }) => {
-  const modulesArray = _.flatten(_.values(modules));
-  const allInterfaces = modulesArray.reduce((prev, curr) => Object.assign(prev, curr.okapiInterfaces), {});
+  const modulesArray = useMemo(() => _.flatten(_.values(modules)), [modules]);
 
-  const missingModules = Object.keys(allInterfaces).reduce((prev, curr) => {
-    if (!interfaces[curr]) {
-      return [...prev, `${curr} ${allInterfaces[curr]}`];
-    } else {
-      return prev;
-    }
-  }, []);
+  const allInterfaces = useMemo(() => {
+    return modulesArray.reduce((prev, curr) => Object.assign(prev, curr.okapiInterfaces), {});
+  }, [modulesArray]);
 
-  const incompatibleModule = Object.keys(allInterfaces).reduce((prev, curr) => {
-    if (interfaces[curr] && !isVersionCompatible(interfaces[curr], allInterfaces[curr])) {
-      return [...prev, `${curr} ${allInterfaces[curr]}`];
-    } else {
-      return prev;
-    }
-  }, []);
+  const missingModules = useMemo(() => {
+    return Object.keys(allInterfaces).reduce((prev, curr) => {
+      if (!interfaces[curr]) {
+        return [...prev, `${curr} ${allInterfaces[curr]}`];
+      } else {
+        return prev;
+      }
+    }, []);
+  }, [allInterfaces, interfaces]);
 
-  const missingModulesCount = _.compact(missingModules).length;
-  const incompatibleModulesCount = _.compact(incompatibleModule).length;
+  const incompatibleModule = useMemo(() => {
+    return Object.keys(allInterfaces).reduce((prev, curr) => {
+      if (interfaces[curr] && !isVersionCompatible(interfaces[curr], allInterfaces[curr])) {
+        return [...prev, `${curr} ${allInterfaces[curr]}`];
+      } else {
+        return prev;
+      }
+    }, []);
+  }, [allInterfaces, interfaces]);
+
+  const missingModulesCount = useMemo(() => _.compact(missingModules).length, [missingModules]);
+
+  const incompatibleModulesCount = useMemo(() => _.compact(incompatibleModule).length, [incompatibleModule]);
+
   const missingModulesMsg = <FormattedMessage id="stripes-core.about.missingModuleCount" values={{ count: missingModulesCount }} />;
   const incompatibleModuleMsg = <FormattedMessage id="stripes-core.about.incompatibleModuleCount" values={{ count: incompatibleModulesCount }} />;
 
