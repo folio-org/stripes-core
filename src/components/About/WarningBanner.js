@@ -31,7 +31,7 @@ const WarningBanner = ({
 
   const incompatibleModules = useMemo(
     () => Object.entries(allInterfaces)
-      .filter(([key]) => (key in interfaces && key in allInterfaces))
+      .filter(([key]) => (key in interfaces) && !isVersionCompatible(interfaces[key], allInterfaces[key]))
       .map(([key, value]) => `${key} ${value}`),
     [allInterfaces, interfaces]
   );
