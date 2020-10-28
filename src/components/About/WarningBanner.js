@@ -32,7 +32,7 @@ const WarningBanner = ({
     }, []);
   }, [allInterfaces, interfaces]);
 
-  const incompatibleModule = useMemo(() => {
+  const incompatibleModules = useMemo(() => {
     return Object.keys(allInterfaces).reduce((prev, curr) => {
       if (interfaces[curr] && !isVersionCompatible(interfaces[curr], allInterfaces[curr])) {
         return [...prev, `${curr} ${allInterfaces[curr]}`];
@@ -42,9 +42,9 @@ const WarningBanner = ({
     }, []);
   }, [allInterfaces, interfaces]);
 
-  const missingModulesCount = useMemo(() => _.compact(missingModules).length, [missingModules]);
+  const missingModulesCount = useMemo(() => missingModules.length, [missingModules]);
 
-  const incompatibleModulesCount = useMemo(() => _.compact(incompatibleModule).length, [incompatibleModule]);
+  const incompatibleModulesCount = useMemo(() => incompatibleModules.length, [incompatibleModules]);
 
   const missingModulesMsg = <FormattedMessage id="stripes-core.about.missingModuleCount" values={{ count: missingModulesCount }} />;
   const incompatibleModuleMsg = <FormattedMessage id="stripes-core.about.incompatibleModuleCount" values={{ count: incompatibleModulesCount }} />;
@@ -71,7 +71,7 @@ const WarningBanner = ({
         <Headline>{incompatibleModuleMsg}</Headline>
         <List
           listStyle="bullets"
-          items={incompatibleModule}
+          items={incompatibleModules}
         />
       </MessageBanner>
     </div>
