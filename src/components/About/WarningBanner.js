@@ -22,27 +22,22 @@ const WarningBanner = ({
     return modulesArray.reduce((prev, curr) => Object.assign(prev, curr.okapiInterfaces), {});
   }, [modules]);
 
-const missingModules = useMemo(
-  () => Object.entries(allInterfaces)
-    .filter(([key]) => !(key in interfaces))
-    .map(([key, value]) => `${key} ${value}`),
-  [allInterfaces, interfaces]
-);
+  const missingModules = useMemo(
+    () => Object.entries(allInterfaces)
+      .filter(([key]) => !(key in interfaces))
+      .map(([key, value]) => `${key} ${value}`),
+    [allInterfaces, interfaces]
+  );
 
-  const incompatibleModules = useMemo(() => {
-    return Object.keys(allInterfaces).reduce((prev, curr) => {
-      if (interfaces[curr] && !isVersionCompatible(interfaces[curr], allInterfaces[curr])) {
-        return [...prev, `${curr} ${allInterfaces[curr]}`];
-      } else {
-        return prev;
-      }
-    }, []);
-  }, [allInterfaces, interfaces]);
+  const incompatibleModules = useMemo(
+    () => Object.entries(allInterfaces)
+      .filter(([key]) => (key in interfaces && key in allInterfaces))
+      .map(([key, value]) => `${key} ${value}`),
+    [allInterfaces, interfaces]
+  );
 
-  const missingModulesCount = useMemo(() => missingModules.length, [missingModules]);
-
-  const incompatibleModulesCount = useMemo(() => incompatibleModules.length, [incompatibleModules]);
-
+  const missingModulesCount = missingModules.length;
+  const incompatibleModulesCount = incompatibleModules.length;
   const missingModulesMsg = <FormattedMessage id="stripes-core.about.missingModuleCount" values={{ count: missingModulesCount }} />;
   const incompatibleModuleMsg = <FormattedMessage id="stripes-core.about.incompatibleModuleCount" values={{ count: incompatibleModulesCount }} />;
 
