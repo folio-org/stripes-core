@@ -2,10 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { Route } from 'react-router-dom';
-
-import ErrorBoundary from '@folio/stripes-components/lib/ErrorBoundary';
-
 import TitleManager from '../TitleManager';
+import RouteErrorBoundary from '../RouteErrorBoundary';
 
 import { withStripes } from '../../StripesContext';
 
@@ -39,10 +37,10 @@ class TitledRoute extends React.Component {
       <Route
         {...rest}
         render={() => (
-          <ErrorBoundary>
+          <RouteErrorBoundary escapeRoute="/">
             <TitleManager page={intl.formatMessage({ id: `stripes-core.title.${name}`, defaultMessage: name })} />
             {componentWithExtraProps}
-          </ErrorBoundary>
+          </RouteErrorBoundary>
         )}
       />
     );

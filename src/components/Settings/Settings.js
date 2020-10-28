@@ -21,6 +21,7 @@ import { withModules } from '../Modules';
 import { stripesShape } from '../../Stripes';
 import AppIcon from '../AppIcon';
 import { packageName } from '../../constants';
+import RouteErrorBoundary from '../RouteErrorBoundary';
 
 import css from './Settings.css';
 
@@ -84,18 +85,23 @@ class Settings extends React.Component {
     });
 
     const routes = this.connectedModules.map(({ module, Component, moduleStripes }) => {
-      return (<Route
-        path={`/settings${module.route}`}
-        key={module.route}
-        render={(props2) => (
-          <StripesContext.Provider value={moduleStripes}>
-            <AddContext context={{ stripes: moduleStripes }}>
-              <Component {...props2} stripes={moduleStripes} showSettings actAs="settings" />
-            </AddContext>
-            {props2.match.isExact ? <div className={css.panePlaceholder} /> : null}
-          </StripesContext.Provider>
-        )}
-      />);
+      const path = `/settings${module.route}`;
+      return (
+        <Route
+          path={path}
+          key={module.route}
+          render={(props2) => (
+            <RouteErrorBoundary escapeRoute={path} moduleName={module.displayName} isSettings>
+              <StripesContext.Provider value={moduleStripes}>
+                <AddContext context={{ stripes: moduleStripes }}>
+                  <Component {...props2} stripes={moduleStripes} showSettings actAs="settings" />
+                </AddContext>
+                {props2.match.isExact ? <div className={css.panePlaceholder} /> : null}
+              </StripesContext.Provider>
+            </RouteErrorBoundary>
+          )}
+        />
+      );
     });
 
     // To keep the top level parent menu item shown as active
