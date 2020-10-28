@@ -22,15 +22,12 @@ const WarningBanner = ({
     return modulesArray.reduce((prev, curr) => Object.assign(prev, curr.okapiInterfaces), {});
   }, [modules]);
 
-  const missingModules = useMemo(() => {
-    return Object.keys(allInterfaces).reduce((prev, curr) => {
-      if (!interfaces[curr]) {
-        return [...prev, `${curr} ${allInterfaces[curr]}`];
-      } else {
-        return prev;
-      }
-    }, []);
-  }, [allInterfaces, interfaces]);
+const missingModules = useMemo(
+  () => Object.entries(allInterfaces)
+    .filter(([key]) => !(key in interfaces))
+    .map(([key, value]) => `${key} ${value}`),
+  [allInterfaces, interfaces]
+);
 
   const incompatibleModules = useMemo(() => {
     return Object.keys(allInterfaces).reduce((prev, curr) => {
