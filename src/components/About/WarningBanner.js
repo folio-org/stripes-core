@@ -16,11 +16,11 @@ const WarningBanner = ({
   interfaces,
   modules,
 }) => {
-  const modulesArray = useMemo(() => _.flatten(_.values(modules)), [modules]);
-
   const allInterfaces = useMemo(() => {
+    const modulesArray = _.flatten(_.values(modules));
+
     return modulesArray.reduce((prev, curr) => Object.assign(prev, curr.okapiInterfaces), {});
-  }, [modulesArray]);
+  }, [modules]);
 
   const missingModules = useMemo(() => {
     return Object.keys(allInterfaces).reduce((prev, curr) => {
