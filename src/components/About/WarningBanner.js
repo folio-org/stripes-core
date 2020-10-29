@@ -1,7 +1,8 @@
 import _ from 'lodash';
-import React, { useMemo } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
+import { useDeepCompareMemo } from 'use-deep-compare';
 
 import {
   Headline,
@@ -16,20 +17,20 @@ const WarningBanner = ({
   interfaces,
   modules,
 }) => {
-  const allInterfaces = useMemo(() => {
+  const allInterfaces = useDeepCompareMemo(() => {
     const modulesArray = _.flatten(_.values(modules));
 
     return modulesArray.reduce((prev, curr) => Object.assign(prev, curr.okapiInterfaces), {});
   }, [modules]);
 
-  const missingModules = useMemo(
+  const missingModules = useDeepCompareMemo(
     () => Object.entries(allInterfaces)
       .filter(([key]) => !(key in interfaces))
       .map(([key, value]) => `${key} ${value}`),
     [allInterfaces, interfaces]
   );
 
-  const incompatibleModules = useMemo(
+  const incompatibleModules = useDeepCompareMemo(
     () => Object.entries(allInterfaces)
       .filter(([key]) => (key in interfaces) && !isVersionCompatible(interfaces[key], allInterfaces[key]))
       .map(([key, value]) => `${key} ${value}`),
