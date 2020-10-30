@@ -25,6 +25,7 @@
 * Adjust package scope name filter to align with NPM rules instead of assuming `@folio/`. Refs STCOR-456.
 * Move `moment` to `peerDependencies`. Refs STCOR-464.
 * Refactor `CreateResetPassword` to use vanilla `react-final-form` instead of `stripes-final-form` wrapper. Refs STCOR-466.
+* Settings > Software version: Remove references to color. Refs STCOR-451.
 
 ## [5.0.2](https://github.com/folio-org/stripes-core/tree/v5.0.2) (2020-06-12)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v5.0.1...v5.0.2)
