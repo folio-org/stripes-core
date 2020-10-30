@@ -123,5 +123,7 @@
     "mainnav.myProfileAriaLabel": "Meu perfil",
     "mainnav.skipMainNavigation": "Pular navegação principal",
     "errors.user.timeout": "Sua sessão expirou. Faça login novamente para retomar sua sessão.",
-    "errors.password.consecutiveWhitespaces.invalid": "A senha não deve conter caracteres de espaço em branco consecutivos."
+    "errors.password.consecutiveWhitespaces.invalid": "A senha não deve conter caracteres de espaço em branco consecutivos.",
+    "about.missingModuleCount": "{count, number} Faltando {count, plural, one {módulo} other {módulos}}",
+    "about.incompatibleModuleCount": "{count, number} Versão {count, plural, one {módulo} other {módulos}} incompatível"
 }

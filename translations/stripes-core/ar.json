@@ -123,5 +123,7 @@
     "mainnav.myProfileAriaLabel": "ملفي الشخصي",
     "mainnav.skipMainNavigation": "تخطي التصفح الرئيسي",
     "errors.user.timeout": "لقد انتهت صلاحية الجلسة. يرجى إعادة تسجيل الدخول مرة أخرى لمتابعة الجلسة.",
-    "errors.password.consecutiveWhitespaces.invalid": "يجب ألا تحتوي كلمة المرور على مسافات متتالية."
+    "errors.password.consecutiveWhitespaces.invalid": "يجب ألا تحتوي كلمة المرور على مسافات متتالية.",
+    "about.missingModuleCount": "{count, number} مفقود {count, plural, one {وحدة} other {وحدة}}",
+    "about.incompatibleModuleCount": "{count, number} غير متوافق {count, plural, one {وحدة} other {وحدة}} إصدار"
 }
