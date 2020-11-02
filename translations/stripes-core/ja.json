@@ -2,7 +2,7 @@
     "front.welcome": "ようこそ、図書館の未来はオープンです!",
     "front.home": "ホーム",
     "front.about": "ソフトウェアのバージョン",
-    "button.new": "+New",
+    "button.new": "+新規",
     "button.new_tooltip": "{entry}追加",
     "button.edit": "編集",
     "button.delete": "削除",
@@ -123,5 +123,7 @@
     "mainnav.myProfileAriaLabel": "My profile",
     "mainnav.skipMainNavigation": "Skip Main Navigation",
     "errors.user.timeout": "Your session has expired. Please login again to resume your session.",
-    "errors.password.consecutiveWhitespaces.invalid": "The password must not contain consecutive white space characters."
+    "errors.password.consecutiveWhitespaces.invalid": "The password must not contain consecutive white space characters.",
+    "about.missingModuleCount": "{count, number} Missing {count, plural, one {module} other {modules}}",
+    "about.incompatibleModuleCount": "{count, number} Incompatible {count, plural, one {module} other {modules}} version"
 }

@@ -123,5 +123,7 @@
     "mainnav.myProfileAriaLabel": "Mi perfil",
     "mainnav.skipMainNavigation": "Saltar navegación principal",
     "errors.user.timeout": "Your session has expired. Please login again to resume your session.",
-    "errors.password.consecutiveWhitespaces.invalid": "The password must not contain consecutive white space characters."
+    "errors.password.consecutiveWhitespaces.invalid": "The password must not contain consecutive white space characters.",
+    "about.missingModuleCount": "{count, number} Falta {count, plural, one {module} other {modules}}",
+    "about.incompatibleModuleCount": "{count, number} Incompatible {count, plural, one { module } other { modules }} versión"
 }
