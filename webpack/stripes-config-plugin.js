@@ -61,12 +61,12 @@ module.exports = class StripesConfigPlugin {
 
     // Create a virtual module for Webpack to include in the build
     const stripesVirtualModule = `
-      const { okapi, config, modules } = ${serialize(this.mergedConfig, { space: 2 })};
+      const { okapi, config, modules, okapiModules } = ${serialize(this.mergedConfig, { space: 2 })};
       const branding = ${stripesSerialize.serializeWithRequire(pluginData.branding)};
       const translations = ${serialize(pluginData.translations, { space: 2 })};
       const metadata = ${stripesSerialize.serializeWithRequire(this.metadata)};
       const icons = ${stripesSerialize.serializeWithRequire(this.icons)};
-      export { okapi, config, modules, branding, translations, metadata, icons };
+      export { okapi, config, modules, branding, translations, metadata, icons, okapiModules };
     `;
 
     logger.log('writing virtual module...', stripesVirtualModule);

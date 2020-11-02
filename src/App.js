@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { okapi as okapiConfig, config } from 'stripes-config';
+import { okapi as okapiConfig, okapiModules, config } from 'stripes-config';
 import merge from 'lodash/merge';
 
 import connectErrorEpic from './connectErrorEpic';
@@ -32,6 +32,11 @@ export default class StripesCore extends Component {
     this.epics = configureEpics(connectErrorEpic);
     this.store = configureStore(initialState, this.logger, this.epics);
     this.actionNames = gatherActions();
+
+    if (Array.isArray(okapiModules)) {
+      this.store.dispatch({ type: 'DISCOVERY_SUCCESS', data: okapiModules });
+      okapiModules.map(entry => this.store.dispatch({ type: 'DISCOVERY_INTERFACES', data: entry }));
+    }
   }
 
   componentWillUnmount() {
