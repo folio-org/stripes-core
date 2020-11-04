@@ -33,7 +33,6 @@ const RouteErrorBoundary = ({ children, escapeRoute, moduleName, isSettings }) =
 
   return (
     <ErrorBoundary
-      forceProductionError
       subTitle={intl.formatMessage({ id: 'stripes-core.routeErrorBoundary.sub' })}
       resetButtonLabel={intl.formatMessage({ id: buttonLabelId }, { name: moduleName })}
       onReset={handleReset}
