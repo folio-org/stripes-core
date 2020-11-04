@@ -13,14 +13,16 @@ const RouteErrorBoundary = ({ children, escapeRoute, moduleName, isSettings }) =
   const history = useHistory();
   const currentRoute = history.location.pathname;
   const shouldGoToAppHome = currentRoute === escapeRoute;
-  let buttonLabel = intl.formatMessage({ id: 'stripes-core.routeErrorBoundary.goToAppHomeLabel' });
+  let buttonLabelId;
 
   if (moduleName) {
-    buttonLabel = intl.formatMessage({ id: 'stripes-core.routeErrorBoundary.goToModuleHomeLabel' }, { name: moduleName });
-
     if (isSettings) {
-      buttonLabel = intl.formatMessage({ id: 'stripes-core.routeErrorBoundary.goToModuleSettingsHomeLabel' }, { name: moduleName });
+      buttonLabelId = 'stripes-core.routeErrorBoundary.goToModuleSettingsHomeLabel';
+    } else {
+      buttonLabelId = 'stripes-core.routeErrorBoundary.goToModuleHomeLabel';
     }
+  } else {
+    buttonLabelId = 'stripes-core.routeErrorBoundary.goToAppHomeLabel';
   }
 
   const handleReset = () => {
@@ -33,7 +35,7 @@ const RouteErrorBoundary = ({ children, escapeRoute, moduleName, isSettings }) =
     <ErrorBoundary
       forceProductionError
       subTitle={intl.formatMessage({ id: 'stripes-core.routeErrorBoundary.sub' })}
-      resetButtonLabel={buttonLabel}
+      resetButtonLabel={intl.formatMessage({ id: buttonLabelId }, { name: moduleName })}
       onReset={handleReset}
     >
       {children}
