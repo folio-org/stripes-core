@@ -18,21 +18,39 @@ function getHeaders(tenant, token) {
 
 export function discoverServices(store) {
   const okapi = store.getState().okapi;
-  return fetch(`${okapi.url}/_/version`, {
+  return Promise.all([
+    fetch(`${okapi.url}/_/version`, {
       headers: getHeaders(okapi.tenant, okapi.token)
-    }).then((response) => { // eslint-disable-line consistent-return
-      if (response.status >= 400) {
-        store.dispatch({ type: 'DISCOVERY_FAILURE', code: response.status });
-      } else {
-        return response.text().then((text) => {
-          store.dispatch({ type: 'DISCOVERY_OKAPI', version: text });
-        });
-      }
-    }).then(() => {
-      store.dispatch({ type: 'DISCOVERY_FINISHED' });
-    }).catch((reason) => {
-      store.dispatch({ type: 'DISCOVERY_FAILURE', message: reason });
-    });
+    })
+      .then((response) => { // eslint-disable-line consistent-return
+        if (response.status >= 400) {
+          store.dispatch({ type: 'DISCOVERY_FAILURE', code: response.status });
+        } else {
+          return response.text().then((text) => {
+            store.dispatch({ type: 'DISCOVERY_OKAPI', version: text });
+          });
+        }
+      }).catch((reason) => {
+        store.dispatch({ type: 'DISCOVERY_FAILURE', message: reason });
+      }),
+    fetch(`${okapi.url}/_/proxy/tenants/${okapi.tenant}/modules?full=true`, {
+      headers: getHeaders(okapi.tenant, okapi.token)
+    })
+      .then((response) => { // eslint-disable-line consistent-return
+        if (response.status >= 400) {
+          store.dispatch({ type: 'DISCOVERY_FAILURE', code: response.status });
+        } else {
+          return response.json().then((json) => {
+            store.dispatch({ type: 'DISCOVERY_SUCCESS', data: json });
+            return Promise.all(json.map(entry => store.dispatch({ type: 'DISCOVERY_INTERFACES', data: entry })));
+          });
+        }
+      }).catch((reason) => {
+        store.dispatch({ type: 'DISCOVERY_FAILURE', message: reason });
+      }),
+  ]).then(() => {
+    store.dispatch({ type: 'DISCOVERY_FINISHED' });
+  });
 }
 
 export function discoveryReducer(state = {}, action) {
