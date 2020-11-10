@@ -44,7 +44,9 @@ export function discoverServices(store) {
   // If Stripes is being served by a dev server, it actually reaches out to Okapi and pulls down the set of modules
   // at build time. This is so that when devs are working on Folio, they don't consistently need to reach out and fetch
   // the new set of modules for every page reload/session. The fetch takes 2-4 seconds to complete so this is an appreciable
-  // time savings in aggregate. See https://github.com/folio-org/stripes-cli/pull/240 for more info.
+  // time savings in aggregate. As a result of this, we check if the Okapi modules have been prefetched and included in the
+  // stripes-config module created at build time. If they haven't, we go out and fetch the modules.
+  // See https://github.com/folio-org/stripes-cli/pull/240 for more info.
   if (Array.isArray(okapiModules) === false || okapiModules.length === 0) {
     promises.push(
       fetch(`${okapi.url}/_/proxy/tenants/${okapi.tenant}/modules?full=true`, {
