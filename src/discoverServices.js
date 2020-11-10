@@ -1,4 +1,5 @@
 import { some } from 'lodash';
+import { okapiModules } from 'stripes-config';
 
 function getHeaders(tenant, token) {
   return {
@@ -18,7 +19,10 @@ function getHeaders(tenant, token) {
 
 export function discoverServices(store) {
   const okapi = store.getState().okapi;
-  return Promise.all([
+
+  const promises = [];
+
+  promises.push(
     fetch(`${okapi.url}/_/version`, {
       headers: getHeaders(okapi.tenant, okapi.token)
     })
@@ -32,23 +36,36 @@ export function discoverServices(store) {
         }
       }).catch((reason) => {
         store.dispatch({ type: 'DISCOVERY_FAILURE', message: reason });
-      }),
-    fetch(`${okapi.url}/_/proxy/tenants/${okapi.tenant}/modules?full=true`, {
-      headers: getHeaders(okapi.tenant, okapi.token)
-    })
-      .then((response) => { // eslint-disable-line consistent-return
-        if (response.status >= 400) {
-          store.dispatch({ type: 'DISCOVERY_FAILURE', code: response.status });
-        } else {
-          return response.json().then((json) => {
-            store.dispatch({ type: 'DISCOVERY_SUCCESS', data: json });
-            return Promise.all(json.map(entry => store.dispatch({ type: 'DISCOVERY_INTERFACES', data: entry })));
-          });
-        }
-      }).catch((reason) => {
-        store.dispatch({ type: 'DISCOVERY_FAILURE', message: reason });
-      }),
-  ]).then(() => {
+      })
+  );
+
+
+  // Stripes is built in one of two ways - into a bundle of JS files, or served live via webpack dev server.
+  // If Stripes is being served by a dev server, it actually reaches out to Okapi and pulls down the set of modules
+  // at build time. This is so that when devs are working on Folio, they don't consistently need to reach out and fetch
+  // the new set of modules for every page reload/session. The fetch takes 2-4 seconds to complete so this is an appreciable
+  // time savings in aggregate. See https://github.com/folio-org/stripes-cli/pull/240 for more info.
+  if (Array.isArray(okapiModules) === false || okapiModules.length === 0) {
+    promises.push(
+      fetch(`${okapi.url}/_/proxy/tenants/${okapi.tenant}/modules?full=true`, {
+        headers: getHeaders(okapi.tenant, okapi.token)
+      })
+        .then((response) => { // eslint-disable-line consistent-return
+          if (response.status >= 400) {
+            store.dispatch({ type: 'DISCOVERY_FAILURE', code: response.status });
+          } else {
+            return response.json().then((json) => {
+              store.dispatch({ type: 'DISCOVERY_SUCCESS', data: json });
+              return Promise.all(json.map(entry => store.dispatch({ type: 'DISCOVERY_INTERFACES', data: entry })));
+            });
+          }
+        }).catch((reason) => {
+          store.dispatch({ type: 'DISCOVERY_FAILURE', message: reason });
+        })
+    );
+  }
+
+  return Promise.all(promises).then(() => {
     store.dispatch({ type: 'DISCOVERY_FINISHED' });
   });
 }
