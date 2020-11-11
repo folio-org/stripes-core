@@ -11,7 +11,9 @@ module.exports = function build(stripesConfig, options) {
     logger.log('starting build...');
     let config = require('../webpack.config.cli.prod'); // eslint-disable-line global-require
 
-    config.plugins.push(new StripesWebpackPlugin({ stripesConfig }));
+    if (stripesConfig) {
+      config.plugins.push(new StripesWebpackPlugin({ stripesConfig }));
+    }
 
     config.resolve.modules = ['node_modules', platformModulePath];
     config.resolveLoader = { modules: ['node_modules', platformModulePath] };
@@ -24,6 +26,34 @@ module.exports = function build(stripesConfig, options) {
     }
     if (options.sourcemap) {
       config.devtool = 'source-map';
+    }
+    if (options.createDll && options.dllName) {
+      config.entry = {};
+      config.entry[options.dllName] = options.createDll.split(',');
+      config.output.library = '[name]';
+      config.output.filename = '[name].[hash].js';
+      config.plugins.push(new webpack.DllPlugin({
+        name: '[name]',
+        path: path.join(options.outputPath, '[name]-manifest.json'),
+      }));
+    }
+    if (options.useDll) {
+      // Recommended by https://engineering.invisionapp.com/post/optimizing-webpack/ for performance
+      config.cache = true;
+      config.devtool = 'eval';
+      config.dependencies = options.useDll.split(',');
+
+      for (let dependency in options.dependencies) {
+        config.plugins.push(new webpack.DllReferencePlugin({
+          context: options.outputPath,
+          manifest: require(path.join(options.outputPath, `${dependency}-manifest.json`))
+        }));
+      }
+    }
+    if (options.createDll || options.useDll) {
+      // When building with Webpack DLL, this alias causes react-dom references to break,
+      // so the remedy is to remove it.
+      delete config.resolve.alias['react-dom'];
     }
 
     // By default, Webpack's production mode will configure UglifyJS
