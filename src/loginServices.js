@@ -1,9 +1,30 @@
 import _ from 'lodash';
-import 'isomorphic-fetch';
 import localforage from 'localforage';
 import { translations } from 'stripes-config';
 import rtlDetect from 'rtl-detect';
 import moment from 'moment';
+
+// polyfills for browsers without full Intl.* support. We include only the
+// polyfill and en data, since that's all we need to keep NightmareJS and
+// its Electron tests happy; adding all the locale data would bloat the bundle
+// from <10 MB to >40 MB. The en data only adds ~470 KB.
+
+import '@formatjs/intl-pluralrules/polyfill';
+import '@formatjs/intl-pluralrules/dist/locale-data/en';
+// import '@formatjs/intl-pluralrules/polyfill-locales;
+// 0.62 MB stat; 0.43 MB parsed; 0.048 MB GZipped
+
+import '@formatjs/intl-relativetimeformat/polyfill';
+import '@formatjs/intl-relativetimeformat/dist/locale-data/en';
+// import '@formatjs/intl-relativetimeformat/polyfill-locales;
+// 2.3MB stat; 1.8 MB parsed; 0.8 MB GZipped
+
+import '@formatjs/intl-displaynames/polyfill';
+import '@formatjs/intl-displaynames/dist/locale-data/en';
+// import '@formatjs/intl-displaynames/polyfill-locales;
+// 13.7 MB stat; 10.7 MB parsed; 1.9 MB GZipped
+
+import { discoverServices } from './discoverServices';
 
 import {
   clearCurrentUser,
@@ -24,6 +45,33 @@ import {
   setUserServicePoints,
 } from './okapiActions';
 import processBadResponse from './processBadResponse';
+
+// export supported locales, i.e. the languages we provide translations for
+export const supportedLocales = [
+  'ar',
+  'zh-CN',
+  'zh-TW',
+  'da-DK',
+  'en-GB',
+  'en-SE',
+  'en-US',
+  'fr-FR',
+  'de-DE',
+  'he',
+  'hi-IN',
+  'hu-HU',
+  'ja',
+  'ko',
+  'it-IT',
+  'pl',
+  'pt-BR',
+  'pt-PT',
+  'ru',
+  'es',
+  'es-419',
+  'es-ES',
+  'ur',
+];
 
 function getHeaders(tenant, token) {
   return {
@@ -46,20 +94,6 @@ export function loadTranslations(store, locale, defaultTranslations = {}) {
   // when the locale changes
   document.documentElement.setAttribute('lang', parentLocale);
   document.documentElement.setAttribute('dir', rtlDetect.getLangDir(locale));
-
-  // check whether we need polyfills for browsers without full Intl.* support
-  if (!Intl.PluralRules) {
-    require('@formatjs/intl-pluralrules/polyfill');
-    require(`@formatjs/intl-pluralrules/dist/locale-data/${parentLocale}`);
-  }
-  if (!Intl.RelativeTimeFormat) {
-    require('@formatjs/intl-relativetimeformat/polyfill');
-    require(`@formatjs/intl-relativetimeformat/dist/locale-data/${parentLocale}`);
-  }
-  if (!Intl.DisplayNames) {
-    require('@formatjs/intl-displaynames/polyfill');
-    require(`@formatjs/intl-displaynames/dist/locale-data/${parentLocale}`);
-  }
 
   // Set locale for Moment.js (en is not importable as it is not stored separately)
   if (parentLocale === 'en') moment.locale(parentLocale);
@@ -150,6 +184,7 @@ function loadResources(okapiUrl, store, tenant) {
   getLocale(okapiUrl, store, tenant);
   getPlugins(okapiUrl, store, tenant);
   getBindings(okapiUrl, store, tenant);
+  if (!store.getState().okapi.withoutOkapi) discoverServices(store);
 }
 
 function createOkapiSession(okapiUrl, store, tenant, token, data) {
@@ -184,9 +219,9 @@ function createOkapiSession(okapiUrl, store, tenant, token, data) {
   loadResources(okapiUrl, store, tenant);
 }
 
-// Validate stored token by attempting to fetch /users
+// Validate stored token by attempting to fetch /bl-users/_self
 function validateUser(okapiUrl, store, tenant, session) {
-  fetch(`${okapiUrl}/users`, { headers: getHeaders(tenant, session.token) }).then((resp) => {
+  fetch(`${okapiUrl}/bl-users/_self`, { headers: getHeaders(tenant, session.token) }).then((resp) => {
     if (resp.status >= 400) {
       store.dispatch(clearCurrentUser());
       store.dispatch(clearOkapiToken());

@@ -28,10 +28,10 @@ export default function setupApplication({
   mirageOptions = {},
   scenarios,
   currentUser = {},
+  userLoggedIn = false,
+  initialState = {},
 } = {}) {
   beforeEach(async function () {
-    const initialState = {};
-
     // when auth is disabled, add a fake user to the store
     if (disableAuth) {
       initialState.okapi = {
@@ -61,6 +61,14 @@ export default function setupApplication({
       setup: () => {
         this.server = startMirage(scenarios, mirageOptions);
         this.server.logging = false;
+
+        if (userLoggedIn) {
+          localforage.setItem('okapiSess', {
+            token: initialState.okapi.token,
+            user: initialState.okapi.currentUser,
+            perms: initialState.okapi.currentPerms,
+          });
+        }
 
         withModules(modules);
         withConfig({ logCategories: '', ...stripesConfig });

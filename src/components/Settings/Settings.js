@@ -1,15 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Switch from 'react-router-dom/Switch';
-import Route from 'react-router-dom/Route';
-import { connectFor } from '@folio/stripes-connect';
+import { FormattedMessage } from 'react-intl';
 import { withRouter } from 'react-router';
+import {
+  Switch,
+  Route,
+} from 'react-router-dom';
+
+import { connectFor } from '@folio/stripes-connect';
 import NavList from '@folio/stripes-components/lib/NavList';
 import NavListItem from '@folio/stripes-components/lib/NavListItem';
 import NavListSection from '@folio/stripes-components/lib/NavListSection';
 import Paneset from '@folio/stripes-components/lib/Paneset';
 import Pane from '@folio/stripes-components/lib/Pane';
-import { FormattedMessage } from 'react-intl';
 
 import About from '../About';
 import { StripesContext } from '../../StripesContext';
@@ -17,6 +20,7 @@ import AddContext from '../../AddContext';
 import { withModules } from '../Modules';
 import { stripesShape } from '../../Stripes';
 import AppIcon from '../AppIcon';
+import { packageName } from '../../constants';
 
 import css from './Settings.css';
 
@@ -39,7 +43,7 @@ class Settings extends React.Component {
     const settingsModules = modules.settings || [];
 
     this.connectedModules = settingsModules
-      .filter(x => stripes.hasPerm(`settings.${x.module.replace(/^@folio\//, '')}.enabled`))
+      .filter(x => stripes.hasPerm(`settings.${x.module.replace(packageName.PACKAGE_SCOPE_REGEX, '')}.enabled`))
       .sort((x, y) => x.displayName.toLowerCase().localeCompare(y.displayName.toLowerCase()))
       .map((m) => {
         try {
@@ -61,7 +65,7 @@ class Settings extends React.Component {
   render() {
     const { stripes, location } = this.props;
     const navLinks = this.connectedModules.map(({ module }) => {
-      const iconData = module.module.replace(/^@[a-z0-9_]+\//, '');
+      const iconData = module.module.replace(packageName.PACKAGE_SCOPE_REGEX, '');
       return (
         <NavListItem
           key={module.route}

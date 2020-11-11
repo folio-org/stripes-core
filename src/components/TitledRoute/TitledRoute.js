@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FormattedMessage } from 'react-intl';
-import Route from 'react-router-dom/Route';
+import { injectIntl } from 'react-intl';
+import { Route } from 'react-router-dom';
 
 import ErrorBoundary from '@folio/stripes-components/lib/ErrorBoundary';
 
@@ -21,6 +21,7 @@ class TitledRoute extends React.Component {
       name,
       component,
       computedMatch,
+      intl,
       ...rest
     } = this.props;
 
@@ -39,11 +40,7 @@ class TitledRoute extends React.Component {
         {...rest}
         render={() => (
           <ErrorBoundary>
-            <FormattedMessage id={`stripes-core.title.${name}`} defaultMessage={name}>
-              {formattedName => (
-                <TitleManager page={formattedName} />
-              )}
-            </FormattedMessage>
+            <TitleManager page={intl.formatMessage({ id: `stripes-core.title.${name}`, defaultMessage: name })} />
             {componentWithExtraProps}
           </ErrorBoundary>
         )}
@@ -52,4 +49,4 @@ class TitledRoute extends React.Component {
   }
 }
 
-export default withStripes(TitledRoute);
+export default withStripes(injectIntl(TitledRoute));

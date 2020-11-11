@@ -1,6 +1,7 @@
 // Top level Webpack configuration for running a development environment
 // from the command line via devServer.js
 
+const path = require('path');
 const webpack = require('webpack');
 const postCssImport = require('postcss-import');
 const autoprefixer = require('autoprefixer');
@@ -10,6 +11,7 @@ const postCssNesting = require('postcss-nesting');
 const postCssCustomMedia = require('postcss-custom-media');
 const postCssMediaMinMax = require('postcss-media-minmax');
 const postCssColorFunction = require('postcss-color-function');
+const { generateStripesAlias } = require('./webpack/module-paths');
 
 const base = require('./webpack.config.base');
 const cli = require('./webpack.config.cli');
@@ -50,7 +52,8 @@ devConfig.module.rules.push({
           postCssImport(),
           autoprefixer(),
           postCssCustomProperties({
-            preserve: false
+            preserve: false,
+            importFrom: [path.join(generateStripesAlias('@folio/stripes-components'), 'lib/variables.css')]
           }),
           postCssCalc(),
           postCssNesting(),

@@ -9,6 +9,8 @@ export { default as stripesConnect } from './src/stripesConnect';
 export { default as Pluggable } from './src/Pluggable';
 export { setServicePoints, setCurServicePoint } from './src/loginServices';
 export { default as coreEvents } from './src/events';
+export { default as useOkapiKy } from './src/useOkapiKy';
+export { default as withOkapiKy } from './src/withOkapiKy';
 
 /* components */
 export { default as AppContextMenu } from './src/components/MainNav/CurrentApp/AppContextMenu';
@@ -19,3 +21,6 @@ export { default as HandlerManager } from './src/components/HandlerManager';
 export { default as IntlConsumer } from './src/components/IntlConsumer';
 export { default as AppIcon } from './src/components/AppIcon';
 export { Route, Switch, Redirect } from './src/components/NestedRouter';
+
+/* misc */
+export { supportedLocales } from './src/loginServices';
