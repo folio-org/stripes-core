@@ -27,7 +27,7 @@ module.exports = function build(stripesConfig, options) {
     if (options.sourcemap) {
       config.devtool = 'source-map';
     }
-    if (options.createDll && options.dllName) {
+    if (options.createDll && options.dllName) { // Adjust build to create Webpack DLL
       config.entry = {};
       config.entry[options.dllName] = options.createDll.split(',');
       config.output.library = '[name]';
@@ -37,7 +37,7 @@ module.exports = function build(stripesConfig, options) {
         path: path.join(options.outputPath, '[name]-manifest.json'),
       }));
     }
-    if (options.useDll) {
+    if (options.useDll) { // Consume Webpack DLL
       // Recommended by https://engineering.invisionapp.com/post/optimizing-webpack/ for performance
       config.cache = true;
       config.devtool = 'eval';

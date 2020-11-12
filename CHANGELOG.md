@@ -17,6 +17,7 @@
 * Apps menu - The options in the "Apps" menu do not voice as actionable (able to be activated). Refs STCOR-453.
 * Adjust package scope name filter to align with NPM rules (https://docs.npmjs.com/files/package.json#name) instead of assuming @folio/. Refs https://issues.folio.org/browse/STCOR-456.
 * Move inter-stripes deps to peers. Refs STCOR-463.
+* Add support for building and consuming Webpack DLLs. Refs STCOR-471.
 
 ## [5.0.2](https://github.com/folio-org/stripes-core/tree/v5.0.2) (2020-06-12)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v5.0.1...v5.0.2)
