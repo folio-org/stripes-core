@@ -3,10 +3,10 @@
     "front.home": "Inicio",
     "front.about": "Versiones del software",
     "button.new": "+Nuevo",
-    "button.new_tooltip": "Adicioanr {entry}",
+    "button.new_tooltip": "Adicionar {entry}",
     "button.edit": "Editar",
-    "button.delete": "Eliminar",
-    "button.deleteEntry": "Eliminar {entry}",
+    "button.delete": "Borrar",
+    "button.deleteEntry": "Borrar {entry}",
     "button.saveAndClose": "Guardar y cerrar",
     "button.cancel": "Cancelar",
     "label.confirmDeleteEntry": "<strong>{name}</strong> será <strong>removido</strong>",
@@ -123,5 +123,7 @@
     "mainnav.myProfileAriaLabel": "Mi perfil",
     "mainnav.skipMainNavigation": "Saltar navegación principal",
     "errors.user.timeout": "Your session has expired. Please login again to resume your session.",
-    "errors.password.consecutiveWhitespaces.invalid": "The password must not contain consecutive white space characters."
+    "errors.password.consecutiveWhitespaces.invalid": "The password must not contain consecutive white space characters.",
+    "about.missingModuleCount": "{cuenta, número} Falta {cuenta, plural, uno {módulo} otro {módulos}}",
+    "about.incompatibleModuleCount": "{count, number} Incompatible {count, plural, one { module } other { modules }} versión"
 }

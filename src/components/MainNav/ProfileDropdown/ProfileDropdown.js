@@ -4,7 +4,7 @@ import get from 'lodash/get';
 import { compose } from 'redux';
 import { withRouter } from 'react-router';
 import PropTypes from 'prop-types';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import { Dropdown } from '@folio/stripes-components/lib/Dropdown';
 import DropdownMenu from '@folio/stripes-components/lib/DropdownMenu';
 import NavList from '@folio/stripes-components/lib/NavList';
@@ -223,28 +223,25 @@ class ProfileDropdown extends Component {
   }
 
   renderProfileTrigger = ({ getTriggerProps, open }) => {
+    const { intl } = this.props;
     const servicePointName = get(this.getUserData(), 'curServicePoint.name', null);
 
     return (
-      <FormattedMessage id="stripes-core.mainnav.myProfileAriaLabel">
-        {label => (
-          <NavButton
-            ariaLabel={label}
-            selected={open}
-            className={css.button}
-            icon={this.getProfileImage()}
-            label={servicePointName ? (
-              <>
-                <span className={css.button__label}>
-                  {servicePointName}
-                </span>
-                <Icon icon={open ? 'caret-up' : 'caret-down'} />
-              </>
-            ) : null}
-            {...getTriggerProps()}
-          />)
-        }
-      </FormattedMessage>
+      <NavButton
+        ariaLabel={intl.formatMessage({ id: 'stripes-core.mainnav.myProfileAriaLabel' })}
+        selected={open}
+        className={css.button}
+        icon={this.getProfileImage()}
+        label={servicePointName ? (
+          <>
+            <span className={css.button__label}>
+              {servicePointName}
+            </span>
+            <Icon icon={open ? 'caret-up' : 'caret-down'} />
+          </>
+        ) : null}
+        {...getTriggerProps()}
+      />
     );
   }
 
@@ -278,4 +275,5 @@ class ProfileDropdown extends Component {
 export default compose(
   withRouter,
   withModules,
+  injectIntl,
 )(ProfileDropdown);
