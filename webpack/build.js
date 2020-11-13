@@ -34,26 +34,18 @@ module.exports = function build(stripesConfig, options) {
       config.output.filename = '[name].[hash].js';
       config.plugins.push(new webpack.DllPlugin({
         name: '[name]',
-        path: path.join(options.outputPath, '[name]-manifest.json'),
+        path: path.join(options.outputPath, '[name].json'),
       }));
     }
     if (options.useDll) { // Consume Webpack DLL
-      // Recommended by https://engineering.invisionapp.com/post/optimizing-webpack/ for performance
-      config.cache = true;
-      config.devtool = 'eval';
-      config.dependencies = options.useDll.split(',');
+      const dependencies = options.useDll.split(',');
 
-      for (let dependency in options.dependencies) {
+      dependencies.map((dependency) => {
+        console.log(dependency);
         config.plugins.push(new webpack.DllReferencePlugin({
-          context: options.outputPath,
-          manifest: require(path.join(options.outputPath, `${dependency}-manifest.json`))
+          manifest: require(path.resolve(dependency))
         }));
-      }
-    }
-    if (options.createDll || options.useDll) {
-      // When building with Webpack DLL, this alias causes react-dom references to break,
-      // so the remedy is to remove it.
-      delete config.resolve.alias['react-dom'];
+      });
     }
 
     // By default, Webpack's production mode will configure UglifyJS
