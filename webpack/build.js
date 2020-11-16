@@ -11,7 +11,7 @@ module.exports = function build(stripesConfig, options) {
     logger.log('starting build...');
     let config = require('../webpack.config.cli.prod'); // eslint-disable-line global-require
 
-    if (stripesConfig) {
+    if (!options.skipStripesBuild) {
       config.plugins.push(new StripesWebpackPlugin({ stripesConfig }));
     }
 
