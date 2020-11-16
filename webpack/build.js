@@ -40,12 +40,13 @@ module.exports = function build(stripesConfig, options) {
     if (options.useDll) { // Consume Webpack DLL
       const dependencies = options.useDll.split(',');
 
-      dependencies.map((dependency) => {
-        console.log(dependency);
+      for (const dependency of dependencies) {
+        const dependencyPath = path.resolve(dependency);
         config.plugins.push(new webpack.DllReferencePlugin({
-          manifest: require(path.resolve(dependency))
+          context: dependencyPath.substring(0, dependencyPath.lastIndexOf('/')),
+          manifest: require(dependencyPath)
         }));
-      });
+      }
     }
 
     // By default, Webpack's production mode will configure UglifyJS
