@@ -12,7 +12,6 @@ const RouteErrorBoundary = ({ children, escapeRoute, moduleName, isSettings }) =
   const intl = useIntl();
   const history = useHistory();
   const currentRoute = history.location.pathname;
-  const shouldGoToAppHome = currentRoute === escapeRoute;
   let buttonLabelId;
 
   if (moduleName) {
@@ -26,9 +25,10 @@ const RouteErrorBoundary = ({ children, escapeRoute, moduleName, isSettings }) =
   }
 
   const handleReset = () => {
-    // Go to the FOLIO app home page if the escape path is the same as the current path
-    const path = shouldGoToAppHome ? '/' : escapeRoute;
-    window.location.replace(path);
+    // If our escape-route is the thing that's bombing, go home
+    // otherwise, try the escape-route
+    const resetPath = currentRoute === escapeRoute ? '/' : escapeRoute;
+    window.location.replace(resetPath);
   };
 
   return (
