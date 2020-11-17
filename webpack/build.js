@@ -12,7 +12,7 @@ module.exports = function build(stripesConfig, options) {
     let config = require('../webpack.config.cli.prod'); // eslint-disable-line global-require
 
     if (!options.skipStripesBuild) {
-      config.plugins.push(new StripesWebpackPlugin({ stripesConfig }));
+      config.plugins.push(new StripesWebpackPlugin({ stripesConfig, createDll: options.createDll }));
     }
 
     config.resolve.modules = ['node_modules', platformModulePath];
