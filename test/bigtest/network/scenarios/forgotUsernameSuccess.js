@@ -1,3 +1,5 @@
 export default (server) => {
-  server.post('bl-users/forgotten/username', {}, 204);
+  server.post('bl-users/forgotten/username', () => {
+    return new Response(204, {}, '');
+  }, 204);
 };
