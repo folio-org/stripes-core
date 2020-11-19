@@ -30,6 +30,9 @@ devConfig.plugins = devConfig.plugins.concat([
   new webpack.HotModuleReplacementPlugin(),
 ]);
 
+// This alias avoids a console warning for react-dom patch
+devConfig.resolve.alias['react-dom'] = '@hot-loader/react-dom';
+
 devConfig.module.rules.push({
   test: /\.css$/,
   use: [
