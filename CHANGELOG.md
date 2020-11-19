@@ -1,6 +1,7 @@
 # Change history for stripes-core
 
-## 6.1.0 IN PROGRESS
+## [6.1.0](https://github.com/folio-org/stripes-core/tree/v6.1.0) (2020-11-19)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v6.0.0...v6.1.0)
 
 * Validate token using a request that does not require permissions. Refs STCOR-452.
 * Update `serialize-javascript` to avoid CVE-2020-7660. Refs STCOR-467.
