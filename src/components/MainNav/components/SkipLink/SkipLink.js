@@ -5,7 +5,7 @@
  */
 
 import React from 'react';
-import { FormattedMessage } from 'react-intl';
+import { useIntl } from 'react-intl';
 import NavButton from '../../NavButton';
 import css from './SkipLink.css';
 
@@ -16,17 +16,17 @@ const SkipIcon = () => (
   </svg>
 );
 
-const SkipLink = () => (
-  <FormattedMessage id="stripes-core.mainnav.skipMainNavigation">
-    {label => (
-      <NavButton
-        icon={<SkipIcon />}
-        href="#ModuleContainer"
-        aria-label={label}
-        className={css.skipLink}
-      />
-    )}
-  </FormattedMessage>
-);
+const SkipLink = () => {
+  const intl = useIntl();
+
+  return (
+    <NavButton
+      icon={<SkipIcon />}
+      href="#ModuleContainer"
+      aria-label={intl.formatMessage({ id: 'stripes-core.mainnav.skipMainNavigation' })}
+      className={css.skipLink}
+    />
+  );
+};
 
 export default SkipLink;
