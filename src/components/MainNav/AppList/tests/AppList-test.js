@@ -47,6 +47,7 @@ describe('AppList', () => {
           </BrowserRouter>
         </div>
       );
+      await appList.dropdownToggle.focus();
       await appList.dropdownToggle.click();
     });
 
@@ -68,6 +69,8 @@ describe('AppList', () => {
             </BrowserRouter>
           </div>
         );
+        await appList.dropdownToggle.$root.focus();
+        await appList.when(() => appList.dropdownToggle.isFocused);
         await appList.dropdownToggle.click();
       });
 
@@ -108,6 +111,8 @@ describe('AppList', () => {
           </BrowserRouter>
         </div>
       );
+      await appList.dropdownToggle.$root.focus();
+      await appList.when(() => appList.dropdownToggle.isFocused);
       await appList.dropdownToggle.click();
     });
 
