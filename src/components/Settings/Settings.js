@@ -1,6 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FormattedMessage } from 'react-intl';
+import {
+  FormattedMessage,
+  injectIntl,
+} from 'react-intl';
 import { withRouter } from 'react-router';
 import {
   Switch,
@@ -33,7 +36,10 @@ class Settings extends React.Component {
     modules: PropTypes.shape({
       app: PropTypes.array,
       settings: PropTypes.array,
-    })
+    }),
+    intl: PropTypes.shape({
+      formatMessage: PropTypes.func.isRequired,
+    }),
   };
 
   constructor(props) {
@@ -63,7 +69,7 @@ class Settings extends React.Component {
   }
 
   render() {
-    const { stripes, location } = this.props;
+    const { stripes, location, intl: { formatMessage } } = this.props;
     const navLinks = this.connectedModules.map(({ module }) => {
       const iconData = module.module.replace(packageName.PACKAGE_SCOPE_REGEX, '');
       return (
@@ -108,34 +114,26 @@ class Settings extends React.Component {
           defaultWidth="20%"
           paneTitle={<FormattedMessage id="stripes-core.settings" />}
         >
-          <FormattedMessage id="stripes-core.settings">
-            { label => (
-              <NavList ariaLabel={label}>
-                <NavListSection
-                  activeLink={activeLink}
-                  label={label}
-                  className={css.navListSection}
-                >
-                  {navLinks}
-                </NavListSection>
-              </NavList>
-            )}
-          </FormattedMessage>
-          <FormattedMessage id="stripes-core.settingSystemInfo">
-            {label => (
-              <NavList aria-label={label}>
-                <NavListSection
-                  label={label}
-                  activeLink={activeLink}
-                  className={css.navListSection}
-                >
-                  <NavListItem to="/settings/about">
-                    <FormattedMessage id="stripes-core.front.about" />
-                  </NavListItem>
-                </NavListSection>
-              </NavList>
-            )}
-          </FormattedMessage>
+          <NavList aria-label={formatMessage({ id: 'stripes-core.settings' })}>
+            <NavListSection
+              activeLink={activeLink}
+              label={formatMessage({ id: 'stripes-core.settings' })}
+              className={css.navListSection}
+            >
+              {navLinks}
+            </NavListSection>
+          </NavList>
+          <NavList aria-label={formatMessage({ id: 'stripes-core.settingSystemInfo' })}>
+            <NavListSection
+              label={formatMessage({ id: 'stripes-core.settingSystemInfo' })}
+              activeLink={activeLink}
+              className={css.navListSection}
+            >
+              <NavListItem to="/settings/about">
+                <FormattedMessage id="stripes-core.front.about" />
+              </NavListItem>
+            </NavListSection>
+          </NavList>
         </Pane>
         <Switch>
           {routes}
@@ -147,4 +145,4 @@ class Settings extends React.Component {
   }
 }
 
-export default withRouter(withModules(Settings));
+export default withRouter(withModules(injectIntl(Settings)));

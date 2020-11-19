@@ -7,6 +7,7 @@ import { IntlProvider } from 'react-intl';
 import queryString from 'query-string';
 import { ApolloProvider } from '@apollo/client';
 import ErrorBoundary from '@folio/stripes-components/lib/ErrorBoundary';
+import { Callout } from '@folio/stripes-components';
 import { metadata, icons } from 'stripes-config';
 
 /* ConnectContext - formerly known as RootContext, now comes from stripes-connect, so stripes-connect
@@ -23,6 +24,7 @@ import { getQueryResourceKey, getCurrentModule } from '../../locationService';
 import Stripes from '../../Stripes';
 import RootWithIntl from '../../RootWithIntl';
 import SystemSkeleton from '../SystemSkeleton';
+import CalloutContext from '../../CalloutContext';
 
 import './Root.css';
 
@@ -43,6 +45,7 @@ class Root extends Component {
     const { modules, history } = this.props;
     const appModule = getCurrentModule(modules, history.location);
     this.queryResourceStateKey = (appModule) ? getQueryResourceKey(appModule) : null;
+    this.callout = React.createRef();
   }
 
   getChildContext() {
@@ -130,22 +133,25 @@ class Root extends Component {
       <ErrorBoundary>
         <ConnectContext.Provider value={{ addReducer: this.addReducer, addEpic: this.addEpic, store }}>
           <ApolloProvider client={createApolloClient(okapi)}>
-            <IntlProvider
-              locale={locale}
-              key={locale}
-              timeZone={timezone}
-              currency={currency}
-              messages={translations}
-              textComponent={Fragment}
-              onError={config?.suppressIntlErrors ? () => {} : undefined}
-            >
-              <RootWithIntl
-                stripes={stripes}
-                token={token}
-                disableAuth={disableAuth}
-                history={history}
-              />
-            </IntlProvider>
+            <CalloutContext.Provider value={this.callout.current}>
+              <IntlProvider
+                locale={locale}
+                key={locale}
+                timeZone={timezone}
+                currency={currency}
+                messages={translations}
+                textComponent={Fragment}
+                onError={config?.suppressIntlErrors ? () => {} : undefined}
+              >
+                <RootWithIntl
+                  stripes={stripes}
+                  token={token}
+                  disableAuth={disableAuth}
+                  history={history}
+                />
+              </IntlProvider>
+            </CalloutContext.Provider>
+            <Callout ref={this.callout} />
           </ApolloProvider>
         </ConnectContext.Provider>
       </ErrorBoundary>
