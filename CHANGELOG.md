@@ -6,6 +6,7 @@
 * Update `serialize-javascript` to avoid CVE-2020-7660. Refs STCOR-467.
 * Pass a string, not a `<FormattedMessage>`, to `<NavButton>`. Refs STCOR-472.
 * Move `CalloutContext` to `<Root>` to avoid issues with Intl. Refs STCOR-481.
+* Test HTTP response cleanup. Refs STCOR-483.
 
 ## [6.0.0](https://github.com/folio-org/stripes-core/tree/v6.0.0) (2020-10-06)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v5.0.2...v6.0.0)
