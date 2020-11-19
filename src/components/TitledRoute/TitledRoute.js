@@ -13,6 +13,9 @@ class TitledRoute extends React.Component {
   static propTypes = {
     component: PropTypes.element,
     computedMatch: PropTypes.oneOfType([PropTypes.element, PropTypes.object]),
+    intl: PropTypes.shape({
+      formatMessage: PropTypes.func.isRequired,
+    }),
     name: PropTypes.string
   };
 

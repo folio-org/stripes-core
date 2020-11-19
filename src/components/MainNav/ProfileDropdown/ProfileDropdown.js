@@ -23,6 +23,9 @@ import IntlConsumer from '../../IntlConsumer';
 
 class ProfileDropdown extends Component {
   static propTypes = {
+    intl: PropTypes.shape({
+      formatMessage: PropTypes.func.isRequired,
+    }),
     modules: PropTypes.shape({
       app: PropTypes.array,
       settings: PropTypes.array,
