@@ -133,25 +133,25 @@ class Root extends Component {
       <ErrorBoundary>
         <ConnectContext.Provider value={{ addReducer: this.addReducer, addEpic: this.addEpic, store }}>
           <ApolloProvider client={createApolloClient(okapi)}>
-            <CalloutContext.Provider value={this.callout.current}>
-              <IntlProvider
-                locale={locale}
-                key={locale}
-                timeZone={timezone}
-                currency={currency}
-                messages={translations}
-                textComponent={Fragment}
-                onError={config?.suppressIntlErrors ? () => {} : undefined}
-              >
+            <IntlProvider
+              locale={locale}
+              key={locale}
+              timeZone={timezone}
+              currency={currency}
+              messages={translations}
+              textComponent={Fragment}
+              onError={config?.suppressIntlErrors ? () => {} : undefined}
+            >
+              <CalloutContext.Provider value={this.callout.current}>
                 <RootWithIntl
                   stripes={stripes}
                   token={token}
                   disableAuth={disableAuth}
                   history={history}
                 />
-              </IntlProvider>
-            </CalloutContext.Provider>
-            <Callout ref={this.callout} />
+              </CalloutContext.Provider>
+              <Callout ref={this.callout} />
+            </IntlProvider>
           </ApolloProvider>
         </ConnectContext.Provider>
       </ErrorBoundary>
