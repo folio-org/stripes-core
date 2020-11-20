@@ -7,6 +7,7 @@ import { IntlProvider } from 'react-intl';
 import queryString from 'query-string';
 import { ApolloProvider } from '@apollo/client';
 import ErrorBoundary from '@folio/stripes-components/lib/ErrorBoundary';
+import { Callout } from '@folio/stripes-components';
 import { metadata, icons } from 'stripes-config';
 
 /* ConnectContext - formerly known as RootContext, now comes from stripes-connect, so stripes-connect
@@ -23,6 +24,7 @@ import { getQueryResourceKey, getCurrentModule } from '../../locationService';
 import Stripes from '../../Stripes';
 import RootWithIntl from '../../RootWithIntl';
 import SystemSkeleton from '../SystemSkeleton';
+import CalloutContext from '../../CalloutContext';
 
 import './Root.css';
 
@@ -43,7 +45,7 @@ class Root extends Component {
     const { modules, history } = this.props;
     const appModule = getCurrentModule(modules, history.location);
     this.queryResourceStateKey = (appModule) ? getQueryResourceKey(appModule) : null;
-
+    this.callout = React.createRef();
     this.defaultRichTextElements = {
       b: (chunks) => <b>{chunks}</b>,
       i: (chunks) => <i>{chunks}</i>,
@@ -153,12 +155,15 @@ class Root extends Component {
               onError={config?.suppressIntlErrors ? () => {} : undefined}
               defaultRichTextElements={this.defaultRichTextElements}
             >
-              <RootWithIntl
-                stripes={stripes}
-                token={token}
-                disableAuth={disableAuth}
-                history={history}
-              />
+              <CalloutContext.Provider value={this.callout.current}>
+                <RootWithIntl
+                  stripes={stripes}
+                  token={token}
+                  disableAuth={disableAuth}
+                  history={history}
+                />
+              </CalloutContext.Provider>
+              <Callout ref={this.callout} />
             </IntlProvider>
           </ApolloProvider>
         </ConnectContext.Provider>

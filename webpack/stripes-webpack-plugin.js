@@ -9,6 +9,7 @@ const logger = require('./logger')('stripesWebpackPlugin');
 module.exports = class StripesWebpackPlugin {
   constructor(options) {
     this.stripesConfig = options.stripesConfig;
+    this.createDll = options.createDll;
   }
 
   apply(compiler) {
@@ -17,13 +18,16 @@ module.exports = class StripesWebpackPlugin {
 
     const stripesPlugins = [
       new StripesConfigPlugin(this.stripesConfig),
-      new StripesBrandingPlugin({
-        tenantBranding: this.stripesConfig.branding,
-        buildAllFavicons: isProduction,
-      }),
       new StripesTranslationsPlugin(this.stripesConfig),
       new StripesDuplicatesPlugin(this.stripesConfig),
     ];
+
+    if (!this.createDll) {
+      stripesPlugins.push(new StripesBrandingPlugin({
+        tenantBranding: this.stripesConfig.branding,
+        buildAllFavicons: isProduction,
+      }));
+    }
 
     logger.log('Applying Stripes plugins...');
     stripesPlugins.forEach(plugin => plugin.apply(compiler));

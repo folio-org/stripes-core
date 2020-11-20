@@ -19,7 +19,9 @@ export default function configure() {
   });
 
   this.get('/bl-users/_self', {});
-  this.post('/bl-users/password-reset/validate', {}, 204);
+  this.post('/bl-users/password-reset/validate', () => {
+    return new Response(204, {}, '');
+  }, 204);
   this.post('/bl-users/password-reset/reset', {}, 401);
 
 

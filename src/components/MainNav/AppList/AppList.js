@@ -5,7 +5,7 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 
 import { Dropdown } from '@folio/stripes-components/lib/Dropdown';
 import DropdownMenu from '@folio/stripes-components/lib/DropdownMenu';
@@ -31,6 +31,9 @@ class AppList extends Component {
     ),
     dropdownId: PropTypes.string,
     dropdownToggleId: PropTypes.string.isRequired,
+    intl: PropTypes.shape({
+      formatMessage: PropTypes.func.isRequired,
+    }),
     selectedApp: PropTypes.object,
   }
 
@@ -117,7 +120,7 @@ class AppList extends Component {
    * The button that toggles the dropdown
    */
   renderDropdownToggleButton = ({ open, getTriggerProps }) => {
-    const { dropdownToggleId } = this.props;
+    const { dropdownToggleId, intl: { formatMessage } } = this.props;
     const icon = (
       <svg className={css.dropdownToggleIcon} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
         <path d="M8.4 2.4H5.1c-1.5 0-2.7 1.2-2.7 2.7v3.3c0 1.5 1.2 2.7 2.7 2.7h3.3c1.5 0 2.7-1.2 2.7-2.7V5.1c0-1.5-1.2-2.7-2.7-2.7zm.7 6c0 .4-.3.7-.7.7H5.1c-.4 0-.7-.3-.7-.7V5.1c0-.4.3-.7.7-.7h3.3c.4 0 .7.3.7.7v3.3zM18.9 2.4h-3.3c-1.5 0-2.7 1.2-2.7 2.7v3.3c0 1.5 1.2 2.7 2.7 2.7h3.3c1.5 0 2.7-1.2 2.7-2.7V5.1c0-1.5-1.2-2.7-2.7-2.7zm.7 6c0 .4-.3.7-.7.7h-3.3c-.4 0-.7-.3-.7-.7V5.1c0-.4.3-.7.7-.7h3.3c.4 0 .7.3.7.7v3.3zM8.4 12.9H5.1c-1.5 0-2.7 1.2-2.7 2.7v3.3c0 1.5 1.2 2.7 2.7 2.7h3.3c1.5 0 2.7-1.2 2.7-2.7v-3.3c0-1.5-1.2-2.7-2.7-2.7zm.7 6c0 .4-.3.7-.7.7H5.1c-.4 0-.7-.3-.7-.7v-3.3c0-.4.3-.7.7-.7h3.3c.4 0 .7.3.7.7v3.3zM18.9 12.9h-3.3c-1.5 0-2.7 1.2-2.7 2.7v3.3c0 1.5 1.2 2.7 2.7 2.7h3.3c1.5 0 2.7-1.2 2.7-2.7v-3.3c0-1.5-1.2-2.7-2.7-2.7zm.7 6c0 .4-.3.7-.7.7h-3.3c-.4 0-.7-.3-.7-.7v-3.3c0-.4.3-.7.7-.7h3.3c.4 0 .7.3.7.7v3.3z" />
@@ -130,23 +133,19 @@ class AppList extends Component {
     );
 
     return (
-      <FormattedMessage id="stripes-core.mainnav.showAllApplicationsButtonAriaLabel">
-        { ariaLabel => (
-          <NavButton
-            data-test-app-list-apps-toggle
-            label={label}
-            aria-label={ariaLabel}
-            className={css.navMobileToggle}
-            labelClassName={css.dropdownToggleLabel}
-            onClick={this.toggleDropdown}
-            selected={this.state.open}
-            icon={icon}
-            {...getTriggerProps()}
-            id={dropdownToggleId}
-            noSelectedBar
-          />
-        )}
-      </FormattedMessage>
+      <NavButton
+        data-test-app-list-apps-toggle
+        label={label}
+        aria-label={formatMessage({ id: 'stripes-core.mainnav.showAllApplicationsButtonAriaLabel' })}
+        className={css.navMobileToggle}
+        labelClassName={css.dropdownToggleLabel}
+        onClick={this.toggleDropdown}
+        selected={this.state.open}
+        icon={icon}
+        {...getTriggerProps()}
+        id={dropdownToggleId}
+        noSelectedBar
+      />
     );
   }
 
@@ -216,4 +215,4 @@ class AppList extends Component {
   }
 }
 
-export default AppList;
+export default injectIntl(AppList);

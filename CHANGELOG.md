@@ -5,6 +5,10 @@
 * Validate token using a request that does not require permissions. Refs STCOR-452.
 * Update `serialize-javascript` to avoid CVE-2020-7660. Refs STCOR-467.
 * Pass a string, not a `<FormattedMessage>`, to `<NavButton>`. Refs STCOR-472.
+* Move `CalloutContext` to `<Root>` to avoid issues with Intl. Refs STCOR-481.
+* Test HTTP response cleanup. Refs STCOR-483.
+* Avoid using `<FormattedMessage>` with render-props. Refs STCOR-472, STCOR-482.
+* Add support for building and consuming Webpack DLLs. Refs STCOR-471.
 * Provide default HTML formatters to `<IntlProvider>` so we can avoid `<SafeHTMLMessage>`. Fixes STCOR-477.
 
 ## [6.0.0](https://github.com/folio-org/stripes-core/tree/v6.0.0) (2020-10-06)
