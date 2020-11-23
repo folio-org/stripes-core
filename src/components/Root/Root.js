@@ -46,6 +46,18 @@ class Root extends Component {
     const appModule = getCurrentModule(modules, history.location);
     this.queryResourceStateKey = (appModule) ? getQueryResourceKey(appModule) : null;
     this.callout = React.createRef();
+    this.defaultRichTextElements = {
+      b: (chunks) => <b>{chunks}</b>,
+      i: (chunks) => <i>{chunks}</i>,
+      em: (chunks) => <em>{chunks}</em>,
+      strong: (chunks) => <strong>{chunks}</strong>,
+      span: (chunks) => <span>{chunks}</span>,
+      div: (chunks) => <div>{chunks}</div>,
+      p: (chunks) => <p>{chunks}</p>,
+      ul: (chunks) => <ul>{chunks}</ul>,
+      ol: (chunks) => <ol>{chunks}</ol>,
+      li: (chunks) => <li>{chunks}</li>,
+    };
   }
 
   getChildContext() {
@@ -133,25 +145,26 @@ class Root extends Component {
       <ErrorBoundary>
         <ConnectContext.Provider value={{ addReducer: this.addReducer, addEpic: this.addEpic, store }}>
           <ApolloProvider client={createApolloClient(okapi)}>
-            <CalloutContext.Provider value={this.callout.current}>
-              <IntlProvider
-                locale={locale}
-                key={locale}
-                timeZone={timezone}
-                currency={currency}
-                messages={translations}
-                textComponent={Fragment}
-                onError={config?.suppressIntlErrors ? () => {} : undefined}
-              >
+            <IntlProvider
+              locale={locale}
+              key={locale}
+              timeZone={timezone}
+              currency={currency}
+              messages={translations}
+              textComponent={Fragment}
+              onError={config?.suppressIntlErrors ? () => {} : undefined}
+              defaultRichTextElements={this.defaultRichTextElements}
+            >
+              <CalloutContext.Provider value={this.callout.current}>
                 <RootWithIntl
                   stripes={stripes}
                   token={token}
                   disableAuth={disableAuth}
                   history={history}
                 />
-              </IntlProvider>
-            </CalloutContext.Provider>
-            <Callout ref={this.callout} />
+              </CalloutContext.Provider>
+              <Callout ref={this.callout} />
+            </IntlProvider>
           </ApolloProvider>
         </ConnectContext.Provider>
       </ErrorBoundary>
