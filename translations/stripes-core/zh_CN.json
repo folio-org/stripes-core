@@ -125,5 +125,9 @@
     "errors.user.timeout": "会话已过期。请再次登录以恢复会话。",
     "errors.password.consecutiveWhitespaces.invalid": "密码不能包含连续的空格字符。",
     "about.missingModuleCount": "{count, number} Missing {count, plural, one {module} other {modules}}",
-    "about.incompatibleModuleCount": "{count, number} Incompatible {count, plural, one {module} other {modules}} version"
+    "about.incompatibleModuleCount": "{count, number} Incompatible {count, plural, one {module} other {modules}} version",
+    "routeErrorBoundary.sub": "An error occurred on this page and it could not be loaded.",
+    "routeErrorBoundary.goToAppHomeLabel": "Return to home",
+    "routeErrorBoundary.goToModuleHomeLabel": "Return to {name} landing page",
+    "routeErrorBoundary.goToModuleSettingsHomeLabel": "Return to {name} settings"
 }
