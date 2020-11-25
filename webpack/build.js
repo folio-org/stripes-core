@@ -11,7 +11,9 @@ module.exports = function build(stripesConfig, options) {
     logger.log('starting build...');
     let config = require('../webpack.config.cli.prod'); // eslint-disable-line global-require
 
-    config.plugins.push(new StripesWebpackPlugin({ stripesConfig }));
+    if (!options.skipStripesBuild) {
+      config.plugins.push(new StripesWebpackPlugin({ stripesConfig, createDll: options.createDll }));
+    }
 
     config.resolve.modules = ['node_modules', platformModulePath];
     config.resolveLoader = { modules: ['node_modules', platformModulePath] };
@@ -24,6 +26,27 @@ module.exports = function build(stripesConfig, options) {
     }
     if (options.sourcemap) {
       config.devtool = 'source-map';
+    }
+    if (options.createDll && options.dllName) { // Adjust build to create Webpack DLL
+      config.entry = {};
+      config.entry[options.dllName] = options.createDll.split(',');
+      config.output.library = '[name]';
+      config.output.filename = '[name].[hash].js';
+      config.plugins.push(new webpack.DllPlugin({
+        name: '[name]',
+        path: path.join(options.outputPath, '[name].json'),
+      }));
+    }
+    if (options.useDll) { // Consume Webpack DLL
+      const dependencies = options.useDll.split(',');
+
+      for (const dependency of dependencies) {
+        const dependencyPath = path.resolve(dependency);
+        config.plugins.push(new webpack.DllReferencePlugin({
+          context: dependencyPath.substring(0, dependencyPath.lastIndexOf('/')),
+          manifest: require(dependencyPath)
+        }));
+      }
     }
 
     // By default, Webpack's production mode will configure UglifyJS

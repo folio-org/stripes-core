@@ -120,10 +120,14 @@
     "errors.password.keyboardSequence.invalid": "The password must not contain a keyboard sequence.",
     "errors.password.repeatingSymbols.invalid": "The password must not contain the same character in a row.",
     "errors.password.whiteSpace.invalid": "The password must not contain whitespaces.",
-    "mainnav.myProfileAriaLabel": "My profile",
+    "mainnav.myProfileAriaLabel": "マイプロフィール",
     "mainnav.skipMainNavigation": "Skip Main Navigation",
     "errors.user.timeout": "Your session has expired. Please login again to resume your session.",
     "errors.password.consecutiveWhitespaces.invalid": "The password must not contain consecutive white space characters.",
     "about.missingModuleCount": "{count, number} Missing {count, plural, one {module} other {modules}}",
-    "about.incompatibleModuleCount": "{count, number} Incompatible {count, plural, one {module} other {modules}} version"
+    "about.incompatibleModuleCount": "{count, number} Incompatible {count, plural, one {module} other {modules}} version",
+    "routeErrorBoundary.sub": "An error occurred on this page and it could not be loaded.",
+    "routeErrorBoundary.goToAppHomeLabel": "Return to home",
+    "routeErrorBoundary.goToModuleHomeLabel": "Return to {name} landing page",
+    "routeErrorBoundary.goToModuleSettingsHomeLabel": "Return to {name} settings"
 }

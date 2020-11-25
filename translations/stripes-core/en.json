@@ -131,5 +131,10 @@
 
   "createResetPassword.header": "Choose a password",
   "createResetPassword.newPassword": "New Password",
-  "createResetPassword.confirmPassword": "Confirm Password"
+  "createResetPassword.confirmPassword": "Confirm Password",
+
+  "routeErrorBoundary.sub": "An error occurred on this page and it could not be loaded.",
+  "routeErrorBoundary.goToAppHomeLabel": "Return to home",
+  "routeErrorBoundary.goToModuleHomeLabel": "Return to {name} landing page",
+  "routeErrorBoundary.goToModuleSettingsHomeLabel": "Return to {name} settings"
 }
