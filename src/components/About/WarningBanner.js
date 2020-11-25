@@ -41,9 +41,8 @@ const WarningBanner = ({
   const incompatibleModulesCount = incompatibleModules.length;
   const missingModulesMsg = <FormattedMessage id="stripes-core.about.missingModuleCount" values={{ count: missingModulesCount }} />;
   const incompatibleModuleMsg = <FormattedMessage id="stripes-core.about.incompatibleModuleCount" values={{ count: incompatibleModulesCount }} />;
-  const isEmptyInterfaces = _.isEmpty(interfaces);
 
-  return !isEmptyInterfaces && (
+  return (
     <div className={css.warningContainer}>
       <MessageBanner
         type="warning"
