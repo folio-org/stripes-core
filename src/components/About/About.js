@@ -10,6 +10,7 @@ import {
   Pane,
   Headline,
   List,
+  Loading,
 } from '@folio/stripes-components';
 import AboutEnabledModules from './AboutEnabledModules';
 import WarningBanner from './WarningBanner';
@@ -91,21 +92,27 @@ const About = (props) => {
 
   const modules = _.get(props.stripes, ['discovery', 'modules']) || {};
   const interfaces = _.get(props.stripes, ['discovery', 'interfaces']) || {};
+  const isLoadingFinished = _.get(props.stripes, ['discovery', 'isFinished']);
   const nm = Object.keys(modules).length;
   const ni = Object.keys(interfaces).length;
   const ConnectedAboutEnabledModules = props.stripes.connect(AboutEnabledModules);
   const unknownMsg = <FormattedMessage id="stripes-core.about.unknown" />;
   const numModulesMsg = <FormattedMessage id="stripes-core.about.moduleCount" values={{ count: nm }} />;
   const numInterfacesMsg = <FormattedMessage id="stripes-core.about.interfaceCount" values={{ count: ni }} />;
+
   return (
     <Pane
       defaultWidth="fill"
       paneTitle={<FormattedMessage id="stripes-core.about.paneTitle" />}
     >
-      <WarningBanner
-        interfaces={interfaces}
-        modules={props.modules}
-      />
+      {!isLoadingFinished ? (
+        <Loading />
+      ) : (
+        <WarningBanner
+          interfaces={interfaces}
+          modules={props.modules}
+        />
+      )}
       <div className={css.versionsContainer}>
         <div className={css.versionsColumn}>
           <Headline size="large">
