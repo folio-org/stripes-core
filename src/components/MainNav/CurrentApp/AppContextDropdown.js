@@ -19,13 +19,12 @@ class AppContextDropdown extends React.Component {
       selectedApp,
     } = this.props;
 
-    const toggle = (
+    const renderToggle = () => (
       <Button
         data-test-context-menu-toggle-button
         buttonStyle="noStyle"
         marginBottom0
         style={{ height: '40px' }}
-        data-role="toggle"
       >
         <Icon icon={open ? 'caret-up' : 'caret-down'} iconPosition="end">
           <AppIcon app={selectedApp.displayName.toLowerCase()}>
@@ -43,12 +42,11 @@ class AppContextDropdown extends React.Component {
     return (
       <Dropdown
         onToggle={onToggle}
+        renderTrigger={renderToggle}
         open={open}
       >
-        { toggle }
         <DropdownMenu
           id="App_context_dropdown_menu"
-          data-role="menu"
           onToggle={onToggle}
         >
           {/* `currently, dropdowns need something initially rendered
