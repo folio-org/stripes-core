@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import { Dropdown, Headline, DropdownMenu, Icon, Button } from '@folio/stripes-components';
 import AppIcon from '../../AppIcon';
+import css from './../NavButton/NavButton.css';
 import { withAppCtxMenu } from './AppCtxMenuContext';
 
 class AppContextDropdown extends React.Component {
@@ -19,16 +20,25 @@ class AppContextDropdown extends React.Component {
       selectedApp,
     } = this.props;
 
-    const renderToggle = () => (
+    const renderToggle = ({ triggerRef, onToggle, ariaProps, keyHandler }) => (
       <Button
         data-test-context-menu-toggle-button
+        ref={triggerRef}
+        onClick={onToggle}
         buttonStyle="noStyle"
+        buttonClass={css.navButton}
         marginBottom0
         style={{ height: '40px' }}
+        onKeyDown={keyHandler}
+        {...ariaProps}
       >
         <Icon icon={open ? 'caret-up' : 'caret-down'} iconPosition="end">
           <AppIcon app={selectedApp.displayName.toLowerCase()}>
-            <Headline tag="h1" size="small" margin="none">
+            <Headline
+              tag="h1"
+              margin="none"
+              weight="black"
+            >
               {selectedApp.displayName}
               <span className="sr-only">
                 <FormattedMessage id="stripes-core.mainnav.appContextMenu" />
@@ -44,6 +54,7 @@ class AppContextDropdown extends React.Component {
         onToggle={onToggle}
         renderTrigger={renderToggle}
         open={open}
+        usePortal={false}
       >
         <DropdownMenu
           id="App_context_dropdown_menu"
