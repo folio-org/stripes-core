@@ -1,6 +1,6 @@
 # Change history for stripes-core
 
-## 6.1.0 IN PROGRESS
+## 7.0.0 IN PROGRESS
 
 * Validate token using a request that does not require permissions. Refs STCOR-452.
 * Update `serialize-javascript` to avoid CVE-2020-7660. Refs STCOR-467.
