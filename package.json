@@ -1,6 +1,6 @@
 {
   "name": "@folio/stripes-core",
-  "version": "6.1.0",
+  "version": "7.0.0",
   "description": "The starting point for Stripes applications",
   "license": "Apache-2.0",
   "repository": "folio-org/stripes-core",
@@ -79,7 +79,7 @@
     "@babel/preset-typescript": "^7.7.7",
     "@babel/register": "^7.0.0",
     "@bigtest/mirage": "^0.0.1",
-    "@folio/stripes-components": "~8.1.0",
+    "@folio/stripes-components": "~9.0.0",
     "@folio/stripes-connect": "~6.1.0",
     "@folio/stripes-logger": "~1.0.0",
     "@formatjs/intl-displaynames": "^2.2.3",
