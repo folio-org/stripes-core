@@ -43,7 +43,7 @@ module.exports = function build(stripesConfig, options) {
       for (const dependency of dependencies) {
         const dependencyPath = path.resolve(dependency);
         config.plugins.push(new webpack.DllReferencePlugin({
-          context: dependencyPath.substring(0, dependencyPath.lastIndexOf('/')),
+          context: path.resolve(),
           manifest: require(dependencyPath)
         }));
       }
