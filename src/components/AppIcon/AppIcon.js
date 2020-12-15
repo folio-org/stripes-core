@@ -39,8 +39,18 @@ const AppIcon = ({
      * If no icon is found we display a placeholder.
      *
      */
-    let appIcon = stripes?.icons?.[app]?.[iconKey];
-    if (!appIcon) appIcon = stripes?.icons?.[`@folio/${app}`]?.[iconKey];
+    const icons = stripes?.icons;
+    // First, see if the app name matches the package name exactly (no scope prefix).
+    let appIcon = icons?.[app]?.[iconKey];
+    if (!appIcon) {
+      for (const key in icons) {
+        // Otherwise, match the package name based on the name after the scope prefix.
+        // For example, app name 'inventory' would match '@folio/inventory' after removing scope.
+        if (key.indexOf('/') && key.slice(key.lastIndexOf('/') + 1) === app) {
+          appIcon = icons?.[key]?.[iconKey];
+        }
+      }
+    }
     if (appIcon && appIcon.src) {
       appIconProps = {
         src: appIcon.src,
