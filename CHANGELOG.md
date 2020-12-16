@@ -11,6 +11,7 @@
 * Add support for building and consuming Webpack DLLs. Refs STCOR-471.
 * Provide default HTML formatters to `<IntlProvider>` so we can avoid `<SafeHTMLMessage>`. Fixes STCOR-477.
 * Settings > Software version > Display a loading indicator when querying for missing/incompatible modules, STCOR-479.
+* Add support for generic package scope names (instead of assuming @folio/something). Refs STCOR-490.
 
 ## [6.0.0](https://github.com/folio-org/stripes-core/tree/v6.0.0) (2020-10-06)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v5.0.2...v6.0.0)
