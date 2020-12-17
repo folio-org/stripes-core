@@ -1,6 +1,7 @@
 const webpack = require('webpack');
 const path = require('path');
 const StripesWebpackPlugin = require('./stripes-webpack-plugin');
+const AddAssetHtmlPlugin = require('add-asset-html-webpack-plugin');
 const applyWebpackOverrides = require('./apply-webpack-overrides');
 const logger = require('./logger')();
 
@@ -27,6 +28,7 @@ module.exports = function build(stripesConfig, options) {
     if (options.sourcemap) {
       config.devtool = 'source-map';
     }
+
     if (options.createDll && options.dllName) { // Adjust build to create Webpack DLL
       config.entry = {};
       config.entry[options.dllName] = options.createDll.split(',');
@@ -39,6 +41,7 @@ module.exports = function build(stripesConfig, options) {
     }
     if (options.useDll) { // Consume Webpack DLL
       const dependencies = options.useDll.split(',');
+      const dllPaths = [];
 
       for (const dependency of dependencies) {
         const dependencyPath = path.resolve(dependency);
@@ -46,7 +49,13 @@ module.exports = function build(stripesConfig, options) {
           context: path.resolve(),
           manifest: require(dependencyPath)
         }));
+
+        const dllPath = path.dirname(dependencyPath);
+
+        dllPaths.push({ filepath: `${dllPath}/*.js` });
       }
+
+      config.plugins.push(new AddAssetHtmlPlugin(dllPaths));
     }
 
     // By default, Webpack's production mode will configure UglifyJS
