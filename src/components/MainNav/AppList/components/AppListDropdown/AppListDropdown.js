@@ -37,7 +37,7 @@ const AppListDropdown = ({ toggleDropdown, apps, listRef, selectedApp }) => (
           role="button"
         >
           <AppIcon
-            app={app.name}
+            app={app.module}
             size="small"
             icon={app.iconData}
           />

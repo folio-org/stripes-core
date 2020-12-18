@@ -72,7 +72,6 @@ class Settings extends React.Component {
   render() {
     const { stripes, location, intl: { formatMessage } } = this.props;
     const navLinks = this.connectedModules.map(({ module }) => {
-      const iconData = module.module.replace(packageName.PACKAGE_SCOPE_REGEX, '');
       return (
         <NavListItem
           key={module.route}
@@ -80,7 +79,7 @@ class Settings extends React.Component {
         >
           <AppIcon
             alt={module.displayName}
-            app={iconData}
+            app={module.module}
             size="small"
             iconClassName={css.appIcon}
           >
