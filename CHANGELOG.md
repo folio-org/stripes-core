@@ -1,5 +1,10 @@
 # Change history for stripes-core
 
+## [6.0.1](https://github.com/folio-org/stripes-core/tree/v6.0.1) (2020-12-18)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v6.0.0...v6.0.1)
+
+* Passing in full module name to resolve icon for modules that don't use @folio/ scope prefix. Refs STCOR-490.
+
 ## [6.0.0](https://github.com/folio-org/stripes-core/tree/v6.0.0) (2020-10-06)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v5.0.2...v6.0.0)
 
