@@ -28,7 +28,6 @@ module.exports = function build(stripesConfig, options) {
     if (options.sourcemap) {
       config.devtool = 'source-map';
     }
-
     if (options.createDll && options.dllName) { // Adjust build to create Webpack DLL
       config.entry = {};
       config.entry[options.dllName] = options.createDll.split(',');
