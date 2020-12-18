@@ -98,7 +98,7 @@ class AppList extends Component {
                   data-test-app-list-item
                   aria-label={app.displayName}
                   iconData={app.iconData}
-                  iconKey={app.name}
+                  iconKey={app.module}
                   id={`app-list-item-${app.id}`}
                   label={app.displayName}
                   role="button"
