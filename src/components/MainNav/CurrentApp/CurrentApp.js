@@ -37,7 +37,7 @@ const CurrentApp = ({ config, currentApp, id, intl, badge }) => {
     description: config.platformDescription || 'FOLIO platform',
   };
 
-  const { displayName, iconData, name, home, route } = actualCurrentApp;
+  const { displayName, iconData, module, home, route } = actualCurrentApp;
   const href = home || route;
   const ariaLabel = href ? intl.formatMessage({ id: 'stripes-core.mainnav.currentAppAriaLabel' }, { appName: displayName }) : displayName;
 
@@ -57,7 +57,7 @@ const CurrentApp = ({ config, currentApp, id, intl, badge }) => {
       id={id}
       ariaLabel={ariaLabel}
       badge={badge}
-      iconKey={name}
+      iconKey={module}
       className={css.button}
       innerClassName={css.button__inner}
       labelClassName={css.button__label}
