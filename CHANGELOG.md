@@ -1,6 +1,21 @@
 # Change history for stripes-core
 
-## 6.0.0 (IN PROGRESS)
+## 7.0.0 IN PROGRESS
+
+* Validate token using a request that does not require permissions. Refs STCOR-452.
+* Update `serialize-javascript` to avoid CVE-2020-7660. Refs STCOR-467.
+* Pass a string, not a `<FormattedMessage>`, to `<NavButton>`. Refs STCOR-472.
+* Move `CalloutContext` to `<Root>` to avoid issues with Intl. Refs STCOR-481.
+* Test HTTP response cleanup. Refs STCOR-483.
+* Avoid using `<FormattedMessage>` with render-props. Refs STCOR-472, STCOR-482.
+* Add support for building and consuming Webpack DLLs. Refs STCOR-471.
+* Provide default HTML formatters to `<IntlProvider>` so we can avoid `<SafeHTMLMessage>`. Fixes STCOR-477.
+* Settings > Software version > Display a loading indicator when querying for missing/incompatible modules, STCOR-479.
+* Passing in full module name to resolve icon for modules that don't use @folio/ scope prefix. Refs STCOR-490.
+* Append dlls to final output during build. STCOR-492.
+
+## [6.0.0](https://github.com/folio-org/stripes-core/tree/v6.0.0) (2020-10-06)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v5.0.2...v6.0.0)
 
 * Abandon legacy context! Refs STCOR-390.
 * Increment `react-router` to `^5.2`.
@@ -11,6 +26,14 @@
 * Mock okapi session in local storage for testing. Refs STCOR-444.
 * Handle `react-router-dom` deprecation warnings. Refs STCOR-448.
 * Update `react-intl` to `v5`. Refs STCOR-449.
+* Add `suppressIntlErrors` option to stripes.config.js.
+* Refactor `CreateResetPassword` to use final-form instead of redux-form. Refs STCOR-441.
+* Add `okapiKy` helpers (see [docs/okapiKy.md](docs/okapiKy.md)).
+* Apps menu - The options in the "Apps" menu do not voice as actionable (able to be activated). Refs STCOR-453.
+* Adjust package scope name filter to align with NPM rules instead of assuming `@folio/`. Refs STCOR-456.
+* Move `moment` to `peerDependencies`. Refs STCOR-464.
+* Refactor `CreateResetPassword` to use vanilla `react-final-form` instead of `stripes-final-form` wrapper. Refs STCOR-466.
+* Settings > Software version: Remove references to color. Refs STCOR-451.
 
 ## [5.0.2](https://github.com/folio-org/stripes-core/tree/v5.0.2) (2020-06-12)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v5.0.1...v5.0.2)

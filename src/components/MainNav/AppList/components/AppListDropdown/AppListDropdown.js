@@ -34,10 +34,10 @@ const AppListDropdown = ({ toggleDropdown, apps, listRef, selectedApp }) => (
           className={css.dropdownListItem}
           aria-label={app.displayName}
           id={`app-list-dropdown-item-${app.id}`}
-          role="menuitem"
+          role="button"
         >
           <AppIcon
-            app={app.name}
+            app={app.module}
             size="small"
             icon={app.iconData}
           />
