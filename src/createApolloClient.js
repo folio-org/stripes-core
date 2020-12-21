@@ -1,15 +1,11 @@
-import { ApolloClient } from 'apollo-client';
-import { HttpLink } from 'apollo-link-http';
-import { InMemoryCache } from 'apollo-cache-inmemory';
+import { InMemoryCache, ApolloClient } from '@apollo/client';
 
-const createClient = okapi => (new ApolloClient({
-  link: new HttpLink({
-    uri: `${okapi.url}/graphql`,
-    headers: {
-      'X-Okapi-Tenant': okapi.tenant,
-      'X-Okapi-Token': okapi.token,
-    },
-  }),
+const createClient = ({ url, tenant, token }) => (new ApolloClient({
+  uri: `${url}/graphql`,
+  headers: {
+    'X-Okapi-Tenant': tenant,
+    'X-Okapi-Token': token,
+  },
   cache: new InMemoryCache(),
 }));
 

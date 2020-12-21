@@ -29,10 +29,9 @@ export default function setupApplication({
   scenarios,
   currentUser = {},
   userLoggedIn = false,
+  initialState = {},
 } = {}) {
   beforeEach(async function () {
-    const initialState = {};
-
     // when auth is disabled, add a fake user to the store
     if (disableAuth) {
       initialState.okapi = {

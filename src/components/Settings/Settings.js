@@ -1,6 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FormattedMessage } from 'react-intl';
+import {
+  FormattedMessage,
+  injectIntl,
+} from 'react-intl';
 import { withRouter } from 'react-router';
 import {
   Switch,
@@ -20,6 +23,8 @@ import AddContext from '../../AddContext';
 import { withModules } from '../Modules';
 import { stripesShape } from '../../Stripes';
 import AppIcon from '../AppIcon';
+import { packageName } from '../../constants';
+import RouteErrorBoundary from '../RouteErrorBoundary';
 
 import css from './Settings.css';
 
@@ -32,7 +37,10 @@ class Settings extends React.Component {
     modules: PropTypes.shape({
       app: PropTypes.array,
       settings: PropTypes.array,
-    })
+    }),
+    intl: PropTypes.shape({
+      formatMessage: PropTypes.func.isRequired,
+    }),
   };
 
   constructor(props) {
@@ -42,7 +50,7 @@ class Settings extends React.Component {
     const settingsModules = modules.settings || [];
 
     this.connectedModules = settingsModules
-      .filter(x => stripes.hasPerm(`settings.${x.module.replace(/^@folio\//, '')}.enabled`))
+      .filter(x => stripes.hasPerm(`settings.${x.module.replace(packageName.PACKAGE_SCOPE_REGEX, '')}.enabled`))
       .sort((x, y) => x.displayName.toLowerCase().localeCompare(y.displayName.toLowerCase()))
       .map((m) => {
         try {
@@ -62,9 +70,8 @@ class Settings extends React.Component {
   }
 
   render() {
-    const { stripes, location } = this.props;
+    const { stripes, location, intl: { formatMessage } } = this.props;
     const navLinks = this.connectedModules.map(({ module }) => {
-      const iconData = module.module.replace(/^@[a-z0-9_]+\//, '');
       return (
         <NavListItem
           key={module.route}
@@ -72,7 +79,7 @@ class Settings extends React.Component {
         >
           <AppIcon
             alt={module.displayName}
-            app={iconData}
+            app={module.module}
             size="small"
             iconClassName={css.appIcon}
           >
@@ -83,18 +90,23 @@ class Settings extends React.Component {
     });
 
     const routes = this.connectedModules.map(({ module, Component, moduleStripes }) => {
-      return (<Route
-        path={`/settings${module.route}`}
-        key={module.route}
-        render={(props2) => (
-          <StripesContext.Provider value={moduleStripes}>
-            <AddContext context={{ stripes: moduleStripes }}>
-              <Component {...props2} stripes={moduleStripes} showSettings actAs="settings" />
-            </AddContext>
-            {props2.match.isExact ? <div className={css.panePlaceholder} /> : null}
-          </StripesContext.Provider>
-        )}
-      />);
+      const path = `/settings${module.route}`;
+      return (
+        <Route
+          path={path}
+          key={module.route}
+          render={(props2) => (
+            <RouteErrorBoundary escapeRoute={path} moduleName={module.displayName} isSettings>
+              <StripesContext.Provider value={moduleStripes}>
+                <AddContext context={{ stripes: moduleStripes }}>
+                  <Component {...props2} stripes={moduleStripes} showSettings actAs="settings" />
+                </AddContext>
+                {props2.match.isExact ? <div className={css.panePlaceholder} /> : null}
+              </StripesContext.Provider>
+            </RouteErrorBoundary>
+          )}
+        />
+      );
     });
 
     // To keep the top level parent menu item shown as active
@@ -107,34 +119,26 @@ class Settings extends React.Component {
           defaultWidth="20%"
           paneTitle={<FormattedMessage id="stripes-core.settings" />}
         >
-          <FormattedMessage id="stripes-core.settings">
-            { label => (
-              <NavList ariaLabel={label}>
-                <NavListSection
-                  activeLink={activeLink}
-                  label={label}
-                  className={css.navListSection}
-                >
-                  {navLinks}
-                </NavListSection>
-              </NavList>
-            )}
-          </FormattedMessage>
-          <FormattedMessage id="stripes-core.settingSystemInfo">
-            {label => (
-              <NavList aria-label={label}>
-                <NavListSection
-                  label={label}
-                  activeLink={activeLink}
-                  className={css.navListSection}
-                >
-                  <NavListItem to="/settings/about">
-                    <FormattedMessage id="stripes-core.front.about" />
-                  </NavListItem>
-                </NavListSection>
-              </NavList>
-            )}
-          </FormattedMessage>
+          <NavList aria-label={formatMessage({ id: 'stripes-core.settings' })}>
+            <NavListSection
+              activeLink={activeLink}
+              label={formatMessage({ id: 'stripes-core.settings' })}
+              className={css.navListSection}
+            >
+              {navLinks}
+            </NavListSection>
+          </NavList>
+          <NavList aria-label={formatMessage({ id: 'stripes-core.settingSystemInfo' })}>
+            <NavListSection
+              label={formatMessage({ id: 'stripes-core.settingSystemInfo' })}
+              activeLink={activeLink}
+              className={css.navListSection}
+            >
+              <NavListItem to="/settings/about">
+                <FormattedMessage id="stripes-core.front.about" />
+              </NavListItem>
+            </NavListSection>
+          </NavList>
         </Pane>
         <Switch>
           {routes}
@@ -146,4 +150,4 @@ class Settings extends React.Component {
   }
 }
 
-export default withRouter(withModules(Settings));
+export default withRouter(withModules(injectIntl(Settings)));

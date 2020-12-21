@@ -83,12 +83,12 @@
     "setPassword": "تعيين كلمة المرور",
     "settingPassword": "جاري تعيين كلمة المرور ...",
     "mainnav.showAllApplicationsButtonLabel": "التطبيقات",
-    "mainnav.showAllApplicationsButtonAriaLabel": "عرض كل التطبيقات",
+    "mainnav.showAllApplicationsButtonAriaLabel": "كل التطبيقات",
     "mainnav.currentAppAriaLabel": "التطبيق الحالي المفتوح: {appName} (انقر للذهاب إلى الصفحة الرئيسية)",
     "mainnav.topLevelLabel": "الرئيسي",
     "mainnav.applicationListLabel": "قائمة التطبيقات",
     "errors.default.error": "عذرًا ، المعلومات التي تم إدخالها لا تتطابق مع سجلاتنا.",
-    "errors.username.incorrect": "خطأ في التحقق من وجود المستخدم: لم يتم العثور على أي مستخدم عن طريق اسم المستخدم {username}",
+    "errors.username.incorrect": "تعذر تحديد موقع حساب فوليو هذا. يرجى الاتصال بمدير أنظمة فوليو الخاص بك.",
     "errors.password.incorrect": "بيانات غير صحيحة",
     "errors.user.blocked": "لأسباب أمنية، حسابك تم إغلاقه. يرجى إعادة المحاولة مرة أخرى أو الاتصال بمسؤول نظام فوليو الخاص بك.",
     "errors.password.match.error": "كلمة المرور غير متطابقة. أعد كتابة كلمة المرور الخاصة بك.",
@@ -123,5 +123,11 @@
     "mainnav.myProfileAriaLabel": "ملفي الشخصي",
     "mainnav.skipMainNavigation": "تخطي التصفح الرئيسي",
     "errors.user.timeout": "لقد انتهت صلاحية الجلسة. يرجى إعادة تسجيل الدخول مرة أخرى لمتابعة الجلسة.",
-    "errors.password.consecutiveWhitespaces.invalid": "يجب ألا تحتوي كلمة المرور على مسافات متتالية."
+    "errors.password.consecutiveWhitespaces.invalid": "يجب ألا تحتوي كلمة المرور على مسافات متتالية.",
+    "about.missingModuleCount": "{count, number} مفقود {count, plural, one {وحدة} other {وحدة}}",
+    "about.incompatibleModuleCount": "{count, number} غير متوافق {count, plural, one {وحدة} other {وحدة}} إصدار",
+    "routeErrorBoundary.sub": "An error occurred on this page and it could not be loaded.",
+    "routeErrorBoundary.goToAppHomeLabel": "Return to home",
+    "routeErrorBoundary.goToModuleHomeLabel": "Return to {name} landing page",
+    "routeErrorBoundary.goToModuleSettingsHomeLabel": "Return to {name} settings"
 }
