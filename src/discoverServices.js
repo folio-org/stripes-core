@@ -1,6 +1,13 @@
 import 'isomorphic-fetch';
 import { some } from 'lodash';
 
+function getHeaders(tenant, token) {
+  return {
+    'X-Okapi-Tenant': tenant,
+    'X-Okapi-Token': token,
+    'Content-Type': 'application/json'
+  };
+}
 /*
  * This function probes Okapi to discover what versions of what
  * interfaces are supported by the services that it is proxying
@@ -13,9 +20,7 @@ export function discoverServices(store) {
   const okapi = store.getState().okapi;
   return Promise.all([
     fetch(`${okapi.url}/_/version`, {
-      'headers': {
-        'X-Okapi-Tenant': 'supertenant'
-      }
+      headers: getHeaders(okapi.tenant, okapi.token)
     })
       .then((response) => { // eslint-disable-line consistent-return
         if (response.status >= 400) {
@@ -29,9 +34,7 @@ export function discoverServices(store) {
         store.dispatch({ type: 'DISCOVERY_FAILURE', message: reason });
       }),
     fetch(`${okapi.url}/_/proxy/tenants/${okapi.tenant}/modules?full=true`, {
-      'headers': {
-        'X-Okapi-Tenant': 'supertenant'
-      }
+      headers: getHeaders(okapi.tenant, okapi.token)
     })
       .then((response) => { // eslint-disable-line consistent-return
         if (response.status >= 400) {
