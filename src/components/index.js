@@ -19,6 +19,7 @@ export { default as TitledRoute } from './TitledRoute';
 export { default as TitleManager } from './TitleManager';
 export { default as SSOLanding } from './SSOLanding';
 export { default as SSORedirect } from './SSORedirect';
+export { default as RouteErrorBoundary } from './RouteErrorBoundary';
 export { default as Front } from './Front';
 export { default as Settings } from './Settings/Settings';
 export { default as ForgotPasswordCtrl } from './ForgotPassword';

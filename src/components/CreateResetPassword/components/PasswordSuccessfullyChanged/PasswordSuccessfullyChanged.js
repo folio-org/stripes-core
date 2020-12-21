@@ -37,7 +37,7 @@ const PasswordSuccessfullyChanged = ({ history }) => {
         <Headline
           size="x-large"
           tag="p"
-          bold={false}
+          weight="regular"
           faded
           data-test-message
         >

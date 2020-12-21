@@ -2,13 +2,14 @@ import React from 'react';
 import { Route } from 'react-router-dom';
 
 import { connectFor } from '@folio/stripes-connect';
-import ErrorBoundary from '@folio/stripes-components/lib/ErrorBoundary';
 
 import ModulesContext from './ModulesContext';
 import { StripesContext } from './StripesContext';
 import AddContext from './AddContext';
 import TitleManager from './components/TitleManager';
+import RouteErrorBoundary from './components/RouteErrorBoundary';
 import { getHandlerComponents } from './handlerService';
+import { packageName } from './constants';
 import events from './events';
 
 function getModuleRoutes(stripes) {
@@ -20,7 +21,7 @@ function getModuleRoutes(stripes) {
         }
 
         return modules.app.map((module) => {
-          const name = module.module.replace(/^@folio\//, '');
+          const name = module.module.replace(packageName.PACKAGE_SCOPE_REGEX, '');
           const displayName = module.displayName;
           const perm = `module.${name}.enabled`;
           if (!stripes.hasPerm(perm)) return null;
@@ -52,11 +53,14 @@ function getModuleRoutes(stripes) {
                   <StripesContext.Provider value={moduleStripes}>
                     <AddContext context={{ stripes: moduleStripes }}>
                       <div id={`${name}-module-display`} data-module={module.module} data-version={module.version}>
-                        <ErrorBoundary>
+                        <RouteErrorBoundary
+                          escapeRoute={module.route}
+                          moduleName={displayName}
+                        >
                           <TitleManager page={displayName}>
                             <Current {...props} connect={connect} stripes={moduleStripes} actAs="app" />
                           </TitleManager>
-                        </ErrorBoundary>
+                        </RouteErrorBoundary>
                       </div>
                     </AddContext>
                   </StripesContext.Provider>);

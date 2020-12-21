@@ -6,11 +6,14 @@ import stripesConnect from '@folio/stripes-connect/package';
 import stripesComponents from '@folio/stripes-components/package';
 import stripesLogger from '@folio/stripes-logger/package';
 
-import Pane from '@folio/stripes-components/lib/Pane';
-import Headline from '@folio/stripes-components/lib/Headline';
-import List from '@folio/stripes-components/lib/List';
-import { isVersionCompatible } from '../../discoverServices';
+import {
+  Pane,
+  Headline,
+  List,
+  Loading,
+} from '@folio/stripes-components';
 import AboutEnabledModules from './AboutEnabledModules';
+import WarningBanner from './WarningBanner';
 import { withModules } from '../Modules';
 
 import stripesCore from '../../../package';
@@ -29,20 +32,10 @@ const About = (props) => {
     }
 
     const itemFormatter = (key) => {
-      const required = okapiInterfaces[key];
-      const available = interfaces[key];
-      let style = {};
-      let text = required;
-
-      if (!available) {
-        style = { color: 'red', fontWeight: 'bold' };
-      } else if (!isVersionCompatible(available, required)) {
-        style = { color: 'orange' };
-        text = <FormattedMessage id="stripes-core.about.newerModuleAvailable" values={{ required, available }} />;
-      }
+      const text = okapiInterfaces[key];
 
       return (
-        <li key={key} style={style}>
+        <li key={key}>
           {key}
           {' '}
           {text}
@@ -56,7 +49,7 @@ const About = (props) => {
           <FormattedMessage id="stripes-core.about.moduleDependsOn" values={{ module: `${m.module} ${m.version || ''}` }} />
         </Headline>
         <List
-          items={Object.keys(okapiInterfaces)}
+          items={Object.keys(okapiInterfaces).sort()}
           itemFormatter={itemFormatter}
           listStyle="bullets"
         />
@@ -80,6 +73,9 @@ const About = (props) => {
       default:
         headlineMsg = <FormattedMessage id="stripes-core.about.moduleTypeCount" values={{ count: list.length, type: caption }} />;
     }
+
+    list.sort();
+
     return (
       <div key={caption}>
         <Headline>{headlineMsg}</Headline>
@@ -96,17 +92,27 @@ const About = (props) => {
 
   const modules = _.get(props.stripes, ['discovery', 'modules']) || {};
   const interfaces = _.get(props.stripes, ['discovery', 'interfaces']) || {};
+  const isLoadingFinished = _.get(props.stripes, ['discovery', 'isFinished']);
   const nm = Object.keys(modules).length;
   const ni = Object.keys(interfaces).length;
   const ConnectedAboutEnabledModules = props.stripes.connect(AboutEnabledModules);
   const unknownMsg = <FormattedMessage id="stripes-core.about.unknown" />;
   const numModulesMsg = <FormattedMessage id="stripes-core.about.moduleCount" values={{ count: nm }} />;
   const numInterfacesMsg = <FormattedMessage id="stripes-core.about.interfaceCount" values={{ count: ni }} />;
+
   return (
     <Pane
       defaultWidth="fill"
       paneTitle={<FormattedMessage id="stripes-core.about.paneTitle" />}
     >
+      {!isLoadingFinished ? (
+        <Loading />
+      ) : (
+        <WarningBanner
+          interfaces={interfaces}
+          modules={props.modules}
+        />
+      )}
       <div className={css.versionsContainer}>
         <div className={css.versionsColumn}>
           <Headline size="large">
@@ -199,26 +205,6 @@ const About = (props) => {
           {renderDependencies(Object.assign({}, stripesCore.stripes || {}, { module: 'stripes-core' }), interfaces)}
           <br />
           {Object.keys(props.modules).map(key => listModules(key, props.modules[key], interfaces))}
-          <Headline size="small">
-            <FormattedMessage id="stripes-core.about.legendKey" />
-          </Headline>
-          <p>
-            <FormattedMessage
-              id="stripes-core.about.key.absentInterfaces"
-              values={{
-                span: chunks => <span className={css.absent}>{chunks}</span>
-              }}
-            />
-            <br />
-            <FormattedMessage
-              id="stripes-core.about.key.incompatibleIntf"
-              values={{
-                span: chunks => <span className={css.incompatible}>{chunks}</span>
-              }}
-            />
-            <br />
-            <FormattedMessage id="stripes-core.about.key.compatible" />
-          </p>
         </div>
       </div>
     </Pane>
