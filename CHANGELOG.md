@@ -1,5 +1,9 @@
 # Change history for stripes-core
 
+## 5.0.4 IN PROGRESS
+
+* Conduct module discovery after login as current tenant. Fixes STCOR-496.
+
 ## [5.0.3](https://github.com/folio-org/stripes-core/tree/v5.0.3) (2020-09-28)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v5.0.2...v5.0.3)
 
