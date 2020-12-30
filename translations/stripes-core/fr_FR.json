@@ -127,7 +127,7 @@
     "about.missingModuleCount": "{count, number} Manquant {count, plural, one { module } other { modules }}",
     "about.incompatibleModuleCount": "{count, number} Incompatible {count, plural, one {module} other {modules}} version",
     "routeErrorBoundary.sub": "An error occurred on this page and it could not be loaded.",
-    "routeErrorBoundary.goToAppHomeLabel": "Return to home",
-    "routeErrorBoundary.goToModuleHomeLabel": "Return to {name} landing page",
-    "routeErrorBoundary.goToModuleSettingsHomeLabel": "Return to {name} settings"
+    "routeErrorBoundary.goToAppHomeLabel": "Retourner à l'accueil",
+    "routeErrorBoundary.goToModuleHomeLabel": "Revenir à la page de destination de {name}",
+    "routeErrorBoundary.goToModuleSettingsHomeLabel": "Revenir aux paramètres de {name}"
 }
