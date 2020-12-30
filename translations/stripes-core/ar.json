@@ -126,8 +126,8 @@
     "errors.password.consecutiveWhitespaces.invalid": "يجب ألا تحتوي كلمة المرور على مسافات متتالية.",
     "about.missingModuleCount": "{count, number} مفقود {count, plural, one {وحدة} other {وحدة}}",
     "about.incompatibleModuleCount": "{count, number} غير متوافق {count, plural, one {وحدة} other {وحدة}} إصدار",
-    "routeErrorBoundary.sub": "An error occurred on this page and it could not be loaded.",
-    "routeErrorBoundary.goToAppHomeLabel": "Return to home",
-    "routeErrorBoundary.goToModuleHomeLabel": "Return to {name} landing page",
-    "routeErrorBoundary.goToModuleSettingsHomeLabel": "Return to {name} settings"
+    "routeErrorBoundary.sub": "لقد حدث خطأ في هذه الصفحة وتعذر تحميلها.",
+    "routeErrorBoundary.goToAppHomeLabel": "العودة إلى الرئيسية",
+    "routeErrorBoundary.goToModuleHomeLabel": "العودة إلى الصفحة المقصودة {name}",
+    "routeErrorBoundary.goToModuleSettingsHomeLabel": "العودة إلى إعدادات {name}"
 }
