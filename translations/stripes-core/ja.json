@@ -53,7 +53,7 @@
     "button.confirm": "確認",
     "title.home": "Home",
     "title.settings": "Settings",
-    "title.login": "Log in",
+    "title.login": "ログイン",
     "title.ssoRedirect": "SSO Redirect",
     "title.notFound": "Not Found",
     "title.ssoLanding": "SSO Landing",
@@ -109,7 +109,7 @@
     "errors.password.incorrect.warn.user": "You have entered the wrong username or password for the third time. You have two more tries to login before your account will be locked.",
     "errors.password.incorrect.block.user": "For security purposes, your account has been locked. Please contact your FOLIO System Administrator to reset your password.",
     "settingSystemInfo": "システム情報",
-    "settingChoose": "Choose settings",
+    "settingChoose": "設定を選択してください",
     "button.save": "保存",
     "mainnav.appContextMenu": "アプリケーション・コンテキスト・ドロップダウン",
     "errors.password.length.invalid": "The password length must be minimum 8 symbols.",
@@ -125,9 +125,9 @@
     "errors.user.timeout": "Your session has expired. Please login again to resume your session.",
     "errors.password.consecutiveWhitespaces.invalid": "The password must not contain consecutive white space characters.",
     "about.missingModuleCount": "{count, number} Missing {count, plural, one {module} other {modules}}",
-    "about.incompatibleModuleCount": "{count, number} Incompatible {count, plural, one {module} other {modules}} version",
-    "routeErrorBoundary.sub": "An error occurred on this page and it could not be loaded.",
-    "routeErrorBoundary.goToAppHomeLabel": "Return to home",
-    "routeErrorBoundary.goToModuleHomeLabel": "Return to {name} landing page",
-    "routeErrorBoundary.goToModuleSettingsHomeLabel": "Return to {name} settings"
+    "about.incompatibleModuleCount": "{count, number}互換性がないバージョンの{count, plural, one { モジュール } other { モジュール }}です",
+    "routeErrorBoundary.sub": "エラーが発生し、ページを読み込めませんでした。",
+    "routeErrorBoundary.goToAppHomeLabel": "ホームに戻る",
+    "routeErrorBoundary.goToModuleHomeLabel": "{name}のランディングページに戻る",
+    "routeErrorBoundary.goToModuleSettingsHomeLabel": "{name}設定に戻る"
 }
