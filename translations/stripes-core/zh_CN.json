@@ -124,10 +124,10 @@
     "mainnav.skipMainNavigation": "跳过主导航",
     "errors.user.timeout": "会话已过期。请再次登录以恢复会话。",
     "errors.password.consecutiveWhitespaces.invalid": "密码不能包含连续的空格字符。",
-    "about.missingModuleCount": "{count, number} Missing {count, plural, one {module} other {modules}}",
-    "about.incompatibleModuleCount": "{count, number} Incompatible {count, plural, one {module} other {modules}} version",
-    "routeErrorBoundary.sub": "An error occurred on this page and it could not be loaded.",
-    "routeErrorBoundary.goToAppHomeLabel": "Return to home",
-    "routeErrorBoundary.goToModuleHomeLabel": "Return to {name} landing page",
-    "routeErrorBoundary.goToModuleSettingsHomeLabel": "Return to {name} settings"
+    "about.missingModuleCount": "{count, number}缺少{count, plural, one {模块} other {模块}}",
+    "about.incompatibleModuleCount": "{count, number}不兼容的{count, plural, one {模块} other {模块}}版本",
+    "routeErrorBoundary.sub": "此页面上发生错误，无法加载。",
+    "routeErrorBoundary.goToAppHomeLabel": "返回主页",
+    "routeErrorBoundary.goToModuleHomeLabel": "返回{name}登陆页面",
+    "routeErrorBoundary.goToModuleSettingsHomeLabel": "返回{name}设置"
 }
