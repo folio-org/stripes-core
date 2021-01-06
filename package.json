@@ -24,7 +24,7 @@
     "stylelint": "stylelint \"src/**/*.css\""
   },
   "engines": {
-    "node": "^15.5.1 || ^14.15.4 || ^12.20.1"
+    "node": ">=15.5.1 || ^14.15.4 || ^12.20.1"
   },
   "stripes": {
     "okapiInterfaces": {
