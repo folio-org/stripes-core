@@ -39,7 +39,6 @@ const CurrentApp = ({ config, currentApp, id, intl, badge }) => {
     iconData: {
       src: homeIcon,
       alt: 'FOLIO',
-      title: 'FOLIO',
     },
   };
 
