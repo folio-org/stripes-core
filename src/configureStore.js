@@ -11,8 +11,12 @@ export default function configureStore(initialState, stripesLogger, epics) {
     // Show logging unless explicitly set false
     predicate: () => stripesLogger.hasCategory('redux'),
   });
+  const { middleware: epicMiddleware, rootEpic } = epics;
   const reducer = enhanceReducer(combineReducers(initialReducers));
-  const middleware = enhanceMiddleware(applyMiddleware(thunk, logger, epics.middleware));
+  const middleware = enhanceMiddleware(applyMiddleware(thunk, logger, epicMiddleware));
+  const store = createStore(reducer, initialState, middleware);
 
-  return createStore(reducer, initialState, middleware);
+  epicMiddleware.run(rootEpic);
+
+  return store;
 }
