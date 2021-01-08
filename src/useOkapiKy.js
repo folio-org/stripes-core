@@ -12,6 +12,7 @@ export default () => {
           request.headers.set('X-Okapi-Token', token);
         }
       ]
-    }
+    },
+    retry: 0
   });
 };
