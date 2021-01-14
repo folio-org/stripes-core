@@ -36,7 +36,7 @@ function getModuleRoutes(stripes) {
             throw Error(error);
           }
 
-          const moduleStripes = stripes.clone({ connect });
+          const moduleStripes = stripes.clone({ connect, moduleConfig: module });
 
           return (
             <Route
