@@ -14,7 +14,9 @@
 * Passing in full module name to resolve icon for modules that don't use @folio/ scope prefix. Refs STCOR-490.
 * Append dlls to final output during build. STCOR-492.
 * Avoid retrying of http requests using `useOkapiKy` hook by default. STCOR-500.
-* Bump react, react-dom and @hot-loader/react-dom versions to v17. STCOR-501, STCOR-722
+* Expose module context via `useModules`/`withModules`/`withModule`. STCOR-502
+* Bump `react`, `react-dom` and `@hot-loader/react-dom` versions to v17. STCOR-501, STCOR-722
+
 ## [6.0.0](https://github.com/folio-org/stripes-core/tree/v6.0.0) (2020-10-06)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v5.0.2...v6.0.0)
 
