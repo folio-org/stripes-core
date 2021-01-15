@@ -5,6 +5,8 @@ export { default as CalloutContext } from './src/CalloutContext';
 /* internal utilities */
 export { stripesShape } from './src/Stripes';
 export { withStripes, useStripes } from './src/StripesContext';
+export { useModules } from './src/ModulesContext';
+export { withModule, withModules } from './src/components/Modules';
 export { default as stripesConnect } from './src/stripesConnect';
 export { default as Pluggable } from './src/Pluggable';
 export { setServicePoints, setCurServicePoint } from './src/loginServices';
