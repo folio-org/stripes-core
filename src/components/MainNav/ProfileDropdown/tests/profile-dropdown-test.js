@@ -12,7 +12,7 @@ class DummyApp extends Component {
   }
 }
 
-describe('Profile dropdown', () => {
+describe.skip('Profile dropdown', () => {
   const dropdown = new DropdownInteractor('#profileDropdown');
   const loginInteractor = new Interactor('[data-test-new-username-field]');
 
