@@ -63,6 +63,8 @@ export const supportedLocales = [
   'ja',
   'ko',
   'it-IT',
+  'nb',
+  'nn',
   'pl',
   'pt-BR',
   'pt-PT',
@@ -70,6 +72,7 @@ export const supportedLocales = [
   'es',
   'es-419',
   'es-ES',
+  'sv',
   'ur',
 ];
 
