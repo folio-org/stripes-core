@@ -85,14 +85,6 @@ class ProfileDropdown extends Component {
   }
 
   createLink(link, index, module) {
-    // STCOR-504: for reasons unclear, the isLocalLoginCheck line (below)
-    // started throwing an NPE, implying that module.getModule() is
-    // returning null. I don't understand how/why, but it is completely 
-    // breaking our nightly builds. returning null here will prevent the
-    // change-password link from appearing in the profile menu, but at 
-    // least we'll _have_ a profile menu.
-    return null;
-
     const { stripes } = this.props;
     const { check, route } = link;
     const isLocalLoginCheck = module.getModule()[check] || validations[check];
