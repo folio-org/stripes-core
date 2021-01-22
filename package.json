@@ -57,6 +57,7 @@
     "react-intl": "^5.7.0",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
+    "react-titled": "^1.0.0",
     "sinon": "^7.3.2",
     "sinon-chai": "^3.3.0",
     "stylelint": "^8.2.0",
@@ -136,7 +137,6 @@
     "react-final-form": "^6.3.0",
     "react-hot-loader": "^4.3.10",
     "react-redux": "^7.2.0",
-    "react-titled": "^1.0.0",
     "react-transform-catch-errors": "^1.0.2",
     "react-transition-group": "^2.2.1",
     "redux": "^4.0.0",
@@ -169,7 +169,8 @@
     "react-dom": "*",
     "react-intl": "^5.7.0",
     "react-router": "^5.2.0",
-    "react-router-dom": "^5.2.0"
+    "react-router-dom": "^5.2.0",
+    "react-titled": "^1.0.0"
   },
   "resolutions": {
     "moment": "~2.24.0"
