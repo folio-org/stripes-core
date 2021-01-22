@@ -18,6 +18,8 @@ class TitleManager extends React.Component {
     }).isRequired,
   }
 
+  static defaultProps = { prefix: '' }
+
   renderTitle = (currentTitle) => {
     const { prefix, page, record } = this.props;
 
@@ -29,7 +31,7 @@ class TitleManager extends React.Component {
 
     tokens[2] = (this.props.stripes.config || {}).platformName || APP;
 
-    return (prefix || '') + tokens
+    return prefix + tokens
       .filter(t => t)
       .join(' - ');
   }
