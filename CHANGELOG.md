@@ -16,6 +16,7 @@
 * Avoid retrying of http requests using `useOkapiKy` hook by default. STCOR-500.
 * Expose module context via `useModules`/`withModules`/`withModule`. STCOR-502
 * Add `prefix` prop to TitleManager. STCOR-507
+* Setup `react-query`. Refs STCOR-508
 
 ## [6.0.0](https://github.com/folio-org/stripes-core/tree/v6.0.0) (2020-10-06)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v5.0.2...v6.0.0)
