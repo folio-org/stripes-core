@@ -5,7 +5,9 @@ import { connect } from 'react-redux';
 import { createBrowserHistory } from 'history';
 import { IntlProvider } from 'react-intl';
 import queryString from 'query-string';
+import { QueryClientProvider } from 'react-query';
 import { ApolloProvider } from '@apollo/client';
+
 import ErrorBoundary from '@folio/stripes-components/lib/ErrorBoundary';
 import { Callout } from '@folio/stripes-components';
 import { metadata, icons } from 'stripes-config';
@@ -18,6 +20,7 @@ import { ConnectContext } from '@folio/stripes-connect';
 import initialReducers from '../../initialReducers';
 import enhanceReducer from '../../enhanceReducer';
 import createApolloClient from '../../createApolloClient';
+import createReactQueryClient from '../../createReactQueryClient';
 import { setSinglePlugin, setBindings, setOkapiToken, setTimezone, setCurrency } from '../../okapiActions';
 import { loadTranslations, checkOkapiSession } from '../../loginServices';
 import { getQueryResourceKey, getCurrentModule } from '../../locationService';
@@ -38,11 +41,13 @@ if (!metadata) {
 class Root extends Component {
   constructor(...args) {
     super(...args);
+
+    const { modules, history, okapi } = this.props;
+
     this.reducers = { ...initialReducers };
     this.epics = {};
-    this.withOkapi = this.props.okapi.withoutOkapi !== true;
+    this.withOkapi = okapi.withoutOkapi !== true;
 
-    const { modules, history } = this.props;
     const appModule = getCurrentModule(modules, history.location);
     this.queryResourceStateKey = (appModule) ? getQueryResourceKey(appModule) : null;
     this.callout = React.createRef();
@@ -58,6 +63,9 @@ class Root extends Component {
       ol: (chunks) => <ol>{chunks}</ol>,
       li: (chunks) => <li>{chunks}</li>,
     };
+
+    this.apolloClient = createApolloClient(okapi);
+    this.reactQueryClient = createReactQueryClient();
   }
 
   getChildContext() {
@@ -144,27 +152,29 @@ class Root extends Component {
     return (
       <ErrorBoundary>
         <ConnectContext.Provider value={{ addReducer: this.addReducer, addEpic: this.addEpic, store }}>
-          <ApolloProvider client={createApolloClient(okapi)}>
-            <IntlProvider
-              locale={locale}
-              key={locale}
-              timeZone={timezone}
-              currency={currency}
-              messages={translations}
-              textComponent={Fragment}
-              onError={config?.suppressIntlErrors ? () => {} : undefined}
-              defaultRichTextElements={this.defaultRichTextElements}
-            >
-              <CalloutContext.Provider value={this.callout.current}>
-                <RootWithIntl
-                  stripes={stripes}
-                  token={token}
-                  disableAuth={disableAuth}
-                  history={history}
-                />
-              </CalloutContext.Provider>
-              <Callout ref={this.callout} />
-            </IntlProvider>
+          <ApolloProvider client={this.apolloClient}>
+            <QueryClientProvider client={this.reactQueryClient}>
+              <IntlProvider
+                locale={locale}
+                key={locale}
+                timeZone={timezone}
+                currency={currency}
+                messages={translations}
+                textComponent={Fragment}
+                onError={config?.suppressIntlErrors ? () => {} : undefined}
+                defaultRichTextElements={this.defaultRichTextElements}
+              >
+                <CalloutContext.Provider value={this.callout.current}>
+                  <RootWithIntl
+                    stripes={stripes}
+                    token={token}
+                    disableAuth={disableAuth}
+                    history={history}
+                  />
+                </CalloutContext.Provider>
+                <Callout ref={this.callout} />
+              </IntlProvider>
+            </QueryClientProvider>
           </ApolloProvider>
         </ConnectContext.Provider>
       </ErrorBoundary>

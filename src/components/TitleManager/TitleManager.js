@@ -8,6 +8,7 @@ const APP = 'FOLIO';
 class TitleManager extends React.Component {
   static propTypes = {
     children: PropTypes.node,
+    prefix: PropTypes.string,
     page: PropTypes.string,
     record: PropTypes.string,
     stripes: PropTypes.shape({
@@ -17,8 +18,10 @@ class TitleManager extends React.Component {
     }).isRequired,
   }
 
+  static defaultProps = { prefix: '' }
+
   renderTitle = (currentTitle) => {
-    const { page, record } = this.props;
+    const { prefix, page, record } = this.props;
 
     if (typeof currentTitle !== 'string') return '';
 
@@ -28,7 +31,7 @@ class TitleManager extends React.Component {
 
     tokens[2] = (this.props.stripes.config || {}).platformName || APP;
 
-    return tokens
+    return prefix + tokens
       .filter(t => t)
       .join(' - ');
   }

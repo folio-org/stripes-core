@@ -3,7 +3,7 @@ import { Route } from 'react-router-dom';
 
 import { connectFor } from '@folio/stripes-connect';
 
-import ModulesContext from './ModulesContext';
+import { ModulesContext } from './ModulesContext';
 import { StripesContext } from './StripesContext';
 import AddContext from './AddContext';
 import TitleManager from './components/TitleManager';
