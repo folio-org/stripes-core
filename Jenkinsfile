@@ -4,4 +4,5 @@ buildNPM {
   publishModDescriptor = true
   runLint = true
   runSonarqube = true
+  sonarScanDirs = './src,./util'
 }
