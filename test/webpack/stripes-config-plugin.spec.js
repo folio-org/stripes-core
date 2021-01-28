@@ -130,7 +130,7 @@ describe('The stripes-config-plugin', function () {
       expect(writeModuleArgs[0]).to.be.a('string').that.equals('node_modules/stripes-config.js');
 
       // TODO: More thorough analysis of the generated virtual module
-      expect(writeModuleArgs[1]).to.be.a('string').with.match(/export { okapi, config, modules, branding, translations, metadata, icons }/);
+      expect(writeModuleArgs[1]).to.be.a('string').with.match(/export { okapi, config, modules, branding, errorLogging, translations, metadata, icons }/);
     });
   });
 
