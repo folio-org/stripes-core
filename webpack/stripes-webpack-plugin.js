@@ -2,6 +2,7 @@
 
 const StripesConfigPlugin = require('./stripes-config-plugin');
 const StripesBrandingPlugin = require('./stripes-branding-plugin');
+const StripesErrorLoggingPlugin = require('./stripes-error-logging-plugin');
 const StripesTranslationsPlugin = require('./stripes-translations-plugin');
 const StripesDuplicatesPlugin = require('./stripes-duplicate-plugin');
 const logger = require('./logger')('stripesWebpackPlugin');
@@ -26,6 +27,10 @@ module.exports = class StripesWebpackPlugin {
       stripesPlugins.push(new StripesBrandingPlugin({
         tenantBranding: this.stripesConfig.branding,
         buildAllFavicons: isProduction,
+      }));
+
+      stripesPlugins.push(new StripesErrorLoggingPlugin({
+        tenantErrorLogging: this.stripesConfig.errorLogging,
       }));
     }
 

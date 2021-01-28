@@ -21,7 +21,7 @@ module.exports = class StripesConfigPlugin {
     if (!_.isObject(options.modules)) {
       throw new StripesBuildError('stripes-config-plugin was not provided a "modules" object for enabling stripes modules');
     }
-    this.options = _.omit(options, 'branding');
+    this.options = _.omit(options, 'branding', 'errorLogging');
   }
 
   apply(compiler) {
@@ -55,6 +55,7 @@ module.exports = class StripesConfigPlugin {
     // Data provided by other stripes plugins via hooks
     const pluginData = {
       branding: {},
+      errorLogging: {},
       translations: {},
     };
     compiler.hooks.stripesConfigPluginBeforeWrite.call(pluginData);
@@ -63,10 +64,11 @@ module.exports = class StripesConfigPlugin {
     const stripesVirtualModule = `
       const { okapi, config, modules } = ${serialize(this.mergedConfig, { space: 2 })};
       const branding = ${stripesSerialize.serializeWithRequire(pluginData.branding)};
+      const errorLogging = ${stripesSerialize.serializeWithRequire(pluginData.errorLogging)};
       const translations = ${serialize(pluginData.translations, { space: 2 })};
       const metadata = ${stripesSerialize.serializeWithRequire(this.metadata)};
       const icons = ${stripesSerialize.serializeWithRequire(this.icons)};
-      export { okapi, config, modules, branding, translations, metadata, icons };
+      export { okapi, config, modules, branding, errorLogging, translations, metadata, icons };
     `;
 
     logger.log('writing virtual module...', stripesVirtualModule);
