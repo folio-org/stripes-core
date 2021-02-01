@@ -14,7 +14,6 @@
     "start": "stripes serve",
     "clean": "rimraf static",
     "test": "stripes test karma",
-    "test:core": "stripes test karma",
     "lint": "eslint . && stylelint \"src/**/*.css\"",
     "eslint": "eslint .",
     "stylelint": "stylelint \"src/**/*.css\""
