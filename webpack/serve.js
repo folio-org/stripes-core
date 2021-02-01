@@ -1,5 +1,4 @@
 const webpack = require('webpack');
-const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 const path = require('path');
 const nodeObjectHash = require('node-object-hash');
 const express = require('express');
@@ -14,17 +13,6 @@ const cwd = path.resolve();
 const platformModulePath = path.join(cwd, 'node_modules');
 const coreModulePath = path.join(__dirname, '..', 'node_modules');
 const serverRoot = path.join(__dirname, '..');
-
-const cachePlugin = new HardSourceWebpackPlugin({
-  cacheDirectory: path.join(cwd, 'webpackcache'),
-  recordsPath: path.join(cwd, 'webpackcache/records.json'),
-  configHash(webpackConfig) {
-    // Build a string value used by HardSource to determine which cache to
-    // use if [confighash] is in cacheDirectory or if the cache should be
-    // replaced if [confighash] does not appear in cacheDirectory.
-    return nodeObjectHash().hash(webpackConfig);
-  },
-});
 
 module.exports = function serve(stripesConfig, options) {
   if (typeof stripesConfig.okapi !== 'object') throw new Error('Missing Okapi config');
@@ -41,9 +29,6 @@ module.exports = function serve(stripesConfig, options) {
     config.resolve.modules = ['node_modules', platformModulePath, coreModulePath];
     config.resolveLoader = { modules: ['node_modules', platformModulePath, coreModulePath] };
 
-    if (options.cache) {
-      config.plugins.push(cachePlugin);
-    }
     if (options.devtool) {
       config.devtool = options.devtool;
     }
