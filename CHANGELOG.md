@@ -19,7 +19,6 @@
 * Setup `react-query`. Refs STCOR-508
 * Increment `favicons-webpack-plugin` to `v4`. Refs STCOR-510.
 * Remove support for `hardsource-webpack-plugin`. Refs STCOR-421, STCOR-510.
-* Publish `ERROR` events from `<RouteErrorBoundary>` so handler modules can react to them. Refs STCOR-455.
 
 ## [6.0.0](https://github.com/folio-org/stripes-core/tree/v6.0.0) (2020-10-06)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v5.0.2...v6.0.0)

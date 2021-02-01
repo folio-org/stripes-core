@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withModules } from '../Modules';
 import { stripesShape } from '../../Stripes';
 
-import { getEventHandlers } from '../../handlerService';
+import { getHandlerComponents } from '../../handlerService';
 
 class HandlerManager extends React.Component {
   static propTypes = {
@@ -11,7 +11,7 @@ class HandlerManager extends React.Component {
     event: PropTypes.string,
     data: PropTypes.object,
     modules: PropTypes.shape({
-      handler: PropTypes.arrayOf(PropTypes.object),
+      handler: PropTypes.array,
     }),
     props: PropTypes.object,
   };
@@ -19,7 +19,7 @@ class HandlerManager extends React.Component {
   constructor(props) {
     super(props);
     const { event, stripes, modules, data } = props;
-    this.components = getEventHandlers(event, stripes, modules.handler, data);
+    this.components = getHandlerComponents(event, stripes, modules.handler, data);
   }
 
   render() {
