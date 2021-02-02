@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import { Dropdown, Headline, DropdownMenu, Icon, Button } from '@folio/stripes-components';
 import AppIcon from '../../AppIcon';
-import css from './../NavButton/NavButton.css';
+import css from '../NavButton/NavButton.css';
 import { withAppCtxMenu } from './AppCtxMenuContext';
 
 class AppContextDropdown extends React.Component {
@@ -15,7 +15,7 @@ class AppContextDropdown extends React.Component {
 
   render() {
     const {
-      onToggle,
+      onToggle: handleToggle,
       open,
       selectedApp,
     } = this.props;
@@ -51,14 +51,14 @@ class AppContextDropdown extends React.Component {
 
     return (
       <Dropdown
-        onToggle={onToggle}
+        onToggle={handleToggle}
         renderTrigger={renderToggle}
         open={open}
         usePortal={false}
       >
         <DropdownMenu
           id="App_context_dropdown_menu"
-          onToggle={onToggle}
+          onToggle={handleToggle}
         >
           {/* `currently, dropdowns need something initially rendered
           in order for the element to render/be used

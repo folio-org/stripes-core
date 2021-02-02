@@ -35,8 +35,8 @@ class Settings extends React.Component {
       pathname: PropTypes.string,
     }).isRequired,
     modules: PropTypes.shape({
-      app: PropTypes.array,
-      settings: PropTypes.array,
+      app: PropTypes.arrayOf(PropTypes.object),
+      settings: PropTypes.arrayOf(PropTypes.object),
     }),
     intl: PropTypes.shape({
       formatMessage: PropTypes.func.isRequired,

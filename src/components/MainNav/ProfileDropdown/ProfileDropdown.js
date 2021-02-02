@@ -24,8 +24,7 @@ import IntlConsumer from '../../IntlConsumer';
 class ProfileDropdown extends Component {
   static propTypes = {
     modules: PropTypes.shape({
-      app: PropTypes.array,
-      settings: PropTypes.array,
+      app: PropTypes.arrayOf(PropTypes.object),
     }),
     onLogout: PropTypes.func.isRequired,
     stripes: PropTypes.shape({
@@ -43,6 +42,7 @@ class ProfileDropdown extends Component {
     history: PropTypes.shape({
       push: PropTypes.func.isRequired,
     }).isRequired,
+    intl: PropTypes.object,
   };
 
   constructor(props) {

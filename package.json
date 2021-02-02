@@ -19,8 +19,8 @@
     "test": "stripes test karma",
     "test:core": "stripes test karma",
     "test:webpack": "mocha --opts test/mocha.opts './test/webpack/**/*.js'",
-    "lint": "eslint . && stylelint \"src/**/*.css\"",
-    "eslint": "eslint .",
+    "lint": "eslint ./src && stylelint \"src/**/*.css\"",
+    "eslint": "eslint ./src",
     "stylelint": "stylelint \"src/**/*.css\""
   },
   "engines": {

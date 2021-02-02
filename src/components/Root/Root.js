@@ -206,7 +206,7 @@ Root.propTypes = {
   currency: PropTypes.string,
   translations: PropTypes.object,
   modules: PropTypes.shape({
-    app: PropTypes.array,
+    app: PropTypes.arrayOf(PropTypes.object),
   }),
   plugins: PropTypes.object,
   bindings: PropTypes.object,
