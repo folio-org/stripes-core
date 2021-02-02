@@ -15,7 +15,7 @@ function withLastVisited(WrappedComponent) {
         listen: PropTypes.func.isRequired,
       }).isRequired,
       modules: PropTypes.shape({
-        app: PropTypes.array,
+        app: PropTypes.arrayOf(PropTypes.object),
       }),
     };
 

@@ -11,7 +11,7 @@ class HandlerManager extends React.Component {
     event: PropTypes.string,
     data: PropTypes.object,
     modules: PropTypes.shape({
-      handler: PropTypes.array,
+      handler: PropTypes.arrayOf(PropTypes.object),
     }),
     props: PropTypes.object,
   };
