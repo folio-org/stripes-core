@@ -30,6 +30,7 @@ export default function setupApplication({
   currentUser = {},
   userLoggedIn = false,
   initialState = {},
+  cookies = {},
 } = {}) {
   beforeEach(async function () {
     // when auth is disabled, add a fake user to the store
@@ -88,10 +89,18 @@ export default function setupApplication({
     // set the root to 100% height
     document.getElementById('testing-root').style.height = '100%';
 
+    // expire existing cookies
+    document.cookie.split(/; /).forEach(c => {
+      const [key] = c.split(/=/);
+      document.cookie = `${key}=;max-age=0`;
+    });
+    // set given cookies
+    document.cookie = Object.entries(cookies).map(([key, val]) => (`${key}=${val}`)).join(';');
+
     // setup react validators
     Object.defineProperties(this, {
       visit: { value: visit },
-      location: { get: location }
+      location: { get: location },
     });
   });
 }
