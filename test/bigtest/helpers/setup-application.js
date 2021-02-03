@@ -14,7 +14,9 @@ import {
   withModules,
   clearModules,
   withConfig,
-  clearConfig
+  clearConfig,
+  setCookies,
+  clearCookies,
 } from './stripes-config';
 
 const { assign } = Object;
@@ -71,6 +73,7 @@ export default function setupApplication({
           });
         }
 
+        setCookies(cookies);
         withModules(modules);
         withConfig({ logCategories: '', ...stripesConfig });
       },
@@ -78,6 +81,7 @@ export default function setupApplication({
       teardown: () => {
         clearConfig();
         clearModules();
+        clearCookies(cookies);
         reset();
         localforage.clear();
         this.server.shutdown();
@@ -88,14 +92,6 @@ export default function setupApplication({
 
     // set the root to 100% height
     document.getElementById('testing-root').style.height = '100%';
-
-    // expire existing cookies
-    document.cookie.split(/; /).forEach(c => {
-      const [key] = c.split(/=/);
-      document.cookie = `${key}=;max-age=0`;
-    });
-    // set given cookies
-    document.cookie = Object.entries(cookies).map(([key, val]) => (`${key}=${val}`)).join(';');
 
     // setup react validators
     Object.defineProperties(this, {
