@@ -121,7 +121,7 @@ export function loadTranslations(store, locale, defaultTranslations = {}) {
 }
 
 export function getLocale(okapiUrl, store, tenant) {
-  fetch(`${okapiUrl}/configurations/entries?query=(module=ORG and configName=localeSettings)`,
+  fetch(`${okapiUrl}/configurations/entries?query=(module==ORG and configName==localeSettings)`,
     { headers: getHeaders(tenant, store.getState().okapi.token) })
     .then((response) => {
       if (response.status === 200) {
@@ -141,7 +141,7 @@ export function getLocale(okapiUrl, store, tenant) {
 }
 
 export function getPlugins(okapiUrl, store, tenant) {
-  fetch(`${okapiUrl}/configurations/entries?query=(module=PLUGINS)`,
+  fetch(`${okapiUrl}/configurations/entries?query=(module==PLUGINS)`,
     { headers: getHeaders(tenant, store.getState().okapi.token) })
     .then((response) => {
       if (response.status < 400) {
@@ -157,7 +157,7 @@ export function getPlugins(okapiUrl, store, tenant) {
 }
 
 export function getBindings(okapiUrl, store, tenant) {
-  fetch(`${okapiUrl}/configurations/entries?query=(module=ORG and configName=bindings)`,
+  fetch(`${okapiUrl}/configurations/entries?query=(module==ORG and configName==bindings)`,
     { headers: getHeaders(tenant, store.getState().okapi.token) })
     .then((response) => {
       let bindings = {};
