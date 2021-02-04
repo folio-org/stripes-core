@@ -12,7 +12,7 @@ class SSORedirect extends Component {
 
   getUrl() {
     const params = this.getParams();
-    return params.fwd;
+    return params?.fwd ?? '';
   }
 
   render() {

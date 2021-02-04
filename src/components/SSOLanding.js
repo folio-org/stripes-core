@@ -1,82 +1,54 @@
 import _ from 'lodash';
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { withRouter } from 'react-router';
-import { withCookies, Cookies } from 'react-cookie';
+import React, { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+import { useCookies } from 'react-cookie';
 import queryString from 'query-string';
+import { useStore } from 'react-redux';
+import { okapi } from 'stripes-config';
+
 import { requestUserWithPerms } from '../loginServices';
 
 const requestUserWithPermsDeb = _.debounce(requestUserWithPerms, 5000, { leading: true, trailing: false });
 
-class SSOLanding extends Component {
-  constructor(props, context) {
-    super(props, context);
+const SSOLanding = () => {
+  const location = useLocation();
+  const [cookies] = useCookies(['ssoToken']);
+  const store = useStore();
 
-    this.store = context.store;
-    this.sys = require('stripes-config'); // eslint-disable-line global-require
-    this.okapiUrl = this.sys.okapi.url;
-    this.tenant = this.sys.okapi.tenant;
-  }
-
-  componentDidMount() {
-    const token = this.getToken();
-    if (token) {
-      requestUserWithPermsDeb(this.okapiUrl, this.store, this.tenant, token);
-    }
-  }
-
-  getParams() {
-    const search = this.props.location.search;
+  const getParams = () => {
+    const search = location.search;
     if (!search) return undefined;
     return queryString.parse(search) || {};
-  }
+  };
 
-  getToken() {
-    const params = this.getParams();
-    const cookies = this.props.cookies;
-    return cookies.get('ssoToken') || params.ssoToken;
-  }
+  const getToken = () => {
+    const params = getParams();
+    return cookies?.ssoToken || params?.ssoToken;
+  };
 
-  render() {
-    const params = this.getParams();
-    const token = this.getToken();
+  const token = getToken();
 
-    if (!token) {
-      return (
-        <div>
-          No
-          {' '}
-          <tt>ssoToken</tt>
-          {' '}
-          cookie or query parameter
-        </div>
-      );
+  useEffect(() => {
+    if (token) {
+      requestUserWithPermsDeb(okapi.url, store, okapi.tenant, token);
     }
+  }, [token, store]);
 
+  if (!token) {
     return (
-      <div>
-        <p>
-          Logged in with token
-          {' '}
-          <tt>{token}</tt>
-          from
-          {' '}
-          {params.ssoToken ? 'param' : 'cookie'}
-        </p>
+      <div data-test-sso-error>
+        No <code>ssoToken</code> cookie or query parameter
       </div>
     );
   }
-}
 
-SSOLanding.contextTypes = {
-  store: PropTypes.object,
+  return (
+    <div data-test-sso-success>
+      <p>
+        Logged in with token <tt>{token}</tt> from {getParams()?.ssoToken ? 'param' : 'cookie'}.
+      </p>
+    </div>
+  );
 };
 
-SSOLanding.propTypes = {
-  location: PropTypes.shape({
-    search: PropTypes.string,
-  }).isRequired,
-  cookies: PropTypes.instanceOf(Cookies).isRequired,
-};
-
-export default withCookies(withRouter(SSOLanding));
+export default SSOLanding;
