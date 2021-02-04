@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withModules } from '../Modules';
 import { stripesShape } from '../../Stripes';
 
-import { getHandlerComponents } from '../../handlerService';
+import { getEventHandlers } from '../../handlerService';
 
 class HandlerManager extends React.Component {
   static propTypes = {
@@ -19,7 +19,7 @@ class HandlerManager extends React.Component {
   constructor(props) {
     super(props);
     const { event, stripes, modules, data } = props;
-    this.components = getHandlerComponents(event, stripes, modules.handler, data);
+    this.components = getEventHandlers(event, stripes, modules.handler, data);
   }
 
   render() {
