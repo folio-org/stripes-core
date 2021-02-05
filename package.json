@@ -154,6 +154,7 @@
     "style-loader": "^1.0.0",
     "svgo": "^1.2.2",
     "svgo-loader": "^2.2.1",
+    "swr": "^0.4.1",
     "tapable": "^1.0.0",
     "typescript": "^2.8.1",
     "use-deep-compare": "^1.1.0",
