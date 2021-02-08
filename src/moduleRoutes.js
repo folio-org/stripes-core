@@ -8,7 +8,7 @@ import { StripesContext } from './StripesContext';
 import AddContext from './AddContext';
 import TitleManager from './components/TitleManager';
 import RouteErrorBoundary from './components/RouteErrorBoundary';
-import { getHandlerComponents } from './handlerService';
+import { getEventHandlers } from './handlerService';
 import { packageName } from './constants';
 import events from './events';
 
@@ -44,7 +44,9 @@ function getModuleRoutes(stripes) {
               key={module.route}
               render={props => {
                 const data = { displayName, name };
-                const components = getHandlerComponents(events.SELECT_MODULE, moduleStripes, modules.handler, data);
+
+                // allow SELECT_MODULE handlers to intervene
+                const components = getEventHandlers(events.SELECT_MODULE, moduleStripes, modules.handler, data);
                 if (components.length) {
                   return components.map(HandlerComponent => (<HandlerComponent stripes={stripes} data={data} />));
                 }
@@ -56,6 +58,7 @@ function getModuleRoutes(stripes) {
                         <RouteErrorBoundary
                           escapeRoute={module.route}
                           moduleName={displayName}
+                          stripes={moduleStripes}
                         >
                           <TitleManager page={displayName}>
                             <Current {...props} connect={connect} stripes={moduleStripes} actAs="app" />

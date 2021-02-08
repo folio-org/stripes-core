@@ -78,7 +78,7 @@
     "moment-timezone": "^0.5.14",
     "prop-types": "^15.5.10",
     "query-string": "^5.0.0",
-    "react-cookie": "^2.1.4",
+    "react-cookie": "^4.0.3",
     "react-final-form": "^6.3.0",
     "react-query": "^3.6.0",
     "react-redux": "^7.2.0",

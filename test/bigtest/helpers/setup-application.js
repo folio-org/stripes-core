@@ -14,7 +14,9 @@ import {
   withModules,
   clearModules,
   withConfig,
-  clearConfig
+  clearConfig,
+  setCookies,
+  clearCookies,
 } from './stripes-config';
 
 const { assign } = Object;
@@ -30,6 +32,7 @@ export default function setupApplication({
   currentUser = {},
   userLoggedIn = false,
   initialState = {},
+  cookies = {},
 } = {}) {
   beforeEach(async function () {
     // when auth is disabled, add a fake user to the store
@@ -70,6 +73,7 @@ export default function setupApplication({
           });
         }
 
+        setCookies(cookies);
         withModules(modules);
         withConfig({ logCategories: '', ...stripesConfig });
       },
@@ -77,6 +81,7 @@ export default function setupApplication({
       teardown: () => {
         clearConfig();
         clearModules();
+        clearCookies(cookies);
         reset();
         localforage.clear();
         this.server.shutdown();
@@ -91,7 +96,7 @@ export default function setupApplication({
     // setup react validators
     Object.defineProperties(this, {
       visit: { value: visit },
-      location: { get: location }
+      location: { get: location },
     });
   });
 }

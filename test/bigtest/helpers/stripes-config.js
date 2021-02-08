@@ -73,3 +73,23 @@ export function clearConfig() {
   // restore initial config
   assign(stripes.config, originalConfig);
 }
+
+/**
+ * setCookies
+ * Set the given object as cookies
+ * @arg cookies object: keys and values are both strings
+ */
+export function setCookies(cookies) {
+  document.cookie = Object.entries(cookies).map(([key, val]) => (`${key}=${val}`)).join(';');
+}
+
+/**
+ * clearCookies
+ * Expire cookies by setting their max-age to 0.
+ * @arg cookies object: keys and values are both strings
+ */
+export function clearCookies(cookies) {
+  Object.keys(cookies).forEach(key => {
+    document.cookie = `${key}=;max-age=0`;
+  });
+}
