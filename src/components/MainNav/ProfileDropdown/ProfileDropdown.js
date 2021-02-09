@@ -17,15 +17,14 @@ import List from '@folio/stripes-components/lib/List';
 import NavButton from '../NavButton';
 import css from './ProfileDropdown.css';
 import { withModules } from '../../Modules';
-import { getHandlerComponent } from '../../../handlerService';
+import { getEventHandler } from '../../../handlerService';
 import validations from '../../../userDropdownLinksService';
 import IntlConsumer from '../../IntlConsumer';
 
 class ProfileDropdown extends Component {
   static propTypes = {
     modules: PropTypes.shape({
-      app: PropTypes.array,
-      settings: PropTypes.array,
+      app: PropTypes.arrayOf(PropTypes.object),
     }),
     onLogout: PropTypes.func.isRequired,
     stripes: PropTypes.shape({
@@ -43,6 +42,7 @@ class ProfileDropdown extends Component {
     history: PropTypes.shape({
       push: PropTypes.func.isRequired,
     }).isRequired,
+    intl: PropTypes.object,
   };
 
   constructor(props) {
@@ -78,7 +78,7 @@ class ProfileDropdown extends Component {
 
   createHandlerComponent(link, module) {
     const { stripes } = this.props;
-    const HandlerComponent = getHandlerComponent(link.event, stripes, module);
+    const HandlerComponent = getEventHandler(link.event, stripes, module);
 
     // forces to recreate a handler component
     this.setInitialState(() => this.setState({ HandlerComponent }));
