@@ -21,6 +21,7 @@
 * Remove support for `hardsource-webpack-plugin`. Refs STCOR-421, STCOR-510.
 * Refactor `<SSOLanding>` to avoid context error; upgrade `react-cookie` for the hooks. Refs STCOR-514.
 * Publish `ERROR` events from `<RouteErrorBoundary>` so handler modules can react to them. Refs STCOR-455.
+* Dispatch `setOkapiReady` when all resources are loaded. Fixes STCOR-506.
 
 ## [6.0.0](https://github.com/folio-org/stripes-core/tree/v6.0.0) (2020-10-06)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v5.0.2...v6.0.0)
