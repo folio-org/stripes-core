@@ -89,8 +89,9 @@
     "redux-form": "^8.3.0",
     "redux-logger": "^3.0.6",
     "redux-observable": "^0.15.0",
-    "rimraf": "^2.5.4",
     "redux-thunk": "^2.1.0",
+    "rimraf": "^2.5.4",
+    "rtl-detect": "^1.0.2",
     "rxjs": "^5.5.0",
     "rxjs-compat": "^6.5.4"
   },
