@@ -25,10 +25,7 @@ const RouteErrorBoundary = ({ children, escapeRoute, moduleName, isSettings }) =
   }
 
   const handleReset = () => {
-    // If our escape-route is the thing that's bombing, go home
-    // otherwise, try the escape-route
-    const resetPath = currentRoute === escapeRoute ? '/' : escapeRoute;
-    window.location.replace(resetPath);
+    window.location.replace(escapeRoute);
   };
 
   return (
