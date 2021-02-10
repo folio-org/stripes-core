@@ -121,7 +121,7 @@ export function loadTranslations(store, locale, defaultTranslations = {}) {
 }
 
 export function getLocale(okapiUrl, store, tenant) {
-  fetch(`${okapiUrl}/configurations/entries?query=(module=ORG and configName=localeSettings)`,
+  return fetch(`${okapiUrl}/configurations/entries?query=(module=ORG and configName=localeSettings)`,
     { headers: getHeaders(tenant, store.getState().okapi.token) })
     .then((response) => {
       if (response.status === 200) {
@@ -137,11 +137,12 @@ export function getLocale(okapiUrl, store, tenant) {
           }
         });
       }
+      return response;
     });
 }
 
 export function getPlugins(okapiUrl, store, tenant) {
-  fetch(`${okapiUrl}/configurations/entries?query=(module=PLUGINS)`,
+  return fetch(`${okapiUrl}/configurations/entries?query=(module=PLUGINS)`,
     { headers: getHeaders(tenant, store.getState().okapi.token) })
     .then((response) => {
       if (response.status < 400) {
@@ -153,11 +154,12 @@ export function getPlugins(okapiUrl, store, tenant) {
           store.dispatch(setPlugins(configs));
         });
       }
+      return response;
     });
 }
 
 export function getBindings(okapiUrl, store, tenant) {
-  fetch(`${okapiUrl}/configurations/entries?query=(module=ORG and configName=bindings)`,
+  return fetch(`${okapiUrl}/configurations/entries?query=(module=ORG and configName=bindings)`,
     { headers: getHeaders(tenant, store.getState().okapi.token) })
     .then((response) => {
       let bindings = {};
@@ -179,15 +181,22 @@ export function getBindings(okapiUrl, store, tenant) {
           store.dispatch(setBindings(bindings));
         });
       }
-      store.dispatch(setOkapiReady());
+      return response;
     });
 }
 
 function loadResources(okapiUrl, store, tenant) {
-  getLocale(okapiUrl, store, tenant);
-  getPlugins(okapiUrl, store, tenant);
-  getBindings(okapiUrl, store, tenant);
-  if (!store.getState().okapi.withoutOkapi) discoverServices(store);
+  const promises = [
+    getLocale(okapiUrl, store, tenant),
+    getPlugins(okapiUrl, store, tenant),
+    getBindings(okapiUrl, store, tenant),
+  ];
+
+  if (!store.getState().okapi.withoutOkapi) {
+    promises.push(discoverServices(store));
+  }
+
+  Promise.all(promises).finally(() => store.dispatch(setOkapiReady()));
 }
 
 function createOkapiSession(okapiUrl, store, tenant, token, data) {
