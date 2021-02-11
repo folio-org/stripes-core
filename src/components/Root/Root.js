@@ -6,7 +6,7 @@ import { createBrowserHistory } from 'history';
 import { IntlProvider } from 'react-intl';
 import queryString from 'query-string';
 import { QueryClientProvider } from 'react-query';
-import { SWRConfig } from 'swr'
+import { SWRConfig } from 'swr';
 import { ApolloProvider } from '@apollo/client';
 
 import ErrorBoundary from '@folio/stripes-components/lib/ErrorBoundary';
