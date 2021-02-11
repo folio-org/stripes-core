@@ -58,18 +58,6 @@ jobs:
           path: ./artifacts
       - store_artifacts:
           path: ./artifacts
-
-  test-webpack:
-    docker:
-      - image: circleci/node:10
-    steps:
-      - attach_workspace:
-          at: ~/
-      - run:
-          name: Run tests
-          command:
-            yarn test:webpack
-
   test-chrome:
     docker:
       - image: circleci/node:10-browsers
@@ -79,7 +67,7 @@ jobs:
       - run:
           name: Run tests
           command:
-            yarn test:core
+            yarn test
             --coverage
             --karma.singleRun
             --karma.browsers=Chrome
@@ -156,9 +144,6 @@ workflows:
           requires:
             - checkout-and-install
       - stylelint:
-          requires:
-            - checkout-and-install
-      - test-webpack:
           requires:
             - checkout-and-install
       - test-chrome:
