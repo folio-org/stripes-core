@@ -93,7 +93,8 @@
     "rimraf": "^2.5.4",
     "rtl-detect": "^1.0.2",
     "rxjs": "^5.5.0",
-    "rxjs-compat": "^6.5.4"
+    "rxjs-compat": "^6.5.4",
+    "swr": "^0.4.1"
   },
   "peerDependencies": {
     "moment": "^2.29.0",
