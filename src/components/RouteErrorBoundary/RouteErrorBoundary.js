@@ -3,7 +3,6 @@
  */
 
 import React, { useContext } from 'react';
-import { useHistory } from 'react-router-dom';
 import { useIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import ErrorBoundary from '@folio/stripes-components/lib/ErrorBoundary';
@@ -14,8 +13,6 @@ import { StripesContext } from '../../StripesContext';
 
 const RouteErrorBoundary = ({ children, escapeRoute, moduleName, isSettings }) => {
   const intl = useIntl();
-  const history = useHistory();
-  const currentRoute = history.location.pathname;
   let buttonLabelId;
 
   const modules = useContext(ModulesContext);
@@ -32,10 +29,7 @@ const RouteErrorBoundary = ({ children, escapeRoute, moduleName, isSettings }) =
   }
 
   const handleReset = () => {
-    // If our escape-route is the thing that's bombing, go home
-    // otherwise, try the escape-route
-    const resetPath = currentRoute === escapeRoute ? '/' : escapeRoute;
-    window.location.replace(resetPath);
+    window.location.replace(escapeRoute);
   };
 
   /**
