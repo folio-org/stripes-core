@@ -27,6 +27,7 @@ import {
   HandlerManager,
   TitleManager,
   Login,
+  OverlayContainer,
   CreateResetPassword,
   CheckEmailStatusPage,
   ForgotPasswordCtrl,
@@ -82,6 +83,7 @@ class RootWithIntl extends React.Component {
                         />
                         { (stripes.okapi !== 'object' || stripes.discovery.isFinished) && (
                           <ModuleContainer id="content">
+                            <OverlayContainer />
                             <Switch>
                               <TitledRoute
                                 name="home"
