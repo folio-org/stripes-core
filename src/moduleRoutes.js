@@ -56,7 +56,7 @@ function getModuleRoutes(stripes) {
                     <AddContext context={{ stripes: moduleStripes }}>
                       <div id={`${name}-module-display`} data-module={module.module} data-version={module.version}>
                         <RouteErrorBoundary
-                          escapeRoute={module.route}
+                          escapeRoute={module.home}
                           moduleName={displayName}
                           stripes={moduleStripes}
                         >
