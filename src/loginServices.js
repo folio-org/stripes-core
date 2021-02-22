@@ -137,6 +137,7 @@ export function getLocale(okapiUrl, store, tenant) {
           }
         });
       }
+      return response;
     });
 }
 
@@ -153,6 +154,7 @@ export function getPlugins(okapiUrl, store, tenant) {
           store.dispatch(setPlugins(configs));
         });
       }
+      return response;
     });
 }
 
@@ -179,15 +181,22 @@ export function getBindings(okapiUrl, store, tenant) {
           store.dispatch(setBindings(bindings));
         });
       }
-      store.dispatch(setOkapiReady());
+      return response;
     });
 }
 
 function loadResources(okapiUrl, store, tenant) {
-  getLocale(okapiUrl, store, tenant);
-  getPlugins(okapiUrl, store, tenant);
-  getBindings(okapiUrl, store, tenant);
-  if (!store.getState().okapi.withoutOkapi) discoverServices(store);
+  const promises = [
+    getLocale(okapiUrl, store, tenant),
+    getPlugins(okapiUrl, store, tenant),
+    getBindings(okapiUrl, store, tenant),
+  ];
+
+  if (!store.getState().okapi.withoutOkapi) {
+    promises.push(discoverServices(store));
+  }
+
+  Promise.all(promises).finally(() => store.dispatch(setOkapiReady()));
 }
 
 function createOkapiSession(okapiUrl, store, tenant, token, data) {

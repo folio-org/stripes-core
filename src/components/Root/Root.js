@@ -6,6 +6,7 @@ import { createBrowserHistory } from 'history';
 import { IntlProvider } from 'react-intl';
 import queryString from 'query-string';
 import { QueryClientProvider } from 'react-query';
+import { SWRConfig } from 'swr';
 import { ApolloProvider } from '@apollo/client';
 
 import ErrorBoundary from '@folio/stripes-components/lib/ErrorBoundary';
@@ -21,6 +22,7 @@ import initialReducers from '../../initialReducers';
 import enhanceReducer from '../../enhanceReducer';
 import createApolloClient from '../../createApolloClient';
 import createReactQueryClient from '../../createReactQueryClient';
+import createSwrOptions from '../../createSwrOptions';
 import { setSinglePlugin, setBindings, setOkapiToken, setTimezone, setCurrency } from '../../okapiActions';
 import { loadTranslations, checkOkapiSession } from '../../loginServices';
 import { getQueryResourceKey, getCurrentModule } from '../../locationService';
@@ -50,7 +52,6 @@ class Root extends Component {
 
     const appModule = getCurrentModule(modules, history.location);
     this.queryResourceStateKey = (appModule) ? getQueryResourceKey(appModule) : null;
-    this.callout = React.createRef();
     this.defaultRichTextElements = {
       b: (chunks) => <b>{chunks}</b>,
       i: (chunks) => <i>{chunks}</i>,
@@ -66,6 +67,11 @@ class Root extends Component {
 
     this.apolloClient = createApolloClient(okapi);
     this.reactQueryClient = createReactQueryClient();
+    this.swrOptions = createSwrOptions();
+
+    this.state = {
+      callout: null,
+    };
   }
 
   getChildContext() {
@@ -106,6 +112,12 @@ class Root extends Component {
       return true;
     }
     return false;
+  }
+
+  setCalloutRef = (ref) => {
+    this.setState({
+      callout: ref,
+    });
   }
 
   render() {
@@ -154,26 +166,28 @@ class Root extends Component {
         <ConnectContext.Provider value={{ addReducer: this.addReducer, addEpic: this.addEpic, store }}>
           <ApolloProvider client={this.apolloClient}>
             <QueryClientProvider client={this.reactQueryClient}>
-              <IntlProvider
-                locale={locale}
-                key={locale}
-                timeZone={timezone}
-                currency={currency}
-                messages={translations}
-                textComponent={Fragment}
-                onError={config?.suppressIntlErrors ? () => {} : undefined}
-                defaultRichTextElements={this.defaultRichTextElements}
-              >
-                <CalloutContext.Provider value={this.callout.current}>
-                  <RootWithIntl
-                    stripes={stripes}
-                    token={token}
-                    disableAuth={disableAuth}
-                    history={history}
-                  />
-                </CalloutContext.Provider>
-                <Callout ref={this.callout} />
-              </IntlProvider>
+              <SWRConfig value={this.swrOptions}>
+                <IntlProvider
+                  locale={locale}
+                  key={locale}
+                  timeZone={timezone}
+                  currency={currency}
+                  messages={translations}
+                  textComponent={Fragment}
+                  onError={config?.suppressIntlErrors ? () => {} : undefined}
+                  defaultRichTextElements={this.defaultRichTextElements}
+                >
+                  <CalloutContext.Provider value={this.state.callout}>
+                    <RootWithIntl
+                      stripes={stripes}
+                      token={token}
+                      disableAuth={disableAuth}
+                      history={history}
+                    />
+                  </CalloutContext.Provider>
+                  <Callout ref={this.setCalloutRef} />
+                </IntlProvider>
+              </SWRConfig>
             </QueryClientProvider>
           </ApolloProvider>
         </ConnectContext.Provider>
