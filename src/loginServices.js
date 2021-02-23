@@ -196,7 +196,7 @@ function loadResources(okapiUrl, store, tenant) {
     promises.push(discoverServices(store));
   }
 
-  Promise.all(promises).finally(() => store.dispatch(setOkapiReady()));
+  return Promise.all(promises);
 }
 
 function createOkapiSession(okapiUrl, store, tenant, token, data) {
@@ -228,29 +228,37 @@ function createOkapiSession(okapiUrl, store, tenant, token, data) {
   localforage.setItem('okapiSess', okapiSess);
   store.dispatch(setSessionData(okapiSess));
 
-  loadResources(okapiUrl, store, tenant);
+  return loadResources(okapiUrl, store, tenant);
 }
 
 // Validate stored token by attempting to fetch /bl-users/_self
 function validateUser(okapiUrl, store, tenant, session) {
-  fetch(`${okapiUrl}/bl-users/_self`, { headers: getHeaders(tenant, session.token) }).then((resp) => {
+  return fetch(`${okapiUrl}/bl-users/_self`, { headers: getHeaders(tenant, session.token) }).then((resp) => {
     if (resp.status >= 400) {
       store.dispatch(clearCurrentUser());
       store.dispatch(clearOkapiToken());
-      store.dispatch(setOkapiReady());
       localforage.removeItem('okapiSess');
     } else {
       const { token, user, perms } = session;
       store.dispatch(setSessionData({ token, user, perms }));
-      loadResources(okapiUrl, store, tenant);
+      return loadResources(okapiUrl, store, tenant);
     }
   }).catch(() => {
     store.dispatch(setServerDown());
   });
 }
 
-function isSSOEnabled(okapiUrl, store, tenant) {
-  fetch(`${okapiUrl}/saml/check`, { headers: { 'X-Okapi-Tenant': tenant, 'Accept': 'application/json' } })
+/**
+ * getSSOEnabled
+ * return a promise that fetches from /saml/check and dispatches checkSSO.
+ * @param {*} okapiUrl
+ * @param {*} store
+ * @param {*} tenant
+ *
+ * @return Promise
+ */
+function getSSOEnabled(okapiUrl, store, tenant) {
+  return fetch(`${okapiUrl}/saml/check`, { headers: { 'X-Okapi-Tenant': tenant, 'Accept': 'application/json' } })
     .then((response) => {
       if (response.status >= 400) {
         store.dispatch(checkSSO(false));
@@ -259,11 +267,9 @@ function isSSOEnabled(okapiUrl, store, tenant) {
           store.dispatch(checkSSO(json.active));
         });
       }
-      store.dispatch(setOkapiReady());
     })
     .catch(() => {
       store.dispatch(checkSSO(false));
-      store.dispatch(setOkapiReady());
     });
 }
 
@@ -308,19 +314,28 @@ function processOkapiSession(okapiUrl, store, tenant, resp, ssoToken) {
   if (resp.status >= 400) {
     handleLoginError(dispatch, resp);
   } else {
-    resp.json().then(json => createOkapiSession(okapiUrl, store, tenant, token, json));
+    resp.json()
+      .then(json => createOkapiSession(okapiUrl, store, tenant, token, json))
+      .then(() => {
+        store.dispatch(setOkapiReady());
+      });
   }
   return resp;
 }
 
 export function checkOkapiSession(okapiUrl, store, tenant) {
-  localforage.getItem('okapiSess').then((sess) => {
-    if (sess !== null) {
-      validateUser(okapiUrl, store, tenant, sess);
-    } else {
-      isSSOEnabled(okapiUrl, store, tenant);
-    }
-  });
+  localforage.getItem('okapiSess')
+    .then((sess) => {
+      if (sess !== null) {
+        return validateUser(okapiUrl, store, tenant, sess);
+      }
+    })
+    .then(() => {
+      getSSOEnabled(okapiUrl, store, tenant);
+    })
+    .finally(() => {
+      store.dispatch(setOkapiReady());
+    });
 }
 
 export function requestLogin(okapiUrl, store, tenant, data) {
