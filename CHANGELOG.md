@@ -23,7 +23,8 @@
 * Publish `ERROR` events from `<RouteErrorBoundary>` so handler modules can react to them. Refs STCOR-455.
 * Dispatch `setOkapiReady` when all resources are loaded. Fixes STCOR-506.
 * Configure `swr`. Refs STCOR-516.
-* Callouts are opened after page reload. Refs STCOR-518. 
+* Callouts are opened after page reload. Refs STCOR-518.
+* Use `==` where possible for more efficient queries. Refs STCOR-520.
 * When rehydrating a session from local storage, always dispatch `checkSSO`. Fixes STCOR-514.
 
 ## [6.0.0](https://github.com/folio-org/stripes-core/tree/v6.0.0) (2020-10-06)
