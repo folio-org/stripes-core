@@ -314,6 +314,7 @@ function validateUser(okapiUrl, store, tenant, session) {
       store.dispatch(clearCurrentUser());
       store.dispatch(clearOkapiToken());
       localforage.removeItem('okapiSess');
+      return null;
     } else {
       const { token, user, perms } = session;
       store.dispatch(setSessionData({ token, user, perms }));
@@ -429,9 +430,7 @@ function processOkapiSession(okapiUrl, store, tenant, resp, ssoToken) {
 export function checkOkapiSession(okapiUrl, store, tenant) {
   localforage.getItem('okapiSess')
     .then((sess) => {
-      if (sess !== null) {
-        return validateUser(okapiUrl, store, tenant, sess);
-      }
+      return sess !== null ? validateUser(okapiUrl, store, tenant, sess) : null;
     })
     .then(() => {
       getSSOEnabled(okapiUrl, store, tenant);
