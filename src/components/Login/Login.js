@@ -202,6 +202,7 @@ class Login extends Component {
                       </Col>
                     </Row>
                   </form>
+                  { ssoActive && <form id="ssoForm" /> }
                 </Row>
               </div>
             </div>
