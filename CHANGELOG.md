@@ -25,6 +25,8 @@
 * Configure `swr`. Refs STCOR-516.
 * Callouts are opened after page reload. Refs STCOR-518.
 * Use `==` where possible for more efficient queries. Refs STCOR-520.
+* Do not nest authentication forms. Refs STCOR-522.
+* When rehydrating a session from local storage, always dispatch `checkSSO`. Fixes STCOR-514.
 * Increment `lodash` for security reasons. Refs STCOR-519.
 
 ## [6.0.0](https://github.com/folio-org/stripes-core/tree/v6.0.0) (2020-10-06)
