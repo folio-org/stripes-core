@@ -25,6 +25,7 @@
 * Configure `swr`. Refs STCOR-516.
 * Callouts are opened after page reload. Refs STCOR-518.
 * Use `==` where possible for more efficient queries. Refs STCOR-520.
+* Do not nest authentication forms. Refs STCOR-522.
 
 ## [6.0.0](https://github.com/folio-org/stripes-core/tree/v6.0.0) (2020-10-06)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v5.0.2...v6.0.0)
