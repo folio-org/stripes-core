@@ -30,7 +30,7 @@
     "about.interfaceCount": "{count, number} {count, plural, one {واجهة} other {واجهة}}",
     "about.uiOrServiceDependencies": "تبعيات واجهة المستخدم/الخدمة",
     "about.moduleDependsOn": "{module} يعتمد على:",
-    "about.newerModuleAvailable": "{required} ({available} متاح)",
+    "about.newerModuleAvailable": "{required} ({available} متاحة)",
     "about.noDependencies": "لا تعلن {base} عن أي تبعيات",
     "about.key.absentInterfaces": "يتم تظليل الواجهات المطلوبة لكنها غير موجودة <span>بالأحمر العريض</span>.",
     "about.key.incompatibleIntf": "يتم تظليل الواجهات المطلوبة لكنها موجودة فقط في إصدار غير متوافق <span>باللون البرتقالي</span>",
