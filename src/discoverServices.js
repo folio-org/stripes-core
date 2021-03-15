@@ -36,7 +36,7 @@ function fetchModules(store) {
  * non-circulating library that doesn't provide the circ interface)
  */
 export function discoverServices(store) {
-  fetchModules(store).then(() => {
+  return fetchModules(store).then(() => {
     store.dispatch({ type: 'DISCOVERY_FINISHED' });
   });
 }
