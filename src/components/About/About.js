@@ -165,7 +165,6 @@ const About = (props) => {
             listStyle="bullets"
             itemFormatter={(item, i) => (<li key={i}>{item}</li>)}
             items={[
-              <FormattedMessage id="stripes-core.about.version" values={{ version: _.get(props.stripes, ['discovery', 'okapi']) || unknownMsg }} />,
               <FormattedMessage id="stripes-core.about.forTenant" values={{ tenant: _.get(props.stripes, ['okapi', 'tenant']) || unknownMsg }} />,
               <FormattedMessage id="stripes-core.about.onUrl" values={{ url: _.get(props.stripes, ['okapi', 'url']) || unknownMsg }} />
             ]}
