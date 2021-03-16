@@ -3,7 +3,7 @@ import { useStripes } from './StripesContext';
 import useOkapiKy from './useOkapiKy';
 
 export default (interfaceId) => {
-  const { discovery: { interfaceProviders } } = useStripes();
+  const { discovery: { interfaceProviders = [] } } = useStripes();
 
   // Find the module that provides both the interfaceId and `custom-fields`
   const module = interfaceProviders.find(m => {
