@@ -114,7 +114,7 @@ class Settings extends React.Component {
     const activeLink = `/settings/${location.pathname.split('/')[2]}`;
 
     return (
-      <Paneset>
+      <Paneset id="settings-module-display">
         <Pane
           defaultWidth="20%"
           paneTitle={<FormattedMessage id="stripes-core.settings" />}
