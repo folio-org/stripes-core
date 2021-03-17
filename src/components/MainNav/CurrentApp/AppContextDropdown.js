@@ -22,7 +22,6 @@ class AppContextDropdown extends React.Component {
     const renderToggle = ({ triggerRef, onToggle, ariaProps, keyHandler }) => (
       <CurrentAppButton
         ref={triggerRef}
-        data-test-context-menu-toggle-button
         onClick={onToggle}
         iconKey={selectedApp.displayName.toLowerCase()}
         onKeyDown={keyHandler}

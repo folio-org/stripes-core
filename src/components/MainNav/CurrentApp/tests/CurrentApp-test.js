@@ -6,7 +6,9 @@ import React from 'react';
 import { beforeEach, it, describe } from '@bigtest/mocha';
 import { expect } from 'chai';
 import setupApplication from '../../../../../test/bigtest/helpers/setup-application';
+import mount from '../../../../../test/bigtest/helpers/mount';
 import AppContextMenu from '../AppContextMenu';
+import CurrentAppButton from '../CurrentAppButton';
 import CurrentAppInteractor from './interactor';
 
 const DummyAppWithContextMenu = () => (
@@ -87,6 +89,20 @@ describe('CurrentApp', () => {
     it('Should render a heading with a label of "FOLIO"', () => {
       expect(currentApp.homeButton.isPresent).to.equal(true);
       expect(currentApp.homeButton.label).to.equal('FOLIO');
+    });
+  });
+
+  describe('CurrentAppButton', () => {
+    beforeEach(async () => {
+      await mount(
+        <CurrentAppButton
+          data-test-current-app-home-button
+        />
+      );
+    });
+
+    it('Should render the current app button', () => {
+      expect(currentApp.homeButton.isPresent).to.be.true;
     });
   });
 });
