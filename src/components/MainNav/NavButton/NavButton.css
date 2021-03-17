@@ -104,7 +104,18 @@ button.navButton {
 /**
  * AppIcon
  */
-
 .appIcon > span::after {
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+/**
+ * Caret icon
+ */
+.caretIcon {
+  font-size: 1.1rem;
+  margin: 0.3rem 0 0 0.35rem;
+}
+
+[dir="rtl"] .caretIcon {
+  margin: 0.3rem 0.35rem 0 0;
 }
