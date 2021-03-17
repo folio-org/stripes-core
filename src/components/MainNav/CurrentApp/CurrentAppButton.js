@@ -20,7 +20,6 @@ const CurrentAppButton = forwardRef(({
   ...rest
 }, ref) => (
   <NavButton
-    data-test-current-app-home-button
     ref={ref}
     open={open}
     label={
