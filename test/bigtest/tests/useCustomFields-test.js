@@ -41,7 +41,7 @@ const createCustomFieldRenderer = (interfaceId, interfaceVersion) => (
 
 const i = new UseCustomFieldsInteractor();
 
-describe.only('useCustomFields hook', () => {
+describe('useCustomFields hook', () => {
   describe('requests for existing custom fields', () => {
     setupWithApp(createCustomFieldRenderer('users'), 'Existing Custom Fields');
     const login = new LoginInteractor();
