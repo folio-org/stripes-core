@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 
 import Badge from '@folio/stripes-components/lib/Badge';
+import Icon from '@folio/stripes-components/lib/Icon';
 
 import AppIcon from '../../AppIcon';
 
@@ -28,6 +29,7 @@ const propTypes = {
     PropTypes.number,
   ]),
   onClick: PropTypes.func,
+  open: PropTypes.bool,
   selected: PropTypes.bool,
   noSelectedBar: PropTypes.bool,
   to: PropTypes.string,
@@ -51,6 +53,7 @@ const NavButton = React.forwardRef(({
   labelClassName,
   noSelectedBar,
   onClick,
+  open,
   selected,
   title,
   to,
@@ -123,6 +126,12 @@ const NavButton = React.forwardRef(({
         { badge && (<Badge color="red" className={css.badge}>{badge}</Badge>) }
         { renderedIcon }
         { label && <span className={classNames(css.label, labelClassName)}>{label}</span>}
+        {typeof open === 'boolean' && (
+          <Icon
+            iconRootClass={css.caretIcon}
+            icon={open ? 'caret-up' : 'caret-down'}
+          />
+        )}
       </span>
     </Element>
   );
