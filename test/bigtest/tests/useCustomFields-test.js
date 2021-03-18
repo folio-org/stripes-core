@@ -41,25 +41,28 @@ const createCustomFieldRenderer = (interfaceId, interfaceVersion) => (
 
 const i = new UseCustomFieldsInteractor();
 
+const doLogin = async function () {
+  const login = new LoginInteractor();
+  const { username, password, submit } = login;
+
+  await username.fill('username');
+  await password.fill('password');
+  await submit.click();
+  await submit.blur();
+  await this.visit('/dummy');
+};
+
+const doLogout = async function () {
+  await i.clickProfileDropdown();
+  await i.clickLogout();
+};
+
 describe('useCustomFields hook', () => {
   describe('requests for existing custom fields', () => {
     setupWithApp(createCustomFieldRenderer('users'), 'Existing Custom Fields');
-    const login = new LoginInteractor();
 
-    beforeEach(async function () {
-      const { username, password, submit } = login;
-
-      await username.fill('username');
-      await password.fill('password');
-      await submit.click();
-      await submit.blur();
-      await this.visit('/dummy');
-    });
-
-    afterEach(function () {
-      i.clickProfileDropdown();
-      i.clickLogout();
-    });
+    beforeEach(doLogin);
+    afterEach(doLogout);
 
     it('should have custom fields', () => {
       expect(i.hasCustomFields).to.be.true;
@@ -69,22 +72,9 @@ describe('useCustomFields hook', () => {
 
   describe('requests for non-existing custom fields', () => {
     setupWithApp(createCustomFieldRenderer('foobar'), 'Non-existing Custom Fields');
-    const login = new LoginInteractor();
 
-    beforeEach(async function () {
-      const { username, password, submit } = login;
-
-      await username.fill('username');
-      await password.fill('password');
-      await submit.click();
-      await submit.blur();
-      await this.visit('/dummy');
-    });
-
-    afterEach(function () {
-      i.clickProfileDropdown();
-      i.clickLogout();
-    });
+    beforeEach(doLogin);
+    afterEach(doLogout);
 
     it('should have error', () => {
       expect(i.hasError).to.be.true;
@@ -93,22 +83,9 @@ describe('useCustomFields hook', () => {
 
   describe('requests for version-incompatible custom fields', () => {
     setupWithApp(createCustomFieldRenderer('users', '1.0'), 'Version-incompatible Custom Fields');
-    const login = new LoginInteractor();
 
-    beforeEach(async function () {
-      const { username, password, submit } = login;
-
-      await username.fill('username');
-      await password.fill('password');
-      await submit.click();
-      await submit.blur();
-      await this.visit('/dummy');
-    });
-
-    afterEach(function () {
-      i.clickProfileDropdown();
-      i.clickLogout();
-    });
+    beforeEach(doLogin);
+    afterEach(doLogout);
 
     it('should have error', () => {
       expect(i.hasError).to.be.true;
@@ -117,22 +94,9 @@ describe('useCustomFields hook', () => {
 
   describe('requests for version-compatible custom fields', () => {
     setupWithApp(createCustomFieldRenderer('users', '42.0'), 'Version-compatible Custom Fields');
-    const login = new LoginInteractor();
 
-    beforeEach(async function () {
-      const { username, password, submit } = login;
-
-      await username.fill('username');
-      await password.fill('password');
-      await submit.click();
-      await submit.blur();
-      await this.visit('/dummy');
-    });
-
-    afterEach(function () {
-      i.clickProfileDropdown();
-      i.clickLogout();
-    });
+    beforeEach(doLogin);
+    afterEach(doLogout);
 
     it('should have custom fields', () => {
       expect(i.hasCustomFields).to.be.true;
