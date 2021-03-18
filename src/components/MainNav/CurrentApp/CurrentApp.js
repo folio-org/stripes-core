@@ -5,10 +5,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import Headline from '@folio/stripes-components/lib/Headline';
-import NavButton from '../NavButton';
+import CurrentAppButton from './CurrentAppButton';
 import homeIcon from '../../../assets/icons/icon-home.svg';
-import css from './CurrentApp.css';
 
 const propTypes = {
   config: PropTypes.shape({
@@ -47,27 +45,15 @@ const CurrentApp = ({ config, currentApp, id, intl, badge }) => {
   const ariaLabel = href ? intl.formatMessage({ id: 'stripes-core.mainnav.currentAppAriaLabel' }, { appName: displayName }) : displayName;
 
   return (
-    <NavButton
+    <CurrentAppButton
       data-test-current-app-home-button
-      label={
-        <Headline
-          tag="h1"
-          margin="none"
-          weight="black"
-          className={css.button__label__inner}
-        >
-          {displayName}
-        </Headline>
-      }
-      id={id}
       ariaLabel={ariaLabel}
       badge={badge}
-      iconKey={module}
-      className={css.button}
-      innerClassName={css.button__inner}
-      labelClassName={css.button__label}
-      to={href}
       iconData={iconData}
+      iconKey={module}
+      id={id}
+      label={displayName}
+      to={href}
     />
   );
 };
