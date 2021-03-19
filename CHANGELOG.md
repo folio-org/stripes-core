@@ -1,5 +1,9 @@
 # Change history for stripes-core
 
+## 7.1.0 (IN PROGRESS)
+
+* Pull user's locale settings from configurations on login, if available. Refs STCOR-527.
+
 ## [7.0.0](https://github.com/folio-org/stripes-core/tree/v7.0.0) (2021-02-25)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v6.0.0...v7.0.0)
 

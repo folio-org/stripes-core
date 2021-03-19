@@ -161,6 +161,31 @@ export function getLocale(okapiUrl, store, tenant) {
     });
 }
 
+export function getUserLocale(okapiUrl, store, tenant, userId) {
+  if (userId) {
+    return fetch(`${okapiUrl}/configurations/entries?query=(configName==localeSettings and userId==${userId})`,
+      { headers: getHeaders(tenant, store.getState().okapi.token) })
+      .then((response) => {
+        if (response.status === 200) {
+          response.json().then((json) => {
+            if (json.configs.length) {
+              const localeValues = JSON.parse(json.configs[0].value);
+              const { locale, timezone, currency } = localeValues;
+              if (locale) {
+                loadTranslations(store, locale);
+              }
+              if (timezone) store.dispatch(setTimezone(timezone));
+              if (currency) store.dispatch(setCurrency(currency));
+            }
+          });
+        }
+        return response;
+      });
+  } else {
+    return Promise.resolve();
+  }
+}
+
 /**
  * getPlugins
  * return a promise that retrieves the tenant's plugins and dispatches them.
@@ -227,12 +252,14 @@ export function getBindings(okapiUrl, store, tenant) {
  * @param {} okapiUrl
  * @param {*} store
  * @param {*} tenant
+ * @param {*} userId user's UUID
  *
  * @return Promise
  */
-function loadResources(okapiUrl, store, tenant) {
+function loadResources(okapiUrl, store, tenant, userId) {
   const promises = [
     getLocale(okapiUrl, store, tenant),
+    getUserLocale(okapiUrl, store, tenant, userId),
     getPlugins(okapiUrl, store, tenant),
     getBindings(okapiUrl, store, tenant),
   ];
@@ -292,7 +319,7 @@ function createOkapiSession(okapiUrl, store, tenant, token, data) {
   localforage.setItem('okapiSess', okapiSess);
   store.dispatch(setSessionData(okapiSess));
 
-  return loadResources(okapiUrl, store, tenant);
+  return loadResources(okapiUrl, store, tenant, user.id);
 }
 
 /**
@@ -318,7 +345,7 @@ function validateUser(okapiUrl, store, tenant, session) {
     } else {
       const { token, user, perms } = session;
       store.dispatch(setSessionData({ token, user, perms }));
-      return loadResources(okapiUrl, store, tenant);
+      return loadResources(okapiUrl, store, tenant, user.id);
     }
   }).catch(() => {
     store.dispatch(setServerDown());
