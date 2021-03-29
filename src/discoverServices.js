@@ -8,25 +8,6 @@ function getHeaders(tenant, token) {
   };
 }
 
-function fetchOkapiVersion(store) {
-  const okapi = store.getState().okapi;
-
-  return fetch(`${okapi.url}/_/version`, {
-    headers: getHeaders(okapi.tenant, okapi.token)
-  }).then((response) => { // eslint-disable-line consistent-return
-    if (response.status >= 400) {
-      store.dispatch({ type: 'DISCOVERY_FAILURE', code: response.status });
-      return response;
-    } else {
-      return response.text().then((text) => {
-        store.dispatch({ type: 'DISCOVERY_OKAPI', version: text });
-      });
-    }
-  }).catch((reason) => {
-    store.dispatch({ type: 'DISCOVERY_FAILURE', message: reason });
-  });
-}
-
 function fetchModules(store) {
   const okapi = store.getState().okapi;
 
@@ -39,7 +20,12 @@ function fetchModules(store) {
     } else {
       return response.json().then((json) => {
         store.dispatch({ type: 'DISCOVERY_SUCCESS', data: json });
-        return Promise.all(json.map(entry => store.dispatch({ type: 'DISCOVERY_INTERFACES', data: entry })));
+        return Promise.all(
+          json.map(entry => Promise.all([
+            store.dispatch({ type: 'DISCOVERY_INTERFACES', data: entry }),
+            store.dispatch({ type: 'DISCOVERY_PROVIDERS', data: entry }),
+          ]))
+        );
       });
     }
   }).catch((reason) => {
@@ -55,12 +41,7 @@ function fetchModules(store) {
  * non-circulating library that doesn't provide the circ interface)
  */
 export function discoverServices(store) {
-  const promises = [
-    fetchOkapiVersion(store),
-    fetchModules(store),
-  ];
-
-  return Promise.all(promises).then(() => {
+  return fetchModules(store).then(() => {
     store.dispatch({ type: 'DISCOVERY_FINISHED' });
   });
 }
@@ -86,6 +67,21 @@ export function discoveryReducer(state = {}, action) {
       return Object.assign({}, state, {
         interfaces: Object.assign(state.interfaces || {}, interfaces),
       });
+    }
+    case 'DISCOVERY_PROVIDERS': {
+      if (action.data.provides?.length > 0) {
+        return Object.assign({}, state, {
+          interfaceProviders: [
+            ...(state.interfaceProviders ?? []),
+            {
+              id: action.data.id,
+              provides: action.data.provides.map(i => ({ id: i.id, version: i.version })),
+            },
+          ]
+        });
+      }
+
+      return state;
     }
     case 'DISCOVERY_FINISHED': {
       return Object.assign({}, state, { isFinished: true });

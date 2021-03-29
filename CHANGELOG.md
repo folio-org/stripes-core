@@ -29,6 +29,7 @@
 * Do not nest authentication forms. Refs STCOR-522.
 * When rehydrating a session from local storage, always dispatch `checkSSO`. Fixes STCOR-514.
 * Increment `lodash` for security reasons. Refs STCOR-519.
+* Updated app context dropdown button styles to match the home butotn. Refs STCOR-524.
 
 ## [6.0.0](https://github.com/folio-org/stripes-core/tree/v6.0.0) (2020-10-06)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v5.0.2...v6.0.0)
