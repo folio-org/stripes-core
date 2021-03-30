@@ -126,7 +126,7 @@
     "errors.password.consecutiveWhitespaces.invalid": "Le mot de passe ne doit pas contenir de caractères blancs consécutifs.",
     "about.missingModuleCount": "{count, number} Manquant {count, plural, one { module } other { modules }}",
     "about.incompatibleModuleCount": "{count, number} Incompatible {count, plural, one {module} other {modules}} version",
-    "routeErrorBoundary.sub": "An error occurred on this page and it could not be loaded.",
+    "routeErrorBoundary.sub": "Une erreur s'est produite sur cette page: elle n'a pu être chargée.",
     "routeErrorBoundary.goToAppHomeLabel": "Retourner à l'accueil",
     "routeErrorBoundary.goToModuleHomeLabel": "Revenir à la page de destination de {name}",
     "routeErrorBoundary.goToModuleSettingsHomeLabel": "Revenir aux paramètres de {name}"
