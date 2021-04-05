@@ -124,7 +124,7 @@
     "mainnav.skipMainNavigation": "Saltar navegación principal",
     "errors.user.timeout": "Your session has expired. Please login again to resume your session.",
     "errors.password.consecutiveWhitespaces.invalid": "The password must not contain consecutive white space characters.",
-    "about.missingModuleCount": "{cuenta, número} Falta {cuenta, plural, uno {módulo} otro {módulos}}",
+    "about.missingModuleCount": "{count, number} Falta {count, plural, uno { module } otro { modules }}",
     "about.incompatibleModuleCount": "{count, number} Incompatible {count, plural, one { module } other { modules }} versión",
     "routeErrorBoundary.sub": "An error occurred on this page and it could not be loaded.",
     "routeErrorBoundary.goToAppHomeLabel": "Return to home",

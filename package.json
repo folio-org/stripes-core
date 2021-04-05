@@ -16,7 +16,8 @@
     "test": "stripes test karma",
     "lint": "eslint . && stylelint \"src/**/*.css\"",
     "eslint": "eslint .",
-    "stylelint": "stylelint \"src/**/*.css\""
+    "stylelint": "stylelint \"src/**/*.css\"",
+    "formatjs-compile": "formatjs compile-folder --ast --format simple ./translations/stripes-core ./translations/stripes-core/compiled"
   },
   "engines": {
     "node": ">=10.0.0"
@@ -41,6 +42,7 @@
     "@bigtest/react": "^0.1.2",
     "@folio/eslint-config-stripes": "^5.2.0",
     "@folio/stripes-cli": "^2.0.0",
+    "@formatjs/cli": "^4.2.2",
     "babel-eslint": "^8.0.1",
     "chai": "^4.1.2",
     "eslint": "^6.2.1",
