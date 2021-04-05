@@ -83,7 +83,7 @@
     "setPassword": "设置密码",
     "settingPassword": "正在设置密码...",
     "mainnav.showAllApplicationsButtonLabel": "功能",
-    "mainnav.showAllApplicationsButtonAriaLabel": "显示所有应用程序",
+    "mainnav.showAllApplicationsButtonAriaLabel": "顯示所有應用程式",
     "mainnav.currentAppAriaLabel": "当前打开的应用程序： {appName} （点击返回）",
     "mainnav.topLevelLabel": "主要",
     "mainnav.applicationListLabel": "应用程序清单",
