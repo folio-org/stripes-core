@@ -72,6 +72,7 @@ class RootWithIntl extends React.Component {
               noWrapper
             >
               <Provider store={stripes.store}>
+                <OverlayContainer />
                 <Router history={history}>
                   { token || disableAuth ?
                     <MainContainer>
@@ -83,7 +84,6 @@ class RootWithIntl extends React.Component {
                         />
                         { (stripes.okapi !== 'object' || stripes.discovery.isFinished) && (
                           <ModuleContainer id="content">
-                            <OverlayContainer />
                             <Switch>
                               <TitledRoute
                                 name="home"
