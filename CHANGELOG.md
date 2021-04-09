@@ -1,5 +1,15 @@
 # Change history for stripes-core
 
+## 7.2.0 (IN PROGRESS)
+
+## [7.1.0](https://github.com/folio-org/stripes-core/tree/v7.1.0) (2021-04-08)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v7.0.0...v7.1.0)
+
+* provide and HTML entity id for the settings Paneset. Refs STCOR-526.
+* Removed fetch of protected okapi /version endpoint. Refs STCOR-525.
+* Updated app context menu button style. Refs STCOR-524.
+* Increment `stripes-components` to `v9.1.0`.
+
 ## [7.0.0](https://github.com/folio-org/stripes-core/tree/v7.0.0) (2021-02-25)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v6.0.0...v7.0.0)
 
