@@ -10,6 +10,7 @@ import { CookiesProvider } from 'react-cookie';
 
 import { HotKeys } from '@folio/stripes-components/lib/HotKeys';
 import { connectFor } from '@folio/stripes-connect';
+import { Callout } from '@folio/stripes-components';
 
 import getModuleRoutes from './moduleRoutes';
 import events from './events';
@@ -35,6 +36,7 @@ import {
   AppCtxMenuProvider,
 } from './components';
 import { StripesContext } from './StripesContext';
+import CalloutContext from './CalloutContext';
 
 class RootWithIntl extends React.Component {
   static propTypes = {
@@ -52,6 +54,14 @@ class RootWithIntl extends React.Component {
     token: '',
     history: {},
   };
+
+  state = { callout: null };
+
+  setCalloutRef = (ref) => {
+    this.setState({
+      callout: ref,
+    });
+  }
 
   render() {
     const {
@@ -72,52 +82,57 @@ class RootWithIntl extends React.Component {
               noWrapper
             >
               <Provider store={stripes.store}>
-                <OverlayContainer />
                 <Router history={history}>
                   { token || disableAuth ?
-                    <MainContainer>
-                      <AppCtxMenuProvider>
-                        <MainNav stripes={stripes} />
-                        <HandlerManager
-                          event={events.LOGIN}
-                          stripes={stripes}
-                        />
-                        { (stripes.okapi !== 'object' || stripes.discovery.isFinished) && (
-                          <ModuleContainer id="content">
-                            <Switch>
-                              <TitledRoute
-                                name="home"
-                                path="/"
-                                key="root"
-                                exact
-                                component={<Front stripes={stripes} />}
-                              />
-                              <TitledRoute
-                                name="ssoRedirect"
-                                path="/sso-landing"
-                                key="sso-landing"
-                                component={<SSORedirect stripes={stripes} />}
-                              />
-                              <TitledRoute
-                                name="settings"
-                                path="/settings"
-                                component={<Settings stripes={stripes} />}
-                              />
-                              {getModuleRoutes(stripes)}
-                              <TitledRoute
-                                name="notFound"
-                                component={(
-                                  <div>
-                                    <h2>Uh-oh!</h2>
-                                    <p>This route does not exist.</p>
-                                  </div>
-                                )}
-                              />
-                            </Switch>
-                          </ModuleContainer>
-                        )}
-                      </AppCtxMenuProvider>
-                    </MainContainer> :
+                    <>
+                      <CalloutContext.Provider value={this.state.callout}>
+                        <MainContainer>
+                          <AppCtxMenuProvider>
+                            <MainNav stripes={stripes} />
+                            <HandlerManager
+                              event={events.LOGIN}
+                              stripes={stripes}
+                            />
+                            { (stripes.okapi !== 'object' || stripes.discovery.isFinished) && (
+                              <ModuleContainer id="content">
+                                <OverlayContainer />
+                                <Switch>
+                                  <TitledRoute
+                                    name="home"
+                                    path="/"
+                                    key="root"
+                                    exact
+                                    component={<Front stripes={stripes} />}
+                                  />
+                                  <TitledRoute
+                                    name="ssoRedirect"
+                                    path="/sso-landing"
+                                    key="sso-landing"
+                                    component={<SSORedirect stripes={stripes} />}
+                                  />
+                                  <TitledRoute
+                                    name="settings"
+                                    path="/settings"
+                                    component={<Settings stripes={stripes} />}
+                                  />
+                                  {getModuleRoutes(stripes)}
+                                  <TitledRoute
+                                    name="notFound"
+                                    component={(
+                                      <div>
+                                        <h2>Uh-oh!</h2>
+                                        <p>This route does not exist.</p>
+                                      </div>
+                                    )}
+                                  />
+                                </Switch>
+                              </ModuleContainer>
+                            )}
+                          </AppCtxMenuProvider>
+                        </MainContainer>
+                      </CalloutContext.Provider>
+                      <Callout ref={this.setCalloutRef} />
+                    </> :
                     <Switch>
                       <TitledRoute
                         name="CreateResetPassword"
