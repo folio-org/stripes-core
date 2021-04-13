@@ -1,5 +1,5 @@
 export default phoneNumber => {
-  const phoneRegExp = /^(\d+[.-]*)+\d+$/;
+  const phoneRegExp = /^\d+([.-]+\d+)*$/;
 
   return phoneRegExp.test(phoneNumber);
 };
