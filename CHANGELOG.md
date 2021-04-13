@@ -1,5 +1,9 @@
 # Change history for stripes-core
 
+## 7.1.1 (IN PROGRESS)
+
+* Move `<CalloutContext>` back to `<RootWithIntl>` to make sure `<Callout>` works between relogins. Fixes STCOR-534.
+
 ## [7.1.0](https://github.com/folio-org/stripes-core/tree/v7.1.0) (2021-04-08)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v7.0.0...v7.1.0)
 
