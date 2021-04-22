@@ -207,13 +207,13 @@ class MainNav extends Component {
                 <NavDivider md="hide" />
                 <NavButton
                   aria-label="Help button"
-                  data-test-app-list-item-help-button
+                  data-test-item-help-button
+                  href="https://docs.folio.org/docs/"
                   icon={<Icon
                     icon="question-mark"
                     size="large"
                   />}
                   id="helpButton"
-                  href="https://docs.folio.org/docs/"
                   target="_blank"
                 />
                 <NavDivider md="hide" />
