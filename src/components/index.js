@@ -25,3 +25,4 @@ export { default as Settings } from './Settings/Settings';
 export { default as ForgotPasswordCtrl } from './ForgotPassword';
 export { default as ForgotUserNameCtrl } from './ForgotUserName';
 export { default as CheckEmailStatusPage } from './CheckEmailStatusPage';
+export * from './CurrentModule';
