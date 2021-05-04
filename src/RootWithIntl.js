@@ -34,7 +34,6 @@ import {
   ForgotPasswordCtrl,
   ForgotUserNameCtrl,
   AppCtxMenuProvider,
-  CurrentModuleProvider,
 } from './components';
 import { StripesContext } from './StripesContext';
 import CalloutContext from './CalloutContext';
@@ -86,7 +85,7 @@ class RootWithIntl extends React.Component {
                 <Provider store={stripes.store}>
                   <Router history={history}>
                     { token || disableAuth ?
-                      <CurrentModuleProvider>
+                      <>
                         <MainContainer>
                           <AppCtxMenuProvider>
                             <MainNav stripes={stripes} />
@@ -132,7 +131,7 @@ class RootWithIntl extends React.Component {
                           </AppCtxMenuProvider>
                         </MainContainer>
                         <Callout ref={this.setCalloutRef} />
-                      </CurrentModuleProvider> :
+                      </> :
                       <Switch>
                         <TitledRoute
                           name="CreateResetPassword"
