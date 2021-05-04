@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withModules } from '../Modules';
 import { stripesShape } from '../../Stripes';
+import { ModuleHierarchyProvider } from '../ModuleHierarchy';
 
 import { getEventHandlers } from '../../handlerService';
 
@@ -25,7 +26,9 @@ class HandlerManager extends React.Component {
   render() {
     const { stripes, data, props } = this.props;
     return (this.components.map(Component => (
-      <Component key={Component.name} stripes={stripes} actAs="handler" data={data} {...props} />
+      <ModuleHierarchyProvider module={Component.module}>
+        <Component key={Component.name} stripes={stripes} actAs="handler" data={data} {...props} />
+      </ModuleHierarchyProvider>
     )));
   }
 }
