@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { modules } from 'stripes-config';
 import { withStripes } from './StripesContext';
-import { CurrentModuleProvider } from './components';
+import { ModuleHierarchyProvider } from './components';
 
 const Pluggable = (props) => {
   const plugins = modules.plugin || [];
@@ -25,9 +25,9 @@ const Pluggable = (props) => {
       const Child = props.stripes.connect(best.getModule());
 
       return (
-        <CurrentModuleProvider module={best}>
+        <ModuleHierarchyProvider module={best}>
           <Child {...props} actAs="plugin" />
-        </CurrentModuleProvider>
+        </ModuleHierarchyProvider>
       );
     }
   }

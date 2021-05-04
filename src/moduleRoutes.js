@@ -10,7 +10,7 @@ import TitleManager from './components/TitleManager';
 import RouteErrorBoundary from './components/RouteErrorBoundary';
 import { getEventHandlers } from './handlerService';
 import { packageName } from './constants';
-import { CurrentModuleProvider } from './components';
+import { ModuleHierarchyProvider } from './components';
 import events from './events';
 
 function getModuleRoutes(stripes) {
@@ -55,7 +55,7 @@ function getModuleRoutes(stripes) {
                 return (
                   <StripesContext.Provider value={moduleStripes}>
                     <AddContext context={{ stripes: moduleStripes }}>
-                      <CurrentModuleProvider module={module}>
+                      <ModuleHierarchyProvider module={module}>
                         <div id={`${name}-module-display`} data-module={module.module} data-version={module.version}>
                           <RouteErrorBoundary
                             escapeRoute={module.home}
@@ -67,7 +67,7 @@ function getModuleRoutes(stripes) {
                             </TitleManager>
                           </RouteErrorBoundary>
                         </div>
-                      </CurrentModuleProvider>
+                      </ModuleHierarchyProvider>
                     </AddContext>
                   </StripesContext.Provider>);
               }}
