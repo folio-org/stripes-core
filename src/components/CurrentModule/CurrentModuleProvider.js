@@ -6,16 +6,16 @@ import useCurrentModule from './useCurrentModule';
 const CurrentModuleProvider = ({ children, module }) => {
   let currentModule = useCurrentModule();
 
-  if (currentModule) {
-    const { module: moduleName } = module;
-    const { moduleNesting } = currentModule;
-
-    currentModule.moduleNesting = {
-      ...moduleNesting,
-      [moduleName]: module,
-    };
-  } else {
+  if (!currentModule) {
     currentModule = module;
+  } else {
+    const { moduleNesting = new Set() } = currentModule;
+
+    if (!moduleNesting.has(module)) {
+      moduleNesting.add(module);
+    }
+
+    currentModule.moduleNesting = moduleNesting;
   }
 
   return (
