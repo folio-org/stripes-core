@@ -25,7 +25,7 @@ import { stripesShape } from '../../Stripes';
 import AppIcon from '../AppIcon';
 import { packageName } from '../../constants';
 import RouteErrorBoundary from '../RouteErrorBoundary';
-import { ModuleHierarchyProvider } from '../CurrentModule';
+import { ModuleHierarchyProvider } from '../ModuleHierarchy';
 
 import css from './Settings.css';
 
