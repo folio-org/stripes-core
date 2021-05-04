@@ -6,8 +6,8 @@ import useModuleHierarchy from './useModuleHierarchy';
 const ModuleHierarchyProvider = ({ children, module }) => {
   const moduleHierarchy = useModuleHierarchy();
   const currentModuleHierarchy = (!moduleHierarchy) ?
-    [module] :
-    [...moduleHierarchy, module];
+    [module.module] :
+    [...moduleHierarchy, module.module];
 
   return (
     <ModuleHierarchyContext.Provider value={currentModuleHierarchy}>

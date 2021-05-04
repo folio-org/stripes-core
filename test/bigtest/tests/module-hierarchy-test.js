@@ -12,9 +12,8 @@ import ModuleHierarchyInteractor from '../interactors/ModuleHierarchy';
 
 const PrintModuleHierarchy = () => {
   const moduleHierarchy = useModuleHierarchy();
-  const moduleNames = moduleHierarchy.map(({ module }) => module).join(':');
 
-  return <div id="module-hierarchy">{moduleNames}</div>;
+  return <div id="module-hierarchy">{moduleHierarchy.join(':')}</div>;
 };
 const ModuleA = () => (
   <Pluggable type="plugin-a" />
