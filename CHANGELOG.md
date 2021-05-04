@@ -4,7 +4,7 @@
 
 * Move `<CalloutContext>` back to `<RootWithIntl>` to make sure `<Callout>` works between relogins. Fixes STCOR-534.
 * Access to Help Site from Universal Header. Refs STCOR-531.
-
+* Do not pass useless props to `<Dropdown>`. Refs STCOR-539.
 
 ## [7.1.0](https://github.com/folio-org/stripes-core/tree/v7.1.0) (2021-04-08)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v7.0.0...v7.1.0)
