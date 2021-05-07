@@ -1,4 +1,5 @@
 import { useModuleHierarchy } from '../components';
+import { delimiters } from '../constants';
 
 // A hook which returns module namespace as a string
 // https://issues.folio.org/browse/STCOR-537
@@ -19,10 +20,10 @@ import { useModuleHierarchy } from '../components';
 const useNamespace = (options = {}) => {
   const moduleHierarchy = useModuleHierarchy();
   const { ignoreParents, key } = options;
-  let namespace = ignoreParents ? moduleHierarchy.pop() : moduleHierarchy.join(':');
+  let namespace = ignoreParents ? moduleHierarchy.pop() : moduleHierarchy.join(delimiters.NAMESPACE_DELIMITER);
 
   if (key) {
-    namespace += `:${key}`;
+    namespace += `${delimiters.NAMESPACE_DELIMITER}${key}`;
   }
 
   return namespace;
