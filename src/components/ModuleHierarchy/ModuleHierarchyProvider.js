@@ -5,9 +5,11 @@ import useModuleHierarchy from './useModuleHierarchy';
 
 const ModuleHierarchyProvider = ({ children, module }) => {
   const moduleHierarchy = useModuleHierarchy();
-  const currentModuleHierarchy = (!moduleHierarchy) ?
-    [module.module] :
-    [...moduleHierarchy, module.module];
+  const currentModuleHierarchy = [module];
+
+  if (moduleHierarchy) {
+    currentModuleHierarchy.unshift(...moduleHierarchy);
+  }
 
   return (
     <ModuleHierarchyContext.Provider value={currentModuleHierarchy}>
@@ -21,7 +23,7 @@ ModuleHierarchyProvider.propTypes = {
     PropTypes.node,
     PropTypes.func,
   ]).isRequired,
-  module: PropTypes.object.isRequired,
+  module: PropTypes.string.isRequired,
 };
 
 export default ModuleHierarchyProvider;

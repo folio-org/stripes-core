@@ -100,7 +100,7 @@ class Settings extends React.Component {
             <RouteErrorBoundary escapeRoute={path} moduleName={module.displayName} isSettings>
               <StripesContext.Provider value={moduleStripes}>
                 <AddContext context={{ stripes: moduleStripes }}>
-                  <ModuleHierarchyProvider module={module}>
+                  <ModuleHierarchyProvider module={module.module}>
                     <Component {...props2} stripes={moduleStripes} showSettings actAs="settings" />
                   </ModuleHierarchyProvider>
                 </AddContext>

@@ -25,7 +25,7 @@ const Pluggable = (props) => {
       const Child = props.stripes.connect(best.getModule());
 
       return (
-        <ModuleHierarchyProvider module={best}>
+        <ModuleHierarchyProvider module={best.module}>
           <Child {...props} actAs="plugin" />
         </ModuleHierarchyProvider>
       );

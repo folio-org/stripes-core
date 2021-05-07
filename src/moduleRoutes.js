@@ -55,7 +55,7 @@ function getModuleRoutes(stripes) {
                 return (
                   <StripesContext.Provider value={moduleStripes}>
                     <AddContext context={{ stripes: moduleStripes }}>
-                      <ModuleHierarchyProvider module={module}>
+                      <ModuleHierarchyProvider module={module.module}>
                         <div id={`${name}-module-display`} data-module={module.module} data-version={module.version}>
                           <RouteErrorBoundary
                             escapeRoute={module.home}
