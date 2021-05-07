@@ -14,6 +14,7 @@ export { default as coreEvents } from './src/events';
 export { default as useOkapiKy } from './src/useOkapiKy';
 export { default as withOkapiKy } from './src/withOkapiKy';
 export { default as useCustomFields } from './src/useCustomFields';
+export { default as useNamespace } from './src/hooks/useNamespace';
 
 /* components */
 export { default as AppContextMenu } from './src/components/MainNav/CurrentApp/AppContextMenu';
@@ -28,3 +29,4 @@ export { ModuleHierarchyContext, useModuleHierarchy } from './src/components';
 
 /* misc */
 export { supportedLocales } from './src/loginServices';
+
