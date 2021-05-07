@@ -25,6 +25,7 @@ import { stripesShape } from '../../Stripes';
 import AppIcon from '../AppIcon';
 import { packageName } from '../../constants';
 import RouteErrorBoundary from '../RouteErrorBoundary';
+import { ModuleHierarchyProvider } from '../ModuleHierarchy';
 
 import css from './Settings.css';
 
@@ -99,7 +100,9 @@ class Settings extends React.Component {
             <RouteErrorBoundary escapeRoute={path} moduleName={module.displayName} isSettings>
               <StripesContext.Provider value={moduleStripes}>
                 <AddContext context={{ stripes: moduleStripes }}>
-                  <Component {...props2} stripes={moduleStripes} showSettings actAs="settings" />
+                  <ModuleHierarchyProvider module={module.module}>
+                    <Component {...props2} stripes={moduleStripes} showSettings actAs="settings" />
+                  </ModuleHierarchyProvider>
                 </AddContext>
                 {props2.match.isExact ? <div className={css.panePlaceholder} /> : null}
               </StripesContext.Provider>
