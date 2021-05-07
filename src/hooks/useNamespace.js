@@ -20,10 +20,11 @@ import { delimiters } from '../constants';
 const useNamespace = (options = {}) => {
   const moduleHierarchy = useModuleHierarchy();
   const { ignoreParents, key } = options;
-  let namespace = ignoreParents ? moduleHierarchy.pop() : moduleHierarchy.join(delimiters.NAMESPACE_DELIMITER);
+  const { NAMESPACE_DELIMITER } = delimiters;
+  let namespace = ignoreParents ? moduleHierarchy.pop() : moduleHierarchy.join(NAMESPACE_DELIMITER);
 
   if (key) {
-    namespace += `${delimiters.NAMESPACE_DELIMITER}${key}`;
+    namespace += `${NAMESPACE_DELIMITER}${key}`;
   }
 
   return namespace;
