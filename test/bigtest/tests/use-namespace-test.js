@@ -12,13 +12,19 @@ import Pluggable from '../../../src/Pluggable';
 import NamespaceInteractor from '../interactors/Namespace';
 
 const PrintNamespace = ({ options }) => {
-  const namespace = useNamespace(options);
+  const [namespace] = useNamespace(options);
 
   return <div id="module-namespace">{namespace}</div>;
 };
 
 PrintNamespace.propTypes = {
   options: PropTypes.object,
+};
+
+const PrintViaGetNamespace = () => {
+  const [, getNamepace] = useNamespace();
+
+  return <div id="module-namespace">{getNamepace({ key: 'test-key-2' })}</div>;
 };
 
 const ModuleA = () => <Pluggable type="plugin-a" />;
@@ -28,6 +34,8 @@ const ModuleB = () => <Pluggable type="plugin-b" />;
 const PluginB = () => <PrintNamespace options={{ ignoreParents: true }} />;
 
 const ModuleC = () => <PrintNamespace options={{ key: 'test-key' }} />;
+
+const ModuleD = () => <PrintViaGetNamespace />;
 
 describe('useNamespace', () => {
   const app = new AppInteractor();
@@ -70,11 +78,19 @@ describe('useNamespace', () => {
         route: '/module-c',
         module: ModuleC,
       },
+      {
+        type: 'app',
+        name: '@folio/ui-module-d',
+        displayName: 'module-d.title',
+        route: '/module-d',
+        module: ModuleD,
+      }
     ],
     translations: {
       'module-a.title': 'ModuleA',
       'module-b.title': 'ModuleB',
       'module-c.title': 'ModuleC',
+      'module-d.title': 'ModuleD',
       'plugin-a.title': 'PluginA',
       'plugin-b.title': 'PluginB',
     },
@@ -107,6 +123,16 @@ describe('useNamespace', () => {
 
     it('shows module namespace with a key', () => {
       expect(namespace.name).to.equal('@folio/ui-module-c:test-key');
+    });
+  });
+
+  describe('open app D', () => {
+    beforeEach(async () => {
+      await app.nav('ModuleD').click();
+    });
+
+    it('shows module namespace with a key', () => {
+      expect(namespace.name).to.equal('@folio/ui-module-d:test-key-2');
     });
   });
 });
