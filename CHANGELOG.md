@@ -6,6 +6,7 @@
 * Access to Help Site from Universal Header. Refs STCOR-531.
 * Do not pass useless props to `<Dropdown>`. Refs STCOR-539.
 * Introduce `<ModuleHierarchyProvider>`. Refs STCOR-529.
+* Introduce `useNamespace` hook which returns module namespace. Refs STCOR-537.
 
 ## [7.1.0](https://github.com/folio-org/stripes-core/tree/v7.1.0) (2021-04-08)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v7.0.0...v7.1.0)
