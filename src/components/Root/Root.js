@@ -10,7 +10,6 @@ import { SWRConfig } from 'swr';
 import { ApolloProvider } from '@apollo/client';
 
 import ErrorBoundary from '@folio/stripes-components/lib/ErrorBoundary';
-import { Callout } from '@folio/stripes-components';
 import { metadata, icons } from 'stripes-config';
 
 /* ConnectContext - formerly known as RootContext, now comes from stripes-connect, so stripes-connect
@@ -29,7 +28,6 @@ import { getQueryResourceKey, getCurrentModule } from '../../locationService';
 import Stripes from '../../Stripes';
 import RootWithIntl from '../../RootWithIntl';
 import SystemSkeleton from '../SystemSkeleton';
-import CalloutContext from '../../CalloutContext';
 
 import './Root.css';
 
@@ -68,10 +66,6 @@ class Root extends Component {
     this.apolloClient = createApolloClient(okapi);
     this.reactQueryClient = createReactQueryClient();
     this.swrOptions = createSwrOptions();
-
-    this.state = {
-      callout: null,
-    };
   }
 
   getChildContext() {
@@ -112,12 +106,6 @@ class Root extends Component {
       return true;
     }
     return false;
-  }
-
-  setCalloutRef = (ref) => {
-    this.setState({
-      callout: ref,
-    });
   }
 
   render() {
@@ -177,15 +165,12 @@ class Root extends Component {
                   onError={config?.suppressIntlErrors ? () => {} : undefined}
                   defaultRichTextElements={this.defaultRichTextElements}
                 >
-                  <CalloutContext.Provider value={this.state.callout}>
-                    <RootWithIntl
-                      stripes={stripes}
-                      token={token}
-                      disableAuth={disableAuth}
-                      history={history}
-                    />
-                  </CalloutContext.Provider>
-                  <Callout ref={this.setCalloutRef} />
+                  <RootWithIntl
+                    stripes={stripes}
+                    token={token}
+                    disableAuth={disableAuth}
+                    history={history}
+                  />
                 </IntlProvider>
               </SWRConfig>
             </QueryClientProvider>

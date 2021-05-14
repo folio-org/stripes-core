@@ -1,8 +1,22 @@
 # Change history for stripes-core
 
-## 7.1.0 (IN PROGRESS)
+## 7.2.0 (IN PROGRESS)
 
+* Move `<CalloutContext>` back to `<RootWithIntl>` to make sure `<Callout>` works between relogins. Fixes STCOR-534.
+* Access to Help Site from Universal Header. Refs STCOR-531.
+* Do not pass useless props to `<Dropdown>`. Refs STCOR-539.
+* Introduce `<ModuleHierarchyProvider>`. Refs STCOR-529.
+* Introduce `useNamespace` hook which returns module namespace. Refs STCOR-537.
+* Indicate that logging out of FOLIO will not affect an SSO session. Refs STCOR-532.
 * Pull user's locale settings from configurations on login, if available. Refs STCOR-527.
+
+## [7.1.0](https://github.com/folio-org/stripes-core/tree/v7.1.0) (2021-04-08)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v7.0.0...v7.1.0)
+
+* provide an HTML entity id for the settings Paneset. Refs STCOR-526.
+* Removed fetch of protected okapi /version endpoint. Refs STCOR-525.
+* Updated app context menu button style. Refs STCOR-524.
+* Increment `stripes-components` to `v9.1.0`.
 
 ## [7.0.0](https://github.com/folio-org/stripes-core/tree/v7.0.0) (2021-02-25)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v6.0.0...v7.0.0)

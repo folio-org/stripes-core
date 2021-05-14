@@ -168,7 +168,6 @@ class AppList extends Component {
       <div className={css.navListDropdownWrap}>
         <Dropdown
           placement="bottom-end"
-          dropdownClass={css.navListDropdown}
           id={dropdownId}
           renderTrigger={renderDropdownToggleButton}
           usePortal={false}

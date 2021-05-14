@@ -8,7 +8,26 @@ export default function configure() {
   // okapi endpoints
   this.get('/_/version', () => '0.0.0');
 
-  this.get('_/proxy/tenants/:id/modules', []);
+  this.get('_/proxy/tenants/:id/modules', [{
+    id : 'mod-users-42.0.0-EXAMPLE.12345',
+    name : 'users',
+    provides : [{
+      id : 'users',
+      version : '42.0',
+      handlers : []
+    }, {
+      id : 'custom-fields',
+      version : '2.0',
+      interfaceType : 'multiple',
+      handlers : [{
+        methods : ['GET'],
+        pathPattern : '/custom-fields',
+        permissionsRequired : []
+      }]
+    }],
+    permissionSets : [],
+    launchDescriptor : {}
+  }]);
 
   this.get('/saml/check', {
     ssoEnabled: false
@@ -42,6 +61,34 @@ export default function configure() {
         permissions: []
       }
     });
+  });
+
+  this.get('/custom-fields', (_schema, request) => {
+    const customFields = [];
+
+    if (request.requestHeaders['x-okapi-module-id'] === 'mod-users-42.0.0-EXAMPLE.12345') {
+      customFields.push({
+        id: 'a9aae99c-9176-4c46-852f-62437b0e3434',
+        name: 'Sponsor information',
+        refId: 'sponsorInformation',
+        type: 'TEXTBOX_LONG',
+        entityType: 'user',
+        visible: true,
+        required: false,
+        isRepeatable: false,
+        order: 4,
+        helpText: 'Record sponsor information for sponsored accounts',
+        textField: {
+          fieldFormat: 'TEXT'
+        }
+      });
+    }
+
+    return new Response(
+      200,
+      {},
+      { customFields }
+    );
   });
 
   // hot-reload passthrough

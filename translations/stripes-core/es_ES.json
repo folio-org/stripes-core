@@ -124,7 +124,7 @@
     "mainnav.skipMainNavigation": "Saltar navegación principal",
     "errors.user.timeout": "Su sesión ha caducado. Regístrese nuevamente para reanudar su sesión.",
     "errors.password.consecutiveWhitespaces.invalid": "La contraseña no debe contener espacios en blanco consecutivos.",
-    "about.missingModuleCount": "{cuenta, número} Falta {cuenta, plural, uno {módulo} otro {módulos}}",
+    "about.missingModuleCount": "{count, number} Falta {count, plural, one {módulo} other {módulos}}",
     "about.incompatibleModuleCount": "{count, number} Incompatible {count, plural, one { module } other { modules }} versión",
     "routeErrorBoundary.sub": "An error occurred on this page and it could not be loaded.",
     "routeErrorBoundary.goToAppHomeLabel": "Return to home",
