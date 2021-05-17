@@ -24,7 +24,7 @@ jobs:
     env:
       YARN_TEST_OPTIONS: ''
       FOLIO_NAME: stripes_core
-      FOLIO_NPM_REGISTRY: 'https://repository.folio.org/repository/npm-folioci/'
+      FOLIO_NPM_REGISTRY: 'https://repository.folio.org/repository/npm-folioci-test/'
       NODEJS_VERSION: '12'
       MODULE_DESCRIPTOR_DIR: 'artifacts/md'
       JEST_JUNIT_OUTPUT_DIR: 'artifacts/jest-junit'
@@ -144,21 +144,6 @@ jobs:
             -Dsonar.sources=${{ env.SQ_ROOT_DIR }}
             -Dsonar.language=js 
             -Dsonar.javascript.lcov.reportPaths=${{ env.SQ_LCOV_REPORT }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        
-      - name: Run SonarCloud scan
-        uses: sonarsource/sonarcloud-github-action@master
-        with:
-          args: >
-            -Dsonar.organization=folio-org 
-            -Dsonar.projectKey=org.folio:${{ github.event.repository.name }}
-            -Dsonar.projectName=${{ github.event.repository.name }}
-            -Dsonar.sources=${{ env.SQ_ROOT_DIR }}
-            -Dsonar.language=js 
-            -Dsonar.javascript.lcov.reportPaths=${{ env.SQ_LCOV_REPORT }}
-            -Dsonar.exclusions=${{ env.SQ_EXCLUSIONS }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
