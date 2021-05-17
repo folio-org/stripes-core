@@ -22,7 +22,7 @@ on:
 jobs:
   Build:
     env:
-      YARN_TEST_OPTIONS: ''
+      YARN_TEST_OPTIONS: '--karma.singleRun --karma.browsers ChromeDocker --karma.reporters mocha junit --coverage'
       FOLIO_NAME: stripes_core
       FOLIO_NPM_REGISTRY: 'https://repository.folio.org/repository/npm-folioci/'
       NODEJS_VERSION: '12'
