@@ -24,7 +24,7 @@ jobs:
     env:
       YARN_TEST_OPTIONS: ''
       FOLIO_NAME: stripes_core
-      FOLIO_NPM_REGISTRY: 'https://repository.folio.org/repository/npm-folioci-test/'
+      FOLIO_NPM_REGISTRY: 'https://repository.folio.org/repository/npm-folioci/'
       NODEJS_VERSION: '12'
       MODULE_DESCRIPTOR_DIR: 'artifacts/md'
       JEST_JUNIT_OUTPUT_DIR: 'artifacts/jest-junit'
