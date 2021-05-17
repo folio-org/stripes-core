@@ -129,5 +129,6 @@
     "routeErrorBoundary.sub": "لقد حدث خطأ في هذه الصفحة وتعذر تحميلها.",
     "routeErrorBoundary.goToAppHomeLabel": "العودة إلى الرئيسية",
     "routeErrorBoundary.goToModuleHomeLabel": "العودة إلى الصفحة المقصودة {name}",
-    "routeErrorBoundary.goToModuleSettingsHomeLabel": "العودة إلى إعدادات {name}"
+    "routeErrorBoundary.goToModuleSettingsHomeLabel": "العودة إلى إعدادات {name}",
+    "logoutKeepSso": "سجّل الخروج من فوليو واحتفظ بجلسة SSO"
 }
