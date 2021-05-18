@@ -24,6 +24,7 @@ import { delimiters } from '../../constants';
 // from plugin embedded in app module with `key` option present (e.g. ui-plugin-find-order executing in ui-agreements)
 // const [namespace] = useNamespace({ key: "filters-pane" }); // "@folio/agreements:@folio/plugin-find-order:filters-pane"
 
+
 const useNamespace = (options = {}) => {
   const moduleHierarchy = useModuleHierarchy();
   const getNamespace = (opts) => {
