@@ -7,10 +7,7 @@ import { expect } from 'chai';
 import setupApplication from '../helpers/setup-core-application';
 import AppInteractor from '../interactors/app';
 
-import {
-  useNamespace,
-  withNamespace,
-} from '../../../src/components';
+import useNamespace from '../../../src/hooks/useNamespace';
 import Pluggable from '../../../src/Pluggable';
 import NamespaceInteractor from '../interactors/Namespace';
 
@@ -18,12 +15,6 @@ const PrintNamespace = ({ options }) => {
   const [namespace] = useNamespace(options);
 
   return <div id="module-namespace">{namespace}</div>;
-};
-
-const WrappedComponent = ({ namespace }) => <div id="module-namespace">{namespace}</div>;
-
-WrappedComponent.propTypes = {
-  namespace: PropTypes.string,
 };
 
 PrintNamespace.propTypes = {
@@ -46,9 +37,7 @@ const ModuleC = () => <PrintNamespace options={{ key: 'test-key' }} />;
 
 const ModuleD = () => <PrintViaGetNamespace />;
 
-const ModuleE = withNamespace(WrappedComponent, { key: 'with-namespace' });
-
-describe('Namespace', () => {
+describe('useNamespace', () => {
   const app = new AppInteractor();
   const namespace = new NamespaceInteractor();
 
@@ -95,13 +84,6 @@ describe('Namespace', () => {
         displayName: 'module-d.title',
         route: '/module-d',
         module: ModuleD,
-      },
-      {
-        type: 'app',
-        name: '@folio/ui-module-e',
-        displayName: 'module-e.title',
-        route: '/module-e',
-        module: ModuleE,
       }
     ],
     translations: {
@@ -109,7 +91,6 @@ describe('Namespace', () => {
       'module-b.title': 'ModuleB',
       'module-c.title': 'ModuleC',
       'module-d.title': 'ModuleD',
-      'module-e.title': 'ModuleE',
       'plugin-a.title': 'PluginA',
       'plugin-b.title': 'PluginB',
     },
@@ -152,16 +133,6 @@ describe('Namespace', () => {
 
     it('shows module namespace with a key', () => {
       expect(namespace.name).to.equal('@folio/ui-module-d:test-key-2');
-    });
-  });
-
-  describe('withNamespace', () => {
-    beforeEach(async () => {
-      await app.nav('ModuleE').click();
-    });
-
-    it('shows module namespace with a key via withNamepace HOC', () => {
-      expect(namespace.name).to.equal('@folio/ui-module-e:with-namespace');
     });
   });
 });
