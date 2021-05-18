@@ -23,4 +23,3 @@ const withNamespace = (Component, options) => {
 };
 
 export default withNamespace;
-
