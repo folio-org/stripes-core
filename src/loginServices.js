@@ -484,6 +484,7 @@ export function requestSSOLogin(okapiUrl, tenant) {
   fetch(`${okapiUrl}/saml/login`, {
     method: 'POST',
     headers: { 'X-Okapi-tenant': tenant, 'Content-Type': 'application/json' },
+    credentials: 'include',
     body: JSON.stringify({ stripesUrl }),
   })
     .then(resp => processSSOLoginResponse(resp));
