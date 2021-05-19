@@ -1,5 +1,5 @@
-import { useModuleHierarchy } from '../components';
-import { delimiters } from '../constants';
+import { useModuleHierarchy } from '../ModuleHierarchy';
+import { delimiters } from '../../constants';
 
 // A hook which returns module namespace as a string
 // https://issues.folio.org/browse/STCOR-537
