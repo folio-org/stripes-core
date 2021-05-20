@@ -60,7 +60,7 @@ jobs:
 
       
       - name: Set FOLIO NPM snapshot version and publish to NPM snapshot repository
-        if: github.REF == $default-branch
+        if: contains(github.REF,'master')
         uses: actions/setup-node@v2
         with:
           node-version: ${{ env.NODEJS_VERSION }}
@@ -150,12 +150,12 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       
       - name: Generate Module descriptor
-        if: github.REF == $default-branch
+        if: contains(github.REF,'master')
         run: stripes mod descriptor --full --strict | jq '.[]' > ${{ env.MODULE_DESCRIPTOR_DIR }}/${{ env.FOLIO_NAME }}.json
 
       - name: Publish Module descriptor
+        if: contains(github.REF,'master')
         uses: fjogeleit/http-request-action@master
-        if: github.REF == $default-branch
         with:
           url: 'http://ec2-3-88-110-24.compute-1.amazonaws.com'
           method: 'POST'
