@@ -24,7 +24,7 @@ jobs:
     env:
       YARN_TEST_OPTIONS: '--karma.singleRun --karma.browsers ChromeDocker --karma.reporters mocha junit --coverage'
       FOLIO_NAME: stripes_core
-      FOLIO_NPM_REGISTRY: 'https://repository.folio.org/repository/npm-folioci/'
+      FOLIO_NPM_REGISTRY: 'https://repository.folio.org/repository/npm-folioci-test/'
       NODEJS_VERSION: '12'
       MODULE_DESCRIPTOR_DIR: 'artifacts/md'
       JEST_JUNIT_OUTPUT_DIR: 'artifacts/jest-junit'
@@ -60,8 +60,8 @@ jobs:
 
       
       - name: Set FOLIO NPM snapshot version and publish to NPM snapshot repository
+        if: github.REF == $default-branch
         uses: actions/setup-node@v2
-        if: github.REF == 'master'
         with:
           node-version: ${{ env.NODEJS_VERSION }}
           registry-url: https://repository.folio.org/repository/npm-folioci-test/
@@ -69,6 +69,7 @@ jobs:
           git clone https://github.com/folio-org/folio-tools.git
           npm --no-git-tag-version version `folio-tools/github-actions-scripts/folioci_npmver.sh`
           rm -rf folio-tools
+          npm publish
         env:
           JOB_ID: ${{ github.run_number }}
           NODE_AUTH_TOKEN: ${{ secrets.FOLIO_NEXUS_NPM_TOKEN }}
@@ -149,13 +150,12 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       
       - name: Generate Module descriptor
-        if: github.REF == 'master'
+        if: github.REF == $default-branch
         run: stripes mod descriptor --full --strict | jq '.[]' > ${{ env.MODULE_DESCRIPTOR_DIR }}/${{ env.FOLIO_NAME }}.json
-      
-      
+
       - name: Publish Module descriptor
         uses: fjogeleit/http-request-action@master
-        if: github.REF == 'master'
+        if: github.REF == $default-branch
         with:
           url: 'http://ec2-3-88-110-24.compute-1.amazonaws.com'
           method: 'POST'
