@@ -481,7 +481,7 @@ export function requestUserWithPerms(okapiUrl, store, tenant, token) {
 export function requestSSOLogin(okapiUrl, tenant) {
   const stripesUrl = (window.location.origin || `${window.location.protocol}//${window.location.host}`) + window.location.pathname;
 
-  fetch(`${okapiUrl}/saml/login`, {
+  fetch(`${okapiUrl}/_/invoke/tenant/${tenant}/saml/login`, {
     method: 'POST',
     headers: { 'X-Okapi-tenant': tenant, 'Content-Type': 'application/json' },
     credentials: 'include',
