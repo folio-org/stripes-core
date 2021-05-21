@@ -6,6 +6,8 @@ import { injectIntl } from 'react-intl';
 import { withRouter } from 'react-router';
 import localforage from 'localforage';
 
+import Icon from '@folio/stripes-components/lib/Icon';
+
 import { withModules } from '../Modules';
 import { LastVisitedContext } from '../LastVisited';
 import { clearOkapiToken, clearCurrentUser } from '../../okapiActions';
@@ -20,6 +22,7 @@ import {
 } from '../../locationService';
 
 import css from './MainNav.css';
+import NavButton from './NavButton';
 import NavDivider from './NavDivider';
 import { CurrentAppGroup } from './CurrentApp';
 import ProfileDropdown from './ProfileDropdown';
@@ -200,6 +203,18 @@ class MainNav extends Component {
                   apps={apps}
                   selectedApp={selectedApp}
                   dropdownToggleId="app-list-dropdown-toggle"
+                />
+                <NavDivider md="hide" />
+                <NavButton
+                  aria-label="Help button"
+                  data-test-item-help-button
+                  href="https://docs.folio.org/docs/"
+                  icon={<Icon
+                    icon="question-mark"
+                    size="large"
+                  />}
+                  id="helpButton"
+                  target="_blank"
                 />
                 <NavDivider md="hide" />
                 <ProfileDropdown

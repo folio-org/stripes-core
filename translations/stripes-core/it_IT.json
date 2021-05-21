@@ -121,13 +121,14 @@
     "errors.password.repeatingSymbols.invalid": "La password non deve contenere caratteri ripetuti in sequenza (es. rossi, o palla, o 1125)",
     "errors.password.whiteSpace.invalid": "La password non deve contenere spazi bianchi.",
     "mainnav.myProfileAriaLabel": "Il mio profilo",
-    "mainnav.skipMainNavigation": "Skip Main Navigation",
-    "errors.user.timeout": "Your session has expired. Please login again to resume your session.",
-    "errors.password.consecutiveWhitespaces.invalid": "The password must not contain consecutive white space characters.",
-    "about.missingModuleCount": "{count, number} Missing {count, plural, one {module} other {modules}}",
+    "mainnav.skipMainNavigation": "Ignora navigazione principale",
+    "errors.user.timeout": "La sessione è scaduta. Si prega di accedere di nuovo per riprendere la sessione.",
+    "errors.password.consecutiveWhitespaces.invalid": "La password non deve contenere spazi bianchi.",
+    "about.missingModuleCount": "{count, number} Manca {count, plural, one { modulo } other { moduli }}",
     "about.incompatibleModuleCount": "{count, number} Versione {count, plural, one {del modulo} other {dei moduli}} non compatibile",
-    "routeErrorBoundary.sub": "An error occurred on this page and it could not be loaded.",
-    "routeErrorBoundary.goToAppHomeLabel": "Return to home",
-    "routeErrorBoundary.goToModuleHomeLabel": "Return to {name} landing page",
-    "routeErrorBoundary.goToModuleSettingsHomeLabel": "Return to {name} settings"
+    "routeErrorBoundary.sub": "Si è verificato un errore in questa pagina e non può essere caricata.",
+    "routeErrorBoundary.goToAppHomeLabel": "Ritorno alla home",
+    "routeErrorBoundary.goToModuleHomeLabel": "Torna alla pagina di destinazione {nome}",
+    "routeErrorBoundary.goToModuleSettingsHomeLabel": "Torna alle impostazioni di {name}",
+    "logoutKeepSso": "Disconnettersi da FOLIO, mantenere la sessione SSO"
 }

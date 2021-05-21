@@ -1,6 +1,6 @@
 {
   "name": "@folio/stripes-core",
-  "version": "7.1.1",
+  "version": "7.2.0",
   "description": "The starting point for Stripes applications",
   "license": "Apache-2.0",
   "repository": "folio-org/stripes-core",
@@ -16,7 +16,8 @@
     "test": "stripes test karma",
     "lint": "eslint . && stylelint \"src/**/*.css\"",
     "eslint": "eslint .",
-    "stylelint": "stylelint \"src/**/*.css\""
+    "stylelint": "stylelint \"src/**/*.css\"",
+    "formatjs-compile": "formatjs compile-folder --ast --format simple ./translations/stripes-core ./translations/stripes-core/compiled"
   },
   "engines": {
     "node": ">=10.0.0"
@@ -44,6 +45,10 @@
     "@bigtest/react": "^0.1.2",
     "@folio/eslint-config-stripes": "^5.2.0",
     "@folio/stripes-cli": "^2.0.0",
+    "@folio/stripes-components": "^9.2.0",
+    "@folio/stripes-connect": "^6.2.0",
+    "@folio/stripes-logger": "^1.0.0",
+    "@formatjs/cli": "^4.2.2",
     "babel-eslint": "^8.0.1",
     "chai": "^4.1.2",
     "eslint": "^6.2.1",
@@ -61,9 +66,6 @@
   },
   "dependencies": {
     "@apollo/client": "^3.2.1",
-    "@folio/stripes-components": "~9.1.0",
-    "@folio/stripes-connect": "~6.1.0",
-    "@folio/stripes-logger": "~1.0.0",
     "@formatjs/intl-displaynames": "^2.2.3",
     "@formatjs/intl-pluralrules": "^2.2.1",
     "@formatjs/intl-relativetimeformat": "^5.2.3",
@@ -100,6 +102,9 @@
     "swr": "^0.4.1"
   },
   "peerDependencies": {
+    "@folio/stripes-components": "^9.2.0",
+    "@folio/stripes-connect": "^6.2.0",
+    "@folio/stripes-logger": "^1.0.0",
     "moment": "^2.29.0",
     "react": "*",
     "react-dom": "*",

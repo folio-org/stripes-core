@@ -19,7 +19,7 @@
     "about.paneTitle": "إصدارات البرمجيات",
     "about.userInterface": "واجهة المستخدم",
     "about.foundation": "مؤسسة",
-    "about.okapiServices": "خدمات اوكابي",
+    "about.okapiServices": "خدمات أوكابي",
     "about.unknown": "غير معروف",
     "about.version": "الإصدار {version}",
     "about.forTenant": "للمستأجر {tenant}",
@@ -129,5 +129,6 @@
     "routeErrorBoundary.sub": "لقد حدث خطأ في هذه الصفحة وتعذر تحميلها.",
     "routeErrorBoundary.goToAppHomeLabel": "العودة إلى الرئيسية",
     "routeErrorBoundary.goToModuleHomeLabel": "العودة إلى الصفحة المقصودة {name}",
-    "routeErrorBoundary.goToModuleSettingsHomeLabel": "العودة إلى إعدادات {name}"
+    "routeErrorBoundary.goToModuleSettingsHomeLabel": "العودة إلى إعدادات {name}",
+    "logoutKeepSso": "سجّل الخروج من فوليو واحتفظ بجلسة SSO"
 }

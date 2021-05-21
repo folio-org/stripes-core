@@ -37,6 +37,10 @@ describe('Nav', () => {
     expect(app.nav('Dummy').isPresent).to.be.true;
   });
 
+  it('shows help button', function () {
+    expect(app.helpButton.isPresent).to.be.true;
+  });
+
   describe('clicking settings', () => {
     beforeEach(async () => {
       await app.nav('Settings').click();

@@ -158,6 +158,7 @@ class ProfileDropdown extends Component {
     const { stripes, onLogout } = this.props;
     const user = this.getUserData();
     const currentPerms = stripes.user ? stripes.user.perms : undefined;
+    const messageId = stripes.okapi.ssoEnabled ? 'stripes-core.logoutKeepSso': 'stripes-core.logout';
 
     /**
      * Show perms, locale etc.
@@ -213,7 +214,7 @@ class ProfileDropdown extends Component {
             }
             {this.userLinks}
             <NavListItem id="clickable-logout" type="button" onClick={onLogout}>
-              <FormattedMessage id="stripes-core.logout" />
+              <FormattedMessage id={messageId} />
             </NavListItem>
           </NavListSection>
         </NavList>
