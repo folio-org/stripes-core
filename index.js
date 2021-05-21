@@ -24,6 +24,13 @@ export { default as HandlerManager } from './src/components/HandlerManager';
 export { default as IntlConsumer } from './src/components/IntlConsumer';
 export { default as AppIcon } from './src/components/AppIcon';
 export { Route, Switch, Redirect } from './src/components/NestedRouter';
+export {
+  ModuleHierarchyContext,
+  useModuleHierarchy,
+  useNamespace,
+  withNamespace,
+} from './src/components';
 
 /* misc */
 export { supportedLocales } from './src/loginServices';
+

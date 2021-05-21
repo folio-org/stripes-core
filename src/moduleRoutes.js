@@ -10,6 +10,7 @@ import TitleManager from './components/TitleManager';
 import RouteErrorBoundary from './components/RouteErrorBoundary';
 import { getEventHandlers } from './handlerService';
 import { packageName } from './constants';
+import { ModuleHierarchyProvider } from './components';
 import events from './events';
 
 function getModuleRoutes(stripes) {
@@ -54,17 +55,19 @@ function getModuleRoutes(stripes) {
                 return (
                   <StripesContext.Provider value={moduleStripes}>
                     <AddContext context={{ stripes: moduleStripes }}>
-                      <div id={`${name}-module-display`} data-module={module.module} data-version={module.version}>
-                        <RouteErrorBoundary
-                          escapeRoute={module.home}
-                          moduleName={displayName}
-                          stripes={moduleStripes}
-                        >
-                          <TitleManager page={displayName}>
-                            <Current {...props} connect={connect} stripes={moduleStripes} actAs="app" />
-                          </TitleManager>
-                        </RouteErrorBoundary>
-                      </div>
+                      <ModuleHierarchyProvider module={module.module}>
+                        <div id={`${name}-module-display`} data-module={module.module} data-version={module.version}>
+                          <RouteErrorBoundary
+                            escapeRoute={module.home}
+                            moduleName={displayName}
+                            stripes={moduleStripes}
+                          >
+                            <TitleManager page={displayName}>
+                              <Current {...props} connect={connect} stripes={moduleStripes} actAs="app" />
+                            </TitleManager>
+                          </RouteErrorBoundary>
+                        </div>
+                      </ModuleHierarchyProvider>
                     </AddContext>
                   </StripesContext.Provider>);
               }}
