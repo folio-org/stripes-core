@@ -27,6 +27,9 @@
       "authtoken": "1.0 2.0",
       "configuration": "2.0"
     },
+    "optionalOkapiInterfaces": {
+      "login-saml": "2.0"
+    },
     "permissionSets": [
       {
         "permissionName": "settings.enabled",

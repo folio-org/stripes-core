@@ -480,7 +480,10 @@ export function requestUserWithPerms(okapiUrl, store, tenant, token) {
  */
 export function requestSSOLogin(okapiUrl, tenant) {
   const stripesUrl = (window.location.origin || `${window.location.protocol}//${window.location.host}`) + window.location.pathname;
-
+  // the /_/invoke/... URL is used for systems that make call-backs
+  // to okapi and don't handle setting of the tenant in the HTTP header.
+  // i.e. ordinarily, we'd just call ${okapiUrl}/saml/login.
+  // https://s3.amazonaws.com/foliodocs/api/okapi/p/okapi.html#invoke_tenant__id_
   fetch(`${okapiUrl}/_/invoke/tenant/${tenant}/saml/login`, {
     method: 'POST',
     headers: { 'X-Okapi-tenant': tenant, 'Content-Type': 'application/json' },

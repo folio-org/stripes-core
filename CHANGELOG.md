@@ -1,5 +1,9 @@
 # Change history for stripes-core
 
+## 7.1.2 (IN PROGRESS)
+
+* Improve SAML security. Refs STCOR-544, STCOR-545.
+
 ## [7.1.1](https://github.com/folio-org/stripes-core/tree/v7.1.1) (2021-04-22)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v7.1.0...v7.1.1)
 
