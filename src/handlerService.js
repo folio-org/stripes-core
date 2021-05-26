@@ -6,10 +6,12 @@ export function getEventHandler(event, stripes, module, data) {
 }
 
 export function getEventHandlers(event, stripes, modules, data) {
-  return modules.reduce((acc, m) => {
-    const component = getEventHandler(event, stripes, m, data);
+  return modules.reduce((acc, module) => {
+    const component = getEventHandler(event, stripes, module, data);
     if (component) {
-      acc.push(stripes.connect(component));
+      const connectedComponent = stripes.connect(component);
+      connectedComponent.module = module;
+      acc.push(connectedComponent);
     }
     return acc;
   }, []);

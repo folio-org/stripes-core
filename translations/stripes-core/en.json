@@ -79,6 +79,7 @@
   "currentServicePoint": "Service point: {name}",
   "currentServicePointNotSelected": "Service point: None",
   "logout": "Log out",
+  "logoutKeepSso": "Log out from FOLIO, keep SSO session",
   "login": "Log in",
   "username": "Username",
   "password": "Password",
