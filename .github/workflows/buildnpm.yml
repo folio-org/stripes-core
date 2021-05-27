@@ -145,7 +145,7 @@ jobs:
         with:
           node-version: ${{ env.NODEJS_VERSION }}
           registry-url: https://repository.folio.org/repository/npm-folioci-test/
-      - run: npm publish
+        run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.FOLIO_NEXUS_NPM_TOKEN }}
 
