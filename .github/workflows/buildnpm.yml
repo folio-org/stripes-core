@@ -8,6 +8,7 @@
 #   - YARN_TEST_OPTIONS
 #   - SQ_ROOT_DIR
 #   - FOLIO_NAME
+#   - PUBLISH_MOD_DESCRIPTOR
 
 
 name: buildNPM Snapshot
@@ -145,7 +146,7 @@ jobs:
           node-version: ${{ env.NODEJS_VERSION }}
           registry-url: https://repository.folio.org/repository/npm-folioci-test/
         if: contains(github.REF,'master')
-      - run: npm publish
+        run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.FOLIO_NEXUS_NPM_TOKEN }}
 
