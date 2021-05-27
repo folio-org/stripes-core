@@ -142,7 +142,7 @@ jobs:
       
       - name: Publish NPM package to FOLIO npm repository
         if: contains(github.REF,'master')
-      - uses: JS-DevTools/npm-publish@v1
+        uses: JS-DevTools/npm-publish@v1
         with:
           token: ${{ secrets.FOLIO_NEXUS_NPM_TOKEN }}
           registry: 'https://repository.folio.org/repository/npm-folioci-test/'
