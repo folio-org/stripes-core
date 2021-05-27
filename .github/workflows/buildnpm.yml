@@ -140,12 +140,12 @@ jobs:
         run: stripes mod descriptor --full --strict | jq '.[]' > ${{ env.MODULE_DESCRIPTOR_DIR }}/${{ env.FOLIO_NAME }}.json
       
       - name: Publish NPM package to FOLIO npm reposiroty
-        if: contains(github.REF,'master')
       - uses: actions/setup-node@v2
         with:
           node-version: ${{ env.NODEJS_VERSION }}
           registry-url: https://repository.folio.org/repository/npm-folioci-test/
-        run: npm publish
+        if: contains(github.REF,'master')
+      - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.FOLIO_NEXUS_NPM_TOKEN }}
 
