@@ -129,5 +129,6 @@
     "routeErrorBoundary.sub": "エラーが発生し、ページを読み込めませんでした。",
     "routeErrorBoundary.goToAppHomeLabel": "ホームに戻る",
     "routeErrorBoundary.goToModuleHomeLabel": "{name}のランディングページに戻る",
-    "routeErrorBoundary.goToModuleSettingsHomeLabel": "{name}設定に戻る"
+    "routeErrorBoundary.goToModuleSettingsHomeLabel": "{name}設定に戻る",
+    "logoutKeepSso": "Log out from FOLIO, keep SSO session"
 }

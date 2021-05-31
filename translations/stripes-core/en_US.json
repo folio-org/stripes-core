@@ -41,7 +41,6 @@
     "about.pluginModuleCount": "{count, number} plugin {count, plural, one {module} other {modules}}",
     "loggedInAs": "Logged in as {firstName} {lastName}",
     "logout": "Log out",
-    "logoutKeepSso": "Log out from FOLIO, keep SSO session",
     "settings": "Settings",
     "folioSettings": "FOLIO settings",
     "loginViaSSO": "Login via SSO",
@@ -130,5 +129,6 @@
     "routeErrorBoundary.sub": "An error occurred on this page and it could not be loaded.",
     "routeErrorBoundary.goToAppHomeLabel": "Return to home",
     "routeErrorBoundary.goToModuleHomeLabel": "Return to {name} landing page",
-    "routeErrorBoundary.goToModuleSettingsHomeLabel": "Return to {name} settings"
+    "routeErrorBoundary.goToModuleSettingsHomeLabel": "Return to {name} settings",
+    "logoutKeepSso": "Log out from FOLIO, keep SSO session"
 }

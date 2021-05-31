@@ -61,6 +61,7 @@ class Root extends Component {
       ul: (chunks) => <ul>{chunks}</ul>,
       ol: (chunks) => <ol>{chunks}</ol>,
       li: (chunks) => <li>{chunks}</li>,
+      code: (chunks) => <code>{chunks}</code>,
     };
 
     this.apolloClient = createApolloClient(okapi);

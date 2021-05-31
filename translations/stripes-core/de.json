@@ -129,5 +129,6 @@
     "routeErrorBoundary.sub": "Bei dieser Seite ist ein Fehler aufgetreten und sie konnte nicht geladen werden.",
     "routeErrorBoundary.goToAppHomeLabel": "Zurück zur Startseite",
     "routeErrorBoundary.goToModuleHomeLabel": "Zurück zu der Zielseite {name}",
-    "routeErrorBoundary.goToModuleSettingsHomeLabel": "Zurück zu den {name}-Einstellungen"
+    "routeErrorBoundary.goToModuleSettingsHomeLabel": "Zurück zu den {name}-Einstellungen",
+    "logoutKeepSso": "Log out from FOLIO, keep SSO session"
 }

@@ -2,13 +2,20 @@
 
 ## 7.2.0 (IN PROGRESS)
 
+* Improve SAML security. Refs STCOR-544, STCOR-545.
 * Move `<CalloutContext>` back to `<RootWithIntl>` to make sure `<Callout>` works between relogins. Fixes STCOR-534.
 * Access to Help Site from Universal Header. Refs STCOR-531.
 * Do not pass useless props to `<Dropdown>`. Refs STCOR-539.
 * Introduce `<ModuleHierarchyProvider>`. Refs STCOR-529.
 * Introduce `useNamespace` hook which returns module namespace. Refs STCOR-537.
 * Indicate that logging out of FOLIO will not affect an SSO session. Refs STCOR-532.
+* Introduce `withNamespace` HOC. Refs STCOR-542.
 * Pull user's locale settings from configurations on login, if available. Refs STCOR-527.
+
+## [7.1.1](https://github.com/folio-org/stripes-core/tree/v7.1.1) (2021-04-22)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v7.1.0...v7.1.1)
+
+* Move `<CalloutContext>` back to `<RootWithIntl>` to make sure `<Callout>` works between relogins. Fixes STCOR-534.
 
 ## [7.1.0](https://github.com/folio-org/stripes-core/tree/v7.1.0) (2021-04-08)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v7.0.0...v7.1.0)

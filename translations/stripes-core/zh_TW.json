@@ -129,5 +129,6 @@
     "routeErrorBoundary.sub": "此页面上发生错误，无法加载。",
     "routeErrorBoundary.goToAppHomeLabel": "返回主页",
     "routeErrorBoundary.goToModuleHomeLabel": "返回{name}登陆页面",
-    "routeErrorBoundary.goToModuleSettingsHomeLabel": "返回{name}设置"
+    "routeErrorBoundary.goToModuleSettingsHomeLabel": "返回{name}设置",
+    "logoutKeepSso": "Log out from FOLIO, keep SSO session"
 }
