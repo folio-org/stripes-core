@@ -76,12 +76,33 @@ export const supportedLocales = [
   'ur',     // urdu
 ];
 
+// export config values for storing user locale
+export const userLocaleConfig = {
+  'configName': 'localeSettings',
+  'module': '@folio/stripes-core',
+};
+
 function getHeaders(tenant, token) {
   return {
     'X-Okapi-Tenant': tenant,
     'X-Okapi-Token': token,
     'Content-Type': 'application/json',
   };
+}
+
+/**
+ * canReadConfig
+ * return true if the user has read-permission for configuration entries,
+ * i.e. if the store contains the key
+ * okapi.currentPerms['configuration.entries.collection.get'].
+ *
+ * @param {object} store a redux store
+ *
+ * @return boolean
+ */
+function canReadConfig(store) {
+  const perms = store.getState().okapi.currentPerms;
+  return perms['configuration.entries.collection.get'];
 }
 
 /**
@@ -162,28 +183,28 @@ export function getLocale(okapiUrl, store, tenant) {
 }
 
 export function getUserLocale(okapiUrl, store, tenant, userId) {
-  if (userId) {
-    return fetch(`${okapiUrl}/configurations/entries?query=(configName==localeSettings and userId==${userId})`,
-      { headers: getHeaders(tenant, store.getState().okapi.token) })
-      .then((response) => {
-        if (response.status === 200) {
-          response.json().then((json) => {
-            if (json.configs.length) {
-              const localeValues = JSON.parse(json.configs[0].value);
-              const { locale, timezone, currency } = localeValues;
-              if (locale) {
-                loadTranslations(store, locale);
-              }
-              if (timezone) store.dispatch(setTimezone(timezone));
-              if (currency) store.dispatch(setCurrency(currency));
+  const query = Object.entries(userLocaleConfig)
+    .map(([k, v]) => `"${k}"=="${v}"`)
+    .join(' AND ');
+
+  return fetch(`${okapiUrl}/configurations/entries?query=(${query} and userId=="${userId}")`,
+    { headers: getHeaders(tenant, store.getState().okapi.token) })
+    .then((response) => {
+      if (response.status === 200) {
+        response.json().then((json) => {
+          if (json.configs.length) {
+            const localeValues = JSON.parse(json.configs[0].value);
+            const { locale, timezone, currency } = localeValues;
+            if (locale) {
+              loadTranslations(store, locale);
             }
-          });
-        }
-        return response;
-      });
-  } else {
-    return Promise.resolve();
-  }
+            if (timezone) store.dispatch(setTimezone(timezone));
+            if (currency) store.dispatch(setCurrency(currency));
+          }
+        });
+      }
+      return response;
+    });
 }
 
 /**
@@ -248,7 +269,8 @@ export function getBindings(okapiUrl, store, tenant) {
 
 /**
  * loadResources
- * return a promise that retrieves the tenants locale, plugins, and key-bindings.
+ * return a promise that retrieves the tenant's locale, user's locale,
+ * plugins, and key-bindings from mod-configuration.
  * @param {} okapiUrl
  * @param {*} store
  * @param {*} tenant
@@ -257,12 +279,19 @@ export function getBindings(okapiUrl, store, tenant) {
  * @return Promise
  */
 function loadResources(okapiUrl, store, tenant, userId) {
-  const promises = [
-    getLocale(okapiUrl, store, tenant),
-    getUserLocale(okapiUrl, store, tenant, userId),
-    getPlugins(okapiUrl, store, tenant),
-    getBindings(okapiUrl, store, tenant),
-  ];
+  let promises = [];
+
+  // tenant's locale, plugin, bindings, and user's locale are all stored
+  // in mod-configuration so we can only retrieve them if the user has
+  // read-permission for configuration entries.
+  if (canReadConfig(store)) {
+    promises = [
+      getLocale(okapiUrl, store, tenant),
+      getUserLocale(okapiUrl, store, tenant, userId),
+      getPlugins(okapiUrl, store, tenant),
+      getBindings(okapiUrl, store, tenant),
+    ];
+  }
 
   if (!store.getState().okapi.withoutOkapi) {
     promises.push(discoverServices(store));
