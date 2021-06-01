@@ -130,5 +130,5 @@
     "routeErrorBoundary.goToAppHomeLabel": "Voltar ao início",
     "routeErrorBoundary.goToModuleHomeLabel": "Voltar para a página de destino de {name}",
     "routeErrorBoundary.goToModuleSettingsHomeLabel": "Voltar para as configurações de {name}",
-    "logoutKeepSso": "Log out from FOLIO, keep SSO session"
+    "logoutKeepSso": "Sair do FOLIO, manter sessão de SSO"
 }
