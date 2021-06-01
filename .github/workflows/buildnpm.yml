@@ -137,7 +137,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       - name: Publish NPM package to FOLIO npm repository
-        if: contains(github.REF,'master')
+        if: contains(github.REF, $default-branch)
         uses: JS-DevTools/npm-publish@v1
         with:
           token: ${{ secrets.FOLIO_NEXUS_NPM_TOKEN }}
