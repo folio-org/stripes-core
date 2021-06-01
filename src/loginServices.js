@@ -152,17 +152,17 @@ export function loadTranslations(store, locale, defaultTranslations = {}) {
 }
 
 /**
- * getLocale
- * return a promise that retrieves the tenant's locale-settings then
- * loads the translations and dispatches the timezone and currency.
- * @param {*} okapiUrl
- * @param {*} store
- * @param {*} tenant
+ * dispatchLocale
+ * Given a URL where locale, timezone, and currency information may be stored,
+ * request the data then dispatch appropriate actions for facet, if available.
  *
- * @return Promise
+ * @param {string} url location of locale information
+ * @param {object} store redux store
+ * @param {string} tenant
+ * @returns Promise
  */
-export function getLocale(okapiUrl, store, tenant) {
-  return fetch(`${okapiUrl}/configurations/entries?query=(module==ORG and configName==localeSettings)`,
+function dispatchLocale(url, store, tenant) {
+  return fetch(url,
     { headers: getHeaders(tenant, store.getState().okapi.token) })
     .then((response) => {
       if (response.status === 200) {
@@ -182,29 +182,44 @@ export function getLocale(okapiUrl, store, tenant) {
     });
 }
 
+/**
+ * getLocale
+ * return a promise that retrieves the tenant's locale-settings then
+ * loads the translations and dispatches the timezone and currency.
+ * @param {*} okapiUrl
+ * @param {*} store
+ * @param {*} tenant
+ *
+ * @return Promise
+ */
+export function getLocale(okapiUrl, store, tenant) {
+  return dispatchLocale(
+    `${okapiUrl}/configurations/entries?query=(module==ORG and configName==localeSettings)`,
+    store,
+    tenant
+  );
+}
+
+/**
+ * getUserLocale
+ * return a promise that retrieves the user's locale-settings then
+ * loads the translations and dispatches the timezone and currency.
+ * @param {*} okapiUrl
+ * @param {*} store
+ * @param {*} tenant
+ *
+ * @return Promise
+ */
 export function getUserLocale(okapiUrl, store, tenant, userId) {
   const query = Object.entries(userLocaleConfig)
     .map(([k, v]) => `"${k}"=="${v}"`)
     .join(' AND ');
 
-  return fetch(`${okapiUrl}/configurations/entries?query=(${query} and userId=="${userId}")`,
-    { headers: getHeaders(tenant, store.getState().okapi.token) })
-    .then((response) => {
-      if (response.status === 200) {
-        response.json().then((json) => {
-          if (json.configs.length) {
-            const localeValues = JSON.parse(json.configs[0].value);
-            const { locale, timezone, currency } = localeValues;
-            if (locale) {
-              loadTranslations(store, locale);
-            }
-            if (timezone) store.dispatch(setTimezone(timezone));
-            if (currency) store.dispatch(setCurrency(currency));
-          }
-        });
-      }
-      return response;
-    });
+  return dispatchLocale(
+    `${okapiUrl}/configurations/entries?query=(${query} and userId=="${userId}")`,
+    store,
+    tenant
+  );
 }
 
 /**
