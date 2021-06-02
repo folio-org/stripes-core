@@ -10,6 +10,7 @@
 * Introduce `useNamespace` hook which returns module namespace. Refs STCOR-537.
 * Indicate that logging out of FOLIO will not affect an SSO session. Refs STCOR-532.
 * Introduce `withNamespace` HOC. Refs STCOR-542.
+* Upgrade RxJS to v6. Refs STCOR-536.
 
 ## [7.1.1](https://github.com/folio-org/stripes-core/tree/v7.1.1) (2021-04-22)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v7.1.0...v7.1.1)
