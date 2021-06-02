@@ -10,6 +10,7 @@
 * Introduce `useNamespace` hook which returns module namespace. Refs STCOR-537.
 * Indicate that logging out of FOLIO will not affect an SSO session. Refs STCOR-532.
 * Introduce `withNamespace` HOC. Refs STCOR-542.
+* Pull user's locale settings from configurations on login, if available. Refs STCOR-527.
 * Able to close `<AppContextDropdown>` outside. Refs STCOR-543. 
 
 ## [7.1.1](https://github.com/folio-org/stripes-core/tree/v7.1.1) (2021-04-22)
@@ -20,7 +21,7 @@
 ## [7.1.0](https://github.com/folio-org/stripes-core/tree/v7.1.0) (2021-04-08)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v7.0.0...v7.1.0)
 
-* provide and HTML entity id for the settings Paneset. Refs STCOR-526.
+* provide an HTML entity id for the settings Paneset. Refs STCOR-526.
 * Removed fetch of protected okapi /version endpoint. Refs STCOR-525.
 * Updated app context menu button style. Refs STCOR-524.
 * Increment `stripes-components` to `v9.1.0`.
