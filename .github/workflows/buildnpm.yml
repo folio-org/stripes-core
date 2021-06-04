@@ -49,7 +49,6 @@ jobs:
         with:
           node-version: ${{ env.NODEJS_VERSION }}
           check-latest: true
-          always-auth: true
 
       - name: Set yarn config
         run: yarn config set @folio:registry $FOLIO_NPM_REGISTRY
@@ -63,7 +62,7 @@ jobs:
           JOB_ID: ${{ github.run_number }}
 
       - name: Run yarn install
-        run: yarn install
+        run: yarn install --ignore-scripts
 
       - name: Run yarn list
         run: yarn list --pattern @folio
@@ -148,7 +147,7 @@ jobs:
           node-version: ${{ env.NODEJS_VERSION }}
           check-latest: true
           always-auth: true
-          registry-url : https://repository.folio.org/repository/npm-folioci-test/
+          registry-url : 'https://repository.folio.org/repository/npm-folioci-test/'
 
       - name: Publish NPM
         if: contains(github.REF, 'master') || contains(github.REF,'main') || contains(github.REF,'malc-test')
