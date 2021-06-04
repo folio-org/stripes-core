@@ -49,6 +49,7 @@ jobs:
         with:
           node-version: ${{ env.NODEJS_VERSION }}
           check-latest: true
+          always-auth: true
 
       - name: Set yarn config
         run: yarn config set @folio:registry $FOLIO_NPM_REGISTRY
@@ -149,9 +150,13 @@ jobs:
           always-auth: true
           registry-url : 'https://repository.folio.org/repository/npm-folioci-test/'
 
+      - name: Debug generated .npmrc
+        if: contains(github.REF, 'master') || contains(github.REF,'main') || contains(github.REF,'malc-test')
+        run: cat .npmrc
+
       - name: Publish NPM
         if: contains(github.REF, 'master') || contains(github.REF,'main') || contains(github.REF,'malc-test')
-        run: npm publish 
+        run: npm publish --registry https://repository.folio.org/repository/npm-folioci-test/
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       
