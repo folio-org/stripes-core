@@ -27,7 +27,6 @@ jobs:
       FOLIO_NAME: stripes_core
       FOLIO_NPM_REGISTRY: 'https://repository.folio.org/repository/npm-folioci/'
       NODEJS_VERSION: '12'
-      MODULE_DESCRIPTOR_DIR: 'artifacts/md'
       JEST_JUNIT_OUTPUT_DIR: 'artifacts/jest-junit'
       JEST_COVERAGE_REPORT_DIR: 'artifacts/coverage-jest/lcov-report/'
       BIGTEST_JUNIT_OUTPUT_DIR: 'artifacts/runTest'
@@ -63,7 +62,6 @@ jobs:
         env: 
           JOB_ID: ${{ github.run_number }}
 
-
       - name: Run yarn install
         run: yarn install
 
@@ -79,8 +77,7 @@ jobs:
 
       - name: Generate Module descriptor
         if: ${{ env.PUBLISH_MOD_DESCRIPTOR }}
-        run: stripes mod descriptor --full --strict | jq '.[]' > ${{ env.MODULE_DESCRIPTOR_DIR }}/${{ env.FOLIO_NAME }}.json
-
+        run: yarn build-mod-descriptor
 
       - name: Publish Jest unit test results
         uses: docker://ghcr.io/enricomi/publish-unit-test-result-action:v1
@@ -160,12 +157,12 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       
       - name: Publish Module descriptor
+        if: ${{ env.PUBLISH_MOD_DESCRIPTOR }} && contains(github.REF, 'master') || contains(github.REF,'main') || contains(github.REF,'malc-test')
         uses: fjogeleit/http-request-action@master
         with:
           url: 'http://ec2-3-88-110-24.compute-1.amazonaws.com'
           method: 'POST'
-          file: '{ "file": "${{ env.MODULE_DESCRIPTOR_DIR }}/${{ env.FOLIO_NAME }}.json" }'
+          file: '{ "file": "module-descriptor.json" }'
           username: ${{ secrets.FOLIO_REGISTRY_USERNAME }}
           password: ${{ secrets.FOLIO_REGISTRY_PASSWORD }}
-
 
