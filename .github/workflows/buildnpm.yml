@@ -50,7 +50,10 @@ jobs:
         with:
           node-version: ${{ env.NODEJS_VERSION }}
           check-latest: true
-      - run: yarn config set @folio:registry $FOLIO_NPM_REGISTRY
+          always-auth: true
+
+      - name: Set yarn config
+        run: yarn config set @folio:registry $FOLIO_NPM_REGISTRY
 
       - name: Set FOLIO NPM snapshot version
         run: | 
@@ -137,7 +140,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       - name: Publish NPM package to FOLIO npm repository
-        if: contains(github.REF, 'master') || contains(github.REF,'main')
+        if: contains(github.REF, 'master') || contains(github.REF,'main') || contains(github.REF,'malc-test')
         uses: JS-DevTools/npm-publish@v1
         with:
           token: ${{ secrets.NPM_TOKEN }}
