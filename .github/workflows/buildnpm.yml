@@ -157,6 +157,7 @@ jobs:
       
       - name: Publish Module descriptor
         if: ${{ env.PUBLISH_MOD_DESCRIPTOR }} && contains(github.REF, 'master') || contains(github.REF,'main') || contains(github.REF,'malc-test')
+        id: modDescriptorRequest
         uses: fjogeleit/http-request-action@master
         with:
           url: 'http://ec2-3-88-110-24.compute-1.amazonaws.com'
@@ -165,3 +166,6 @@ jobs:
           username: ${{ secrets.FOLIO_REGISTRY_USERNAME }}
           password: ${{ secrets.FOLIO_REGISTRY_PASSWORD }}
 
+      - name: Show FOLIO registry response
+        if: ${{ env.PUBLISH_MOD_DESCRIPTOR }} && contains(github.REF, 'master') || contains(github.REF,'main') || contains(github.REF,'malc-test')
+        run: echo ${{ steps.modDescriptorRequest.outputs.response }}
