@@ -173,7 +173,7 @@ jobs:
         with:
           url: 'http://ec2-3-88-110-24.compute-1.amazonaws.com/_/proxy/modules'
           method: 'POST'
-          contentType: 'application/json; charset=utf-8'
+          contentType: 'application/json'
           files: '{ "file": "module-descriptor.json" }'
           username: ${{ secrets.FOLIO_REGISTRY_USERNAME }}
           password: ${{ secrets.FOLIO_REGISTRY_PASSWORD }}
