@@ -158,7 +158,7 @@ jobs:
 
       - name: Publish NPM
         if: contains(github.REF, 'master') || contains(github.REF,'main') || contains(github.REF,'malc-test')
-        run: npm publish
+        run: npm publish --registry=https://repository.folio.org/repository/npm-folioci-test/
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       
@@ -167,8 +167,9 @@ jobs:
         id: modDescriptorRequest
         uses: fjogeleit/http-request-action@master
         with:
-          url: 'http://ec2-3-88-110-24.compute-1.amazonaws.com'
+          url: 'http://ec2-3-88-110-24.compute-1.amazonaws.com/_/proxy/modules'
           method: 'POST'
+          contentType: 'application/json; charset=utf-8'
           file: '{ "file": "module-descriptor.json" }'
           username: ${{ secrets.FOLIO_REGISTRY_USERNAME }}
           password: ${{ secrets.FOLIO_REGISTRY_PASSWORD }}
