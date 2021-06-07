@@ -79,6 +79,10 @@ jobs:
         if: ${{ env.PUBLISH_MOD_DESCRIPTOR }}
         run: yarn build-mod-descriptor
 
+      - name: debug mod descriptor
+        if: ${{ env.PUBLISH_MOD_DESCRIPTOR }}
+        run: cat module-descriptor.json
+
       - name: Publish Jest unit test results
         uses: docker://ghcr.io/enricomi/publish-unit-test-result-action:v1
         if: always()
@@ -170,7 +174,7 @@ jobs:
           url: 'http://ec2-3-88-110-24.compute-1.amazonaws.com/_/proxy/modules'
           method: 'POST'
           contentType: 'application/json; charset=utf-8'
-          file: '{ "file": "module-descriptor.json" }'
+          files: '{ "file": "module-descriptor.json" }'
           username: ${{ secrets.FOLIO_REGISTRY_USERNAME }}
           password: ${{ secrets.FOLIO_REGISTRY_PASSWORD }}
 
