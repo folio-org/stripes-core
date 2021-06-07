@@ -5,10 +5,10 @@
 # https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 
 # Common FOLIO configurable env:
-#   - YARN_TEST_OPTIONS
-#   - SQ_ROOT_DIR
+#   - YARN_TEST_OPTIONS (options to pass to 'yarn test')
+#   - SQ_ROOT_DIR (where to scan relative to top-level directory)
 #   - FOLIO_NAME
-#   - PUBLISH_MOD_DESCRIPTOR
+#   - PUBLISH_MOD_DESCRIPTOR (boolean 'true' or 'false')
 
 
 name: buildNPM Snapshot
@@ -152,17 +152,16 @@ jobs:
           node-version: ${{ env.NODEJS_VERSION }}
           check-latest: true
           always-auth: true
-          registry-url : 'https://repository.folio.org/repository/npm-folioci-test/'
 
       - name: Set _auth in .npmrc
         if: contains(github.REF, 'master') || contains(github.REF,'main') || contains(github.REF,'malc-test')
-        run: npm config set _auth ${{ env.NODE_AUTH_TOKEN }}
+        run: npm config set @folio:registry https://repository.folio.org/repository/npm-folioci-test/ &&  npm config set _auth ${{ env.NODE_AUTH_TOKEN }}
         env: 
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Publish NPM
         if: contains(github.REF, 'master') || contains(github.REF,'main') || contains(github.REF,'malc-test')
-        run: npm publish --@folio:registry=https://repository.folio.org/repository/npm-folioci-test/
+        run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       
