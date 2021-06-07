@@ -37,7 +37,7 @@
     "about.key.compatible": "호환되는 버전이 있는 인터페이스는 일반 글꼴로 표시됩니다.",
     "about.moduleTypeCount": "{count, number} {type} {count, plural, one {module} other {modules}}",
     "about.appModuleCount": "{count, number} app {count, plural, one {module} other {modules}}",
-    "about.settingsModuleCount": "{count, number} 설정 {count, plural, one { module } other { modules }}",
+    "about.settingsModuleCount": "{count, number} settings {count, plural, one {module} other {modules}}",
     "about.pluginModuleCount": "{count, number} plugin {count, plural, one {module} other {modules}}",
     "loggedInAs": "{firstName} {lastName} 로 로그인했습니다.",
     "logout": "로그아웃",
