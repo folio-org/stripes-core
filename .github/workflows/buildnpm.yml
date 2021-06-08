@@ -165,16 +165,23 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       
-      - name: Publish Module descriptor
+      - Name: Read module descriptor
         if: ${{ env.PUBLISH_MOD_DESCRIPTOR }} && contains(github.REF, 'master') || contains(github.REF,'main') || contains(github.REF,'malc-test')
-        id: modDescriptorRequest
+        id: moduleDescriptor
+        uses: juliangruber/read-file-action@v1
+        with: 
+          path: ./module-descriptor.json
+
+      - name: Publish module descriptor
+        if: ${{ env.PUBLISH_MOD_DESCRIPTOR }} && contains(github.REF, 'master') || contains(github.REF,'main') || contains(github.REF,'malc-test')
+        id: modDescriptorPost
         uses: fjogeleit/http-request-action@master
         with:
           url: 'http://ec2-3-88-110-24.compute-1.amazonaws.com/_/proxy/modules'
           method: 'POST'
           contentType: 'application/json; charset=utf-8'
           customHeaders: '{ "Accept": "application/json; charset=utf-8" }'
-          files: '{ "file": "module-descriptor.json" }'
+          data: ${{ steps.moduleDescriptor.outputs.content }}
           username: ${{ secrets.FOLIO_REGISTRY_USERNAME }}
           password: ${{ secrets.FOLIO_REGISTRY_PASSWORD }}
 
