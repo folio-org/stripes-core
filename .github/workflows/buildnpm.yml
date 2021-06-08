@@ -187,4 +187,4 @@ jobs:
 
       - name: Show FOLIO registry response
         if: ${{ env.PUBLISH_MOD_DESCRIPTOR }} && contains(github.REF, 'master') || contains(github.REF,'main') || contains(github.REF,'malc-test')
-        run: echo ${{ steps.modDescriptorRequest.outputs.response }}
+        run: echo "${{ steps.modDescriptorPost.outputs.response }}"
