@@ -11,7 +11,8 @@
 * Indicate that logging out of FOLIO will not affect an SSO session. Refs STCOR-532.
 * Introduce `withNamespace` HOC. Refs STCOR-542.
 * Pull user's locale settings from configurations on login, if available. Refs STCOR-527.
-* Able to close `<AppContextDropdown>` outside. Refs STCOR-543. 
+* Able to close `<AppContextDropdown>` outside. Refs STCOR-543.
+* Update `@folio/stripes-cli` to `^2.3.0` and update `karma.conf.js` for `karma` `v6` compatibility. Refs STCOR-551.
 
 ## [7.1.1](https://github.com/folio-org/stripes-core/tree/v7.1.1) (2021-04-22)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v7.1.0...v7.1.1)
