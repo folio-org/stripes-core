@@ -1,6 +1,6 @@
 # Change history for stripes-core
 
-## [7.2.0](https://github.com/folio-org/stripes-core/tree/v7.2.0) (2021-06-08)
+## [7.2.0](https://github.com/folio-org/stripes-core/tree/v7.2.0) (2021-06-09)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v7.1.0...v7.2.0)
 
 * Provide `useCustomFields` hook. Refs STCOR-550.
@@ -16,6 +16,7 @@
 * Improve SAML security. Refs STCOR-544, STCOR-545.
 * Pull user's locale settings from configurations on login, if available. Refs STCOR-527.
 * Able to close `<AppContextDropdown>` outside. Refs STCOR-543.
+* Update `@folio/stripes-cli` to `^2.3.0` and update `karma.conf.js` for `karma` `v6` compatibility. Refs STCOR-551.
 
 ## [7.1.1](https://github.com/folio-org/stripes-core/tree/v7.1.1) (2021-04-22)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v7.1.0...v7.1.1)
