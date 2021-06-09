@@ -2,14 +2,17 @@
 
 ## 7.2.0 (IN PROGRESS)
 
-* Improve SAML security. Refs STCOR-544, STCOR-545.
+* Provide `useCustomFields` hook. Refs STCOR-550.
+* Compile translations to improve performance and reduce console noise.
 * Move `<CalloutContext>` back to `<RootWithIntl>` to make sure `<Callout>` works between relogins. Fixes STCOR-534.
+* Avoid ReDoS in `validatePhoneNumber`. Refs STCOR-535.
 * Access to Help Site from Universal Header. Refs STCOR-531.
 * Do not pass useless props to `<Dropdown>`. Refs STCOR-539.
 * Introduce `<ModuleHierarchyProvider>`. Refs STCOR-529.
 * Introduce `useNamespace` hook which returns module namespace. Refs STCOR-537.
 * Indicate that logging out of FOLIO will not affect an SSO session. Refs STCOR-532.
 * Introduce `withNamespace` HOC. Refs STCOR-542.
+* Improve SAML security. Refs STCOR-544, STCOR-545.
 * Pull user's locale settings from configurations on login, if available. Refs STCOR-527.
 * Able to close `<AppContextDropdown>` outside. Refs STCOR-543.
 * Update `@folio/stripes-cli` to `^2.3.0` and update `karma.conf.js` for `karma` `v6` compatibility. Refs STCOR-551.
