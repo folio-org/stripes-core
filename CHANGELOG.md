@@ -1,6 +1,7 @@
 # Change history for stripes-core
 
-## 7.2.0 (IN PROGRESS)
+## [7.2.0](https://github.com/folio-org/stripes-core/tree/v7.2.0) (2021-06-09)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v7.1.0...v7.2.0)
 
 * Provide `useCustomFields` hook. Refs STCOR-550.
 * Compile translations to improve performance and reduce console noise.
