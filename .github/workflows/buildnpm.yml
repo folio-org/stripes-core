@@ -5,10 +5,10 @@
 # https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 
 # Common FOLIO configurable env:
-#   - YARN_TEST_OPTIONS
-#   - SQ_ROOT_DIR
+#   - YARN_TEST_OPTIONS (options to pass to 'yarn test')
+#   - SQ_ROOT_DIR (where to scan relative to top-level directory)
 #   - FOLIO_NAME
-#   - PUBLISH_MOD_DESCRIPTOR
+#   - PUBLISH_MOD_DESCRIPTOR (boolean 'true' or 'false')
 
 
 name: buildNPM Snapshot
@@ -27,7 +27,6 @@ jobs:
       FOLIO_NAME: stripes_core
       FOLIO_NPM_REGISTRY: 'https://repository.folio.org/repository/npm-folioci/'
       NODEJS_VERSION: '12'
-      MODULE_DESCRIPTOR_DIR: 'artifacts/md'
       JEST_JUNIT_OUTPUT_DIR: 'artifacts/jest-junit'
       JEST_COVERAGE_REPORT_DIR: 'artifacts/coverage-jest/lcov-report/'
       BIGTEST_JUNIT_OUTPUT_DIR: 'artifacts/runTest'
@@ -43,16 +42,20 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Test github.REF contents
+        run: echo ${{ github.REF }}
+
       - name: Setup kernel for react native, increase watchers
-        run: |
-          echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
-          echo "Starting run"
+        run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
       - name: Use Node.js
         uses: actions/setup-node@v2
         with:
           node-version: ${{ env.NODEJS_VERSION }}
           check-latest: true
-      - run: yarn config set @folio:registry $FOLIO_NPM_REGISTRY
+          always-auth: true
+
+      - name: Set yarn config
+        run: yarn config set @folio:registry $FOLIO_NPM_REGISTRY
 
       - name: Set FOLIO NPM snapshot version
         run: | 
@@ -62,9 +65,8 @@ jobs:
         env: 
           JOB_ID: ${{ github.run_number }}
 
-
       - name: Run yarn install
-        run: yarn install
+        run: yarn install --ignore-scripts
 
       - name: Run yarn list
         run: yarn list --pattern @folio
@@ -75,6 +77,14 @@ jobs:
 
       - name: Run yarn test
         run: xvfb-run --server-args="-screen 0 1024x768x24" yarn test $YARN_TEST_OPTIONS 
+
+      - name: Generate Module descriptor
+        if: ${{ env.PUBLISH_MOD_DESCRIPTOR }}
+        run: yarn build-mod-descriptor
+
+      - name: debug mod descriptor
+        if: ${{ env.PUBLISH_MOD_DESCRIPTOR }}
+        run: cat module-descriptor.json
 
       - name: Publish Jest unit test results
         uses: docker://ghcr.io/enricomi/publish-unit-test-result-action:v1
@@ -138,25 +148,46 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-      - name: Publish NPM package to FOLIO npm repository
-        if: contains(github.REF, 'master') || contains(github.REF,'main')
-        uses: JS-DevTools/npm-publish@v1
+      - name: Set up NPM environment for publishing
+        if: contains(github.REF, 'master') || contains(github.REF,'main') || contains(github.REF,'malc-test')
+        uses: actions/setup-node@v2
         with:
-          token: ${{ secrets.FOLIO_NEXUS_NPM_TOKEN }}
-          registry: 'https://repository.folio.org/repository/npm-folioci-test/'
-      
-      - name: Generate Module descriptor
-        if: ${{ env.PUBLISH_MOD_DESCRIPTOR }}
-        run: stripes mod descriptor --full --strict | jq '.[]' > ${{ env.MODULE_DESCRIPTOR_DIR }}/${{ env.FOLIO_NAME }}.json
-      
+          node-version: ${{ env.NODEJS_VERSION }}
+          check-latest: true
+          always-auth: true
 
-      - name: Publish Module descriptor
+      - name: Set _auth in .npmrc
+        if: contains(github.REF, 'master') || contains(github.REF,'main') || contains(github.REF,'malc-test')
+        run: npm config set @folio:registry https://repository.folio.org/repository/npm-folioci-test/ &&  npm config set _auth ${{ env.NODE_AUTH_TOKEN }}
+        env: 
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish NPM
+        if: contains(github.REF, 'master') || contains(github.REF,'main') || contains(github.REF,'malc-test')
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      
+      - name: Read module descriptor
+        if: ${{ env.PUBLISH_MOD_DESCRIPTOR }} && contains(github.REF, 'master') || contains(github.REF,'main') || contains(github.REF,'malc-test')
+        id: moduleDescriptor
+        uses: juliangruber/read-file-action@v1
+        with: 
+          path: ./module-descriptor.json
+
+      - name: Publish module descriptor
+        if: ${{ env.PUBLISH_MOD_DESCRIPTOR }} && contains(github.REF, 'master') || contains(github.REF,'main') || contains(github.REF,'malc-test')
+        id: modDescriptorPost
         uses: fjogeleit/http-request-action@master
         with:
-          url: 'http://ec2-3-88-110-24.compute-1.amazonaws.com'
+          url: 'http://ec2-3-88-110-24.compute-1.amazonaws.com/_/proxy/modules'
           method: 'POST'
-          file: '{ "file": "${{ env.MODULE_DESCRIPTOR_DIR }}/${{ env.FOLIO_NAME }}.json" }'
+          contentType: 'application/json; charset=utf-8'
+          customHeaders: '{ "Accept": "application/json; charset=utf-8" }'
+          data: ${{ steps.moduleDescriptor.outputs.content }}
           username: ${{ secrets.FOLIO_REGISTRY_USERNAME }}
           password: ${{ secrets.FOLIO_REGISTRY_PASSWORD }}
 
-
+      - name: Show FOLIO registry response
+        if: ${{ env.PUBLISH_MOD_DESCRIPTOR }} && contains(github.REF, 'master') || contains(github.REF,'main') || contains(github.REF,'malc-test')
+        run: echo "${{ steps.modDescriptorPost.outputs.response }}"
