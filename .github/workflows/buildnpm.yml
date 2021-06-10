@@ -41,9 +41,12 @@ jobs:
       - uses: folio-org/checkout@v2
         with:
           fetch-depth: 0
+          
+      - name: Extract Branch Name
+        run: echo "BRANCH=$(echo ${GITHUB_REF##*/})" >> $GITHUB_ENV
 
-      - name: Test github.REF contents are
-        run: echo ${{ github.REF }} 
+      - name: Test BRANCH contents are
+        run: echo ${{ env.BRANCH }} 
 
       - name: Setup kernel for react native, increase watchers
         run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
