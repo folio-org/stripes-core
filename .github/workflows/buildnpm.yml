@@ -160,26 +160,26 @@ jobs:
           always-auth: true
 
       - name: Set _auth in .npmrc
-        if: github.REF  == 'refs/heads/master' || github.REF  == 'refs/heads/main' 
+        if: ${{ github.ref == 'refs/heads/master' || github.ref  == 'refs/heads/main' }}
         run: npm config set @folio:registry https://repository.folio.org/repository/npm-folioci-test/ &&  npm config set _auth ${{ env.NODE_AUTH_TOKEN }}
         env: 
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Publish NPM
-        if: github.ref  == 'refs/heads/master' || github.ref  == 'refs/heads/main' || github.ref == 'refs/head/FOLIO-3067-ReplaceJenkins'
+        if: ${{ github.ref == 'refs/heads/master' || github.ref  == 'refs/heads/main' }}
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       
       - name: Read module descriptor
-        if: ${{ env.PUBLISH_MOD_DESCRIPTOR }} && github.REF  == 'refs/heads/master' || github.REF  == 'refs/heads/main' 
+        if: ${{ env.PUBLISH_MOD_DESCRIPTOR && github.ref == 'refs/heads/master' || github.ref  == 'refs/heads/main' }}
         id: moduleDescriptor
         uses: juliangruber/read-file-action@v1
         with: 
           path: ./module-descriptor.json
 
       - name: Publish module descriptor
-        if: ${{ env.PUBLISH_MOD_DESCRIPTOR }} && github.REF  == 'refs/heads/master' || github.REF  == 'refs/heads/main' 
+        if: ${{ env.PUBLISH_MOD_DESCRIPTOR && github.ref == 'refs/heads/master' || github.ref  == 'refs/heads/main' }} 
         id: modDescriptorPost
         uses: fjogeleit/http-request-action@master
         with:
@@ -192,5 +192,5 @@ jobs:
           password: ${{ secrets.FOLIO_REGISTRY_PASSWORD }}
 
       - name: Show FOLIO registry response
-        if: ${{ env.PUBLISH_MOD_DESCRIPTOR }} && github.REF  == 'refs/heads/master' || github.REF  == 'refs/heads/main' 
+        if: ${{ env.PUBLISH_MOD_DESCRIPTOR && github.ref == 'refs/heads/master' || github.ref  == 'refs/heads/main' }} 
         run: echo "${{ steps.modDescriptorPost.outputs.response }}"
