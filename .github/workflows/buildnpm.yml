@@ -152,7 +152,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       - name: Set up NPM environment for publishing
-        if: github.REF  == 'refs/heads/master' || github.REF  == 'refs/heads/main'
+        if: ${{ env.BRANCH }}  == 'master' || ${{ env.BRANCH }}  == 'main' || ${{ env.BRANCH }}  == 'FOLIO-3067-ReplaceJenkins'
         uses: actions/setup-node@v2
         with:
           node-version: ${{ env.NODEJS_VERSION }}
