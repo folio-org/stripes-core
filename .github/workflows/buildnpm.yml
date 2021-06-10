@@ -157,19 +157,19 @@ jobs:
           always-auth: true
 
       - name: Set _auth in .npmrc
-        if: contains(github.REF, 'master') || contains(github.REF,'main') || contains(github.REF,'FOLIO-3067-ReplaceJenkins')
+        if: ${{ github.REF }} == 'refs/heads/master' || ${{ github.REF }} == 'refs/heads/main' || ${{ github.REF }} == 'refs/heads/FOLIO-3067-ReplaceJenkins'
         run: npm config set @folio:registry https://repository.folio.org/repository/npm-folioci-test/ &&  npm config set _auth ${{ env.NODE_AUTH_TOKEN }}
         env: 
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Publish NPM
-        if: contains(github.REF, 'master') || contains(github.REF,'main') || contains(github.REF,'FOLIO-3067-ReplaceJenkins')
+        if: ${{ github.REF }} == 'refs/heads/master' || ${{ github.REF }} == 'refs/heads/main' || ${{ github.REF }} == 'refs/heads/FOLIO-3067-ReplaceJenkins'
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       
       - name: Read module descriptor
-        if: ${{ env.PUBLISH_MOD_DESCRIPTOR }} && contains(github.REF, 'master') || contains(github.REF,'main') || contains(github.REF,'FOLIO-3067-ReplaceJenkins')
+        if: ${{ env.PUBLISH_MOD_DESCRIPTOR }} && ${{ github.REF }} == 'refs/heads/master' || ${{ github.REF }} == 'refs/heads/main' || ${{ github.REF }} == 'refs/heads/FOLIO-3067-ReplaceJenkins'
         id: moduleDescriptor
         uses: juliangruber/read-file-action@v1
         with: 
@@ -189,5 +189,5 @@ jobs:
           password: ${{ secrets.FOLIO_REGISTRY_PASSWORD }}
 
       - name: Show FOLIO registry response
-        if: ${{ env.PUBLISH_MOD_DESCRIPTOR }} && contains(github.REF, 'master') || contains(github.REF,'main') || contains(github.REF,'FOLIO-3067-ReplaceJenkins')
+        if: ${{ env.PUBLISH_MOD_DESCRIPTOR }} && ${{ github.REF }} == 'refs/heads/master' || ${{ github.REF }} == 'refs/heads/main' || ${{ github.REF }} == 'refs/heads/FOLIO-3067-ReplaceJenkins'
         run: echo "${{ steps.modDescriptorPost.outputs.response }}"
