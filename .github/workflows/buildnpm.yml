@@ -163,7 +163,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Publish NPM
-        if: github.REF  == 'refs/heads/master' || github.REF  == 'refs/heads/main' || github.REF == 'refs/head/FOLIO-3067-ReplaceJenkins'
+        if: github.ref  == 'refs/heads/master' || github.ref  == 'refs/heads/main' || github.ref == 'refs/head/FOLIO-3067-ReplaceJenkins'
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
