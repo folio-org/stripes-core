@@ -12,6 +12,7 @@ import { withModules } from '../Modules';
 import { LastVisitedContext } from '../LastVisited';
 import { clearOkapiToken, clearCurrentUser } from '../../okapiActions';
 import { resetStore } from '../../mainActions';
+import { getLocale } from '../../loginServices';
 import {
   updateQueryResource,
   getLocationQuery,
@@ -117,16 +118,21 @@ class MainNav extends Component {
 
   // Return the user to the login screen, but after logging in they will return to their previous activity.
   returnToLogin() {
-    this.store.dispatch(clearOkapiToken());
-    this.store.dispatch(clearCurrentUser());
-    this.store.dispatch(resetStore());
-    localforage.removeItem('okapiSess');
+    const { okapi } = this.store.getState();
+
+    return getLocale(okapi.url, this.store, okapi.tenant).then(() => {
+      this.store.dispatch(clearOkapiToken());
+      this.store.dispatch(clearCurrentUser());
+      this.store.dispatch(resetStore());
+      localforage.removeItem('okapiSess');
+    });
   }
 
   // return the user to the login screen, but after logging in they will be brought to the default screen.
   logout() {
-    this.returnToLogin();
-    this.props.history.push('/');
+    this.returnToLogin().then(() => {
+      this.props.history.push("/");
+    });
   }
 
   getAppList(lastVisited) {

@@ -1,15 +1,22 @@
 # Change history for stripes-core
 
-## 7.2.0 (IN PROGRESS)
+## [7.2.0](https://github.com/folio-org/stripes-core/tree/v7.2.0) (2021-06-09)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v7.1.0...v7.2.0)
 
-* Improve SAML security. Refs STCOR-544, STCOR-545.
+* Provide `useCustomFields` hook. Refs STCOR-550.
+* Compile translations to improve performance and reduce console noise.
 * Move `<CalloutContext>` back to `<RootWithIntl>` to make sure `<Callout>` works between relogins. Fixes STCOR-534.
+* Avoid ReDoS in `validatePhoneNumber`. Refs STCOR-535.
 * Access to Help Site from Universal Header. Refs STCOR-531.
 * Do not pass useless props to `<Dropdown>`. Refs STCOR-539.
 * Introduce `<ModuleHierarchyProvider>`. Refs STCOR-529.
 * Introduce `useNamespace` hook which returns module namespace. Refs STCOR-537.
 * Indicate that logging out of FOLIO will not affect an SSO session. Refs STCOR-532.
 * Introduce `withNamespace` HOC. Refs STCOR-542.
+* Improve SAML security. Refs STCOR-544, STCOR-545.
+* Pull user's locale settings from configurations on login, if available. Refs STCOR-527.
+* Able to close `<AppContextDropdown>` outside. Refs STCOR-543.
+* Update `@folio/stripes-cli` to `^2.3.0` and update `karma.conf.js` for `karma` `v6` compatibility. Refs STCOR-551.
 
 ## [7.1.1](https://github.com/folio-org/stripes-core/tree/v7.1.1) (2021-04-22)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v7.1.0...v7.1.1)
@@ -19,7 +26,7 @@
 ## [7.1.0](https://github.com/folio-org/stripes-core/tree/v7.1.0) (2021-04-08)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v7.0.0...v7.1.0)
 
-* provide and HTML entity id for the settings Paneset. Refs STCOR-526.
+* provide an HTML entity id for the settings Paneset. Refs STCOR-526.
 * Removed fetch of protected okapi /version endpoint. Refs STCOR-525.
 * Updated app context menu button style. Refs STCOR-524.
 * Increment `stripes-components` to `v9.1.0`.

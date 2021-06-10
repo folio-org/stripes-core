@@ -1,5 +1,5 @@
 {
-    "front.welcome": "Bem vindo. O futuro das Bibliotecas é LIVRE!",
+    "front.welcome": "Bem-vindo, o Futuro das Bibliotecas É ABERTO!",
     "front.home": "Início",
     "front.about": "Versões de software",
     "button.new": "+ Novo",
@@ -14,7 +14,7 @@
     "label.createEntry": "Criar {entry}",
     "label.missingRequiredField": "Por favor, preencha isto para continuar",
     "label.okay": "OK",
-    "successfullyDeleted": "A {entry} <strong>{name}</strong> foi   <strong>removida</strong> com sucesso.",
+    "successfullyDeleted": "A {entry} <strong>{name}</strong> foi <strong>removida</strong> com sucesso.",
     "untitled": "Sem título",
     "about.paneTitle": "Versões de software",
     "about.userInterface": "Interface de usuário",
@@ -130,5 +130,5 @@
     "routeErrorBoundary.goToAppHomeLabel": "Voltar ao início",
     "routeErrorBoundary.goToModuleHomeLabel": "Voltar para a página de destino de {name}",
     "routeErrorBoundary.goToModuleSettingsHomeLabel": "Voltar para as configurações de {name}",
-    "logoutKeepSso": "Log out from FOLIO, keep SSO session"
+    "logoutKeepSso": "Sair do FOLIO, manter sessão de SSO"
 }
