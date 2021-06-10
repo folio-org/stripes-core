@@ -75,8 +75,8 @@ jobs:
         run: yarn lint
         continue-on-error: true
 
-      - name: Run yarn test
-        run: xvfb-run --server-args="-screen 0 1024x768x24" yarn test $YARN_TEST_OPTIONS 
+      # - name: Run yarn test
+      #   run: xvfb-run --server-args="-screen 0 1024x768x24" yarn test $YARN_TEST_OPTIONS 
 
       - name: Generate Module descriptor
         if: ${{ env.PUBLISH_MOD_DESCRIPTOR }}
@@ -176,7 +176,7 @@ jobs:
           path: ./module-descriptor.json
 
       - name: Publish module descriptor
-        if: ${{ env.PUBLISH_MOD_DESCRIPTOR }} && contains(github.REF, 'master') || contains(github.REF,'main') || contains(github.REF,'FOLIO-3067-ReplaceJenkins')
+        if: ${{ env.PUBLISH_MOD_DESCRIPTOR }} && ${{ github.REF }} == 'refs/heads/master' || ${{ github.REF }} == 'refs/heads/main' || ${{ github.REF }} == 'refs/heads/FOLIO-3067-ReplaceJenkins'
         id: modDescriptorPost
         uses: fjogeleit/http-request-action@master
         with:
