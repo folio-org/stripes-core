@@ -57,7 +57,7 @@
     "title.ssoRedirect": "Redirecionamento SSO",
     "title.notFound": "Não encontrado",
     "title.ssoLanding": "Destino de SSO",
-    "currentServicePoint": "Serviço",
+    "currentServicePoint": "Serviço {name}",
     "currentServicePointNotSelected": "Serviço: Nenhum",
     "title.CreateResetPassword": "Escolha uma palavra-passe",
     "title.forgotPassword": "Esqueceu a palavra-passe?",

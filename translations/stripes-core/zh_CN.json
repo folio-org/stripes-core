@@ -36,7 +36,7 @@
     "about.key.incompatibleIntf": "必需但仅在非兼容版本中出现的接口以<span>橙色</span>突出显示。",
     "about.key.compatible": "兼容版本中存在的接口以普通字体显示。",
     "about.moduleTypeCount": "{count, number} {type} {count, plural, one {模块} other {模块}}",
-    "about.appModuleCount": "{count, number}应用{count, number} {count, plural, one {模块} other {模块}}",
+    "about.appModuleCount": "{count, number}应用 {count, plural, one {模块} other {模块}}",
     "about.settingsModuleCount": "{count, number} 设置 {count, plural, one {模块} other {模块}}",
     "about.pluginModuleCount": "{count, number} 插件 {count, plural, one {模块} other {模块}}",
     "loggedInAs": "以{firstName} {lastName}登录",
