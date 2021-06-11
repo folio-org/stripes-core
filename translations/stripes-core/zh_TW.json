@@ -36,7 +36,7 @@
     "about.key.incompatibleIntf": "必需的，但僅存在於不相容版本中的介面接口，以<span>橙色</span>突出顯示。",
     "about.key.compatible": "相容版本中存在的介面接口以普通字體呈現。",
     "about.moduleTypeCount": "{count, number} {type} {count, plural, one {模組} other {模組}}",
-    "about.appModuleCount": "{count, number} app {count, number} {count, plural, one {模組} other {模組}}",
+    "about.appModuleCount": "{count, number} app {count, plural, one {模組} other {模組}}",
     "about.settingsModuleCount": "{count, number} 設置 {count, plural, one {模組} other {模組}}",
     "about.pluginModuleCount": "{count, number} 插件 {count, plural, one {模組} other {模組}}",
     "loggedInAs": "登入為 {firstName} {lastName} ",
