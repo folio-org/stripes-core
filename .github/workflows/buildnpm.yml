@@ -152,7 +152,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       - name: Set up NPM environment for publishing
-        if: ${{ github.ref == 'refs/heads/master' || github.ref  == 'refs/heads/main'}}
+        if: ${{ github.ref == 'refs/heads/master' || github.ref  == 'refs/heads/main' || github.ref == 'refs/heads/FOLIO-3067-ReplaceJenkins'}}
         uses: actions/setup-node@v2
         with:
           node-version: ${{ env.NODEJS_VERSION }}
@@ -160,26 +160,26 @@ jobs:
           always-auth: true
 
       - name: Set _auth in .npmrc
-        if: ${{ github.ref == 'refs/heads/master' || github.ref  == 'refs/heads/main' }}
+        if: ${{ github.ref == 'refs/heads/master' || github.ref  == 'refs/heads/main' || github.ref == 'refs/heads/FOLIO-3067-ReplaceJenkins' }}
         run: npm config set @folio:registry https://repository.folio.org/repository/npm-folioci-test/ &&  npm config set _auth ${{ env.NODE_AUTH_TOKEN }}
         env: 
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Publish NPM
-        if: ${{ github.ref == 'refs/heads/master' || github.ref  == 'refs/heads/main' }}
+        if: ${{ github.ref == 'refs/heads/master' || github.ref  == 'refs/heads/main' || github.ref == 'refs/heads/FOLIO-3067-ReplaceJenkins' }}
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       
       - name: Read module descriptor
-        if: ${{ env.PUBLISH_MOD_DESCRIPTOR && github.ref == 'refs/heads/master' || github.ref  == 'refs/heads/main' }}
+        if: ${{ env.PUBLISH_MOD_DESCRIPTOR && github.ref == 'refs/heads/master' || github.ref  == 'refs/heads/main' || github.ref == 'refs/heads/FOLIO-3067-ReplaceJenkins' }}
         id: moduleDescriptor
         uses: juliangruber/read-file-action@v1
         with: 
           path: ./module-descriptor.json
 
       - name: Publish module descriptor
-        if: ${{ env.PUBLISH_MOD_DESCRIPTOR && github.ref == 'refs/heads/master' || github.ref  == 'refs/heads/main' }} 
+        if: ${{ env.PUBLISH_MOD_DESCRIPTOR && github.ref == 'refs/heads/master' || github.ref  == 'refs/heads/main' || github.ref == 'refs/heads/FOLIO-3067-ReplaceJenkins' }} 
         id: modDescriptorPost
         uses: fjogeleit/http-request-action@master
         with:
@@ -192,5 +192,5 @@ jobs:
           password: ${{ secrets.FOLIO_REGISTRY_PASSWORD }}
 
       - name: Show FOLIO registry response
-        if: ${{ env.PUBLISH_MOD_DESCRIPTOR && github.ref == 'refs/heads/master' || github.ref  == 'refs/heads/main' }} 
+        if: ${{ env.PUBLISH_MOD_DESCRIPTOR && github.ref == 'refs/heads/master' || github.ref  == 'refs/heads/main' || github.ref == 'refs/heads/FOLIO-3067-ReplaceJenkins' }} 
         run: echo "${{ steps.modDescriptorPost.outputs.response }}"
