@@ -128,7 +128,7 @@
     "about.incompatibleModuleCount": "{count, number} Versione {count, plural, one {del modulo} other {dei moduli}} non compatibile",
     "routeErrorBoundary.sub": "Si è verificato un errore in questa pagina e non può essere caricata.",
     "routeErrorBoundary.goToAppHomeLabel": "Ritorno alla home",
-    "routeErrorBoundary.goToModuleHomeLabel": "Torna alla pagina di destinazione {nome}",
+    "routeErrorBoundary.goToModuleHomeLabel": "Torna alla pagina di destinazione {name}",
     "routeErrorBoundary.goToModuleSettingsHomeLabel": "Torna alle impostazioni di {name}",
     "logoutKeepSso": "Disconnettersi da FOLIO, mantenere la sessione SSO"
 }

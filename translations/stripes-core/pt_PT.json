@@ -88,7 +88,7 @@
     "mainnav.topLevelLabel": "Primário",
     "mainnav.applicationListLabel": "Lista de aplicações",
     "errors.default.error": "Desculpe, a informação inserida não corresponde aos nossos registos.",
-    "errors.username.incorrect": "Erro ao verificar a existência do utilizador: Nenhum utilizador encontrado com o nome {username}",
+    "errors.username.incorrect": "This FOLIO account cannot be located. Please contact your FOLIO systems administrator.",
     "errors.password.incorrect": "Credenciais inválidas",
     "errors.user.blocked": "Por motivos de segurança, a sua conta foi bloqueada. Por favor, tente novamente ou entre em contacto com o administrador do sistema FOLIO.",
     "errors.password.match.error": "A palavra-passe não corresponde. Digite a sua palavra-passe novamente.",
