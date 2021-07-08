@@ -22,6 +22,10 @@
   min-height: var(--main-nav-min-height-desktop);
   z-index: 99999;
   position: relative;
+
+  & li {
+    color: var(--color-text);
+  }
 }
 
 .nowrap {
