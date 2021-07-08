@@ -171,8 +171,8 @@ class ProfileDropdown extends Component {
           {
             intl => {
               const items = [
-                `Locale: ${intl.locale}`,
-                `Perms: ${Object.keys(currentPerms || {}).sort().join(', ')}`,
+                `${intl.formatMessage({ id: 'stripes-core.mainnav.profileDropdown.locale' })}: ${intl.locale}`,
+                `${intl.formatMessage({ id: 'stripes-core.mainnav.profileDropdown.permissions' })}: ${Object.keys(currentPerms || {}).sort().join(', ')}`,
               ];
 
               return (

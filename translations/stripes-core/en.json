@@ -101,6 +101,9 @@
   "mainnav.myProfileAriaLabel": "My profile",
   "mainnav.skipMainNavigation": "Skip Main Navigation",
 
+  "mainnav.profileDropdown.locale": "Locale",
+  "mainnav.profileDropdown.permissions": "Permissions",
+
   "errors.default.error": "Sorry, the information entered does not match our records.",
   "errors.username.incorrect": "This FOLIO account cannot be located. Please contact your FOLIO systems administrator.",
   "errors.password.incorrect": "Bad credentials",
