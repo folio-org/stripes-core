@@ -2,6 +2,7 @@
 
 ## 7.3.0 IN PROGRESS
 
+* Localize ProfileDropdown text. Fixes STCOR-554.
 * Increase contrast for ProfileDropdown permissions display. Fixes STCOR-553.
 
 ## [7.2.0](https://github.com/folio-org/stripes-core/tree/v7.2.0) (2021-06-09)
