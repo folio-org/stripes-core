@@ -145,7 +145,7 @@ jobs:
       
       - name: Generate Module descriptor
         if: ${{ env.PUBLISH_MOD_DESCRIPTOR }}
-        run: stripes mod descriptor --full --strict | jq '.[]' > ${{ env.MODULE_DESCRIPTOR_DIR }}/${{ env.FOLIO_NAME }}.json
+        run: yarn stripes mod descriptor --full --strict | jq '.[]' > ${{ env.MODULE_DESCRIPTOR_DIR }}/${{ env.FOLIO_NAME }}.json
       
 
       - name: Publish Module descriptor
