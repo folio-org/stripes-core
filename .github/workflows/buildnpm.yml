@@ -1,7 +1,7 @@
-# This workflow will do a clean install of node dependencies, build the source code, 
-# run unit tests, and perform a SonarCloud scan. 
+# This workflow will do a clean install of node dependencies, build the source code,
+# run unit tests, and perform a SonarCloud scan.
 
-# For more information see: 
+# For more information see:
 # https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 
 # Common FOLIO configurable env:
@@ -12,7 +12,7 @@
 
 
 name: buildNPM Snapshot
-on: 
+on:
   push:
     paths-ignore:
       - 'translations/**'
@@ -53,11 +53,11 @@ jobs:
       - run: yarn config set @folio:registry $FOLIO_NPM_REGISTRY
 
       - name: Set FOLIO NPM snapshot version
-        run: | 
+        run: |
           git clone https://github.com/folio-org/folio-tools.git
           npm --no-git-tag-version version `folio-tools/github-actions-scripts/folioci_npmver.sh`
           rm -rf folio-tools
-        env: 
+        env:
           JOB_ID: ${{ github.run_number }}
 
 
@@ -72,12 +72,12 @@ jobs:
         continue-on-error: true
 
       - name: Run yarn test
-        run: xvfb-run --server-args="-screen 0 1024x768x24" yarn test $YARN_TEST_OPTIONS 
+        run: xvfb-run --server-args="-screen 0 1024x768x24" yarn test $YARN_TEST_OPTIONS
 
       - name: Publish Jest unit test results
         uses: docker://ghcr.io/enricomi/publish-unit-test-result-action:v1
         if: always()
-        with: 
+        with:
           github_token: ${{ github.token }}
           files: "${{ env.JEST_JUNIT_OUTPUT_DIR }}/*.xml"
           check_name: Jest Unit Test Results
@@ -86,16 +86,16 @@ jobs:
 
       - name: Publish Jest coverage report
         uses: actions/upload-artifact@v2
-        if: always() 
-        with: 
-          name: jest-coverage-report 
+        if: always()
+        with:
+          name: jest-coverage-report
           path: ${{ env.JEST_COVERAGE_REPORT_DIR }}
           retention-days: 30
 
       - name: Publish BigTest unit test results
         uses: docker://ghcr.io/enricomi/publish-unit-test-result-action:v1
         if: always()
-        with: 
+        with:
           github_token: ${{ github.token }}
           files: "${{ env.BIGTEST_JUNIT_OUTPUT_DIR }}/*.xml"
           check_name: BigTest Unit Test Results
@@ -104,32 +104,32 @@ jobs:
 
       - name: Publish BigTest coverage report
         uses: actions/upload-artifact@v2
-        if: always() 
-        with: 
-          name: bigtest-coverage-report 
+        if: always()
+        with:
+          name: bigtest-coverage-report
           path: ${{ env.BIGTEST_COVERAGE_REPORT_DIR }}
           retention-days: 30
- 
-      - name: Publish yarn.lock 
+
+      - name: Publish yarn.lock
         uses: actions/upload-artifact@v2
         if: failure()
-        with: 
+        with:
           name: yarn.lock
           path: yarn.lock
           retention-days: 5
 
       - name: Fetch branches for SonarCloud
         run: git fetch --no-tags ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY} +refs/heads/master:refs/remotes/origin/master
-        
+
       - name: Run SonarCloud scan
         uses: sonarsource/sonarcloud-github-action@master
         with:
           args: >
-            -Dsonar.organization=folio-org 
+            -Dsonar.organization=folio-org
             -Dsonar.projectKey=org.folio:${{ github.event.repository.name }}
             -Dsonar.projectName=${{ github.event.repository.name }}
             -Dsonar.sources=${{ env.SQ_ROOT_DIR }}
-            -Dsonar.language=js 
+            -Dsonar.language=js
             -Dsonar.javascript.lcov.reportPaths=${{ env.SQ_LCOV_REPORT }}
             -Dsonar.exclusions=${{ env.SQ_EXCLUSIONS }}
         env:
@@ -142,11 +142,15 @@ jobs:
         with:
           token: ${{ secrets.NPM_TOKEN }}
           registry: https://repository.folio.org/repository/npm-folioci-test/
-      
+
+      - name: Generate artifacts directory
+        if: ${{ env.PUBLISH_MOD_DESCRIPTOR }}
+        run: mkdir -p ${{ env.MODULE_DESCRIPTOR_DIR }}
+
       - name: Generate Module descriptor
         if: ${{ env.PUBLISH_MOD_DESCRIPTOR }}
-        run: yarn stripes mod descriptor --full --strict | jq '.[]' > ${{ env.MODULE_DESCRIPTOR_DIR }}/${{ env.FOLIO_NAME }}.json
-      
+        run: ./node_modules/.bin/stripes mod descriptor --full --strict | jq '.[]' > ${{ env.MODULE_DESCRIPTOR_DIR }}/${{ env.FOLIO_NAME }}.json
+
 
       - name: Publish Module descriptor
         uses: fjogeleit/http-request-action@master
@@ -156,5 +160,3 @@ jobs:
           file: '{ "file": "${{ env.MODULE_DESCRIPTOR_DIR }}/${{ env.FOLIO_NAME }}.json" }'
           username: ${{ secrets.FOLIO_REGISTRY_USERNAME }}
           password: ${{ secrets.FOLIO_REGISTRY_PASSWORD }}
-
-
