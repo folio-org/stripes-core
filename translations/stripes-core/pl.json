@@ -130,5 +130,7 @@
     "routeErrorBoundary.goToAppHomeLabel": "Wróć na stronę główną",
     "routeErrorBoundary.goToModuleHomeLabel": "Wróć do {name} strony docelowej",
     "routeErrorBoundary.goToModuleSettingsHomeLabel": "Wróć do {name} ustawień",
-    "logoutKeepSso": "Log out from FOLIO, keep SSO session"
+    "logoutKeepSso": "Log out from FOLIO, keep SSO session",
+    "mainnav.profileDropdown.locale": "Locale",
+    "mainnav.profileDropdown.permissions": "Permissions"
 }
