@@ -130,5 +130,7 @@
     "routeErrorBoundary.goToAppHomeLabel": "العودة إلى الرئيسية",
     "routeErrorBoundary.goToModuleHomeLabel": "العودة إلى الصفحة المقصودة {name}",
     "routeErrorBoundary.goToModuleSettingsHomeLabel": "العودة إلى إعدادات {name}",
-    "logoutKeepSso": "سجّل الخروج من فوليو واحتفظ بجلسة SSO"
+    "logoutKeepSso": "سجّل الخروج من فوليو واحتفظ بجلسة SSO",
+    "mainnav.profileDropdown.locale": "إعداد محلي",
+    "mainnav.profileDropdown.permissions": "صلاحيات"
 }
