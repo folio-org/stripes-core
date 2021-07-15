@@ -33,4 +33,5 @@ export {
 
 /* misc */
 export { supportedLocales } from './src/loginServices';
+export { supportedNumberingSystems } from './src/loginServices';
 export { userLocaleConfig } from './src/loginServices';
