@@ -39,11 +39,11 @@ class AppContextDropdown extends React.Component {
       />
     );
 
-    const renderMenu = ({ open }) => (
+    const renderMenu = ({ open: openRenderMenu }) => (
       <DropdownMenu
         id="App_context_dropdown_menu"
         onToggle={handleToggle}
-        open={open}
+        open={openRenderMenu}
       >
         {/* `currently, dropdowns need something initially rendered
         in order for the element to render/be used

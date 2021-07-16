@@ -158,7 +158,7 @@ class ProfileDropdown extends Component {
     const { stripes, onLogout } = this.props;
     const user = this.getUserData();
     const currentPerms = stripes.user ? stripes.user.perms : undefined;
-    const messageId = stripes.okapi.ssoEnabled ? 'stripes-core.logoutKeepSso': 'stripes-core.logout';
+    const messageId = stripes.okapi.ssoEnabled ? 'stripes-core.logoutKeepSso' : 'stripes-core.logout';
 
     /**
      * Show perms, locale etc.
