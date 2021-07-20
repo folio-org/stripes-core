@@ -36,7 +36,7 @@
     "about.key.incompatibleIntf": "必需的，但僅存在於不相容版本中的介面接口，以<span>橙色</span>突出顯示。",
     "about.key.compatible": "相容版本中存在的介面接口以普通字體呈現。",
     "about.moduleTypeCount": "{count, number} {type} {count, plural, one {模組} other {模組}}",
-    "about.appModuleCount": "{count, number} app {count, number} {count, plural, one {模組} other {模組}}",
+    "about.appModuleCount": "{count, number} app {count, plural, one {模組} other {模組}}",
     "about.settingsModuleCount": "{count, number} 設置 {count, plural, one {模組} other {模組}}",
     "about.pluginModuleCount": "{count, number} 插件 {count, plural, one {模組} other {模組}}",
     "loggedInAs": "登入為 {firstName} {lastName} ",
@@ -77,7 +77,7 @@
     "label.your.email": "已發送電子郵件給您",
     "label.check.email": "請查看您的電子郵件",
     "label.caution.email": "如果您没有收到电子邮件, 请检查您的垃圾邮件、社交或其他文件夹。或联系您的 folio 系统管理员",
-    "label.sent.email": "已向 {hiddenusumail} 发送了一封电子邮件。",
+    "label.sent.email": "已向 {hiddenUserEmail} 发送了一封电子邮件。",
     "label.congratulations": "祝贺！",
     "label.changed.password": "您已成功更改密码。",
     "setPassword": "设置密码",
@@ -88,7 +88,7 @@
     "mainnav.topLevelLabel": "主要",
     "mainnav.applicationListLabel": "Application List",
     "errors.default.error": "对不起, 输入的信息与我们的记录不符。",
-    "errors.username.incorrect": "找不到使用者 {username}，請洽館員。",
+    "errors.username.incorrect": "This FOLIO account cannot be located. Please contact your FOLIO systems administrator.",
     "errors.password.incorrect": "凭据错误",
     "errors.user.blocked": "出于安全考虑，您的帐户已被锁定。请重试或联系您的FOLIO系统管理员。",
     "errors.password.match.error": "密碼不對，請重新輸入密碼。",
@@ -130,5 +130,7 @@
     "routeErrorBoundary.goToAppHomeLabel": "返回主页",
     "routeErrorBoundary.goToModuleHomeLabel": "返回{name}登陆页面",
     "routeErrorBoundary.goToModuleSettingsHomeLabel": "返回{name}设置",
-    "logoutKeepSso": "Log out from FOLIO, keep SSO session"
+    "logoutKeepSso": "Log out from FOLIO, keep SSO session",
+    "mainnav.profileDropdown.locale": "Locale",
+    "mainnav.profileDropdown.permissions": "Permissions"
 }

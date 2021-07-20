@@ -130,5 +130,7 @@
     "routeErrorBoundary.goToAppHomeLabel": "ホームに戻る",
     "routeErrorBoundary.goToModuleHomeLabel": "{name}のランディングページに戻る",
     "routeErrorBoundary.goToModuleSettingsHomeLabel": "{name}設定に戻る",
-    "logoutKeepSso": "Log out from FOLIO, keep SSO session"
+    "logoutKeepSso": "Log out from FOLIO, keep SSO session",
+    "mainnav.profileDropdown.locale": "Locale",
+    "mainnav.profileDropdown.permissions": "Permissions"
 }

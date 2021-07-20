@@ -36,7 +36,7 @@
     "about.key.incompatibleIntf": "必需但仅在非兼容版本中出现的接口以<span>橙色</span>突出显示。",
     "about.key.compatible": "兼容版本中存在的接口以普通字体显示。",
     "about.moduleTypeCount": "{count, number} {type} {count, plural, one {模块} other {模块}}",
-    "about.appModuleCount": "{count, number}应用{count, number} {count, plural, one {模块} other {模块}}",
+    "about.appModuleCount": "{count, number}应用 {count, plural, one {模块} other {模块}}",
     "about.settingsModuleCount": "{count, number} 设置 {count, plural, one {模块} other {模块}}",
     "about.pluginModuleCount": "{count, number} 插件 {count, plural, one {模块} other {模块}}",
     "loggedInAs": "以{firstName} {lastName}登录",
@@ -77,7 +77,7 @@
     "label.your.email": "已向您的电子邮件地址发送了一封电子邮件",
     "label.check.email": "检查您的电子邮件",
     "label.caution.email": "如果未收到电子邮件, 请检查您的垃圾邮件、社交或其他文件夹。或联系folio系统管理员",
-    "label.sent.email": "已向 {hiddenusumail} 发送了一封电子邮件。",
+    "label.sent.email": "已向 {hiddenUserEmail} 发送了一封电子邮件。",
     "label.congratulations": "祝贺！",
     "label.changed.password": "您已成功更改密码。",
     "setPassword": "设置密码",
@@ -130,5 +130,7 @@
     "routeErrorBoundary.goToAppHomeLabel": "返回主页",
     "routeErrorBoundary.goToModuleHomeLabel": "返回{name}登陆页面",
     "routeErrorBoundary.goToModuleSettingsHomeLabel": "返回{name}设置",
-    "logoutKeepSso": "从FOLIO注销，保持SSO会话"
+    "logoutKeepSso": "从FOLIO注销，保持SSO会话",
+    "mainnav.profileDropdown.locale": "Locale",
+    "mainnav.profileDropdown.permissions": "Permissions"
 }

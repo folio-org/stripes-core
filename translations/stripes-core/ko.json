@@ -130,5 +130,7 @@
     "routeErrorBoundary.goToAppHomeLabel": "홈으로 돌아가기",
     "routeErrorBoundary.goToModuleHomeLabel": "Return to {name} landing page",
     "routeErrorBoundary.goToModuleSettingsHomeLabel": "{name} 설정으로 돌아 가기",
-    "logoutKeepSso": "FOLIO에서 로그 아웃하고 SSO 세션 유지"
+    "logoutKeepSso": "FOLIO에서 로그 아웃하고 SSO 세션 유지",
+    "mainnav.profileDropdown.locale": "Locale",
+    "mainnav.profileDropdown.permissions": "Permissions"
 }

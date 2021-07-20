@@ -18,7 +18,7 @@
     "untitled": "بدون عنوان",
     "about.paneTitle": "إصدارات البرمجيات",
     "about.userInterface": "واجهة المستخدم",
-    "about.foundation": "مؤسسة",
+    "about.foundation": "المؤسسة",
     "about.okapiServices": "خدمات أوكابي",
     "about.unknown": "غير معروف",
     "about.version": "الإصدار {version}",
@@ -130,5 +130,7 @@
     "routeErrorBoundary.goToAppHomeLabel": "العودة إلى الرئيسية",
     "routeErrorBoundary.goToModuleHomeLabel": "العودة إلى الصفحة المقصودة {name}",
     "routeErrorBoundary.goToModuleSettingsHomeLabel": "العودة إلى إعدادات {name}",
-    "logoutKeepSso": "سجّل الخروج من فوليو واحتفظ بجلسة SSO"
+    "logoutKeepSso": "سجّل الخروج من فوليو واحتفظ بجلسة SSO",
+    "mainnav.profileDropdown.locale": "إعداد محلي",
+    "mainnav.profileDropdown.permissions": "صلاحيات"
 }

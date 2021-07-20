@@ -57,7 +57,7 @@
     "title.ssoRedirect": "SSO átirányítás",
     "title.notFound": "Nem található",
     "title.ssoLanding": "SSO beállítások",
-    "currentServicePoint": "Szolgáltatási pont: {név}",
+    "currentServicePoint": "Szolgáltatási pont: {name}",
     "currentServicePointNotSelected": "Szolgáltatási pont: nincs",
     "title.CreateResetPassword": "Choose a password",
     "title.forgotPassword": "Forgot password?",
@@ -130,5 +130,7 @@
     "routeErrorBoundary.goToAppHomeLabel": "Return to home",
     "routeErrorBoundary.goToModuleHomeLabel": "Return to {name} landing page",
     "routeErrorBoundary.goToModuleSettingsHomeLabel": "Return to {name} settings",
-    "logoutKeepSso": "Log out from FOLIO, keep SSO session"
+    "logoutKeepSso": "Log out from FOLIO, keep SSO session",
+    "mainnav.profileDropdown.locale": "Locale",
+    "mainnav.profileDropdown.permissions": "Permissions"
 }
