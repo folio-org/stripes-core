@@ -1,6 +1,6 @@
 # Change history for stripes-core
 
-## 7.3.0 IN PROGRESS
+## 8.0.0 IN PROGRESS
 
 * Localize ProfileDropdown text. Fixes STCOR-554.
 * Increase contrast for ProfileDropdown permissions display. Fixes STCOR-553.
@@ -9,6 +9,7 @@
 * Wait for SSO enabled status response before setting okapi ready. Fixes STCOR-557.
 * `AppContextDropdown` uses a constant value to retrieve its icon. Fixes STCOR-547.
 * Upgrade RxJS to v6. Refs STCOR-536.
+* React 17. Refs STCOR-501.
 
 ## [7.2.0](https://github.com/folio-org/stripes-core/tree/v7.2.0) (2021-06-09)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v7.1.0...v7.2.0)
