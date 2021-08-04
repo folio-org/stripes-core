@@ -132,5 +132,5 @@
     "routeErrorBoundary.goToModuleSettingsHomeLabel": "Return to {name} settings",
     "logoutKeepSso": "Log out from FOLIO, keep SSO session",
     "mainnav.profileDropdown.locale": "Locale",
-    "mainnav.profileDropdown.permissions": "Permissions"
+    "mainnav.profileDropdown.permissions": "Permisos"
 }

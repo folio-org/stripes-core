@@ -131,6 +131,6 @@
     "routeErrorBoundary.goToModuleHomeLabel": "返回{name}登陆页面",
     "routeErrorBoundary.goToModuleSettingsHomeLabel": "返回{name}设置",
     "logoutKeepSso": "从FOLIO注销，保持SSO会话",
-    "mainnav.profileDropdown.locale": "Locale",
-    "mainnav.profileDropdown.permissions": "Permissions"
+    "mainnav.profileDropdown.locale": "语言环境",
+    "mainnav.profileDropdown.permissions": "权限"
 }
