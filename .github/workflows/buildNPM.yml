@@ -21,7 +21,6 @@ jobs:
       SQ_ROOT_DIR: <set to to root SQ directory relative to top-level directory)
       COMPILE_TRANSLATION_FILES: true
       PUBLISH_MOD_DESCRIPTOR: <publish mod desc to FOLIO registry (true|false)>
-      COMPILE_TRANSLATION_FILES: true
       FOLIO_NPM_REGISTRY: 'https://repository.folio.org/repository/npm-folioci/'
       FOLIO_MD_REGISTRY: 'https://folio-registry.dev.folio.org'
       NODEJS_VERSION: '12'
@@ -186,7 +185,7 @@ jobs:
         id: modDescriptorPost
         uses: fjogeleit/http-request-action@master
         with:
-          url: ${{ FOLIO_MD_REGISTRY }}/_/proxy/modules
+          url: ${{ env.FOLIO_MD_REGISTRY }}/_/proxy/modules
           method: 'POST'
           contentType: 'application/json; charset=utf-8'
           customHeaders: '{ "Accept": "application/json; charset=utf-8" }'
