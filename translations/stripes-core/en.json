@@ -14,6 +14,8 @@
   "front.welcome": "Welcome, the Future Of Libraries Is OPEN!",
   "front.home": "Home",
   "front.about": "Software versions",
+  "front.error.header": "404 Error",
+  "front.error.message": "The requested URL {br}{url}{br} was not found on this server.",
   "button.new": "+ New",
   "button.new_tooltip": "Add {entry}",
   "button.edit": "Edit",

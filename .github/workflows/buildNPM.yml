@@ -71,15 +71,15 @@ jobs:
         run: xvfb-run --server-args="-screen 0 1024x768x24" yarn test $YARN_TEST_OPTIONS
 
       - name: Run yarn formatjs-compile
-        if : ${{ env.COMPILE_TRANSLATION_FILES }}
+        if : ${{ env.COMPILE_TRANSLATION_FILES == 'true' }}
         run: yarn formatjs-compile
 
       - name: Generate FOLIO module descriptor
-        if: ${{ env.PUBLISH_MOD_DESCRIPTOR }}
+        if: ${{ env.PUBLISH_MOD_DESCRIPTOR == 'true' }}
         run: yarn build-mod-descriptor
 
       - name: Print FOLIO module descriptor
-        if: ${{ env.PUBLISH_MOD_DESCRIPTOR }}
+        if: ${{ env.PUBLISH_MOD_DESCRIPTOR == 'true' }}
         run: cat module-descriptor.json
 
       - name: Publish Jest unit test results
@@ -89,7 +89,7 @@ jobs:
           github_token: ${{ github.token }}
           files: "${{ env.JEST_JUNIT_OUTPUT_DIR }}/*.xml"
           check_name: Jest Unit Test Results
-          comment_on_pr: true
+          comment_mode: update last
           comment_title: Jest Unit Test Statistics
 
       - name: Publish Jest coverage report
@@ -107,7 +107,7 @@ jobs:
           github_token: ${{ github.token }}
           files: "${{ env.BIGTEST_JUNIT_OUTPUT_DIR }}/*.xml"
           check_name: BigTest Unit Test Results
-          comment_on_pr: true
+          comment_mode: update last
           comment_title: BigTest Unit Test Statistics
 
       - name: Publish BigTest coverage report
@@ -174,14 +174,14 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Read module descriptor
-        if: ${{ env.PUBLISH_MOD_DESCRIPTOR && github.ref == 'refs/heads/master' || github.ref  == 'refs/heads/main' }}
+        if: ${{ env.PUBLISH_MOD_DESCRIPTOR == 'true' && github.ref == 'refs/heads/master' || github.ref  == 'refs/heads/main' }}
         id: moduleDescriptor
         uses: juliangruber/read-file-action@v1
         with:
           path: ./module-descriptor.json
 
       - name: Publish module descriptor
-        if: ${{ env.PUBLISH_MOD_DESCRIPTOR && github.ref == 'refs/heads/master' || github.ref  == 'refs/heads/main' }}
+        if: ${{ env.PUBLISH_MOD_DESCRIPTOR == 'true' && github.ref == 'refs/heads/master' || github.ref  == 'refs/heads/main' }}
         id: modDescriptorPost
         uses: fjogeleit/http-request-action@master
         with:
