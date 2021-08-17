@@ -90,19 +90,19 @@ jobs:
         run: xvfb-run --server-args="-screen 0 1024x768x24" yarn test $YARN_TEST_OPTIONS
 
       - name: Run yarn formatjs-compile
-        if : ${{ env.COMPILE_TRANSLATION_FILES == true }}
+        if: ${{ env.COMPILE_TRANSLATION_FILES == 'true' }}
         run: yarn formatjs-compile
 
       - name: Generate FOLIO module descriptor
-        if: ${{ env.PUBLISH_MOD_DESCRIPTOR == true }}
+        if: ${{ env.PUBLISH_MOD_DESCRIPTOR == 'true' }}
         run: yarn build-mod-descriptor
 
       - name: Print FOLIO module descriptor
-        if: ${{ env.PUBLISH_MOD_DESCRIPTOR == true }}
+        if: ${{ env.PUBLISH_MOD_DESCRIPTOR == 'true' }}
         run: cat module-descriptor.json
 
       - name: Read module descriptor
-        if: ${{ env.PUBLISH_MOD_DESCRIPTOR == true }}
+        if: ${{ env.PUBLISH_MOD_DESCRIPTOR == 'true' }}
         id: moduleDescriptor
         uses: juliangruber/read-file-action@v1
         with:
@@ -112,7 +112,7 @@ jobs:
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login https://docker.io/v2/ -u "${{ secrets.DOCKER_USER }}" --password-stdin
 
       - name: Start a local instance of Okapi
-        if: ${{ env.PUBLISH_MOD_DESCRIPTOR == true }}
+        if: ${{ env.PUBLISH_MOD_DESCRIPTOR == 'true' }}
         run: |
           docker pull folioorg/okapi:latest
           docker run --name okapi -t -detach folioorg/okapi:latest dev
@@ -120,7 +120,7 @@ jobs:
           sleep 10
 
       - name: Pull all Module descriptors to local Okapi instance
-        if: ${{ env.PUBLISH_MOD_DESCRIPTOR == true }}
+        if: ${{ env.PUBLISH_MOD_DESCRIPTOR == 'true' }}
         uses: fjogeleit/http-request-action@master
         with:
           url: http://${{ env.OKAPI_IP }}:9130/_/proxy/pull/modules
@@ -131,7 +131,7 @@ jobs:
           timeout: 60000
 
       - name: Perform local Okapi dependency check
-        if: ${{ env.PUBLISH_MOD_DESCRIPTOR == true }}
+        if: ${{ env.PUBLISH_MOD_DESCRIPTOR == 'true' }}
         uses: fjogeleit/http-request-action@master
         with:
           url: http://${{ env.OKAPI_IP }}:9130/_/proxy/modules?preRelease=false&npmSnapshot=false
@@ -228,7 +228,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Publish module descriptor to FOLIO registry
-        if: ${{ env.PUBLISH_MOD_DESCRIPTOR == true }}
+        if: ${{ env.PUBLISH_MOD_DESCRIPTOR == 'true' }}
         id: modDescriptorPost
         uses: fjogeleit/http-request-action@master
         with:
