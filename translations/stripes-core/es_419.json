@@ -127,10 +127,12 @@
     "about.missingModuleCount": "{count, number} Falta {count, plural, one {módulo} other {módulos}}",
     "about.incompatibleModuleCount": "{count, number} Incompatible {count, plural, one { module } other { modules }} versión",
     "routeErrorBoundary.sub": "An error occurred on this page and it could not be loaded.",
-    "routeErrorBoundary.goToAppHomeLabel": "Return to home",
+    "routeErrorBoundary.goToAppHomeLabel": "Vuelve a casa",
     "routeErrorBoundary.goToModuleHomeLabel": "Return to {name} landing page",
     "routeErrorBoundary.goToModuleSettingsHomeLabel": "Return to {name} settings",
     "logoutKeepSso": "Cerrar sesión en FOLIO, mantener la sesión SSO",
     "mainnav.profileDropdown.locale": "Lugar",
-    "mainnav.profileDropdown.permissions": "Permisos"
+    "mainnav.profileDropdown.permissions": "Permisos",
+    "front.error.header": "Error 404",
+    "front.error.message": "The requested URL {br}{url}{br} was not found on this server."
 }
