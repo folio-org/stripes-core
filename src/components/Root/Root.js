@@ -22,7 +22,7 @@ import enhanceReducer from '../../enhanceReducer';
 import createApolloClient from '../../createApolloClient';
 import createReactQueryClient from '../../createReactQueryClient';
 import createSwrOptions from '../../createSwrOptions';
-import { setSinglePlugin, setBindings, setOkapiToken, setTimezone, setCurrency } from '../../okapiActions';
+import { setSinglePlugin, setBindings, setOkapiToken, setTimezone, setCurrency, setTranslations } from '../../okapiActions';
 import { loadTranslations, checkOkapiSession } from '../../loginServices';
 import { getQueryResourceKey, getCurrentModule } from '../../locationService';
 import Stripes from '../../Stripes';
@@ -109,6 +109,21 @@ class Root extends Component {
     return false;
   }
 
+  /*
+   * global function to update current locale translations
+   * after translating or editing library-defined controlled vocabularies translations. see [UXPROD-3148] issue.
+  */
+  setCurrentLocaleTranslations = (store, newTrans) => {
+    if (store.getState().okapi.token) {
+      store.dispatch(
+        setTranslations(
+          Object.assign(store.getState().okapi.translations, newTrans)
+        )
+      );
+    }
+    return null;
+  };
+
   render() {
     const { logger, store, epics, config, okapi, actionNames, token, disableAuth, currentUser, currentPerms, locale, defaultTranslations, timezone, currency, plugins, bindings, discovery, translations, history, serverDown } = this.props;
 
@@ -138,6 +153,13 @@ class Root extends Component {
       setLocale: (localeValue) => { loadTranslations(store, localeValue, defaultTranslations); },
       setTimezone: (timezoneValue) => { store.dispatch(setTimezone(timezoneValue)); },
       setCurrency: (currencyValue) => { store.dispatch(setCurrency(currencyValue)); },
+      /*
+       * global function to update current locale translations
+       * after translating or editing library-defined controlled vocabularies translations. see [UXPROD-3148] issue.
+      */
+      setTranslations: (newTrans) => {
+        this.setCurrentLocaleTranslations(store, newTrans);
+      },
       plugins: plugins || {},
       setSinglePlugin: (key, value) => { store.dispatch(setSinglePlugin(key, value)); },
       bindings,
