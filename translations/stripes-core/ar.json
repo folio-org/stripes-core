@@ -132,5 +132,7 @@
     "routeErrorBoundary.goToModuleSettingsHomeLabel": "العودة إلى إعدادات {name}",
     "logoutKeepSso": "سجّل الخروج من فوليو واحتفظ بجلسة SSO",
     "mainnav.profileDropdown.locale": "إعداد محلي",
-    "mainnav.profileDropdown.permissions": "صلاحيات"
+    "mainnav.profileDropdown.permissions": "صلاحيات",
+    "front.error.header": "خطأ 404",
+    "front.error.message": "لم يتم العثور على عنوان URL المطلوب {br}{url}{br} على هذا الخادم."
 }
