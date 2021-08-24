@@ -132,7 +132,7 @@
     "routeErrorBoundary.goToModuleSettingsHomeLabel": "返回{name}设置",
     "logoutKeepSso": "从FOLIO注销，保持SSO会话",
     "mainnav.profileDropdown.locale": "语言环境",
-    "mainnav.profileDropdown.permissions": "权限",
+    "mainnav.profileDropdown.permissions": "许可",
     "front.error.header": "404 Error",
     "front.error.message": "The requested URL {br}{url}{br} was not found on this server."
 }
