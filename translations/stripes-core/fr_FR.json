@@ -132,5 +132,7 @@
     "routeErrorBoundary.goToModuleSettingsHomeLabel": "Revenir aux paramètres de {name}",
     "logoutKeepSso": "Déconnectez-vous de FOLIO, gardez la session SSO",
     "mainnav.profileDropdown.locale": "Locale",
-    "mainnav.profileDropdown.permissions": "Permissions"
+    "mainnav.profileDropdown.permissions": "Permissions",
+    "front.error.header": "Erreur 404",
+    "front.error.message": "L'URL demandée {br}{url}{br} n'a pas été trouvée sur ce serveur."
 }
