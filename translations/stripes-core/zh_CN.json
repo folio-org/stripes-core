@@ -133,6 +133,6 @@
     "logoutKeepSso": "从FOLIO注销，保持SSO会话",
     "mainnav.profileDropdown.locale": "语言环境",
     "mainnav.profileDropdown.permissions": "许可",
-    "front.error.header": "404 Error",
-    "front.error.message": "The requested URL {br}{url}{br} was not found on this server."
+    "front.error.header": "404错误",
+    "front.error.message": "在此服务器上找不到请求的 URL {br}{url}{br}"
 }
