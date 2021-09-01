@@ -134,5 +134,5 @@
     "mainnav.profileDropdown.locale": "Idioma",
     "mainnav.profileDropdown.permissions": "Permissões",
     "front.error.header": "Erro 404",
-    "front.error.message": "The requested URL {br}{url}{br} was not found on this server."
+    "front.error.message": "O URL solicitado {br}{url}{br} não foi encontrado neste servidor."
 }
