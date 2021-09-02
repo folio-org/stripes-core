@@ -7,6 +7,7 @@
 * Provide a list of available numbering formats. Fixes STCOR-555.
 * Add 404 error screen for invalid url. Fixes STCOR-533.
 * Wait for SSO enabled status response before setting okapi ready. Fixes STCOR-557.
+* `AppContextDropdown` uses a constant value to retrieve its icon. Fixes STCOR-547.
 
 ## [7.2.0](https://github.com/folio-org/stripes-core/tree/v7.2.0) (2021-06-09)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v7.1.0...v7.2.0)
