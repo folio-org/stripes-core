@@ -57,7 +57,7 @@
     "moment": "^2.29.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
-    "react-intl": "^5.7.0",
+    "react-intl": "^5.8.0",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
     "sinon": "^7.3.2",
@@ -104,13 +104,13 @@
     "swr": "^0.4.1"
   },
   "peerDependencies": {
-    "@folio/stripes-components": "^9.2.0",
+    "@folio/stripes-components": "^9.0.0",
     "@folio/stripes-connect": "^6.2.0",
     "@folio/stripes-logger": "^1.0.0",
     "moment": "^2.29.0",
     "react": "*",
     "react-dom": "*",
-    "react-intl": "^5.7.0",
+    "react-intl": "^5.8.0",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0"
   },

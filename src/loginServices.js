@@ -147,12 +147,30 @@ export function loadTranslations(store, locale, defaultTranslations = {}) {
     });
   }
 
+  // fetch library-defined controlled vocabularies translations, then merge it with stripes translations. see [UXPROD-3148] issue
   return fetch(translations[region] ? translations[region] : translations[parentLocale])
     .then((response) => {
       if (response.ok) {
         response.json().then((stripesTranslations) => {
-          store.dispatch(setTranslations(Object.assign(stripesTranslations, defaultTranslations)));
-          store.dispatch(setLocale(locale));
+          if (store.getState().okapi.token) {
+            fetch(`${store.getState().okapi.url}/translations?query=(localeCode==${locale})`,
+              { headers: getHeaders(store.getState().okapi.tenant, store.getState().okapi.token) })
+              .then((translation) => {
+                if (translation.status === 200) {
+                  translation.json().then((trans) => {
+                    const conVocabTranslations = trans.translations.map(conTrans => conTrans.messages)[0] || {};
+                    store.dispatch(setTranslations(Object.assign(stripesTranslations, defaultTranslations, conVocabTranslations)));
+                    store.dispatch(setLocale(locale));
+                  });
+                } else {
+                  store.dispatch(setTranslations(Object.assign(stripesTranslations, defaultTranslations)));
+                  store.dispatch(setLocale(locale));
+                }
+              });
+          } else {
+            store.dispatch(setTranslations(Object.assign(stripesTranslations, defaultTranslations)));
+            store.dispatch(setLocale(locale));
+          }
         });
       }
     });
