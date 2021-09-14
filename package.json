@@ -48,8 +48,8 @@
     "@bigtest/react": "^0.1.2",
     "@folio/eslint-config-stripes": "^6.0.0",
     "@folio/stripes-cli": "^2.4.0",
-    "@folio/stripes-components": "folio-org/stripes-components#stripes-v7",
-    "@folio/stripes-connect": "folio-org/stripes-connect#stripes-v7",
+    "@folio/stripes-components": "^10.0.0",
+    "@folio/stripes-connect": "^7.0.0",
     "@folio/stripes-logger": "^1.0.0",
     "@formatjs/cli": "^4.2.2",
     "chai": "^4.1.2",
@@ -101,8 +101,8 @@
     "swr": "^0.4.1"
   },
   "peerDependencies": {
-    "@folio/stripes-components": "folio-org/stripes-components#stripes-v7",
-    "@folio/stripes-connect": "folio-org/stripes-connect#stripes-v7",
+    "@folio/stripes-components": "^10.0.0",
+    "@folio/stripes-connect": "^7.0.0",
     "@folio/stripes-logger": "^1.0.0",
     "moment": "^2.29.0",
     "react": "^17.0.2",
@@ -110,8 +110,8 @@
     "react-intl": "^5.7.0",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
-    "rxjs": "^6.6.3",
-    "redux-observable": "^1.2.0"
+    "redux-observable": "^1.2.0",
+    "rxjs": "^6.6.3"
   },
   "resolutions": {
     "moment": "~2.24.0"
