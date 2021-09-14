@@ -48,9 +48,9 @@
     "login": "Log in",
     "username": "Username",
     "password": "Password",
-    "loggingIn": "Logging in...",
-    "button.back": "Back",
-    "button.confirm": "Confirm",
+    "loggingIn": "Přihlašování ...",
+    "button.back": "Zpět",
+    "button.confirm": "Potvrdit",
     "title.home": "Home",
     "title.settings": "Settings",
     "title.login": "Log in",
@@ -132,7 +132,7 @@
     "routeErrorBoundary.goToModuleSettingsHomeLabel": "Return to {name} settings",
     "logoutKeepSso": "Log out from FOLIO, keep SSO session",
     "mainnav.profileDropdown.locale": "Locale",
-    "mainnav.profileDropdown.permissions": "Permissions",
-    "front.error.header": "404 Error",
+    "mainnav.profileDropdown.permissions": "Oprávnění",
+    "front.error.header": "Chyba 404",
     "front.error.message": "The requested URL {br}{url}{br} was not found on this server."
 }

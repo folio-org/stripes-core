@@ -132,5 +132,7 @@
     "routeErrorBoundary.goToModuleSettingsHomeLabel": "{name} 설정으로 돌아 가기",
     "logoutKeepSso": "FOLIO에서 로그 아웃하고 SSO 세션 유지",
     "mainnav.profileDropdown.locale": "Locale",
-    "mainnav.profileDropdown.permissions": "Permissions"
+    "mainnav.profileDropdown.permissions": "Permissions",
+    "front.error.header": "404 Error",
+    "front.error.message": "The requested URL {br}{url}{br} was not found on this server."
 }
