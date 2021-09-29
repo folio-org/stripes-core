@@ -19,8 +19,8 @@ jobs:
     env:
       YARN_TEST_OPTIONS: '--karma.singleRun --karma.browsers ChromeDocker --karma.reporters mocha junit --coverage'
       SQ_ROOT_DIR: './src'
-      COMPILE_TRANSLATION_FILES: true
-      PUBLISH_MOD_DESCRIPTOR: true
+      COMPILE_TRANSLATION_FILES: 'true'
+      PUBLISH_MOD_DESCRIPTOR: 'true'
       FOLIO_NPM_REGISTRY: 'https://repository.folio.org/repository/npm-folioci/'
       FOLIO_MD_REGISTRY: 'https://folio-registry.dev.folio.org'
       NODEJS_VERSION: '12'
@@ -71,15 +71,15 @@ jobs:
         run: xvfb-run --server-args="-screen 0 1024x768x24" yarn test $YARN_TEST_OPTIONS
 
       - name: Run yarn formatjs-compile
-        if : ${{ env.COMPILE_TRANSLATION_FILES }}
+        if : ${{ env.COMPILE_TRANSLATION_FILES == 'true' }}
         run: yarn formatjs-compile
 
       - name: Generate FOLIO module descriptor
-        if: ${{ env.PUBLISH_MOD_DESCRIPTOR }}
+        if: ${{ env.PUBLISH_MOD_DESCRIPTOR == 'true' }}
         run: yarn build-mod-descriptor
 
       - name: Print FOLIO module descriptor
-        if: ${{ env.PUBLISH_MOD_DESCRIPTOR }}
+        if: ${{ env.PUBLISH_MOD_DESCRIPTOR == 'true' }}
         run: cat module-descriptor.json
 
       - name: Publish Jest unit test results
@@ -89,7 +89,7 @@ jobs:
           github_token: ${{ github.token }}
           files: "${{ env.JEST_JUNIT_OUTPUT_DIR }}/*.xml"
           check_name: Jest Unit Test Results
-          comment_on_pr: true
+          comment_mode: update last
           comment_title: Jest Unit Test Statistics
 
       - name: Publish Jest coverage report
@@ -107,7 +107,7 @@ jobs:
           github_token: ${{ github.token }}
           files: "${{ env.BIGTEST_JUNIT_OUTPUT_DIR }}/*.xml"
           check_name: BigTest Unit Test Results
-          comment_on_pr: true
+          comment_mode: update last
           comment_title: BigTest Unit Test Statistics
 
       - name: Publish BigTest coverage report
@@ -126,8 +126,11 @@ jobs:
           path: yarn.lock
           retention-days: 5
 
+      - name: Set default branch as env variable
+        run: echo "DEFAULT_BRANCH=${{ github.event.repository.default_branch }}" >> $GITHUB_ENV
+
       - name: Fetch branches for SonarCloud
-        run: git fetch --no-tags ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY} +refs/heads/master:refs/remotes/origin/master
+        run: git fetch --no-tags ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY} +refs/heads/${{ env.DEFAULT_BRANCH }}:refs/remotes/origin/${{ env.DEFAULT_BRANCH }}
 
       - name: Run SonarCloud scan
         uses: sonarsource/sonarcloud-github-action@master
@@ -174,14 +177,14 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Read module descriptor
-        if: ${{ env.PUBLISH_MOD_DESCRIPTOR && github.ref == 'refs/heads/master' || github.ref  == 'refs/heads/main' }}
+        if: ${{ env.PUBLISH_MOD_DESCRIPTOR == 'true' && github.ref == 'refs/heads/master' || github.ref  == 'refs/heads/main' }}
         id: moduleDescriptor
         uses: juliangruber/read-file-action@v1
         with:
           path: ./module-descriptor.json
 
       - name: Publish module descriptor
-        if: ${{ env.PUBLISH_MOD_DESCRIPTOR && github.ref == 'refs/heads/master' || github.ref  == 'refs/heads/main' }}
+        if: ${{ env.PUBLISH_MOD_DESCRIPTOR == 'true' && github.ref == 'refs/heads/master' || github.ref  == 'refs/heads/main' }}
         id: modDescriptorPost
         uses: fjogeleit/http-request-action@master
         with:

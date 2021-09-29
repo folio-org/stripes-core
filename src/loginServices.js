@@ -419,10 +419,12 @@ function getSSOEnabled(okapiUrl, store, tenant) {
     .then((response) => {
       if (response.status >= 400) {
         store.dispatch(checkSSO(false));
+        return null;
       } else {
-        response.json().then((json) => {
-          store.dispatch(checkSSO(json.active));
-        });
+        return response.json()
+          .then((json) => {
+            store.dispatch(checkSSO(json.active));
+          });
       }
     })
     .catch(() => {
@@ -535,7 +537,7 @@ export function checkOkapiSession(okapiUrl, store, tenant) {
       return sess !== null ? validateUser(okapiUrl, store, tenant, sess) : null;
     })
     .then(() => {
-      getSSOEnabled(okapiUrl, store, tenant);
+      return getSSOEnabled(okapiUrl, store, tenant);
     })
     .finally(() => {
       store.dispatch(setOkapiReady());

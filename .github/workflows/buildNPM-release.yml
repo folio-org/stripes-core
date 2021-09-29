@@ -23,8 +23,8 @@ jobs:
     env:
       YARN_TEST_OPTIONS: '--karma.singleRun --karma.browsers ChromeDocker --karma.reporters mocha junit --coverage'
       SQ_ROOT_DIR: './src'
-      COMPILE_TRANSLATION_FILES: true
-      PUBLISH_MOD_DESCRIPTOR: true
+      COMPILE_TRANSLATION_FILES: 'true'
+      PUBLISH_MOD_DESCRIPTOR: 'true' 
       FOLIO_NPM_REGISTRY: 'https://repository.folio.org/repository/npm-folio/'
       FOLIO_MD_REGISTRY: 'https://folio-registry.dev.folio.org'
       NODEJS_VERSION: '12'
@@ -90,19 +90,19 @@ jobs:
         run: xvfb-run --server-args="-screen 0 1024x768x24" yarn test $YARN_TEST_OPTIONS
 
       - name: Run yarn formatjs-compile
-        if : ${{ env.COMPILE_TRANSLATION_FILES }}
+        if: ${{ env.COMPILE_TRANSLATION_FILES == 'true' }}
         run: yarn formatjs-compile
 
       - name: Generate FOLIO module descriptor
-        if: ${{ env.PUBLISH_MOD_DESCRIPTOR }}
+        if: ${{ env.PUBLISH_MOD_DESCRIPTOR == 'true' }}
         run: yarn build-mod-descriptor
 
       - name: Print FOLIO module descriptor
-        if: ${{ env.PUBLISH_MOD_DESCRIPTOR }}
+        if: ${{ env.PUBLISH_MOD_DESCRIPTOR == 'true' }}
         run: cat module-descriptor.json
 
       - name: Read module descriptor
-        if: ${{ env.PUBLISH_MOD_DESCRIPTOR }}
+        if: ${{ env.PUBLISH_MOD_DESCRIPTOR == 'true' }}
         id: moduleDescriptor
         uses: juliangruber/read-file-action@v1
         with:
@@ -112,7 +112,7 @@ jobs:
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login https://docker.io/v2/ -u "${{ secrets.DOCKER_USER }}" --password-stdin
 
       - name: Start a local instance of Okapi
-        if: ${{ env.PUBLISH_MOD_DESCRIPTOR }}
+        if: ${{ env.PUBLISH_MOD_DESCRIPTOR == 'true' }}
         run: |
           docker pull folioorg/okapi:latest
           docker run --name okapi -t -detach folioorg/okapi:latest dev
@@ -120,7 +120,7 @@ jobs:
           sleep 10
 
       - name: Pull all Module descriptors to local Okapi instance
-        if: ${{ env.PUBLISH_MOD_DESCRIPTOR }}
+        if: ${{ env.PUBLISH_MOD_DESCRIPTOR == 'true' }}
         uses: fjogeleit/http-request-action@master
         with:
           url: http://${{ env.OKAPI_IP }}:9130/_/proxy/pull/modules
@@ -131,7 +131,7 @@ jobs:
           timeout: 60000
 
       - name: Perform local Okapi dependency check
-        if: ${{ env.PUBLISH_MOD_DESCRIPTOR }}
+        if: ${{ env.PUBLISH_MOD_DESCRIPTOR == 'true' }}
         uses: fjogeleit/http-request-action@master
         with:
           url: http://${{ env.OKAPI_IP }}:9130/_/proxy/modules?preRelease=false&npmSnapshot=false
@@ -147,7 +147,7 @@ jobs:
           github_token: ${{ github.token }}
           files: "${{ env.JEST_JUNIT_OUTPUT_DIR }}/*.xml"
           check_name: Jest Unit Test Results
-          comment_on_pr: true
+          comment_mode: update last
           comment_title: Jest Unit Test Statistics
 
       - name: Publish Jest coverage report
@@ -165,7 +165,7 @@ jobs:
           github_token: ${{ github.token }}
           files: "${{ env.BIGTEST_JUNIT_OUTPUT_DIR }}/*.xml"
           check_name: BigTest Unit Test Results
-          comment_on_pr: true
+          comment_mode: update last
           comment_title: BigTest Unit Test Statistics
 
       - name: Publish BigTest coverage report
@@ -184,8 +184,11 @@ jobs:
           path: yarn.lock
           retention-days: 5
 
+      - name: Set default branch as env variable
+        run: echo "DEFAULT_BRANCH=${{ github.event.repository.default_branch }}" >> $GITHUB_ENV
+
       - name: Fetch branches for SonarCloud
-        run: git fetch --no-tags ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY} +refs/heads/master:refs/remotes/origin/master
+        run: git fetch --no-tags ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY} +refs/heads/${{ env.DEFAULT_BRANCH }}:refs/remotes/origin/${{ env.DEFAULT_BRANCH }}
 
       - name: Run SonarCloud scan
         uses: sonarsource/sonarcloud-github-action@master
@@ -228,7 +231,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Publish module descriptor to FOLIO registry
-        if: ${{ env.PUBLISH_MOD_DESCRIPTOR }}
+        if: ${{ env.PUBLISH_MOD_DESCRIPTOR == 'true' }}
         id: modDescriptorPost
         uses: fjogeleit/http-request-action@master
         with:
