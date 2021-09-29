@@ -1,6 +1,7 @@
 # Change history for stripes-core
 
-## 8.0.0 IN PROGRESS
+## [8.0.0](https://github.com/folio-org/stripes-core/tree/v8.0.0) (2021-09-27)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v7.2.0...v8.0.0)
 
 * Localize ProfileDropdown text. Fixes STCOR-554.
 * Increase contrast for ProfileDropdown permissions display. Fixes STCOR-553.
