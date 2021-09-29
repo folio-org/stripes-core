@@ -348,8 +348,6 @@ function createOkapiSession(okapiUrl, store, tenant, token, data) {
     servicePoints[0] :
     servicePoints.find(sp => sp.id === curSpId);
 
-    console.log(data)
-
   const user = {
     id: data.user.id,
     username: data.user.username,
@@ -503,13 +501,13 @@ function processOkapiSession(okapiUrl, store, tenant, resp, ssoToken) {
           headers,
           method: 'GET',
         })
-        .then(response => response.json())
-        .then(permissions => {
-          return {
-            user,
-            permissions
-          }
-        })
+          .then(response => response.json())
+          .then(permissions => {
+            return {
+              user,
+              permissions
+            };
+          });
       })
       .then(data => {
         createOkapiSession(okapiUrl, store, tenant, token, { user: data.user, permissions: data.permissions });
@@ -560,23 +558,23 @@ export function requestLogin(okapiUrl, store, tenant, data) {
     headers: { 'X-Okapi-Tenant': tenant, 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
   })
-  .then(resp => {
-    if (resp.status >= 400) {
-      handleLoginError(dispatch, resp);
-    } else {
-      token = resp.headers.get('X-Okapi-Token') || ssoToken;
-      const headers = {
-        'X-Okapi-Tenant': tenant,
-        'X-Okapi-Token': token,
-        'Content-Type': 'application/json',
-      };
-      return fetch(`${okapiUrl}/users?query=username==${data.username}`, {
-        headers,
-        method: 'GET',
-      })
-    }
-  })
-  .then(resp => processOkapiSession(okapiUrl, store, tenant, resp, token));
+    .then(resp => {
+      if (resp.status >= 400) {
+        handleLoginError(dispatch, resp);
+      } else {
+        token = resp.headers.get('X-Okapi-Token') || ssoToken;
+        const headers = {
+          'X-Okapi-Tenant': tenant,
+          'X-Okapi-Token': token,
+          'Content-Type': 'application/json',
+        };
+        return fetch(`${okapiUrl}/users?query=username==${data.username}`, {
+          headers,
+          method: 'GET',
+        });
+      }
+    })
+    .then(resp => processOkapiSession(okapiUrl, store, tenant, resp, token));
 }
 
 /**
