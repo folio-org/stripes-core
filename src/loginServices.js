@@ -560,9 +560,9 @@ export function requestLogin(okapiUrl, store, tenant, data) {
   })
     .then(resp => {
       if (resp.status >= 400) {
-        handleLoginError(dispatch, resp);
+        handleLoginError(store.dispatch, resp);
       } else {
-        token = resp.headers.get('X-Okapi-Token') || ssoToken;
+        token = resp.headers.get('X-Okapi-Token');
         const headers = {
           'X-Okapi-Tenant': tenant,
           'X-Okapi-Token': token,
