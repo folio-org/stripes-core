@@ -63,7 +63,7 @@
   "about.notEnabledModules": "Installed modules that are not enabled for this tenant are displayed <span>in gray</span>.",
   "about.moduleCount": "{count, number} {count, plural, one {module} other {modules}}",
   "about.missingModuleCount": "{count, number} missing {count, plural, one {interface} other {interfaces}}",
-  "about.incompatibleModuleCount": "{count, number} Incompatible {count, plural, one {module} other {modules}} version",
+  "about.incompatibleModuleCount": "{count, number} incompatible interface {count, plural, one {version} other {versions}}",
   "about.interfaceCount": "{count, number} {count, plural, one {interface} other {interfaces}}",
   "about.uiOrServiceDependencies": "UI/service dependencies",
   "about.moduleDependsOn": "{module} depends on:",
