@@ -1,6 +1,12 @@
-const connectErrorEpic = action$ => action$
-  .ofType('@@stripes-connect/FETCH_ERROR', '@@stripes-connect/MUTATION_ERROR')
-  .map((action) => {
+import { ofType } from 'redux-observable';
+import {
+  map,
+  filter,
+} from 'rxjs/operators';
+
+const connectErrorEpic = action$ => action$.pipe(
+  ofType('@@stripes-connect/FETCH_ERROR', '@@stripes-connect/MUTATION_ERROR'),
+  map((action) => {
     const { meta, payload: e } = action;
     const op = action.type === '@@stripes-connect/FETCH_ERROR' ? 'GET' : e.type;
     const status = e.status || e.httpStatus;
@@ -30,7 +36,8 @@ const connectErrorEpic = action$ => action$
     // through it this will better follow the redux-observable pattern of emitting
     // another action.
     return { type: '@@stripes-core/CREATE_NOTIFICATION' };
-  })
-  .filter(action => action !== undefined);
+  }),
+  filter(action => action !== undefined),
+);
 
 export default connectErrorEpic;
