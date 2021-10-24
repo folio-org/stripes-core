@@ -1,5 +1,10 @@
 # Change history for stripes-core
 
+## [8.0.1](https://github.com/folio-org/stripes-core/tree/v8.0.1) (2021-10-24)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v8.0.0...v8.0.1)
+
+* Login screen logos have better proportions. Refs STOR-574.
+
 ## [8.0.0](https://github.com/folio-org/stripes-core/tree/v8.0.0) (2021-09-27)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v7.2.0...v8.0.0)
 
