@@ -9,7 +9,7 @@
 }
 
 .navButton {
-  composes: interactionStylesControl from "@folio/stripes-components/lib/sharedStyles/interactionStyles.css";  /* stylelint-disable-line */
+  composes: interactionStylesControl from "~@folio/stripes-components/lib/sharedStyles/interactionStyles.css";  /* stylelint-disable-line */
   padding: 0 var(--gutter-static-one-third);
   min-height: var(--main-nav-button-min-height);
   font-size: var(--main-nav-button-font-size);
@@ -35,7 +35,7 @@
 }
 
 .isInteractive {
-  composes: interactionStyles from "@folio/stripes-components/lib/sharedStyles/interactionStyles.css";  /* stylelint-disable-line */
+  composes: interactionStyles from "~@folio/stripes-components/lib/sharedStyles/interactionStyles.css";  /* stylelint-disable-line */
 }
 
 /* To make sure we overwrite default link colors */
