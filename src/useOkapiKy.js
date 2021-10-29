@@ -14,6 +14,7 @@ export default () => {
         }
       ]
     },
-    retry: 0
+    retry: 0,
+    timeout: 30000,
   });
 };
