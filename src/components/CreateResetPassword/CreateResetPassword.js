@@ -5,9 +5,11 @@ import { FormattedMessage } from 'react-intl';
 import {
   Field,
   Form,
+  FORM_ERROR,
 } from 'react-final-form';
 
 import isEmpty from 'lodash/isEmpty';
+import isEqual from 'lodash/isEqual';
 
 import {
   TextField,
@@ -16,6 +18,7 @@ import {
   Col,
   PasswordStrength,
   Headline,
+  Layout,
 } from '@folio/stripes-components';
 
 
@@ -58,8 +61,28 @@ class CreateResetPassword extends Component {
       errors: 'stripes-core.errors',
       button: 'stripes-core.button',
     };
-    this.passwordMatchErrorCode = 'password.match.error';
+    this.passwordErrorCodes = {
+      match: 'password.match.error',
+      length: 'password.length.error',
+      numeric: 'password.numeric.error',
+      special: 'password.special.error',
+      lowerAndUpperCase: 'password.lowerAndUpperCase.error',
+    };
+    this.passwordRules = [{
+      regex: /^.{8,}$/,
+      errorCode: this.passwordErrorCodes.length,
+    }, {
+      regex: /\d/,
+      errorCode: this.passwordErrorCodes.numeric,
+    }, {
+      regex: /[ `!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?~]/,
+      errorCode: this.passwordErrorCodes.special,
+    }, {
+      regex: /(?=.*[a-z])(?=.*[A-Z])/,
+      errorCode: this.passwordErrorCodes.lowerAndUpperCase,
+    }];
     this.validators = {
+      newPassword: this.newPasswordFieldValidation,
       confirmPassword: this.confirmPasswordFieldValidation,
     };
     this.inputColProps = {
@@ -79,13 +102,24 @@ class CreateResetPassword extends Component {
     }));
   };
 
+  newPasswordFieldValidation = (value) => {
+    const errorCode = this.passwordRules.find(rule => !rule.regex.test(value))?.errorCode;
+
+    if (errorCode) {
+      this.validationHandler(
+        [errorCode],
+        this.translationNamespaces.errors,
+      );
+    }
+  };
+
   confirmPasswordFieldValidation = (value, { newPassword, confirmPassword } = {}) => {
     const confirmPasswordValid = !(newPassword && confirmPassword && newPassword !== confirmPassword);
     const { clearAuthErrors } = this.props;
 
     if (!confirmPasswordValid) {
       this.validationHandler(
-        [this.passwordMatchErrorCode],
+        [this.passwordErrorCodes.match],
         this.translationNamespaces.errors,
       );
     } else {
@@ -93,13 +127,45 @@ class CreateResetPassword extends Component {
     }
   };
 
-  validationHandler = (errors, translationNamespace) => {
+  validationHandler = ({ newPassword, confirmPassword }) => {
+    const { clearAuthErrors } = this.props;
+
+    if (!newPassword && !confirmPassword) {
+      return null;
+    }
+
+    const errorCode = this.passwordRules.find(rule => !rule.regex.test(newPassword))?.errorCode;
+    const confirmPasswordValid = !(newPassword && confirmPassword && newPassword !== confirmPassword);
+
+    if (errorCode) {
+      this.dispatchValidationError(
+        [errorCode],
+        this.translationNamespaces.errors,
+      );
+
+      return FORM_ERROR;
+    }
+
+    if (!confirmPasswordValid) {
+      this.dispatchValidationError(
+        [this.passwordErrorCodes.match],
+        this.translationNamespaces.errors,
+      );
+
+      return FORM_ERROR;
+    }
+
+    clearAuthErrors();
+    return null;
+  };
+
+  dispatchValidationError = (errors, translationNamespace) => {
     const {
       stripes: {
         store: {
-          dispatch
-        }
-      }
+          dispatch,
+        },
+      },
     } = this.props;
 
     dispatch(setAuthError(errors.map((error) => {
@@ -165,6 +231,8 @@ class CreateResetPassword extends Component {
                 submitting: true,
                 pristine: true,
               }}
+              initialValuesEqual={isEqual}
+              validate={this.validationHandler}
             >
               { ({ handleSubmit, form: { getState } }) => (
                 <form
@@ -209,6 +277,27 @@ class CreateResetPassword extends Component {
                       </Col>
                     </Row>
                   </div>
+                  <div data-test-password-requirements>
+                    <Row center="xs">
+                      <Col
+                        xs={12}
+                        sm={6}
+                      >
+                        <Layout className="textLeft padding-top-gutter padding-start-gutter">
+                          <FormattedMessage id={`${this.translationNamespaces.page}.requirement.length`} />
+                        </Layout>
+                        <Layout className="textLeft padding-top-gutter padding-start-gutter">
+                          <FormattedMessage id={`${this.translationNamespaces.page}.requirement.numeric`} />
+                        </Layout>
+                        <Layout className="textLeft padding-top-gutter padding-start-gutter">
+                          <FormattedMessage id={`${this.translationNamespaces.page}.requirement.special`} />
+                        </Layout>
+                        <Layout className="textLeft padding-top-gutter padding-start-gutter">
+                          <FormattedMessage id={`${this.translationNamespaces.page}.requirement.lowerAndUpperCase`} />
+                        </Layout>
+                      </Col>
+                    </Row>
+                  </div>
                   <div data-test-confirm-password-field>
                     <Row center="xs">
                       <Col
@@ -238,10 +327,8 @@ class CreateResetPassword extends Component {
                             marginBottom0
                             fullWidth
                             inputClass={styles.input}
-                            validationEnabled={false}
                             hasClearIcon={false}
                             autoComplete="new-password"
-                            validate={this.validators.confirmPassword}
                           />
                         </div>
                       </Col>
