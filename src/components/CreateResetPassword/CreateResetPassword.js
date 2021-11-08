@@ -3,10 +3,11 @@ import PropTypes from 'prop-types';
 
 import { FormattedMessage } from 'react-intl';
 import {
+  FormSpy,
   Field,
   Form,
-  FORM_ERROR,
 } from 'react-final-form';
+import { FORM_ERROR } from 'final-form';
 
 import isEmpty from 'lodash/isEmpty';
 import isEqual from 'lodash/isEqual';
@@ -53,6 +54,7 @@ class CreateResetPassword extends Component {
     super(props);
     this.state = {
       passwordMasked: true,
+      formIsPristine: true,
     };
     this.translationNamespaces = {
       module: 'stripes-core',
@@ -81,10 +83,6 @@ class CreateResetPassword extends Component {
       regex: /(?=.*[a-z])(?=.*[A-Z])/,
       errorCode: this.passwordErrorCodes.lowerAndUpperCase,
     }];
-    this.validators = {
-      newPassword: this.newPasswordFieldValidation,
-      confirmPassword: this.confirmPasswordFieldValidation,
-    };
     this.inputColProps = {
       xs:12,
       sm:8,
@@ -102,35 +100,10 @@ class CreateResetPassword extends Component {
     }));
   };
 
-  newPasswordFieldValidation = (value) => {
-    const errorCode = this.passwordRules.find(rule => !rule.regex.test(value))?.errorCode;
-
-    if (errorCode) {
-      this.validationHandler(
-        [errorCode],
-        this.translationNamespaces.errors,
-      );
-    }
-  };
-
-  confirmPasswordFieldValidation = (value, { newPassword, confirmPassword } = {}) => {
-    const confirmPasswordValid = !(newPassword && confirmPassword && newPassword !== confirmPassword);
-    const { clearAuthErrors } = this.props;
-
-    if (!confirmPasswordValid) {
-      this.validationHandler(
-        [this.passwordErrorCodes.match],
-        this.translationNamespaces.errors,
-      );
-    } else {
-      clearAuthErrors();
-    }
-  };
-
   validationHandler = ({ newPassword, confirmPassword }) => {
     const { clearAuthErrors } = this.props;
 
-    if (!newPassword && !confirmPassword) {
+    if (this.state.formIsPristine) {
       return null;
     }
 
@@ -157,6 +130,12 @@ class CreateResetPassword extends Component {
 
     clearAuthErrors();
     return null;
+  };
+
+  onFormStateChange = (state) => {
+    this.setState({
+      formIsPristine: state.pristine,
+    });
   };
 
   dispatchValidationError = (errors, translationNamespace) => {
@@ -235,156 +214,164 @@ class CreateResetPassword extends Component {
               validate={this.validationHandler}
             >
               { ({ handleSubmit, form: { getState } }) => (
-                <form
-                  className={styles.form}
-                  onSubmit={handleSubmit}
-                >
-                  <div data-test-new-password-field>
-                    <Row center="xs">
-                      <Col
-                        xs={12}
-                        sm={6}
+                <>
+                  <form
+                    className={styles.form}
+                    onSubmit={handleSubmit}
+                  >
+                    <div data-test-new-password-field>
+                      <Row center="xs">
+                        <Col
+                          xs={12}
+                          sm={6}
+                        >
+                          <FieldLabel htmlFor="new-password">
+                            <FormattedMessage id={`${this.translationNamespaces.page}.newPassword`} />
+                          </FieldLabel>
+                        </Col>
+                      </Row>
+                      <Row
+                        center="xs"
+                        end="sm"
                       >
-                        <FieldLabel htmlFor="new-password">
-                          <FormattedMessage id={`${this.translationNamespaces.page}.newPassword`} />
-                        </FieldLabel>
-                      </Col>
-                    </Row>
-                    <Row
-                      center="xs"
-                      end="sm"
-                    >
-                      <Col
-                        xs={12}
-                        sm={9}
-                      >
-                        <Field
-                          id="new-password"
-                          name="newPassword"
-                          autoComplete="new-password"
-                          component={PasswordStrength}
-                          inputClass={styles.input}
-                          type={passwordType}
-                          hasClearIcon={false}
-                          autoFocus
-                          errors={errors}
-                          marginBottom0
-                          fullWidth
-                          inputColProps={this.inputColProps}
-                          passwordMeterColProps={this.passwordMeterColProps}
-                          onFocus={() => onPasswordInputFocus(submitIsFailed)}
-                        />
-                      </Col>
-                    </Row>
-                  </div>
-                  <div data-test-password-requirements>
-                    <Row center="xs">
-                      <Col
-                        xs={12}
-                        sm={6}
-                      >
-                        <Layout className="textLeft padding-top-gutter padding-start-gutter">
-                          <FormattedMessage id={`${this.translationNamespaces.page}.requirement.length`} />
-                        </Layout>
-                        <Layout className="textLeft padding-top-gutter padding-start-gutter">
-                          <FormattedMessage id={`${this.translationNamespaces.page}.requirement.numeric`} />
-                        </Layout>
-                        <Layout className="textLeft padding-top-gutter padding-start-gutter">
-                          <FormattedMessage id={`${this.translationNamespaces.page}.requirement.special`} />
-                        </Layout>
-                        <Layout className="textLeft padding-top-gutter padding-start-gutter">
-                          <FormattedMessage id={`${this.translationNamespaces.page}.requirement.lowerAndUpperCase`} />
-                        </Layout>
-                      </Col>
-                    </Row>
-                  </div>
-                  <div data-test-confirm-password-field>
-                    <Row center="xs">
-                      <Col
-                        xs={12}
-                        sm={6}
-                      >
-                        <FieldLabel htmlFor="confirm-password">
-                          <FormattedMessage id={`${this.translationNamespaces.page}.confirmPassword`} />
-                        </FieldLabel>
-                      </Col>
-                    </Row>
-                    <Row
-                      end="sm"
-                      center="xs"
-                      bottom="xs"
-                    >
-                      <Col
-                        xs={12}
-                        sm={6}
-                      >
-                        <div className={styles.formGroup}>
+                        <Col
+                          xs={12}
+                          sm={9}
+                        >
                           <Field
-                            id="confirm-password"
-                            component={TextField}
-                            name="confirmPassword"
+                            id="new-password"
+                            name="newPassword"
+                            autoComplete="new-password"
+                            component={PasswordStrength}
+                            inputClass={styles.input}
                             type={passwordType}
+                            hasClearIcon={false}
+                            autoFocus
+                            errors={errors}
                             marginBottom0
                             fullWidth
-                            inputClass={styles.input}
-                            hasClearIcon={false}
-                            autoComplete="new-password"
+                            inputColProps={this.inputColProps}
+                            passwordMeterColProps={this.passwordMeterColProps}
+                            onFocus={() => onPasswordInputFocus(submitIsFailed)}
                           />
-                        </div>
-                      </Col>
+                        </Col>
+                      </Row>
+                    </div>
+                    <div data-test-password-requirements>
+                      <Row center="xs">
+                        <Col
+                          xs={12}
+                          sm={6}
+                        >
+                          <Layout className="textLeft padding-top-gutter padding-start-gutter">
+                            <FormattedMessage id={`${this.translationNamespaces.page}.requirement.length`} />
+                          </Layout>
+                          <Layout className="textLeft padding-top-gutter padding-start-gutter">
+                            <FormattedMessage id={`${this.translationNamespaces.page}.requirement.numeric`} />
+                          </Layout>
+                          <Layout className="textLeft padding-top-gutter padding-start-gutter">
+                            <FormattedMessage id={`${this.translationNamespaces.page}.requirement.special`} />
+                          </Layout>
+                          <Layout className="textLeft padding-top-gutter padding-start-gutter">
+                            <FormattedMessage id={`${this.translationNamespaces.page}.requirement.lowerAndUpperCase`} />
+                          </Layout>
+                        </Col>
+                      </Row>
+                    </div>
+                    <div data-test-confirm-password-field>
+                      <Row center="xs">
+                        <Col
+                          xs={12}
+                          sm={6}
+                        >
+                          <FieldLabel htmlFor="confirm-password">
+                            <FormattedMessage id={`${this.translationNamespaces.page}.confirmPassword`} />
+                          </FieldLabel>
+                        </Col>
+                      </Row>
+                      <Row
+                        end="sm"
+                        center="xs"
+                        bottom="xs"
+                      >
+                        <Col
+                          xs={12}
+                          sm={6}
+                        >
+                          <div className={styles.formGroup}>
+                            <Field
+                              id="confirm-password"
+                              component={TextField}
+                              name="confirmPassword"
+                              type={passwordType}
+                              marginBottom0
+                              fullWidth
+                              inputClass={styles.input}
+                              hasClearIcon={false}
+                              autoComplete="new-password"
+                            />
+                          </div>
+                        </Col>
+                        <Col
+                          sm={3}
+                          xs={12}
+                        >
+                          <div
+                            data-test-change-password-toggle-mask-btn
+                            className={styles.toggleButtonWrapper}
+                          >
+                            <Button
+                              type="button"
+                              buttonStyle="link"
+                              onClick={this.togglePasswordMask}
+                            >
+                              <FormattedMessage id={passwordToggleLabelId} />
+                            </Button>
+                          </div>
+                        </Col>
+                      </Row>
+                    </div>
+                    <Row center="xs">
                       <Col
-                        sm={3}
                         xs={12}
+                        sm={6}
                       >
                         <div
-                          data-test-change-password-toggle-mask-btn
-                          className={styles.toggleButtonWrapper}
+                          className={styles.formGroup}
+                          data-test-submit
                         >
                           <Button
-                            type="button"
-                            buttonStyle="link"
-                            onClick={this.togglePasswordMask}
+                            buttonStyle="primary"
+                            id="clickable-login"
+                            type="submit"
+                            buttonClass={styles.submitButton}
+                            disabled={isButtonDisabled(getState)}
+                            fullWidth
+                            marginBottom0
                           >
-                            <FormattedMessage id={passwordToggleLabelId} />
+                            <FormattedMessage id={buttonLabelId} />
                           </Button>
                         </div>
                       </Col>
                     </Row>
-                  </div>
-                  <Row center="xs">
-                    <Col
-                      xs={12}
-                      sm={6}
-                    >
-                      <div
-                        className={styles.formGroup}
-                        data-test-submit
+                    <Row center="xs">
+                      <Col
+                        xs={12}
+                        sm={6}
                       >
-                        <Button
-                          buttonStyle="primary"
-                          id="clickable-login"
-                          type="submit"
-                          buttonClass={styles.submitButton}
-                          disabled={isButtonDisabled(getState)}
-                          fullWidth
-                          marginBottom0
-                        >
-                          <FormattedMessage id={buttonLabelId} />
-                        </Button>
-                      </div>
-                    </Col>
-                  </Row>
-                  <Row center="xs">
-                    <Col
-                      xs={12}
-                      sm={6}
-                    >
-                      <div className={styles.authErrorsWrapper}>
-                        <AuthErrorsContainer errors={errors} />
-                      </div>
-                    </Col>
-                  </Row>
-                </form>
+                        <div className={styles.authErrorsWrapper}>
+                          <AuthErrorsContainer errors={errors} />
+                        </div>
+                      </Col>
+                    </Row>
+                  </form>
+                  <FormSpy
+                    subscription={{
+                      pristine: true,
+                    }}
+                    onChange={this.onFormStateChange}
+                  />
+                </>
               )}
             </Form>
           </Row>
