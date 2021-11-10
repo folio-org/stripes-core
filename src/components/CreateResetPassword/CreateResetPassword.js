@@ -10,7 +10,6 @@ import {
 import { FORM_ERROR } from 'final-form';
 
 import isEmpty from 'lodash/isEmpty';
-import isEqual from 'lodash/isEqual';
 
 import {
   TextField,
@@ -210,7 +209,6 @@ class CreateResetPassword extends Component {
                 submitting: true,
                 pristine: true,
               }}
-              initialValuesEqual={isEqual}
               validate={this.validationHandler}
             >
               { ({ handleSubmit, form: { getState } }) => (

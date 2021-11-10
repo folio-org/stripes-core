@@ -94,8 +94,8 @@ describe('Create/Reset password page', () => {
         beforeEach(async function () {
           const { newPassword, confirmPassword } = CreateResetPasswordPage;
 
-          await newPassword.fillAndBlur('test');
-          await confirmPassword.fillAndBlur('test');
+          await newPassword.fillAndBlur('Test123$');
+          await confirmPassword.fillAndBlur('Test123$');
         });
 
         describe('new password field', () => {
@@ -112,7 +112,7 @@ describe('Create/Reset password page', () => {
           });
 
           it('should have inserted password', () => {
-            expect(CreateResetPasswordPage.newPassword.val).to.equal('test');
+            expect(CreateResetPasswordPage.newPassword.val).to.equal('Test123$');
           });
         });
 
@@ -130,7 +130,7 @@ describe('Create/Reset password page', () => {
           });
 
           it('should have inserted password', () => {
-            expect(CreateResetPasswordPage.confirmPassword.val).to.equal('test');
+            expect(CreateResetPasswordPage.confirmPassword.val).to.equal('Test123$');
           });
         });
 
@@ -201,12 +201,12 @@ describe('Create/Reset password page', () => {
         });
       });
 
-      describe('different passwords insertion', () => {
+      describe('password that is too short insertion', () => {
         beforeEach(async function () {
           const { newPassword, confirmPassword } = CreateResetPasswordPage;
 
-          await newPassword.fillAndBlur('test-test');
-          await confirmPassword.fillAndBlur('test');
+          await newPassword.fillAndBlur('Tes123$');
+          await confirmPassword.fillAndBlur('Tes123$');
         });
 
         describe('new password field', () => {
@@ -223,7 +223,211 @@ describe('Create/Reset password page', () => {
           });
 
           it('should have inserted password', () => {
-            expect(CreateResetPasswordPage.newPassword.val).to.equal('test-test');
+            expect(CreateResetPasswordPage.newPassword.val).to.equal('Tes123$');
+          });
+        });
+
+        describe('submit button', () => {
+          it.always('should be presented', () => {
+            expect(CreateResetPasswordPage.submit.isPresent).to.be.true;
+          });
+
+          it.always('should have proper text', () => {
+            expect(CreateResetPasswordPage.submit.text).to.equal(translations.setPassword);
+          });
+
+          it('should be disabled', () => {
+            expect(CreateResetPasswordPage.submit.isDisabled).to.be.true;
+          });
+
+          describe('error message', () => {
+            it('should be presented', () => {
+              expect(CreateResetPasswordPage.message.isPresent).to.be.true;
+            });
+
+            it('should have proper text', () => {
+              expect(CreateResetPasswordPage.message.text).to.equal(translations['errors.password.length.error']);
+            });
+          });
+        });
+      });
+
+      describe('password without a digit insertion', () => {
+        beforeEach(async function () {
+          const { newPassword, confirmPassword } = CreateResetPasswordPage;
+
+          await newPassword.fillAndBlur('Testqwe$');
+          await confirmPassword.fillAndBlur('Testqwe$');
+        });
+
+        describe('new password field', () => {
+          it.always('should be presented', () => {
+            expect(CreateResetPasswordPage.newPassword.isPresent).to.be.true;
+          });
+
+          it.always('should have type password', () => {
+            expect(CreateResetPasswordPage.newPassword.type).to.equal('password');
+          });
+
+          it.always('should have proper label', () => {
+            expect(CreateResetPasswordPage.newPassword.label).to.equal(translations['createResetPassword.newPassword']);
+          });
+
+          it('should have inserted password', () => {
+            expect(CreateResetPasswordPage.newPassword.val).to.equal('Testqwe$');
+          });
+        });
+
+        describe('submit button', () => {
+          it.always('should be presented', () => {
+            expect(CreateResetPasswordPage.submit.isPresent).to.be.true;
+          });
+
+          it.always('should have proper text', () => {
+            expect(CreateResetPasswordPage.submit.text).to.equal(translations.setPassword);
+          });
+
+          it('should be disabled', () => {
+            expect(CreateResetPasswordPage.submit.isDisabled).to.be.true;
+          });
+
+          describe('error message', () => {
+            it('should be presented', () => {
+              expect(CreateResetPasswordPage.message.isPresent).to.be.true;
+            });
+
+            it('should have proper text', () => {
+              expect(CreateResetPasswordPage.message.text).to.equal(translations['errors.password.numeric.error']);
+            });
+          });
+        });
+      });
+
+      describe('password without special characters insertion', () => {
+        beforeEach(async function () {
+          const { newPassword, confirmPassword } = CreateResetPasswordPage;
+
+          await newPassword.fillAndBlur('Test1234');
+          await confirmPassword.fillAndBlur('Test1234');
+        });
+
+        describe('new password field', () => {
+          it.always('should be presented', () => {
+            expect(CreateResetPasswordPage.newPassword.isPresent).to.be.true;
+          });
+
+          it.always('should have type password', () => {
+            expect(CreateResetPasswordPage.newPassword.type).to.equal('password');
+          });
+
+          it.always('should have proper label', () => {
+            expect(CreateResetPasswordPage.newPassword.label).to.equal(translations['createResetPassword.newPassword']);
+          });
+
+          it('should have inserted password', () => {
+            expect(CreateResetPasswordPage.newPassword.val).to.equal('Test1234');
+          });
+        });
+
+        describe('submit button', () => {
+          it.always('should be presented', () => {
+            expect(CreateResetPasswordPage.submit.isPresent).to.be.true;
+          });
+
+          it.always('should have proper text', () => {
+            expect(CreateResetPasswordPage.submit.text).to.equal(translations.setPassword);
+          });
+
+          it('should be disabled', () => {
+            expect(CreateResetPasswordPage.submit.isDisabled).to.be.true;
+          });
+
+          describe('error message', () => {
+            it('should be presented', () => {
+              expect(CreateResetPasswordPage.message.isPresent).to.be.true;
+            });
+
+            it('should have proper text', () => {
+              expect(CreateResetPasswordPage.message.text).to.equal(translations['errors.password.special.error']);
+            });
+          });
+        });
+      });
+
+      describe('password without lowercase and uppercase characters insertion', () => {
+        beforeEach(async function () {
+          const { newPassword, confirmPassword } = CreateResetPasswordPage;
+
+          await newPassword.fillAndBlur('test123$');
+          await confirmPassword.fillAndBlur('test123$');
+        });
+
+        describe('new password field', () => {
+          it.always('should be presented', () => {
+            expect(CreateResetPasswordPage.newPassword.isPresent).to.be.true;
+          });
+
+          it.always('should have type password', () => {
+            expect(CreateResetPasswordPage.newPassword.type).to.equal('password');
+          });
+
+          it.always('should have proper label', () => {
+            expect(CreateResetPasswordPage.newPassword.label).to.equal(translations['createResetPassword.newPassword']);
+          });
+
+          it('should have inserted password', () => {
+            expect(CreateResetPasswordPage.newPassword.val).to.equal('test123$');
+          });
+        });
+
+        describe('submit button', () => {
+          it.always('should be presented', () => {
+            expect(CreateResetPasswordPage.submit.isPresent).to.be.true;
+          });
+
+          it.always('should have proper text', () => {
+            expect(CreateResetPasswordPage.submit.text).to.equal(translations.setPassword);
+          });
+
+          it('should be disabled', () => {
+            expect(CreateResetPasswordPage.submit.isDisabled).to.be.true;
+          });
+
+          describe('error message', () => {
+            it('should be presented', () => {
+              expect(CreateResetPasswordPage.message.isPresent).to.be.true;
+            });
+
+            it('should have proper text', () => {
+              expect(CreateResetPasswordPage.message.text).to.equal(translations['errors.password.lowerAndUpperCase.error']);
+            });
+          });
+        });
+      });
+
+      describe('different passwords insertion', () => {
+        beforeEach(async function () {
+          const { newPassword, confirmPassword } = CreateResetPasswordPage;
+
+          await newPassword.fillAndBlur('Test123$');
+          await confirmPassword.fillAndBlur('Test123$-1');
+        });
+
+        describe('new password field', () => {
+          it.always('should be presented', () => {
+            expect(CreateResetPasswordPage.newPassword.isPresent).to.be.true;
+          });
+
+          it.always('should have type password', () => {
+            expect(CreateResetPasswordPage.newPassword.type).to.equal('password');
+          });
+
+          it.always('should have proper label', () => {
+            expect(CreateResetPasswordPage.newPassword.label).to.equal(translations['createResetPassword.newPassword']);
+          });
+
+          it('should have inserted password', () => {
+            expect(CreateResetPasswordPage.newPassword.val).to.equal('Test123$');
           });
         });
 
@@ -241,7 +445,7 @@ describe('Create/Reset password page', () => {
           });
 
           it('should have inserted password', () => {
-            expect(CreateResetPasswordPage.confirmPassword.val).to.equal('test');
+            expect(CreateResetPasswordPage.confirmPassword.val).to.equal('Test123$-1');
           });
         });
 
@@ -340,8 +544,8 @@ describe('Create/Reset password page', () => {
 
       beforeEach(async function () {
         await this.visit('/reset-password/test');
-        await newPassword.fillAndBlur('test');
-        await confirmPassword.fillAndBlur('test');
+        await newPassword.fillAndBlur('Test123$');
+        await confirmPassword.fillAndBlur('Test123$');
         await submitForm.clickSubmit();
       });
 
@@ -404,8 +608,8 @@ describe('Create/Reset password page', () => {
 
       beforeEach(async function () {
         await this.visit('/reset-password/test');
-        await newPassword.fillAndBlur('test');
-        await confirmPassword.fillAndBlur('test');
+        await newPassword.fillAndBlur('Test123$');
+        await confirmPassword.fillAndBlur('Test123$');
         await submitForm.clickSubmit();
       });
 
@@ -445,8 +649,8 @@ describe('Create/Reset password page', () => {
 
       beforeEach(async function () {
         this.visit('/reset-password/test');
-        await newPassword.fillAndBlur('test');
-        await confirmPassword.fillAndBlur('test');
+        await newPassword.fillAndBlur('Test123$');
+        await confirmPassword.fillAndBlur('Test123$');
         await submitForm.clickSubmit();
       });
 
@@ -483,8 +687,8 @@ describe('Create/Reset password page', () => {
 
       beforeEach(async function () {
         this.visit('/reset-password/test');
-        await newPassword.fillAndBlur('test');
-        await confirmPassword.fillAndBlur('test');
+        await newPassword.fillAndBlur('Test123$');
+        await confirmPassword.fillAndBlur('Test123$');
         await submitForm.clickSubmit();
       });
 
