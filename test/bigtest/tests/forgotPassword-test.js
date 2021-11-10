@@ -20,7 +20,6 @@ describe('forgot password form test', () => {
   const {
     inputField,
     submitButton,
-    submitButton: { button },
     mainHeading,
     callToActionParagraph,
     errorsWrapper,
@@ -47,7 +46,7 @@ describe('forgot password form test', () => {
 
   describe('forgot form submit button tests', () => {
     it('should display a "Continue" button to submit a request', () => {
-      expect(button.isPresent).to.be.true;
+      expect(submitButton.isPresent).to.be.true;
     });
 
     it('should have a disabled "Continue" button by default', () => {
