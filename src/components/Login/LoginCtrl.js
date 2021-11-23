@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect as reduxConnect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
 import { ConnectContext } from '@folio/stripes-connect';
 import {
@@ -19,6 +20,9 @@ class LoginCtrl extends Component {
       password: PropTypes.string.isRequired,
     }),
     clearAuthErrors: PropTypes.func.isRequired,
+    history: PropTypes.shape({
+      push: PropTypes.func.isRequired,
+    }).isRequired,
   };
 
   static contextType = ConnectContext;
@@ -40,7 +44,8 @@ class LoginCtrl extends Component {
   }
 
   handleSubmit(data) {
-    return requestLogin(this.okapiUrl, this.context.store, this.tenant, data);
+    return requestLogin(this.okapiUrl, this.context.store, this.tenant, data)
+      .then(() => this.props.history.push('/'));
   }
 
   handleSSOLogin() {
@@ -69,4 +74,4 @@ const mapDispatchToProps = dispatch => ({
   clearAuthErrors: () => dispatch(setAuthError([])),
 });
 
-export default reduxConnect(mapStateToProps, mapDispatchToProps)(LoginCtrl);
+export default reduxConnect(mapStateToProps, mapDispatchToProps)(withRouter(LoginCtrl));
