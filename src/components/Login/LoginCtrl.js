@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect as reduxConnect } from 'react-redux';
+import {
+  withRouter,
+  matchPath,
+} from 'react-router-dom';
 
 import { ConnectContext } from '@folio/stripes-connect';
 import {
@@ -19,17 +23,21 @@ class LoginCtrl extends Component {
       password: PropTypes.string.isRequired,
     }),
     clearAuthErrors: PropTypes.func.isRequired,
+    history: PropTypes.shape({
+      push: PropTypes.func.isRequired,
+    }).isRequired,
+    location: PropTypes.shape({
+      pathname: PropTypes.string.isRequired,
+    }).isRequired,
   };
 
   static contextType = ConnectContext;
 
   constructor(props) {
     super(props);
-    this.handleSubmit = this.handleSubmit.bind(this);
     this.sys = require('stripes-config'); // eslint-disable-line global-require
     this.okapiUrl = this.sys.okapi.url;
     this.tenant = this.sys.okapi.tenant;
-    this.handleSSOLogin = this.handleSSOLogin.bind(this);
     if (props.autoLogin && props.autoLogin.username) {
       this.handleSubmit(props.autoLogin);
     }
@@ -39,11 +47,18 @@ class LoginCtrl extends Component {
     this.props.clearAuthErrors();
   }
 
-  handleSubmit(data) {
-    return requestLogin(this.okapiUrl, this.context.store, this.tenant, data);
+  handleSuccessfulLogin = () => {
+    if (matchPath(this.props.location.pathname, '/login')) {
+      this.props.history.push('/');
+    }
   }
 
-  handleSSOLogin() {
+  handleSubmit = (data) => {
+    return requestLogin(this.okapiUrl, this.context.store, this.tenant, data)
+      .then(this.handleSuccessfulLogin);
+  }
+
+  handleSSOLogin = () => {
     requestSSOLogin(this.okapiUrl, this.tenant);
   }
 
@@ -69,4 +84,4 @@ const mapDispatchToProps = dispatch => ({
   clearAuthErrors: () => dispatch(setAuthError([])),
 });
 
-export default reduxConnect(mapStateToProps, mapDispatchToProps)(LoginCtrl);
+export default reduxConnect(mapStateToProps, mapDispatchToProps)(withRouter(LoginCtrl));

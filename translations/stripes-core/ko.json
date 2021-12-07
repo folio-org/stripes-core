@@ -124,15 +124,15 @@
     "mainnav.skipMainNavigation": "기본 탐색 건너 뛰기",
     "errors.user.timeout": "세션이 만료되었습니다. 세션을 다시 시작하려면 다시 로그인하십시오.",
     "errors.password.consecutiveWhitespaces.invalid": "암호는 연속된 공백 문자를 포함하지 않아야합니다.",
-    "about.missingModuleCount": "{count, number} missing {count, plural, one {interface} other {interfaces}}",
-    "about.incompatibleModuleCount": "{count, number} incompatible interface {count, plural, one {version} other {versions}}",
+    "about.missingModuleCount": "{count, number} 누락된 {count, plural, one {인터페이스} other {인터페이스}}",
+    "about.incompatibleModuleCount": "{count, number} 호환되지 않는 인터페이스 {count, plural, one {버전} other {버전}}",
     "routeErrorBoundary.sub": "이 페이지에서 오류가 발생하여 로드할 수 없습니다.",
     "routeErrorBoundary.goToAppHomeLabel": "홈으로 돌아가기",
-    "routeErrorBoundary.goToModuleHomeLabel": "Return to {name} landing page",
+    "routeErrorBoundary.goToModuleHomeLabel": "{name} 방문 페이지로 돌아가기",
     "routeErrorBoundary.goToModuleSettingsHomeLabel": "{name} 설정으로 돌아 가기",
     "logoutKeepSso": "FOLIO에서 로그 아웃하고 SSO 세션 유지",
     "mainnav.profileDropdown.locale": "Locale",
-    "mainnav.profileDropdown.permissions": "Permissions",
-    "front.error.header": "404 Error",
-    "front.error.message": "The requested URL {br}{url}{br} was not found on this server."
+    "mainnav.profileDropdown.permissions": "권한",
+    "front.error.header": "404 오류",
+    "front.error.message": "요청한 URL {br}{url}{br} 을(를) 이 서버에서 찾을 수 없습니다."
 }
