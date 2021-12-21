@@ -6,7 +6,7 @@ import camelCase from 'lodash/camelCase';
 // of the filename, otherwise webpack will output duplicate filepaths
 //
 // see: https://github.com/webpack/webpack/issues/12087
-const req = require.context('./', true,  /\.\/.*\.js$/);
+const req = require.context('./', true, /\.\/.*\.js$/);
 const modules = req.keys().reduce((acc, modulePath) => {
   const moduleParts = modulePath.split('/');
   const moduleType = moduleParts[1];
