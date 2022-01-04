@@ -9,7 +9,7 @@
     "button.deleteEntry": "{entry} törlése",
     "button.saveAndClose": "Ment és bezár",
     "button.cancel": "Mégsem",
-    "label.confirmDeleteEntry": "Biztosan törli: <strong>{name}</strong>?",
+    "label.confirmDeleteEntry": "<strong>{name}</strong> will be <strong>removed</strong>",
     "label.editEntry": "{entry} szerkesztése",
     "label.createEntry": "{entry} létrehozása",
     "label.missingRequiredField": "Kérem, töltse ki ezt a folytatáshoz",
