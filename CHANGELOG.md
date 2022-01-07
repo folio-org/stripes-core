@@ -5,6 +5,7 @@
 * Use correct `css-loader` syntax. STCOR-577.
 * Your password changed confirmation page > Continue to Login URL goes to an error page. Fixes STCOR-582.
 * Dependency cleanup. Refs STCOR-584.
+* Restore okapi version display. Refs STCOR-480, STCOR-525.
 
 ## [8.0.0](https://github.com/folio-org/stripes-core/tree/v8.0.0) (2021-09-27)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v7.2.0...v8.0.0)

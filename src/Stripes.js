@@ -5,81 +5,81 @@ import { isVersionCompatible } from './discoverServices';
 
 export const stripesShape = PropTypes.shape({
   // Properties provided by the class
-  hasPerm: PropTypes.func.isRequired,
-  hasInterface: PropTypes.func.isRequired,
   clone: PropTypes.func.isRequired,
+  hasInterface: PropTypes.func.isRequired,
+  hasPerm: PropTypes.func.isRequired,
 
   // Properties passed into the constructor by the caller
-  logger: PropTypes.shape({
-    log: PropTypes.func.isRequired,
+  actionNames: PropTypes.arrayOf(
+    PropTypes.string,
+  ).isRequired,
+  bindings: PropTypes.object,
+  config: PropTypes.shape({
+    disableAuth: PropTypes.bool,
+    hasAllPerms: PropTypes.bool,
+    listInvisiblePerms: PropTypes.bool,
+    logCategories: PropTypes.string,
+    logPrefix: PropTypes.string,
+    logTimestamp: PropTypes.bool,
+    showHomeLink: PropTypes.bool,
+    showPerms: PropTypes.bool,
   }).isRequired,
-  store: PropTypes.shape({
-    getState: PropTypes.func.isRequired,
-    dispatch: PropTypes.func.isRequired,
-    subscribe: PropTypes.func.isRequired,
-    replaceReducer: PropTypes.func.isRequired,
+  connect: PropTypes.func.isRequired,
+  currency: PropTypes.string,
+  discovery: PropTypes.shape({
+    interfaces: PropTypes.object,
+    isFinished: PropTypes.bool,
+    okapi: PropTypes.string,
+    modules: PropTypes.object,
   }),
   epics: PropTypes.shape({
     add: PropTypes.func.isRequired,
     middleware: PropTypes.func.isRequired,
   }),
-  config: PropTypes.shape({
-    logCategories: PropTypes.string,
-    logPrefix: PropTypes.string,
-    logTimestamp: PropTypes.bool,
-    showPerms: PropTypes.bool,
-    showHomeLink: PropTypes.bool,
-    listInvisiblePerms: PropTypes.bool,
-    disableAuth: PropTypes.bool,
-    hasAllPerms: PropTypes.bool,
+  icons: PropTypes.object,
+  locale: PropTypes.string,
+  logger: PropTypes.shape({
+    log: PropTypes.func.isRequired,
   }).isRequired,
+  metadata: PropTypes.object,
   okapi: PropTypes.shape({
-    withoutOkapi: PropTypes.bool,
-    url: PropTypes.string.isRequired,
-    tenant: PropTypes.string.isRequired,
-    okapiReady: PropTypes.bool,
     authFailure:  PropTypes.oneOfType([
       PropTypes.bool,
       PropTypes.arrayOf(PropTypes.object)
     ]),
-    translations: PropTypes.object,
+    okapiReady: PropTypes.bool,
+    tenant: PropTypes.string.isRequired,
     token: PropTypes.string,
+    translations: PropTypes.object,
+    url: PropTypes.string.isRequired,
+    withoutOkapi: PropTypes.bool,
   }).isRequired,
-  withOkapi: PropTypes.bool.isRequired,
-  setToken: PropTypes.func.isRequired,
-  actionNames: PropTypes.arrayOf(
-    PropTypes.string,
-  ).isRequired,
-  locale: PropTypes.string,
-  timezone: PropTypes.string,
-  currency: PropTypes.string,
-  metadata: PropTypes.object,
-  icons: PropTypes.object,
-  setLocale: PropTypes.func.isRequired,
-  setTimezone: PropTypes.func.isRequired,
-  setCurrency: PropTypes.func.isRequired,
   plugins: PropTypes.object,
-  setSinglePlugin: PropTypes.func.isRequired,
-  bindings: PropTypes.object,
   setBindings: PropTypes.func.isRequired,
-  discovery: PropTypes.shape({
-    okapi: PropTypes.stripes,
-    modules: PropTypes.object,
-    interfaces: PropTypes.object,
-    isFinished: PropTypes.bool,
+  setCurrency: PropTypes.func.isRequired,
+  setLocale: PropTypes.func.isRequired,
+  setSinglePlugin: PropTypes.func.isRequired,
+  setTimezone: PropTypes.func.isRequired,
+  setToken: PropTypes.func.isRequired,
+  store: PropTypes.shape({
+    dispatch: PropTypes.func.isRequired,
+    getState: PropTypes.func.isRequired,
+    replaceReducer: PropTypes.func.isRequired,
+    subscribe: PropTypes.func.isRequired,
   }),
+  timezone: PropTypes.string,
   user: PropTypes.shape({
-    user: PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      username: PropTypes.string.isRequired,
-      firstName: PropTypes.string,
-      lastName: PropTypes.string,
-      email: PropTypes.string,
-      addresses: PropTypes.arrayOf(PropTypes.object),
-    }),
     perms: PropTypes.object,
+    user: PropTypes.shape({
+      addresses: PropTypes.arrayOf(PropTypes.object),
+      email: PropTypes.string,
+      firstName: PropTypes.string,
+      id: PropTypes.string.isRequired,
+      lastName: PropTypes.string,
+      username: PropTypes.string.isRequired,
+    }),
   }),
-  connect: PropTypes.func.isRequired,
+  withOkapi: PropTypes.bool.isRequired,
 });
 
 

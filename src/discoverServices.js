@@ -8,6 +8,13 @@ function getHeaders(tenant, token) {
   };
 }
 
+/**
+ * fetchModules
+ * Fetch module version information from Okapi for this tenant.
+ *
+ * @param {object} store
+ * @returns Promise
+ */
 function fetchModules(store) {
   const okapi = store.getState().okapi;
 
@@ -33,17 +40,49 @@ function fetchModules(store) {
   });
 }
 
-/*
+/**
+ * fetchOkapiVersion
+ * Fetch okapi version.
+ *
+ * @param {object} store
+ * @returns Promise
+ */
+function fetchOkapiVersion(store) {
+  const okapi = store.getState().okapi;
+
+  return fetch(`${okapi.url}/_/version`, {
+    headers: getHeaders(okapi.tenant, okapi.token)
+  }).then((response) => { // eslint-disable-line consistent-return
+    if (response.status >= 400) {
+      store.dispatch({ type: 'DISCOVERY_FAILURE', code: response.status });
+      return response;
+    } else {
+      return response.text().then((version) => {
+        return store.dispatch({ type: 'DISCOVERY_OKAPI', version });
+      });
+    }
+  }).catch((reason) => {
+    store.dispatch({ type: 'DISCOVERY_FAILURE', message: reason });
+  });
+}
+
+/**
+ * discoverServices
  * This function probes Okapi to discover what versions of what
  * interfaces are supported by the services that it is proxying
  * for. This information can be used to configure the UI at run-time
  * (e.g. not attempting to fetch loan information for a
  * non-circulating library that doesn't provide the circ interface)
+ *
+ * @param {object} store
+ * @returns Promise
  */
 export function discoverServices(store) {
-  return fetchModules(store).then(() => {
-    store.dispatch({ type: 'DISCOVERY_FINISHED' });
-  });
+  return fetchOkapiVersion(store)
+    .then(() => { fetchModules(store); })
+    .then(() => {
+      store.dispatch({ type: 'DISCOVERY_FINISHED' });
+    });
 }
 
 export function discoveryReducer(state = {}, action) {
