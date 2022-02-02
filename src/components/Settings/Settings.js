@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { createRef } from 'react';
 import PropTypes from 'prop-types';
 import {
   FormattedMessage,
@@ -70,6 +70,14 @@ class Settings extends React.Component {
       });
   }
 
+  componentDidMount() {
+    if (this.paneTitleRef.current) {
+      this.paneTitleRef.current.focus();
+    }
+  }
+
+  paneTitleRef = createRef();
+
   render() {
     const { stripes, location, intl: { formatMessage } } = this.props;
     const navLinks = this.connectedModules.map(({ module }) => {
@@ -121,6 +129,7 @@ class Settings extends React.Component {
         <Pane
           defaultWidth="20%"
           paneTitle={<FormattedMessage id="stripes-core.settings" />}
+          paneTitleRef={this.paneTitleRef}
         >
           <NavList aria-label={formatMessage({ id: 'stripes-core.settings' })}>
             <NavListSection

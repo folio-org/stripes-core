@@ -5,6 +5,7 @@ node_modules
 !test/webpack/node_modules/@folio/app2/node_modules/
 !test/webpack/node_modules/
 npm-debug.log
+package-lock.json
 static
 README.html
 OVERVIEW.html
