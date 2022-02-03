@@ -134,6 +134,7 @@ class Settings extends React.Component {
           <NavList aria-label={formatMessage({ id: 'stripes-core.settingSystemInfo' })}>
             <NavListSection
               label={formatMessage({ id: 'stripes-core.settingSystemInfo' })}
+              tag="h3"
               activeLink={activeLink}
               className={css.navListSection}
             >
