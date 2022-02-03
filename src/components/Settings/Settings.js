@@ -47,6 +47,7 @@ class Settings extends React.Component {
   constructor(props) {
     super(props);
 
+    this.paneTitleRef = createRef();
     const { stripes, modules } = props;
     const settingsModules = modules.settings || [];
 
@@ -75,8 +76,6 @@ class Settings extends React.Component {
       this.paneTitleRef.current.focus();
     }
   }
-
-  paneTitleRef = createRef();
 
   render() {
     const { stripes, location, intl: { formatMessage } } = this.props;
