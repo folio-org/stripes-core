@@ -1,13 +1,5 @@
 @import '@folio/stripes-components/lib/variables.css';
 
-:root {
-  --main-nav-min-height-desktop: 56px;
-  --main-nav-min-height-mobile: 48px;
-  --main-nav-border-bottom-color: rgba(0, 0, 0, 0.9);
-  --main-nav-background-color: rgba(0, 0, 0, 0.8);
-  --main-nav-text-color: #fff;
-}
-
 .navRoot {
   background-color: var(--main-nav-background-color);
   border-bottom: 1px solid var(--main-nav-border-bottom-color);
