@@ -6,6 +6,7 @@
 * Your password changed confirmation page > Continue to Login URL goes to an error page. Fixes STCOR-582.
 * Dependency cleanup. Refs STCOR-584.
 * Correct the invalid `PropTypes.stripes` prop-type. And use the alphabet.
+* Settings Focus change. Refs STRIPES-731.
 
 ## [8.0.0](https://github.com/folio-org/stripes-core/tree/v8.0.0) (2021-09-27)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v7.2.0...v8.0.0)
