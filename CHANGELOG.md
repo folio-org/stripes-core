@@ -1,6 +1,7 @@
 # Change history for stripes-core
 
-## 8.1 IN PROGRESS
+## [8.1.0](https://github.com/folio-org/stripes-core/tree/v8.1.0) (2022-02-11)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v8.0.0...v8.1.0)
 
 * Use correct `css-loader` syntax. STCOR-577.
 * Your password changed confirmation page > Continue to Login URL goes to an error page. Fixes STCOR-582.
