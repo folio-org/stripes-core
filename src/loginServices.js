@@ -4,26 +4,6 @@ import { translations } from 'stripes-config';
 import rtlDetect from 'rtl-detect';
 import moment from 'moment';
 
-// polyfills for browsers without full Intl.* support. We include only the
-// polyfill and en data, since that's all we need to keep NightmareJS and
-// its Electron tests happy; adding all the locale data would bloat the bundle
-// from <10 MB to >40 MB. The en data only adds ~470 KB.
-
-import '@formatjs/intl-pluralrules/polyfill';
-import '@formatjs/intl-pluralrules/dist/locale-data/en';
-// import '@formatjs/intl-pluralrules/polyfill-locales;
-// 0.62 MB stat; 0.43 MB parsed; 0.048 MB GZipped
-
-import '@formatjs/intl-relativetimeformat/polyfill';
-import '@formatjs/intl-relativetimeformat/dist/locale-data/en';
-// import '@formatjs/intl-relativetimeformat/polyfill-locales;
-// 2.3MB stat; 1.8 MB parsed; 0.8 MB GZipped
-
-import '@formatjs/intl-displaynames/polyfill';
-import '@formatjs/intl-displaynames/dist/locale-data/en';
-// import '@formatjs/intl-displaynames/polyfill-locales;
-// 13.7 MB stat; 10.7 MB parsed; 1.9 MB GZipped
-
 import { discoverServices } from './discoverServices';
 
 import {
