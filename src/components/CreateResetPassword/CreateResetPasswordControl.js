@@ -188,7 +188,7 @@ const mapStateToProps = state => ({ authFailure: state.okapi.authFailure });
 const mapDispatchToProps = dispatch => ({
   handleBadResponse: error => processBadResponse(dispatch, error),
   clearAuthErrors: () => dispatch(setAuthError([])),
-  setDefaultAuthError: error => dispatch(setAuthError(error)),
+  setDefaultAuthError: error => dispatch(setAuthError([error])),
 });
 
 export default withRouter(reduxConnect(mapStateToProps, mapDispatchToProps)(CreateResetPasswordControl));
