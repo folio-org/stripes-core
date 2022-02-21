@@ -27,6 +27,7 @@ const setupWithApp = (App, title) => setupApplication({
   }],
   translations: {
     'dummy.title': title,
+    'login.title': 'login title',
   },
 });
 

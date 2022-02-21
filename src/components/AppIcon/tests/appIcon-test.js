@@ -121,9 +121,8 @@ describe('AppIcon', () => {
     });
   });
 
-
   Object.keys(iconSizes).forEach(size => {
-    describe(`Passing a size of "${size}"`, () => {
+    describe(`Passing a size of "${size}"`, async () => {
       beforeEach(async () => {
         await mount(
           <AppIcon
