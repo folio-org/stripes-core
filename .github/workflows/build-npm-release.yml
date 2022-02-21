@@ -11,7 +11,7 @@
 #   - COMPILE_TRANSLATION_FILES (boolean 'true' or 'false')
 
 name: buildNPM Release
-on: 
+on:
   push:
     tags:
       - 'v[0-9]+.[0-9]+.[0-9]+*'
@@ -24,7 +24,7 @@ jobs:
       YARN_TEST_OPTIONS: '--karma.singleRun --karma.browsers ChromeDocker --karma.reporters mocha junit --coverage'
       SQ_ROOT_DIR: './src'
       COMPILE_TRANSLATION_FILES: 'true'
-      PUBLISH_MOD_DESCRIPTOR: 'true' 
+      PUBLISH_MOD_DESCRIPTOR: 'true'
       FOLIO_NPM_REGISTRY: 'https://repository.folio.org/repository/npm-folio/'
       FOLIO_MD_REGISTRY: 'https://folio-registry.dev.folio.org'
       NODEJS_VERSION: '12'
@@ -52,17 +52,17 @@ jobs:
       - name: Get version from package.json
         id: package_version
         uses: notiz-dev/github-action-json-property@release
-        with: 
+        with:
           path: 'package.json'
           prop_path: 'version'
-      
+
       - name: Check matching tag and version in package.json
         if: ${{ env.TAG_VERSION != steps.package_version.outputs.prop }}
         run: |
           echo "Tag version, ${TAG_VERSION}, does not match package.json version, ${PACKAGE_VERSION}."
           exit 1
         env:
-          PACKAGE_VERSION: ${{ steps.package_version.outputs.prop }} 
+          PACKAGE_VERSION: ${{ steps.package_version.outputs.prop }}
 
       - name: Setup kernel for react native, increase watchers
         run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
@@ -86,12 +86,12 @@ jobs:
         run: yarn lint
         continue-on-error: true
 
-      - name: Run yarn test
-        run: xvfb-run --server-args="-screen 0 1024x768x24" yarn test $YARN_TEST_OPTIONS
-
       - name: Run yarn formatjs-compile
         if: ${{ env.COMPILE_TRANSLATION_FILES == 'true' }}
         run: yarn formatjs-compile
+
+      - name: Run yarn test
+        run: xvfb-run --server-args="-screen 0 1024x768x24" yarn test $YARN_TEST_OPTIONS
 
       - name: Generate FOLIO module descriptor
         if: ${{ env.PUBLISH_MOD_DESCRIPTOR == 'true' }}
@@ -214,13 +214,13 @@ jobs:
 
       - name: Set _auth in .npmrc
         run: |
-          npm config set @folio:registry $FOLIO_NPM_REGISTRY 
-          npm config set _auth $NODE_AUTH_TOKEN 
+          npm config set @folio:registry $FOLIO_NPM_REGISTRY
+          npm config set _auth $NODE_AUTH_TOKEN
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Exclude some CI-generated artifacts in package
-        run: | 
+        run: |
           echo ".github" >> .npmignore
           echo ".scannerwork" >> .npmignore
           cat .npmignore
