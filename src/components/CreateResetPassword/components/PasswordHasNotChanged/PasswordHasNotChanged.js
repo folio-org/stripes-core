@@ -55,7 +55,6 @@ class PasswordHasNotChanged extends Component {
           <Headline
             size="x-large"
             tag="p"
-            bold={false}
             faded
             data-test-message
           >

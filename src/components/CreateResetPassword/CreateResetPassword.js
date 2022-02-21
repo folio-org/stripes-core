@@ -36,9 +36,6 @@ class CreateResetPassword extends Component {
     onPasswordInputFocus: PropTypes.func.isRequired,
     submitting: PropTypes.bool,
     submitIsFailed: PropTypes.bool,
-    form: PropTypes.shape({
-      getState: PropTypes.func.isRequired,
-    }).isRequired,
   };
 
   static defaultProps = {
