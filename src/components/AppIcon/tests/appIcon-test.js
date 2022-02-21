@@ -121,9 +121,8 @@ describe('AppIcon', () => {
     });
   });
 
-
-  Object.keys(iconSizes).forEach(size => {
-    describe(`Passing a size of "${size}"`, () => {
+  const sizeTest = async (size) => {
+    describe(`Passing a size of "${size}"`, async () => {
       beforeEach(async () => {
         await mount(
           <AppIcon
@@ -139,5 +138,9 @@ describe('AppIcon', () => {
         expect(appIcon.img.offsetHeight).to.equal(iconSizes[size]);
       });
     });
-  });
+  };
+
+  sizeTest('small');
+  sizeTest('medium');
+  sizeTest('large');
 });
