@@ -11,6 +11,14 @@ import {
 
 import { actionTypes } from './mainActions';
 
+//
+// here be dragons, maybe. or if not dragons, something that is
+// maybe poorly understood and _certainly_ poorly documented. 
+// consider visiting STCOR-592 before doing any major work here. 
+// redux-observable was a solid option for when we first 
+// implemented this, but there may be simpler options how. 
+//
+
 export default function configureEpics(...initialEpics) {
   const middleware = createEpicMiddleware();
   const epic$ = new BehaviorSubject(combineEpics(...initialEpics));
