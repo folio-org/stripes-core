@@ -16,7 +16,7 @@ import { actionTypes } from './mainActions';
 // maybe poorly understood and _certainly_ poorly documented. 
 // consider visiting STCOR-592 before doing any major work here. 
 // redux-observable was a solid option for when we first 
-// implemented this, but there may be simpler options how. 
+// implemented this, but there may be simpler options now. 
 //
 
 export default function configureEpics(...initialEpics) {
