@@ -35,12 +35,14 @@ import {
   ForgotUserNameCtrl,
   AppCtxMenuProvider,
 } from './components';
+import StaleBundleWarning from './components/StaleBundleWarning';
 import { StripesContext } from './StripesContext';
 import CalloutContext from './CalloutContext';
 
 class RootWithIntl extends React.Component {
   static propTypes = {
     stripes: PropTypes.shape({
+      config: PropTypes.object,
       epics: PropTypes.object,
       logger: PropTypes.object.isRequired,
       clone: PropTypes.func.isRequired,
@@ -89,6 +91,7 @@ class RootWithIntl extends React.Component {
                         <MainContainer>
                           <AppCtxMenuProvider>
                             <MainNav stripes={stripes} />
+                            {typeof stripes?.config?.staleBundleWarning === 'object' && <StaleBundleWarning />}
                             <HandlerManager
                               event={events.LOGIN}
                               stripes={stripes}
