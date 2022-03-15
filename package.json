@@ -114,6 +114,6 @@
   },
   "resolutions": {
     "moment": "~2.24.0",
-    "@folio/stripes-webpack": "folio-org/stripes-webpack#dont-watch"
+    "@folio/stripes-cli": "folio-org/stripes-cli#dont-watch"
   }
 }
