@@ -49,7 +49,7 @@ class PasswordRequirementsField extends React.Component {
 
     const { rules } = await mutator.validators.GET(headers);
 
-    const requiredRules = rules
+    return rules
       .filter(rule => passwordRequirementsNames.includes(rule.name))
       .map(rule => {
         const splittedRuleDescription = rule.description.split(' must ');
@@ -58,8 +58,6 @@ class PasswordRequirementsField extends React.Component {
 
         return rule;
       });
-
-    return requiredRules;
   }
 
   render() {
