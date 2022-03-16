@@ -18,6 +18,7 @@ import {
   Headline,
 } from '@folio/stripes-components';
 
+import PasswordRequirementsField from './components/PasswordRequirementsField';
 
 import { setAuthError } from '../../okapiActions';
 import { stripesShape } from '../../Stripes';
@@ -68,6 +69,7 @@ class CreateResetPassword extends Component {
       sm:4,
       className:styles.passwordStrength,
     };
+    this.passwordRequirementsField = props.stripes.connect(PasswordRequirementsField);
   }
 
   togglePasswordMask = () => {
@@ -126,6 +128,12 @@ class CreateResetPassword extends Component {
     const isButtonDisabled = getState => {
       const { newPassword, confirmPassword } = getState().values;
       return !isEmpty(errors) || submissionStatus || !(newPassword && confirmPassword);
+    };
+
+    const getPasswordValue = getState => {
+      const { newPassword } = getState().values;
+
+      return newPassword;
     };
 
     return (
@@ -202,6 +210,16 @@ class CreateResetPassword extends Component {
                           inputColProps={this.inputColProps}
                           passwordMeterColProps={this.passwordMeterColProps}
                           onFocus={() => onPasswordInputFocus(submitIsFailed)}
+                        />
+                      </Col>
+                    </Row>
+                    <Row center="xs">
+                      <Col
+                        xs={12}
+                        sm={6}
+                      >
+                        <this.passwordRequirementsField
+                          passwordValue={getPasswordValue(getState)}
                         />
                       </Col>
                     </Row>
