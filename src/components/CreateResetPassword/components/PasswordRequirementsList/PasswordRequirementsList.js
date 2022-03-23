@@ -2,6 +2,7 @@ import React, {
   useState,
   useEffect,
 } from 'react';
+import { useIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 
 import { Layout } from '@folio/stripes-components';
@@ -18,6 +19,8 @@ const passwordRequirementsNames = [
 ];
 
 const PasswordRequirementsList = ({ passwordValue }) => {
+  const intl = useIntl();
+
   const [requiredRules, setRequiredRules] = useState([]);
   const [unfulfilledRules, setUnfulfilledRules] = useState([]);
 
@@ -30,14 +33,21 @@ const PasswordRequirementsList = ({ passwordValue }) => {
         .map(rule => {
           const splittedRuleDescription = rule.description.split(' must ');
 
-          rule.description = `Must ${splittedRuleDescription[1]}`;
+          rule.description = intl.formatMessage(
+            { id: 'stripes-core.createResetPassword.ruleTemplate' },
+            { description: splittedRuleDescription[1] },
+          );
 
           return rule;
         });
 
       setRequiredRules(requiredRulesSet);
     }
-  }, [rules, requiredRules.length]);
+  }, [
+    intl,
+    rules,
+    requiredRules.length,
+  ]);
 
   useEffect(() => {
     const unfulfilledRulesSet = requiredRules?.filter(rule => !new RegExp(rule.expression).test(passwordValue));
