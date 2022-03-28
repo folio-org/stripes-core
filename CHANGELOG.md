@@ -3,6 +3,7 @@
 ## 8.2.0 IN PROGRESS
 
 * Align prop-types related to password reset errors. Refs STCOR-590.
+* Provide missing `password.compromised` translation. Refs STCOR-595.
 * Remove `react-hot-loader` cruft. Refs STCOR-597, STRIPES-725.
 
 ## [8.1.0](https://github.com/folio-org/stripes-core/tree/v8.1.0) (2022-02-11)
