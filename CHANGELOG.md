@@ -4,6 +4,7 @@
 
 * Align prop-types related to password reset errors. Refs STCOR-590.
 * Provide missing `password.compromised` translation. Refs STCOR-595.
+* Create/Reset password page > Display password requirements on page. Refs STCOR-576.
 
 ## [8.1.0](https://github.com/folio-org/stripes-core/tree/v8.1.0) (2022-02-11)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v8.0.0...v8.1.0)
