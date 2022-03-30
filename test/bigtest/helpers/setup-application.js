@@ -64,6 +64,9 @@ export default function setupApplication({
       setup: () => {
         this.server = startMirage(scenarios, mirageOptions);
         this.server.logging = false;
+        // this makes the return immediate which speeds up tests. We can remove this when we
+        // work up a solid NODE_ENV=='test' workflow.
+        this.server.timing = 0;
 
         if (userLoggedIn) {
           localforage.setItem('okapiSess', {
