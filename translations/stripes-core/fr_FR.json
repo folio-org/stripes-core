@@ -1,5 +1,5 @@
 {
-    "front.welcome": "Welcome, the Future Of Libraries Is OPEN!",
+    "front.welcome": "Bienvenue, l'avenir des bibliothèques est OUVERT !",
     "front.home": "Page d'accueil",
     "front.about": "Versions du logiciel",
     "button.new": "Nouveau",
@@ -125,7 +125,7 @@
     "errors.user.timeout": "Votre session a expiré. Veuillez vous reconnecter pour reprendre votre session.",
     "errors.password.consecutiveWhitespaces.invalid": "Le mot de passe ne doit pas contenir de caractères blancs consécutifs.",
     "about.missingModuleCount": "{count, number} Manquant {count, plural, one { module } other { modules }}",
-    "about.incompatibleModuleCount": "{count, number} Incompatible {count, plural, one {module} other {modules}} version",
+    "about.incompatibleModuleCount": "{count, number} incompatible interface {count, plural, one {version} other {versions}}",
     "routeErrorBoundary.sub": "Une erreur s'est produite sur cette page: elle n'a pu être chargée.",
     "routeErrorBoundary.goToAppHomeLabel": "Retourner à l'accueil",
     "routeErrorBoundary.goToModuleHomeLabel": "Revenir à la page de destination de {name}",

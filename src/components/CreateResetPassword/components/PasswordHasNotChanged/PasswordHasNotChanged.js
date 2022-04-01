@@ -15,7 +15,7 @@ import styles from './PasswordHasNotChanged.css';
 
 class PasswordHasNotChanged extends Component {
   static propTypes = {
-    errors: PropTypes.arrayOf(PropTypes.string),
+    errors: PropTypes.arrayOf(PropTypes.object),
   };
 
   static defaultProps = {
@@ -26,10 +26,12 @@ class PasswordHasNotChanged extends Component {
     const { errors } = this.props;
     const labelNamespace = 'stripes-core.errors';
 
-    const isExpiredLink = includes(errors, changePasswordErrorCodes.EXPIRED_ERROR_CODE);
-    const isUsedLink = includes(errors, changePasswordErrorCodes.USED_ERROR_CODE);
+    const errorCodes = errors.map((e) => e?.code);
+
+    const isExpiredLink = includes(errorCodes, changePasswordErrorCodes.EXPIRED_ERROR_CODE);
+    const isUsedLink = includes(errorCodes, changePasswordErrorCodes.USED_ERROR_CODE);
     const isOutdatedLink = isExpiredLink || isUsedLink;
-    const isInvalidLink = includes(errors, changePasswordErrorCodes.INVALID_ERROR_CODE) && !isOutdatedLink;
+    const isInvalidLink = includes(errorCodes, changePasswordErrorCodes.INVALID_ERROR_CODE) && !isOutdatedLink;
 
     if (isInvalidLink) {
       return `${labelNamespace}.${changePasswordErrorCodes.INVALID_ERROR_CODE}`;
@@ -55,7 +57,6 @@ class PasswordHasNotChanged extends Component {
           <Headline
             size="x-large"
             tag="p"
-            bold={false}
             faded
             data-test-message
           >

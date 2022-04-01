@@ -1,6 +1,6 @@
 {
   "name": "@folio/stripes-core",
-  "version": "8.0.0",
+  "version": "8.2.0",
   "description": "The starting point for Stripes applications",
   "license": "Apache-2.0",
   "repository": "folio-org/stripes-core",
@@ -68,13 +68,9 @@
   },
   "dependencies": {
     "@apollo/client": "^3.2.1",
-    "@formatjs/intl-displaynames": "^2.2.3",
-    "@formatjs/intl-pluralrules": "^2.2.1",
-    "@formatjs/intl-relativetimeformat": "^5.2.3",
     "classnames": "^2.2.5",
     "final-form": "^4.18.2",
     "graphql": "^0.11.7",
-    "handlebars": "^4.5.1",
     "history": "^4.6.3",
     "hoist-non-react-statics": "^3.3.0",
     "jwt-decode": "^2.2.0",
@@ -100,7 +96,8 @@
     "rimraf": "^2.5.4",
     "rtl-detect": "^1.0.2",
     "rxjs": "^6.6.3",
-    "swr": "^0.4.1"
+    "swr": "^0.4.1",
+    "use-deep-compare": "^1.1.0"
   },
   "peerDependencies": {
     "@folio/stripes-components": "^10.0.0",

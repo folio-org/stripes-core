@@ -43,6 +43,7 @@ class CreateResetPasswordControl extends Component {
   }
 
   async componentDidMount() {
+    this._isMounted = true;
     await this.makeCall();
 
     this.setState({ isLoading: false });
@@ -50,6 +51,7 @@ class CreateResetPasswordControl extends Component {
 
   componentWillUnmount() {
     this.props.clearAuthErrors();
+    this._isMounted = false;
   }
 
   handleResponse = (response) => {
@@ -83,7 +85,7 @@ class CreateResetPasswordControl extends Component {
     }
   };
 
-  makeCall = async (body) => {
+  makeCall = (body) => {
     const {
       stripes: {
         okapi: {
@@ -102,21 +104,23 @@ class CreateResetPasswordControl extends Component {
 
     const path = `${url}/bl-users/password-reset/${isValidToken ? 'reset' : 'validate'}`;
 
-    try {
-      const response = await fetch(path, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-okapi-token': token,
-          'x-okapi-tenant': tenant,
-        },
-        ...(body && { body: JSON.stringify(body) }),
+    fetch(path, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-okapi-token': token,
+        'x-okapi-tenant': tenant,
+      },
+      ...(body && { body: JSON.stringify(body) }),
+    })
+      .then((response) => {
+        if (this._isMounted) {
+          this.handleResponse(response);
+        }
+      })
+      .catch(error => {
+        handleBadResponse(error);
       });
-
-      this.handleResponse(response);
-    } catch (error) {
-      handleBadResponse(error);
-    }
   };
 
   handleSubmit = async (values) => {
@@ -184,7 +188,7 @@ const mapStateToProps = state => ({ authFailure: state.okapi.authFailure });
 const mapDispatchToProps = dispatch => ({
   handleBadResponse: error => processBadResponse(dispatch, error),
   clearAuthErrors: () => dispatch(setAuthError([])),
-  setDefaultAuthError: error => dispatch(setAuthError(error)),
+  setDefaultAuthError: error => dispatch(setAuthError([error])),
 });
 
 export default withRouter(reduxConnect(mapStateToProps, mapDispatchToProps)(CreateResetPasswordControl));

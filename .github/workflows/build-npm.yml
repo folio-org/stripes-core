@@ -15,7 +15,7 @@ name: buildNPM Snapshot
 on: [push, pull_request]
 
 jobs:
-  build:
+  build-npm:
     env:
       YARN_TEST_OPTIONS: '--karma.singleRun --karma.browsers ChromeDocker --karma.reporters mocha junit --coverage'
       SQ_ROOT_DIR: './src'
@@ -67,12 +67,12 @@ jobs:
         run: yarn lint
         continue-on-error: true
 
-      - name: Run yarn test
-        run: xvfb-run --server-args="-screen 0 1024x768x24" yarn test $YARN_TEST_OPTIONS
-
       - name: Run yarn formatjs-compile
         if : ${{ env.COMPILE_TRANSLATION_FILES == 'true' }}
         run: yarn formatjs-compile
+
+      - name: Run yarn test
+        run: xvfb-run --server-args="-screen 0 1024x768x24" yarn test $YARN_TEST_OPTIONS
 
       - name: Generate FOLIO module descriptor
         if: ${{ env.PUBLISH_MOD_DESCRIPTOR == 'true' }}
@@ -165,7 +165,7 @@ jobs:
 
       - name: Exclude some CI-generated artifacts in package
         if: ${{ github.ref == 'refs/heads/master' || github.ref  == 'refs/heads/main' }}
-        run: | 
+        run: |
           echo ".github" >> .npmignore
           echo ".scannerwork" >> .npmignore
           cat .npmignore

@@ -8,6 +8,25 @@ function getHeaders(tenant, token) {
   };
 }
 
+function fetchOkapiVersion(store) {
+  const okapi = store.getState().okapi;
+
+  return fetch(`${okapi.url}/_/version`, {
+    headers: getHeaders(okapi.tenant, okapi.token)
+  }).then((response) => { // eslint-disable-line consistent-return
+    if (response.status >= 400) {
+      store.dispatch({ type: 'DISCOVERY_FAILURE', code: response.status });
+      return response;
+    } else {
+      return response.text().then((text) => {
+        store.dispatch({ type: 'DISCOVERY_OKAPI', version: text });
+      });
+    }
+  }).catch((reason) => {
+    store.dispatch({ type: 'DISCOVERY_FAILURE', message: reason });
+  });
+}
+
 function fetchModules(store) {
   const okapi = store.getState().okapi;
 
@@ -41,7 +60,12 @@ function fetchModules(store) {
  * non-circulating library that doesn't provide the circ interface)
  */
 export function discoverServices(store) {
-  return fetchModules(store).then(() => {
+  const promises = [
+    fetchOkapiVersion(store),
+    fetchModules(store),
+  ];
+
+  return Promise.all(promises).then(() => {
     store.dispatch({ type: 'DISCOVERY_FINISHED' });
   });
 }

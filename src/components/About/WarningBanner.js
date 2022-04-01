@@ -46,7 +46,7 @@ const WarningBanner = ({
     <div className={css.warningContainer}>
       <MessageBanner
         type="warning"
-        show={missingModulesCount}
+        show={!!missingModulesCount}
         dismissable
       >
         <Headline>{missingModulesMsg}</Headline>
@@ -58,7 +58,7 @@ const WarningBanner = ({
 
       <MessageBanner
         type="warning"
-        show={incompatibleModulesCount}
+        show={!!incompatibleModulesCount}
         dismissable
       >
         <Headline>{incompatibleModuleMsg}</Headline>

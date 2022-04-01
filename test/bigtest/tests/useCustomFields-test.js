@@ -12,6 +12,13 @@ const setupWithApp = (App, title) => setupApplication({
   disableAuth: false, // Can't skip login flow bc we need to fetch module info
   modules: [{
     type: 'app',
+    name: '@folio/ui-login',
+    displayName: 'login.title',
+    route: '/login',
+    hasSettings: false,
+    module: () => {},
+  }, {
+    type: 'app',
     name: '@folio/ui-dummy',
     displayName: 'dummy.title',
     route: '/dummy',
@@ -19,8 +26,9 @@ const setupWithApp = (App, title) => setupApplication({
     module: App,
   }],
   translations: {
-    'dummy.title': title
-  }
+    'dummy.title': title,
+    'login.title': 'login title',
+  },
 });
 
 const createCustomFieldRenderer = (interfaceId, interfaceVersion) => (

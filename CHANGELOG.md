@@ -1,5 +1,20 @@
 # Change history for stripes-core
 
+## 8.2.0 IN PROGRESS
+
+* Align prop-types related to password reset errors. Refs STCOR-590.
+* Provide missing `password.compromised` translation. Refs STCOR-595.
+* Create/Reset password page > Display password requirements on page. Refs STCOR-576.
+
+## [8.1.0](https://github.com/folio-org/stripes-core/tree/v8.1.0) (2022-02-11)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v8.0.0...v8.1.0)
+
+* Use correct `css-loader` syntax. STCOR-577.
+* Your password changed confirmation page > Continue to Login URL goes to an error page. Fixes STCOR-582.
+* Dependency cleanup. Refs STCOR-584.
+* Correct the invalid `PropTypes.stripes` prop-type. And use the alphabet.
+* Settings Focus change. Refs STRIPES-731.
+
 ## [8.0.0](https://github.com/folio-org/stripes-core/tree/v8.0.0) (2021-09-27)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v7.2.0...v8.0.0)
 

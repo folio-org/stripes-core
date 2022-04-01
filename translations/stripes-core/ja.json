@@ -124,7 +124,7 @@
     "mainnav.skipMainNavigation": "Skip Main Navigation",
     "errors.user.timeout": "Your session has expired. Please login again to resume your session.",
     "errors.password.consecutiveWhitespaces.invalid": "The password must not contain consecutive white space characters.",
-    "about.missingModuleCount": "{count, number} Missing {count, plural, one {module} other {modules}}",
+    "about.missingModuleCount": "{count, number} missing {count, plural, one {interface} other {interfaces}}",
     "about.incompatibleModuleCount": "{count, number}互換性がないバージョンの{count, plural, one { モジュール } other { モジュール }}です",
     "routeErrorBoundary.sub": "エラーが発生し、ページを読み込めませんでした。",
     "routeErrorBoundary.goToAppHomeLabel": "ホームに戻る",

@@ -18,6 +18,7 @@ import {
   Headline,
 } from '@folio/stripes-components';
 
+import PasswordRequirementsList from './components/PasswordRequirementsList';
 
 import { setAuthError } from '../../okapiActions';
 import { stripesShape } from '../../Stripes';
@@ -36,9 +37,6 @@ class CreateResetPassword extends Component {
     onPasswordInputFocus: PropTypes.func.isRequired,
     submitting: PropTypes.bool,
     submitIsFailed: PropTypes.bool,
-    form: PropTypes.shape({
-      getState: PropTypes.func.isRequired,
-    }).isRequired,
   };
 
   static defaultProps = {
@@ -116,7 +114,7 @@ class CreateResetPassword extends Component {
       onSubmit,
       onPasswordInputFocus,
       submitIsFailed,
-      stripes
+      stripes,
     } = this.props;
 
     const errors = stripes.okapi.authFailure;
@@ -129,6 +127,12 @@ class CreateResetPassword extends Component {
     const isButtonDisabled = getState => {
       const { newPassword, confirmPassword } = getState().values;
       return !isEmpty(errors) || submissionStatus || !(newPassword && confirmPassword);
+    };
+
+    const getPasswordValue = getState => {
+      const { newPassword } = getState().values;
+
+      return newPassword;
     };
 
     return (
@@ -205,6 +209,16 @@ class CreateResetPassword extends Component {
                           inputColProps={this.inputColProps}
                           passwordMeterColProps={this.passwordMeterColProps}
                           onFocus={() => onPasswordInputFocus(submitIsFailed)}
+                        />
+                      </Col>
+                    </Row>
+                    <Row center="xs">
+                      <Col
+                        xs={12}
+                        sm={6}
+                      >
+                        <PasswordRequirementsList
+                          passwordValue={getPasswordValue(getState)}
                         />
                       </Col>
                     </Row>
