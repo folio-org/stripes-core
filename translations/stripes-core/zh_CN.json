@@ -134,5 +134,7 @@
     "mainnav.profileDropdown.locale": "语言环境",
     "mainnav.profileDropdown.permissions": "许可",
     "front.error.header": "404错误",
-    "front.error.message": "在此服务器上找不到请求的 URL {br}{url}{br}"
+    "front.error.message": "在此服务器上找不到请求的 URL {br}{url}{br}",
+    "errors.password.compromised.invalid": "密码不得被普遍使用、预期或泄露",
+    "createResetPassword.ruleTemplate": "Must {description}"
 }
