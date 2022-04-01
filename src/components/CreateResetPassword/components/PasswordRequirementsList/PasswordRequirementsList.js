@@ -77,7 +77,7 @@ const PasswordRequirementsList = ({ passwordValue }) => {
       >
         {
           unfulfilledRules?.map(rule => (
-            <li key={rule.id}>
+            <li key={rule.ruleId}>
               {rule.description}
             </li>
           ))
