@@ -25,12 +25,6 @@ describe('AppIcon', async () => {
     alt,
   };
 
-  const iconSizes = {
-    small: 14,
-    medium: 24,
-    large: 48,
-  };
-
   // This is a mock of the Stripes context that's available in an Folio app
   const stripesMock = {
     icons: {
@@ -134,22 +128,12 @@ describe('AppIcon', async () => {
       it(`Should render an icon into a ${size}-sized container`, () => {
         expect(appIcon.className).to.match(new RegExp(size));
       });
-      // it(`Should render an icon with a height of ${iconSizes[size]}px`, () => {
-      //   console.log(appIcon)
-      //   console.log(appIcon.img.offsetWidth)
-      //   expect(appIcon.img.offsetHeight).to.equal(iconSizes[size]);
-      // });
     });
   };
+
   describe('Size tests', () => {
     sizeTest('small');
     sizeTest('medium');
     sizeTest('large');
   });
-
-
-  // await sizeTest('small');
-  // await sizeTest('medium');
-  // await sizeTest('large');
-
 });
