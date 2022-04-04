@@ -134,10 +134,12 @@
   "errors.password.repeatingSymbols.invalid": "The password must not contain the same character in a row.",
   "errors.password.whiteSpace.invalid": "The password must not contain whitespaces.",
   "errors.password.consecutiveWhitespaces.invalid": "The password must not contain consecutive white space characters.",
+  "errors.password.compromised.invalid": "The password must not be commonly-used, expected or compromised",
 
   "createResetPassword.header": "Choose a password",
   "createResetPassword.newPassword": "New Password",
   "createResetPassword.confirmPassword": "Confirm Password",
+  "createResetPassword.ruleTemplate": "Must {description}",
 
   "routeErrorBoundary.sub": "An error occurred on this page and it could not be loaded.",
   "routeErrorBoundary.goToAppHomeLabel": "Return to home",
