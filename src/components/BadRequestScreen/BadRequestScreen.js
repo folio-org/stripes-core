@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 
 import Headline from '@folio/stripes-components/lib/Headline';
@@ -9,8 +10,20 @@ import { useStripes } from '../../StripesContext';
 
 import css from './BadRequestScreen.css';
 
-const BadRequestScreen = () => {
+const BadRequestScreen = ({ isResetPasswordRoute }) => {
   const stripes = useStripes();
+
+  const errorMessage = isResetPasswordRoute
+    ? <FormattedMessage id="stripes-core.front.error.setPassword.message" />
+    : (
+      <FormattedMessage
+        id="stripes-core.front.error.general.message"
+        values={{
+          url: window.location.href,
+          br: <br />,
+        }}
+      />
+    );
 
   return (
     <AddContext context={{ stripes }}>
@@ -30,12 +43,16 @@ const BadRequestScreen = () => {
             margin="none"
             className={css.title}
           >
-            <FormattedMessage id="stripes-core.front.error.message" />
+            {errorMessage}
           </Headline>
         </div>
       </Pluggable>
     </AddContext>
   );
+};
+
+BadRequestScreen.propTypes = {
+  isResetPasswordRoute: PropTypes.bool.isRequired,
 };
 
 export default BadRequestScreen;

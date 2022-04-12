@@ -41,10 +41,14 @@ function ModuleRoutes({ stripes }) {
         const isValidRoute = modules.app.some(module => location.pathname.startsWith(`${module.route}`));
 
         if (!isValidRoute) {
+          const isResetPasswordRoute = location.pathname.startsWith('/reset-password');
+
           return (
             <TitledRoute
               name="notFound"
-              component={<BadRequestScreen />}
+              component={<BadRequestScreen
+                isResetPasswordRoute={isResetPasswordRoute}
+              />}
             />
           );
         }
