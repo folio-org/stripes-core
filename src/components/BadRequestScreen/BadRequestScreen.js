@@ -30,13 +30,7 @@ const BadRequestScreen = () => {
             margin="none"
             className={css.title}
           >
-            <FormattedMessage
-              id="stripes-core.front.error.message"
-              values={{
-                url: window.location.href,
-                br: <br />,
-              }}
-            />
+            <FormattedMessage id="stripes-core.front.error.message" />
           </Headline>
         </div>
       </Pluggable>

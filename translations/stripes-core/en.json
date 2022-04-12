@@ -15,7 +15,7 @@
   "front.home": "Home",
   "front.about": "Software versions",
   "front.error.header": "404 Error",
-  "front.error.message": "The requested URL {br}{url}{br} was not found on this server.",
+  "front.error.message": "Please log out of your current FOLIO session to set password. Once logged out please try to set your password with this link again.",
   "button.new": "+ New",
   "button.new_tooltip": "Add {entry}",
   "button.edit": "Edit",
