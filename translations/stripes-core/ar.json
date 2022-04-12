@@ -134,5 +134,7 @@
     "mainnav.profileDropdown.locale": "إعداد محلي",
     "mainnav.profileDropdown.permissions": "صلاحيات",
     "front.error.header": "خطأ 404",
-    "front.error.message": "لم يتم العثور على عنوان URL المطلوب {br}{url}{br} على هذا الخادم."
+    "front.error.message": "لم يتم العثور على عنوان URL المطلوب {br}{url}{br} على هذا الخادم.",
+    "errors.password.compromised.invalid": "يجب ألا تكون كلمة المرور شائعة الاستخدام أو سهلة التوقع أو مهددة بالاختراق",
+    "createResetPassword.ruleTemplate": "يجب {description}"
 }
