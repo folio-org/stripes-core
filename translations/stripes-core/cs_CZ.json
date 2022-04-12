@@ -30,7 +30,7 @@
     "about.interfaceCount": "{count, number} {count, plural, one {interface} other {interfaces}}",
     "about.uiOrServiceDependencies": "UI/service dependencies",
     "about.moduleDependsOn": "{module} depends on:",
-    "about.newerModuleAvailable": "{required} ({available} available)",
+    "about.newerModuleAvailable": "{required} ({available} k dispozici)",
     "about.noDependencies": "{base} declares no dependencies",
     "about.key.absentInterfaces": "Interfaces that are required but absent are highlighted in <span>bold red</span>.",
     "about.key.incompatibleIntf": "Interfaces that are required but present only in an incompatible version are highlighted in <span>orange</span>.",
@@ -124,8 +124,8 @@
     "mainnav.skipMainNavigation": "Skip Main Navigation",
     "errors.user.timeout": "Your session has expired. Please login again to resume your session.",
     "errors.password.consecutiveWhitespaces.invalid": "The password must not contain consecutive white space characters.",
-    "about.missingModuleCount": "{count, number} missing {count, plural, one {interface} other {interfaces}}",
-    "about.incompatibleModuleCount": "{count, number} incompatible interface {count, plural, one {version} other {versions}}",
+    "about.missingModuleCount": "{count, number} chybí {count, plural, one {rozhraní} other {rozhraní}}",
+    "about.incompatibleModuleCount": "{count, number} nekompatibilní rozhraní {count, plural, one {verze} other {verze}}",
     "routeErrorBoundary.sub": "An error occurred on this page and it could not be loaded.",
     "routeErrorBoundary.goToAppHomeLabel": "Return to home",
     "routeErrorBoundary.goToModuleHomeLabel": "Return to {name} landing page",
@@ -134,5 +134,7 @@
     "mainnav.profileDropdown.locale": "Locale",
     "mainnav.profileDropdown.permissions": "Oprávnění",
     "front.error.header": "Chyba 404",
-    "front.error.message": "The requested URL {br}{url}{br} was not found on this server."
+    "front.error.message": "The requested URL {br}{url}{br} was not found on this server.",
+    "errors.password.compromised.invalid": "The password must not be commonly-used, expected or compromised",
+    "createResetPassword.ruleTemplate": "Must {description}"
 }
