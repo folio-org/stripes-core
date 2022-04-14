@@ -129,6 +129,7 @@ class Settings extends React.Component {
           defaultWidth="20%"
           paneTitle={<FormattedMessage id="stripes-core.settings" />}
           paneTitleRef={this.paneTitleRef}
+          id="settings-nav-pane"
         >
           <NavList aria-label={formatMessage({ id: 'stripes-core.settings' })}>
             <NavListSection
