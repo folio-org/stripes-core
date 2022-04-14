@@ -1,6 +1,7 @@
 # Change history for stripes-core
 
-## 8.1.1 IN PROGRESS
+## [8.1.1](https://github.com/folio-org/stripes-core/tree/v8.1.1) (2022-04-14)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v8.1.0...v8.1.1)
 
 * Add id to `<Settings>` navigation pane. Refs STCOR-604.
 
