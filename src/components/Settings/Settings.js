@@ -1,4 +1,4 @@
-import React, { createRef } from 'react';
+import React, { createRef, Suspense } from 'react';
 import PropTypes from 'prop-types';
 import {
   FormattedMessage,
@@ -16,6 +16,7 @@ import NavListItem from '@folio/stripes-components/lib/NavListItem';
 import NavListSection from '@folio/stripes-components/lib/NavListSection';
 import Paneset from '@folio/stripes-components/lib/Paneset';
 import Pane from '@folio/stripes-components/lib/Pane';
+import { LoadingView } from '@folio/stripes-components';
 
 import About from '../About';
 import { StripesContext } from '../../StripesContext';
@@ -124,41 +125,42 @@ class Settings extends React.Component {
     const activeLink = `/settings/${location.pathname.split('/')[2]}`;
 
     return (
-      <Paneset id="settings-module-display">
-        <Pane
-          defaultWidth="20%"
-          paneTitle={<FormattedMessage id="stripes-core.settings" />}
-          paneTitleRef={this.paneTitleRef}
-          id="settings-nav-pane"
-        >
-          <NavList aria-label={formatMessage({ id: 'stripes-core.settings' })}>
-            <NavListSection
-              activeLink={activeLink}
-              label={formatMessage({ id: 'stripes-core.settings' })}
-              className={css.navListSection}
-            >
-              {navLinks}
-            </NavListSection>
-          </NavList>
-          <NavList aria-label={formatMessage({ id: 'stripes-core.settingSystemInfo' })}>
-            <NavListSection
-              label={formatMessage({ id: 'stripes-core.settingSystemInfo' })}
-              tag="h3"
-              activeLink={activeLink}
-              className={css.navListSection}
-            >
-              <NavListItem to="/settings/about">
-                <FormattedMessage id="stripes-core.front.about" />
-              </NavListItem>
-            </NavListSection>
-          </NavList>
-        </Pane>
-        <Switch>
-          {routes}
-          <Route path="/settings/about" component={() => <About stripes={stripes} />} key="about" />
-          <Route component={() => <div style={{ padding: '15px' }}><FormattedMessage id="stripes-core.settingChoose" /></div>} />
-        </Switch>
-      </Paneset>
+      <Suspense fallback={<LoadingView />}>
+        <Paneset id="settings-module-display">
+          <Pane
+            defaultWidth="20%"
+            paneTitle={<FormattedMessage id="stripes-core.settings" />}
+            paneTitleRef={this.paneTitleRef}
+            id="settings-nav-pane"
+          >
+            <NavList aria-label={formatMessage({ id: 'stripes-core.settings' })}>
+              <NavListSection
+                activeLink={activeLink}
+                label={formatMessage({ id: 'stripes-core.settings' })}
+                className={css.navListSection}
+              >
+                {navLinks}
+              </NavListSection>
+            </NavList>
+            <NavList aria-label={formatMessage({ id: 'stripes-core.settingSystemInfo' })}>
+              <NavListSection
+                label={formatMessage({ id: 'stripes-core.settingSystemInfo' })}
+                activeLink={activeLink}
+                className={css.navListSection}
+              >
+                <NavListItem to="/settings/about">
+                  <FormattedMessage id="stripes-core.front.about" />
+                </NavListItem>
+              </NavListSection>
+            </NavList>
+          </Pane>
+          <Switch>
+            {routes}
+            <Route path="/settings/about" component={() => <About stripes={stripes} />} key="about" />
+            <Route component={() => <div style={{ padding: '15px' }}><FormattedMessage id="stripes-core.settingChoose" /></div>} />
+          </Switch>
+        </Paneset>
+      </Suspense>
     );
   }
 }
