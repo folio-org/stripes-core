@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React, { createRef, Suspense } from 'react';
 import PropTypes from 'prop-types';
 import {
   FormattedMessage,
