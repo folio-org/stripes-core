@@ -134,5 +134,7 @@
     "mainnav.profileDropdown.locale": "Idioma",
     "mainnav.profileDropdown.permissions": "Permissões",
     "front.error.header": "Erro 404",
-    "front.error.message": "O URL solicitado {br}{url}{br} não foi encontrado neste servidor."
+    "front.error.message": "O URL solicitado {br}{url}{br} não foi encontrado neste servidor.",
+    "errors.password.compromised.invalid": "A senha não deve ser comumente usada, esperada ou comprometida",
+    "createResetPassword.ruleTemplate": "Deve {description}"
 }
