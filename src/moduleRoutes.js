@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { Route } from 'react-router-dom';
 import { useLocation } from 'react-router';
 import PropTypes from 'prop-types';
 
 import { connectFor } from '@folio/stripes-connect';
+import { LoadingView } from '@folio/stripes-components';
 
 import { ModulesContext } from './ModulesContext';
 import { StripesContext } from './StripesContext';
@@ -54,7 +55,7 @@ function ModuleRoutes({ stripes }) {
         }
 
         return (
-          <>
+          <Suspense fallback={<LoadingView />}>
             {modules.app.map((module) => {
               const name = module.module.replace(packageName.PACKAGE_SCOPE_REGEX, '');
               const displayName = module.displayName;
@@ -109,7 +110,7 @@ function ModuleRoutes({ stripes }) {
                 />
               );
             }).filter(x => x)}
-          </>
+          </Suspense>
         );
       }}
     </ModulesContext.Consumer>
