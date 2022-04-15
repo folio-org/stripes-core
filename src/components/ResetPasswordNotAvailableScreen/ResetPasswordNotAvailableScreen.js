@@ -7,9 +7,9 @@ import AddContext from '../../AddContext';
 import Pluggable from '../../Pluggable';
 import { useStripes } from '../../StripesContext';
 
-import css from './BadRequestScreen.css';
+import css from './ResetPasswordNotAvailableScreen.css';
 
-const BadRequestScreen = () => {
+const ResetPasswordNotAvailableScreen = () => {
   const stripes = useStripes();
 
   return (
@@ -30,13 +30,7 @@ const BadRequestScreen = () => {
             margin="none"
             className={css.title}
           >
-            <FormattedMessage
-              id="stripes-core.front.error.general.message"
-              values={{
-                url: window.location.href,
-                br: <br />,
-              }}
-            />
+            <FormattedMessage id="stripes-core.front.error.setPassword.message" />
           </Headline>
         </div>
       </Pluggable>
@@ -44,4 +38,4 @@ const BadRequestScreen = () => {
   );
 };
 
-export default BadRequestScreen;
+export default ResetPasswordNotAvailableScreen;
