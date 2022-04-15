@@ -16,6 +16,7 @@ import { packageName } from './constants';
 import {
   BadRequestScreen,
   ModuleHierarchyProvider,
+  ResetPasswordNotAvailableScreen,
   TitledRoute,
 } from './components';
 import events from './events';
@@ -44,14 +45,19 @@ function ModuleRoutes({ stripes }) {
         if (!isValidRoute) {
           const isResetPasswordRoute = location.pathname.startsWith('/reset-password');
 
-          return (
-            <TitledRoute
-              name="notFound"
-              component={<BadRequestScreen
-                isResetPasswordRoute={isResetPasswordRoute}
-              />}
-            />
-          );
+          return isResetPasswordRoute
+            ? (
+              <TitledRoute
+                name="notFound"
+                component={<ResetPasswordNotAvailableScreen />}
+              />
+            )
+            : (
+              <TitledRoute
+                name="notFound"
+                component={<BadRequestScreen />}
+              />
+            );
         }
 
         return (

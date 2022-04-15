@@ -26,5 +26,6 @@ export { default as ForgotPasswordCtrl } from './ForgotPassword';
 export { default as ForgotUserNameCtrl } from './ForgotUserName';
 export { default as CheckEmailStatusPage } from './CheckEmailStatusPage';
 export { default as BadRequestScreen } from './BadRequestScreen';
+export { default as ResetPasswordNotAvailableScreen } from './ResetPasswordNotAvailableScreen';
 export * from './ModuleHierarchy';
 export * from './Namespace';
