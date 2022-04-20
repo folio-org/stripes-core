@@ -134,7 +134,8 @@
     "mainnav.profileDropdown.locale": "Gebietsschema",
     "mainnav.profileDropdown.permissions": "Berechtigungen",
     "front.error.header": "404 Fehler",
-    "front.error.message": "Die angeforderte URL {br}{url}{br} wurde auf diesem Server nicht gefunden.",
     "errors.password.compromised.invalid": "The password must not be commonly-used, expected or compromised",
-    "createResetPassword.ruleTemplate": "Must {description}"
+    "createResetPassword.ruleTemplate": "Must {description}",
+    "front.error.general.message": "The requested URL {br}{url}{br} was not found on this server.",
+    "front.error.setPassword.message": "Please log out of your current FOLIO session to set password. Once logged out please try to set your password with this link again."
 }

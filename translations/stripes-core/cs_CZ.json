@@ -134,7 +134,8 @@
     "mainnav.profileDropdown.locale": "Locale",
     "mainnav.profileDropdown.permissions": "Oprávnění",
     "front.error.header": "Chyba 404",
-    "front.error.message": "The requested URL {br}{url}{br} was not found on this server.",
-    "errors.password.compromised.invalid": "The password must not be commonly-used, expected or compromised",
-    "createResetPassword.ruleTemplate": "Must {description}"
+    "errors.password.compromised.invalid": "Heslo nesmí být běžně používané, očekávané nebo prozrazené",
+    "createResetPassword.ruleTemplate": "Musí {description}",
+    "front.error.general.message": "Požadovaná adresa URL {br}{url}{br} nebyla na tomto serveru nalezena.",
+    "front.error.setPassword.message": "Chcete-li nastavit heslo, odhlaste se ze své aktuální relace FOLIO. Po odhlášení zkuste znovu nastavit heslo pomocí tohoto odkazu."
 }
