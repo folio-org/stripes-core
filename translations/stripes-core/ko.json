@@ -134,7 +134,8 @@
     "mainnav.profileDropdown.locale": "Locale",
     "mainnav.profileDropdown.permissions": "권한",
     "front.error.header": "404 오류",
-    "front.error.message": "요청한 URL {br}{url}{br} 을(를) 이 서버에서 찾을 수 없습니다.",
     "errors.password.compromised.invalid": "The password must not be commonly-used, expected or compromised",
-    "createResetPassword.ruleTemplate": "Must {description}"
+    "createResetPassword.ruleTemplate": "Must {description}",
+    "front.error.general.message": "The requested URL {br}{url}{br} was not found on this server.",
+    "front.error.setPassword.message": "Please log out of your current FOLIO session to set password. Once logged out please try to set your password with this link again."
 }
