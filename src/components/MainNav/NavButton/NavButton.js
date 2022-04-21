@@ -3,8 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 
-import Badge from '@folio/stripes-components/lib/Badge';
-import Icon from '@folio/stripes-components/lib/Icon';
+import { Badge, Icon } from '@folio/stripes-components';
 
 import AppIcon from '../../AppIcon';
 

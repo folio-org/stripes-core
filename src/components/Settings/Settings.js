@@ -11,12 +11,15 @@ import {
 } from 'react-router-dom';
 
 import { connectFor } from '@folio/stripes-connect';
-import NavList from '@folio/stripes-components/lib/NavList';
-import NavListItem from '@folio/stripes-components/lib/NavListItem';
-import NavListSection from '@folio/stripes-components/lib/NavListSection';
-import Paneset from '@folio/stripes-components/lib/Paneset';
-import Pane from '@folio/stripes-components/lib/Pane';
-import { LoadingView } from '@folio/stripes-components';
+
+import {
+  LoadingView,
+  NavList,
+  NavListItem,
+  NavListSection,
+  Pane,
+  Paneset
+} from '@folio/stripes-components';
 
 import About from '../About';
 import { StripesContext } from '../../StripesContext';

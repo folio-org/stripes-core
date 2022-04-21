@@ -1,7 +1,7 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import Headline from '@folio/stripes-components/lib/Headline';
+import { Headline } from '@folio/stripes-components';
 
 import AddContext from '../../AddContext';
 import Pluggable from '../../Pluggable';

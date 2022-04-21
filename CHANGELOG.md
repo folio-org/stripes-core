@@ -8,6 +8,7 @@
 * Remove `react-hot-loader` cruft. Refs STCOR-597, STRIPES-725.
 * Add id to `<Settings>` navigation pane. Refs STCOR-604.
 * Display different message when user attempts to access the set password link when still logged in. Refs STCOR-599.
+* Import stripes-components via its public exports. Refs STCOR-612.
 
 ## [8.1.0](https://github.com/folio-org/stripes-core/tree/v8.1.0) (2022-02-11)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v8.0.0...v8.1.0)

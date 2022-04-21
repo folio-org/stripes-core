@@ -8,9 +8,8 @@ import {
 import { Provider } from 'react-redux';
 import { CookiesProvider } from 'react-cookie';
 
-import { HotKeys } from '@folio/stripes-components/lib/HotKeys';
 import { connectFor } from '@folio/stripes-connect';
-import { Callout } from '@folio/stripes-components';
+import { Callout, HotKeys } from '@folio/stripes-components';
 
 import ModuleRoutes from './moduleRoutes';
 import events from './events';

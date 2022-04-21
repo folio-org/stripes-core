@@ -6,7 +6,7 @@ import { injectIntl } from 'react-intl';
 import { withRouter } from 'react-router';
 import localforage from 'localforage';
 
-import Icon from '@folio/stripes-components/lib/Icon';
+import { Icon } from '@folio/stripes-components';
 
 import { withModules } from '../Modules';
 import { LastVisitedContext } from '../LastVisited';
