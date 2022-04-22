@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import { FormattedMessage } from 'react-intl';
 
-import Button from '@folio/stripes-components/lib/Button';
+import { Button } from '@folio/stripes-components';
 import styles from '../CreateResetPassword/CreateResetPassword.css';
 
 const propTypes = {

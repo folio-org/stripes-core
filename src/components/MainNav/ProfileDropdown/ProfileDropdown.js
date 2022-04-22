@@ -5,14 +5,17 @@ import { compose } from 'redux';
 import { withRouter } from 'react-router';
 import PropTypes from 'prop-types';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { Dropdown } from '@folio/stripes-components/lib/Dropdown';
-import DropdownMenu from '@folio/stripes-components/lib/DropdownMenu';
-import NavList from '@folio/stripes-components/lib/NavList';
-import Avatar from '@folio/stripes-components/lib/Avatar';
-import NavListSection from '@folio/stripes-components/lib/NavListSection';
-import NavListItem from '@folio/stripes-components/lib/NavListItem';
-import Icon from '@folio/stripes-components/lib/Icon';
-import List from '@folio/stripes-components/lib/List';
+
+import {
+  Avatar,
+  Dropdown,
+  DropdownMenu,
+  Icon,
+  List,
+  NavList,
+  NavListItem,
+  NavListSection,
+} from '@folio/stripes-components';
 
 import NavButton from '../NavButton';
 import css from './ProfileDropdown.css';

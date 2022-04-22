@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 
-import Headline from '@folio/stripes-components/lib/Headline';
+import { Headline } from '@folio/stripes-components';
 
 import OrganizationLogo from '../OrganizationLogo/OrganizationLogo';
 import validateEmail from '../../validators/validateEmail/validateEmail';

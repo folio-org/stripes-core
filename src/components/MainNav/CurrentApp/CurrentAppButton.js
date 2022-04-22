@@ -4,7 +4,7 @@
 
 import React, { forwardRef } from 'react';
 import PropTypes from 'prop-types';
-import Headline from '@folio/stripes-components/lib/Headline';
+import { Headline } from '@folio/stripes-components';
 import NavButton from '../NavButton';
 import css from './CurrentApp.css';
 
