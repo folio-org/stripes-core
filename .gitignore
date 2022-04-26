@@ -12,3 +12,4 @@ yarn.lock
 yarn-error.log
 artifacts
 dist
+junit.xml
