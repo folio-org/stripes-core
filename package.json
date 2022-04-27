@@ -13,7 +13,7 @@
   "scripts": {
     "start": "stripes serve",
     "clean": "rimraf static",
-    "test": "yarn run test:jest && yarn run test:bigtest ",
+    "test": "yarn run test:bigtest ",
     "test:bigtest": "stripes test karma",
     "test:jest": "jest --ci --coverage --colors",
     "lint": "eslint . && stylelint \"src/**/*.css\"",
