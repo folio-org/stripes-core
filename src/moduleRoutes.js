@@ -2,6 +2,7 @@ import React, { Suspense } from 'react';
 import { Route } from 'react-router-dom';
 import { useLocation } from 'react-router';
 import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
 
 import { connectFor } from '@folio/stripes-connect';
 import { LoadingView } from '@folio/stripes-components';
@@ -66,7 +67,14 @@ function ModuleRoutes({ stripes }) {
               const name = module.module.replace(packageName.PACKAGE_SCOPE_REGEX, '');
               const displayName = module.displayName;
               const perm = `module.${name}.enabled`;
-              if (!stripes.hasPerm(perm)) return null;
+              if (!stripes.hasPerm(perm)) {
+                return (
+                  <FormattedMessage
+                    id="stripes-core.front.error.noPermission"
+                    tagName="h2"
+                  />
+                );
+              }
 
               const connect = connectFor(module.module, stripes.epics, stripes.logger);
 
