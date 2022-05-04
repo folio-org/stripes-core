@@ -136,6 +136,7 @@
     "front.error.header": "Erro 404",
     "errors.password.compromised.invalid": "A senha não deve ser comumente usada, esperada ou comprometida",
     "createResetPassword.ruleTemplate": "Deve {description}",
-    "front.error.general.message": "The requested URL {br}{url}{br} was not found on this server.",
-    "front.error.setPassword.message": "Please log out of your current FOLIO session to set password. Once logged out please try to set your password with this link again."
+    "front.error.general.message": "A URL solicitada {br}{url}{br} não foi encontrada neste servidor.",
+    "front.error.setPassword.message": "Por favor, saia de sua sessão atual do FOLIO para definir a senha. Uma vez desconectado, tente definir sua senha com este link novamente.",
+    "front.error.noPermission": "Você não tem permissão para ver este aplicativo/registro"
 }
