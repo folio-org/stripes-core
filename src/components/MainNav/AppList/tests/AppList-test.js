@@ -4,9 +4,9 @@
 
 import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
-import { beforeEach, it, describe } from '@bigtest/mocha';
+import { afterEach, beforeEach, it, describe } from '@bigtest/mocha';
 import { expect } from 'chai';
-import { mountWithContext } from '../../../../../test/bigtest/helpers/render-helpers';
+import { mountWithContext, unmount } from '../../../../../test/bigtest/helpers/render-helpers';
 
 import AppList from '../AppList';
 import AppListInteractor from './interactor';
@@ -29,6 +29,10 @@ describe('AppList', () => {
     );
   });
 
+  afterEach(async () => {
+    unmount();
+  });
+
   it(`Should render ${apps.length} nav items`, () => {
     expect(appList.itemsCount).to.equal(apps.length);
   });
@@ -49,6 +53,10 @@ describe('AppList', () => {
       );
       await appList.dropdownToggle.focus();
       await appList.dropdownToggle.click();
+    });
+
+    afterEach(async () => {
+      unmount();
     });
 
     it('focuses the corresponding item for the selected app', () => {
@@ -74,6 +82,10 @@ describe('AppList', () => {
         await appList.dropdownToggle.click();
       });
 
+      afterEach(async () => {
+        unmount();
+      });
+
       it('focuses the first item in the list', () => {
         expect(document.activeElement.id).to.equal(appList.dropdownMenu.items(0).id);
       });
@@ -91,6 +103,10 @@ describe('AppList', () => {
           />
         </BrowserRouter>
       );
+    });
+
+    afterEach(async () => {
+      unmount();
     });
 
     it('Should not render the AppList', () => {
@@ -114,6 +130,10 @@ describe('AppList', () => {
       await appList.dropdownToggle.$root.focus();
       await appList.when(() => appList.dropdownToggle.isFocused);
       await appList.dropdownToggle.click();
+    });
+
+    afterEach(async () => {
+      unmount();
     });
 
     it('Should render the "all apps" button', () => {

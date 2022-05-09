@@ -4,9 +4,9 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import times from 'lodash/times';
-import { beforeEach, it, describe } from '@bigtest/mocha';
+import { afterEach, beforeEach, it, describe } from '@bigtest/mocha';
 import { expect } from 'chai';
-import { mount } from '../../../../../../../test/bigtest/helpers/render-helpers';
+import { mount, unmount } from '../../../../../../../test/bigtest/helpers/render-helpers';
 
 import ResizeContainer from '../ResizeContainer';
 import ResizeContainerInteractor from './interactor';
@@ -86,6 +86,10 @@ describe('ResizeContainer', () => {
     );
   });
 
+  afterEach(async () => {
+    unmount();
+  });
+
   it(`renders ${EXPECTED_VISIBLE_ITEMS} visible items`, () => {
     expect(resizeContainer.visibleItems.length).to.equal(EXPECTED_VISIBLE_ITEMS);
   });
@@ -105,6 +109,10 @@ describe('ResizeContainer', () => {
           hideAllWidth={9999999}
         />
       );
+    });
+
+    afterEach(async () => {
+      unmount();
     });
 
     it('renders 0 visible items', () => {
@@ -128,6 +136,10 @@ describe('ResizeContainer', () => {
           hideAllWidth={0} // Disabled
         />
       );
+    });
+
+    afterEach(async () => {
+      unmount();
     });
 
     it(`renders ${EXPECTED_VISIBLE_ITEMS} visible items`, () => {

@@ -1,48 +1,22 @@
 import React from 'react';
 import { expect } from 'chai';
 import { beforeEach, it, describe } from '@bigtest/mocha';
-import ButtonInteractor from '@folio/stripes-components/lib/Button/tests/interactor';
 
 import setupApplication from '../helpers/setup-core-application';
-import Harness from '../helpers/Harness';
-import { mount } from '../helpers/render-helpers';
-import SSOLogin from '../../../src/components/SSOLogin';
-import translations from '../../../translations/stripes-core/en';
 import SSOLandingInteractor from '../interactors/SSOLanding';
 
+// Why is this file named aaa-sso-login-test?
+//
+// BigTest OG first runs tests in /src (which are all component-based tests
+// and therefore only call mount) and then the tests in /tests (which are all
+// route-based tests and therefore call setupApplication or one of its
+// derivatives).
+//
+// The SSO tests leverage both mount (to directly test individual
+// components) and setupApplication (to test the DOM when mounted at
+// particular routes).
+//
 describe('Login via SSO', () => {
-  describe('SSO form presentation', () => {
-    const ssoLoginButton = new ButtonInteractor('[data-test-sso-login-button]');
-    let clicked = false;
-
-    beforeEach(async () => {
-      await mount(
-        <Harness>
-          <SSOLogin handleSSOLogin={() => { clicked = true; }} />
-        </Harness>
-      );
-    });
-
-    it('button should be rendered', () => {
-      expect(ssoLoginButton.isPresent).to.be.true;
-      expect(ssoLoginButton.isButton).to.be.true;
-    });
-
-    it('text should be rendered as label of button', () => {
-      expect(ssoLoginButton.text).to.equal(translations.loginViaSSO);
-    });
-
-    describe('clicking the SSO Login button', () => {
-      beforeEach(async () => {
-        await ssoLoginButton.click();
-      });
-
-      it('should trigger handleSSOLogin callback', () => {
-        expect(clicked).to.be.true;
-      });
-    });
-  });
-
   describe('SSO redirect', () => {
     const sso = new SSOLandingInteractor();
 

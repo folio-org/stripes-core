@@ -3,10 +3,10 @@
  */
 
 import React from 'react';
-import { beforeEach, it, describe } from '@bigtest/mocha';
+import { afterEach, beforeEach, it, describe } from '@bigtest/mocha';
 import { expect } from 'chai';
 
-import { mount } from '../../../../test/bigtest/helpers/render-helpers';
+import { mount, unmount } from '../../../../test/bigtest/helpers/render-helpers';
 
 import AppIcon from '../AppIcon';
 import AppIconInteractor from './interactor';
@@ -54,6 +54,10 @@ describe('AppIcon', async () => {
       );
     });
 
+    afterEach(async () => {
+      unmount();
+    });
+
     it('Should render an <img>', () => {
       expect(appIcon.hasImg).to.equal(true);
     });
@@ -71,6 +75,10 @@ describe('AppIcon', async () => {
           className={className}
         />
       );
+    });
+
+    afterEach(async () => {
+      unmount();
     });
 
     it('Should render an <img>', () => {
@@ -95,6 +103,10 @@ describe('AppIcon', async () => {
       );
     });
 
+    afterEach(async () => {
+      unmount();
+    });
+
     it('Should render an AppIcon with a label', () => {
       expect(appIcon.label).to.equal(label);
     });
@@ -108,6 +120,10 @@ describe('AppIcon', async () => {
           icon={iconObject}
         />
       );
+    });
+
+    afterEach(async () => {
+      unmount();
     });
 
     it(`Should render an AppIcon with a HTML tag of "${tag}"`, () => {
@@ -125,6 +141,11 @@ describe('AppIcon', async () => {
           />
         );
       });
+
+      afterEach(async () => {
+        unmount();
+      });
+
       it(`Should render an icon into a ${size}-sized container`, () => {
         expect(appIcon.className).to.match(new RegExp(size));
       });

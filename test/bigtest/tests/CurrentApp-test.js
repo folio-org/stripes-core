@@ -5,9 +5,9 @@
 import React from 'react';
 import { beforeEach, it, describe } from '@bigtest/mocha';
 import { expect } from 'chai';
-import setupApplication from '../../../../../test/bigtest/helpers/setup-application';
-import AppContextMenu from '../AppContextMenu';
-import CurrentAppInteractor from './interactor';
+import setupApplication from '../helpers/setup-application';
+import AppContextMenu from '../../../src/components/MainNav/CurrentApp/AppContextMenu';
+import CurrentAppInteractor from '../interactors/CurrentApp';
 
 const DummyAppWithContextMenu = () => (
   <div>
