@@ -41,8 +41,8 @@
     "about.pluginModuleCount": "{count, number} plugin {count, plural, one {modul} other {moduly}}",
     "loggedInAs": "Logged in as {firstName} {lastName}",
     "logout": "Log out",
-    "settings": "Settings",
-    "folioSettings": "FOLIO settings",
+    "settings": "Nastavení",
+    "folioSettings": "Nastavení FOLIO",
     "loginViaSSO": "Login via SSO",
     "button.close": "Close",
     "login": "Log in",
@@ -52,7 +52,7 @@
     "button.back": "Zpět",
     "button.confirm": "Potvrdit",
     "title.home": "Home",
-    "title.settings": "Settings",
+    "title.settings": "Nastavení",
     "title.login": "Log in",
     "title.ssoRedirect": "SSO Redirect",
     "title.notFound": "Not Found",
@@ -87,7 +87,7 @@
     "mainnav.currentAppAriaLabel": "Current open application: {appName} (Click to go home)",
     "mainnav.topLevelLabel": "Primary",
     "mainnav.applicationListLabel": "Application List",
-    "errors.default.error": "Sorry, the information entered does not match our records.",
+    "errors.default.error": "Omlouváme se, zadané informace neodpovídají našim záznamům.",
     "errors.username.incorrect": "This FOLIO account cannot be located. Please contact your FOLIO systems administrator.",
     "errors.password.incorrect": "Bad credentials",
     "errors.user.blocked": "For security purposes, your account has been locked. Please try again or contact your FOLIO System Administrator.",
@@ -137,6 +137,5 @@
     "errors.password.compromised.invalid": "Heslo nesmí být běžně používané, očekávané nebo prozrazené",
     "createResetPassword.ruleTemplate": "Musí {description}",
     "front.error.general.message": "Požadovaná adresa URL {br}{url}{br} nebyla na tomto serveru nalezena.",
-    "front.error.setPassword.message": "Chcete-li nastavit heslo, odhlaste se ze své aktuální relace FOLIO. Po odhlášení zkuste znovu nastavit heslo pomocí tohoto odkazu.",
-    "front.error.noPermission": "K zobrazení této aplikace/záznamu nemáte oprávnění"
+    "front.error.setPassword.message": "Chcete-li nastavit heslo, odhlaste se ze své aktuální relace FOLIO. Po odhlášení zkuste znovu nastavit heslo pomocí tohoto odkazu."
 }
