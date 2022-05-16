@@ -5,16 +5,14 @@ import { beforeEach, it, describe } from '@bigtest/mocha';
 import setupApplication from '../helpers/setup-core-application';
 import SSOLandingInteractor from '../interactors/SSOLanding';
 
-// Why is this file named aaa-sso-login-test?
+// These are SSO route-based tests. There are also component-based tests
+// at / src / components / SSOLogin / tests /
 //
 // BigTest OG first runs tests in /src (which are all component-based tests
 // and therefore only call mount) and then the tests in /tests (which are all
 // route-based tests and therefore call setupApplication or one of its
-// derivatives).
-//
-// The SSO tests leverage both mount (to directly test individual
-// components) and setupApplication (to test the DOM when mounted at
-// particular routes).
+// derivatives). The two types don't play nice together because of they way
+// the do (or don't) clean up their mount points after running.
 //
 describe('Login via SSO', () => {
   describe('SSO redirect', () => {
