@@ -1,10 +1,10 @@
 import React from 'react';
 import { expect } from 'chai';
-import { afterEach, beforeEach, it, describe } from '@bigtest/mocha';
+import { beforeEach, it, describe } from '@bigtest/mocha';
 import ButtonInteractor from '@folio/stripes-components/lib/Button/tests/interactor';
 
 import Harness from '../../../../test/bigtest/helpers/Harness';
-import { mount, unmount } from '../../../../test/bigtest/helpers/render-helpers';
+import { mount } from '../../../../test/bigtest/helpers/render-helpers';
 import SSOLogin from '..';
 import translations from '../../../../translations/stripes-core/en';
 
@@ -27,10 +27,6 @@ describe('Login via SSO', () => {
           <SSOLogin handleSSOLogin={() => { clicked = true; }} />
         </Harness>
       );
-    });
-
-    afterEach(async () => {
-      unmount();
     });
 
     it('button should be rendered', () => {
