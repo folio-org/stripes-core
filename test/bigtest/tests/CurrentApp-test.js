@@ -26,12 +26,6 @@ const DummyAppWithoutContextMenu = () => <div />;
 describe('CurrentApp', () => {
   const currentApp = new CurrentAppInteractor();
 
-  before(async () => {
-    await new Promise((resolve) => {
-      setTimeout(resolve, 1900);
-    });
-  });
-
   setupApplication({
     modules: [
       {
