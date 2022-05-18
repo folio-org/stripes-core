@@ -4,7 +4,7 @@ import { expect } from 'chai';
 import React, { Component } from 'react';
 import DropdownInteractor from '@folio/stripes-components/lib/Dropdown/tests/interactor';
 
-import setupApplication from '../../../../../test/bigtest/helpers/setup-application';
+import setupApplication from '../helpers/setup-application';
 
 class DummyApp extends Component {
   render() {
