@@ -3,11 +3,11 @@
  */
 
 import React from 'react';
-import { beforeEach, it, describe } from '@bigtest/mocha';
+import { before, beforeEach, it, describe } from '@bigtest/mocha';
 import { expect } from 'chai';
-import setupApplication from '../../../../../test/bigtest/helpers/setup-application';
-import AppContextMenu from '../AppContextMenu';
-import CurrentAppInteractor from './interactor';
+import setupApplication from '../helpers/setup-application';
+import AppContextMenu from '../../../src/components/MainNav/CurrentApp/AppContextMenu';
+import CurrentAppInteractor from '../interactors/CurrentApp';
 
 const DummyAppWithContextMenu = () => (
   <div>
@@ -25,6 +25,12 @@ const DummyAppWithoutContextMenu = () => <div />;
 
 describe('CurrentApp', () => {
   const currentApp = new CurrentAppInteractor();
+
+  before(async () => {
+    await new Promise((resolve) => {
+      setTimeout(resolve, 1900);
+    });
+  });
 
   setupApplication({
     modules: [
