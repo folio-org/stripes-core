@@ -137,6 +137,5 @@
     "errors.password.compromised.invalid": "密码不得被普遍使用、预期或泄露",
     "createResetPassword.ruleTemplate": "必须{description}",
     "front.error.general.message": "在此服务器上找不到请求的 URL {br}{url}{br}",
-    "front.error.setPassword.message": "请退出当前的 FOLIO 会话以设置密码。退出后，请尝试再次使用此链接设置密码。",
-    "front.error.noPermission": "您无权查看此应用/记录"
+    "front.error.setPassword.message": "请退出当前的 FOLIO 会话以设置密码。退出后，请尝试再次使用此链接设置密码。"
 }
