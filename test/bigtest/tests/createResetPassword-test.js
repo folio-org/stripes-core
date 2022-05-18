@@ -556,7 +556,7 @@ describe('Create/Reset password page', () => {
       });
 
       it('should have an appropriate content', () => {
-        expect(message.text).to.equal(translations['errors.default.server.error']);
+        expect(message.text).to.equal(translations['errors.link.invalid']);
       });
     });
 
@@ -581,7 +581,7 @@ describe('Create/Reset password page', () => {
       });
 
       it('should have an appropriate content', () => {
-        expect(message.text).to.equal(translations['errors.default.server.error']);
+        expect(message.text).to.equal(translations['errors.link.expired']);
       });
     });
 
@@ -606,7 +606,7 @@ describe('Create/Reset password page', () => {
       });
 
       it('should have an appropriate content', () => {
-        expect(message.text).to.equal(translations['errors.default.server.error']);
+        expect(message.text).to.equal(translations['errors.link.used']);
       });
     });
     describe('system error', () => {

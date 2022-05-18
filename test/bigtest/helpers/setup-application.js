@@ -1,3 +1,4 @@
+import ReactDOM from 'react-dom';
 import { beforeEach } from '@bigtest/mocha';
 import { setupAppForTesting, visit, location } from '@bigtest/react';
 import localforage from 'localforage';
@@ -34,6 +35,8 @@ export default function setupApplication({
   initialState = {},
   cookies = {},
 } = {}) {
+  const mountId = 'testing-root';
+
   beforeEach(async function () {
     // when auth is disabled, add a fake user to the store
     if (disableAuth) {
@@ -50,11 +53,15 @@ export default function setupApplication({
         }, currentUser),
         currentPerms: permissions
       };
+    } else {
+      initialState.okapi = {
+        ssoEnabled: true,
+      };
     }
 
     // mount the app
     this.app = await setupAppForTesting(App, {
-      mountId: 'testing-root',
+      mountId,
 
       props: {
         initialState,
@@ -84,14 +91,14 @@ export default function setupApplication({
         clearCookies(cookies);
         reset();
         localforage.clear();
-        this.server.shutdown();
+        this.server?.shutdown();
         this.server = null;
         this.app = null;
       }
     });
 
     // set the root to 100% height
-    document.getElementById('testing-root').style.height = '100%';
+    document.getElementById(mountId).style.height = '100%';
 
     // setup react validators
     Object.defineProperties(this, {
