@@ -17,7 +17,6 @@ import { metadata, icons } from 'stripes-config';
 * dependency between stripes-connect and stripes-core. STCON-76
 */
 import { ConnectContext } from '@folio/stripes-connect';
-
 import initialReducers from '../../initialReducers';
 import enhanceReducer from '../../enhanceReducer';
 import createApolloClient from '../../createApolloClient';
