@@ -125,6 +125,7 @@ describe('AppIcon', async () => {
           />
         );
       });
+
       it(`Should render an icon into a ${size}-sized container`, () => {
         expect(appIcon.className).to.match(new RegExp(size));
       });
