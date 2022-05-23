@@ -9,7 +9,7 @@ import { QueryClientProvider } from 'react-query';
 import { SWRConfig } from 'swr';
 import { ApolloProvider } from '@apollo/client';
 
-import ErrorBoundary from '@folio/stripes-components/lib/ErrorBoundary';
+import { ErrorBoundary } from '@folio/stripes-components';
 import { metadata, icons } from 'stripes-config';
 
 /* ConnectContext - formerly known as RootContext, now comes from stripes-connect, so stripes-connect
