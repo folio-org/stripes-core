@@ -159,7 +159,7 @@ jobs:
         if: ${{ github.ref == 'refs/heads/master' || github.ref  == 'refs/heads/main' }}
         run: |
           npm config set @folio:registry $FOLIO_NPM_REGISTRY
-          npm config set //repository.folio.org/repository/npm-folio/:_auth $NODE_AUTH_TOKEN
+          npm config set //repository.folio.org/repository/npm-folioci/:_auth $NODE_AUTH_TOKEN
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
