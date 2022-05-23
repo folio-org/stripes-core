@@ -5,7 +5,7 @@
 import React, { useContext } from 'react';
 import { useIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-import ErrorBoundary from '@folio/stripes-components/lib/ErrorBoundary';
+import { ErrorBoundary } from '@folio/stripes-components';
 import events from '../../events';
 import { getEventHandlers } from '../../handlerService';
 import { ModulesContext } from '../../ModulesContext';
