@@ -12,6 +12,7 @@
 * Support testing with Jest/RTL. Refs STCOR-618.
 * Export `queryLimit` to provide a default API query limit. Refs STCOR-615.
 * Update NodeJS to v16 in GitHub Actions. Refs STCOR-623.
+* Add `@bigtest/miragejs` dev-dep since tests rely on it. Refs STCOR-629.
 
 ## [8.1.0](https://github.com/folio-org/stripes-core/tree/v8.1.0) (2022-02-11)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v8.0.0...v8.1.0)
