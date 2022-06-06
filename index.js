@@ -1,7 +1,6 @@
 /* external utilities */
 export { ConnectContext as RootContext, withConnect as withRoot } from '@folio/stripes-connect';
-export { default as CalloutContext } from './src/CalloutContext';
-export { default as useCallout } from './src/useCallout';
+export { CalloutContext, useCallout } from './src/CalloutContext';
 
 /* internal utilities */
 export { stripesShape } from './src/Stripes';

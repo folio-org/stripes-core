@@ -35,7 +35,7 @@ import {
   AppCtxMenuProvider,
 } from './components';
 import { StripesContext } from './StripesContext';
-import CalloutContext from './CalloutContext';
+import { CalloutContext } from './CalloutContext';
 
 class RootWithIntl extends React.Component {
   static propTypes = {
