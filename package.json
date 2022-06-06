@@ -21,7 +21,7 @@
     "build-mod-descriptor": "stripes mod descriptor --full --strict | jq '.[]' > module-descriptor.json"
   },
   "engines": {
-    "node": ">=10.0.0"
+    "node": ">=14.0.0"
   },
   "stripes": {
     "okapiInterfaces": {
