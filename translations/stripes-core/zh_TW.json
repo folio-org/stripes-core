@@ -88,7 +88,7 @@
     "mainnav.topLevelLabel": "主要",
     "mainnav.applicationListLabel": "Application List",
     "errors.default.error": "对不起, 输入的信息与我们的记录不符。",
-    "errors.username.incorrect": "This FOLIO account cannot be located. Please contact your FOLIO systems administrator.",
+    "errors.username.incorrect": "無法找到此 FOLIO帳戶。請聯繫您的Folio系統管理員。",
     "errors.password.incorrect": "凭据错误",
     "errors.user.blocked": "出于安全考虑，您的帐户已被锁定。请重试或联系您的FOLIO系统管理员。",
     "errors.password.match.error": "密碼不對，請重新輸入密碼。",
@@ -134,5 +134,9 @@
     "mainnav.profileDropdown.locale": "Locale",
     "mainnav.profileDropdown.permissions": "Permissions",
     "front.error.header": "錯誤 404",
-    "front.error.message": "The requested URL {br}{url}{br} was not found on this server."
+    "front.error.message": "The requested URL {br}{url}{br} was not found on this server.",
+    "errors.password.compromised.invalid": "The password must not be commonly-used, expected or compromised",
+    "createResetPassword.ruleTemplate": "Must {description}",
+    "front.error.general.message": "The requested URL {br}{url}{br} was not found on this server.",
+    "front.error.setPassword.message": "Please log out of your current FOLIO session to set password. Once logged out please try to set your password with this link again."
 }
