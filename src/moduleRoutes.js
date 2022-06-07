@@ -6,8 +6,10 @@ import { LoadingView } from '@folio/stripes-components';
 
 import { ModulesContext } from './ModulesContext';
 
+import { packageName } from './constants';
 import {
   BadRequestScreen,
+  NoPermissionScreen,
   ResetPasswordNotAvailableScreen,
   TitledRoute,
 } from './components';
@@ -51,6 +53,18 @@ function ModuleRoutes({ stripes }) {
                 component={<BadRequestScreen />}
               />
             );
+        }
+
+        const currentModule = modules.app.find(module => location.pathname.startsWith(`${module.route}`));
+        const moduleName = currentModule?.module?.replace(packageName.PACKAGE_SCOPE_REGEX, '');
+
+        if (!stripes.hasPerm(`module.${moduleName}.enabled`)) {
+          return (
+            <TitledRoute
+              name="noPermission"
+              component={<NoPermissionScreen />}
+            />
+          );
         }
 
         return (
