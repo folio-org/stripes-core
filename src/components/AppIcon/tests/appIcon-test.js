@@ -13,7 +13,7 @@ import AppIconInteractor from './interactor';
 import png from './users-app-icon.png';
 import svg from './users-app-icon.svg';
 
-describe('AppIcon', () => {
+describe('AppIcon', async () => {
   const appIcon = new AppIconInteractor();
   const alt = 'My alt';
   const label = 'My label';
@@ -23,12 +23,6 @@ describe('AppIcon', () => {
   const iconObject = {
     src: png,
     alt,
-  };
-
-  const iconSizes = {
-    small: 14,
-    medium: 24,
-    large: 48,
   };
 
   // This is a mock of the Stripes context that's available in an Folio app
@@ -121,7 +115,7 @@ describe('AppIcon', () => {
     });
   });
 
-  const sizeTest = async (size) => {
+  const sizeTest = (size) => {
     describe(`Passing a size of "${size}"`, async () => {
       beforeEach(async () => {
         await mount(
@@ -131,16 +125,16 @@ describe('AppIcon', () => {
           />
         );
       });
-      it(`Should render an icon with a width of ${iconSizes[size]}px`, () => {
-        expect(appIcon.img.offsetWidth).to.equal(iconSizes[size]);
-      });
-      it(`Should render an icon with a height of ${iconSizes[size]}px`, () => {
-        expect(appIcon.img.offsetHeight).to.equal(iconSizes[size]);
+
+      it(`Should render an icon into a ${size}-sized container`, () => {
+        expect(appIcon.className).to.match(new RegExp(size));
       });
     });
   };
 
-  sizeTest('small');
-  sizeTest('medium');
-  sizeTest('large');
+  describe('Size tests', () => {
+    sizeTest('small');
+    sizeTest('medium');
+    sizeTest('large');
+  });
 });
