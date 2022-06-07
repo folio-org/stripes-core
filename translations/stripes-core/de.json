@@ -136,6 +136,6 @@
     "front.error.header": "404 Fehler",
     "errors.password.compromised.invalid": "The password must not be commonly-used, expected or compromised",
     "createResetPassword.ruleTemplate": "Must {description}",
-    "front.error.general.message": "The requested URL {br}{url}{br} was not found on this server.",
-    "front.error.setPassword.message": "Please log out of your current FOLIO session to set password. Once logged out please try to set your password with this link again."
+    "front.error.general.message": "Die angeforderte URL {br}{url}{br} wurde auf diesem Server nicht gefunden.",
+    "front.error.setPassword.message": "Bitte loggen Sie sich aus Ihrer aktuellen FOLIO-Sitzung aus, um Ihr Passwort zu setzen. Wenn Sie abgemeldet sind, versuchen Sie bitte erneut, Ihr Passwort über diesen Link zu setzen."
 }

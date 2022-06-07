@@ -29,7 +29,7 @@ class AppContextDropdown extends React.Component {
         open={open}
         label={
           <>
-            {selectedApp.displayName}
+            {selectedApp?.displayName}
             <span className="sr-only">
               <FormattedMessage id="stripes-core.mainnav.appContextMenu" />
             </span>

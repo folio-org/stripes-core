@@ -65,7 +65,7 @@ const doLogout = async function () {
   await i.clickLogout();
 };
 
-describe('useCustomFields hook', () => {
+describe.skip('useCustomFields hook', () => {
   describe('requests for existing custom fields', () => {
     setupWithApp(createCustomFieldRenderer('users'), 'Existing Custom Fields');
 

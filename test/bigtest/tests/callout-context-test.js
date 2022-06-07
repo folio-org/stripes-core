@@ -6,7 +6,7 @@ import { expect } from 'chai';
 
 import CalloutInteractor from '@folio/stripes-components/lib/Callout/tests/interactor';
 
-import CalloutContext from '../../../src/CalloutContext';
+import { CalloutContext } from '../../../src/CalloutContext';
 import setupApplication from '../helpers/setup-core-application';
 import AppInteractor from '../interactors/app';
 

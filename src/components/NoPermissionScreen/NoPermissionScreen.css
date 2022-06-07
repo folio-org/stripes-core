@@ -1,0 +1,22 @@
+@import "@folio/stripes-components/lib/variables.css";
+
+.titleWrap {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  box-sizing: border-box;
+  padding-bottom: 6rem;
+}
+
+h2.title {
+  font-size: var(--font-size-large);
+  text-align: center;
+}
+
+@media screen and (max-width: 900px) {
+  h2.title {
+    font-size: var(--font-size-small);
+  }
+}
