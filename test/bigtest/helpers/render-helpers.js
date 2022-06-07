@@ -1,37 +1,34 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { setupAppForTesting } from '@bigtest/react';
+
 import Harness from './Harness';
 
+// load these styles for our tests
 import '@folio/stripes-components/lib/global.css';
 
-function getCleanTestingRoot() {
-  let $root = document.getElementById('root');
+/**
+ * mount a component
+ */
+export async function mount(component) {
+  const ComponentHarness = () => {
+    return component;
+  };
 
-  // if a root exists, unmount anything inside and remove it
-  if ($root) {
-    ReactDOM.unmountComponentAtNode($root);
-    $root.parentNode.removeChild($root);
-  }
+  await setupAppForTesting(ComponentHarness, {
+    mountId: 'testing-root',
+  });
 
-  // create a brand new root element
-  $root = document.createElement('div');
-  $root.id = 'root';
-
-  document.body.appendChild($root);
-
-  return $root;
+  // set the root to 100% height
+  document.getElementById('testing-root').style.height = '100%';
 }
 
-export function mount(component) {
-  return new Promise(resolve => {
-    ReactDOM.render(component, getCleanTestingRoot(), resolve);
-  });
-}
-
-export function mountWithContext(component) {
-  return new Promise(resolve => {
-    ReactDOM.render(<Harness>{component}</Harness>, getCleanTestingRoot(), resolve);
-  });
+/**
+ * mount a component with contexts provided by redux-store
+ * and react-intl.
+ */
+export async function mountWithContext(component) {
+  await (mount(<Harness>{component}</Harness>));
 }
 
 export function selectorFromClassnameString(str) {
