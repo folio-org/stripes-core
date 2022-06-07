@@ -1,6 +1,7 @@
 # Change history for stripes-core
 
-## 8.1.2 IN PROGRESS
+## [8.1.2](https://github.com/folio-org/stripes-core/tree/v8.1.2) (2022-06-07)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v8.1.1...v8.1.2)
 
 * Update NodeJS to active LTS, v16. Refs STCOR-623.
 * Update `zh_TW` translations. Refs STCOR-628.
