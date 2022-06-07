@@ -137,5 +137,7 @@
     "errors.password.compromised.invalid": "يجب ألا تكون كلمة المرور شائعة الاستخدام أو سهلة التوقع أو مهددة بالاختراق",
     "createResetPassword.ruleTemplate": "يجب {description}",
     "front.error.general.message": "لم يتم العثور على عنوان URL المطلوب {br}{url}{br} على هذا الخادم.",
-    "front.error.setPassword.message": "يرجى تسجيل الخروج من جلسة فوليو الحالية لتعيين كلمة المرور. بمجرد تسجيل الخروج، يرجى محاولة تعيين كلمة المرور الخاصة بك باستخدام هذا الرابط مرة أخرى."
+    "front.error.setPassword.message": "يرجى تسجيل الخروج من جلسة فوليو الحالية لتعيين كلمة المرور. بمجرد تسجيل الخروج، يرجى محاولة تعيين كلمة المرور الخاصة بك باستخدام هذا الرابط مرة أخرى.",
+    "title.noPermission": "No permission",
+    "front.error.noPermission": "You don't have permission to view this app/record"
 }
