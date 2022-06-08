@@ -197,6 +197,7 @@ class MainNav extends Component {
         {({ lastVisited }) => {
           const apps = this.getAppList(lastVisited);
           const selectedApp = apps.find(entry => entry.active);
+          const helpUrl = stripes.config.helpUrl ?? "https://docs.folio.org/docs";
 
           return (
             <header className={css.navRoot}>
@@ -214,7 +215,7 @@ class MainNav extends Component {
                 <NavButton
                   aria-label="Help button"
                   data-test-item-help-button
-                  href="https://docs.folio.org/docs/"
+                  href={helpUrl}
                   icon={<Icon
                     icon="question-mark"
                     size="large"
