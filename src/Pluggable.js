@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { Suspense, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { modules } from 'stripes-config';
 import { withStripes } from './StripesContext';
