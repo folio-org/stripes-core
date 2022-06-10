@@ -14,6 +14,7 @@
 * Update NodeJS to v16 in GitHub Actions. Refs STCOR-623.
 * Provide `useCallout` hook. Refs STCOR-631.
 * Add message to indicate user cannot access app/record. Refs STCOR-619.
+* Wrapp `<Pluggable>` in `<Suspense>` to avoid whole-tree re-render. Refs STCOR-635.
 
 ## [8.1.0](https://github.com/folio-org/stripes-core/tree/v8.1.0) (2022-02-11)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v8.0.0...v8.1.0)

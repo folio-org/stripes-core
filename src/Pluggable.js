@@ -1,8 +1,9 @@
-import React, { useMemo } from 'react';
+import React, { Suspense, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { modules } from 'stripes-config';
 import { withStripes } from './StripesContext';
 import { ModuleHierarchyProvider } from './components';
+import { LoadingView } from '@folio/stripes-components';
 
 const Pluggable = (props) => {
   const plugins = modules.plugin || [];
@@ -37,7 +38,9 @@ const Pluggable = (props) => {
   if (cachedPlugins.length) {
     return cachedPlugins.map(({ plugin, Child }) => (
       <ModuleHierarchyProvider module={plugin}>
-        <Child {...props} actAs="plugin" />
+        <Suspense fallback={<LoadingView />}>
+          <Child {...props} actAs="plugin" />
+        </Suspense>
       </ModuleHierarchyProvider>
     ));
   }
@@ -47,7 +50,11 @@ const Pluggable = (props) => {
     // eslint-disable-next-line no-console
     console.error(`<Pluggable type="${props.type}"> has ${props.children.length} children, can only return one`);
   }
-  return props.children;
+  return (
+    <Suspense fallback={<LoadingView />}>
+      {props.children}
+    </Suspense>
+  );
 };
 
 Pluggable.propTypes = {
