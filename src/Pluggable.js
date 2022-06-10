@@ -2,7 +2,8 @@ import React, { Suspense, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { modules } from 'stripes-config';
 import { withStripes } from './StripesContext';
-import { LoadingView, ModuleHierarchyProvider } from './components';
+import { ModuleHierarchyProvider } from './components';
+import { LoadingView } from '@folio/stripes-components';
 
 const Pluggable = (props) => {
   const plugins = modules.plugin || [];
