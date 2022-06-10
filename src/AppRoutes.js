@@ -43,7 +43,7 @@ const AppRoutes = ({ modules, stripes }) => {
         module,
         stripes,
         connect,
-      }
+      };
     }).filter(x => x);
   }, [modules.app]);
 
@@ -82,7 +82,7 @@ const AppRoutes = ({ modules, stripes }) => {
       }}
     />
   ));
-}
+};
 
 AppRoutes.propTypes = {
   modules: PropTypes.object,
