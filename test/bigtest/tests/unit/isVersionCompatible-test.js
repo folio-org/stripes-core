@@ -1,4 +1,3 @@
-/* global describe, it */
 import { expect } from 'chai';
 import { isVersionCompatible } from '../../../../src/discoverServices';
 

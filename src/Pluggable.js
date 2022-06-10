@@ -27,7 +27,7 @@ const Pluggable = (props) => {
         cached.push({
           Child,
           plugin: best.module
-        })
+        });
       }
     }
 
