@@ -39,6 +39,7 @@ class MainNav extends Component {
     stripes: PropTypes.shape({
       config: PropTypes.shape({
         showPerms: PropTypes.bool,
+        helpUrl: PropTypes.string,
       }),
       store: PropTypes.shape({
         dispatch: PropTypes.func.isRequired,
@@ -197,7 +198,7 @@ class MainNav extends Component {
         {({ lastVisited }) => {
           const apps = this.getAppList(lastVisited);
           const selectedApp = apps.find(entry => entry.active);
-          const helpUrl = stripes.config.helpUrl ?? "https://docs.folio.org/docs";
+          const helpUrl = stripes.config.helpUrl ?? 'https://docs.folio.org/docs';
 
           return (
             <header className={css.navRoot}>
