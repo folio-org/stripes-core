@@ -163,7 +163,9 @@ class Login extends Component {
                       <Col xs={6}>
                         <Row between="xs">
                           <Col
-                            xs={5}
+                            xs={12}
+                            sm={6}
+                            md={4}
                             data-test-new-forgot-password-link
                           >
                             <Button
@@ -176,7 +178,9 @@ class Login extends Component {
                             </Button>
                           </Col>
                           <Col
-                            xs={5}
+                            xs={12}
+                            sm={6}
+                            md={4}
                             data-test-new-forgot-username-link
                           >
                             <Button
