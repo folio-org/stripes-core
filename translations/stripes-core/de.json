@@ -137,5 +137,7 @@
     "errors.password.compromised.invalid": "The password must not be commonly-used, expected or compromised",
     "createResetPassword.ruleTemplate": "Must {description}",
     "front.error.general.message": "Die angeforderte URL {br}{url}{br} wurde auf diesem Server nicht gefunden.",
-    "front.error.setPassword.message": "Bitte loggen Sie sich aus Ihrer aktuellen FOLIO-Sitzung aus, um Ihr Passwort zu setzen. Wenn Sie abgemeldet sind, versuchen Sie bitte erneut, Ihr Passwort über diesen Link zu setzen."
+    "front.error.setPassword.message": "Bitte loggen Sie sich aus Ihrer aktuellen FOLIO-Sitzung aus, um Ihr Passwort zu setzen. Wenn Sie abgemeldet sind, versuchen Sie bitte erneut, Ihr Passwort über diesen Link zu setzen.",
+    "title.noPermission": "No permission",
+    "front.error.noPermission": "You don't have permission to view this app/record"
 }
