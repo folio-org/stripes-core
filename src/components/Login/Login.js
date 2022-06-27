@@ -49,167 +49,169 @@ class Login extends Component {
           const buttonDisabled = submissionStatus || !(username);
           const buttonLabel = submissionStatus ? 'loggingIn' : 'login';
           return (
-            <div className={styles.wrapper}>
-              <div className={styles.container}>
-                <Row center="xs">
-                  <Col xs={6}>
-                    <OrganizationLogo />
-                  </Col>
-                </Row>
-                <Row center="xs">
-                  <Col xs={6}>
-                    <Headline
-                      size="xx-large"
-                      tag="h1"
-                      data-test-h1
+            <main>
+              <div className={styles.wrapper}>
+                <div className={styles.container}>
+                  <Row center="xs">
+                    <Col xs={6}>
+                      <OrganizationLogo />
+                    </Col>
+                  </Row>
+                  <Row center="xs">
+                    <Col xs={6}>
+                      <Headline
+                        size="xx-large"
+                        tag="h1"
+                        data-test-h1
+                      >
+                        <FormattedMessage id="stripes-core.title.login" />
+                      </Headline>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <form
+                      className={styles.form}
+                      onSubmit={data => handleSubmit(data).then(() => form.change('password', undefined))}
                     >
-                      <FormattedMessage id="stripes-core.title.login" />
-                    </Headline>
-                  </Col>
-                </Row>
-                <Row>
-                  <form
-                    className={styles.form}
-                    onSubmit={data => handleSubmit(data).then(() => form.change('password', undefined))}
-                  >
-                    <div data-test-new-username-field>
-                      <Row center="xs">
-                        <Col xs={6}>
-                          <Row
-                            between="xs"
-                            bottom="xs"
-                          >
-                            <Col xs={3}>
-                              <FieldLabel htmlFor="input-username">
-                                <FormattedMessage id="stripes-core.username" />
-                              </FieldLabel>
-                            </Col>
-                          </Row>
-                        </Col>
-                      </Row>
-                      <Row center="xs">
-                        <Col xs={6}>
-                          <Field
-                            id="input-username"
-                            name="username"
-                            type="text"
-                            component={TextField}
-                            inputClass={styles.input}
-                            autoComplete="username"
-                            autoCapitalize="none"
-                            validationEnabled={false}
-                            hasClearIcon={false}
-                            marginBottom0
-                            fullWidth
-                            autoFocus
-                          />
-                        </Col>
-                      </Row>
-                    </div>
-                    <div data-test-new-username-field>
-                      <Row center="xs">
-                        <Col xs={6}>
-                          <Row
-                            between="xs"
-                            bottom="xs"
-                          >
-                            <Col xs={3}>
-                              <FieldLabel htmlFor="input-password">
-                                <FormattedMessage id="stripes-core.password" />
-                              </FieldLabel>
-                            </Col>
-                          </Row>
-                        </Col>
-                      </Row>
-                      <Row center="xs">
-                        <Col xs={6}>
-                          <Field
-                            id="input-password"
-                            component={TextField}
-                            name="password"
-                            type="password"
-                            value=""
-                            marginBottom0
-                            fullWidth
-                            inputClass={styles.input}
-                            validationEnabled={false}
-                            hasClearIcon={false}
-                            autoComplete="current-password"
-                          />
-                        </Col>
-                      </Row>
-                    </div>
-                    <Row center="xs">
-                      <Col xs={6}>
-                        <div className={styles.formGroup}>
-                          <Button
-                            buttonStyle="primary"
-                            id="clickable-login"
-                            type="submit"
-                            buttonClass={styles.submitButton}
-                            disabled={buttonDisabled}
-                            fullWidth
-                            marginBottom0
-                          >
-                            <FormattedMessage id={`stripes-core.${buttonLabel}`} />
-                          </Button>
-                        </div>
-                      </Col>
-                    </Row>
-                    <Row
-                      className={styles.linksWrapper}
-                      center="xs"
-                    >
-                      <Col xs={6}>
-                        <Row between="xs">
-                          <Col
-                            xs={12}
-                            sm={6}
-                            md={4}
-                            data-test-new-forgot-password-link
-                          >
-                            <Button
-                              to="/forgot-password"
-                              buttonClass={styles.link}
-                              type="button"
-                              buttonStyle="link"
+                      <div data-test-new-username-field>
+                        <Row center="xs">
+                          <Col xs={6}>
+                            <Row
+                              between="xs"
+                              bottom="xs"
                             >
-                              <FormattedMessage id="stripes-core.button.forgotPassword" />
-                            </Button>
-                          </Col>
-                          <Col
-                            xs={12}
-                            sm={6}
-                            md={4}
-                            data-test-new-forgot-username-link
-                          >
-                            <Button
-                              to="/forgot-username"
-                              buttonClass={styles.link}
-                              type="button"
-                              buttonStyle="link"
-                            >
-                              <FormattedMessage id="stripes-core.button.forgotUsername" />
-                            </Button>
+                              <Col xs={3}>
+                                <FieldLabel htmlFor="input-username">
+                                  <FormattedMessage id="stripes-core.username" />
+                                </FieldLabel>
+                              </Col>
+                            </Row>
                           </Col>
                         </Row>
-                      </Col>
-                    </Row>
-                    <Row center="xs">
-                      <Col xs={6}>
-                        <div className={styles.authErrorsWrapper}>
-                          <AuthErrorsContainer errors={authErrors} />
-                        </div>
-                        <div className={styles.formGroup}>
-                          { ssoActive && <SSOLogin handleSSOLogin={handleSSOLogin} /> }
-                        </div>
-                      </Col>
-                    </Row>
-                  </form>
-                  { ssoActive && <form id="ssoForm" /> }
-                </Row>
+                        <Row center="xs">
+                          <Col xs={6}>
+                            <Field
+                              id="input-username"
+                              name="username"
+                              type="text"
+                              component={TextField}
+                              inputClass={styles.input}
+                              autoComplete="username"
+                              autoCapitalize="none"
+                              validationEnabled={false}
+                              hasClearIcon={false}
+                              marginBottom0
+                              fullWidth
+                              autoFocus
+                            />
+                          </Col>
+                        </Row>
+                      </div>
+                      <div data-test-new-username-field>
+                        <Row center="xs">
+                          <Col xs={6}>
+                            <Row
+                              between="xs"
+                              bottom="xs"
+                            >
+                              <Col xs={3}>
+                                <FieldLabel htmlFor="input-password">
+                                  <FormattedMessage id="stripes-core.password" />
+                                </FieldLabel>
+                              </Col>
+                            </Row>
+                          </Col>
+                        </Row>
+                        <Row center="xs">
+                          <Col xs={6}>
+                            <Field
+                              id="input-password"
+                              component={TextField}
+                              name="password"
+                              type="password"
+                              value=""
+                              marginBottom0
+                              fullWidth
+                              inputClass={styles.input}
+                              validationEnabled={false}
+                              hasClearIcon={false}
+                              autoComplete="current-password"
+                            />
+                          </Col>
+                        </Row>
+                      </div>
+                      <Row center="xs">
+                        <Col xs={6}>
+                          <div className={styles.formGroup}>
+                            <Button
+                              buttonStyle="primary"
+                              id="clickable-login"
+                              type="submit"
+                              buttonClass={styles.submitButton}
+                              disabled={buttonDisabled}
+                              fullWidth
+                              marginBottom0
+                            >
+                              <FormattedMessage id={`stripes-core.${buttonLabel}`} />
+                            </Button>
+                          </div>
+                        </Col>
+                      </Row>
+                      <Row
+                        className={styles.linksWrapper}
+                        center="xs"
+                      >
+                        <Col xs={6}>
+                          <Row between="xs">
+                            <Col
+                              xs={12}
+                              sm={6}
+                              md={4}
+                              data-test-new-forgot-password-link
+                            >
+                              <Button
+                                to="/forgot-password"
+                                buttonClass={styles.link}
+                                type="button"
+                                buttonStyle="link"
+                              >
+                                <FormattedMessage id="stripes-core.button.forgotPassword" />
+                              </Button>
+                            </Col>
+                            <Col
+                              xs={12}
+                              sm={6}
+                              md={4}
+                              data-test-new-forgot-username-link
+                            >
+                              <Button
+                                to="/forgot-username"
+                                buttonClass={styles.link}
+                                type="button"
+                                buttonStyle="link"
+                              >
+                                <FormattedMessage id="stripes-core.button.forgotUsername" />
+                              </Button>
+                            </Col>
+                          </Row>
+                        </Col>
+                      </Row>
+                      <Row center="xs">
+                        <Col xs={6}>
+                          <div className={styles.authErrorsWrapper}>
+                            <AuthErrorsContainer errors={authErrors} />
+                          </div>
+                          <div className={styles.formGroup}>
+                            {ssoActive && <SSOLogin handleSSOLogin={handleSSOLogin} />}
+                          </div>
+                        </Col>
+                      </Row>
+                    </form>
+                    {ssoActive && <form id="ssoForm" />}
+                  </Row>
+                </div>
               </div>
-            </div>
+            </main>
           );
         }}
       />
