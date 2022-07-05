@@ -132,7 +132,7 @@
     "routeErrorBoundary.goToModuleSettingsHomeLabel": "Return to {name} settings",
     "logoutKeepSso": "Desconectarse de FOLIO, mantener sesión SSO",
     "mainnav.profileDropdown.locale": "Locale",
-    "mainnav.profileDropdown.permissions": "Permissions",
+    "mainnav.profileDropdown.permissions": "Permisos",
     "front.error.header": "404 Error",
     "errors.password.compromised.invalid": "The password must not be commonly-used, expected or compromised",
     "createResetPassword.ruleTemplate": "Must {description}",
