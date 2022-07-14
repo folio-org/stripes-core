@@ -5,6 +5,7 @@
     "button.new": "Nouveau",
     "button.new_tooltip": "Ajouter {entry}",
     "button.edit": "Modifier",
+    "button.duplicate": "Dupliquer",
     "button.delete": "Supprimer",
     "button.deleteEntry": "Supprimer {entry}",
     "button.saveAndClose": "Sauvegarder et fermer",

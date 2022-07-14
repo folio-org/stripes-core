@@ -22,6 +22,7 @@
   "button.new": "+ New",
   "button.new_tooltip": "Add {entry}",
   "button.edit": "Edit",
+  "button.duplicate": "Duplicate",
   "button.delete": "Delete",
   "button.deleteEntry": "Delete {entry}",
   "button.saveAndClose": "Save and close",
