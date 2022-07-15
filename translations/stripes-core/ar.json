@@ -139,5 +139,6 @@
     "front.error.general.message": "لم يتم العثور على عنوان URL المطلوب {br}{url}{br} على هذا الخادم.",
     "front.error.setPassword.message": "يرجى تسجيل الخروج من جلسة فوليو الحالية لتعيين كلمة المرور. بمجرد تسجيل الخروج، يرجى محاولة تعيين كلمة المرور الخاصة بك باستخدام هذا الرابط مرة أخرى.",
     "title.noPermission": "لا توجد صلاحية",
-    "front.error.noPermission": "ليس لديك صلاحية لعرض هذا التطبيق/التسجيلة"
+    "front.error.noPermission": "ليس لديك صلاحية لعرض هذا التطبيق/التسجيلة",
+    "button.duplicate": "Duplicate"
 }

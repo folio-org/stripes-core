@@ -5,7 +5,6 @@
     "button.new": "Nouveau",
     "button.new_tooltip": "Ajouter {entry}",
     "button.edit": "Modifier",
-    "button.duplicate": "Dupliquer",
     "button.delete": "Supprimer",
     "button.deleteEntry": "Supprimer {entry}",
     "button.saveAndClose": "Sauvegarder et fermer",
@@ -140,5 +139,6 @@
     "front.error.general.message": "The requested URL {br}{url}{br} was not found on this server.",
     "front.error.setPassword.message": "Please log out of your current FOLIO session to set password. Once logged out please try to set your password with this link again.",
     "title.noPermission": "No permission",
-    "front.error.noPermission": "You don't have permission to view this app/record"
+    "front.error.noPermission": "You don't have permission to view this app/record",
+    "button.duplicate": "Duplicate"
 }
