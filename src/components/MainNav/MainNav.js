@@ -199,7 +199,7 @@ class MainNav extends Component {
         {({ lastVisited }) => {
           const apps = this.getAppList(lastVisited);
           const selectedApp = apps.find(entry => entry.active);
-          const helpUrl = stripes.config.helpUrl ?? 'https://docs.folio.org/docs';
+          const helpUrl = stripes.config.helpUrl ?? 'https://docs.folio.org';
 
           return (
             <header className={css.navRoot}>
