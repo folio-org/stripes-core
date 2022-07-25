@@ -1,6 +1,7 @@
 # Change history for stripes-core
 
-## 8.3.0 IN PROGRESS
+## [8.2.1](https://github.com/folio-org/stripes-core/tree/v8.2.1) (2022-07-25)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v8.2.0...v8.2.1)
 
 * Use documenation's root URL in NavBar `?` link. Refs STCOR-621.
 
