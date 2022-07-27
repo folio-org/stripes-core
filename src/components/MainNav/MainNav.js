@@ -40,6 +40,7 @@ class MainNav extends Component {
       config: PropTypes.shape({
         showPerms: PropTypes.bool,
         helpUrl: PropTypes.string,
+        style: PropTypes.object,
       }),
       store: PropTypes.shape({
         dispatch: PropTypes.func.isRequired,
@@ -202,7 +203,7 @@ class MainNav extends Component {
           const helpUrl = stripes.config.helpUrl ?? 'https://docs.folio.org';
 
           return (
-            <header className={css.navRoot}>
+            <header className={css.navRoot} style={stripes.config.style?.navBar ?? {}}>
               <div className={css.startSection}>
                 <SkipLink />
                 <CurrentAppGroup selectedApp={selectedApp} config={stripes.config} />
