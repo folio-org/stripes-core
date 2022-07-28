@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import { Field, Form } from 'react-final-form';
 
+import { branding } from 'stripes-config';
+
 import {
   TextField,
   Button,
@@ -11,7 +13,6 @@ import {
   Headline,
 } from '@folio/stripes-components';
 
-import { withStripes } from '../../StripesContext';
 import SSOLogin from '../SSOLogin';
 import OrganizationLogo from '../OrganizationLogo';
 import AuthErrorsContainer from '../AuthErrorsContainer';
@@ -25,7 +26,6 @@ class Login extends Component {
     authErrors: PropTypes.arrayOf(PropTypes.object),
     onSubmit: PropTypes.func.isRequired,
     handleSSOLogin: PropTypes.func.isRequired,
-    stripes: PropTypes.object,
   };
 
   static defaultProps = {
@@ -39,7 +39,6 @@ class Login extends Component {
       handleSSOLogin,
       ssoActive,
       onSubmit,
-      stripes,
     } = this.props;
 
     return (
@@ -53,7 +52,7 @@ class Login extends Component {
           const buttonLabel = submissionStatus ? 'loggingIn' : 'login';
           return (
             <main>
-              <div className={styles.wrapper} style={stripes.config.style?.login ?? {}}>
+              <div className={styles.wrapper} style={branding.style?.login ?? {}}>
                 <div className={styles.container}>
                   <Row center="xs">
                     <Col xs={6}>
@@ -222,4 +221,4 @@ class Login extends Component {
   }
 }
 
-export default withStripes(Login);
+export default Login;
