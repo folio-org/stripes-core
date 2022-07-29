@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import { Field, Form } from 'react-final-form';
 
+import { branding } from 'stripes-config';
+
 import {
   TextField,
   Button,
@@ -36,7 +38,7 @@ class Login extends Component {
       authErrors,
       handleSSOLogin,
       ssoActive,
-      onSubmit
+      onSubmit,
     } = this.props;
 
     return (
@@ -49,7 +51,7 @@ class Login extends Component {
           const buttonDisabled = submissionStatus || !(username);
           const buttonLabel = submissionStatus ? 'loggingIn' : 'login';
           return (
-            <div className={styles.wrapper}>
+            <div className={styles.wrapper} style={branding.style?.login ?? {}}>
               <div className={styles.container}>
                 <Row center="xs">
                   <Col xs={6}>
