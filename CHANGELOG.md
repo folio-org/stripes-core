@@ -3,6 +3,7 @@
 ## 8.3.0 IN PROGRESS
 
 * Use documenation's root URL in NavBar `?` link. Refs STCOR-621.
+* Allow customization of login page's CSS. Refs STCOR-643.
 * Allow customization of navbar CSS. Refs STCOR-644.
 
 ## [8.2.0](https://github.com/folio-org/stripes-core/tree/v8.2.0) (2022-06-14)
