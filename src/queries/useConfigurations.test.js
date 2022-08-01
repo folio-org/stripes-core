@@ -11,6 +11,10 @@ import useOkapiKy from '../useOkapiKy';
 jest.mock('../useOkapiKy');
 jest.mock('../StripesContext');
 
+// set query retries to false. otherwise, react-query will thoughtfully
+// (but unhelpfully, in the context of testing) retry a failed query
+// several times causing the test to timeout when what we really want
+// is for it to throw so we can catch and test the exception.
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
