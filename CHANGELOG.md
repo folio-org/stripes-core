@@ -3,6 +3,7 @@
 ## 8.3.0 IN PROGRESS
 
 * Use documenation's root URL in NavBar `?` link. Refs STCOR-621.
+* Optionally display Okapi env, mod-configuration, or stripes.config values on about page. Refs STCOR-603.
 
 ## [8.2.0](https://github.com/folio-org/stripes-core/tree/v8.2.0) (2022-06-14)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v8.1.0...v8.2.0)
