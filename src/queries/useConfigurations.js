@@ -29,7 +29,7 @@ const useConfigurations = ({ module, configName, code }) => {
 
   const { isFetching, data, error } = useQuery(
     [namespace, configName, code],
-    async () => {
+    () => {
       if (stripes.hasPerm('configuration.entries.collection.get')) {
         return ky.get(configurationsApi(module, configName, code))
           .json();

@@ -12,7 +12,7 @@ const useOkapiEnv = () => {
 
   const { isFetching, data, error } = useQuery(
     [namespace],
-    async () => {
+    () => {
       if (stripes.hasPerm('okapi.env.list')) {
         return ky.get(OKAPI_ENV_API).json();
       }
