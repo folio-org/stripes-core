@@ -17,9 +17,9 @@ export const configurationsApi = (module, configName, code) => {
     params.push(`code=="${code}"`);
   }
 
-  const query = params.join(' and ');
+  const query = params.length ? `query=(${params.join(' and ')})` : '';
 
-  return `configurations/entries?${query ? `query=(${query})` : ''}&limit=${queryLimit()}`;
+  return `configurations/entries?${query}&limit=${queryLimit()}`;
 };
 
 const useConfigurations = ({ module, configName, code }) => {
