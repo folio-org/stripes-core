@@ -50,6 +50,7 @@
     "@folio/stripes-cli": "^2.4.0",
     "@folio/stripes-components": "^10.0.0",
     "@folio/stripes-connect": "^7.0.0",
+    "@folio/stripes-final-form": "^6.1.0",
     "@folio/stripes-logger": "^1.0.0",
     "@formatjs/cli": "^4.2.2",
     "@jest/globals": "^28.0.1",
@@ -116,6 +117,7 @@
   "peerDependencies": {
     "@folio/stripes-components": "^10.0.0",
     "@folio/stripes-connect": "^7.0.0",
+    "@folio/stripes-final-form": "^6.1.0",
     "@folio/stripes-logger": "^1.0.0",
     "moment": "^2.29.0",
     "react": "^17.0.2",
