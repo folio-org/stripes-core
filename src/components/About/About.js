@@ -5,6 +5,7 @@ import { FormattedMessage } from 'react-intl';
 import stripesConnect from '@folio/stripes-connect/package';
 import stripesComponents from '@folio/stripes-components/package';
 import stripesLogger from '@folio/stripes-logger/package';
+import stripesFinalForm from '@folio/stripes-final-form/package';
 
 import {
   Pane,
@@ -147,6 +148,10 @@ const About = (props) => {
               {
                 key: 'stripes-logger',
                 value: `stripes-logger ${stripesLogger.version}`,
+              },
+              {
+                key: 'stripes-final-form',
+                value: `stripes-final-form ${stripesFinalForm.version}`,
               },
             ]}
             itemFormatter={item => (<li key={item.key}>{item.value}</li>)}
