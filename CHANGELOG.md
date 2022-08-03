@@ -5,6 +5,7 @@
 * Use documenation's root URL in NavBar `?` link. Refs STCOR-621.
 * Allow customization of login page's CSS. Refs STCOR-643.
 * Allow customization of navbar CSS. Refs STCOR-644.
+* Optionally display Okapi env, mod-configuration, or stripes.config values on about page. Refs STCOR-603.
 * Settings > About - show stripes-final-form version. Refs STCOR-646.
 
 ## [8.2.0](https://github.com/folio-org/stripes-core/tree/v8.2.0) (2022-06-14)

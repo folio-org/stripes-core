@@ -14,9 +14,9 @@ import {
   Loading,
 } from '@folio/stripes-components';
 import AboutEnabledModules from './AboutEnabledModules';
+import AboutInstallMessages from './AboutInstallMessages';
 import WarningBanner from './WarningBanner';
 import { withModules } from '../Modules';
-
 import stripesCore from '../../../package';
 import css from './About.css';
 
@@ -114,6 +114,7 @@ const About = (props) => {
           modules={props.modules}
         />
       )}
+      <AboutInstallMessages stripes={props.stripes} />
       <div className={css.versionsContainer}>
         <div className={css.versionsColumn}>
           <Headline size="large">
@@ -224,6 +225,7 @@ About.propTypes = {
       interfaces: PropTypes.object,
     }),
     connect: PropTypes.func,
+    hasPerm: PropTypes.func.isRequired,
   }).isRequired,
 };
 
