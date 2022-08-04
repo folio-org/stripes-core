@@ -31,7 +31,7 @@ export const supportedLocales = [
   'ar',     // arabic
   'zh-CN',  // chinese, china
   'zh-TW',  // chinese, taiwan
-  'cs_CZ',  // czech, czechia
+  'cs-CZ',  // czech, czechia
   'da-DK',  // danish, denmark
   'en-GB',  // british english
   'en-SE',  // english, sweden
