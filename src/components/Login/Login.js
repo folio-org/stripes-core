@@ -59,22 +59,29 @@ class Login extends Component {
                       <OrganizationLogo />
                     </Col>
                   </Row>
-                  <Row center="xs">
-                    <Col xs={6}>
-                      <Headline
-                        size="xx-large"
-                        tag="h1"
-                        data-test-h1
-                      >
-                        <FormattedMessage id="stripes-core.title.login" />
-                      </Headline>
-                    </Col>
-                  </Row>
                   <Row>
                     <form
                       className={styles.form}
                       onSubmit={data => handleSubmit(data).then(() => form.change('password', undefined))}
                     >
+                      <Row center="xs">
+                        <Col xs={6}>
+                          <div className={styles.formGroup}>
+                            {ssoActive && <SSOLogin handleSSOLogin={handleSSOLogin} />}
+                          </div>
+                        </Col>
+                      </Row>
+                      <Row center="xs">
+                        <Col xs={6}>
+                          <Headline
+                            size="xx-large"
+                            tag="h1"
+                            data-test-h1
+                          >
+                            <FormattedMessage id="stripes-core.title.login" />
+                          </Headline>
+                        </Col>
+                      </Row>
                       <div data-test-new-username-field>
                         <Row center="xs">
                           <Col xs={6}>
@@ -202,9 +209,6 @@ class Login extends Component {
                         <Col xs={6}>
                           <div className={styles.authErrorsWrapper}>
                             <AuthErrorsContainer errors={authErrors} />
-                          </div>
-                          <div className={styles.formGroup}>
-                            {ssoActive && <SSOLogin handleSSOLogin={handleSSOLogin} />}
                           </div>
                         </Col>
                       </Row>
