@@ -10,7 +10,10 @@
   "publishConfig": {
     "registry": "https://repository.folio.org/repository/npm-folio/"
   },
+  "main": "dist/index.js",
+  "style": "dist/style.css",
   "scripts": {
+    "prepublish": "yarn transpile",
     "start": "stripes serve",
     "clean": "rimraf static",
     "test": "yarn run test:jest && yarn run test:bigtest ",
@@ -20,7 +23,8 @@
     "eslint": "eslint .",
     "stylelint": "stylelint \"src/**/*.css\"",
     "formatjs-compile": "formatjs compile-folder --ast --format simple ./translations/stripes-core ./translations/stripes-core/compiled",
-    "build-mod-descriptor": "stripes mod descriptor --full --strict | jq '.[]' > module-descriptor.json"
+    "build-mod-descriptor": "stripes mod descriptor --full --strict | jq '.[]' > module-descriptor.json",
+    "transpile": "stripes transpile"
   },
   "stripes": {
     "okapiInterfaces": {

@@ -36,3 +36,5 @@ export { supportedLocales } from './src/loginServices';
 export { supportedNumberingSystems } from './src/loginServices';
 export { userLocaleConfig } from './src/loginServices';
 export { default as queryLimit } from './src/queryLimit';
+
+export default './src/index';
