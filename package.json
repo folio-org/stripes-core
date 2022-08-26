@@ -12,6 +12,10 @@
   },
   "main": "dist/index.js",
   "style": "dist/style.css",
+  "files": [
+    "dist",
+    "translations"
+  ],
   "scripts": {
     "prepublish": "yarn transpile",
     "start": "stripes serve",
@@ -26,6 +30,7 @@
     "build-mod-descriptor": "stripes mod descriptor --full --strict | jq '.[]' > module-descriptor.json",
     "transpile": "stripes transpile"
   },
+
   "stripes": {
     "okapiInterfaces": {
       "users-bl": "5.0 6.0",
