@@ -20,6 +20,8 @@ export default function okapiReducer(state = {}, action) {
       return Object.assign({}, state, { bindings: action.bindings });
     case 'SET_CURRENT_PERMS':
       return Object.assign({}, state, { currentPerms: action.currentPerms });
+    case 'SET_LOGIN_DATA':
+      return Object.assign({}, state, { loginData: action.loginData });
     case 'CLEAR_CURRENT_USER':
       return Object.assign({}, state, { currentUser: {}, currentPerms: {} });
     case 'SET_SESSION_DATA': {
@@ -40,6 +42,8 @@ export default function okapiReducer(state = {}, action) {
       return { ...state, currentUser: { ...state.currentUser, curServicePoint: action.servicePoint } };
     case 'SET_USER_SERVICE_POINTS':
       return { ...state, currentUser: { ...state.currentUser, servicePoints: action.servicePoints } };
+    case 'UPDATE_CURRENT_USER':
+      return { ...state, currentUser: { ...state.currentUser, ...action.data } };
     default:
       return state;
   }
