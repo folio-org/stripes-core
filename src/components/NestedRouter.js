@@ -39,7 +39,10 @@ export function Route({ component: Component, children, ...props }) {
 }
 
 Route.propTypes = {
-  children: PropTypes.node,
+  children: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.object,
+  ]),
   component: PropTypes.oneOfType([
     PropTypes.func,
     PropTypes.object,
