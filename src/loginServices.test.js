@@ -3,6 +3,7 @@ import localforage from 'localforage';
 import {
   createOkapiSession,
   handleLoginError,
+  processOkapiSession,
   setCurServicePoint,
   setServicePoints,
   supportedLocales,
@@ -31,6 +32,10 @@ import {
   setUserServicePoints,
   updateCurrentUser,
 } from './okapiActions';
+
+import { defaultErrors } from './constants';
+
+
 
 jest.mock('localforage', () => ({
   getItem: jest.fn(() => Promise.resolve({ user: {} })),
@@ -97,17 +102,59 @@ describe('handleLoginError', () => {
     const dispatch = jest.fn();
     await handleLoginError(dispatch, {});
     expect(dispatch).toHaveBeenCalledWith(setOkapiReady());
+    expect(dispatch).toHaveBeenCalledWith(setAuthError([defaultErrors.DEFAULT_LOGIN_CLIENT_ERROR]));
   });
 });
 
 describe('processOkapiSession', () => {
-  it('dispatches setOkapiReady', async () => {
-    const dispatch = jest.fn();
-    await handleLoginError(dispatch, {});
-    expect(dispatch).toHaveBeenCalledWith(setOkapiReady());
+  it('handles success', async () => {
+    const store = {
+      dispatch: jest.fn(),
+      getState: () => ({
+        okapi: {
+          currentPerms: [],
+        }
+      }),
+    };
+
+    const resp = {
+      headers: {
+        get: jest.fn(),
+      },
+      ok: true,
+      json: () => Promise.resolve({
+        user: { id: 'id' },
+        permissions: {
+          permissions: [{ permissionName: 'a' }, { permissionName: 'b' }]
+        }
+      }),
+    };
+
+    mockFetchSuccess();
+
+    await processOkapiSession('url', store, 'tenant', resp, 'token');
+    expect(store.dispatch).toHaveBeenCalledWith(setAuthError(null));
+    expect(store.dispatch).toHaveBeenCalledWith(setOkapiReady());
+
+    mockFetchCleanUp();
+  });
+
+  it('handles error', async () => {
+    const store = {
+      dispatch: jest.fn()
+    };
+    const resp = {
+      headers: {
+        get: jest.fn(),
+      }
+    };
+
+    await processOkapiSession('url', store, 'tenant', resp, 'token');
+
+    expect(store.dispatch).toHaveBeenCalledWith(setOkapiReady());
+    expect(store.dispatch).toHaveBeenCalledWith(setAuthError([defaultErrors.DEFAULT_LOGIN_CLIENT_ERROR]));
   });
 });
-
 
 describe('setCurServicePoint', () => {
   it('dispatches setCurrentServicePoint', async () => {

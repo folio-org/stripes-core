@@ -484,7 +484,7 @@ export function handleLoginError(dispatch, resp) {
  *
  * @returns {Promise} resolving with login response body, rejecting with, ummmmm
  */
-function processOkapiSession(okapiUrl, store, tenant, resp, ssoToken) {
+export function processOkapiSession(okapiUrl, store, tenant, resp, ssoToken) {
   const token = resp.headers.get('X-Okapi-Token') || ssoToken;
   const { dispatch } = store;
 
