@@ -20,6 +20,7 @@ module.exports = {
     '^.+\\.(css)$': 'identity-obj-proxy',
     '^.+\\.(svg)$': 'identity-obj-proxy',
     'ky': 'ky/umd',
+    'uuid': require.resolve('uuid'), // https://github.com/uuidjs/uuid/issues/451
   },
   testEnvironment: 'jsdom',
   testMatch: ['**/(lib|src)/**/?(*.)test.{js,jsx}'],
