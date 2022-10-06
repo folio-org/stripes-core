@@ -325,7 +325,7 @@ function loadResources(okapiUrl, store, tenant, userId) {
  *
  * @returns {Promise}
  */
-function createOkapiSession(okapiUrl, store, tenant, token, data) {
+export function createOkapiSession(okapiUrl, store, tenant, token, data) {
   const user = {
     id: data.user.id,
     username: data.user.username,
@@ -370,7 +370,7 @@ function createOkapiSession(okapiUrl, store, tenant, token, data) {
  *
  * @returns {Promise}
  */
-function validateUser(okapiUrl, store, tenant, session) {
+export function validateUser(okapiUrl, store, tenant, session) {
   return fetch(`${okapiUrl}/bl-users/_self`, { headers: getHeaders(tenant, session.token) }).then((resp) => {
     if (resp.ok) {
       const { token, user, perms } = session;
@@ -399,7 +399,7 @@ function validateUser(okapiUrl, store, tenant, session) {
  *
  * @returns {Promise}
  */
-function getSSOEnabled(okapiUrl, store, tenant) {
+export function getSSOEnabled(okapiUrl, store, tenant) {
   return fetch(`${okapiUrl}/saml/check`, { headers: { 'X-Okapi-Tenant': tenant, 'Accept': 'application/json' } })
     .then((response) => {
       if (response.status >= 400) {
