@@ -1,7 +1,13 @@
+import localforage from 'localforage';
+
 import {
   createOkapiSession,
+  handleLoginError,
+  setCurServicePoint,
+  setServicePoints,
   supportedLocales,
   supportedNumberingSystems,
+  updateUser,
   validateUser,
 } from './loginServices';
 
@@ -25,6 +31,12 @@ import {
   setUserServicePoints,
   updateCurrentUser,
 } from './okapiActions';
+
+jest.mock('localforage', () => ({
+  getItem: jest.fn(() => Promise.resolve({ user: {} })),
+  setItem: jest.fn(() => Promise.resolve()),
+  removeItem: jest.fn(() => Promise.resolve()),
+}));
 
 // fetch success: resolve promise with ok == true and $data in json()
 const mockFetchSuccess = (data) => {
@@ -64,18 +76,58 @@ describe('createOkapiSession', () => {
         id: 'user-id',
       },
       permissions: {
-        permissions: [{ permissonName: 'a' }, { permissionName: 'b' }]
+        permissions: [{ permissionName: 'a' }, { permissionName: 'b' }]
       }
     };
+    const permissionsMap = { a: true, b: true };
 
     mockFetchSuccess([]);
 
     await createOkapiSession('url', store, 'tenant', 'token', data);
-    expect(store.dispatch).toHaveBeenCalledWith({
-      type: 'SET_AUTH_FAILURE',
-      message: null
-    });
+    expect(store.dispatch).toHaveBeenCalledWith(setAuthError(null));
+    expect(store.dispatch).toHaveBeenCalledWith(setLoginData(data));
+    expect(store.dispatch).toHaveBeenCalledWith(setCurrentPerms(permissionsMap));
+
     mockFetchCleanUp();
+  });
+});
+
+describe('handleLoginError', () => {
+  it('dispatches setOkapiReady', async () => {
+    const dispatch = jest.fn();
+    await handleLoginError(dispatch, {});
+    expect(dispatch).toHaveBeenCalledWith(setOkapiReady());
+  });
+});
+
+describe('processOkapiSession', () => {
+  it('dispatches setOkapiReady', async () => {
+    const dispatch = jest.fn();
+    await handleLoginError(dispatch, {});
+    expect(dispatch).toHaveBeenCalledWith(setOkapiReady());
+  });
+});
+
+
+describe('setCurServicePoint', () => {
+  it('dispatches setCurrentServicePoint', async () => {
+    const store = {
+      dispatch: jest.fn(),
+    };
+    const sp = 'monkey-bagel';
+    await setCurServicePoint(store, sp);
+    expect(store.dispatch).toHaveBeenCalledWith(setCurrentServicePoint(sp));
+  });
+});
+
+describe('setServicePoints', () => {
+  it('dispatches setUserServicePoints', async () => {
+    const store = {
+      dispatch: jest.fn(),
+    };
+    const data = ['thunder', 'chicken'];
+    await setServicePoints(store, data);
+    expect(store.dispatch).toHaveBeenCalledWith(setUserServicePoints(data));
   });
 });
 
@@ -143,5 +195,16 @@ describe('validateUser', () => {
     expect(store.dispatch).toHaveBeenCalledWith(clearCurrentUser());
     expect(store.dispatch).toHaveBeenCalledWith(clearOkapiToken());
     mockFetchCleanUp();
+  });
+});
+
+describe('updateUser', () => {
+  it('dispatches updateCurrentUser', async () => {
+    const store = {
+      dispatch: jest.fn(),
+    };
+    const data = { thunder: 'chicken' };
+    await updateUser(store, data);
+    expect(store.dispatch).toHaveBeenCalledWith(updateCurrentUser(data));
   });
 });

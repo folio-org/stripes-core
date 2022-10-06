@@ -463,7 +463,7 @@ function processSSOLoginResponse(resp) {
  *
  * @returns {Promise} resolving to the response's JSON
  */
-function handleLoginError(dispatch, resp) {
+export function handleLoginError(dispatch, resp) {
   return localforage.removeItem('okapiSess')
     .then(() => processBadResponse(dispatch, resp))
     .then(responseBody => {
