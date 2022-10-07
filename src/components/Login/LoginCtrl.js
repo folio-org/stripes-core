@@ -55,7 +55,10 @@ class LoginCtrl extends Component {
 
   handleSubmit = (data) => {
     return requestLogin(this.okapiUrl, this.context.store, this.tenant, data)
-      .then(this.handleSuccessfulLogin);
+      .then(this.handleSuccessfulLogin)
+      .catch(e => {
+        console.error(e); // eslint-disable-line no-console
+      });
   }
 
   handleSSOLogin = () => {

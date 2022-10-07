@@ -128,24 +128,40 @@ function setUserServicePoints(servicePoints) {
   };
 }
 
+function setLoginData(loginData) {
+  return {
+    type: 'SET_LOGIN_DATA',
+    loginData,
+  };
+}
+
+function updateCurrentUser(data) {
+  return {
+    type: 'UPDATE_CURRENT_USER',
+    data,
+  };
+}
+
 export {
-  setCurrentUser,
+  checkSSO,
   clearCurrentUser,
-  setCurrentPerms,
-  setLocale,
-  setTimezone,
-  setCurrency,
-  setPlugins,
-  setSinglePlugin,
-  setBindings,
-  setOkapiToken,
   clearOkapiToken,
   setAuthError,
-  setTranslations,
-  checkSSO,
+  setBindings,
+  setCurrency,
+  setCurrentPerms,
+  setCurrentServicePoint,
+  setCurrentUser,
+  setLocale,
+  setLoginData,
   setOkapiReady,
+  setOkapiToken,
+  setPlugins,
   setServerDown,
   setSessionData,
-  setCurrentServicePoint,
-  setUserServicePoints
+  setSinglePlugin,
+  setTimezone,
+  setTranslations,
+  setUserServicePoints,
+  updateCurrentUser,
 };
