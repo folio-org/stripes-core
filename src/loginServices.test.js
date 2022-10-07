@@ -3,6 +3,7 @@ import localforage from 'localforage';
 import {
   createOkapiSession,
   handleLoginError,
+  loadTranslations,
   processOkapiSession,
   setCurServicePoint,
   setServicePoints,
@@ -103,6 +104,70 @@ describe('handleLoginError', () => {
     await handleLoginError(dispatch, {});
     expect(dispatch).toHaveBeenCalledWith(setOkapiReady());
     expect(dispatch).toHaveBeenCalledWith(setAuthError([defaultErrors.DEFAULT_LOGIN_CLIENT_ERROR]));
+  });
+});
+
+describe('loadTranslations', () => {
+  it('dispatches setLocale', async () => {
+    const store = {
+      dispatch: jest.fn(),
+    };
+    const locale = 'cs-CZ';
+
+    mockFetchSuccess({});
+    await loadTranslations(store, locale, {});
+    expect(store.dispatch).toHaveBeenCalledWith(setLocale(locale));
+    mockFetchCleanUp();
+  });
+
+  describe('sets document attributes correctly', () => {
+    it('sets lang given region', async () => {
+      const store = {
+        dispatch: jest.fn(),
+      };
+      const locale = 'cs-CZ';
+
+      mockFetchSuccess({});
+      await loadTranslations(store, locale, {});
+      expect(document.documentElement.lang).toMatch('cs');
+      mockFetchCleanUp();
+    });
+
+    it('sets lang without region', async () => {
+      const store = {
+        dispatch: jest.fn(),
+      };
+      const locale = 'cs';
+
+      mockFetchSuccess({});
+      await loadTranslations(store, locale, {});
+      expect(document.documentElement.lang).toMatch('cs');
+      mockFetchCleanUp();
+    });
+
+    it('sets dir (LTR)', async () => {
+      const store = {
+        dispatch: jest.fn(),
+      };
+      const locale = 'fr';
+
+      mockFetchSuccess({});
+      await loadTranslations(store, locale, {});
+      expect(document.dir).toMatch('ltr');
+      mockFetchCleanUp();
+    });
+
+    it('sets dir (RTL)', async () => {
+      const store = {
+        dispatch: jest.fn(),
+      };
+      const locale = 'ar';
+
+      mockFetchSuccess({});
+      await loadTranslations(store, locale, {});
+      expect(document.dir).toMatch('rtl');
+      mockFetchCleanUp();
+    });
   });
 });
 
