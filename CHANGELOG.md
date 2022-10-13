@@ -1,13 +1,14 @@
 # Change history for stripes-core
 
-## 8.3.0 IN PROGRESS
+## [8.3.0](https://github.com/folio-org/stripes-core/tree/v8.2.0) (2022-06-14)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v8.2.0...v8.3.0)
 
-* Use documenation's root URL in NavBar `?` link. Refs STCOR-621.
+* Use documentation's root URL in NavBar `?` link. Refs STCOR-621.
 * Allow customization of login page's CSS. Refs STCOR-643.
 * Allow customization of navbar CSS. Refs STCOR-644.
 * Add `cs_CZ` (Czech, Czechia) to the supported locales. Refs STCOR-645.
 * Optionally display Okapi env, mod-configuration, or stripes.config values on about page. Refs STCOR-603.
-* Move SSO logon  above Folio Username and Password Boxes. Refs STCOR-648.
+* Move SSO logon above Folio Username and Password Boxes. Refs STCOR-648.
 
 ## [8.2.0](https://github.com/folio-org/stripes-core/tree/v8.2.0) (2022-06-14)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v8.1.0...v8.2.0)
