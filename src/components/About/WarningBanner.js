@@ -50,7 +50,6 @@ const WarningBanner = ({
         show={!!missingModulesCount}
         dismissable
         ref={bannerRef}
-        autoFocusDismissButton
       >
         <Headline>{missingModulesMsg}</Headline>
         <List
@@ -64,7 +63,6 @@ const WarningBanner = ({
         show={!!incompatibleModulesCount}
         dismissable
         ref={bannerRef}
-        autoFocusDismissButton
       >
         <Headline>{incompatibleModuleMsg}</Headline>
         <List
