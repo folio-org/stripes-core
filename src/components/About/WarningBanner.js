@@ -16,6 +16,7 @@ import css from './About.css';
 const WarningBanner = ({
   interfaces,
   modules,
+  bannerRef
 }) => {
   const allInterfaces = useDeepCompareMemo(() => {
     const modulesArray = _.flatten(_.values(modules));
@@ -48,6 +49,8 @@ const WarningBanner = ({
         type="warning"
         show={!!missingModulesCount}
         dismissable
+        ref={bannerRef}
+        autoFocusDismissButton
       >
         <Headline>{missingModulesMsg}</Headline>
         <List
@@ -60,6 +63,8 @@ const WarningBanner = ({
         type="warning"
         show={!!incompatibleModulesCount}
         dismissable
+        ref={bannerRef}
+        autoFocusDismissButton
       >
         <Headline>{incompatibleModuleMsg}</Headline>
         <List
@@ -74,6 +79,10 @@ const WarningBanner = ({
 WarningBanner.propTypes = {
   modules: PropTypes.object,
   interfaces: PropTypes.object,
+  bannerRef: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.shape({ current: PropTypes.instanceOf(Element) })
+  ])
 };
 
 export default WarningBanner;
