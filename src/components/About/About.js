@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import React, {useRef, useEffect} from 'react';
+import React, { useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import stripesConnect from '@folio/stripes-connect/package';
@@ -10,7 +10,7 @@ import {
   Pane,
   Headline,
   List,
-  Loading, PaneHeader,
+  Loading
 } from '@folio/stripes-components';
 import AboutEnabledModules from './AboutEnabledModules';
 import AboutInstallMessages from './AboutInstallMessages';
@@ -29,7 +29,7 @@ const About = (props) => {
     } else {
       titleRef.current?.focus();
     }
-  }, [])
+  }, []);
 
   function renderDependencies(m, interfaces) {
     const base = `${m.module} ${m.version}`;
