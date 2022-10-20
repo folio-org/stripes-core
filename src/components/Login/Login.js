@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 
@@ -10,6 +10,7 @@ import {
   Row,
   Col,
   Headline,
+  nativeChangeFieldValue,
 } from '@folio/stripes-components';
 
 import SSOLogin from '../SSOLogin';
@@ -27,11 +28,7 @@ const Login = ({
 }) => {
   const [buttonDisabled, setButtonDisabled] = useState(true);
   const [buttonLabel, setButtonLabel] = useState('login');
-
-  const handleChange = (e) => {
-    const disable = Boolean(!e.target.value);
-    setButtonDisabled(disable);
-  };
+  const field = useRef(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -40,8 +37,14 @@ const Login = ({
     let data = Object.fromEntries(formData.entries());
     setButtonLabel('loggingIn');
     await onSubmit(data);
+    nativeChangeFieldValue(field, false, '', true);
     data = null;
     setButtonLabel('login');
+  };
+
+  const handleChange = (e) => {
+    const disable = Boolean(!e.target.value);
+    setButtonDisabled(disable);
   };
 
   return (
@@ -130,13 +133,13 @@ const Login = ({
                       id="input-password"
                       name="password"
                       type="password"
-                      value=""
                       marginBottom0
                       fullWidth
                       inputClass={styles.input}
                       validationEnabled={false}
                       hasClearIcon={false}
                       autoComplete="current-password"
+                      inputRef={field}
                     />
                   </Col>
                 </Row>
