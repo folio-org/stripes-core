@@ -473,6 +473,39 @@ export function handleLoginError(dispatch, resp) {
 }
 
 /**
+ * processStoredLogin
+ * Perform store functions for login after an existing login token has been set in
+ * localStorage...
+ * @param {string} okapiUrl
+ * @param {redux store} store
+ * @param {string} tenant
+ * @param {object} data
+ */
+export async function processStoredLogin(okapiUrl, store, tenant, data) {
+  const storedOkapiSess = localStorage.getItem('okapiSess');
+  const okapiSess = JSON.parse(storedOkapiSess);
+  const {
+    user,
+    perms,
+  } = okapiSess;
+
+  // clear any auth-n errors
+  store.dispatch(setAuthError(null));
+
+  // store perms...
+  store.dispatch(setCurrentPerms(perms));
+
+  // store the session...
+  store.dispatch(setSessionData(okapiSess));
+
+  // store the raw login response for future parsing by other modules
+  // e.g. if optional values are returned, e.g. see UISP-32
+  store.dispatch(setLoginData(data));
+  await loadResources(okapiUrl, store, tenant, user.id);
+  store.dispatch(setOkapiReady());
+}
+
+/**
  * processOkapiSession
  * create a new okapi session with the response from either a username/password
  * authentication request or a bl-users/_self request.

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>Login Form</title>
+  <script type="text/javascript">
+    var userName = "userName";
+    var loginReady = "Log in";
+    var loginBusy = "Logging in";
+
+    var okapiUrl = '';
+    var tenant = '';
+
+    const submissionRequest = JSON.stringify({ type: 'submissionInfo' });
+    window.parent.postMessage(submissionRequest, "*");
+
+    function submitLogin(e) {
+      e.preventDefault();
+      e.stopPropagation();
+
+      var formData = new FormData(e.currentTarget);
+      var data = Object.fromEntries(formData.entries());
+      console.log(data);
+      e.target.querySelector("button").innerText = loginBusy;
+      fetch(`${okapiUrl}/bl-users/login?expandPermissions=true&fullPermissions=true`, {
+        method: 'POST',
+        headers: { 'X-Okapi-Tenant': tenant, 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      })
+        .then(function (response) {
+          if (!response.ok) {
+            throw new Error('This FOLIO account cannot be located. Please contact your FOLIO systems administrator.');
+          }
+          const token = response.headers.get('X-Okapi-Token');
+
+          response.json()
+            .then(function(data) {
+              const user = {
+                id: data.user.id,
+                username: data.user.username,
+                ...data.user.personal,
+              };
+              // remap data's array of permission-names to set with
+              // permission-names for keys and `true` for values
+              const perms = Object.assign({}, ...data.permissions.permissions.map(p => ({ [p.permissionName]: true })));
+
+              const okapiSess = JSON.stringify({
+                token,
+                user,
+                perms,
+              });
+
+              const loginData = JSON.stringify(data);
+
+              localStorage.setItem('okapiSess', okapiSess);
+              // let client app know we've set all the things...
+              const message = JSON.stringify({
+                type: "loginSuccess",
+                loginData,
+              });
+              window.parent.postMessage(message, "*");
+            });
+        })
+        .catch(function (err) {
+          const errMessage = document.createElement("div");
+          errMessage.innerHTML = err;
+          document.getElementById("validation").append(errMessage);
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      let container = document.createElement("div");
+      document.body.appendChild(container);
+      container.innerHTML = `
+      <style>
+      .slab {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+      }
+
+      .center {
+        max-width: 50%;
+        text-align: center;
+        width: 100%;
+      }
+
+      .input {
+        margin-bottom: 1rem;
+        width: 100%;
+      }
+
+      .input.mega {
+        padding: 1rem;
+      }
+
+      label, input {
+        display: block;
+        text-align: initial;
+      }
+
+      </style>
+      <div class="slab">
+      <div class="center">
+        <h2>Log in</h2>
+        <div id="validation"></div>
+        <form id="loginForm">
+      <label class="username-label">Username</label>
+      <input class="mega input" type="text" name="username" autofocus>
+      <label class="password-label">Password</label>
+      <input class="mega input" type="password" name="password">
+      <button type="submit" class="login">Log in</button>
+      </form>
+      </div>
+      </div>`;
+
+      document
+        .getElementById("loginForm")
+        .addEventListener("submit", submitLogin);
+
+      var allowed = [
+        "translationReq",
+        "translationRes",
+        "loginReq",
+        "loginRes"
+      ];
+
+      window.addEventListener("message", (e) => {
+        if (typeof e.data === "string" && e.data.includes("translationRes")) {
+          const data = JSON.parse(e.data);
+          if (data.position == "loggingin") {
+            loginReady = data.message;
+            document.querySelector("button.login").innerText = data.message;
+          } else if (data.position == "login") {
+            loginBusy = data.message;
+          }
+          const labelEl = document.querySelector(`.${data.position}-label`);
+          if (labelEl) labelEl.innerText = data.message;
+        } else if (typeof e.data === "string" && e.data.includes("okapi")) {
+          const data = JSON.parse(e.data);
+          okapiUrl = data.okapiUrl;
+          tenant = data.tenant;
+        }
+      });
+
+      function requestTranslation(key) {
+        const message = JSON.stringify({
+          type: "translationReq",
+          key: key
+        });
+        window.parent.postMessage(message, "*");
+      }
+
+      requestTranslation("username");
+      requestTranslation("password");
+      requestTranslation("login");
+      requestTranslation("loggingIn");
+    });
+  </script>
+</head>
+
+<body></body>
+
+</html>

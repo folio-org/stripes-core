@@ -10,6 +10,7 @@ import { ConnectContext } from '@folio/stripes-connect';
 import {
   requestLogin,
   requestSSOLogin,
+  processStoredLogin
 } from '../../loginServices';
 import { setAuthError } from '../../okapiActions';
 import Login from './Login';
@@ -53,6 +54,15 @@ class LoginCtrl extends Component {
     }
   }
 
+  handleLoginResponse = (data) => {
+    processStoredLogin(this.okapiUrl, this.context.store, this.tenant, data);
+  }
+
+  getSubmissionInfo = () => ({
+    tenant: this.tenant,
+    okapiUrl: this.okapiUrl
+  });
+
   handleSubmit = (data) => {
     return requestLogin(this.okapiUrl, this.context.store, this.tenant, data)
       .then(this.handleSuccessfulLogin)
@@ -73,6 +83,8 @@ class LoginCtrl extends Component {
         onSubmit={this.handleSubmit}
         authErrors={authFailure}
         handleSSOLogin={this.handleSSOLogin}
+        handleLogin={this.handleLoginResponse}
+        getSubmissionInfo={this.getSubmissionInfo}
         ssoActive={ssoEnabled}
       />
     );
