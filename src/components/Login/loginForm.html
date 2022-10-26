@@ -23,7 +23,6 @@
 
       var formData = new FormData(e.currentTarget);
       var data = Object.fromEntries(formData.entries());
-      console.log(data);
       e.target.querySelector("button").innerText = loginBusy;
       fetch(`${okapiUrl}/bl-users/login?expandPermissions=true&fullPermissions=true`, {
         method: 'POST',
