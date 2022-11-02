@@ -5,6 +5,6 @@ import { render } from 'react-dom';
 
 import App from './App';
 
-export default function start() {
+export default function init() {
   render(<App />, document.getElementById('root'));
 }
