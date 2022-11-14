@@ -165,7 +165,7 @@ class Root extends Component {
                   messages={translations}
                   textComponent={Fragment}
                   onError={config?.suppressIntlErrors ? () => {} : undefined}
-                  onWarn={config?.suppressIntlErrors ? () => {} : undefined}
+                  onWarn={config?.suppressIntlWarnings ? () => {} : undefined}
                   defaultRichTextElements={this.defaultRichTextElements}
                 >
                   <RootWithIntl

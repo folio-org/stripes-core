@@ -2,7 +2,7 @@
 
 # 8.4.0 (IN PROGRESS)
 
-* Leverage `suppressIntlErrors` to suppress warnings, in addition to errors. Refs STCOR-
+* Allow suppression of `react-intl` warnings, in addition to errors. Refs STCOR-659.
 
 ## [8.3.0](https://github.com/folio-org/stripes-core/tree/v8.2.0) (2022-06-14)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v8.2.0...v8.3.0)
