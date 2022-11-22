@@ -1,5 +1,9 @@
 # Change history for stripes-core
 
+# 8.3.1 (IN PROGRESS)
+
+* Catastrophic Messaging | Return to MARC authority. Fixes STCOR-661.
+
 ## [8.3.0](https://github.com/folio-org/stripes-core/tree/v8.2.0) (2022-06-14)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v8.2.0...v8.3.0)
 
