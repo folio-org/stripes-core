@@ -66,7 +66,7 @@ const AppRoutes = ({ modules, stripes }) => {
               <ModuleHierarchyProvider module={module.module}>
                 <div id={`${name}-module-display`} data-module={module.module} data-version={module.version}>
                   <RouteErrorBoundary
-                    escapeRoute={module.home}
+                    escapeRoute={module.home ?? module.route}
                     moduleName={displayName}
                     stripes={moduleStripes}
                   >
