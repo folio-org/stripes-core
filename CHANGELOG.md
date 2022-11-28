@@ -1,10 +1,11 @@
 # Change history for stripes-core
 
-# 8.3.1 (IN PROGRESS)
+## [8.3.1](https://github.com/folio-org/stripes-core/tree/v8.3.1) (2022-11-28)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v8.3.0...v8.3.1)
 
 * Catastrophic Messaging | Return to MARC authority. Fixes STCOR-661.
 
-## [8.3.0](https://github.com/folio-org/stripes-core/tree/v8.2.0) (2022-06-14)
+## [8.3.0](https://github.com/folio-org/stripes-core/tree/v8.3.0) (2022-10-13)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v8.2.0...v8.3.0)
 
 * Use documentation's root URL in NavBar `?` link. Refs STCOR-621.
