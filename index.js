@@ -3,9 +3,9 @@ export { ConnectContext as RootContext, withConnect as withRoot } from '@folio/s
 export { CalloutContext, useCallout } from './src/CalloutContext';
 
 /* internal utilities */
-export { stripesShape } from './src/Stripes';
-export { withStripes, useStripes } from './src/StripesContext';
-export { useModules } from './src/ModulesContext';
+export { stripesShape, default as Stripes } from './src/Stripes';
+export { withStripes, useStripes, StripesContext } from './src/StripesContext';
+export { useModules, ModulesContext, originalModules } from './src/ModulesContext';
 export { withModule, withModules } from './src/components/Modules';
 export { default as stripesConnect } from './src/stripesConnect';
 export { default as Pluggable } from './src/Pluggable';
@@ -27,6 +27,7 @@ export { default as AppIcon } from './src/components/AppIcon';
 export { Route, Switch, Redirect } from './src/components/NestedRouter';
 export {
   ModuleHierarchyContext,
+  ModuleHierarchyProvider,
   useModuleHierarchy,
   useNamespace,
   withNamespace,
@@ -37,4 +38,3 @@ export { supportedLocales } from './src/loginServices';
 export { supportedNumberingSystems } from './src/loginServices';
 export { userLocaleConfig } from './src/loginServices';
 export { default as queryLimit } from './src/queryLimit';
-export { default as init } from './src/init';

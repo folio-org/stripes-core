@@ -1,5 +1,0 @@
-@import "@folio/stripes-components/lib/variables.css";
-
-.AuthErrorsContainer {
-  margin-top: var(--gutter-static);
-}
