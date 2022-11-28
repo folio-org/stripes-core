@@ -4,7 +4,7 @@ import { useQuery } from 'react-query';
 import { useStripes } from './StripesContext';
 import useOkapiKy from './useOkapiKy';
 
-import { isVersionCompatible } from './discoverServices';
+import isVersionCompatible from './isVersionCompatible';
 
 export default (interfaceId, interfaceVersion) => {
   const [customFields, setCustomFields] = useState();

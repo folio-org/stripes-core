@@ -9,15 +9,14 @@ export { useModules, ModulesContext, originalModules } from './src/ModulesContex
 export { withModule, withModules } from './src/components/Modules';
 export { default as stripesConnect } from './src/stripesConnect';
 export { default as Pluggable } from './src/Pluggable';
-export { setServicePoints, setCurServicePoint } from './src/loginServices';
-export { updateUser } from './src/loginServices';
+export { setServicePoints, setCurServicePoint, updateUser } from './src/loginServices';
 export { default as coreEvents } from './src/events';
 export { default as useOkapiKy } from './src/useOkapiKy';
 export { default as withOkapiKy } from './src/withOkapiKy';
 export { default as useCustomFields } from './src/useCustomFields';
 
 /* components */
-export { default as AppContextMenu } from './src/components/MainNav/CurrentApp/AppContextMenu';
+export { AppContextMenu, AppCtxMenuContext, AppCtxMenuProvider, withAppCtxMenu } from './src/components/AppContextMenu';
 export { default as IfInterface } from './src/components/IfInterface';
 export { default as IfPermission } from './src/components/IfPermission';
 export { default as TitleManager } from './src/components/TitleManager';
@@ -34,7 +33,7 @@ export {
 } from './src/components';
 
 /* misc */
-export { supportedLocales } from './src/loginServices';
-export { supportedNumberingSystems } from './src/loginServices';
-export { userLocaleConfig } from './src/loginServices';
+export { supportedNumberingSystems, supportedLocales, userLocaleConfig } from './src/loginServices';
+export { getEventHandler, getEventHandlers } from './src/handlerService';
 export { default as queryLimit } from './src/queryLimit';
+export { default as isVersionCompatible } from './src/isVersionCompatible';

@@ -1,5 +1,6 @@
 import { useModuleHierarchy } from '../ModuleHierarchy';
-import { delimiters } from '../../constants';
+
+const NAMESPACE_DELIMITER = ':';
 
 // A hook which returns module namespace as a string
 // https://issues.folio.org/browse/STCOR-537
@@ -29,7 +30,6 @@ const useNamespace = (options = {}) => {
   const moduleHierarchy = useModuleHierarchy();
   const getNamespace = (opts) => {
     const { ignoreParents, key } = opts;
-    const { NAMESPACE_DELIMITER } = delimiters;
 
     let namespace = ignoreParents ? moduleHierarchy.pop() : moduleHierarchy.join(NAMESPACE_DELIMITER);
 

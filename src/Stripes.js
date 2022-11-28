@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { isVersionCompatible } from './discoverServices';
+import isVersionCompatible from './isVersionCompatible';
 
 
 export const stripesShape = PropTypes.shape({
