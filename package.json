@@ -13,8 +13,7 @@
   "scripts": {
     "start": "stripes serve",
     "clean": "rimraf static",
-    "test": "yarn run test:jest && yarn run test:bigtest ",
-    "test:bigtest": "stripes test karma",
+    "test": "yarn run test:jest",
     "test:jest": "jest --ci --coverage --colors",
     "lint": "eslint . && stylelint \"src/**/*.css\"",
     "eslint": "eslint .",
@@ -41,11 +40,6 @@
   "devDependencies": {
     "@babel/core": "^7.15.0",
     "@babel/eslint-parser": "^7.15.0",
-    "@bigtest/convergence": "^0.10.0",
-    "@bigtest/interactor": "^0.7.2",
-    "@bigtest/mirage": "^0.0.1",
-    "@bigtest/mocha": "^0.5.1",
-    "@bigtest/react": "^0.1.2",
     "@folio/eslint-config-stripes": "^6.0.0",
     "@folio/stripes-cli": "^2.4.0",
     "@folio/stripes-components": "^10.0.0",
@@ -93,7 +87,6 @@
     "ky": "^0.23.0",
     "localforage": "^1.5.6",
     "lodash": "^4.17.21",
-    "miragejs": "^0.1.32",
     "moment-timezone": "^0.5.14",
     "prop-types": "^15.5.10",
     "query-string": "^5.0.0",
@@ -128,8 +121,5 @@
     "react-router-dom": "^5.2.0",
     "redux-observable": "^1.2.0",
     "rxjs": "^6.6.3"
-  },
-  "resolutions": {
-    "moment": "~2.24.0"
   }
 }

@@ -1,6 +1,5 @@
 import localforage from 'localforage';
 
-
 function setCurrentServicePoint(servicePoint) {
   return {
     type: 'SET_CURRENT_SERVICE_POINT',
@@ -75,7 +74,7 @@ export const userLocaleConfig = {
  *
  * @returns {Promise}
  */
- export function setCurServicePoint(store, servicePoint) {
+export function setCurServicePoint(store, servicePoint) {
   return localforage.getItem('okapiSess')
     .then((sess) => {
       sess.user.curServicePoint = servicePoint;
