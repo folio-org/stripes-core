@@ -17,7 +17,7 @@ on: [push, pull_request]
 jobs:
   build-npm:
     env:
-      YARN_TEST_OPTIONS: '--karma.singleRun --karma.browsers ChromeDocker --karma.reporters mocha junit --coverage'
+      YARN_TEST_OPTIONS: '--passWithNoTests'
       SQ_ROOT_DIR: './src'
       COMPILE_TRANSLATION_FILES: 'true'
       PUBLISH_MOD_DESCRIPTOR: 'true'
