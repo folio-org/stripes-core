@@ -89,7 +89,7 @@
     "lodash": "^4.17.21",
     "moment-timezone": "^0.5.14",
     "prop-types": "^15.5.10",
-    "query-string": "^5.0.0",
+    "query-string": "^7.1.2",
     "react-cookie": "^4.0.3",
     "react-final-form": "^6.3.0",
     "react-query": "^3.6.0",
