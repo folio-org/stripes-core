@@ -30,6 +30,8 @@ export {
   useModuleHierarchy,
   useNamespace,
   withNamespace,
+  LastVisitedContext,
+  withLastVisited,
 } from './src/components';
 
 /* misc */
