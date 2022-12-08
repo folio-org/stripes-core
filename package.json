@@ -11,7 +11,6 @@
     "registry": "https://repository.folio.org/repository/npm-folio/"
   },
   "scripts": {
-    "start": "stripes serve",
     "clean": "rimraf static",
     "test": "yarn run test:jest",
     "test:jest": "jest --ci --coverage --colors",
