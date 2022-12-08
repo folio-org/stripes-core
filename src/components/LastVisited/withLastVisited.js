@@ -4,7 +4,7 @@ import { compose } from 'redux';
 import { withRouter } from 'react-router';
 import hoistNonReactStatics from 'hoist-non-react-statics';
 
-import { withModules } from '@folio/stripes-core';
+import { withModules } from '../Modules';
 
 import LastVisitedContext from './LastVisitedContext';
 
