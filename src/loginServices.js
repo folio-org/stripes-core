@@ -1,25 +1,10 @@
 import localforage from 'localforage';
 
-function setCurrentServicePoint(servicePoint) {
-  return {
-    type: 'SET_CURRENT_SERVICE_POINT',
-    servicePoint,
-  };
-}
-
-function setUserServicePoints(servicePoints) {
-  return {
-    type: 'SET_USER_SERVICE_POINTS',
-    servicePoints,
-  };
-}
-
-function updateCurrentUser(data) {
-  return {
-    type: 'UPDATE_CURRENT_USER',
-    data,
-  };
-}
+import {
+  setCurrentServicePoint,
+  setUserServicePoints,
+  updateCurrentUser,
+} from './okapiActions';
 
 // export supported numbering systems, i.e. the systems tenants may chose
 // for numeral display
