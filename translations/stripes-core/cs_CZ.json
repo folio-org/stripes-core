@@ -117,7 +117,7 @@
     "errors.password.number.invalid": "Heslo musí obsahovat alespoň jeden číselný znak.",
     "errors.password.specialCharacter.invalid": "Heslo musí obsahovat alespoň jeden speciální znak.",
     "errors.password.usernameDuplicate.invalid": "Heslo nesmí obsahovat vaše uživatelské jméno.",
-    "errors.password.keyboardSequence.invalid": "Heslo nesmí obsahovat klávesovou sekvenci.",
+    "errors.password.keyboardSequence.invalid": "Heslo nesmí obsahovat pořadí klávesnice.",
     "errors.password.repeatingSymbols.invalid": "Heslo nesmí obsahovat stejný znak za sebou.",
     "errors.password.whiteSpace.invalid": "Heslo nesmí obsahovat mezery.",
     "mainnav.myProfileAriaLabel": "Můj profil",
