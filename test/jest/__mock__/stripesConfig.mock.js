@@ -3,6 +3,7 @@ jest.mock('stripes-config', () => (
     branding: {
       style: {},
     },
+    config: {},
     metadata: {},
     modules: [],
     okapi: {

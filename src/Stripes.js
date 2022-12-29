@@ -1,13 +1,16 @@
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { isVersionCompatible } from './discoverServices';
+import { config } from 'stripes-config';
 
+import { isVersionCompatible } from './discoverServices';
+import configureLogger from './configureLogger';
 
 export const stripesShape = PropTypes.shape({
   // Properties provided by the class
   clone: PropTypes.func.isRequired,
   hasInterface: PropTypes.func.isRequired,
   hasPerm: PropTypes.func.isRequired,
+  reset: PropTypes.func.isRequired,
 
   // Properties passed into the constructor by the caller
   actionNames: PropTypes.arrayOf(
@@ -127,6 +130,15 @@ class Stripes {
 
   clone(extraProps) {
     return new Stripes(Object.assign({}, this, extraProps));
+  }
+
+  /**
+   * reset
+   * reset config and logger properties to their default values
+   */
+  reset() {
+    this.config = config;
+    this.logger = configureLogger(config);
   }
 }
 

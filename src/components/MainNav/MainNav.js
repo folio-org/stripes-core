@@ -43,10 +43,12 @@ class MainNav extends Component {
         showPerms: PropTypes.bool,
         helpUrl: PropTypes.string,
       }),
+      hasPerm: PropTypes.func.isRequired,
+      logger: PropTypes.object.isRequired,
+      reset: PropTypes.func.isRequired,
       store: PropTypes.shape({
         dispatch: PropTypes.func.isRequired,
       }),
-      hasPerm: PropTypes.func.isRequired,
       withOkapi: PropTypes.bool,
     }),
     history: PropTypes.shape({
@@ -121,9 +123,12 @@ class MainNav extends Component {
 
   // Return the user to the login screen, but after logging in they will return to their previous activity.
   returnToLogin() {
+    const { stripes } = this.props;
     const { okapi } = this.store.getState();
 
     return getLocale(okapi.url, this.store, okapi.tenant).then(() => {
+      stripes.reset();
+
       this.store.dispatch(clearOkapiToken());
       this.store.dispatch(clearCurrentUser());
       this.store.dispatch(resetStore());
