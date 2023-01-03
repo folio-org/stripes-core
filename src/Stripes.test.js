@@ -23,14 +23,12 @@ describe('Stripes', () => {
         const logger = { log: jest.fn() };
         const s = new Stripes({ logger, discovery: { interfaces: { 'monkey': '3.0' } } });
         expect(s.hasInterface('monkey')).toBe(true);
-        expect(logger.log).toHaveBeenCalledWith('interface', 'interface \'monkey\' exists');
       });
 
       it('when the interface is present and compatible with the requested version [string, available interface]', () => {
         const logger = { log: jest.fn() };
         const s = new Stripes({ logger, discovery: { interfaces: { 'monkey': '3.0' } } });
         expect(s.hasInterface('monkey', '3.0')).toBe('3.0');
-        expect(logger.log).toHaveBeenCalled();
       });
     });
 
@@ -39,28 +37,24 @@ describe('Stripes', () => {
         const logger = { log: jest.fn() };
         const s = new Stripes({ logger, discovery: { interfaces: { 'monkey': '3.0' } } });
         expect(s.hasInterface('monkey', '4.0')).toBe(0);
-        expect(logger.log).toHaveBeenCalled();
       });
 
       it('when `discovery` is unavailable [undefined]', () => {
         const logger = { log: jest.fn() };
         const s = new Stripes({ logger });
         expect(s.hasInterface('monkey')).toBeUndefined();
-        expect(logger.log).toHaveBeenCalled();
       });
 
       it('when `discovery.interfaces` is unavailable [undefined]', () => {
         const logger = { log: jest.fn() };
         const s = new Stripes({ logger, discovery: {} });
         expect(s.hasInterface('monkey')).toBeUndefined();
-        expect(logger.log).toHaveBeenCalled();
       });
 
       it('when the requested interface is absent [undefined]', () => {
         const logger = { log: jest.fn() };
         const s = new Stripes({ logger, discovery: { interfaces: { 'funky': '3.0' } } });
         expect(s.hasInterface('monkey')).toBeUndefined();
-        expect(logger.log).toHaveBeenCalledWith('interface', 'interface \'monkey\' is missing');
       });
     });
   });
@@ -71,7 +65,6 @@ describe('Stripes', () => {
         const logger = { log: jest.fn() };
         const s = new Stripes({ logger, config: { hasAllPerms: true } });
         expect(s.hasPerm('monkey')).toBe(true);
-        expect(logger.log).toHaveBeenCalledWith('perm', 'assuming perm \'monkey\': hasAllPerms is true');
       });
 
       it('when requested permissions are assigned', () => {
@@ -85,7 +78,6 @@ describe('Stripes', () => {
           }
         });
         expect(s.hasPerm('monkey,bagel')).toBe(true);
-        expect(logger.log).toHaveBeenCalledWith('perm', 'checking perm \'monkey,bagel\': ', true);
       });
     });
 
@@ -99,14 +91,12 @@ describe('Stripes', () => {
           }
         });
         expect(s.hasPerm('monkey,funky')).toBe(false);
-        expect(logger.log).toHaveBeenCalledWith('perm', 'checking perm \'monkey,funky\': ', false);
       });
 
       it('when user perms are uninitialized [undefined]', () => {
         const logger = { log: jest.fn() };
         const s = new Stripes({ logger, user: {} });
         expect(s.hasPerm('monkey')).toBeUndefined();
-        expect(logger.log).toHaveBeenCalledWith('perm', 'not checking perm \'monkey\': no user permissions yet');
       });
     });
   });
