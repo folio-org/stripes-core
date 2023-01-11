@@ -1,6 +1,6 @@
 # Change history for stripes-core
 
-# 8.4.0 (IN PROGRESS)
+# 9.0.0 (IN PROGRESS)
 
 * Allow suppression of `react-intl` warnings, in addition to errors. Refs STCOR-659.
 * Catastrophic Messaging | Return to MARC authority. Fixes STCOR-661.
