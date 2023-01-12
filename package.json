@@ -1,6 +1,6 @@
 {
   "name": "@folio/stripes-core",
-  "version": "8.4.0",
+  "version": "9.0.0",
   "description": "The starting point for Stripes applications",
   "license": "Apache-2.0",
   "repository": "folio-org/stripes-core",
@@ -41,7 +41,7 @@
     "@babel/eslint-parser": "^7.15.0",
     "@folio/eslint-config-stripes": "^6.0.0",
     "@folio/stripes-cli": "^2.4.0",
-    "@folio/stripes-components": "^10.0.0",
+    "@folio/stripes-components": "^11.0.0",
     "@folio/stripes-connect": "^7.0.0",
     "@folio/stripes-logger": "^1.0.0",
     "@formatjs/cli": "^4.2.2",
@@ -88,7 +88,7 @@
     "rxjs": "^6.6.3"
   },
   "peerDependencies": {
-    "@folio/stripes-components": "^10.0.0",
+    "@folio/stripes-components": "^11.0.0",
     "@folio/stripes-connect": "^7.0.0",
     "@folio/stripes-logger": "^1.0.0",
     "moment": "^2.29.0",
