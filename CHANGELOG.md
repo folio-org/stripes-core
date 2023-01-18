@@ -6,6 +6,7 @@
 * Catastrophic Messaging | Return to MARC authority. Fixes STCOR-661.
 * Reset App Context Dropdown state when switching apps/unmounting. Fixes STCOR-664.
 * PasswordValidationField swallows error messages from API queries. Fixes STCOR-657.
+* Guarantee a single-row response to the tenant's locale-config query. Fixes STCOR-675.
 
 ## [8.3.0](https://github.com/folio-org/stripes-core/tree/v8.2.0) (2022-06-14)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v8.2.0...v8.3.0)
