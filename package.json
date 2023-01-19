@@ -113,7 +113,6 @@
     "rimraf": "^2.5.4",
     "rtl-detect": "^1.0.2",
     "rxjs": "^6.6.3",
-    "swr": "^0.4.1",
     "use-deep-compare": "^1.1.0"
   },
   "peerDependencies": {
