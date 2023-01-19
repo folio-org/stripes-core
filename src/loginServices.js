@@ -182,8 +182,14 @@ function dispatchLocale(url, store, tenant) {
  * @returns {Promise}
  */
 export function getLocale(okapiUrl, store, tenant) {
+  const query = [
+    'module==ORG',
+    'configName == localeSettings',
+    '(cql.allRecords=1 NOT userId="" NOT code="")'
+  ].join(' AND ');
+
   return dispatchLocale(
-    `${okapiUrl}/configurations/entries?query=(module==ORG and configName==localeSettings)`,
+    `${okapiUrl}/configurations/entries?query=(${query})`,
     store,
     tenant
   );
