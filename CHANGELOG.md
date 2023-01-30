@@ -1,6 +1,7 @@
 # Change history for stripes-core
 
-# 9.0.0 (IN PROGRESS)
+## [9.0.0](https://github.com/folio-org/stripes-core/tree/v9.0.0) (2023-01-30)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v8.3.0...v9.0.0)
 
 * Allow suppression of `react-intl` warnings, in addition to errors. Refs STCOR-659.
 * Catastrophic Messaging | Return to MARC authority. Fixes STCOR-661.
