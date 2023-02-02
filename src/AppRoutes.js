@@ -45,7 +45,7 @@ const AppRoutes = ({ modules, stripes }) => {
         connect,
       };
     }).filter(x => x);
-  }, [modules.app]);
+  }, [modules.app, stripes]);
 
   return cachedModules.map(({ ModuleComponent, connect, module, name, moduleStripes, stripes, displayName }) => (
     <Route
