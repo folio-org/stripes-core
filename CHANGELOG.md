@@ -1,12 +1,20 @@
 # Change history for stripes-core
 
-# 9.0.0 (IN PROGRESS)
+## 9.1.0 IN PROGRESS
+
+* Configure global onError handler for React Query mutations. Refs STCOR-687.
+
+## [9.0.0](https://github.com/folio-org/stripes-core/tree/v9.0.0) (2023-01-30)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v8.3.0...v9.0.0)
 
 * Allow suppression of `react-intl` warnings, in addition to errors. Refs STCOR-659.
 * Catastrophic Messaging | Return to MARC authority. Fixes STCOR-661.
 * Reset App Context Dropdown state when switching apps/unmounting. Fixes STCOR-664.
 * PasswordValidationField swallows error messages from API queries. Fixes STCOR-657.
-* Configure global onError handler for React Query mutations. Refs STCOR-687.
+* Guarantee a single-row response to the tenant's locale-config query. Fixes STCOR-675.
+* *BREAKING*: Remove SWR, a POC that never took off. Refs STCOR-516, STCOR-611.
+* *BREAKING*: Upgrade `react-redux` to `v8`. Refs STCOR-678.
+* *BREAKING*: Remove `setServicePoints`, `setCurServicePoint`. Refs STCOR-650, UISP-32.
 
 ## [8.3.0](https://github.com/folio-org/stripes-core/tree/v8.2.0) (2022-06-14)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v8.2.0...v8.3.0)
