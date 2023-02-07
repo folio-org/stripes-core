@@ -7,7 +7,7 @@ const mockMutation = jest.fn(() => {
   throw new Error('Mutation failed');
 });
 
-const useMockedMutation = ({ onError }) => useMutation(mockMutation, { onError });
+const useMockedMutation = (options) => useMutation(mockMutation, options);
 
 const wrapper = ({ children }) => (
   <QueryClientProvider client={createReactQueryClient()}>
@@ -27,15 +27,15 @@ describe('createReactQueryClient', () => {
   it('skips the onError function when the onError option is passed to useMutation', async () => {
     const { result } = renderHook(() => useMockedMutation({ onError: () => jest.fn() }), { wrapper });
 
-    act(() => {
-      result.current.mutate();
+    await act(async () => {
+      await result.current.mutate();
     });
 
     expect(window.alert).not.toHaveBeenCalled();
   });
 
   it('calls global onError function when the onError option is not passed to useMutation', async () => {
-    const { result } = renderHook(() => useMockedMutation({}), { wrapper });
+    const { result } = renderHook(() => useMockedMutation(), { wrapper });
 
     await act(async () => {
       await result.current.mutate();
