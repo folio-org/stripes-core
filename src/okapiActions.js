@@ -114,20 +114,6 @@ function setSessionData(session) {
   };
 }
 
-function setCurrentServicePoint(servicePoint) {
-  return {
-    type: 'SET_CURRENT_SERVICE_POINT',
-    servicePoint,
-  };
-}
-
-function setUserServicePoints(servicePoints) {
-  return {
-    type: 'SET_USER_SERVICE_POINTS',
-    servicePoints,
-  };
-}
-
 function setLoginData(loginData) {
   return {
     type: 'SET_LOGIN_DATA',
@@ -150,7 +136,6 @@ export {
   setBindings,
   setCurrency,
   setCurrentPerms,
-  setCurrentServicePoint,
   setCurrentUser,
   setLocale,
   setLoginData,
@@ -162,6 +147,5 @@ export {
   setSinglePlugin,
   setTimezone,
   setTranslations,
-  setUserServicePoints,
   updateCurrentUser,
 };

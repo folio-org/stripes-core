@@ -21,8 +21,6 @@ import {
   setServerDown,
   setSessionData,
   setLoginData,
-  setCurrentServicePoint,
-  setUserServicePoints,
   updateCurrentUser,
 } from './okapiActions';
 import processBadResponse from './processBadResponse';
@@ -589,46 +587,6 @@ export function requestSSOLogin(okapiUrl, tenant) {
     body: JSON.stringify({ stripesUrl }),
   })
     .then(resp => processSSOLoginResponse(resp));
-}
-
-/**
- * setCurServicePoint
- * 1. store the given service-point as the current one in locale storage,
- * 2. dispatch the current service-point
- * @param {redux store} store
- * @param {object} servicePoint
- *
- * @returns {Promise}
- */
-export function setCurServicePoint(store, servicePoint) {
-  return localforage.getItem('okapiSess')
-    .then((sess) => {
-      sess.user.curServicePoint = servicePoint;
-      return localforage.setItem('okapiSess', sess);
-    })
-    .then(() => {
-      store.dispatch(setCurrentServicePoint(servicePoint));
-    });
-}
-
-/**
- * setServicePoints
- * 1. store the given list in locale storage,
- * 2. dispatch the list of service-points
- * @param {redux store} store redux store
- * @param {Array} servicePoints
- *
- * @returns {Promise}
- */
-export function setServicePoints(store, servicePoints) {
-  return localforage.getItem('okapiSess')
-    .then((sess) => {
-      sess.user.servicePoints = servicePoints;
-      return localforage.setItem('okapiSess', sess);
-    })
-    .then(() => {
-      store.dispatch(setUserServicePoints(servicePoints));
-    });
 }
 
 /**

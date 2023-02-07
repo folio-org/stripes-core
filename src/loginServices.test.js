@@ -1,12 +1,10 @@
-import localforage from 'localforage';
+// import localforage from 'localforage';
 
 import {
   createOkapiSession,
   handleLoginError,
   loadTranslations,
   processOkapiSession,
-  setCurServicePoint,
-  setServicePoints,
   supportedLocales,
   supportedNumberingSystems,
   updateUser,
@@ -17,20 +15,18 @@ import {
   clearCurrentUser,
   setCurrentPerms,
   setLocale,
-  setTimezone,
-  setCurrency,
-  setPlugins,
-  setBindings,
-  setTranslations,
+  // setTimezone,
+  // setCurrency,
+  // setPlugins,
+  // setBindings,
+  // setTranslations,
   clearOkapiToken,
   setAuthError,
-  checkSSO,
+  // checkSSO,
   setOkapiReady,
   setServerDown,
   setSessionData,
   setLoginData,
-  setCurrentServicePoint,
-  setUserServicePoints,
   updateCurrentUser,
 } from './okapiActions';
 
@@ -218,28 +214,6 @@ describe('processOkapiSession', () => {
 
     expect(store.dispatch).toHaveBeenCalledWith(setOkapiReady());
     expect(store.dispatch).toHaveBeenCalledWith(setAuthError([defaultErrors.DEFAULT_LOGIN_CLIENT_ERROR]));
-  });
-});
-
-describe('setCurServicePoint', () => {
-  it('dispatches setCurrentServicePoint', async () => {
-    const store = {
-      dispatch: jest.fn(),
-    };
-    const sp = 'monkey-bagel';
-    await setCurServicePoint(store, sp);
-    expect(store.dispatch).toHaveBeenCalledWith(setCurrentServicePoint(sp));
-  });
-});
-
-describe('setServicePoints', () => {
-  it('dispatches setUserServicePoints', async () => {
-    const store = {
-      dispatch: jest.fn(),
-    };
-    const data = ['thunder', 'chicken'];
-    await setServicePoints(store, data);
-    expect(store.dispatch).toHaveBeenCalledWith(setUserServicePoints(data));
   });
 });
 
