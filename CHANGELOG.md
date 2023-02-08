@@ -13,6 +13,7 @@
 * *BREAKING*: Remove SWR, a POC that never took off. Refs STCOR-516, STCOR-611.
 * *BREAKING*: Upgrade `react-redux` to `v8`. Refs STCOR-678.
 * *BREAKING*: Remove `setServicePoints`, `setCurServicePoint`. Refs STCOR-650, UISP-32.
+* Switching service points not being captured in circulation log record. Refs STCOR-686
 
 ## [8.3.0](https://github.com/folio-org/stripes-core/tree/v8.2.0) (2022-06-14)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v8.2.0...v8.3.0)
