@@ -1,5 +1,9 @@
 # Change history for stripes-core
 
+## 9.0.4 IN PROGRESS
+
+* Close app-context menu when its wrapper is undefined, which it will be when switching among apps. Fixes STCOR-680.
+
 ## [9.0.3](https://github.com/folio-org/stripes-core/tree/v9.0.3) (2023-03-06)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v9.0.2...v9.0.3)
 
