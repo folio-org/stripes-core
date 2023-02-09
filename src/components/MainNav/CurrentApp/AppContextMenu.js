@@ -34,7 +34,7 @@ class AppContextMenu extends React.PureComponent {
   }
 
   render() {
-    const { children, onToggle } = this.props;
+    const { children, onToggle, open } = this.props;
     const menu = children(onToggle);
     const container = document.getElementById('App_context_dropdown_menu');
 
@@ -43,6 +43,8 @@ class AppContextMenu extends React.PureComponent {
         menu,
         container
       );
+    } else if (open) {
+      onToggle();
     }
 
     return null;
