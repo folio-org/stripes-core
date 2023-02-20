@@ -1,0 +1,1278 @@
+{
+  "about.appModuleCount": [
+    {
+      "style": null,
+      "type": 2,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": " تطبيق "
+    },
+    {
+      "offset": 0,
+      "options": {
+        "one": {
+          "value": [
+            {
+              "type": 0,
+              "value": "وحدة"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "وحدة"
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "count"
+    }
+  ],
+  "about.forTenant": [
+    {
+      "type": 0,
+      "value": "للمستأجر "
+    },
+    {
+      "type": 1,
+      "value": "tenant"
+    }
+  ],
+  "about.foundation": [
+    {
+      "type": 0,
+      "value": "المؤسسة"
+    }
+  ],
+  "about.incompatibleModuleCount": [
+    {
+      "style": null,
+      "type": 2,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": " واجهة غير متوافقة "
+    },
+    {
+      "offset": 0,
+      "options": {
+        "one": {
+          "value": [
+            {
+              "type": 0,
+              "value": "إصدار"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "إصدارات"
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "count"
+    }
+  ],
+  "about.interfaceCount": [
+    {
+      "style": null,
+      "type": 2,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": " "
+    },
+    {
+      "offset": 0,
+      "options": {
+        "one": {
+          "value": [
+            {
+              "type": 0,
+              "value": "واجهة"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "واجهة"
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "count"
+    }
+  ],
+  "about.key.absentInterfaces": [
+    {
+      "type": 0,
+      "value": "يتم تظليل الواجهات المطلوبة لكنها غير موجودة "
+    },
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": "بالأحمر العريض"
+        }
+      ],
+      "type": 8,
+      "value": "span"
+    },
+    {
+      "type": 0,
+      "value": "."
+    }
+  ],
+  "about.key.compatible": [
+    {
+      "type": 0,
+      "value": "يتم عرض الواجهات الموجودة في إصدار متوافق بالخط العادي."
+    }
+  ],
+  "about.key.incompatibleIntf": [
+    {
+      "type": 0,
+      "value": "يتم تظليل الواجهات المطلوبة لكنها موجودة فقط في إصدار غير متوافق "
+    },
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": "باللون البرتقالي"
+        }
+      ],
+      "type": 8,
+      "value": "span"
+    }
+  ],
+  "about.legendKey": [
+    {
+      "type": 0,
+      "value": "مفتاح"
+    }
+  ],
+  "about.missingModuleCount": [
+    {
+      "style": null,
+      "type": 2,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": " مفقود "
+    },
+    {
+      "offset": 0,
+      "options": {
+        "one": {
+          "value": [
+            {
+              "type": 0,
+              "value": "واجهة"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "واجهة"
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "count"
+    }
+  ],
+  "about.moduleCount": [
+    {
+      "style": null,
+      "type": 2,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": " "
+    },
+    {
+      "offset": 0,
+      "options": {
+        "one": {
+          "value": [
+            {
+              "type": 0,
+              "value": "وحدة"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "وحدة"
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "count"
+    }
+  ],
+  "about.moduleDependsOn": [
+    {
+      "type": 1,
+      "value": "module"
+    },
+    {
+      "type": 0,
+      "value": " يعتمد على:"
+    }
+  ],
+  "about.moduleTypeCount": [
+    {
+      "style": null,
+      "type": 2,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": " "
+    },
+    {
+      "type": 1,
+      "value": "type"
+    },
+    {
+      "type": 0,
+      "value": " "
+    },
+    {
+      "offset": 0,
+      "options": {
+        "one": {
+          "value": [
+            {
+              "type": 0,
+              "value": "وحدة"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "وحدة"
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "count"
+    }
+  ],
+  "about.newerModuleAvailable": [
+    {
+      "type": 1,
+      "value": "required"
+    },
+    {
+      "type": 0,
+      "value": " ("
+    },
+    {
+      "type": 1,
+      "value": "available"
+    },
+    {
+      "type": 0,
+      "value": " متاحة)"
+    }
+  ],
+  "about.noDependencies": [
+    {
+      "type": 0,
+      "value": "لا تعلن "
+    },
+    {
+      "type": 1,
+      "value": "base"
+    },
+    {
+      "type": 0,
+      "value": " عن أي تبعيات"
+    }
+  ],
+  "about.notEnabledModules": [
+    {
+      "type": 0,
+      "value": "يتم عرض الوحدات المثبتة غير المفعلة لهذا المستأجر "
+    },
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": "باللون الرمادي"
+        }
+      ],
+      "type": 8,
+      "value": "span"
+    }
+  ],
+  "about.okapiServices": [
+    {
+      "type": 0,
+      "value": "خدمات أوكابي"
+    }
+  ],
+  "about.onUrl": [
+    {
+      "type": 0,
+      "value": "على URL "
+    },
+    {
+      "type": 1,
+      "value": "url"
+    }
+  ],
+  "about.paneTitle": [
+    {
+      "type": 0,
+      "value": "إصدارات البرمجيات"
+    }
+  ],
+  "about.pluginModuleCount": [
+    {
+      "style": null,
+      "type": 2,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": " برنامج مساعد "
+    },
+    {
+      "offset": 0,
+      "options": {
+        "one": {
+          "value": [
+            {
+              "type": 0,
+              "value": "وحدة"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "وحدة"
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "count"
+    }
+  ],
+  "about.settingsModuleCount": [
+    {
+      "style": null,
+      "type": 2,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": " إعدادات "
+    },
+    {
+      "offset": 0,
+      "options": {
+        "one": {
+          "value": [
+            {
+              "type": 0,
+              "value": "وحدة"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "وحدة"
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "count"
+    }
+  ],
+  "about.uiOrServiceDependencies": [
+    {
+      "type": 0,
+      "value": "تبعيات واجهة المستخدم/الخدمة"
+    }
+  ],
+  "about.unknown": [
+    {
+      "type": 0,
+      "value": "غير معروف"
+    }
+  ],
+  "about.userInterface": [
+    {
+      "type": 0,
+      "value": "واجهة المستخدم"
+    }
+  ],
+  "about.version": [
+    {
+      "type": 0,
+      "value": "الإصدار "
+    },
+    {
+      "type": 1,
+      "value": "version"
+    }
+  ],
+  "button.back": [
+    {
+      "type": 0,
+      "value": "الرجوع"
+    }
+  ],
+  "button.cancel": [
+    {
+      "type": 0,
+      "value": "إلغاء"
+    }
+  ],
+  "button.close": [
+    {
+      "type": 0,
+      "value": "إغلاق"
+    }
+  ],
+  "button.confirm": [
+    {
+      "type": 0,
+      "value": "تأكيد"
+    }
+  ],
+  "button.continue": [
+    {
+      "type": 0,
+      "value": "المتابعة"
+    }
+  ],
+  "button.delete": [
+    {
+      "type": 0,
+      "value": "حذف"
+    }
+  ],
+  "button.deleteEntry": [
+    {
+      "type": 0,
+      "value": "حذف "
+    },
+    {
+      "type": 1,
+      "value": "entry"
+    }
+  ],
+  "button.edit": [
+    {
+      "type": 0,
+      "value": "تحرير"
+    }
+  ],
+  "button.forgotPassword": [
+    {
+      "type": 0,
+      "value": "هل نسيت كلمة المرور؟"
+    }
+  ],
+  "button.forgotUsername": [
+    {
+      "type": 0,
+      "value": "هل نسيت اسم المستخدم؟"
+    }
+  ],
+  "button.hidePassword": [
+    {
+      "type": 0,
+      "value": "إخفاء كلمة المرور"
+    }
+  ],
+  "button.new": [
+    {
+      "type": 0,
+      "value": "+ جديد"
+    }
+  ],
+  "button.new_tooltip": [
+    {
+      "type": 0,
+      "value": "إضافة "
+    },
+    {
+      "type": 1,
+      "value": "entry"
+    }
+  ],
+  "button.redirect.login": [
+    {
+      "type": 0,
+      "value": "المتابعة إلى فوليو"
+    }
+  ],
+  "button.save": [
+    {
+      "type": 0,
+      "value": "حفظ"
+    }
+  ],
+  "button.saveAndClose": [
+    {
+      "type": 0,
+      "value": "حفظ وإغلاق"
+    }
+  ],
+  "button.showPassword": [
+    {
+      "type": 0,
+      "value": "إظهار كلمة المرور"
+    }
+  ],
+  "createResetPassword.confirmPassword": [
+    {
+      "type": 0,
+      "value": "تأكيد كلمة المرور"
+    }
+  ],
+  "createResetPassword.header": [
+    {
+      "type": 0,
+      "value": "واختر كلمة مرور"
+    }
+  ],
+  "createResetPassword.newPassword": [
+    {
+      "type": 0,
+      "value": "كلمة المرور الجديدة"
+    }
+  ],
+  "createResetPassword.ruleTemplate": [
+    {
+      "type": 0,
+      "value": "يجب "
+    },
+    {
+      "type": 1,
+      "value": "description"
+    }
+  ],
+  "currentServicePoint": [
+    {
+      "type": 0,
+      "value": "نقطة الخدمة: "
+    },
+    {
+      "type": 1,
+      "value": "name"
+    }
+  ],
+  "currentServicePointNotSelected": [
+    {
+      "type": 0,
+      "value": "نقطة الخدمة: لا توجد"
+    }
+  ],
+  "errors.default.error": [
+    {
+      "type": 0,
+      "value": "عذرًا ، المعلومات التي تم إدخالها لا تتطابق مع سجلاتنا."
+    }
+  ],
+  "errors.default.server.error": [
+    {
+      "type": 0,
+      "value": "خطأ في النظام. غير قادر على تحديد موقع حساب فوليو. يرجى إعادة المحاولة مرة أخرى."
+    }
+  ],
+  "errors.email.invalid": [
+    {
+      "type": 0,
+      "value": "يرجى إدخال عنوان بريد إلكتروني صحيح."
+    }
+  ],
+  "errors.forgotten.password.found.inactive": [
+    {
+      "type": 0,
+      "value": "حسابك مغلق حاليًا. يرجى الاتصال بمسؤول نظام فوليو الخاص بك لإعادة تعيين كلمة المرور."
+    }
+  ],
+  "errors.forgotten.password.found.multiple.users": [
+    {
+      "type": 0,
+      "value": "المعلومات التي تم تقديمها مرتبطة بعدة حسابات فوليو. يرجى الاتصال بمسؤول نظام فوليو الخاص بك لإعادة تعيين كلمة المرور."
+    }
+  ],
+  "errors.forgotten.username.found.multiple.users": [
+    {
+      "type": 0,
+      "value": "هذا البريد الالكتروني أو رقم الهاتف مرتبط بعدة حسابات فوليو. يرجى الاتصال بمسؤول نظام فوليو الخاص بك."
+    }
+  ],
+  "errors.link.expired": [
+    {
+      "type": 0,
+      "value": "انتهت صلاحية رابط كلمة المرور الذي اخترته أو تم استخدامه بالفعل. يرجى الاتصال بمسؤول فوليو للحصول على رابط جديد."
+    }
+  ],
+  "errors.link.invalid": [
+    {
+      "type": 0,
+      "value": "رابط كلمة المرور الذي اخترته غير صالح. يرجى التأكد من استخدامك للرابط الموجود في بريدك الالكتروني أو الاتصال بمسؤول فوليو."
+    }
+  ],
+  "errors.link.used": [
+    {
+      "type": 0,
+      "value": "انتهت صلاحية رابط كلمة المرور الذي اخترته أو تم استخدامه بالفعل. يرجى الاتصال بمسؤول فوليو للحصول على رابط جديد."
+    }
+  ],
+  "errors.password.alphabetical.invalid": [
+    {
+      "type": 0,
+      "value": "يجب أن تحتوي كلمة المرور على أحرف صغيرة وأخرى كبيرة."
+    }
+  ],
+  "errors.password.compromised.invalid": [
+    {
+      "type": 0,
+      "value": "يجب ألا تكون كلمة المرور شائعة الاستخدام أو سهلة التوقع أو مهددة بالاختراق"
+    }
+  ],
+  "errors.password.consecutiveWhitespaces.invalid": [
+    {
+      "type": 0,
+      "value": "يجب ألا تحتوي كلمة المرور على مسافات متتالية."
+    }
+  ],
+  "errors.password.incorrect": [
+    {
+      "type": 0,
+      "value": "بيانات غير صحيحة"
+    }
+  ],
+  "errors.password.incorrect.block.user": [
+    {
+      "type": 0,
+      "value": "لأسباب أمنية، حسابك تم إغلاقه. يرجى الاتصال بمسؤول نظام فوليو الخاص بك لإعادة تعيين كلمة المرور."
+    }
+  ],
+  "errors.password.incorrect.warn.user": [
+    {
+      "type": 0,
+      "value": "لقد قمت بإدخال اسم المستخدم أو كلمة المرور خطأً للمرة الثالثة. لديك محاولتين فقط قبل أن يتم قفل حسابك."
+    }
+  ],
+  "errors.password.keyboardSequence.invalid": [
+    {
+      "type": 0,
+      "value": "يجب ألا تحتوي كلمة المرور على حروف متسلسلة في لوحة المفاتيح."
+    }
+  ],
+  "errors.password.lastTenPasswords.invalid": [
+    {
+      "type": 0,
+      "value": "سبق استخدام كلمة المرور هذه. الرجاء إدخال كلمة مرور جديدة."
+    }
+  ],
+  "errors.password.length.invalid": [
+    {
+      "type": 0,
+      "value": "الحد الأدنى لطول كلمة المرور هو 8 أحرف."
+    }
+  ],
+  "errors.password.match.error": [
+    {
+      "type": 0,
+      "value": "كلمة المرور غير متطابقة. أعد كتابة كلمة المرور الخاصة بك."
+    }
+  ],
+  "errors.password.number.invalid": [
+    {
+      "type": 0,
+      "value": "يجب أن تحتوي كلمة المرور على رقم واحد على الأقل."
+    }
+  ],
+  "errors.password.repeatingSymbols.invalid": [
+    {
+      "type": 0,
+      "value": "يجب ألا تحتوي كلمة المرور على تسلسل متتالٍ لنفس الحرف"
+    }
+  ],
+  "errors.password.specialCharacter.invalid": [
+    {
+      "type": 0,
+      "value": "يجب أن تحتوي كلمة المرور على حرف خاص واحد على الأقل."
+    }
+  ],
+  "errors.password.usernameDuplicate.invalid": [
+    {
+      "type": 0,
+      "value": "يجب ألا تحتوي كلمة المرور على اسم المستخدم الخاص بك."
+    }
+  ],
+  "errors.password.whiteSpace.invalid": [
+    {
+      "type": 0,
+      "value": "يجب ألا تحتوي كلمة المرور على مسافات."
+    }
+  ],
+  "errors.unable.locate.account": [
+    {
+      "type": 0,
+      "value": "تعذر العثور على حسابك. يرجى إدخال عنوان بريد إلكتروني أو رقم هاتف صالح."
+    }
+  ],
+  "errors.unable.locate.account.password": [
+    {
+      "type": 0,
+      "value": "تعذر العثور على حسابك. يرجى إدخال عنوان بريد إلكتروني أو رقم هاتف أو اسم مستخدم صالح."
+    }
+  ],
+  "errors.user.blocked": [
+    {
+      "type": 0,
+      "value": "لأسباب أمنية، حسابك تم إغلاقه. يرجى إعادة المحاولة مرة أخرى أو الاتصال بمسؤول نظام فوليو الخاص بك."
+    }
+  ],
+  "errors.user.timeout": [
+    {
+      "type": 0,
+      "value": "لقد انتهت صلاحية الجلسة. يرجى إعادة تسجيل الدخول مرة أخرى لمتابعة الجلسة."
+    }
+  ],
+  "errors.username.incorrect": [
+    {
+      "type": 0,
+      "value": "تعذر تحديد موقع حساب فوليو هذا. يرجى الاتصال بمدير أنظمة فوليو الخاص بك."
+    }
+  ],
+  "folioSettings": [
+    {
+      "type": 0,
+      "value": "إعدادات فوليو"
+    }
+  ],
+  "front.about": [
+    {
+      "type": 0,
+      "value": "إصدارات البرمجيات"
+    }
+  ],
+  "front.error.general.message": [
+    {
+      "type": 0,
+      "value": "لم يتم العثور على عنوان URL المطلوب "
+    },
+    {
+      "type": 1,
+      "value": "br"
+    },
+    {
+      "type": 1,
+      "value": "url"
+    },
+    {
+      "type": 1,
+      "value": "br"
+    },
+    {
+      "type": 0,
+      "value": " على هذا الخادم."
+    }
+  ],
+  "front.error.header": [
+    {
+      "type": 0,
+      "value": "خطأ 404"
+    }
+  ],
+  "front.error.setPassword.message": [
+    {
+      "type": 0,
+      "value": "يرجى تسجيل الخروج من جلسة فوليو الحالية لتعيين كلمة المرور. بمجرد تسجيل الخروج، يرجى محاولة تعيين كلمة المرور الخاصة بك باستخدام هذا الرابط مرة أخرى."
+    }
+  ],
+  "front.home": [
+    {
+      "type": 0,
+      "value": "الرئيسية"
+    }
+  ],
+  "front.welcome": [
+    {
+      "type": 0,
+      "value": "مرحبًا بكم، مستقبل المكتبات في الانفتاحية!"
+    }
+  ],
+  "label.caution.email": [
+    {
+      "type": 0,
+      "value": "إذا لم تتلقى البريد الإلكتروني، يرجى التحقق من البريد المزعج أو مجلدات البريد غير المرغوب به أو الرسائل الإجتماعية أو غيرها من المجلدات. أو قم بالاتصال بمسؤول نظام فوليو الخاص بك."
+    }
+  ],
+  "label.changed.password": [
+    {
+      "type": 0,
+      "value": "لقد قمت بتغيير كلمة المرور الخاصة بك بنجاح."
+    }
+  ],
+  "label.check.email": [
+    {
+      "type": 0,
+      "value": "تحقق من بريدك الالكتروني"
+    }
+  ],
+  "label.confirmDeleteEntry": [
+    {
+      "type": 0,
+      "value": "ستتم "
+    },
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": "إزالة"
+        }
+      ],
+      "type": 8,
+      "value": "strong"
+    },
+    {
+      "type": 0,
+      "value": "  "
+    },
+    {
+      "children": [
+        {
+          "type": 1,
+          "value": "name"
+        }
+      ],
+      "type": 8,
+      "value": "strong"
+    }
+  ],
+  "label.congratulations": [
+    {
+      "type": 0,
+      "value": "تهانينا!"
+    }
+  ],
+  "label.createEntry": [
+    {
+      "type": 0,
+      "value": "إنشاء "
+    },
+    {
+      "type": 1,
+      "value": "entry"
+    }
+  ],
+  "label.editEntry": [
+    {
+      "type": 0,
+      "value": "تحرير "
+    },
+    {
+      "type": 1,
+      "value": "entry"
+    }
+  ],
+  "label.forgotPassword": [
+    {
+      "type": 0,
+      "value": "هل نسيت كلمة المرور؟"
+    }
+  ],
+  "label.forgotPasswordCallToAction": [
+    {
+      "type": 0,
+      "value": "يرجى إدخال بريدك الإلكتروني أو اسم المستخدم الخاص بك أو رقم هاتفك"
+    }
+  ],
+  "label.forgotUsername": [
+    {
+      "type": 0,
+      "value": "هل نسيت اسم المستخدم؟"
+    }
+  ],
+  "label.forgotUsernameCallToAction": [
+    {
+      "type": 0,
+      "value": "يرجى إدخال بريدك الإلكتروني أو رقم هاتفك"
+    }
+  ],
+  "label.missingRequiredField": [
+    {
+      "type": 0,
+      "value": "يرجى ملء هذا للمتابعة"
+    }
+  ],
+  "label.okay": [
+    {
+      "type": 0,
+      "value": "موافق"
+    }
+  ],
+  "label.sent.email": [
+    {
+      "type": 0,
+      "value": "تم إرسال بريد إلكتروني إلى "
+    },
+    {
+      "type": 1,
+      "value": "hiddenUserEmail"
+    }
+  ],
+  "label.your.email": [
+    {
+      "type": 0,
+      "value": "تم إرسال بريد إلكتروني إلى عنوان بريدك الإلكتروني"
+    }
+  ],
+  "loggedInAs": [
+    {
+      "type": 0,
+      "value": "تم تسجيل الدخول باسم  "
+    },
+    {
+      "type": 1,
+      "value": "firstName"
+    },
+    {
+      "type": 0,
+      "value": " "
+    },
+    {
+      "type": 1,
+      "value": "lastName"
+    }
+  ],
+  "loggingIn": [
+    {
+      "type": 0,
+      "value": "جاري تسجيل الدخول..."
+    }
+  ],
+  "login": [
+    {
+      "type": 0,
+      "value": "تسجيل الدخول"
+    }
+  ],
+  "loginViaSSO": [
+    {
+      "type": 0,
+      "value": "تسجيل الدخول عبر SSO"
+    }
+  ],
+  "logout": [
+    {
+      "type": 0,
+      "value": "خروج"
+    }
+  ],
+  "logoutKeepSso": [
+    {
+      "type": 0,
+      "value": "سجّل الخروج من فوليو واحتفظ بجلسة SSO"
+    }
+  ],
+  "mainnav.appContextMenu": [
+    {
+      "type": 0,
+      "value": "القائمة المنسدلة لسياق التطبيق"
+    }
+  ],
+  "mainnav.applicationListLabel": [
+    {
+      "type": 0,
+      "value": "قائمة التطبيقات"
+    }
+  ],
+  "mainnav.currentAppAriaLabel": [
+    {
+      "type": 0,
+      "value": "التطبيق الحالي المفتوح: "
+    },
+    {
+      "type": 1,
+      "value": "appName"
+    },
+    {
+      "type": 0,
+      "value": " (انقر للذهاب إلى الصفحة الرئيسية)"
+    }
+  ],
+  "mainnav.myProfileAriaLabel": [
+    {
+      "type": 0,
+      "value": "ملفي الشخصي"
+    }
+  ],
+  "mainnav.profileDropdown.locale": [
+    {
+      "type": 0,
+      "value": "إعداد محلي"
+    }
+  ],
+  "mainnav.profileDropdown.permissions": [
+    {
+      "type": 0,
+      "value": "صلاحيات"
+    }
+  ],
+  "mainnav.showAllApplicationsButtonAriaLabel": [
+    {
+      "type": 0,
+      "value": "كل التطبيقات"
+    }
+  ],
+  "mainnav.showAllApplicationsButtonLabel": [
+    {
+      "type": 0,
+      "value": "التطبيقات"
+    }
+  ],
+  "mainnav.skipMainNavigation": [
+    {
+      "type": 0,
+      "value": "تخطي التصفح الرئيسي"
+    }
+  ],
+  "mainnav.topLevelLabel": [
+    {
+      "type": 0,
+      "value": "الرئيسي"
+    }
+  ],
+  "password": [
+    {
+      "type": 0,
+      "value": "كلمة المرور"
+    }
+  ],
+  "routeErrorBoundary.goToAppHomeLabel": [
+    {
+      "type": 0,
+      "value": "العودة إلى الرئيسية"
+    }
+  ],
+  "routeErrorBoundary.goToModuleHomeLabel": [
+    {
+      "type": 0,
+      "value": "العودة إلى الصفحة المقصودة "
+    },
+    {
+      "type": 1,
+      "value": "name"
+    }
+  ],
+  "routeErrorBoundary.goToModuleSettingsHomeLabel": [
+    {
+      "type": 0,
+      "value": "العودة إلى إعدادات "
+    },
+    {
+      "type": 1,
+      "value": "name"
+    }
+  ],
+  "routeErrorBoundary.sub": [
+    {
+      "type": 0,
+      "value": "لقد حدث خطأ في هذه الصفحة وتعذر تحميلها."
+    }
+  ],
+  "setPassword": [
+    {
+      "type": 0,
+      "value": "تعيين كلمة المرور"
+    }
+  ],
+  "settingChoose": [
+    {
+      "type": 0,
+      "value": "اختر الإعدادات"
+    }
+  ],
+  "settingPassword": [
+    {
+      "type": 0,
+      "value": "جاري تعيين كلمة المرور ..."
+    }
+  ],
+  "settingSystemInfo": [
+    {
+      "type": 0,
+      "value": "معلومات النظام"
+    }
+  ],
+  "settings": [
+    {
+      "type": 0,
+      "value": "الإعدادات"
+    }
+  ],
+  "successfullyDeleted": [
+    {
+      "type": 0,
+      "value": "تم "
+    },
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": "حذف"
+        }
+      ],
+      "type": 8,
+      "value": "strong"
+    },
+    {
+      "type": 0,
+      "value": " ال "
+    },
+    {
+      "type": 1,
+      "value": "entry"
+    },
+    {
+      "type": 0,
+      "value": " "
+    },
+    {
+      "children": [
+        {
+          "type": 1,
+          "value": "name"
+        }
+      ],
+      "type": 8,
+      "value": "strong"
+    },
+    {
+      "type": 0,
+      "value": " بنجاح."
+    }
+  ],
+  "title.CreateResetPassword": [
+    {
+      "type": 0,
+      "value": "اختر كلمة مرور"
+    }
+  ],
+  "title.changePassword": [
+    {
+      "type": 0,
+      "value": "تغيير كلمة المرور"
+    }
+  ],
+  "title.checkEmail": [
+    {
+      "type": 0,
+      "value": "تحقق من بريدك الالكتروني"
+    }
+  ],
+  "title.forgotPassword": [
+    {
+      "type": 0,
+      "value": "هل نسيت كلمة المرور؟"
+    }
+  ],
+  "title.forgotUsername": [
+    {
+      "type": 0,
+      "value": "هل نسيت اسم المستخدم؟"
+    }
+  ],
+  "title.home": [
+    {
+      "type": 0,
+      "value": "الرئيسية"
+    }
+  ],
+  "title.login": [
+    {
+      "type": 0,
+      "value": "تسجيل الدخول"
+    }
+  ],
+  "title.notFound": [
+    {
+      "type": 0,
+      "value": "لم يتم العثور عليه"
+    }
+  ],
+  "title.settings": [
+    {
+      "type": 0,
+      "value": "الإعدادات"
+    }
+  ],
+  "title.ssoLanding": [
+    {
+      "type": 0,
+      "value": "هبوط تسجيل الدخول الأحادي SSO"
+    }
+  ],
+  "title.ssoRedirect": [
+    {
+      "type": 0,
+      "value": "إعادة توجيه SSO"
+    }
+  ],
+  "untitled": [
+    {
+      "type": 0,
+      "value": "بدون عنوان"
+    }
+  ],
+  "username": [
+    {
+      "type": 0,
+      "value": "اسم المستخدم"
+    }
+  ]
+}

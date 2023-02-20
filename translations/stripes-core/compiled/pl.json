@@ -1,0 +1,1298 @@
+{
+  "about.appModuleCount": [
+    {
+      "style": null,
+      "type": 2,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": " aplikacja "
+    },
+    {
+      "offset": 0,
+      "options": {
+        "one": {
+          "value": [
+            {
+              "type": 0,
+              "value": "moduł"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "moduły"
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "count"
+    }
+  ],
+  "about.forTenant": [
+    {
+      "type": 0,
+      "value": "Dla dzierżawcy "
+    },
+    {
+      "type": 1,
+      "value": "tenant"
+    }
+  ],
+  "about.foundation": [
+    {
+      "type": 0,
+      "value": "Fundacja"
+    }
+  ],
+  "about.incompatibleModuleCount": [
+    {
+      "style": null,
+      "type": 2,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": " Niezgodna "
+    },
+    {
+      "offset": 0,
+      "options": {
+        "one": {
+          "value": [
+            {
+              "type": 0,
+              "value": "moduł"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "moduły"
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": " wersja"
+    }
+  ],
+  "about.interfaceCount": [
+    {
+      "style": null,
+      "type": 2,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": " "
+    },
+    {
+      "offset": 0,
+      "options": {
+        "one": {
+          "value": [
+            {
+              "type": 0,
+              "value": "interfejs"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "interfejsy"
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "count"
+    }
+  ],
+  "about.key.absentInterfaces": [
+    {
+      "type": 0,
+      "value": "Interfejsy, które są wymagane, ale niedostępne, są wyróżnione "
+    },
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": "pogrubionym kolorem czerwonym"
+        }
+      ],
+      "type": 8,
+      "value": "span"
+    },
+    {
+      "type": 0,
+      "value": "."
+    }
+  ],
+  "about.key.compatible": [
+    {
+      "type": 0,
+      "value": "Obecne interfejsy w wersji kompatybilnej są wyświetlane zwykłą czcionką."
+    }
+  ],
+  "about.key.incompatibleIntf": [
+    {
+      "type": 0,
+      "value": "Interfejsy, które są wymagane, ale występują w niekompatybilnej wersji, są zaznaczone "
+    },
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": "kolorem pomarańczowym"
+        }
+      ],
+      "type": 8,
+      "value": "span"
+    },
+    {
+      "type": 0,
+      "value": "."
+    }
+  ],
+  "about.legendKey": [
+    {
+      "type": 0,
+      "value": "Klucz"
+    }
+  ],
+  "about.missingModuleCount": [
+    {
+      "style": null,
+      "type": 2,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": " brakujący "
+    },
+    {
+      "offset": 0,
+      "options": {
+        "one": {
+          "value": [
+            {
+              "type": 0,
+              "value": "moduł"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "moduły"
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "count"
+    }
+  ],
+  "about.moduleCount": [
+    {
+      "style": null,
+      "type": 2,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": " "
+    },
+    {
+      "offset": 0,
+      "options": {
+        "one": {
+          "value": [
+            {
+              "type": 0,
+              "value": "moduł"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "moduły"
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "count"
+    }
+  ],
+  "about.moduleDependsOn": [
+    {
+      "type": 1,
+      "value": "module"
+    },
+    {
+      "type": 0,
+      "value": " zależy od:"
+    }
+  ],
+  "about.moduleTypeCount": [
+    {
+      "style": null,
+      "type": 2,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": " "
+    },
+    {
+      "type": 1,
+      "value": "type"
+    },
+    {
+      "type": 0,
+      "value": " "
+    },
+    {
+      "offset": 0,
+      "options": {
+        "one": {
+          "value": [
+            {
+              "type": 0,
+              "value": "moduł"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "moduły"
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "count"
+    }
+  ],
+  "about.newerModuleAvailable": [
+    {
+      "type": 1,
+      "value": "required"
+    },
+    {
+      "type": 0,
+      "value": " ("
+    },
+    {
+      "type": 1,
+      "value": "available"
+    },
+    {
+      "type": 0,
+      "value": " dostępne)"
+    }
+  ],
+  "about.noDependencies": [
+    {
+      "type": 1,
+      "value": "base"
+    },
+    {
+      "type": 0,
+      "value": " deklaruje brak zależności"
+    }
+  ],
+  "about.notEnabledModules": [
+    {
+      "type": 0,
+      "value": "Zainstalowane moduły, które nie są dostępne dla tego dzierżawcy, są wyświetlane "
+    },
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": "w kolorze szarym"
+        }
+      ],
+      "type": 8,
+      "value": "span"
+    },
+    {
+      "type": 0,
+      "value": "."
+    }
+  ],
+  "about.okapiServices": [
+    {
+      "type": 0,
+      "value": "Usługi Okapi"
+    }
+  ],
+  "about.onUrl": [
+    {
+      "type": 0,
+      "value": "Na adresie URL "
+    },
+    {
+      "type": 1,
+      "value": "url"
+    }
+  ],
+  "about.paneTitle": [
+    {
+      "type": 0,
+      "value": "Wersje oprogramowania"
+    }
+  ],
+  "about.pluginModuleCount": [
+    {
+      "style": null,
+      "type": 2,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": " wtyczka "
+    },
+    {
+      "offset": 0,
+      "options": {
+        "one": {
+          "value": [
+            {
+              "type": 0,
+              "value": "moduły"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "modułów"
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "count"
+    }
+  ],
+  "about.settingsModuleCount": [
+    {
+      "style": null,
+      "type": 2,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": " ustawienia "
+    },
+    {
+      "offset": 0,
+      "options": {
+        "one": {
+          "value": [
+            {
+              "type": 0,
+              "value": "modułu"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "modułów"
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "count"
+    }
+  ],
+  "about.uiOrServiceDependencies": [
+    {
+      "type": 0,
+      "value": "Zależności UI/usługi"
+    }
+  ],
+  "about.unknown": [
+    {
+      "type": 0,
+      "value": "Nieznany"
+    }
+  ],
+  "about.userInterface": [
+    {
+      "type": 0,
+      "value": "Interfejs użytkownika"
+    }
+  ],
+  "about.version": [
+    {
+      "type": 0,
+      "value": "Wersja "
+    },
+    {
+      "type": 1,
+      "value": "version"
+    }
+  ],
+  "button.back": [
+    {
+      "type": 0,
+      "value": "Cofnij"
+    }
+  ],
+  "button.cancel": [
+    {
+      "type": 0,
+      "value": "Anuluj"
+    }
+  ],
+  "button.close": [
+    {
+      "type": 0,
+      "value": "Zamknij"
+    }
+  ],
+  "button.confirm": [
+    {
+      "type": 0,
+      "value": "Potwierdź"
+    }
+  ],
+  "button.continue": [
+    {
+      "type": 0,
+      "value": "Kontynuuj"
+    }
+  ],
+  "button.delete": [
+    {
+      "type": 0,
+      "value": "Usuń"
+    }
+  ],
+  "button.deleteEntry": [
+    {
+      "type": 0,
+      "value": "Usuń "
+    },
+    {
+      "type": 1,
+      "value": "entry"
+    }
+  ],
+  "button.edit": [
+    {
+      "type": 0,
+      "value": "Edytuj"
+    }
+  ],
+  "button.forgotPassword": [
+    {
+      "type": 0,
+      "value": "Zapomniałeś hasła?"
+    }
+  ],
+  "button.forgotUsername": [
+    {
+      "type": 0,
+      "value": "Zapomniałeś nazwy użytkownika?"
+    }
+  ],
+  "button.hidePassword": [
+    {
+      "type": 0,
+      "value": "Ukryj hasło"
+    }
+  ],
+  "button.new": [
+    {
+      "type": 0,
+      "value": "+ Nowy"
+    }
+  ],
+  "button.new_tooltip": [
+    {
+      "type": 0,
+      "value": "Dodaj "
+    },
+    {
+      "type": 1,
+      "value": "entry"
+    }
+  ],
+  "button.redirect.login": [
+    {
+      "type": 0,
+      "value": "Kontynuuj w FOLIO"
+    }
+  ],
+  "button.save": [
+    {
+      "type": 0,
+      "value": "Zapisz"
+    }
+  ],
+  "button.saveAndClose": [
+    {
+      "type": 0,
+      "value": "Zapisz i zamknij"
+    }
+  ],
+  "button.showPassword": [
+    {
+      "type": 0,
+      "value": "Pokaż hasło"
+    }
+  ],
+  "createResetPassword.confirmPassword": [
+    {
+      "type": 0,
+      "value": "Potwierdź hasło"
+    }
+  ],
+  "createResetPassword.header": [
+    {
+      "type": 0,
+      "value": "Wybierz hasło"
+    }
+  ],
+  "createResetPassword.newPassword": [
+    {
+      "type": 0,
+      "value": "Nowe hasło"
+    }
+  ],
+  "createResetPassword.ruleTemplate": [
+    {
+      "type": 0,
+      "value": "Must "
+    },
+    {
+      "type": 1,
+      "value": "description"
+    }
+  ],
+  "currentServicePoint": [
+    {
+      "type": 0,
+      "value": "Punkt obsługi "
+    },
+    {
+      "type": 1,
+      "value": "name"
+    }
+  ],
+  "currentServicePointNotSelected": [
+    {
+      "type": 0,
+      "value": "Punkt obsługi: brak"
+    }
+  ],
+  "errors.default.error": [
+    {
+      "type": 0,
+      "value": "Przepraszamy, wprowadzone informacje nie zgadzają się z naszymi danymi."
+    }
+  ],
+  "errors.default.server.error": [
+    {
+      "type": 0,
+      "value": "Błąd systemu. Nie można znaleźć konta Folio. Spróbuj ponownie."
+    }
+  ],
+  "errors.email.invalid": [
+    {
+      "type": 0,
+      "value": "Proszę wpisać prawidłowy adres e-mail."
+    }
+  ],
+  "errors.forgotten.password.found.inactive": [
+    {
+      "type": 0,
+      "value": "Twoje konto jest obecnie zablokowane. Skontaktuj się z administratorem systemu FOLIO, aby zresetować hasło"
+    }
+  ],
+  "errors.forgotten.password.found.multiple.users": [
+    {
+      "type": 0,
+      "value": "Podane informacje są powiązane z wieloma kontami Folio. Skontaktuj się z administratorem systemu Folio, aby zresetować hasło."
+    }
+  ],
+  "errors.forgotten.username.found.multiple.users": [
+    {
+      "type": 0,
+      "value": "Ten adres e-mail lub numer telefonu jest powiązany z wieloma kontami Folio. Skontaktuj się z administratorem systemu Folio."
+    }
+  ],
+  "errors.link.expired": [
+    {
+      "type": 0,
+      "value": "Twój link do wyboru hasła wygasł lub został już użyty. Skontaktuj się z administratorem Folio, aby uzyskać nowy link."
+    }
+  ],
+  "errors.link.invalid": [
+    {
+      "type": 0,
+      "value": "Twój link do wyboru hasła jest nieprawidłowy. Sprawdź, czy używasz linku zawartego w wiadomości e-mail lub skontaktuj się z administratorem Folio."
+    }
+  ],
+  "errors.link.used": [
+    {
+      "type": 0,
+      "value": "Twój link do wyboru hasła wygasł lub został już użyty. Skontaktuj się z administratorem Folio, aby uzyskać nowy link."
+    }
+  ],
+  "errors.password.alphabetical.invalid": [
+    {
+      "type": 0,
+      "value": "Hasło musi zawierać zarówno małe, jak i duże litery."
+    }
+  ],
+  "errors.password.compromised.invalid": [
+    {
+      "type": 0,
+      "value": "The password must not be commonly-used, expected or compromised"
+    }
+  ],
+  "errors.password.consecutiveWhitespaces.invalid": [
+    {
+      "type": 0,
+      "value": "Hasło nie może zawierać następujących po sobie spacji."
+    }
+  ],
+  "errors.password.incorrect": [
+    {
+      "type": 0,
+      "value": "Nieprawidłowe dane uwierzytelniające"
+    }
+  ],
+  "errors.password.incorrect.block.user": [
+    {
+      "type": 0,
+      "value": "Ze względów bezpieczeństwa Twoje konto zostało zablokowane. Skontaktuj się z administratorem systemu FOLIO, aby zresetować hasło."
+    }
+  ],
+  "errors.password.incorrect.warn.user": [
+    {
+      "type": 0,
+      "value": "Po raz trzeci została wprowadzona nieprawidłowa nazwa użytkownika lub hasło. Masz jeszcze dwie próby zalogowania się, zanim Twoje konto zostanie zablokowane."
+    }
+  ],
+  "errors.password.keyboardSequence.invalid": [
+    {
+      "type": 0,
+      "value": "Hasło nie może zawierać sekwencji klawiatury."
+    }
+  ],
+  "errors.password.lastTenPasswords.invalid": [
+    {
+      "type": 0,
+      "value": "Poprzednio używane hasło. Wprowadź nowe hasło."
+    }
+  ],
+  "errors.password.length.invalid": [
+    {
+      "type": 0,
+      "value": "Hasło musi mieć co najmniej 8 znaków."
+    }
+  ],
+  "errors.password.match.error": [
+    {
+      "type": 0,
+      "value": "Hasło nie jest zgodne. Wpisz ponownie hasło."
+    }
+  ],
+  "errors.password.number.invalid": [
+    {
+      "type": 0,
+      "value": "Hasło musi zawierać co najmniej jeden znak numeryczny."
+    }
+  ],
+  "errors.password.repeatingSymbols.invalid": [
+    {
+      "type": 0,
+      "value": "Hasło nie może zawierać tego samego znaku w jednym wierszu."
+    }
+  ],
+  "errors.password.specialCharacter.invalid": [
+    {
+      "type": 0,
+      "value": "Hasło musi zawierać co najmniej jeden znak specjalny."
+    }
+  ],
+  "errors.password.usernameDuplicate.invalid": [
+    {
+      "type": 0,
+      "value": "Hasło nie może zawierać Twojej nazwy użytkownika."
+    }
+  ],
+  "errors.password.whiteSpace.invalid": [
+    {
+      "type": 0,
+      "value": "Hasło nie może zawierać spacji."
+    }
+  ],
+  "errors.unable.locate.account": [
+    {
+      "type": 0,
+      "value": "Nie można znaleźć Twojego konta. Wprowadź prawidłowy adres e-mail lub numer telefonu."
+    }
+  ],
+  "errors.unable.locate.account.password": [
+    {
+      "type": 0,
+      "value": "Nie można znaleźć Twojego konta. Wprowadź prawidłowy adres e-mail, numer telefonu lub nazwę użytkownika."
+    }
+  ],
+  "errors.user.blocked": [
+    {
+      "type": 0,
+      "value": "Ze względów bezpieczeństwa Twoje konto zostało zablokowane. Spróbuj ponownie lub skontaktuj się z administratorem systemu FOLIO."
+    }
+  ],
+  "errors.user.timeout": [
+    {
+      "type": 0,
+      "value": "Twoja sesja wygasła. Zaloguj się ponownie, aby wznowić sesję."
+    }
+  ],
+  "errors.username.incorrect": [
+    {
+      "type": 0,
+      "value": "Nie można znaleźć tego konta FOLIO. Skontaktuj się z administratorem systemów FOLIO."
+    }
+  ],
+  "folioSettings": [
+    {
+      "type": 0,
+      "value": "Ustawienia FOLIO"
+    }
+  ],
+  "front.about": [
+    {
+      "type": 0,
+      "value": "Wersje oprogramowania"
+    }
+  ],
+  "front.error.general.message": [
+    {
+      "type": 0,
+      "value": "The requested URL "
+    },
+    {
+      "type": 1,
+      "value": "br"
+    },
+    {
+      "type": 1,
+      "value": "url"
+    },
+    {
+      "type": 1,
+      "value": "br"
+    },
+    {
+      "type": 0,
+      "value": " was not found on this server."
+    }
+  ],
+  "front.error.header": [
+    {
+      "type": 0,
+      "value": "404 Error"
+    }
+  ],
+  "front.error.setPassword.message": [
+    {
+      "type": 0,
+      "value": "Please log out of your current FOLIO session to set password. Once logged out please try to set your password with this link again."
+    }
+  ],
+  "front.home": [
+    {
+      "type": 0,
+      "value": "Strona główna"
+    }
+  ],
+  "front.welcome": [
+    {
+      "type": 0,
+      "value": "Witamy, przyszłość bibliotek OTWARTA!"
+    }
+  ],
+  "label.caution.email": [
+    {
+      "type": 0,
+      "value": "Jeśli nie otrzymasz wiadomości e-mail, sprawdź foldery ze spamem, wiadomości-śmieci oraz inne. Lub skontaktuj się z administratorem systemu FOLIO"
+    }
+  ],
+  "label.changed.password": [
+    {
+      "type": 0,
+      "value": "Hasło zostało pomyślnie zmienione."
+    }
+  ],
+  "label.check.email": [
+    {
+      "type": 0,
+      "value": "Sprawdź swój e-mail"
+    }
+  ],
+  "label.confirmDeleteEntry": [
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": " "
+        },
+        {
+          "type": 1,
+          "value": "name"
+        },
+        {
+          "type": 0,
+          "value": " "
+        }
+      ],
+      "type": 8,
+      "value": "strong"
+    },
+    {
+      "type": 0,
+      "value": " zostanie "
+    },
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": " usunięty "
+        }
+      ],
+      "type": 8,
+      "value": "strong"
+    }
+  ],
+  "label.congratulations": [
+    {
+      "type": 0,
+      "value": "Gratulacje!"
+    }
+  ],
+  "label.createEntry": [
+    {
+      "type": 0,
+      "value": "Utwórz "
+    },
+    {
+      "type": 1,
+      "value": "entry"
+    }
+  ],
+  "label.editEntry": [
+    {
+      "type": 0,
+      "value": "Edytuj "
+    },
+    {
+      "type": 1,
+      "value": "entry"
+    }
+  ],
+  "label.forgotPassword": [
+    {
+      "type": 0,
+      "value": "Zapomniałeś hasła?"
+    }
+  ],
+  "label.forgotPasswordCallToAction": [
+    {
+      "type": 0,
+      "value": "Wpisz swój adres e-mail, nazwę użytkownika lub numer telefonu"
+    }
+  ],
+  "label.forgotUsername": [
+    {
+      "type": 0,
+      "value": "Zapomniałeś nazwy użytkownika?"
+    }
+  ],
+  "label.forgotUsernameCallToAction": [
+    {
+      "type": 0,
+      "value": "Wpisz swój adres e-mail lub numer telefonu"
+    }
+  ],
+  "label.missingRequiredField": [
+    {
+      "type": 0,
+      "value": "Proszę to wypełnić, aby kontynuować"
+    }
+  ],
+  "label.okay": [
+    {
+      "type": 0,
+      "value": "Zgoda"
+    }
+  ],
+  "label.sent.email": [
+    {
+      "type": 0,
+      "value": "E-mail został wysłany do "
+    },
+    {
+      "type": 1,
+      "value": "hiddenUserEmail"
+    }
+  ],
+  "label.your.email": [
+    {
+      "type": 0,
+      "value": "Wiadomość została wysłana na Twój adres e-mail"
+    }
+  ],
+  "loggedInAs": [
+    {
+      "type": 0,
+      "value": "Zalogowany jako "
+    },
+    {
+      "type": 1,
+      "value": "firstName"
+    },
+    {
+      "type": 0,
+      "value": " "
+    },
+    {
+      "type": 1,
+      "value": "lastName"
+    }
+  ],
+  "loggingIn": [
+    {
+      "type": 0,
+      "value": "Logowanie..."
+    }
+  ],
+  "login": [
+    {
+      "type": 0,
+      "value": "Zaloguj sie"
+    }
+  ],
+  "loginViaSSO": [
+    {
+      "type": 0,
+      "value": "Zaloguj się przez SSO"
+    }
+  ],
+  "logout": [
+    {
+      "type": 0,
+      "value": "Wyloguj"
+    }
+  ],
+  "logoutKeepSso": [
+    {
+      "type": 0,
+      "value": "Log out from FOLIO, keep SSO session"
+    }
+  ],
+  "mainnav.appContextMenu": [
+    {
+      "type": 0,
+      "value": "Menu kontekstowe aplikacji"
+    }
+  ],
+  "mainnav.applicationListLabel": [
+    {
+      "type": 0,
+      "value": "Lista aplikacji"
+    }
+  ],
+  "mainnav.currentAppAriaLabel": [
+    {
+      "type": 0,
+      "value": "Aktualnie otwarta aplikacja: "
+    },
+    {
+      "type": 1,
+      "value": "appName"
+    },
+    {
+      "type": 0,
+      "value": " (Kliknij, aby przejść do strony głównej)"
+    }
+  ],
+  "mainnav.myProfileAriaLabel": [
+    {
+      "type": 0,
+      "value": "Mój profil"
+    }
+  ],
+  "mainnav.profileDropdown.locale": [
+    {
+      "type": 0,
+      "value": "Locale"
+    }
+  ],
+  "mainnav.profileDropdown.permissions": [
+    {
+      "type": 0,
+      "value": "Permissions"
+    }
+  ],
+  "mainnav.showAllApplicationsButtonAriaLabel": [
+    {
+      "type": 0,
+      "value": "Wszystkie aplikacje"
+    }
+  ],
+  "mainnav.showAllApplicationsButtonLabel": [
+    {
+      "type": 0,
+      "value": "Aplikacje"
+    }
+  ],
+  "mainnav.skipMainNavigation": [
+    {
+      "type": 0,
+      "value": "Pomiń nawigację główną"
+    }
+  ],
+  "mainnav.topLevelLabel": [
+    {
+      "type": 0,
+      "value": "Główny"
+    }
+  ],
+  "password": [
+    {
+      "type": 0,
+      "value": "Hasło"
+    }
+  ],
+  "routeErrorBoundary.goToAppHomeLabel": [
+    {
+      "type": 0,
+      "value": "Wróć na stronę główną"
+    }
+  ],
+  "routeErrorBoundary.goToModuleHomeLabel": [
+    {
+      "type": 0,
+      "value": "Wróć do "
+    },
+    {
+      "type": 1,
+      "value": "name"
+    },
+    {
+      "type": 0,
+      "value": " strony docelowej"
+    }
+  ],
+  "routeErrorBoundary.goToModuleSettingsHomeLabel": [
+    {
+      "type": 0,
+      "value": "Wróć do "
+    },
+    {
+      "type": 1,
+      "value": "name"
+    },
+    {
+      "type": 0,
+      "value": " ustawień"
+    }
+  ],
+  "routeErrorBoundary.sub": [
+    {
+      "type": 0,
+      "value": "Wystąpił błąd na tej stronie i nie można jej załadować."
+    }
+  ],
+  "setPassword": [
+    {
+      "type": 0,
+      "value": "Ustaw hasło"
+    }
+  ],
+  "settingChoose": [
+    {
+      "type": 0,
+      "value": "Wybierz ustawienia"
+    }
+  ],
+  "settingPassword": [
+    {
+      "type": 0,
+      "value": "Ustawiam hasło..."
+    }
+  ],
+  "settingSystemInfo": [
+    {
+      "type": 0,
+      "value": "Informacje o systemie"
+    }
+  ],
+  "settings": [
+    {
+      "type": 0,
+      "value": "Ustawienia"
+    }
+  ],
+  "successfullyDeleted": [
+    {
+      "type": 0,
+      "value": "To "
+    },
+    {
+      "type": 1,
+      "value": "entry"
+    },
+    {
+      "type": 0,
+      "value": " "
+    },
+    {
+      "children": [
+        {
+          "type": 1,
+          "value": "name"
+        }
+      ],
+      "type": 8,
+      "value": "strong"
+    },
+    {
+      "type": 0,
+      "value": " zostało pomyślnie "
+    },
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": "usunięte"
+        }
+      ],
+      "type": 8,
+      "value": "strong"
+    },
+    {
+      "type": 0,
+      "value": "."
+    }
+  ],
+  "title.CreateResetPassword": [
+    {
+      "type": 0,
+      "value": "Wybierz hasło"
+    }
+  ],
+  "title.changePassword": [
+    {
+      "type": 0,
+      "value": "Zmień hasło"
+    }
+  ],
+  "title.checkEmail": [
+    {
+      "type": 0,
+      "value": "Sprawdź swój e-mail"
+    }
+  ],
+  "title.forgotPassword": [
+    {
+      "type": 0,
+      "value": "Zapomniałeś hasła?"
+    }
+  ],
+  "title.forgotUsername": [
+    {
+      "type": 0,
+      "value": "Zapomniałeś nazwy użytkownika?"
+    }
+  ],
+  "title.home": [
+    {
+      "type": 0,
+      "value": "Strona główna"
+    }
+  ],
+  "title.login": [
+    {
+      "type": 0,
+      "value": "Zaloguj sie"
+    }
+  ],
+  "title.notFound": [
+    {
+      "type": 0,
+      "value": "Nie znaleziono"
+    }
+  ],
+  "title.settings": [
+    {
+      "type": 0,
+      "value": "Ustawienia"
+    }
+  ],
+  "title.ssoLanding": [
+    {
+      "type": 0,
+      "value": "SSO Landing"
+    }
+  ],
+  "title.ssoRedirect": [
+    {
+      "type": 0,
+      "value": "Przekierowanie SSO"
+    }
+  ],
+  "untitled": [
+    {
+      "type": 0,
+      "value": "Bez nazwy"
+    }
+  ],
+  "username": [
+    {
+      "type": 0,
+      "value": "Nazwa użytkownika"
+    }
+  ]
+}

@@ -1,0 +1,1310 @@
+{
+  "about.appModuleCount": [
+    {
+      "style": null,
+      "type": 2,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": " app "
+    },
+    {
+      "offset": 0,
+      "options": {
+        "one": {
+          "value": [
+            {
+              "type": 0,
+              "value": "模組"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "模組"
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "count"
+    }
+  ],
+  "about.forTenant": [
+    {
+      "type": 0,
+      "value": "對於租戶 "
+    },
+    {
+      "type": 1,
+      "value": "tenant"
+    }
+  ],
+  "about.foundation": [
+    {
+      "type": 0,
+      "value": "基礎"
+    }
+  ],
+  "about.incompatibleModuleCount": [
+    {
+      "style": null,
+      "type": 2,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": "不兼容的"
+    },
+    {
+      "offset": 0,
+      "options": {
+        "one": {
+          "value": [
+            {
+              "type": 0,
+              "value": "模块"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "模块"
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": "版本"
+    }
+  ],
+  "about.interfaceCount": [
+    {
+      "style": null,
+      "type": 2,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": " "
+    },
+    {
+      "offset": 0,
+      "options": {
+        "one": {
+          "value": [
+            {
+              "type": 0,
+              "value": "界面接口"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "界面接口"
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "count"
+    }
+  ],
+  "about.key.absentInterfaces": [
+    {
+      "type": 0,
+      "value": "必需的，但不存在的介面接口以"
+    },
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": "粗體紅色"
+        }
+      ],
+      "type": 8,
+      "value": "span"
+    },
+    {
+      "type": 0,
+      "value": "突出顯示。"
+    }
+  ],
+  "about.key.compatible": [
+    {
+      "type": 0,
+      "value": "相容版本中存在的介面接口以普通字體呈現。"
+    }
+  ],
+  "about.key.incompatibleIntf": [
+    {
+      "type": 0,
+      "value": "必需的，但僅存在於不相容版本中的介面接口，以"
+    },
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": "橙色"
+        }
+      ],
+      "type": 8,
+      "value": "span"
+    },
+    {
+      "type": 0,
+      "value": "突出顯示。"
+    }
+  ],
+  "about.legendKey": [
+    {
+      "type": 0,
+      "value": "Key"
+    }
+  ],
+  "about.missingModuleCount": [
+    {
+      "style": null,
+      "type": 2,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": "缺少"
+    },
+    {
+      "offset": 0,
+      "options": {
+        "one": {
+          "value": [
+            {
+              "type": 0,
+              "value": "模块"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "模块"
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "count"
+    }
+  ],
+  "about.moduleCount": [
+    {
+      "style": null,
+      "type": 2,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": " "
+    },
+    {
+      "offset": 0,
+      "options": {
+        "one": {
+          "value": [
+            {
+              "type": 0,
+              "value": "模組"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "模組"
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "count"
+    }
+  ],
+  "about.moduleDependsOn": [
+    {
+      "type": 1,
+      "value": "module"
+    },
+    {
+      "type": 0,
+      "value": " 需依賴："
+    }
+  ],
+  "about.moduleTypeCount": [
+    {
+      "style": null,
+      "type": 2,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": " "
+    },
+    {
+      "type": 1,
+      "value": "type"
+    },
+    {
+      "type": 0,
+      "value": " "
+    },
+    {
+      "offset": 0,
+      "options": {
+        "one": {
+          "value": [
+            {
+              "type": 0,
+              "value": "模組"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "模組"
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "count"
+    }
+  ],
+  "about.newerModuleAvailable": [
+    {
+      "type": 1,
+      "value": "required"
+    },
+    {
+      "type": 0,
+      "value": "("
+    },
+    {
+      "type": 1,
+      "value": "available"
+    },
+    {
+      "type": 0,
+      "value": " 可用)"
+    }
+  ],
+  "about.noDependencies": [
+    {
+      "type": 1,
+      "value": "base"
+    },
+    {
+      "type": 0,
+      "value": " 聲明沒有依賴性"
+    }
+  ],
+  "about.notEnabledModules": [
+    {
+      "type": 0,
+      "value": "尚未為此租戶啟用的已安裝模組以"
+    },
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": "灰色顯示"
+        }
+      ],
+      "type": 8,
+      "value": "span"
+    },
+    {
+      "type": 0,
+      "value": " 。"
+    }
+  ],
+  "about.okapiServices": [
+    {
+      "type": 0,
+      "value": "Okapi 服務"
+    }
+  ],
+  "about.onUrl": [
+    {
+      "type": 0,
+      "value": "在網址 "
+    },
+    {
+      "type": 1,
+      "value": "url"
+    }
+  ],
+  "about.paneTitle": [
+    {
+      "type": 0,
+      "value": "軟體版本"
+    }
+  ],
+  "about.pluginModuleCount": [
+    {
+      "style": null,
+      "type": 2,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": " 插件 "
+    },
+    {
+      "offset": 0,
+      "options": {
+        "one": {
+          "value": [
+            {
+              "type": 0,
+              "value": "模組"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "模組"
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "count"
+    }
+  ],
+  "about.settingsModuleCount": [
+    {
+      "style": null,
+      "type": 2,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": " 設置 "
+    },
+    {
+      "offset": 0,
+      "options": {
+        "one": {
+          "value": [
+            {
+              "type": 0,
+              "value": "模組"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "模組"
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "count"
+    }
+  ],
+  "about.uiOrServiceDependencies": [
+    {
+      "type": 0,
+      "value": "UI /Service 依賴性"
+    }
+  ],
+  "about.unknown": [
+    {
+      "type": 0,
+      "value": "未知"
+    }
+  ],
+  "about.userInterface": [
+    {
+      "type": 0,
+      "value": "使用者界面"
+    }
+  ],
+  "about.version": [
+    {
+      "type": 0,
+      "value": "版本 "
+    },
+    {
+      "type": 1,
+      "value": "version"
+    }
+  ],
+  "button.back": [
+    {
+      "type": 0,
+      "value": "返回"
+    }
+  ],
+  "button.cancel": [
+    {
+      "type": 0,
+      "value": "取消"
+    }
+  ],
+  "button.close": [
+    {
+      "type": 0,
+      "value": "關閉"
+    }
+  ],
+  "button.confirm": [
+    {
+      "type": 0,
+      "value": "確認"
+    }
+  ],
+  "button.continue": [
+    {
+      "type": 0,
+      "value": "继续"
+    }
+  ],
+  "button.delete": [
+    {
+      "type": 0,
+      "value": "刪除"
+    }
+  ],
+  "button.deleteEntry": [
+    {
+      "type": 0,
+      "value": "刪除"
+    },
+    {
+      "type": 1,
+      "value": "entry"
+    }
+  ],
+  "button.edit": [
+    {
+      "type": 0,
+      "value": "編輯"
+    }
+  ],
+  "button.forgotPassword": [
+    {
+      "type": 0,
+      "value": "忘記密碼 ？"
+    }
+  ],
+  "button.forgotUsername": [
+    {
+      "type": 0,
+      "value": "忘記使用者名稱 ？"
+    }
+  ],
+  "button.hidePassword": [
+    {
+      "type": 0,
+      "value": "隐藏密码"
+    }
+  ],
+  "button.new": [
+    {
+      "type": 0,
+      "value": "+ 新增"
+    }
+  ],
+  "button.new_tooltip": [
+    {
+      "type": 0,
+      "value": "新增"
+    },
+    {
+      "type": 1,
+      "value": "entry"
+    }
+  ],
+  "button.redirect.login": [
+    {
+      "type": 0,
+      "value": "前往FOLIO"
+    }
+  ],
+  "button.save": [
+    {
+      "type": 0,
+      "value": "儲存"
+    }
+  ],
+  "button.saveAndClose": [
+    {
+      "type": 0,
+      "value": "儲存並關閉"
+    }
+  ],
+  "button.showPassword": [
+    {
+      "type": 0,
+      "value": "顯示密碼"
+    }
+  ],
+  "createResetPassword.confirmPassword": [
+    {
+      "type": 0,
+      "value": "确认密码"
+    }
+  ],
+  "createResetPassword.header": [
+    {
+      "type": 0,
+      "value": "选择一个密码"
+    }
+  ],
+  "createResetPassword.newPassword": [
+    {
+      "type": 0,
+      "value": "新密碼"
+    }
+  ],
+  "createResetPassword.ruleTemplate": [
+    {
+      "type": 0,
+      "value": "Must "
+    },
+    {
+      "type": 1,
+      "value": "description"
+    }
+  ],
+  "currentServicePoint": [
+    {
+      "type": 0,
+      "value": "服務地點："
+    },
+    {
+      "type": 1,
+      "value": "name"
+    }
+  ],
+  "currentServicePointNotSelected": [
+    {
+      "type": 0,
+      "value": "服務地點：無"
+    }
+  ],
+  "errors.default.error": [
+    {
+      "type": 0,
+      "value": "对不起, 输入的信息与我们的记录不符。"
+    }
+  ],
+  "errors.default.server.error": [
+    {
+      "type": 0,
+      "value": "系统错误。无法找到Folio帐户。请再试一次。"
+    }
+  ],
+  "errors.email.invalid": [
+    {
+      "type": 0,
+      "value": "請輸入有效的電子郵件地址。"
+    }
+  ],
+  "errors.forgotten.password.found.inactive": [
+    {
+      "type": 0,
+      "value": "您的帐户目前已被锁定。请联系您的FOLIO系统管理员以重置密码"
+    }
+  ],
+  "errors.forgotten.password.found.multiple.users": [
+    {
+      "type": 0,
+      "value": "提供的信息与多个Folio帐户相关联。请与Folio系统管理员联系以重置密码。"
+    }
+  ],
+  "errors.forgotten.username.found.multiple.users": [
+    {
+      "type": 0,
+      "value": "此電子郵件或電話號碼已與多個 Folio 帳號綁定。請聯繫您的Folio系統管理員。"
+    }
+  ],
+  "errors.link.expired": [
+    {
+      "type": 0,
+      "value": "您选择的密码链接已过期或已被使用。请联系您的Folio管理员以获取新链接。"
+    }
+  ],
+  "errors.link.invalid": [
+    {
+      "type": 0,
+      "value": "您选择的密码链接无效。请确认您使用的是电子邮件中包含的链接或与Folio管理员联系。"
+    }
+  ],
+  "errors.link.used": [
+    {
+      "type": 0,
+      "value": "您选择的密码链接已过期或已被使用。请联系您的Folio管理员以获取新链接。"
+    }
+  ],
+  "errors.password.alphabetical.invalid": [
+    {
+      "type": 0,
+      "value": "密码必须包含小写和大写字母。"
+    }
+  ],
+  "errors.password.compromised.invalid": [
+    {
+      "type": 0,
+      "value": "The password must not be commonly-used, expected or compromised"
+    }
+  ],
+  "errors.password.consecutiveWhitespaces.invalid": [
+    {
+      "type": 0,
+      "value": "密码不能包含连续的空格字符。"
+    }
+  ],
+  "errors.password.incorrect": [
+    {
+      "type": 0,
+      "value": "凭据错误"
+    }
+  ],
+  "errors.password.incorrect.block.user": [
+    {
+      "type": 0,
+      "value": "出于安全考虑，您的帐户已被锁定。请联系您的FOLIO系统管理员以重置密码。"
+    }
+  ],
+  "errors.password.incorrect.warn.user": [
+    {
+      "type": 0,
+      "value": "您第三次輸入了錯誤的使用者名稱或密碼。在您的帳號被鎖定之前，您還有兩次嘗試機會。"
+    }
+  ],
+  "errors.password.keyboardSequence.invalid": [
+    {
+      "type": 0,
+      "value": "密码不得包含键盘顺序字符。"
+    }
+  ],
+  "errors.password.lastTenPasswords.invalid": [
+    {
+      "type": 0,
+      "value": "以前用过的密码。请输入新密码。"
+    }
+  ],
+  "errors.password.length.invalid": [
+    {
+      "type": 0,
+      "value": "密码长度必须至少为8个符号。"
+    }
+  ],
+  "errors.password.match.error": [
+    {
+      "type": 0,
+      "value": "密碼不對，請重新輸入密碼。"
+    }
+  ],
+  "errors.password.number.invalid": [
+    {
+      "type": 0,
+      "value": "密码必须至少包含一个数字字符。"
+    }
+  ],
+  "errors.password.repeatingSymbols.invalid": [
+    {
+      "type": 0,
+      "value": "密码不得包含连续的相同字符。"
+    }
+  ],
+  "errors.password.specialCharacter.invalid": [
+    {
+      "type": 0,
+      "value": "密码必须至少包含一个特殊字符。"
+    }
+  ],
+  "errors.password.usernameDuplicate.invalid": [
+    {
+      "type": 0,
+      "value": "密碼不得包含使用者名稱。"
+    }
+  ],
+  "errors.password.whiteSpace.invalid": [
+    {
+      "type": 0,
+      "value": "密碼不能含有空格。"
+    }
+  ],
+  "errors.unable.locate.account": [
+    {
+      "type": 0,
+      "value": "无法找到您的帐户。请输入有效的电子邮件地址或电话号码。"
+    }
+  ],
+  "errors.unable.locate.account.password": [
+    {
+      "type": 0,
+      "value": "無法找到您的帳號。請輸入有效的電子郵件地址，電話號碼或使用者名稱。"
+    }
+  ],
+  "errors.user.blocked": [
+    {
+      "type": 0,
+      "value": "出于安全考虑，您的帐户已被锁定。请重试或联系您的FOLIO系统管理员。"
+    }
+  ],
+  "errors.user.timeout": [
+    {
+      "type": 0,
+      "value": "会话已过期。请再次登录以恢复会话。"
+    }
+  ],
+  "errors.username.incorrect": [
+    {
+      "type": 0,
+      "value": "This FOLIO account cannot be located. Please contact your FOLIO systems administrator."
+    }
+  ],
+  "folioSettings": [
+    {
+      "type": 0,
+      "value": "FOLIO 設定"
+    }
+  ],
+  "front.about": [
+    {
+      "type": 0,
+      "value": "軟體版本"
+    }
+  ],
+  "front.error.general.message": [
+    {
+      "type": 0,
+      "value": "The requested URL "
+    },
+    {
+      "type": 1,
+      "value": "br"
+    },
+    {
+      "type": 1,
+      "value": "url"
+    },
+    {
+      "type": 1,
+      "value": "br"
+    },
+    {
+      "type": 0,
+      "value": " was not found on this server."
+    }
+  ],
+  "front.error.header": [
+    {
+      "type": 0,
+      "value": "錯誤 404"
+    }
+  ],
+  "front.error.setPassword.message": [
+    {
+      "type": 0,
+      "value": "Please log out of your current FOLIO session to set password. Once logged out please try to set your password with this link again."
+    }
+  ],
+  "front.home": [
+    {
+      "type": 0,
+      "value": "首頁"
+    }
+  ],
+  "front.welcome": [
+    {
+      "type": 0,
+      "value": "歡迎您，圖書館的未來是開放的 ！"
+    }
+  ],
+  "label.caution.email": [
+    {
+      "type": 0,
+      "value": "如果您没有收到电子邮件, 请检查您的垃圾邮件、社交或其他文件夹。或联系您的 folio 系统管理员"
+    }
+  ],
+  "label.changed.password": [
+    {
+      "type": 0,
+      "value": "您已成功更改密码。"
+    }
+  ],
+  "label.check.email": [
+    {
+      "type": 0,
+      "value": "請查看您的電子郵件"
+    }
+  ],
+  "label.confirmDeleteEntry": [
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": " "
+        },
+        {
+          "type": 1,
+          "value": "name"
+        },
+        {
+          "type": 0,
+          "value": " "
+        }
+      ],
+      "type": 8,
+      "value": "strong"
+    },
+    {
+      "type": 0,
+      "value": "將被"
+    },
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": "移除"
+        }
+      ],
+      "type": 8,
+      "value": "strong"
+    }
+  ],
+  "label.congratulations": [
+    {
+      "type": 0,
+      "value": "祝贺！"
+    }
+  ],
+  "label.createEntry": [
+    {
+      "type": 0,
+      "value": "新增 "
+    },
+    {
+      "type": 1,
+      "value": "entry"
+    }
+  ],
+  "label.editEntry": [
+    {
+      "type": 0,
+      "value": "編輯"
+    },
+    {
+      "type": 1,
+      "value": "entry"
+    }
+  ],
+  "label.forgotPassword": [
+    {
+      "type": 0,
+      "value": "忘了密码?"
+    }
+  ],
+  "label.forgotPasswordCallToAction": [
+    {
+      "type": 0,
+      "value": "輸入你的電子郵件、使用者名稱或是電話號碼"
+    }
+  ],
+  "label.forgotUsername": [
+    {
+      "type": 0,
+      "value": "忘記使用者名稱 ？"
+    }
+  ],
+  "label.forgotUsernameCallToAction": [
+    {
+      "type": 0,
+      "value": "輸入您的電子郵件或電話號碼"
+    }
+  ],
+  "label.missingRequiredField": [
+    {
+      "type": 0,
+      "value": "請填寫此內容以繼續"
+    }
+  ],
+  "label.okay": [
+    {
+      "type": 0,
+      "value": "Okay"
+    }
+  ],
+  "label.sent.email": [
+    {
+      "type": 0,
+      "value": "已向 "
+    },
+    {
+      "type": 1,
+      "value": "hiddenUserEmail"
+    },
+    {
+      "type": 0,
+      "value": " 发送了一封电子邮件。"
+    }
+  ],
+  "label.your.email": [
+    {
+      "type": 0,
+      "value": "已發送電子郵件給您"
+    }
+  ],
+  "loggedInAs": [
+    {
+      "type": 0,
+      "value": "登入為 "
+    },
+    {
+      "type": 1,
+      "value": "firstName"
+    },
+    {
+      "type": 0,
+      "value": " "
+    },
+    {
+      "type": 1,
+      "value": "lastName"
+    },
+    {
+      "type": 0,
+      "value": " "
+    }
+  ],
+  "loggingIn": [
+    {
+      "type": 0,
+      "value": "登入中……"
+    }
+  ],
+  "login": [
+    {
+      "type": 0,
+      "value": "登入"
+    }
+  ],
+  "loginViaSSO": [
+    {
+      "type": 0,
+      "value": "通過 SSO 登入"
+    }
+  ],
+  "logout": [
+    {
+      "type": 0,
+      "value": "登出"
+    }
+  ],
+  "logoutKeepSso": [
+    {
+      "type": 0,
+      "value": "Log out from FOLIO, keep SSO session"
+    }
+  ],
+  "mainnav.appContextMenu": [
+    {
+      "type": 0,
+      "value": "应用程序上下文下拉列表"
+    }
+  ],
+  "mainnav.applicationListLabel": [
+    {
+      "type": 0,
+      "value": "Application List"
+    }
+  ],
+  "mainnav.currentAppAriaLabel": [
+    {
+      "type": 0,
+      "value": "当前打开的应用程序： "
+    },
+    {
+      "type": 1,
+      "value": "appName"
+    },
+    {
+      "type": 0,
+      "value": " （点击返回）"
+    }
+  ],
+  "mainnav.myProfileAriaLabel": [
+    {
+      "type": 0,
+      "value": "我的個人資料"
+    }
+  ],
+  "mainnav.profileDropdown.locale": [
+    {
+      "type": 0,
+      "value": "Locale"
+    }
+  ],
+  "mainnav.profileDropdown.permissions": [
+    {
+      "type": 0,
+      "value": "Permissions"
+    }
+  ],
+  "mainnav.showAllApplicationsButtonAriaLabel": [
+    {
+      "type": 0,
+      "value": "顯示所有應用程式"
+    }
+  ],
+  "mainnav.showAllApplicationsButtonLabel": [
+    {
+      "type": 0,
+      "value": "功能"
+    }
+  ],
+  "mainnav.skipMainNavigation": [
+    {
+      "type": 0,
+      "value": "跳过主导航"
+    }
+  ],
+  "mainnav.topLevelLabel": [
+    {
+      "type": 0,
+      "value": "主要"
+    }
+  ],
+  "password": [
+    {
+      "type": 0,
+      "value": "密碼"
+    }
+  ],
+  "routeErrorBoundary.goToAppHomeLabel": [
+    {
+      "type": 0,
+      "value": "返回主页"
+    }
+  ],
+  "routeErrorBoundary.goToModuleHomeLabel": [
+    {
+      "type": 0,
+      "value": "返回"
+    },
+    {
+      "type": 1,
+      "value": "name"
+    },
+    {
+      "type": 0,
+      "value": "登陆页面"
+    }
+  ],
+  "routeErrorBoundary.goToModuleSettingsHomeLabel": [
+    {
+      "type": 0,
+      "value": "返回"
+    },
+    {
+      "type": 1,
+      "value": "name"
+    },
+    {
+      "type": 0,
+      "value": "设置"
+    }
+  ],
+  "routeErrorBoundary.sub": [
+    {
+      "type": 0,
+      "value": "此页面上发生错误，无法加载。"
+    }
+  ],
+  "setPassword": [
+    {
+      "type": 0,
+      "value": "设置密码"
+    }
+  ],
+  "settingChoose": [
+    {
+      "type": 0,
+      "value": "選擇設定"
+    }
+  ],
+  "settingPassword": [
+    {
+      "type": 0,
+      "value": "正在设置密码..."
+    }
+  ],
+  "settingSystemInfo": [
+    {
+      "type": 0,
+      "value": "系统資訊"
+    }
+  ],
+  "settings": [
+    {
+      "type": 0,
+      "value": "設定"
+    }
+  ],
+  "successfullyDeleted": [
+    {
+      "type": 1,
+      "value": "entry"
+    },
+    {
+      "type": 0,
+      "value": " "
+    },
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": " "
+        },
+        {
+          "type": 1,
+          "value": "name"
+        },
+        {
+          "type": 0,
+          "value": " "
+        }
+      ],
+      "type": 8,
+      "value": "strong"
+    },
+    {
+      "type": 0,
+      "value": "已經成功"
+    },
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": "刪除"
+        }
+      ],
+      "type": 8,
+      "value": "strong"
+    },
+    {
+      "type": 0,
+      "value": " 。"
+    }
+  ],
+  "title.CreateResetPassword": [
+    {
+      "type": 0,
+      "value": "選擇一個密碼"
+    }
+  ],
+  "title.changePassword": [
+    {
+      "type": 0,
+      "value": "更改密碼"
+    }
+  ],
+  "title.checkEmail": [
+    {
+      "type": 0,
+      "value": "請查看您的電子郵件"
+    }
+  ],
+  "title.forgotPassword": [
+    {
+      "type": 0,
+      "value": "忘記密碼 ？"
+    }
+  ],
+  "title.forgotUsername": [
+    {
+      "type": 0,
+      "value": "忘記使用者名稱 ？"
+    }
+  ],
+  "title.home": [
+    {
+      "type": 0,
+      "value": "首頁"
+    }
+  ],
+  "title.login": [
+    {
+      "type": 0,
+      "value": "登入"
+    }
+  ],
+  "title.notFound": [
+    {
+      "type": 0,
+      "value": "未找到"
+    }
+  ],
+  "title.settings": [
+    {
+      "type": 0,
+      "value": "設定"
+    }
+  ],
+  "title.ssoLanding": [
+    {
+      "type": 0,
+      "value": "SSO 登入"
+    }
+  ],
+  "title.ssoRedirect": [
+    {
+      "type": 0,
+      "value": "SSO 重定向"
+    }
+  ],
+  "untitled": [
+    {
+      "type": 0,
+      "value": "無標題"
+    }
+  ],
+  "username": [
+    {
+      "type": 0,
+      "value": "使用者名稱"
+    }
+  ]
+}

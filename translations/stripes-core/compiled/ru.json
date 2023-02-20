@@ -1,0 +1,1302 @@
+{
+  "about.appModuleCount": [
+    {
+      "style": null,
+      "type": 2,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": " прил. "
+    },
+    {
+      "offset": 0,
+      "options": {
+        "one": {
+          "value": [
+            {
+              "type": 0,
+              "value": "модуль"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "модули"
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "count"
+    }
+  ],
+  "about.forTenant": [
+    {
+      "type": 0,
+      "value": "Для арендатора "
+    },
+    {
+      "type": 1,
+      "value": "tenant"
+    }
+  ],
+  "about.foundation": [
+    {
+      "type": 0,
+      "value": "Фонд"
+    }
+  ],
+  "about.incompatibleModuleCount": [
+    {
+      "style": null,
+      "type": 2,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": " incompatible interface "
+    },
+    {
+      "offset": 0,
+      "options": {
+        "one": {
+          "value": [
+            {
+              "type": 0,
+              "value": "version"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "versions"
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "count"
+    }
+  ],
+  "about.interfaceCount": [
+    {
+      "style": null,
+      "type": 2,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": " "
+    },
+    {
+      "offset": 0,
+      "options": {
+        "one": {
+          "value": [
+            {
+              "type": 0,
+              "value": "интерфейс"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "интерфейсы"
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "count"
+    }
+  ],
+  "about.key.absentInterfaces": [
+    {
+      "type": 0,
+      "value": "Интерфейсы, которые необходимы, но отсутствуют, выделены "
+    },
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": "жирным красным"
+        }
+      ],
+      "type": 8,
+      "value": "span"
+    },
+    {
+      "type": 0,
+      "value": "."
+    }
+  ],
+  "about.key.compatible": [
+    {
+      "type": 0,
+      "value": "Интерфейсы, присутствующие в совместимой версии, отображаются обычным шрифтом."
+    }
+  ],
+  "about.key.incompatibleIntf": [
+    {
+      "type": 0,
+      "value": "Интерфейсы, которые необходимы, но присутствуют только в несовместимой версии, выделены "
+    },
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": "оранжевым"
+        }
+      ],
+      "type": 8,
+      "value": "span"
+    },
+    {
+      "type": 0,
+      "value": "."
+    }
+  ],
+  "about.legendKey": [
+    {
+      "type": 0,
+      "value": "Ключ"
+    }
+  ],
+  "about.missingModuleCount": [
+    {
+      "style": null,
+      "type": 2,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": " missing "
+    },
+    {
+      "offset": 0,
+      "options": {
+        "one": {
+          "value": [
+            {
+              "type": 0,
+              "value": "interface"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "interfaces"
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "count"
+    }
+  ],
+  "about.moduleCount": [
+    {
+      "style": null,
+      "type": 2,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": " "
+    },
+    {
+      "offset": 0,
+      "options": {
+        "one": {
+          "value": [
+            {
+              "type": 0,
+              "value": "модуль"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "модули"
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "count"
+    }
+  ],
+  "about.moduleDependsOn": [
+    {
+      "type": 1,
+      "value": "module"
+    },
+    {
+      "type": 0,
+      "value": " зависит от:"
+    }
+  ],
+  "about.moduleTypeCount": [
+    {
+      "style": null,
+      "type": 2,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": " "
+    },
+    {
+      "type": 1,
+      "value": "type"
+    },
+    {
+      "type": 0,
+      "value": " "
+    },
+    {
+      "offset": 0,
+      "options": {
+        "one": {
+          "value": [
+            {
+              "type": 0,
+              "value": "модуль"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "модули"
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "count"
+    }
+  ],
+  "about.newerModuleAvailable": [
+    {
+      "type": 1,
+      "value": "required"
+    },
+    {
+      "type": 0,
+      "value": " ("
+    },
+    {
+      "type": 1,
+      "value": "available"
+    },
+    {
+      "type": 0,
+      "value": " доступно)"
+    }
+  ],
+  "about.noDependencies": [
+    {
+      "type": 0,
+      "value": "В "
+    },
+    {
+      "type": 1,
+      "value": "base"
+    },
+    {
+      "type": 0,
+      "value": " нет зависимостей"
+    }
+  ],
+  "about.notEnabledModules": [
+    {
+      "type": 0,
+      "value": "Установленные модули, которые не доступны для этого арендатора, отображаются "
+    },
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": " серым цветом "
+        }
+      ],
+      "type": 8,
+      "value": "span"
+    },
+    {
+      "type": 0,
+      "value": "."
+    }
+  ],
+  "about.okapiServices": [
+    {
+      "type": 0,
+      "value": "Сервисы Okapi"
+    }
+  ],
+  "about.onUrl": [
+    {
+      "type": 0,
+      "value": "На URL-адрес "
+    },
+    {
+      "type": 1,
+      "value": "url"
+    }
+  ],
+  "about.paneTitle": [
+    {
+      "type": 0,
+      "value": "Версии программного обеспечения"
+    }
+  ],
+  "about.pluginModuleCount": [
+    {
+      "style": null,
+      "type": 2,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": " настроек "
+    },
+    {
+      "offset": 0,
+      "options": {
+        "one": {
+          "value": [
+            {
+              "type": 0,
+              "value": "модуль"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "модули"
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "count"
+    }
+  ],
+  "about.settingsModuleCount": [
+    {
+      "style": null,
+      "type": 2,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": " настройки "
+    },
+    {
+      "offset": 0,
+      "options": {
+        "one": {
+          "value": [
+            {
+              "type": 0,
+              "value": "модуль"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "модули"
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "count"
+    }
+  ],
+  "about.uiOrServiceDependencies": [
+    {
+      "type": 0,
+      "value": "UI / сервисные зависимости"
+    }
+  ],
+  "about.unknown": [
+    {
+      "type": 0,
+      "value": "Неизвестный"
+    }
+  ],
+  "about.userInterface": [
+    {
+      "type": 0,
+      "value": "Пользовательский интерфейс"
+    }
+  ],
+  "about.version": [
+    {
+      "type": 0,
+      "value": "Версия "
+    },
+    {
+      "type": 1,
+      "value": "version"
+    }
+  ],
+  "button.back": [
+    {
+      "type": 0,
+      "value": "Назад"
+    }
+  ],
+  "button.cancel": [
+    {
+      "type": 0,
+      "value": "Отмена"
+    }
+  ],
+  "button.close": [
+    {
+      "type": 0,
+      "value": "Закрыть"
+    }
+  ],
+  "button.confirm": [
+    {
+      "type": 0,
+      "value": "Подтвердить"
+    }
+  ],
+  "button.continue": [
+    {
+      "type": 0,
+      "value": "Продолжить"
+    }
+  ],
+  "button.delete": [
+    {
+      "type": 0,
+      "value": "Удалить"
+    }
+  ],
+  "button.deleteEntry": [
+    {
+      "type": 0,
+      "value": "Удалить "
+    },
+    {
+      "type": 1,
+      "value": "entry"
+    }
+  ],
+  "button.edit": [
+    {
+      "type": 0,
+      "value": "Редактировать"
+    }
+  ],
+  "button.forgotPassword": [
+    {
+      "type": 0,
+      "value": "Забыли пароль?"
+    }
+  ],
+  "button.forgotUsername": [
+    {
+      "type": 0,
+      "value": "Забыли имя пользователя?"
+    }
+  ],
+  "button.hidePassword": [
+    {
+      "type": 0,
+      "value": "Скрыть пароль"
+    }
+  ],
+  "button.new": [
+    {
+      "type": 0,
+      "value": "+ Новый"
+    }
+  ],
+  "button.new_tooltip": [
+    {
+      "type": 0,
+      "value": "Добавить "
+    },
+    {
+      "type": 1,
+      "value": "entry"
+    }
+  ],
+  "button.redirect.login": [
+    {
+      "type": 0,
+      "value": "Продолжить в FOLIO"
+    }
+  ],
+  "button.save": [
+    {
+      "type": 0,
+      "value": "Сохранить"
+    }
+  ],
+  "button.saveAndClose": [
+    {
+      "type": 0,
+      "value": "Сохранить и закрыть"
+    }
+  ],
+  "button.showPassword": [
+    {
+      "type": 0,
+      "value": "Показать пароль"
+    }
+  ],
+  "createResetPassword.confirmPassword": [
+    {
+      "type": 0,
+      "value": "Подтвердить Пароль"
+    }
+  ],
+  "createResetPassword.header": [
+    {
+      "type": 0,
+      "value": "Выберите пароль"
+    }
+  ],
+  "createResetPassword.newPassword": [
+    {
+      "type": 0,
+      "value": "Новый пароль"
+    }
+  ],
+  "createResetPassword.ruleTemplate": [
+    {
+      "type": 0,
+      "value": "Must "
+    },
+    {
+      "type": 1,
+      "value": "description"
+    }
+  ],
+  "currentServicePoint": [
+    {
+      "type": 0,
+      "value": "Пункт обслуживания: "
+    },
+    {
+      "type": 1,
+      "value": "name"
+    }
+  ],
+  "currentServicePointNotSelected": [
+    {
+      "type": 0,
+      "value": "Пункт обслуживания: нет"
+    }
+  ],
+  "errors.default.error": [
+    {
+      "type": 0,
+      "value": "Извините, введенная информация не соответствует нашим записям."
+    }
+  ],
+  "errors.default.server.error": [
+    {
+      "type": 0,
+      "value": "Системная ошибка. Невозможно найти учетную запись Folio. Пожалуйста, попробуйте еще раз."
+    }
+  ],
+  "errors.email.invalid": [
+    {
+      "type": 0,
+      "value": "Пожалуйста, введите действительный адрес электронной почты."
+    }
+  ],
+  "errors.forgotten.password.found.inactive": [
+    {
+      "type": 0,
+      "value": "Your account is currently locked. Please contact your FOLIO system administrator to reset your password"
+    }
+  ],
+  "errors.forgotten.password.found.multiple.users": [
+    {
+      "type": 0,
+      "value": "Предоставленная информация связана с несколькими учетными записями Фолио. Обратитесь к системному администратору Folio, чтобы сбросить пароль."
+    }
+  ],
+  "errors.forgotten.username.found.multiple.users": [
+    {
+      "type": 0,
+      "value": "Этот адрес электронной почты или номер телефона привязан к нескольким учетным записям Folio. Пожалуйста, обратитесь к системному администратору Folio."
+    }
+  ],
+  "errors.link.expired": [
+    {
+      "type": 0,
+      "value": "Ваш выбранный пароль истек или уже используется. Пожалуйста, обратитесь к администратору Folio для нового соединения."
+    }
+  ],
+  "errors.link.invalid": [
+    {
+      "type": 0,
+      "value": "Ваша ссылка для выбора пароля недействительна. Убедитесь, что вы используете ссылку, указанную в электронном письме, или обратитесь к администратору Folio."
+    }
+  ],
+  "errors.link.used": [
+    {
+      "type": 0,
+      "value": "Ваш выбранный пароль истек или уже используется. Пожалуйста, обратитесь к администратору Folio для нового соединения."
+    }
+  ],
+  "errors.password.alphabetical.invalid": [
+    {
+      "type": 0,
+      "value": "Пароль должен содержать как строчные, так и прописные буквы."
+    }
+  ],
+  "errors.password.compromised.invalid": [
+    {
+      "type": 0,
+      "value": "The password must not be commonly-used, expected or compromised"
+    }
+  ],
+  "errors.password.consecutiveWhitespaces.invalid": [
+    {
+      "type": 0,
+      "value": "Пароль не должен содержать последовательных пробелов."
+    }
+  ],
+  "errors.password.incorrect": [
+    {
+      "type": 0,
+      "value": "Bad credentials"
+    }
+  ],
+  "errors.password.incorrect.block.user": [
+    {
+      "type": 0,
+      "value": "В целях безопасности ваша учетная запись была заблокирована. Обратитесь к системному администратору FOLIO, чтобы сбросить пароль."
+    }
+  ],
+  "errors.password.incorrect.warn.user": [
+    {
+      "type": 0,
+      "value": "Вы ввели неправильный логин или пароль в третий раз. У вас есть еще две попытки войти, прежде чем ваша учетная запись будет заблокирована."
+    }
+  ],
+  "errors.password.keyboardSequence.invalid": [
+    {
+      "type": 0,
+      "value": "Пароль не должен содержать последовательности на клавиатуре."
+    }
+  ],
+  "errors.password.lastTenPasswords.invalid": [
+    {
+      "type": 0,
+      "value": "Ранее использованный пароль. Пожалуйста, введите новый пароль."
+    }
+  ],
+  "errors.password.length.invalid": [
+    {
+      "type": 0,
+      "value": "Длина пароля должна быть не менее 8 символов."
+    }
+  ],
+  "errors.password.match.error": [
+    {
+      "type": 0,
+      "value": "Пароль не совпадает. Введите пароль повторно."
+    }
+  ],
+  "errors.password.number.invalid": [
+    {
+      "type": 0,
+      "value": "Пароль должен содержать хотя бы один цифровой символ."
+    }
+  ],
+  "errors.password.repeatingSymbols.invalid": [
+    {
+      "type": 0,
+      "value": "Пароль не должен содержать один и тот же символ в строке."
+    }
+  ],
+  "errors.password.specialCharacter.invalid": [
+    {
+      "type": 0,
+      "value": "Пароль должен содержать хотя бы один специальный символ."
+    }
+  ],
+  "errors.password.usernameDuplicate.invalid": [
+    {
+      "type": 0,
+      "value": "Пароль не должен содержать ваше имя пользователя."
+    }
+  ],
+  "errors.password.whiteSpace.invalid": [
+    {
+      "type": 0,
+      "value": "Пароль не должен содержать пробелов."
+    }
+  ],
+  "errors.unable.locate.account": [
+    {
+      "type": 0,
+      "value": "Невозможно найти ваш аккаунт. Пожалуйста, введите действующий адрес электронной почты или номер телефона."
+    }
+  ],
+  "errors.unable.locate.account.password": [
+    {
+      "type": 0,
+      "value": "Невозможно найти ваш аккаунт. Пожалуйста, введите действующий адрес электронной почты, номер телефона или имя пользователя."
+    }
+  ],
+  "errors.user.blocked": [
+    {
+      "type": 0,
+      "value": "For security purposes, your account has been locked. Please try again or contact your FOLIO System Administrator."
+    }
+  ],
+  "errors.user.timeout": [
+    {
+      "type": 0,
+      "value": "Your session has expired. Please login again to resume your session."
+    }
+  ],
+  "errors.username.incorrect": [
+    {
+      "type": 0,
+      "value": "This FOLIO account cannot be located. Please contact your FOLIO systems administrator."
+    }
+  ],
+  "folioSettings": [
+    {
+      "type": 0,
+      "value": "Настройки FOLIO"
+    }
+  ],
+  "front.about": [
+    {
+      "type": 0,
+      "value": "Версии программного обеспечения "
+    }
+  ],
+  "front.error.general.message": [
+    {
+      "type": 0,
+      "value": "The requested URL "
+    },
+    {
+      "type": 1,
+      "value": "br"
+    },
+    {
+      "type": 1,
+      "value": "url"
+    },
+    {
+      "type": 1,
+      "value": "br"
+    },
+    {
+      "type": 0,
+      "value": " was not found on this server."
+    }
+  ],
+  "front.error.header": [
+    {
+      "type": 0,
+      "value": "404 Error"
+    }
+  ],
+  "front.error.setPassword.message": [
+    {
+      "type": 0,
+      "value": "Please log out of your current FOLIO session to set password. Once logged out please try to set your password with this link again."
+    }
+  ],
+  "front.home": [
+    {
+      "type": 0,
+      "value": "Главная"
+    }
+  ],
+  "front.welcome": [
+    {
+      "type": 0,
+      "value": "Добро пожаловать, будущее библиотек открыто!"
+    }
+  ],
+  "label.caution.email": [
+    {
+      "type": 0,
+      "value": "Если вы не получили письмо, проверьте папку со спамом, нежелательной почтой, социальной сетью или другими папками. Или обратитесь к системному администратору FOLIO"
+    }
+  ],
+  "label.changed.password": [
+    {
+      "type": 0,
+      "value": "Вы успешно изменили свой пароль."
+    }
+  ],
+  "label.check.email": [
+    {
+      "type": 0,
+      "value": "Проверьте свою электронную почту"
+    }
+  ],
+  "label.confirmDeleteEntry": [
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": " "
+        },
+        {
+          "type": 1,
+          "value": "name"
+        },
+        {
+          "type": 0,
+          "value": " "
+        }
+      ],
+      "type": 8,
+      "value": "strong"
+    },
+    {
+      "type": 0,
+      "value": " будет "
+    },
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": " удален "
+        }
+      ],
+      "type": 8,
+      "value": "strong"
+    }
+  ],
+  "label.congratulations": [
+    {
+      "type": 0,
+      "value": "Поздравляем!"
+    }
+  ],
+  "label.createEntry": [
+    {
+      "type": 0,
+      "value": "Создать "
+    },
+    {
+      "type": 1,
+      "value": "entry"
+    }
+  ],
+  "label.editEntry": [
+    {
+      "type": 0,
+      "value": "Редактировать "
+    },
+    {
+      "type": 1,
+      "value": "entry"
+    }
+  ],
+  "label.forgotPassword": [
+    {
+      "type": 0,
+      "value": "Забыли пароль?"
+    }
+  ],
+  "label.forgotPasswordCallToAction": [
+    {
+      "type": 0,
+      "value": "Введите адрес электронной почты, имя пользователя или номер телефона"
+    }
+  ],
+  "label.forgotUsername": [
+    {
+      "type": 0,
+      "value": "Забыли имя пользователя?"
+    }
+  ],
+  "label.forgotUsernameCallToAction": [
+    {
+      "type": 0,
+      "value": "Введите адрес электронной почты или номер телефона"
+    }
+  ],
+  "label.missingRequiredField": [
+    {
+      "type": 0,
+      "value": "Пожалуйста, заполните это, чтобы продолжить"
+    }
+  ],
+  "label.okay": [
+    {
+      "type": 0,
+      "value": "Хорошо"
+    }
+  ],
+  "label.sent.email": [
+    {
+      "type": 0,
+      "value": "Электронное письмо было отправлено на "
+    },
+    {
+      "type": 1,
+      "value": "hiddenUserEmail"
+    }
+  ],
+  "label.your.email": [
+    {
+      "type": 0,
+      "value": "Письмо было отправлено на ваш адрес электронной почты "
+    }
+  ],
+  "loggedInAs": [
+    {
+      "type": 0,
+      "value": "Вы вошли как "
+    },
+    {
+      "type": 1,
+      "value": "firstName"
+    },
+    {
+      "type": 0,
+      "value": " "
+    },
+    {
+      "type": 1,
+      "value": "lastName"
+    }
+  ],
+  "loggingIn": [
+    {
+      "type": 0,
+      "value": "Вход в систему..."
+    }
+  ],
+  "login": [
+    {
+      "type": 0,
+      "value": "Войти"
+    }
+  ],
+  "loginViaSSO": [
+    {
+      "type": 0,
+      "value": "Войти через SSO"
+    }
+  ],
+  "logout": [
+    {
+      "type": 0,
+      "value": "Выйти"
+    }
+  ],
+  "logoutKeepSso": [
+    {
+      "type": 0,
+      "value": "Log out from FOLIO, keep SSO session"
+    }
+  ],
+  "mainnav.appContextMenu": [
+    {
+      "type": 0,
+      "value": "Application context dropdown"
+    }
+  ],
+  "mainnav.applicationListLabel": [
+    {
+      "type": 0,
+      "value": "Список приложений"
+    }
+  ],
+  "mainnav.currentAppAriaLabel": [
+    {
+      "type": 0,
+      "value": "Current open application: "
+    },
+    {
+      "type": 1,
+      "value": "appName"
+    },
+    {
+      "type": 0,
+      "value": " (Click to go home)"
+    }
+  ],
+  "mainnav.myProfileAriaLabel": [
+    {
+      "type": 0,
+      "value": "Мой профиль"
+    }
+  ],
+  "mainnav.profileDropdown.locale": [
+    {
+      "type": 0,
+      "value": "Locale"
+    }
+  ],
+  "mainnav.profileDropdown.permissions": [
+    {
+      "type": 0,
+      "value": "Permissions"
+    }
+  ],
+  "mainnav.showAllApplicationsButtonAriaLabel": [
+    {
+      "type": 0,
+      "value": "Показать все приложения"
+    }
+  ],
+  "mainnav.showAllApplicationsButtonLabel": [
+    {
+      "type": 0,
+      "value": "Apps"
+    }
+  ],
+  "mainnav.skipMainNavigation": [
+    {
+      "type": 0,
+      "value": "Skip Main Navigation"
+    }
+  ],
+  "mainnav.topLevelLabel": [
+    {
+      "type": 0,
+      "value": "Первичный"
+    }
+  ],
+  "password": [
+    {
+      "type": 0,
+      "value": "Пароль"
+    }
+  ],
+  "routeErrorBoundary.goToAppHomeLabel": [
+    {
+      "type": 0,
+      "value": "Return to home"
+    }
+  ],
+  "routeErrorBoundary.goToModuleHomeLabel": [
+    {
+      "type": 0,
+      "value": "Return to "
+    },
+    {
+      "type": 1,
+      "value": "name"
+    },
+    {
+      "type": 0,
+      "value": " landing page"
+    }
+  ],
+  "routeErrorBoundary.goToModuleSettingsHomeLabel": [
+    {
+      "type": 0,
+      "value": "Return to "
+    },
+    {
+      "type": 1,
+      "value": "name"
+    },
+    {
+      "type": 0,
+      "value": " settings"
+    }
+  ],
+  "routeErrorBoundary.sub": [
+    {
+      "type": 0,
+      "value": "An error occurred on this page and it could not be loaded."
+    }
+  ],
+  "setPassword": [
+    {
+      "type": 0,
+      "value": "Установить пароль"
+    }
+  ],
+  "settingChoose": [
+    {
+      "type": 0,
+      "value": "Choose settings"
+    }
+  ],
+  "settingPassword": [
+    {
+      "type": 0,
+      "value": "Установка пароля ..."
+    }
+  ],
+  "settingSystemInfo": [
+    {
+      "type": 0,
+      "value": "Системная информация"
+    }
+  ],
+  "settings": [
+    {
+      "type": 0,
+      "value": "Настройки"
+    }
+  ],
+  "successfullyDeleted": [
+    {
+      "type": 1,
+      "value": "entry"
+    },
+    {
+      "type": 0,
+      "value": " "
+    },
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": " "
+        },
+        {
+          "type": 1,
+          "value": "name"
+        },
+        {
+          "type": 0,
+          "value": " "
+        }
+      ],
+      "type": 8,
+      "value": "strong"
+    },
+    {
+      "type": 0,
+      "value": " был успешно "
+    },
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": " удален "
+        }
+      ],
+      "type": 8,
+      "value": "strong"
+    },
+    {
+      "type": 0,
+      "value": " ."
+    }
+  ],
+  "title.CreateResetPassword": [
+    {
+      "type": 0,
+      "value": "Выберите пароль"
+    }
+  ],
+  "title.changePassword": [
+    {
+      "type": 0,
+      "value": "Изменить пароль"
+    }
+  ],
+  "title.checkEmail": [
+    {
+      "type": 0,
+      "value": "Проверьте свою электронную почту"
+    }
+  ],
+  "title.forgotPassword": [
+    {
+      "type": 0,
+      "value": "Забыли пароль?"
+    }
+  ],
+  "title.forgotUsername": [
+    {
+      "type": 0,
+      "value": "Забыли имя пользователя?"
+    }
+  ],
+  "title.home": [
+    {
+      "type": 0,
+      "value": "Главная"
+    }
+  ],
+  "title.login": [
+    {
+      "type": 0,
+      "value": "Войти"
+    }
+  ],
+  "title.notFound": [
+    {
+      "type": 0,
+      "value": "Не найдено"
+    }
+  ],
+  "title.settings": [
+    {
+      "type": 0,
+      "value": "Настройки"
+    }
+  ],
+  "title.ssoLanding": [
+    {
+      "type": 0,
+      "value": "SSO Landing"
+    }
+  ],
+  "title.ssoRedirect": [
+    {
+      "type": 0,
+      "value": "Перенаправление SSO"
+    }
+  ],
+  "untitled": [
+    {
+      "type": 0,
+      "value": "Без названия"
+    }
+  ],
+  "username": [
+    {
+      "type": 0,
+      "value": "Имя пользователя"
+    }
+  ]
+}

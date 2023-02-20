@@ -1,0 +1,1290 @@
+{
+  "about.appModuleCount": [
+    {
+      "style": null,
+      "type": 2,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": " app "
+    },
+    {
+      "offset": 0,
+      "options": {
+        "one": {
+          "value": [
+            {
+              "type": 0,
+              "value": "module"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "modules"
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "count"
+    }
+  ],
+  "about.forTenant": [
+    {
+      "type": 0,
+      "value": "테넌트 "
+    },
+    {
+      "type": 1,
+      "value": "tenant"
+    }
+  ],
+  "about.foundation": [
+    {
+      "type": 0,
+      "value": "기초"
+    }
+  ],
+  "about.incompatibleModuleCount": [
+    {
+      "style": null,
+      "type": 2,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": " 호환되지 않는 인터페이스 "
+    },
+    {
+      "offset": 0,
+      "options": {
+        "one": {
+          "value": [
+            {
+              "type": 0,
+              "value": "버전"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "버전"
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "count"
+    }
+  ],
+  "about.interfaceCount": [
+    {
+      "style": null,
+      "type": 2,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": " "
+    },
+    {
+      "offset": 0,
+      "options": {
+        "one": {
+          "value": [
+            {
+              "type": 0,
+              "value": "interface"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "interfaces"
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "count"
+    }
+  ],
+  "about.key.absentInterfaces": [
+    {
+      "type": 0,
+      "value": "필요하지만 없는 인터페이스는 "
+    },
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": " 굵은 빨간색 "
+        }
+      ],
+      "type": 8,
+      "value": "span"
+    },
+    {
+      "type": 0,
+      "value": " 으로 강조 표시됩니다."
+    }
+  ],
+  "about.key.compatible": [
+    {
+      "type": 0,
+      "value": "호환되는 버전이 있는 인터페이스는 일반 글꼴로 표시됩니다."
+    }
+  ],
+  "about.key.incompatibleIntf": [
+    {
+      "type": 0,
+      "value": "필요하지만 호환되지 않는 버전만 있는 인터페이스는 "
+    },
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": " 주황색 "
+        }
+      ],
+      "type": 8,
+      "value": "span"
+    },
+    {
+      "type": 0,
+      "value": " 으로 강조 표시됩니다."
+    }
+  ],
+  "about.legendKey": [
+    {
+      "type": 0,
+      "value": "키"
+    }
+  ],
+  "about.missingModuleCount": [
+    {
+      "style": null,
+      "type": 2,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": " 누락된 "
+    },
+    {
+      "offset": 0,
+      "options": {
+        "one": {
+          "value": [
+            {
+              "type": 0,
+              "value": "인터페이스"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "인터페이스"
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "count"
+    }
+  ],
+  "about.moduleCount": [
+    {
+      "style": null,
+      "type": 2,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": " "
+    },
+    {
+      "offset": 0,
+      "options": {
+        "one": {
+          "value": [
+            {
+              "type": 0,
+              "value": "module"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "modules"
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "count"
+    }
+  ],
+  "about.moduleDependsOn": [
+    {
+      "type": 1,
+      "value": "module"
+    },
+    {
+      "type": 0,
+      "value": " 은 다음에 따라 다릅니다."
+    }
+  ],
+  "about.moduleTypeCount": [
+    {
+      "style": null,
+      "type": 2,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": " "
+    },
+    {
+      "type": 1,
+      "value": "type"
+    },
+    {
+      "type": 0,
+      "value": " "
+    },
+    {
+      "offset": 0,
+      "options": {
+        "one": {
+          "value": [
+            {
+              "type": 0,
+              "value": "module"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "modules"
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "count"
+    }
+  ],
+  "about.newerModuleAvailable": [
+    {
+      "type": 1,
+      "value": "required"
+    },
+    {
+      "type": 0,
+      "value": " ( "
+    },
+    {
+      "type": 1,
+      "value": "available"
+    },
+    {
+      "type": 0,
+      "value": " 사용 가능)"
+    }
+  ],
+  "about.noDependencies": [
+    {
+      "type": 1,
+      "value": "base"
+    },
+    {
+      "type": 0,
+      "value": " 는 종속성을 선언하지 않습니다."
+    }
+  ],
+  "about.notEnabledModules": [
+    {
+      "type": 0,
+      "value": "이 테넌트에 대해 활성화되지 않은 설치된 모듈은 "
+    },
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": " 회색 "
+        }
+      ],
+      "type": 8,
+      "value": "span"
+    },
+    {
+      "type": 0,
+      "value": " 으로 표시됩니다."
+    }
+  ],
+  "about.okapiServices": [
+    {
+      "type": 0,
+      "value": "Okapi 서비스"
+    }
+  ],
+  "about.onUrl": [
+    {
+      "type": 0,
+      "value": "URL "
+    },
+    {
+      "type": 1,
+      "value": "url"
+    }
+  ],
+  "about.paneTitle": [
+    {
+      "type": 0,
+      "value": "소프트웨어 버전"
+    }
+  ],
+  "about.pluginModuleCount": [
+    {
+      "style": null,
+      "type": 2,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": " plugin "
+    },
+    {
+      "offset": 0,
+      "options": {
+        "one": {
+          "value": [
+            {
+              "type": 0,
+              "value": "module"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "modules"
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "count"
+    }
+  ],
+  "about.settingsModuleCount": [
+    {
+      "style": null,
+      "type": 2,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": " settings "
+    },
+    {
+      "offset": 0,
+      "options": {
+        "one": {
+          "value": [
+            {
+              "type": 0,
+              "value": "module"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "modules"
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "count"
+    }
+  ],
+  "about.uiOrServiceDependencies": [
+    {
+      "type": 0,
+      "value": "UI / 서비스 종속성"
+    }
+  ],
+  "about.unknown": [
+    {
+      "type": 0,
+      "value": "알 수 없는"
+    }
+  ],
+  "about.userInterface": [
+    {
+      "type": 0,
+      "value": "사용자 인터페이스"
+    }
+  ],
+  "about.version": [
+    {
+      "type": 0,
+      "value": "버전 "
+    },
+    {
+      "type": 1,
+      "value": "version"
+    }
+  ],
+  "button.back": [
+    {
+      "type": 0,
+      "value": "뒤로"
+    }
+  ],
+  "button.cancel": [
+    {
+      "type": 0,
+      "value": "취소"
+    }
+  ],
+  "button.close": [
+    {
+      "type": 0,
+      "value": "닫기"
+    }
+  ],
+  "button.confirm": [
+    {
+      "type": 0,
+      "value": "확인"
+    }
+  ],
+  "button.continue": [
+    {
+      "type": 0,
+      "value": "계속"
+    }
+  ],
+  "button.delete": [
+    {
+      "type": 0,
+      "value": "삭제"
+    }
+  ],
+  "button.deleteEntry": [
+    {
+      "type": 1,
+      "value": "entry"
+    },
+    {
+      "type": 0,
+      "value": " 삭제"
+    }
+  ],
+  "button.edit": [
+    {
+      "type": 0,
+      "value": "편집"
+    }
+  ],
+  "button.forgotPassword": [
+    {
+      "type": 0,
+      "value": "비밀번호를 잊으셨나요?"
+    }
+  ],
+  "button.forgotUsername": [
+    {
+      "type": 0,
+      "value": "사용자 이름을 잊으셨나요?"
+    }
+  ],
+  "button.hidePassword": [
+    {
+      "type": 0,
+      "value": "비밀번호 숨기기"
+    }
+  ],
+  "button.new": [
+    {
+      "type": 0,
+      "value": "+ 신규"
+    }
+  ],
+  "button.new_tooltip": [
+    {
+      "type": 1,
+      "value": "entry"
+    },
+    {
+      "type": 0,
+      "value": " 추가"
+    }
+  ],
+  "button.redirect.login": [
+    {
+      "type": 0,
+      "value": "FOLIO 계속하기"
+    }
+  ],
+  "button.save": [
+    {
+      "type": 0,
+      "value": "저장"
+    }
+  ],
+  "button.saveAndClose": [
+    {
+      "type": 0,
+      "value": "저장 후 닫기"
+    }
+  ],
+  "button.showPassword": [
+    {
+      "type": 0,
+      "value": "비밀번호 표시"
+    }
+  ],
+  "createResetPassword.confirmPassword": [
+    {
+      "type": 0,
+      "value": "비밀번호 확인"
+    }
+  ],
+  "createResetPassword.header": [
+    {
+      "type": 0,
+      "value": "비밀번호를 선택하세요"
+    }
+  ],
+  "createResetPassword.newPassword": [
+    {
+      "type": 0,
+      "value": "새 비밀번호"
+    }
+  ],
+  "createResetPassword.ruleTemplate": [
+    {
+      "type": 0,
+      "value": "Must "
+    },
+    {
+      "type": 1,
+      "value": "description"
+    }
+  ],
+  "currentServicePoint": [
+    {
+      "type": 0,
+      "value": "서비스 지점 : "
+    },
+    {
+      "type": 1,
+      "value": "name"
+    }
+  ],
+  "currentServicePointNotSelected": [
+    {
+      "type": 0,
+      "value": "서비스 지점 : 없음"
+    }
+  ],
+  "errors.default.error": [
+    {
+      "type": 0,
+      "value": "죄송합니다. 입력한 정보가 저희 기록과 일치하지 않습니다."
+    }
+  ],
+  "errors.default.server.error": [
+    {
+      "type": 0,
+      "value": "시스템 오류. Folio 계정을 찾을 수 없습니다. 다시 시도하십시오."
+    }
+  ],
+  "errors.email.invalid": [
+    {
+      "type": 0,
+      "value": "유효한 이메일 주소를 입력하십시오."
+    }
+  ],
+  "errors.forgotten.password.found.inactive": [
+    {
+      "type": 0,
+      "value": "귀하의 계정은 현재 잠겨 있습니다. 비밀번호를 재설정하려면 FOLIO 시스템 관리자에게 문의하십시오."
+    }
+  ],
+  "errors.forgotten.password.found.multiple.users": [
+    {
+      "type": 0,
+      "value": "제공된 정보는 여러 Folio 계정에 연결되어 있습니다. 비밀번호를 재설정하려면 Folio 시스템 관리자에게 문의하십시오."
+    }
+  ],
+  "errors.forgotten.username.found.multiple.users": [
+    {
+      "type": 0,
+      "value": "이 이메일 또는 전화번호는 여러 Folio 계정에 연결되어 있습니다. Folio 시스템 관리자에게 문의하십시오."
+    }
+  ],
+  "errors.link.expired": [
+    {
+      "type": 0,
+      "value": "비밀번호 선택 링크가 만료되었거나 이미 사용되었습니다. 새 링크는 Folio 관리자에게 문의하십시오."
+    }
+  ],
+  "errors.link.invalid": [
+    {
+      "type": 0,
+      "value": "비밀번호 선택 링크가 잘못되었습니다. 이메일에 포함된 링크를 사용하고 있는지 확인하거나 Folio 관리자에게 문의하십시오."
+    }
+  ],
+  "errors.link.used": [
+    {
+      "type": 0,
+      "value": "비밀번호 선택 링크가 만료되었거나 이미 사용되었습니다. 새 링크는 Folio 관리자에게 문의하십시오."
+    }
+  ],
+  "errors.password.alphabetical.invalid": [
+    {
+      "type": 0,
+      "value": "비밀번호에는 소문자와 대문자를 모두 포함해야 합니다."
+    }
+  ],
+  "errors.password.compromised.invalid": [
+    {
+      "type": 0,
+      "value": "The password must not be commonly-used, expected or compromised"
+    }
+  ],
+  "errors.password.consecutiveWhitespaces.invalid": [
+    {
+      "type": 0,
+      "value": "암호는 연속된 공백 문자를 포함하지 않아야합니다."
+    }
+  ],
+  "errors.password.incorrect": [
+    {
+      "type": 0,
+      "value": "잘못된 자격 증명"
+    }
+  ],
+  "errors.password.incorrect.block.user": [
+    {
+      "type": 0,
+      "value": "보안상의 이유로 귀하의 계정이 잠겨 있습니다. 비밀번호를 재설정하려면 FOLIO 시스템 관리자에게 문의하십시오."
+    }
+  ],
+  "errors.password.incorrect.warn.user": [
+    {
+      "type": 0,
+      "value": "세 번째 잘못된 사용자 이름 또는 비밀번호를 입력했습니다. 계정이 잠기기 전에 두 번 더 로그인을 시도할 수 있습니다."
+    }
+  ],
+  "errors.password.keyboardSequence.invalid": [
+    {
+      "type": 0,
+      "value": "비밀번호는 키보드 시퀀스를 포함하지 않아야합니다."
+    }
+  ],
+  "errors.password.lastTenPasswords.invalid": [
+    {
+      "type": 0,
+      "value": "이전에 사용한 비밀번호입니다. 새 비밀번호를 입력하세요."
+    }
+  ],
+  "errors.password.length.invalid": [
+    {
+      "type": 0,
+      "value": "비밀번호 길이는 최소 8 개의 기호여야합니다."
+    }
+  ],
+  "errors.password.match.error": [
+    {
+      "type": 0,
+      "value": "비밀번호가 일치하지 않습니다. 비밀번호를 다시 입력하십시오."
+    }
+  ],
+  "errors.password.number.invalid": [
+    {
+      "type": 0,
+      "value": "비밀번호에는 하나 이상의 숫자가 포함되어야 합니다."
+    }
+  ],
+  "errors.password.repeatingSymbols.invalid": [
+    {
+      "type": 0,
+      "value": "비밀번호는 동일한 문자를 연속해서 포함할 수 없습니다."
+    }
+  ],
+  "errors.password.specialCharacter.invalid": [
+    {
+      "type": 0,
+      "value": "비밀번호에는 하나 이상의 특수문자가 포함되어야 합니다."
+    }
+  ],
+  "errors.password.usernameDuplicate.invalid": [
+    {
+      "type": 0,
+      "value": "비밀번호에는 사용자 이름이 포함되지 않아야합니다."
+    }
+  ],
+  "errors.password.whiteSpace.invalid": [
+    {
+      "type": 0,
+      "value": "비밀번호에는 공백이 없어야합니다."
+    }
+  ],
+  "errors.unable.locate.account": [
+    {
+      "type": 0,
+      "value": "계정을 찾을 수 없습니다. 유효한 이메일 주소 또는 전화번호를 입력하십시오."
+    }
+  ],
+  "errors.unable.locate.account.password": [
+    {
+      "type": 0,
+      "value": "계정을 찾을 수 없습니다. 유효한 이메일 주소, 전화번호 또는 사용자 이름을 입력하십시오."
+    }
+  ],
+  "errors.user.blocked": [
+    {
+      "type": 0,
+      "value": "보안상의 이유로 귀하의 계정이 잠겨 있습니다. 다시 시도하거나 FOLIO 시스템 관리자에게 문의하십시오."
+    }
+  ],
+  "errors.user.timeout": [
+    {
+      "type": 0,
+      "value": "세션이 만료되었습니다. 세션을 다시 시작하려면 다시 로그인하십시오."
+    }
+  ],
+  "errors.username.incorrect": [
+    {
+      "type": 0,
+      "value": "이 FOLIO 계정을 찾을 수 없습니다. FOLIO 시스템 관리자에게 문의하십시오."
+    }
+  ],
+  "folioSettings": [
+    {
+      "type": 0,
+      "value": "FOLIO 설정"
+    }
+  ],
+  "front.about": [
+    {
+      "type": 0,
+      "value": "소프트웨어 버전"
+    }
+  ],
+  "front.error.general.message": [
+    {
+      "type": 0,
+      "value": "The requested URL "
+    },
+    {
+      "type": 1,
+      "value": "br"
+    },
+    {
+      "type": 1,
+      "value": "url"
+    },
+    {
+      "type": 1,
+      "value": "br"
+    },
+    {
+      "type": 0,
+      "value": " was not found on this server."
+    }
+  ],
+  "front.error.header": [
+    {
+      "type": 0,
+      "value": "404 오류"
+    }
+  ],
+  "front.error.setPassword.message": [
+    {
+      "type": 0,
+      "value": "Please log out of your current FOLIO session to set password. Once logged out please try to set your password with this link again."
+    }
+  ],
+  "front.home": [
+    {
+      "type": 0,
+      "value": "홈"
+    }
+  ],
+  "front.welcome": [
+    {
+      "type": 0,
+      "value": "환영합니다. 도서관의 미래가 열립니다!"
+    }
+  ],
+  "label.caution.email": [
+    {
+      "type": 0,
+      "value": "이메일을 받지 못한 경우 스팸, 정크, 소셜 또는 기타 폴더를 확인하십시오. 또는 FOLIO 시스템 관리자에게 문의하십시오."
+    }
+  ],
+  "label.changed.password": [
+    {
+      "type": 0,
+      "value": "비밀번호를 성공적으로 변경했습니다."
+    }
+  ],
+  "label.check.email": [
+    {
+      "type": 0,
+      "value": "이메일을 확인하십시오"
+    }
+  ],
+  "label.confirmDeleteEntry": [
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": " "
+        },
+        {
+          "type": 1,
+          "value": "name"
+        },
+        {
+          "type": 0,
+          "value": " "
+        }
+      ],
+      "type": 8,
+      "value": "strong"
+    },
+    {
+      "type": 0,
+      "value": " 이 (가) "
+    },
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": " 제거됩니다 "
+        }
+      ],
+      "type": 8,
+      "value": "strong"
+    }
+  ],
+  "label.congratulations": [
+    {
+      "type": 0,
+      "value": "축하합니다!"
+    }
+  ],
+  "label.createEntry": [
+    {
+      "type": 1,
+      "value": "entry"
+    },
+    {
+      "type": 0,
+      "value": " 생성"
+    }
+  ],
+  "label.editEntry": [
+    {
+      "type": 1,
+      "value": "entry"
+    },
+    {
+      "type": 0,
+      "value": " 수정"
+    }
+  ],
+  "label.forgotPassword": [
+    {
+      "type": 0,
+      "value": "비밀번호를 잊으셨나요?"
+    }
+  ],
+  "label.forgotPasswordCallToAction": [
+    {
+      "type": 0,
+      "value": "이메일, 사용자 이름 또는 전화번호를 입력하세요."
+    }
+  ],
+  "label.forgotUsername": [
+    {
+      "type": 0,
+      "value": "사용자 이름을 잊으셨나요?"
+    }
+  ],
+  "label.forgotUsernameCallToAction": [
+    {
+      "type": 0,
+      "value": "이메일 또는 전화번호를 입력하세요."
+    }
+  ],
+  "label.missingRequiredField": [
+    {
+      "type": 0,
+      "value": "계속하려면 이것을 입력하십시오"
+    }
+  ],
+  "label.okay": [
+    {
+      "type": 0,
+      "value": "OK"
+    }
+  ],
+  "label.sent.email": [
+    {
+      "type": 1,
+      "value": "hiddenUserEmail"
+    },
+    {
+      "type": 0,
+      "value": " 로 이메일이 전송되었습니다."
+    }
+  ],
+  "label.your.email": [
+    {
+      "type": 0,
+      "value": "귀하의 이메일 주소로 이메일이 전송되었습니다."
+    }
+  ],
+  "loggedInAs": [
+    {
+      "type": 1,
+      "value": "firstName"
+    },
+    {
+      "type": 0,
+      "value": " "
+    },
+    {
+      "type": 1,
+      "value": "lastName"
+    },
+    {
+      "type": 0,
+      "value": " 로 로그인했습니다."
+    }
+  ],
+  "loggingIn": [
+    {
+      "type": 0,
+      "value": "로그인 중 ..."
+    }
+  ],
+  "login": [
+    {
+      "type": 0,
+      "value": "로그인"
+    }
+  ],
+  "loginViaSSO": [
+    {
+      "type": 0,
+      "value": "SSO를 통해 로그인"
+    }
+  ],
+  "logout": [
+    {
+      "type": 0,
+      "value": "로그아웃"
+    }
+  ],
+  "logoutKeepSso": [
+    {
+      "type": 0,
+      "value": "FOLIO에서 로그 아웃하고 SSO 세션 유지"
+    }
+  ],
+  "mainnav.appContextMenu": [
+    {
+      "type": 0,
+      "value": "응용 프로그램 컨텍스트 드롭다운"
+    }
+  ],
+  "mainnav.applicationListLabel": [
+    {
+      "type": 0,
+      "value": "응용 프로그램 목록"
+    }
+  ],
+  "mainnav.currentAppAriaLabel": [
+    {
+      "type": 0,
+      "value": "현재 열려 있는 응용 프로그램: "
+    },
+    {
+      "type": 1,
+      "value": "appName"
+    },
+    {
+      "type": 0,
+      "value": " (집으로 이동하려면 클릭)"
+    }
+  ],
+  "mainnav.myProfileAriaLabel": [
+    {
+      "type": 0,
+      "value": "내 프로파일"
+    }
+  ],
+  "mainnav.profileDropdown.locale": [
+    {
+      "type": 0,
+      "value": "Locale"
+    }
+  ],
+  "mainnav.profileDropdown.permissions": [
+    {
+      "type": 0,
+      "value": "권한"
+    }
+  ],
+  "mainnav.showAllApplicationsButtonAriaLabel": [
+    {
+      "type": 0,
+      "value": "모든 응용 프로그램"
+    }
+  ],
+  "mainnav.showAllApplicationsButtonLabel": [
+    {
+      "type": 0,
+      "value": "앱"
+    }
+  ],
+  "mainnav.skipMainNavigation": [
+    {
+      "type": 0,
+      "value": "기본 탐색 건너 뛰기"
+    }
+  ],
+  "mainnav.topLevelLabel": [
+    {
+      "type": 0,
+      "value": "기본"
+    }
+  ],
+  "password": [
+    {
+      "type": 0,
+      "value": "비밀번호"
+    }
+  ],
+  "routeErrorBoundary.goToAppHomeLabel": [
+    {
+      "type": 0,
+      "value": "홈으로 돌아가기"
+    }
+  ],
+  "routeErrorBoundary.goToModuleHomeLabel": [
+    {
+      "type": 1,
+      "value": "name"
+    },
+    {
+      "type": 0,
+      "value": " 방문 페이지로 돌아가기"
+    }
+  ],
+  "routeErrorBoundary.goToModuleSettingsHomeLabel": [
+    {
+      "type": 1,
+      "value": "name"
+    },
+    {
+      "type": 0,
+      "value": " 설정으로 돌아 가기"
+    }
+  ],
+  "routeErrorBoundary.sub": [
+    {
+      "type": 0,
+      "value": "이 페이지에서 오류가 발생하여 로드할 수 없습니다."
+    }
+  ],
+  "setPassword": [
+    {
+      "type": 0,
+      "value": "비밀번호 설정"
+    }
+  ],
+  "settingChoose": [
+    {
+      "type": 0,
+      "value": "설정 선택"
+    }
+  ],
+  "settingPassword": [
+    {
+      "type": 0,
+      "value": "비밀번호 설정 중 ..."
+    }
+  ],
+  "settingSystemInfo": [
+    {
+      "type": 0,
+      "value": "시스템 정보"
+    }
+  ],
+  "settings": [
+    {
+      "type": 0,
+      "value": "설정"
+    }
+  ],
+  "successfullyDeleted": [
+    {
+      "type": 1,
+      "value": "entry"
+    },
+    {
+      "type": 0,
+      "value": " "
+    },
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": " "
+        },
+        {
+          "type": 1,
+          "value": "name"
+        },
+        {
+          "type": 0,
+          "value": " "
+        }
+      ],
+      "type": 8,
+      "value": "strong"
+    },
+    {
+      "type": 0,
+      "value": " 이 (가) 성공적으로 "
+    },
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": " 삭제되었습니다 "
+        }
+      ],
+      "type": 8,
+      "value": "strong"
+    },
+    {
+      "type": 0,
+      "value": " ."
+    }
+  ],
+  "title.CreateResetPassword": [
+    {
+      "type": 0,
+      "value": "비밀번호를 선택하세요"
+    }
+  ],
+  "title.changePassword": [
+    {
+      "type": 0,
+      "value": "비밀번호 변경"
+    }
+  ],
+  "title.checkEmail": [
+    {
+      "type": 0,
+      "value": "이메일을 확인하십시오"
+    }
+  ],
+  "title.forgotPassword": [
+    {
+      "type": 0,
+      "value": "비밀번호를 잊으셨나요?"
+    }
+  ],
+  "title.forgotUsername": [
+    {
+      "type": 0,
+      "value": "사용자 이름을 잊으셨나요?"
+    }
+  ],
+  "title.home": [
+    {
+      "type": 0,
+      "value": "홈"
+    }
+  ],
+  "title.login": [
+    {
+      "type": 0,
+      "value": "로그인"
+    }
+  ],
+  "title.notFound": [
+    {
+      "type": 0,
+      "value": "찾을 수 없음"
+    }
+  ],
+  "title.settings": [
+    {
+      "type": 0,
+      "value": "설정"
+    }
+  ],
+  "title.ssoLanding": [
+    {
+      "type": 0,
+      "value": "SSO 랜딩"
+    }
+  ],
+  "title.ssoRedirect": [
+    {
+      "type": 0,
+      "value": "SSO 리디렉션"
+    }
+  ],
+  "untitled": [
+    {
+      "type": 0,
+      "value": "제목 없음"
+    }
+  ],
+  "username": [
+    {
+      "type": 0,
+      "value": "사용자 이름"
+    }
+  ]
+}

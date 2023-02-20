@@ -1,0 +1,1298 @@
+{
+  "about.appModuleCount": [
+    {
+      "style": null,
+      "type": 2,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": " app "
+    },
+    {
+      "offset": 0,
+      "options": {
+        "one": {
+          "value": [
+            {
+              "type": 0,
+              "value": "モジュール"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "モジュール"
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "count"
+    }
+  ],
+  "about.forTenant": [
+    {
+      "type": 0,
+      "value": "テナント"
+    },
+    {
+      "type": 1,
+      "value": "tenant"
+    }
+  ],
+  "about.foundation": [
+    {
+      "type": 0,
+      "value": "基本"
+    }
+  ],
+  "about.incompatibleModuleCount": [
+    {
+      "style": null,
+      "type": 2,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": "互換性がないバージョンの"
+    },
+    {
+      "offset": 0,
+      "options": {
+        "one": {
+          "value": [
+            {
+              "type": 0,
+              "value": " モジュール "
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": " モジュール "
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": "です"
+    }
+  ],
+  "about.interfaceCount": [
+    {
+      "style": null,
+      "type": 2,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": " "
+    },
+    {
+      "offset": 0,
+      "options": {
+        "one": {
+          "value": [
+            {
+              "type": 0,
+              "value": "インターフェース"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "インターフェース"
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "count"
+    }
+  ],
+  "about.key.absentInterfaces": [
+    {
+      "type": 0,
+      "value": "必須であるが存在しないインターフェースは、 "
+    },
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": "赤の太字"
+        }
+      ],
+      "type": 8,
+      "value": "span"
+    },
+    {
+      "type": 0,
+      "value": "で強調表示されます。"
+    }
+  ],
+  "about.key.compatible": [
+    {
+      "type": 0,
+      "value": "互換性のあるバージョンに存在するインターフェイスは、通常のフォントで表示されます。"
+    }
+  ],
+  "about.key.incompatibleIntf": [
+    {
+      "type": 0,
+      "value": "必須ですが、互換性のないバージョンにのみ存在するインターフェースは、 "
+    },
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": "オレンジ"
+        }
+      ],
+      "type": 8,
+      "value": "span"
+    },
+    {
+      "type": 0,
+      "value": "で強調表示されます。"
+    }
+  ],
+  "about.legendKey": [
+    {
+      "type": 0,
+      "value": "キー"
+    }
+  ],
+  "about.missingModuleCount": [
+    {
+      "style": null,
+      "type": 2,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": " missing "
+    },
+    {
+      "offset": 0,
+      "options": {
+        "one": {
+          "value": [
+            {
+              "type": 0,
+              "value": "interface"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "interfaces"
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "count"
+    }
+  ],
+  "about.moduleCount": [
+    {
+      "style": null,
+      "type": 2,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": " "
+    },
+    {
+      "offset": 0,
+      "options": {
+        "one": {
+          "value": [
+            {
+              "type": 0,
+              "value": " モジュール "
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": " モジュール "
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "count"
+    }
+  ],
+  "about.moduleDependsOn": [
+    {
+      "type": 1,
+      "value": "module"
+    },
+    {
+      "type": 0,
+      "value": "は次に依存します："
+    }
+  ],
+  "about.moduleTypeCount": [
+    {
+      "style": null,
+      "type": 2,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": " "
+    },
+    {
+      "type": 1,
+      "value": "type"
+    },
+    {
+      "type": 0,
+      "value": " "
+    },
+    {
+      "offset": 0,
+      "options": {
+        "one": {
+          "value": [
+            {
+              "type": 0,
+              "value": "モジュール"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "モジュール"
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "count"
+    }
+  ],
+  "about.newerModuleAvailable": [
+    {
+      "type": 1,
+      "value": "required"
+    },
+    {
+      "type": 0,
+      "value": " （ "
+    },
+    {
+      "type": 1,
+      "value": "available"
+    },
+    {
+      "type": 0,
+      "value": "利用可能）"
+    }
+  ],
+  "about.noDependencies": [
+    {
+      "type": 1,
+      "value": "base"
+    },
+    {
+      "type": 0,
+      "value": "は依存関係を宣言しません"
+    }
+  ],
+  "about.notEnabledModules": [
+    {
+      "type": 0,
+      "value": "このテナントに対して有効になっていないインストール済みモジュールは、 "
+    },
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": "がグレーで表示されます"
+        }
+      ],
+      "type": 8,
+      "value": "span"
+    },
+    {
+      "type": 0,
+      "value": " 。"
+    }
+  ],
+  "about.okapiServices": [
+    {
+      "type": 0,
+      "value": "Okapiサービス"
+    }
+  ],
+  "about.onUrl": [
+    {
+      "type": 0,
+      "value": "URL "
+    },
+    {
+      "type": 1,
+      "value": "url"
+    }
+  ],
+  "about.paneTitle": [
+    {
+      "type": 0,
+      "value": "ソフトウェアのバージョン"
+    }
+  ],
+  "about.pluginModuleCount": [
+    {
+      "style": null,
+      "type": 2,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": " プラグイン "
+    },
+    {
+      "offset": 0,
+      "options": {
+        "one": {
+          "value": [
+            {
+              "type": 0,
+              "value": "モジュール"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "モジュール"
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "count"
+    }
+  ],
+  "about.settingsModuleCount": [
+    {
+      "style": null,
+      "type": 2,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": " 設定 "
+    },
+    {
+      "offset": 0,
+      "options": {
+        "one": {
+          "value": [
+            {
+              "type": 0,
+              "value": "モジュール"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "モジュール"
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "count"
+    }
+  ],
+  "about.uiOrServiceDependencies": [
+    {
+      "type": 0,
+      "value": "UI /サービスの依存関係"
+    }
+  ],
+  "about.unknown": [
+    {
+      "type": 0,
+      "value": "Unknown"
+    }
+  ],
+  "about.userInterface": [
+    {
+      "type": 0,
+      "value": "ユーザーインターフェース"
+    }
+  ],
+  "about.version": [
+    {
+      "type": 0,
+      "value": "バージョン"
+    },
+    {
+      "type": 1,
+      "value": "version"
+    }
+  ],
+  "button.back": [
+    {
+      "type": 0,
+      "value": "戻る"
+    }
+  ],
+  "button.cancel": [
+    {
+      "type": 0,
+      "value": "キャンセル"
+    }
+  ],
+  "button.close": [
+    {
+      "type": 0,
+      "value": "閉じる"
+    }
+  ],
+  "button.confirm": [
+    {
+      "type": 0,
+      "value": "確認"
+    }
+  ],
+  "button.continue": [
+    {
+      "type": 0,
+      "value": "Continue"
+    }
+  ],
+  "button.delete": [
+    {
+      "type": 0,
+      "value": "削除"
+    }
+  ],
+  "button.deleteEntry": [
+    {
+      "type": 1,
+      "value": "entry"
+    },
+    {
+      "type": 0,
+      "value": "削除"
+    }
+  ],
+  "button.edit": [
+    {
+      "type": 0,
+      "value": "編集"
+    }
+  ],
+  "button.forgotPassword": [
+    {
+      "type": 0,
+      "value": "パスワードをお忘れですか？"
+    }
+  ],
+  "button.forgotUsername": [
+    {
+      "type": 0,
+      "value": "ユーザー名をお忘れですか？"
+    }
+  ],
+  "button.hidePassword": [
+    {
+      "type": 0,
+      "value": "パスワードを隠す"
+    }
+  ],
+  "button.new": [
+    {
+      "type": 0,
+      "value": "+新規"
+    }
+  ],
+  "button.new_tooltip": [
+    {
+      "type": 1,
+      "value": "entry"
+    },
+    {
+      "type": 0,
+      "value": "追加"
+    }
+  ],
+  "button.redirect.login": [
+    {
+      "type": 0,
+      "value": "Continue to FOLIO"
+    }
+  ],
+  "button.save": [
+    {
+      "type": 0,
+      "value": "保存"
+    }
+  ],
+  "button.saveAndClose": [
+    {
+      "type": 0,
+      "value": "保存して閉じる"
+    }
+  ],
+  "button.showPassword": [
+    {
+      "type": 0,
+      "value": "パスワードを表示"
+    }
+  ],
+  "createResetPassword.confirmPassword": [
+    {
+      "type": 0,
+      "value": "パスワードの確認"
+    }
+  ],
+  "createResetPassword.header": [
+    {
+      "type": 0,
+      "value": "パスワードを選択する"
+    }
+  ],
+  "createResetPassword.newPassword": [
+    {
+      "type": 0,
+      "value": "新しいパスワード"
+    }
+  ],
+  "createResetPassword.ruleTemplate": [
+    {
+      "type": 0,
+      "value": "Must "
+    },
+    {
+      "type": 1,
+      "value": "description"
+    }
+  ],
+  "currentServicePoint": [
+    {
+      "type": 0,
+      "value": "サービスポイント： "
+    },
+    {
+      "type": 1,
+      "value": "name"
+    }
+  ],
+  "currentServicePointNotSelected": [
+    {
+      "type": 0,
+      "value": "サービスポイント：なし"
+    }
+  ],
+  "errors.default.error": [
+    {
+      "type": 0,
+      "value": "Sorry, the information entered does not match our records."
+    }
+  ],
+  "errors.default.server.error": [
+    {
+      "type": 0,
+      "value": "System error. Unable to locate Folio account. Please try again."
+    }
+  ],
+  "errors.email.invalid": [
+    {
+      "type": 0,
+      "value": "Please enter a valid email address."
+    }
+  ],
+  "errors.forgotten.password.found.inactive": [
+    {
+      "type": 0,
+      "value": "あなたのアカウントは現在ロックされています。 FOLIOシステム管理者に連絡して、パスワードをリセットしてください"
+    }
+  ],
+  "errors.forgotten.password.found.multiple.users": [
+    {
+      "type": 0,
+      "value": "The information provided is tied to multiple Folio accounts. Please contact your Folio system administrator to reset your password."
+    }
+  ],
+  "errors.forgotten.username.found.multiple.users": [
+    {
+      "type": 0,
+      "value": "This email or phone number is tied to multiple Folio accounts. Please contact your Folio system administrator."
+    }
+  ],
+  "errors.link.expired": [
+    {
+      "type": 0,
+      "value": "Your choose password link expired or has already been used. Please contact your Folio Administrator for a new link."
+    }
+  ],
+  "errors.link.invalid": [
+    {
+      "type": 0,
+      "value": "Your choose password link is invalid. Please verify that you are using the link included in your email or contact your Folio Administrator."
+    }
+  ],
+  "errors.link.used": [
+    {
+      "type": 0,
+      "value": "Your choose password link expired or has already been used. Please contact your Folio Administrator for a new link."
+    }
+  ],
+  "errors.password.alphabetical.invalid": [
+    {
+      "type": 0,
+      "value": "The password must contain both lowercase and uppercase letters."
+    }
+  ],
+  "errors.password.compromised.invalid": [
+    {
+      "type": 0,
+      "value": "The password must not be commonly-used, expected or compromised"
+    }
+  ],
+  "errors.password.consecutiveWhitespaces.invalid": [
+    {
+      "type": 0,
+      "value": "The password must not contain consecutive white space characters."
+    }
+  ],
+  "errors.password.incorrect": [
+    {
+      "type": 0,
+      "value": "資格情報が正しくありません"
+    }
+  ],
+  "errors.password.incorrect.block.user": [
+    {
+      "type": 0,
+      "value": "For security purposes, your account has been locked. Please contact your FOLIO System Administrator to reset your password."
+    }
+  ],
+  "errors.password.incorrect.warn.user": [
+    {
+      "type": 0,
+      "value": "You have entered the wrong username or password for the third time. You have two more tries to login before your account will be locked."
+    }
+  ],
+  "errors.password.keyboardSequence.invalid": [
+    {
+      "type": 0,
+      "value": "The password must not contain a keyboard sequence."
+    }
+  ],
+  "errors.password.lastTenPasswords.invalid": [
+    {
+      "type": 0,
+      "value": "Previously used password. Please enter a new password."
+    }
+  ],
+  "errors.password.length.invalid": [
+    {
+      "type": 0,
+      "value": "The password length must be minimum 8 symbols."
+    }
+  ],
+  "errors.password.match.error": [
+    {
+      "type": 0,
+      "value": "Password does not match. Retype your password."
+    }
+  ],
+  "errors.password.number.invalid": [
+    {
+      "type": 0,
+      "value": "The password must contain at least one numeric character."
+    }
+  ],
+  "errors.password.repeatingSymbols.invalid": [
+    {
+      "type": 0,
+      "value": "The password must not contain the same character in a row."
+    }
+  ],
+  "errors.password.specialCharacter.invalid": [
+    {
+      "type": 0,
+      "value": "The password must contain at least one special character."
+    }
+  ],
+  "errors.password.usernameDuplicate.invalid": [
+    {
+      "type": 0,
+      "value": " The password must not contain your username."
+    }
+  ],
+  "errors.password.whiteSpace.invalid": [
+    {
+      "type": 0,
+      "value": "The password must not contain whitespaces."
+    }
+  ],
+  "errors.unable.locate.account": [
+    {
+      "type": 0,
+      "value": "Unable to find your account. Please enter a valid email address or phone number."
+    }
+  ],
+  "errors.unable.locate.account.password": [
+    {
+      "type": 0,
+      "value": "アカウントが見つかりません。有効なメールアドレス、電話番号、またはユーザー名を入力してください。"
+    }
+  ],
+  "errors.user.blocked": [
+    {
+      "type": 0,
+      "value": "For security purposes, your account has been locked. Please try again or contact your FOLIO System Administrator."
+    }
+  ],
+  "errors.user.timeout": [
+    {
+      "type": 0,
+      "value": "Your session has expired. Please login again to resume your session."
+    }
+  ],
+  "errors.username.incorrect": [
+    {
+      "type": 0,
+      "value": "This FOLIO account cannot be located. Please contact your FOLIO systems administrator."
+    }
+  ],
+  "folioSettings": [
+    {
+      "type": 0,
+      "value": "FOLIO の設定"
+    }
+  ],
+  "front.about": [
+    {
+      "type": 0,
+      "value": "ソフトウェアのバージョン"
+    }
+  ],
+  "front.error.general.message": [
+    {
+      "type": 0,
+      "value": "The requested URL "
+    },
+    {
+      "type": 1,
+      "value": "br"
+    },
+    {
+      "type": 1,
+      "value": "url"
+    },
+    {
+      "type": 1,
+      "value": "br"
+    },
+    {
+      "type": 0,
+      "value": " was not found on this server."
+    }
+  ],
+  "front.error.header": [
+    {
+      "type": 0,
+      "value": "404 Error"
+    }
+  ],
+  "front.error.setPassword.message": [
+    {
+      "type": 0,
+      "value": "Please log out of your current FOLIO session to set password. Once logged out please try to set your password with this link again."
+    }
+  ],
+  "front.home": [
+    {
+      "type": 0,
+      "value": "ホーム"
+    }
+  ],
+  "front.welcome": [
+    {
+      "type": 0,
+      "value": "ようこそ、図書館の未来はオープンです!"
+    }
+  ],
+  "label.caution.email": [
+    {
+      "type": 0,
+      "value": "If you don't receive the email, check your spam, junk, social or other folders. Or contact your FOLIO system administrator"
+    }
+  ],
+  "label.changed.password": [
+    {
+      "type": 0,
+      "value": "パスワードが正常に変更されました。"
+    }
+  ],
+  "label.check.email": [
+    {
+      "type": 0,
+      "value": "Check your email"
+    }
+  ],
+  "label.confirmDeleteEntry": [
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": " "
+        },
+        {
+          "type": 1,
+          "value": "name"
+        },
+        {
+          "type": 0,
+          "value": " "
+        }
+      ],
+      "type": 8,
+      "value": "strong"
+    },
+    {
+      "type": 0,
+      "value": "は"
+    },
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": "削除されます"
+        }
+      ],
+      "type": 8,
+      "value": "strong"
+    }
+  ],
+  "label.congratulations": [
+    {
+      "type": 0,
+      "value": "Congratulations!"
+    }
+  ],
+  "label.createEntry": [
+    {
+      "type": 1,
+      "value": "entry"
+    },
+    {
+      "type": 0,
+      "value": "作成"
+    }
+  ],
+  "label.editEntry": [
+    {
+      "type": 1,
+      "value": "entry"
+    },
+    {
+      "type": 0,
+      "value": "編集"
+    }
+  ],
+  "label.forgotPassword": [
+    {
+      "type": 0,
+      "value": "パスワードをお忘れですか？"
+    }
+  ],
+  "label.forgotPasswordCallToAction": [
+    {
+      "type": 0,
+      "value": "メールアドレス、ユーザー名または電話番号を入力してください"
+    }
+  ],
+  "label.forgotUsername": [
+    {
+      "type": 0,
+      "value": "ユーザー名をお忘れですか？"
+    }
+  ],
+  "label.forgotUsernameCallToAction": [
+    {
+      "type": 0,
+      "value": "メールアドレスまたは電話番号を入力してください"
+    }
+  ],
+  "label.missingRequiredField": [
+    {
+      "type": 0,
+      "value": "続行するには入力してください"
+    }
+  ],
+  "label.okay": [
+    {
+      "type": 0,
+      "value": "OK"
+    }
+  ],
+  "label.sent.email": [
+    {
+      "type": 0,
+      "value": "電子メールが "
+    },
+    {
+      "type": 1,
+      "value": "hiddenUserEmail"
+    },
+    {
+      "type": 0,
+      "value": " に送信されました。"
+    }
+  ],
+  "label.your.email": [
+    {
+      "type": 0,
+      "value": "An email has been sent to your email address"
+    }
+  ],
+  "loggedInAs": [
+    {
+      "type": 1,
+      "value": "firstName"
+    },
+    {
+      "type": 0,
+      "value": " "
+    },
+    {
+      "type": 1,
+      "value": "lastName"
+    },
+    {
+      "type": 0,
+      "value": "としてログインしています"
+    }
+  ],
+  "loggingIn": [
+    {
+      "type": 0,
+      "value": "ログインしています..."
+    }
+  ],
+  "login": [
+    {
+      "type": 0,
+      "value": "ログイン"
+    }
+  ],
+  "loginViaSSO": [
+    {
+      "type": 0,
+      "value": "SSO経由でログイン"
+    }
+  ],
+  "logout": [
+    {
+      "type": 0,
+      "value": "ログアウト"
+    }
+  ],
+  "logoutKeepSso": [
+    {
+      "type": 0,
+      "value": "Log out from FOLIO, keep SSO session"
+    }
+  ],
+  "mainnav.appContextMenu": [
+    {
+      "type": 0,
+      "value": "アプリケーション・コンテキスト・ドロップダウン"
+    }
+  ],
+  "mainnav.applicationListLabel": [
+    {
+      "type": 0,
+      "value": "Application List"
+    }
+  ],
+  "mainnav.currentAppAriaLabel": [
+    {
+      "type": 0,
+      "value": "Current open application: "
+    },
+    {
+      "type": 1,
+      "value": "appName"
+    },
+    {
+      "type": 0,
+      "value": " (Click to go home)"
+    }
+  ],
+  "mainnav.myProfileAriaLabel": [
+    {
+      "type": 0,
+      "value": "マイプロフィール"
+    }
+  ],
+  "mainnav.profileDropdown.locale": [
+    {
+      "type": 0,
+      "value": "Locale"
+    }
+  ],
+  "mainnav.profileDropdown.permissions": [
+    {
+      "type": 0,
+      "value": "Permissions"
+    }
+  ],
+  "mainnav.showAllApplicationsButtonAriaLabel": [
+    {
+      "type": 0,
+      "value": "All applications"
+    }
+  ],
+  "mainnav.showAllApplicationsButtonLabel": [
+    {
+      "type": 0,
+      "value": "アプリ"
+    }
+  ],
+  "mainnav.skipMainNavigation": [
+    {
+      "type": 0,
+      "value": "Skip Main Navigation"
+    }
+  ],
+  "mainnav.topLevelLabel": [
+    {
+      "type": 0,
+      "value": "Primary"
+    }
+  ],
+  "password": [
+    {
+      "type": 0,
+      "value": "パスワード"
+    }
+  ],
+  "routeErrorBoundary.goToAppHomeLabel": [
+    {
+      "type": 0,
+      "value": "ホームに戻る"
+    }
+  ],
+  "routeErrorBoundary.goToModuleHomeLabel": [
+    {
+      "type": 1,
+      "value": "name"
+    },
+    {
+      "type": 0,
+      "value": "のランディングページに戻る"
+    }
+  ],
+  "routeErrorBoundary.goToModuleSettingsHomeLabel": [
+    {
+      "type": 1,
+      "value": "name"
+    },
+    {
+      "type": 0,
+      "value": "設定に戻る"
+    }
+  ],
+  "routeErrorBoundary.sub": [
+    {
+      "type": 0,
+      "value": "エラーが発生し、ページを読み込めませんでした。"
+    }
+  ],
+  "setPassword": [
+    {
+      "type": 0,
+      "value": "パスワードの設定"
+    }
+  ],
+  "settingChoose": [
+    {
+      "type": 0,
+      "value": "設定を選択してください"
+    }
+  ],
+  "settingPassword": [
+    {
+      "type": 0,
+      "value": "パスワードを設定しています..."
+    }
+  ],
+  "settingSystemInfo": [
+    {
+      "type": 0,
+      "value": "システム情報"
+    }
+  ],
+  "settings": [
+    {
+      "type": 0,
+      "value": "設定"
+    }
+  ],
+  "successfullyDeleted": [
+    {
+      "type": 1,
+      "value": "entry"
+    },
+    {
+      "type": 0,
+      "value": " "
+    },
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": " "
+        },
+        {
+          "type": 1,
+          "value": "name"
+        },
+        {
+          "type": 0,
+          "value": " "
+        }
+      ],
+      "type": 8,
+      "value": "strong"
+    },
+    {
+      "type": 0,
+      "value": "は正常に"
+    },
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": "削除されました"
+        }
+      ],
+      "type": 8,
+      "value": "strong"
+    },
+    {
+      "type": 0,
+      "value": " 。"
+    }
+  ],
+  "title.CreateResetPassword": [
+    {
+      "type": 0,
+      "value": "パスワードを選択する"
+    }
+  ],
+  "title.changePassword": [
+    {
+      "type": 0,
+      "value": "パスワードを変更する"
+    }
+  ],
+  "title.checkEmail": [
+    {
+      "type": 0,
+      "value": "Check your email"
+    }
+  ],
+  "title.forgotPassword": [
+    {
+      "type": 0,
+      "value": "パスワードをお忘れですか？"
+    }
+  ],
+  "title.forgotUsername": [
+    {
+      "type": 0,
+      "value": "ユーザー名をお忘れですか？"
+    }
+  ],
+  "title.home": [
+    {
+      "type": 0,
+      "value": "Home"
+    }
+  ],
+  "title.login": [
+    {
+      "type": 0,
+      "value": "ログイン"
+    }
+  ],
+  "title.notFound": [
+    {
+      "type": 0,
+      "value": "Not Found"
+    }
+  ],
+  "title.settings": [
+    {
+      "type": 0,
+      "value": "Settings"
+    }
+  ],
+  "title.ssoLanding": [
+    {
+      "type": 0,
+      "value": "SSO Landing"
+    }
+  ],
+  "title.ssoRedirect": [
+    {
+      "type": 0,
+      "value": "SSO Redirect"
+    }
+  ],
+  "untitled": [
+    {
+      "type": 0,
+      "value": "無題"
+    }
+  ],
+  "username": [
+    {
+      "type": 0,
+      "value": "ユーザー名"
+    }
+  ]
+}

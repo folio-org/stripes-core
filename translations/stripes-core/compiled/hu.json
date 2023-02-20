@@ -1,0 +1,1294 @@
+{
+  "about.appModuleCount": [
+    {
+      "style": null,
+      "type": 2,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": " app "
+    },
+    {
+      "offset": 0,
+      "options": {
+        "one": {
+          "value": [
+            {
+              "type": 0,
+              "value": "module"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "modules"
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "count"
+    }
+  ],
+  "about.forTenant": [
+    {
+      "type": 0,
+      "value": "Tenant számára "
+    },
+    {
+      "type": 1,
+      "value": "tenant"
+    }
+  ],
+  "about.foundation": [
+    {
+      "type": 0,
+      "value": "Alapítvány"
+    }
+  ],
+  "about.incompatibleModuleCount": [
+    {
+      "style": null,
+      "type": 2,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": " incompatible interface "
+    },
+    {
+      "offset": 0,
+      "options": {
+        "one": {
+          "value": [
+            {
+              "type": 0,
+              "value": "version"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "versions"
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "count"
+    }
+  ],
+  "about.interfaceCount": [
+    {
+      "style": null,
+      "type": 2,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": " "
+    },
+    {
+      "offset": 0,
+      "options": {
+        "one": {
+          "value": [
+            {
+              "type": 0,
+              "value": "interface"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "interfaces"
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "count"
+    }
+  ],
+  "about.key.absentInterfaces": [
+    {
+      "type": 0,
+      "value": "A szükséges, de hiányzó interfészeket a "
+    },
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": " félkövér piros szín "
+        }
+      ],
+      "type": 8,
+      "value": "span"
+    },
+    {
+      "type": 0,
+      "value": " emeli ki."
+    }
+  ],
+  "about.key.compatible": [
+    {
+      "type": 0,
+      "value": "A kompatibilis verzióban megjelenő felületek normál betűtípussal jelennek meg."
+    }
+  ],
+  "about.key.incompatibleIntf": [
+    {
+      "type": 0,
+      "value": "A szükséges, de csak az inkompatibilis verzióban megjelenő felületeket a "
+    },
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": "narancssárga szín"
+        }
+      ],
+      "type": 8,
+      "value": "span"
+    },
+    {
+      "type": 0,
+      "value": " emeli ki."
+    }
+  ],
+  "about.legendKey": [
+    {
+      "type": 0,
+      "value": "Kulcs"
+    }
+  ],
+  "about.missingModuleCount": [
+    {
+      "style": null,
+      "type": 2,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": " missing "
+    },
+    {
+      "offset": 0,
+      "options": {
+        "one": {
+          "value": [
+            {
+              "type": 0,
+              "value": "interface"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "interfaces"
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "count"
+    }
+  ],
+  "about.moduleCount": [
+    {
+      "style": null,
+      "type": 2,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": " "
+    },
+    {
+      "offset": 0,
+      "options": {
+        "one": {
+          "value": [
+            {
+              "type": 0,
+              "value": "module"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "modules"
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "count"
+    }
+  ],
+  "about.moduleDependsOn": [
+    {
+      "type": 1,
+      "value": "module"
+    },
+    {
+      "type": 0,
+      "value": " a következőktől függ:"
+    }
+  ],
+  "about.moduleTypeCount": [
+    {
+      "style": null,
+      "type": 2,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": " "
+    },
+    {
+      "type": 1,
+      "value": "type"
+    },
+    {
+      "type": 0,
+      "value": " "
+    },
+    {
+      "offset": 0,
+      "options": {
+        "one": {
+          "value": [
+            {
+              "type": 0,
+              "value": "module"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "modules"
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "count"
+    }
+  ],
+  "about.newerModuleAvailable": [
+    {
+      "type": 1,
+      "value": "required"
+    },
+    {
+      "type": 0,
+      "value": " ("
+    },
+    {
+      "type": 1,
+      "value": "available"
+    },
+    {
+      "type": 0,
+      "value": " elérhető)"
+    }
+  ],
+  "about.noDependencies": [
+    {
+      "type": 1,
+      "value": "base"
+    },
+    {
+      "type": 0,
+      "value": " nem mutat függőségeket"
+    }
+  ],
+  "about.notEnabledModules": [
+    {
+      "type": 0,
+      "value": "Azok a telepített modulok, amelyek nem engedélyezettek ennek a tenant-nak "
+    },
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": "szürke"
+        }
+      ],
+      "type": 8,
+      "value": "span"
+    },
+    {
+      "type": 0,
+      "value": " színben jelennek meg."
+    }
+  ],
+  "about.okapiServices": [
+    {
+      "type": 0,
+      "value": "Okapi szolgáltatások"
+    }
+  ],
+  "about.onUrl": [
+    {
+      "type": 1,
+      "value": "url"
+    },
+    {
+      "type": 0,
+      "value": "-en"
+    }
+  ],
+  "about.paneTitle": [
+    {
+      "type": 0,
+      "value": "Szoftver verziók"
+    }
+  ],
+  "about.pluginModuleCount": [
+    {
+      "style": null,
+      "type": 2,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": " plugin "
+    },
+    {
+      "offset": 0,
+      "options": {
+        "one": {
+          "value": [
+            {
+              "type": 0,
+              "value": "module"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "modules"
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "count"
+    }
+  ],
+  "about.settingsModuleCount": [
+    {
+      "style": null,
+      "type": 2,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": " beállítások "
+    },
+    {
+      "offset": 0,
+      "options": {
+        "one": {
+          "value": [
+            {
+              "type": 0,
+              "value": "module"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 0,
+              "value": "modules"
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "count"
+    }
+  ],
+  "about.uiOrServiceDependencies": [
+    {
+      "type": 0,
+      "value": "UI / szolgáltatás függőségek"
+    }
+  ],
+  "about.unknown": [
+    {
+      "type": 0,
+      "value": "Ismeretlen"
+    }
+  ],
+  "about.userInterface": [
+    {
+      "type": 0,
+      "value": "Felhasználói felület"
+    }
+  ],
+  "about.version": [
+    {
+      "type": 0,
+      "value": "Verzió "
+    },
+    {
+      "type": 1,
+      "value": "version"
+    }
+  ],
+  "button.back": [
+    {
+      "type": 0,
+      "value": "Vissza"
+    }
+  ],
+  "button.cancel": [
+    {
+      "type": 0,
+      "value": "Mégsem"
+    }
+  ],
+  "button.close": [
+    {
+      "type": 0,
+      "value": "Bezár"
+    }
+  ],
+  "button.confirm": [
+    {
+      "type": 0,
+      "value": "Erősítse meg"
+    }
+  ],
+  "button.continue": [
+    {
+      "type": 0,
+      "value": "Continue"
+    }
+  ],
+  "button.delete": [
+    {
+      "type": 0,
+      "value": "Töröl"
+    }
+  ],
+  "button.deleteEntry": [
+    {
+      "type": 1,
+      "value": "entry"
+    },
+    {
+      "type": 0,
+      "value": " törlése"
+    }
+  ],
+  "button.edit": [
+    {
+      "type": 0,
+      "value": "Szerkeszt"
+    }
+  ],
+  "button.forgotPassword": [
+    {
+      "type": 0,
+      "value": "Forgot password?"
+    }
+  ],
+  "button.forgotUsername": [
+    {
+      "type": 0,
+      "value": "Forgot username?"
+    }
+  ],
+  "button.hidePassword": [
+    {
+      "type": 0,
+      "value": "Hide password"
+    }
+  ],
+  "button.new": [
+    {
+      "type": 0,
+      "value": "Új"
+    }
+  ],
+  "button.new_tooltip": [
+    {
+      "type": 1,
+      "value": "entry"
+    },
+    {
+      "type": 0,
+      "value": " hozzáadása"
+    }
+  ],
+  "button.redirect.login": [
+    {
+      "type": 0,
+      "value": "Continue to FOLIO"
+    }
+  ],
+  "button.save": [
+    {
+      "type": 0,
+      "value": "Save"
+    }
+  ],
+  "button.saveAndClose": [
+    {
+      "type": 0,
+      "value": "Ment és bezár"
+    }
+  ],
+  "button.showPassword": [
+    {
+      "type": 0,
+      "value": "Show password"
+    }
+  ],
+  "createResetPassword.confirmPassword": [
+    {
+      "type": 0,
+      "value": "Confirm Password"
+    }
+  ],
+  "createResetPassword.header": [
+    {
+      "type": 0,
+      "value": "Choose a password"
+    }
+  ],
+  "createResetPassword.newPassword": [
+    {
+      "type": 0,
+      "value": "New Password"
+    }
+  ],
+  "createResetPassword.ruleTemplate": [
+    {
+      "type": 0,
+      "value": "Must "
+    },
+    {
+      "type": 1,
+      "value": "description"
+    }
+  ],
+  "currentServicePoint": [
+    {
+      "type": 0,
+      "value": "Szolgáltatási pont: "
+    },
+    {
+      "type": 1,
+      "value": "name"
+    }
+  ],
+  "currentServicePointNotSelected": [
+    {
+      "type": 0,
+      "value": "Szolgáltatási pont: nincs"
+    }
+  ],
+  "errors.default.error": [
+    {
+      "type": 0,
+      "value": "Sorry, the information entered does not match our records."
+    }
+  ],
+  "errors.default.server.error": [
+    {
+      "type": 0,
+      "value": "System error. Unable to locate Folio account. Please try again."
+    }
+  ],
+  "errors.email.invalid": [
+    {
+      "type": 0,
+      "value": "Please enter a valid email address."
+    }
+  ],
+  "errors.forgotten.password.found.inactive": [
+    {
+      "type": 0,
+      "value": "Your account is currently locked. Please contact your FOLIO system administrator to reset your password"
+    }
+  ],
+  "errors.forgotten.password.found.multiple.users": [
+    {
+      "type": 0,
+      "value": "The information provided is tied to multiple Folio accounts. Please contact your Folio system administrator to reset your password."
+    }
+  ],
+  "errors.forgotten.username.found.multiple.users": [
+    {
+      "type": 0,
+      "value": "This email or phone number is tied to multiple Folio accounts. Please contact your Folio system administrator."
+    }
+  ],
+  "errors.link.expired": [
+    {
+      "type": 0,
+      "value": "Your choose password link expired or has already been used. Please contact your Folio Administrator for a new link."
+    }
+  ],
+  "errors.link.invalid": [
+    {
+      "type": 0,
+      "value": "Your choose password link is invalid. Please verify that you are using the link included in your email or contact your Folio Administrator."
+    }
+  ],
+  "errors.link.used": [
+    {
+      "type": 0,
+      "value": "Your choose password link expired or has already been used. Please contact your Folio Administrator for a new link."
+    }
+  ],
+  "errors.password.alphabetical.invalid": [
+    {
+      "type": 0,
+      "value": "The password must contain both lowercase and uppercase letters."
+    }
+  ],
+  "errors.password.compromised.invalid": [
+    {
+      "type": 0,
+      "value": "The password must not be commonly-used, expected or compromised"
+    }
+  ],
+  "errors.password.consecutiveWhitespaces.invalid": [
+    {
+      "type": 0,
+      "value": "The password must not contain consecutive white space characters."
+    }
+  ],
+  "errors.password.incorrect": [
+    {
+      "type": 0,
+      "value": "Bad credentials"
+    }
+  ],
+  "errors.password.incorrect.block.user": [
+    {
+      "type": 0,
+      "value": "For security purposes, your account has been locked. Please contact your FOLIO System Administrator to reset your password."
+    }
+  ],
+  "errors.password.incorrect.warn.user": [
+    {
+      "type": 0,
+      "value": "You have entered the wrong username or password for the third time. You have two more tries to login before your account will be locked."
+    }
+  ],
+  "errors.password.keyboardSequence.invalid": [
+    {
+      "type": 0,
+      "value": "The password must not contain a keyboard sequence."
+    }
+  ],
+  "errors.password.lastTenPasswords.invalid": [
+    {
+      "type": 0,
+      "value": "Previously used password. Please enter a new password."
+    }
+  ],
+  "errors.password.length.invalid": [
+    {
+      "type": 0,
+      "value": "The password length must be minimum 8 symbols."
+    }
+  ],
+  "errors.password.match.error": [
+    {
+      "type": 0,
+      "value": "Password does not match. Retype your password."
+    }
+  ],
+  "errors.password.number.invalid": [
+    {
+      "type": 0,
+      "value": "The password must contain at least one numeric character."
+    }
+  ],
+  "errors.password.repeatingSymbols.invalid": [
+    {
+      "type": 0,
+      "value": "The password must not contain the same character in a row."
+    }
+  ],
+  "errors.password.specialCharacter.invalid": [
+    {
+      "type": 0,
+      "value": "The password must contain at least one special character."
+    }
+  ],
+  "errors.password.usernameDuplicate.invalid": [
+    {
+      "type": 0,
+      "value": " The password must not contain your username."
+    }
+  ],
+  "errors.password.whiteSpace.invalid": [
+    {
+      "type": 0,
+      "value": "The password must not contain whitespaces."
+    }
+  ],
+  "errors.unable.locate.account": [
+    {
+      "type": 0,
+      "value": "Unable to find your account. Please enter a valid email address or phone number."
+    }
+  ],
+  "errors.unable.locate.account.password": [
+    {
+      "type": 0,
+      "value": "Unable to find your account. Please enter a valid email address, phone number, or username."
+    }
+  ],
+  "errors.user.blocked": [
+    {
+      "type": 0,
+      "value": "For security purposes, your account has been locked. Please try again or contact your FOLIO System Administrator."
+    }
+  ],
+  "errors.user.timeout": [
+    {
+      "type": 0,
+      "value": "Your session has expired. Please login again to resume your session."
+    }
+  ],
+  "errors.username.incorrect": [
+    {
+      "type": 0,
+      "value": "This FOLIO account cannot be located. Please contact your FOLIO systems administrator."
+    }
+  ],
+  "folioSettings": [
+    {
+      "type": 0,
+      "value": "FOLIO beállítások"
+    }
+  ],
+  "front.about": [
+    {
+      "type": 0,
+      "value": "Szoftver verziók"
+    }
+  ],
+  "front.error.general.message": [
+    {
+      "type": 0,
+      "value": "The requested URL "
+    },
+    {
+      "type": 1,
+      "value": "br"
+    },
+    {
+      "type": 1,
+      "value": "url"
+    },
+    {
+      "type": 1,
+      "value": "br"
+    },
+    {
+      "type": 0,
+      "value": " was not found on this server."
+    }
+  ],
+  "front.error.header": [
+    {
+      "type": 0,
+      "value": "404 Error"
+    }
+  ],
+  "front.error.setPassword.message": [
+    {
+      "type": 0,
+      "value": "Please log out of your current FOLIO session to set password. Once logged out please try to set your password with this link again."
+    }
+  ],
+  "front.home": [
+    {
+      "type": 0,
+      "value": "Főoldal"
+    }
+  ],
+  "front.welcome": [
+    {
+      "type": 0,
+      "value": "Üdvözöljük! A jövő könyvtára NYITVA ÁLL!"
+    }
+  ],
+  "label.caution.email": [
+    {
+      "type": 0,
+      "value": "If you don't receive the email, check your spam, junk, social or other folders. Or contact your FOLIO system administrator"
+    }
+  ],
+  "label.changed.password": [
+    {
+      "type": 0,
+      "value": "You've successfully changed your password."
+    }
+  ],
+  "label.check.email": [
+    {
+      "type": 0,
+      "value": "Check your email"
+    }
+  ],
+  "label.confirmDeleteEntry": [
+    {
+      "children": [
+        {
+          "type": 1,
+          "value": "name"
+        }
+      ],
+      "type": 8,
+      "value": "strong"
+    },
+    {
+      "type": 0,
+      "value": " will be "
+    },
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": "removed"
+        }
+      ],
+      "type": 8,
+      "value": "strong"
+    }
+  ],
+  "label.congratulations": [
+    {
+      "type": 0,
+      "value": "Congratulations!"
+    }
+  ],
+  "label.createEntry": [
+    {
+      "type": 1,
+      "value": "entry"
+    },
+    {
+      "type": 0,
+      "value": " létrehozása"
+    }
+  ],
+  "label.editEntry": [
+    {
+      "type": 1,
+      "value": "entry"
+    },
+    {
+      "type": 0,
+      "value": " szerkesztése"
+    }
+  ],
+  "label.forgotPassword": [
+    {
+      "type": 0,
+      "value": "Forgot password?"
+    }
+  ],
+  "label.forgotPasswordCallToAction": [
+    {
+      "type": 0,
+      "value": "Enter your email, username or phone number"
+    }
+  ],
+  "label.forgotUsername": [
+    {
+      "type": 0,
+      "value": "Forgot username?"
+    }
+  ],
+  "label.forgotUsernameCallToAction": [
+    {
+      "type": 0,
+      "value": "Enter your email or phone number"
+    }
+  ],
+  "label.missingRequiredField": [
+    {
+      "type": 0,
+      "value": "Kérem, töltse ki ezt a folytatáshoz"
+    }
+  ],
+  "label.okay": [
+    {
+      "type": 0,
+      "value": "Oké"
+    }
+  ],
+  "label.sent.email": [
+    {
+      "type": 0,
+      "value": "An email has been sent to "
+    },
+    {
+      "type": 1,
+      "value": "hiddenUserEmail"
+    }
+  ],
+  "label.your.email": [
+    {
+      "type": 0,
+      "value": "An email has been sent to your email address"
+    }
+  ],
+  "loggedInAs": [
+    {
+      "type": 0,
+      "value": "Bejelentkezve "
+    },
+    {
+      "type": 1,
+      "value": "firstName"
+    },
+    {
+      "type": 0,
+      "value": " "
+    },
+    {
+      "type": 1,
+      "value": "lastName"
+    }
+  ],
+  "loggingIn": [
+    {
+      "type": 0,
+      "value": "Bejelentkezés..."
+    }
+  ],
+  "login": [
+    {
+      "type": 0,
+      "value": "Bejelentkezés"
+    }
+  ],
+  "loginViaSSO": [
+    {
+      "type": 0,
+      "value": "Bejelentkezés SSO-val"
+    }
+  ],
+  "logout": [
+    {
+      "type": 0,
+      "value": "Kijelentkezés"
+    }
+  ],
+  "logoutKeepSso": [
+    {
+      "type": 0,
+      "value": "Log out from FOLIO, keep SSO session"
+    }
+  ],
+  "mainnav.appContextMenu": [
+    {
+      "type": 0,
+      "value": "Application context dropdown"
+    }
+  ],
+  "mainnav.applicationListLabel": [
+    {
+      "type": 0,
+      "value": "Application List"
+    }
+  ],
+  "mainnav.currentAppAriaLabel": [
+    {
+      "type": 0,
+      "value": "Current open application: "
+    },
+    {
+      "type": 1,
+      "value": "appName"
+    },
+    {
+      "type": 0,
+      "value": " (Click to go home)"
+    }
+  ],
+  "mainnav.myProfileAriaLabel": [
+    {
+      "type": 0,
+      "value": "My profile"
+    }
+  ],
+  "mainnav.profileDropdown.locale": [
+    {
+      "type": 0,
+      "value": "Locale"
+    }
+  ],
+  "mainnav.profileDropdown.permissions": [
+    {
+      "type": 0,
+      "value": "Permissions"
+    }
+  ],
+  "mainnav.showAllApplicationsButtonAriaLabel": [
+    {
+      "type": 0,
+      "value": "All applications"
+    }
+  ],
+  "mainnav.showAllApplicationsButtonLabel": [
+    {
+      "type": 0,
+      "value": "Apps"
+    }
+  ],
+  "mainnav.skipMainNavigation": [
+    {
+      "type": 0,
+      "value": "Skip Main Navigation"
+    }
+  ],
+  "mainnav.topLevelLabel": [
+    {
+      "type": 0,
+      "value": "Primary"
+    }
+  ],
+  "password": [
+    {
+      "type": 0,
+      "value": "Jelszó"
+    }
+  ],
+  "routeErrorBoundary.goToAppHomeLabel": [
+    {
+      "type": 0,
+      "value": "Return to home"
+    }
+  ],
+  "routeErrorBoundary.goToModuleHomeLabel": [
+    {
+      "type": 0,
+      "value": "Return to "
+    },
+    {
+      "type": 1,
+      "value": "name"
+    },
+    {
+      "type": 0,
+      "value": " landing page"
+    }
+  ],
+  "routeErrorBoundary.goToModuleSettingsHomeLabel": [
+    {
+      "type": 0,
+      "value": "Return to "
+    },
+    {
+      "type": 1,
+      "value": "name"
+    },
+    {
+      "type": 0,
+      "value": " settings"
+    }
+  ],
+  "routeErrorBoundary.sub": [
+    {
+      "type": 0,
+      "value": "An error occurred on this page and it could not be loaded."
+    }
+  ],
+  "setPassword": [
+    {
+      "type": 0,
+      "value": "Set password"
+    }
+  ],
+  "settingChoose": [
+    {
+      "type": 0,
+      "value": "Choose settings"
+    }
+  ],
+  "settingPassword": [
+    {
+      "type": 0,
+      "value": "Setting password..."
+    }
+  ],
+  "settingSystemInfo": [
+    {
+      "type": 0,
+      "value": "System information"
+    }
+  ],
+  "settings": [
+    {
+      "type": 0,
+      "value": "Beállítások"
+    }
+  ],
+  "successfullyDeleted": [
+    {
+      "type": 0,
+      "value": "A(z) "
+    },
+    {
+      "type": 1,
+      "value": "entry"
+    },
+    {
+      "type": 0,
+      "value": " "
+    },
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": " "
+        },
+        {
+          "type": 1,
+          "value": "name"
+        },
+        {
+          "type": 0,
+          "value": " "
+        }
+      ],
+      "type": 8,
+      "value": "strong"
+    },
+    {
+      "type": 0,
+      "value": "-t sikeresen "
+    },
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": "törölte"
+        }
+      ],
+      "type": 8,
+      "value": "strong"
+    },
+    {
+      "type": 0,
+      "value": "."
+    }
+  ],
+  "title.CreateResetPassword": [
+    {
+      "type": 0,
+      "value": "Choose a password"
+    }
+  ],
+  "title.changePassword": [
+    {
+      "type": 0,
+      "value": "Change password"
+    }
+  ],
+  "title.checkEmail": [
+    {
+      "type": 0,
+      "value": "Check your email"
+    }
+  ],
+  "title.forgotPassword": [
+    {
+      "type": 0,
+      "value": "Forgot password?"
+    }
+  ],
+  "title.forgotUsername": [
+    {
+      "type": 0,
+      "value": "Forgot username?"
+    }
+  ],
+  "title.home": [
+    {
+      "type": 0,
+      "value": "Főoldal"
+    }
+  ],
+  "title.login": [
+    {
+      "type": 0,
+      "value": "Bejelentkezés"
+    }
+  ],
+  "title.notFound": [
+    {
+      "type": 0,
+      "value": "Nem található"
+    }
+  ],
+  "title.settings": [
+    {
+      "type": 0,
+      "value": "Beállítások"
+    }
+  ],
+  "title.ssoLanding": [
+    {
+      "type": 0,
+      "value": "SSO beállítások"
+    }
+  ],
+  "title.ssoRedirect": [
+    {
+      "type": 0,
+      "value": "SSO átirányítás"
+    }
+  ],
+  "untitled": [
+    {
+      "type": 0,
+      "value": "Névtelen"
+    }
+  ],
+  "username": [
+    {
+      "type": 0,
+      "value": "Felhasználónév"
+    }
+  ]
+}
