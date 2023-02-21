@@ -1,5 +1,10 @@
 # Change history for stripes-core
 
+## [9.0.1](https://github.com/folio-org/stripes-core/tree/v9.0.1) (2023-02-21)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v9.0.0...v9.0.1)
+
+* Switching service points not being captured in circulation log record. Refs STCOR-686
+
 ## [9.0.0](https://github.com/folio-org/stripes-core/tree/v9.0.0) (2023-01-30)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v8.3.0...v9.0.0)
 
@@ -11,7 +16,6 @@
 * *BREAKING*: Remove SWR, a POC that never took off. Refs STCOR-516, STCOR-611.
 * *BREAKING*: Upgrade `react-redux` to `v8`. Refs STCOR-678.
 * *BREAKING*: Remove `setServicePoints`, `setCurServicePoint`. Refs STCOR-650, UISP-32.
-* Switching service points not being captured in circulation log record. Refs STCOR-686
 
 ## [8.3.0](https://github.com/folio-org/stripes-core/tree/v8.2.0) (2022-06-14)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v8.2.0...v8.3.0)
