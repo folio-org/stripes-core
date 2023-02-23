@@ -107,6 +107,7 @@ export function loadTranslations(store, locale, defaultTranslations = {}) {
   // Since moment.js don't support translations like it or it-IT-u-nu-latn
   // we need to build string like it_IT for fetch call
   const loadedLocale = locale.replace('-', '_').split('-')[0];
+  const momentLocale = locale.split('-', 2).join('-');
 
   // react-intl provides things like pt-BR.
   // lokalise provides things like pt_BR.
@@ -125,8 +126,8 @@ export function loadTranslations(store, locale, defaultTranslations = {}) {
     // For moment, we want to import and load the most-specific
     // locale possible without the numbering system suffix,
     // e.g. it-IT if available, falling back to it if that fails.
-    import(`moment/locale/${locale}`).then(() => {
-      moment.locale(locale);
+    import(`moment/locale/${momentLocale}`).then(() => {
+      moment.locale(momentLocale);
     }).catch(() => {
       import(`moment/locale/${parentLocale}`).then(() => {
         moment.locale(parentLocale);
