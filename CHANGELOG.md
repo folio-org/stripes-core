@@ -1,6 +1,7 @@
 # Change history for stripes-core
 
-## 9.0.2 IN PROGRESS
+## [9.0.2](https://github.com/folio-org/stripes-core/tree/v9.0.2) (2023-02-24)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v9.0.1...v9.0.2)
 
 * If you choose a numbering system and language in Settings > Tenant > Language and localization, saving the new values does not change the locale. Fixes STCOR-696.
 
