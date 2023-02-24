@@ -104,6 +104,10 @@ function canReadConfig(store) {
  */
 export function loadTranslations(store, locale, defaultTranslations = {}) {
   const parentLocale = locale.split('-')[0];
+  // Since moment.js don't support translations like it or it-IT-u-nu-latn
+  // we need to build string like it_IT for fetch call
+  const loadedLocale = locale.replace('-', '_').split('-')[0];
+  const momentLocale = locale.split('-', 2).join('-');
 
   // react-intl provides things like pt-BR.
   // lokalise provides things like pt_BR.
@@ -113,21 +117,32 @@ export function loadTranslations(store, locale, defaultTranslations = {}) {
 
   // Update dir- and lang-attributes on the HTML element
   // when the locale changes
-  document.documentElement.setAttribute('lang', parentLocale);
-  document.documentElement.setAttribute('dir', rtlDetect.getLangDir(locale));
+  document.documentElement.setAttribute('lang', locale);
+  document.documentElement.setAttribute('dir', rtlDetect.getLangDir(parentLocale));
 
   // Set locale for Moment.js (en is not importable as it is not stored separately)
   if (parentLocale === 'en') moment.locale(parentLocale);
   else {
-    import(`moment/locale/${parentLocale}`).then(() => {
-      moment.locale(parentLocale);
-    }).catch(e => {
-      // eslint-disable-next-line no-console
-      console.error(`Error loading locale ${parentLocale} for Moment.js`, e);
+    // For moment, we want to import and load the most-specific
+    // locale possible without the numbering system suffix,
+    // e.g. it-IT if available, falling back to it if that fails.
+    import(`moment/locale/${momentLocale}`).then(() => {
+      moment.locale(momentLocale);
+    }).catch(() => {
+      import(`moment/locale/${parentLocale}`).then(() => {
+        moment.locale(parentLocale);
+      }).catch(e => {
+        // eslint-disable-next-line no-console
+        console.error(`Error loading locale ${parentLocale} for Moment.js`, e);
+      });
     });
   }
 
-  return fetch(translations[region] ? translations[region] : translations[parentLocale])
+  // Here we put additional condition because languages
+  // like Japan we need to use like ja, but with numeric system
+  // Japan language builds like ja_u, that incorrect. We need to be safe from that bug.
+  return fetch(translations[region] ? translations[region] :
+    translations[loadedLocale] || translations[[parentLocale]])
     .then((response) => {
       if (response.ok) {
         response.json().then((stripesTranslations) => {

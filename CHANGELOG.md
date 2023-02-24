@@ -4,6 +4,7 @@
 
 * Close app-context menu when its wrapper is undefined, which it will be when switching among apps. Fixes STCOR-680.
 * Move `miragejs` to dev-deps; remove `clean` script and `rimraf`. Refs STCOR-668, STCOR-681.
+* If you choose a numbering system and language in Settings > Tenant > Language and localization, saving the new values does not change the locale. Fixes STCOR-696.
 
 ## [9.0.0](https://github.com/folio-org/stripes-core/tree/v9.0.0) (2023-01-30)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v8.3.0...v9.0.0)
