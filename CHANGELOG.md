@@ -4,6 +4,7 @@
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v9.0.1...v9.0.2)
 
 * If you choose a numbering system and language in Settings > Tenant > Language and localization, saving the new values does not change the locale. Fixes STCOR-696.
+* Align version of `@folio/stripes-connect` in dev/peer deps. Refs STCOR-705.
 
 ## [9.0.1](https://github.com/folio-org/stripes-core/tree/v9.0.1) (2023-02-21)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v9.0.0...v9.0.1)
