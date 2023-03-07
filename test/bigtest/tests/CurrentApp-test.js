@@ -3,7 +3,7 @@
  */
 
 import React from 'react';
-import { before, beforeEach, it, describe } from '@bigtest/mocha';
+import { before, beforeEach, it, describe } from 'mocha';
 import { expect } from 'chai';
 import setupApplication from '../helpers/setup-application';
 import AppContextMenu from '../../../src/components/MainNav/CurrentApp/AppContextMenu';

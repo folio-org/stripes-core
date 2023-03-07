@@ -2,11 +2,12 @@ import {
   describe,
   it,
   beforeEach,
-} from '@bigtest/mocha';
+} from 'mocha';
 import { expect } from 'chai';
 
 import translations from '../../../translations/stripes-core/en';
 import setupApplication from '../helpers/setup-core-application';
+import always from '../helpers/always';
 import ForgotPasswordInteractor from '../interactors/ForgotPassword';
 
 describe('forgot password form test', () => {
@@ -59,9 +60,9 @@ describe('forgot password form test', () => {
       await inputField.fillInput(existingRecord);
     });
 
-    it.always('should have an enabled submit button', () => {
+    it('should have an enabled submit button', always(() => {
       expect(submitButton.isDisabled).to.be.false;
-    });
+    }));
   });
 
   describe('forgot form headings tests', () => {
@@ -90,9 +91,9 @@ describe('forgot password form test', () => {
         expect(errorsWrapper.isPresent).to.be.true;
       });
 
-      it.always('should not display the error container', () => {
+      it('should not display the error container', always(() => {
         expect(errorsContainer.isPresent).to.be.false;
-      });
+      }));
     });
   });
 
@@ -224,9 +225,9 @@ describe('forgot password form test', () => {
         await submitButton.click();
       });
 
-      it.always('should not display an error container if the input match any record in DB', () => {
+      it('should not display an error container if the input match any record in DB', always(() => {
         expect(errorsContainer.isPresent).to.be.false;
-      });
+      }));
 
       it('should be redirected to the Check email status page', () => {
         expect(statusPage.isPresent).to.be.true;

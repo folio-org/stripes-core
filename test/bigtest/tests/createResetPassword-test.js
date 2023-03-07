@@ -4,9 +4,10 @@ import {
   describe,
   it,
   beforeEach,
-} from '@bigtest/mocha';
+} from 'mocha';
 
 import setupApplication from '../helpers/setup-core-application';
+import always from '../helpers/always';
 import CreateResetPasswordInteractor from '../interactors/CreateResetPassword';
 import ChangePasswordErrorPageInteractor from '../interactors/ChangePasswordErrorPage';
 import ChangePasswordConfirmationInteractor from '../interactors/ChangePasswordConfirmation';
@@ -84,9 +85,9 @@ describe('Create/Reset password page', () => {
         });
 
         describe('error message', () => {
-          it.always('should not be presented', () => {
+          it('should not be presented', always(() => {
             expect(CreateResetPasswordPage.message.isPresent).to.be.false;
-          });
+          }));
         });
       });
 
@@ -99,17 +100,17 @@ describe('Create/Reset password page', () => {
         });
 
         describe('new password field', () => {
-          it.always('should be presented', () => {
+          it('should be presented', always(() => {
             expect(CreateResetPasswordPage.newPassword.isPresent).to.be.true;
-          });
+          }));
 
-          it.always('should have type password', () => {
+          it('should have type password', always(() => {
             expect(CreateResetPasswordPage.newPassword.type).to.equal('password');
-          });
+          }));
 
-          it.always('should have proper label', () => {
+          it('should have proper label', always(() => {
             expect(CreateResetPasswordPage.newPassword.label).to.equal(translations['createResetPassword.newPassword']);
-          });
+          }));
 
           it('should have inserted password', () => {
             expect(CreateResetPasswordPage.newPassword.val).to.equal('test');
@@ -117,17 +118,17 @@ describe('Create/Reset password page', () => {
         });
 
         describe('confirm password field', () => {
-          it.always('should be presented', () => {
+          it('should be presented', always(() => {
             expect(CreateResetPasswordPage.confirmPassword.isPresent).to.be.true;
-          });
+          }));
 
-          it.always('should have type password', () => {
+          it('should have type password', always(() => {
             expect(CreateResetPasswordPage.confirmPassword.type).to.equal('password');
-          });
+          }));
 
-          it.always('should have proper label', () => {
+          it('should have proper label', always(() => {
             expect(CreateResetPasswordPage.confirmPassword.label).to.equal(translations['createResetPassword.confirmPassword']);
-          });
+          }));
 
           it('should have inserted password', () => {
             expect(CreateResetPasswordPage.confirmPassword.val).to.equal('test');
@@ -135,13 +136,13 @@ describe('Create/Reset password page', () => {
         });
 
         describe('toggle mask button', () => {
-          it.always('should be presented', () => {
+          it('should be presented', always(() => {
             expect(CreateResetPasswordPage.toggleMask.isPresent).to.be.true;
-          });
+          }));
 
-          it.always('should have proper text', () => {
+          it('should have proper text', always(() => {
             expect(CreateResetPasswordPage.toggleMask.text).to.equal(translations['button.showPassword']);
-          });
+          }));
 
           describe('toggle mask from password to text', () => {
             beforeEach(async () => {
@@ -181,22 +182,22 @@ describe('Create/Reset password page', () => {
         });
 
         describe('submit button', () => {
-          it.always('should be presented', () => {
+          it('should be presented', always(() => {
             expect(CreateResetPasswordPage.submit.isPresent).to.be.true;
-          });
+          }));
 
-          it.always('should have proper text', () => {
+          it('should have proper text', always(() => {
             expect(CreateResetPasswordPage.submit.text).to.equal(translations.setPassword);
-          });
+          }));
 
-          it.always('should be active', () => {
+          it('should be active', always(() => {
             expect(CreateResetPasswordPage.submit.isDisabled).to.be.false;
-          });
+          }));
 
           describe('error message', () => {
-            it.always('should not be presented', () => {
+            it('should not be presented', always(() => {
               expect(CreateResetPasswordPage.message.isPresent).to.be.false;
-            });
+            }));
           });
         });
       });
@@ -210,17 +211,17 @@ describe('Create/Reset password page', () => {
         });
 
         describe('new password field', () => {
-          it.always('should be presented', () => {
+          it('should be presented', always(() => {
             expect(CreateResetPasswordPage.newPassword.isPresent).to.be.true;
-          });
+          }));
 
-          it.always('should have type password', () => {
+          it('should have type password', always(() => {
             expect(CreateResetPasswordPage.newPassword.type).to.equal('password');
-          });
+          }));
 
-          it.always('should have proper label', () => {
+          it('should have proper label', always(() => {
             expect(CreateResetPasswordPage.newPassword.label).to.equal(translations['createResetPassword.newPassword']);
-          });
+          }));
 
           it('should have inserted password', () => {
             expect(CreateResetPasswordPage.newPassword.val).to.equal('test-test');
@@ -228,17 +229,17 @@ describe('Create/Reset password page', () => {
         });
 
         describe('confirm password field', () => {
-          it.always('should be presented', () => {
+          it('should be presented', always(() => {
             expect(CreateResetPasswordPage.confirmPassword.isPresent).to.be.true;
-          });
+          }));
 
-          it.always('should have type password', () => {
+          it('should have type password', always(() => {
             expect(CreateResetPasswordPage.confirmPassword.type).to.equal('password');
-          });
+          }));
 
-          it.always('should have proper label', () => {
+          it('should have proper label', always(() => {
             expect(CreateResetPasswordPage.confirmPassword.label).to.equal(translations['createResetPassword.confirmPassword']);
-          });
+          }));
 
           it('should have inserted password', () => {
             expect(CreateResetPasswordPage.confirmPassword.val).to.equal('test');
@@ -246,13 +247,13 @@ describe('Create/Reset password page', () => {
         });
 
         describe('toggle mask button', () => {
-          it.always('should be presented', () => {
+          it('should be presented', always(() => {
             expect(CreateResetPasswordPage.toggleMask.isPresent).to.be.true;
-          });
+          }));
 
-          it.always('should have proper text', () => {
+          it('should have proper text', always(() => {
             expect(CreateResetPasswordPage.toggleMask.text).to.equal(translations['button.showPassword']);
-          });
+          }));
 
           describe('toggle mask from password to text', () => {
             beforeEach(async () => {
@@ -292,13 +293,13 @@ describe('Create/Reset password page', () => {
         });
 
         describe('submit button', () => {
-          it.always('should be presented', () => {
+          it('should be presented', always(() => {
             expect(CreateResetPasswordPage.submit.isPresent).to.be.true;
-          });
+          }));
 
-          it.always('should have proper text', () => {
+          it('should have proper text', always(() => {
             expect(CreateResetPasswordPage.submit.text).to.equal(translations.setPassword);
-          });
+          }));
 
           it('should be disabled', () => {
             expect(CreateResetPasswordPage.submit.isDisabled).to.be.true;

@@ -1,4 +1,4 @@
-import { describe, beforeEach, it } from '@bigtest/mocha';
+import { describe, beforeEach, it } from 'mocha';
 import { Interactor } from '@bigtest/interactor';
 import { expect } from 'chai';
 import React, { Component } from 'react';

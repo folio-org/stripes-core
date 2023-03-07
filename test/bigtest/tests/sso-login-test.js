@@ -1,6 +1,6 @@
 import React from 'react';
 import { expect } from 'chai';
-import { beforeEach, it, describe } from '@bigtest/mocha';
+import { beforeEach, it, describe } from 'mocha';
 
 import setupApplication from '../helpers/setup-core-application';
 import SSOLandingInteractor from '../interactors/SSOLanding';

@@ -1,4 +1,4 @@
-import { beforeEach } from '@bigtest/mocha';
+import { beforeEach } from 'mocha';
 
 import setupStripesCore from './setup-application';
 import {

@@ -1,4 +1,4 @@
-import { beforeEach, describe, it } from '@bigtest/mocha';
+import { beforeEach, describe, it } from 'mocha';
 import { expect } from 'chai';
 
 import translations from '../../../translations/stripes-core/en';

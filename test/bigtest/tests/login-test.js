@@ -4,9 +4,10 @@ import {
   describe,
   it,
   beforeEach
-} from '@bigtest/mocha';
+} from 'mocha';
 
 import setupApplication from '../helpers/setup-core-application';
+import always from '../helpers/always';
 import LoginInteractor from '../interactors/login';
 
 import translations from '../../../translations/stripes-core/en';
@@ -41,9 +42,9 @@ describe('Login', () => {
       expect(login.submit.isDisabled).to.be.true;
     });
 
-    it.always('error message should not be present', () => {
+    it('error message should not be present', always(() => {
       expect(login.message.isPresent).to.be.false;
-    });
+    }));
   });
 
   describe('username insertion', () => {
@@ -61,9 +62,9 @@ describe('Login', () => {
       expect(login.submit.isDisabled).to.be.false;
     });
 
-    it.always('error message should not be present', () => {
+    it('error message should not be present', always(() => {
       expect(login.message.isPresent).to.be.false;
-    });
+    }));
   });
 
   describe('password insertion', () => {
@@ -77,13 +78,13 @@ describe('Login', () => {
       expect(login.submit.isPresent).to.be.true;
     });
 
-    it.always('submit button should be disabled', () => {
+    it('submit button should be disabled', () => {
       expect(login.submit.isDisabled).to.be.true;
     });
 
-    it.always('error message should not be present', () => {
+    it('error message should not be present', always(() => {
       expect(login.message.isPresent).to.be.false;
-    });
+    }));
   });
 
   describe('errors', () => {
@@ -101,9 +102,9 @@ describe('Login', () => {
         await submit.click();
       });
 
-      it.always('username should not be reset upon failed submit', () => {
+      it('username should not be reset upon failed submit', always(() => {
         expect(login.username.value).to.equal('username');
-      });
+      }));
 
       it('password should be reset upon failed submit', () => {
         expect(login.password.value).to.equal('');
@@ -132,9 +133,9 @@ describe('Login', () => {
         await submit.click();
       });
 
-      it.always('username should not be reset upon failed submit', () => {
+      it('username should not be reset upon failed submit', always(() => {
         expect(login.username.value).to.equal('username');
-      });
+      }));
 
       it('password should be reset upon failed submit', () => {
         expect(login.password.value).to.equal('');
@@ -163,9 +164,9 @@ describe('Login', () => {
         await submit.click();
       });
 
-      it.always('username should not be reset upon failed submit', () => {
+      it('username should not be reset upon failed submit', always(() => {
         expect(login.username.value).to.equal('username');
-      });
+      }));
 
       it('password should be reset upon failed submit', () => {
         expect(login.password.value).to.equal('');
@@ -194,9 +195,9 @@ describe('Login', () => {
         await submit.click();
       });
 
-      it.always('username should not be reset upon failed submit', () => {
+      it('username should not be reset upon failed submit', always(() => {
         expect(login.username.value).to.equal('username');
-      });
+      }));
 
       it('password should be reset upon failed submit', () => {
         expect(login.password.value).to.equal('');
@@ -225,9 +226,9 @@ describe('Login', () => {
         await submit.click();
       });
 
-      it.always('username should not be reset upon failed submit', () => {
+      it('username should not be reset upon failed submit', always(() => {
         expect(login.username.value).to.equal('username');
-      });
+      }));
 
       it('password should be reset upon failed submit', () => {
         expect(login.password.value).to.equal('');
@@ -256,9 +257,9 @@ describe('Login', () => {
         await submit.click();
       });
 
-      it.always('username should not be reset upon failed submit', () => {
+      it('username should not be reset upon failed submit', always(() => {
         expect(login.username.value).to.equal('username');
-      });
+      }));
 
       it('password should be reset upon failed submit', () => {
         expect(login.password.value).to.equal('');
@@ -287,9 +288,9 @@ describe('Login', () => {
         await submit.click();
       });
 
-      it.always('username should not be reset upon failed submit', () => {
+      it('username should not be reset upon failed submit', always(() => {
         expect(login.username.value).to.equal('username');
-      });
+      }));
 
       it('password should be reset upon failed submit', () => {
         expect(login.password.value).to.equal('');
@@ -320,9 +321,9 @@ describe('Login', () => {
         await submit.click();
       });
 
-      it.always('username should not be reset upon failed submit', () => {
+      it('username should not be reset upon failed submit', always(() => {
         expect(login.username.value).to.equal('username');
-      });
+      }));
 
       it('password should be reset upon failed submit', () => {
         expect(login.password.value).to.equal('');
