@@ -9,7 +9,7 @@ export { useModules, ModulesContext, originalModules } from './src/ModulesContex
 export { withModule, withModules } from './src/components/Modules';
 export { default as stripesConnect } from './src/stripesConnect';
 export { default as Pluggable } from './src/Pluggable';
-export { setServicePoints, setCurServicePoint, updateUser } from './src/loginServices';
+export { updateUser } from './src/loginServices';
 export { default as coreEvents } from './src/events';
 export { default as useOkapiKy } from './src/useOkapiKy';
 export { default as withOkapiKy } from './src/withOkapiKy';

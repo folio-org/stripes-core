@@ -1,6 +1,4 @@
 import {
-  setCurServicePoint,
-  setServicePoints,
   supportedLocales,
   supportedNumberingSystems,
   updateUser,
@@ -17,28 +15,6 @@ jest.mock('localforage', () => ({
   setItem: jest.fn(() => Promise.resolve()),
   removeItem: jest.fn(() => Promise.resolve()),
 }));
-
-describe('setCurServicePoint', () => {
-  it('dispatches setCurrentServicePoint', async () => {
-    const store = {
-      dispatch: jest.fn(),
-    };
-    const sp = 'monkey-bagel';
-    await setCurServicePoint(store, sp);
-    expect(store.dispatch).toHaveBeenCalledWith(setCurrentServicePoint(sp));
-  });
-});
-
-describe('setServicePoints', () => {
-  it('dispatches setUserServicePoints', async () => {
-    const store = {
-      dispatch: jest.fn(),
-    };
-    const data = ['thunder', 'chicken'];
-    await setServicePoints(store, data);
-    expect(store.dispatch).toHaveBeenCalledWith(setUserServicePoints(data));
-  });
-});
 
 describe('supportedLocales', () => {
   it('is an array of strings', () => {
