@@ -1,90 +1,65 @@
-import { expect } from 'chai';
-
 import {
   describe,
   it,
   beforeEach
 } from 'mocha';
 
+import { TextField, Bigtest, HTML, including } from '@folio/stripes-testing';
 import setupApplication from '../helpers/setup-core-application';
 import always from '../helpers/always';
-import LoginInteractor from '../interactors/login';
 
 import translations from '../../../translations/stripes-core/en';
 
-describe('Login', () => {
-  const login = new LoginInteractor('form[class^="form--"]');
+const ErrorMessage = HTML.extend('message banner')
+  .selector('[data-test-message-banner]');
+
+describe.only('Login', () => {
+  const { Link, Button: LoginButton } = Bigtest;
+  const usernamefield = TextField({ id: 'input-username' });
+  const passwordfield = TextField({ id: 'input-password' });
+  const loginButton = LoginButton('Log in');
+  const loginDisabled = () => LoginButton({ text: 'Log in', disabled: true }).exists();
+
+  const loginAction = async () => {
+    await usernamefield.fillIn('username');
+    await passwordfield.fillIn('password');
+    await loginButton.click();
+  };
 
   setupApplication({ disableAuth: false });
 
   describe('default behavior', () => {
-    it('should have username field', () => {
-      expect(login.username.isPresent).to.be.true;
-    });
+    it('should have username field', () => usernamefield.exists());
 
-    it('should have password field', () => {
-      expect(login.password.isPresent).to.be.true;
-    });
+    it('should have password field', () => passwordfield.exists());
 
-    it('should have forgot password link', () => {
-      expect(login.forgotPassword.isPresent).to.be.true;
-    });
+    it('should have forgot password link', () => Link('Forgot password?').exists());
 
-    it('should have forgot username link', () => {
-      expect(login.forgotUsername.isPresent).to.be.true;
-    });
+    it('should have forgot username link', () => Link('Forgot username?').exists());
 
-    it('should have submit button', () => {
-      expect(login.submit.isPresent).to.be.true;
-    });
+    it('submit button should be disabled', loginDisabled);
 
-    it('submit button should be disabled', () => {
-      expect(login.submit.isDisabled).to.be.true;
-    });
-
-    it('error message should not be present', always(() => {
-      expect(login.message.isPresent).to.be.false;
-    }));
+    it('error message should not be present', always(() => ErrorMessage().absent()));
   });
 
   describe('username insertion', () => {
     beforeEach(async () => {
-      const { username } = login;
-
-      await username.fill('test');
+      await usernamefield.fillIn('test');
     });
 
-    it('should have submit button', () => {
-      expect(login.submit.isPresent).to.be.true;
-    });
+    it('submit button should be active', () => loginButton.is({ disabled: false }));
 
-    it('submit button should be active', () => {
-      expect(login.submit.isDisabled).to.be.false;
-    });
-
-    it('error message should not be present', always(() => {
-      expect(login.message.isPresent).to.be.false;
-    }));
+    it('error message should not be present', always(() => ErrorMessage().absent()));
   });
 
   describe('password insertion', () => {
     beforeEach(async () => {
-      const password = login.password;
-
-      await password.fill('test');
+      await passwordfield.fillIn('test');
     });
 
-    it('should have submit button', () => {
-      expect(login.submit.isPresent).to.be.true;
-    });
+    it('submit button should be disabled', loginDisabled);
 
-    it('submit button should be disabled', () => {
-      expect(login.submit.isDisabled).to.be.true;
-    });
-
-    it('error message should not be present', always(() => {
-      expect(login.message.isPresent).to.be.false;
-    }));
+    it('error message should not be present', always(() => ErrorMessage().absent()));
   });
 
   describe('errors', () => {
@@ -94,29 +69,13 @@ describe('Login', () => {
         scenarios: ['wrongUsername'],
       });
 
-      beforeEach(async function () {
-        const { username, password, submit } = login;
+      beforeEach(loginAction);
 
-        await username.fill('username');
-        await password.fill('password');
-        await submit.click();
-      });
+      it('username should not be reset upon failed submit', always(() => usernamefield.has({ value: 'username' })));
 
-      it('username should not be reset upon failed submit', always(() => {
-        expect(login.username.value).to.equal('username');
-      }));
+      it('password should be reset upon failed submit', () => passwordfield.has({ value: '' }));
 
-      it('password should be reset upon failed submit', () => {
-        expect(login.password.value).to.equal('');
-      });
-
-      it('error message should be present upon failed submit', () => {
-        expect(login.message.isPresent).to.be.true;
-      });
-
-      it('error message should have proper text upon failed submit', () => {
-        expect(login.message.text).to.equal(translations['errors.username.incorrect']);
-      });
+      it('error message should have proper text upon failed submit', () => ErrorMessage(translations['errors.username.incorrect']).exists());
     });
 
     describe('error for the wrong password', () => {
@@ -125,29 +84,13 @@ describe('Login', () => {
         scenarios: ['wrongPassword'],
       });
 
-      beforeEach(async function () {
-        const { username, password, submit } = login;
+      beforeEach(loginAction);
 
-        await username.fill('username');
-        await password.fill('password');
-        await submit.click();
-      });
+      it('username should not be reset upon failed submit', always(() => usernamefield.has({ value: 'username' })));
 
-      it('username should not be reset upon failed submit', always(() => {
-        expect(login.username.value).to.equal('username');
-      }));
+      it('password should be reset upon failed submit', () => passwordfield.has({ value: '' }));
 
-      it('password should be reset upon failed submit', () => {
-        expect(login.password.value).to.equal('');
-      });
-
-      it('error message should be present upon failed submit', () => {
-        expect(login.message.isPresent).to.be.true;
-      });
-
-      it('error message should have proper text upon failed submit', () => {
-        expect(login.message.text).to.equal(translations['errors.password.incorrect']);
-      });
+      it('error message should have proper text upon failed submit', () => ErrorMessage(translations['errors.password.incorrect']).exists());
     });
 
     describe('error for the server error', () => {
@@ -156,29 +99,13 @@ describe('Login', () => {
         scenarios: ['serverError'],
       });
 
-      beforeEach(async function () {
-        const { username, password, submit } = login;
+      beforeEach(loginAction);
 
-        await username.fill('username');
-        await password.fill('password');
-        await submit.click();
-      });
+      it('username should not be reset upon failed submit', always(() => usernamefield.has({ value: 'username' })));
 
-      it('username should not be reset upon failed submit', always(() => {
-        expect(login.username.value).to.equal('username');
-      }));
+      it('password should be reset upon failed submit', () => passwordfield.has({ value: '' }));
 
-      it('password should be reset upon failed submit', () => {
-        expect(login.password.value).to.equal('');
-      });
-
-      it('error message should be present upon failed submit', () => {
-        expect(login.message.isPresent).to.be.true;
-      });
-
-      it('error message should have proper text upon failed submit', () => {
-        expect(login.message.text).to.equal(translations['errors.default.server.error']);
-      });
+      it('error message should have proper text upon failed submit', () => ErrorMessage(translations['errors.default.server.error']).exists());
     });
 
     describe('error for the third attempt to enter wrong password', () => {
@@ -187,29 +114,13 @@ describe('Login', () => {
         scenarios: ['thirdAttemptToLogin'],
       });
 
-      beforeEach(async function () {
-        const { username, password, submit } = login;
+      beforeEach(loginAction);
 
-        await username.fill('username');
-        await password.fill('password');
-        await submit.click();
-      });
+      it('username should not be reset upon failed submit', always(() => usernamefield.has({ value: 'username' })));
 
-      it('username should not be reset upon failed submit', always(() => {
-        expect(login.username.value).to.equal('username');
-      }));
+      it('password should be reset upon failed submit', () => passwordfield.has({ value: '' }));
 
-      it('password should be reset upon failed submit', () => {
-        expect(login.password.value).to.equal('');
-      });
-
-      it('error message should be present upon failed submit', () => {
-        expect(login.message.isPresent).to.be.true;
-      });
-
-      it('error message should have proper text upon failed submit', () => {
-        expect(login.message.text).to.equal(translations['errors.password.incorrect.warn.user']);
-      });
+      it('error message should have proper text upon failed submit', () => ErrorMessage(translations['errors.password.incorrect.warn.user']).exists());
     });
 
     describe('error for the fifth attempt to enter wrong password', () => {
@@ -218,29 +129,13 @@ describe('Login', () => {
         scenarios: ['fifthAttemptToLogin'],
       });
 
-      beforeEach(async function () {
-        const { username, password, submit } = login;
+      beforeEach(loginAction);
 
-        await username.fill('username');
-        await password.fill('password');
-        await submit.click();
-      });
+      it('username should not be reset upon failed submit', always(() => usernamefield.has({ value: 'username' })));
 
-      it('username should not be reset upon failed submit', always(() => {
-        expect(login.username.value).to.equal('username');
-      }));
+      it('password should be reset upon failed submit', () => passwordfield.has({ value: '' }));
 
-      it('password should be reset upon failed submit', () => {
-        expect(login.password.value).to.equal('');
-      });
-
-      it('error message should be present upon failed submit', () => {
-        expect(login.message.isPresent).to.be.true;
-      });
-
-      it('error message should have proper text upon failed submit', () => {
-        expect(login.message.text).to.equal(translations['errors.password.incorrect.block.user']);
-      });
+      it('error message should have proper text upon failed submit', () => ErrorMessage(translations['errors.password.incorrect.block.user']));
     });
 
     describe('error for the attempt to login to locked account', () => {
@@ -249,29 +144,13 @@ describe('Login', () => {
         scenarios: ['lockedAccount'],
       });
 
-      beforeEach(async function () {
-        const { username, password, submit } = login;
+      beforeEach(loginAction);
 
-        await username.fill('username');
-        await password.fill('password');
-        await submit.click();
-      });
+      it('username should not be reset upon failed submit', always(() => usernamefield.has({ value: 'username' })));
 
-      it('username should not be reset upon failed submit', always(() => {
-        expect(login.username.value).to.equal('username');
-      }));
+      it('password should be reset upon failed submit', () => passwordfield.has({ value: '' }));
 
-      it('password should be reset upon failed submit', () => {
-        expect(login.password.value).to.equal('');
-      });
-
-      it('error message should be present upon failed submit', () => {
-        expect(login.message.isPresent).to.be.true;
-      });
-
-      it('error message should have proper text upon failed submit', () => {
-        expect(login.message.text).to.equal(translations['errors.user.blocked']);
-      });
+      it('error message should have proper text upon failed submit', () => ErrorMessage(translations['errors.user.blocked']));
     });
 
     describe('multiple errors', () => {
@@ -280,30 +159,18 @@ describe('Login', () => {
         scenarios: ['multipleErrors'],
       });
 
-      beforeEach(async function () {
-        const { username, password, submit } = login;
+      beforeEach(loginAction);
 
-        await username.fill('username');
-        await password.fill('password');
-        await submit.click();
-      });
+      it('username should not be reset upon failed submit', always(() => usernamefield.has({ value: 'username' })));
 
-      it('username should not be reset upon failed submit', always(() => {
-        expect(login.username.value).to.equal('username');
-      }));
-
-      it('password should be reset upon failed submit', () => {
-        expect(login.password.value).to.equal('');
-      });
-
-      it('error message should be present upon failed submit', () => {
-        expect(login.message.isPresent).to.be.true;
-      });
+      it('password should be reset upon failed submit', () => passwordfield.has({ value: '' }));
 
       it('error message should have proper text upon failed submit', () => {
-        expect(login.message.text).to.equal(
-          `${translations['errors.user.blocked']}${translations['errors.password.incorrect.warn.user']}`
-        );
+        const res = [
+          ErrorMessage(including(translations['errors.user.blocked'])).exists(),
+          ErrorMessage(including(translations['errors.password.incorrect.warn.user'])).exists()
+        ];
+        return Promise.all(res);
       });
     });
 
@@ -313,46 +180,22 @@ describe('Login', () => {
         scenarios: ['invalidResponseBody'],
       });
 
-      beforeEach(async function () {
-        const { username, password, submit } = login;
+      beforeEach(loginAction);
 
-        await username.fill('username');
-        await password.fill('password');
-        await submit.click();
-      });
+      it('username should not be reset upon failed submit', always(() => usernamefield.has({ value: 'username' })));
 
-      it('username should not be reset upon failed submit', always(() => {
-        expect(login.username.value).to.equal('username');
-      }));
+      it('password should be reset upon failed submit', () => passwordfield.has({ value: '' }));
 
-      it('password should be reset upon failed submit', () => {
-        expect(login.password.value).to.equal('');
-      });
-
-      it('error message should be present upon failed submit', () => {
-        expect(login.message.isPresent).to.be.true;
-      });
-
-      it('error message should have proper text upon failed submit', () => {
-        expect(login.message.text).to.equal(
-          translations['errors.default.error']
-        );
-      });
-    });
-  });
-
-  describe('with valid credentials', () => {
-    beforeEach(async () => {
-      const { username, password, submit } = login;
-
-      await username.fill('username');
-      await password.fill('password');
-      await submit.click();
-      await submit.blur();
+      it('error message should have proper text upon failed submit', () => ErrorMessage(translations['errors.default.error']).exists());
     });
 
-    it('login page should not be displayed upon successful login', () => {
-      expect(login.isPresent).to.be.false;
+    describe('with valid credentials', () => {
+      beforeEach(async () => {
+        await loginAction();
+        await loginButton.blur();
+      });
+
+      it('login page should not be displayed upon successful login', () => usernamefield.absent());
     });
   });
 });

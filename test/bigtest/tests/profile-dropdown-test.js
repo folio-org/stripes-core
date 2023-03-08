@@ -1,9 +1,7 @@
 import { describe, beforeEach, it } from 'mocha';
-import { Interactor } from '@bigtest/interactor';
 import { expect } from 'chai';
 import React, { Component } from 'react';
-import DropdownInteractor from '@folio/stripes-components/lib/Dropdown/tests/interactor';
-
+import { Dropdown as DropdownInteractor, HTML, TextField as LoginInteractor } from '@folio/stripes-testing';
 import setupApplication from '../helpers/setup-application';
 
 class DummyApp extends Component {
@@ -12,9 +10,16 @@ class DummyApp extends Component {
   }
 }
 
+const ProfileMenuInteractor = HTML.extend('profile menu')
+  .selector('div[class*=DropdownMenu]')
+  .filters({
+    itemCount: el => el.querySelectorAll('[data-test-nav-list-item]').length
+  });
+
 describe('Profile dropdown', () => {
-  const dropdown = new DropdownInteractor('#profileDropdown');
-  const loginInteractor = new Interactor('[data-test-new-username-field]');
+  const profileDropdown = DropdownInteractor({ id: 'profileDropdown' });
+  const profileMenu = ProfileMenuInteractor();
+  const loginInteractor = LoginInteractor({ id: 'input-username' });
 
   const modules = [{
     type: 'app',
@@ -55,22 +60,18 @@ describe('Profile dropdown', () => {
     this.visit('/dummy');
   });
 
-  it('renders', () => {
-    expect(dropdown.triggerDisplayed).to.be.true;
-  });
+  it('renders', () => profileDropdown.exists());
 
   describe('opening the dropdown', () => {
     beforeEach(async () => {
-      await dropdown.clickTrigger();
+      await profileDropdown.toggle();
     });
 
-    it('displays the appropriate number of links', () => {
-      expect(dropdown.menu.items().length).to.equal(4);
-    });
+    it('displays the appropriate number of links', () => profileMenu.has({ itemCount: 4 }));
 
     describe('clicking the home link', () => {
       beforeEach(async () => {
-        await dropdown.menu.items(0).click();
+        await ProfileMenuInteractor().find(HTML('Home')).click();
       });
 
       it('changes the url', function () {
@@ -80,7 +81,7 @@ describe('Profile dropdown', () => {
 
     describe('clicking a userlink', () => {
       beforeEach(async () => {
-        await dropdown.menu.items(1).click();
+        await profileMenu.find(HTML('Okay')).click();
       });
 
       it('changes the url', function () {
@@ -90,7 +91,7 @@ describe('Profile dropdown', () => {
 
     describe('clicking a Change Password link', () => {
       beforeEach(async () => {
-        await dropdown.menu.items(2).click();
+        await profileMenu.find(HTML('Change password')).click();
       });
 
       it('changes the url', function () {
@@ -100,12 +101,10 @@ describe('Profile dropdown', () => {
 
     describe('clicking logout', () => {
       beforeEach(async () => {
-        await dropdown.menu.items(3).click();
+        await profileMenu.find(HTML('Log out')).click();
       });
 
-      it('changes the url', () => {
-        expect(loginInteractor.isPresent).to.be.true;
-      });
+      it('changes the url', () => loginInteractor.exists());
     });
   });
 });

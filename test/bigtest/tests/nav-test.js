@@ -2,7 +2,7 @@ import { describe, beforeEach, it } from 'mocha';
 import { expect } from 'chai';
 
 import React, { Component } from 'react';
-
+import { Button } from '@folio/stripes-testing';
 import setupApplication from '../helpers/setup-core-application';
 import AppInteractor from '../interactors/app';
 
@@ -29,17 +29,11 @@ describe('Nav', () => {
     }
   });
 
-  it('shows a settings button', () => {
-    expect(app.nav('Settings').isPresent).to.be.true;
-  });
+  it('shows a settings button', () => Button('Settings').exists());
 
-  it('shows a dummy app button', () => {
-    expect(app.nav('Dummy').isPresent).to.be.true;
-  });
+  it('shows a dummy app button', () => Button('Dummy').exists());
 
-  it('shows help button', function () {
-    expect(app.helpButton.isPresent).to.be.true;
-  });
+  it('shows help button', () => Button({ id: 'helpButton' }).exists());
 
   describe('clicking settings', () => {
     beforeEach(async () => {
