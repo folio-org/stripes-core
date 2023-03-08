@@ -1,13 +1,10 @@
 import { describe, beforeEach, it } from 'mocha';
-import { expect } from 'chai';
+import { HTML } from '@folio/stripes-testing';
 
 import setupApplication from '../helpers/setup-core-application';
-import LoginInteractor from '../interactors/login';
 import translations from '../../../translations/stripes-core/en';
 
 describe('Session timeout test', () => {
-  const login = new LoginInteractor('form[class^="form--"]');
-
   setupApplication({
     scenarios: ['invalidToken']
   });
@@ -17,8 +14,6 @@ describe('Session timeout test', () => {
       this.visit('/settings/about');
     });
 
-    it('should redirect to login with session timeout message', function () {
-      expect(login.message.text).to.equal(translations['errors.user.timeout']);
-    });
+    it('should redirect to login with session timeout message', () => HTML(translations['errors.user.timeout']).exists());
   });
 });

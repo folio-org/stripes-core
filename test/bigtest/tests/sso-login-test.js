@@ -1,9 +1,17 @@
 import React from 'react';
 import { expect } from 'chai';
 import { beforeEach, it, describe } from 'mocha';
-
+import { HTML } from '@folio/stripes-testing';
 import setupApplication from '../helpers/setup-core-application';
-import SSOLandingInteractor from '../interactors/SSOLanding';
+// import SSOLandingInteractor from '../interactors/SSOLanding';
+
+
+const SSOLandingInteractor = HTML.extend('sso landing')
+  .selector('div[tabindex="-1"]')
+  .filters({
+    error: el => el.matches('[data-test-sso-error]'),
+    valid: el => el.matches('[data-test-sso-success]')
+  });
 
 // These are SSO route-based tests. There are also component-based tests
 // at / src / components / SSOLogin / tests /
@@ -16,23 +24,19 @@ import SSOLandingInteractor from '../interactors/SSOLanding';
 //
 describe('Login via SSO', () => {
   describe('SSO redirect', () => {
-    const sso = new SSOLandingInteractor();
+    const sso = SSOLandingInteractor();
 
     describe('Renders error without token', () => {
       setupApplication({
         disableAuth: false,
       });
       beforeEach(async function () {
-        this.visit('/sso-landing');
+        await this.visit('/sso-landing');
       });
 
-      it('Shows error message', () => {
-        expect(sso.isError).to.be.true;
-      });
+      it('Shows error message', () => sso.has({ error: true }));
 
-      it('Does not show token message', () => {
-        expect(sso.isValid).to.be.false;
-      });
+      it('Does not show token message', () => sso.has({ valid: false }));
     });
 
     describe('Reads token in params', () => {
@@ -41,12 +45,10 @@ describe('Login via SSO', () => {
       });
 
       beforeEach(async function () {
-        this.visit('/sso-landing?ssoToken=c0ffee');
+        await this.visit('/sso-landing?ssoToken=c0ffee');
       });
 
-      it('Shows token message', () => {
-        expect(sso.isValid).to.be.true;
-      });
+      it('Shows token message', () => sso.has({ valid: true }));
     });
 
     describe('Reads token in cookie', () => {
@@ -56,12 +58,10 @@ describe('Login via SSO', () => {
       });
 
       beforeEach(async function () {
-        this.visit('/sso-landing');
+        await this.visit('/sso-landing');
       });
 
-      it('Shows token message', () => {
-        expect(sso.isValid).to.be.true;
-      });
+      it('Shows token message', () => sso.has({ valid: true }));
     });
   });
 });

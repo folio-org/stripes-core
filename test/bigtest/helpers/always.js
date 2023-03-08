@@ -3,7 +3,7 @@
 */
 
 export default (trial) => {
-  const duration = 1000;
+  const duration = 200;
   return async () => {
     const startTime = performance.now();
     while (true) { // eslint-disable-line no-constant-condition
