@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import stripesConnect from '@folio/stripes-connect/package';
@@ -10,16 +10,27 @@ import {
   Pane,
   Headline,
   List,
-  Loading,
+  Loading
 } from '@folio/stripes-components';
 import AboutEnabledModules from './AboutEnabledModules';
+import AboutInstallMessages from './AboutInstallMessages';
 import WarningBanner from './WarningBanner';
 import { withModules } from '../Modules';
-
 import stripesCore from '../../../package';
 import css from './About.css';
 
 const About = (props) => {
+  const titleRef = useRef(null);
+  const bannerRef = useRef(null);
+
+  useEffect(() => {
+    if (bannerRef.current) {
+      bannerRef.current.focus();
+    } else {
+      titleRef.current?.focus();
+    }
+  }, []);
+
   function renderDependencies(m, interfaces) {
     const base = `${m.module} ${m.version}`;
     if (!interfaces) {
@@ -104,6 +115,7 @@ const About = (props) => {
     <Pane
       defaultWidth="fill"
       paneTitle={<FormattedMessage id="stripes-core.about.paneTitle" />}
+      paneTitleRef={titleRef}
     >
       {!isLoadingFinished ? (
         <Loading />
@@ -111,8 +123,10 @@ const About = (props) => {
         <WarningBanner
           interfaces={interfaces}
           modules={props.modules}
+          bannerRef={bannerRef}
         />
       )}
+      <AboutInstallMessages stripes={props.stripes} />
       <div className={css.versionsContainer}>
         <div className={css.versionsColumn}>
           <Headline size="large">
@@ -219,6 +233,7 @@ About.propTypes = {
       interfaces: PropTypes.object,
     }),
     connect: PropTypes.func,
+    hasPerm: PropTypes.func.isRequired,
   }).isRequired,
 };
 

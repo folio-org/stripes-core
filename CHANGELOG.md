@@ -1,8 +1,54 @@
 # Change history for stripes-core
 
-## 8.2.0 IN PROGRESS
+## 9.1.0 IN PROGRESS
+
+* Close app-context menu when its wrapper is undefined, which it will be when switching among apps. Fixes STCOR-680.
+* Move `miragejs` to dev-deps; remove `clean` script and `rimraf`. Refs STCOR-668, STCOR-681.
+* If you choose a numbering system and language in Settings > Tenant > Language and localization, saving the new values does not change the locale. Fixes STCOR-696.
+* Align version of `@folio/stripes-connect` in dev/peer deps. Refs STCOR-705.
+
+## [9.0.0](https://github.com/folio-org/stripes-core/tree/v9.0.0) (2023-01-30)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v8.3.0...v9.0.0)
+
+* Allow suppression of `react-intl` warnings, in addition to errors. Refs STCOR-659.
+* Catastrophic Messaging | Return to MARC authority. Fixes STCOR-661.
+* Reset App Context Dropdown state when switching apps/unmounting. Fixes STCOR-664.
+* PasswordValidationField swallows error messages from API queries. Fixes STCOR-657.
+* Guarantee a single-row response to the tenant's locale-config query. Fixes STCOR-675.
+* *BREAKING*: Remove SWR, a POC that never took off. Refs STCOR-516, STCOR-611.
+* *BREAKING*: Upgrade `react-redux` to `v8`. Refs STCOR-678.
+* *BREAKING*: Remove `setServicePoints`, `setCurServicePoint`. Refs STCOR-650, UISP-32.
+* Switching service points not being captured in circulation log record. Refs STCOR-686
+
+## [8.3.0](https://github.com/folio-org/stripes-core/tree/v8.2.0) (2022-06-14)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v8.2.0...v8.3.0)
+
+* Use documentation's root URL in NavBar `?` link. Refs STCOR-621.
+* Allow customization of login page's CSS. Refs STCOR-643.
+* Allow customization of navbar CSS. Refs STCOR-644.
+* Add `cs_CZ` (Czech, Czechia) to the supported locales. Refs STCOR-645.
+* Optionally display Okapi env, mod-configuration, or stripes.config values on about page. Refs STCOR-603.
+* Move SSO logon above Folio Username and Password Boxes. Refs STCOR-648.
+
+## [8.2.0](https://github.com/folio-org/stripes-core/tree/v8.2.0) (2022-06-14)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v8.1.0...v8.2.0)
 
 * Align prop-types related to password reset errors. Refs STCOR-590.
+* Provide missing `password.compromised` translation. Refs STCOR-595.
+* Create/Reset password page > Display password requirements on page. Refs STCOR-576.
+* Remove `react-hot-loader` cruft. Refs STCOR-597, STRIPES-725.
+* Add id to `<Settings>` navigation pane. Refs STCOR-604.
+* Display different message when user attempts to access the set password link when still logged in. Refs STCOR-599.
+* Import stripes-components via its public exports. Refs STCOR-612.
+* Support testing with Jest/RTL. Refs STCOR-618.
+* Export `queryLimit` to provide a default API query limit. Refs STCOR-615.
+* Update NodeJS to v16 in GitHub Actions. Refs STCOR-623.
+* Provide `useCallout` hook. Refs STCOR-631.
+* Add message to indicate user cannot access app/record. Refs STCOR-619.
+* Clear console on logout. Refs STCOR-636.
+* Forgot username/password pages - Not responsive. Refs STCOR-630.
+* Add main landmark to login screen. Refs STCOR-633.
+* Record detail panes are empty when printed. Refs STCOR-638.
 
 ## [8.1.0](https://github.com/folio-org/stripes-core/tree/v8.1.0) (2022-02-11)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v8.0.0...v8.1.0)

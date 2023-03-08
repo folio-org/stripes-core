@@ -7,9 +7,11 @@ import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import { FormattedMessage, injectIntl } from 'react-intl';
 
-import { Dropdown } from '@folio/stripes-components/lib/Dropdown';
-import DropdownMenu from '@folio/stripes-components/lib/DropdownMenu';
-import Icon from '@folio/stripes-components/lib/Icon';
+import {
+  Dropdown,
+  DropdownMenu,
+  Icon
+} from '@folio/stripes-components';
 
 import { ResizeContainer, AppListDropdown } from './components';
 import NavButton from '../NavButton';

@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
-import List from '@folio/stripes-components/lib/List';
+import { List } from '@folio/stripes-components';
 
 class AboutEnabledModules extends React.Component {
   static manifest = Object.freeze({

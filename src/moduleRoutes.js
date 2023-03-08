@@ -1,23 +1,20 @@
-import React from 'react';
-import { Route } from 'react-router-dom';
+import React, { Suspense } from 'react';
 import { useLocation } from 'react-router';
 import PropTypes from 'prop-types';
 
-import { connectFor } from '@folio/stripes-connect';
+import { LoadingView } from '@folio/stripes-components';
 
 import { ModulesContext } from './ModulesContext';
-import { StripesContext } from './StripesContext';
-import AddContext from './AddContext';
-import TitleManager from './components/TitleManager';
-import RouteErrorBoundary from './components/RouteErrorBoundary';
-import { getEventHandlers } from './handlerService';
+
 import { packageName } from './constants';
 import {
   BadRequestScreen,
-  ModuleHierarchyProvider,
+  NoPermissionScreen,
+  ResetPasswordNotAvailableScreen,
   TitledRoute,
 } from './components';
-import events from './events';
+
+import AppRoutes from './AppRoutes';
 
 const propTypes = {
   stripes: PropTypes.shape({
@@ -41,71 +38,39 @@ function ModuleRoutes({ stripes }) {
         const isValidRoute = modules.app.some(module => location.pathname.startsWith(`${module.route}`));
 
         if (!isValidRoute) {
+          const isResetPasswordRoute = location.pathname.startsWith('/reset-password');
+
+          return isResetPasswordRoute
+            ? (
+              <TitledRoute
+                name="notFound"
+                component={<ResetPasswordNotAvailableScreen />}
+              />
+            )
+            : (
+              <TitledRoute
+                name="notFound"
+                component={<BadRequestScreen />}
+              />
+            );
+        }
+
+        const currentModule = modules.app.find(module => location.pathname.startsWith(`${module.route}`));
+        const moduleName = currentModule?.module?.replace(packageName.PACKAGE_SCOPE_REGEX, '');
+
+        if (!stripes.hasPerm(`module.${moduleName}.enabled`)) {
           return (
             <TitledRoute
-              name="notFound"
-              component={<BadRequestScreen />}
+              name="noPermission"
+              component={<NoPermissionScreen />}
             />
           );
         }
 
         return (
-          <>
-            {modules.app.map((module) => {
-              const name = module.module.replace(packageName.PACKAGE_SCOPE_REGEX, '');
-              const displayName = module.displayName;
-              const perm = `module.${name}.enabled`;
-              if (!stripes.hasPerm(perm)) return null;
-
-              const connect = connectFor(module.module, stripes.epics, stripes.logger);
-
-              let Current;
-              try {
-                Current = connect(module.getModule());
-              } catch (error) {
-                console.error(error); // eslint-disable-line
-                throw Error(error);
-              }
-
-              const moduleStripes = stripes.clone({ connect });
-
-              return (
-                <Route
-                  path={module.route}
-                  key={module.route}
-                  render={props => {
-                    const data = { displayName, name };
-
-                    // allow SELECT_MODULE handlers to intervene
-                    const components = getEventHandlers(events.SELECT_MODULE, moduleStripes, modules.handler, data);
-                    if (components.length) {
-                      return components.map(HandlerComponent => (<HandlerComponent stripes={stripes} data={data} />));
-                    }
-
-                    return (
-                      <StripesContext.Provider value={moduleStripes}>
-                        <AddContext context={{ stripes: moduleStripes }}>
-                          <ModuleHierarchyProvider module={module.module}>
-                            <div id={`${name}-module-display`} data-module={module.module} data-version={module.version}>
-                              <RouteErrorBoundary
-                                escapeRoute={module.home}
-                                moduleName={displayName}
-                                stripes={moduleStripes}
-                              >
-                                <TitleManager page={displayName}>
-                                  <Current {...props} connect={connect} stripes={moduleStripes} actAs="app" />
-                                </TitleManager>
-                              </RouteErrorBoundary>
-                            </div>
-                          </ModuleHierarchyProvider>
-                        </AddContext>
-                      </StripesContext.Provider>
-                    );
-                  }}
-                />
-              );
-            }).filter(x => x)}
-          </>
+          <Suspense fallback={<LoadingView />}>
+            <AppRoutes modules={modules} stripes={stripes} />
+          </Suspense>
         );
       }}
     </ModulesContext.Consumer>

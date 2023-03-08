@@ -130,9 +130,15 @@
     "routeErrorBoundary.goToAppHomeLabel": "Return to home",
     "routeErrorBoundary.goToModuleHomeLabel": "Return to {name} landing page",
     "routeErrorBoundary.goToModuleSettingsHomeLabel": "Return to {name} settings",
-    "logoutKeepSso": "Log out from FOLIO, keep SSO session",
+    "logoutKeepSso": "Desconectarse de FOLIO, mantener sesión SSO",
     "mainnav.profileDropdown.locale": "Locale",
-    "mainnav.profileDropdown.permissions": "Permissions",
+    "mainnav.profileDropdown.permissions": "Permisos",
     "front.error.header": "404 Error",
-    "front.error.message": "The requested URL {br}{url}{br} was not found on this server."
+    "errors.password.compromised.invalid": "The password must not be commonly-used, expected or compromised",
+    "createResetPassword.ruleTemplate": "Must {description}",
+    "front.error.general.message": "The requested URL {br}{url}{br} was not found on this server.",
+    "front.error.setPassword.message": "Please log out of your current FOLIO session to set password. Once logged out please try to set your password with this link again.",
+    "title.noPermission": "No permission",
+    "front.error.noPermission": "You don't have permission to view this app/record",
+    "button.duplicate": "Duplicate"
 }

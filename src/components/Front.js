@@ -1,7 +1,7 @@
 import { get } from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
-import Headline from '@folio/stripes-components/lib/Headline';
+import { Headline } from '@folio/stripes-components';
 import { FormattedMessage } from 'react-intl';
 
 import Pluggable from '../Pluggable';

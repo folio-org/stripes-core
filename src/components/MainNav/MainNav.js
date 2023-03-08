@@ -6,7 +6,9 @@ import { injectIntl } from 'react-intl';
 import { withRouter } from 'react-router';
 import localforage from 'localforage';
 
-import Icon from '@folio/stripes-components/lib/Icon';
+import { branding } from 'stripes-config';
+
+import { Icon } from '@folio/stripes-components';
 
 import { withModules } from '../Modules';
 import { LastVisitedContext } from '../LastVisited';
@@ -39,6 +41,7 @@ class MainNav extends Component {
     stripes: PropTypes.shape({
       config: PropTypes.shape({
         showPerms: PropTypes.bool,
+        helpUrl: PropTypes.string,
       }),
       store: PropTypes.shape({
         dispatch: PropTypes.func.isRequired,
@@ -130,6 +133,7 @@ class MainNav extends Component {
 
   // return the user to the login screen, but after logging in they will be brought to the default screen.
   logout() {
+    console.clear(); // eslint-disable-line no-console
     this.returnToLogin().then(() => {
       this.props.history.push('/');
     });
@@ -197,9 +201,10 @@ class MainNav extends Component {
         {({ lastVisited }) => {
           const apps = this.getAppList(lastVisited);
           const selectedApp = apps.find(entry => entry.active);
+          const helpUrl = stripes.config.helpUrl ?? 'https://docs.folio.org';
 
           return (
-            <header className={css.navRoot}>
+            <header className={css.navRoot} style={branding.style?.mainNav ?? {}}>
               <div className={css.startSection}>
                 <SkipLink />
                 <CurrentAppGroup selectedApp={selectedApp} config={stripes.config} />
@@ -214,7 +219,7 @@ class MainNav extends Component {
                 <NavButton
                   aria-label="Help button"
                   data-test-item-help-button
-                  href="https://docs.folio.org/docs/"
+                  href={helpUrl}
                   icon={<Icon
                     icon="question-mark"
                     size="large"

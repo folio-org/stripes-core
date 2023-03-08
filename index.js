@@ -1,6 +1,6 @@
 /* external utilities */
 export { ConnectContext as RootContext, withConnect as withRoot } from '@folio/stripes-connect';
-export { default as CalloutContext } from './src/CalloutContext';
+export { CalloutContext, useCallout } from './src/CalloutContext';
 
 /* internal utilities */
 export { stripesShape } from './src/Stripes';
@@ -9,7 +9,7 @@ export { useModules } from './src/ModulesContext';
 export { withModule, withModules } from './src/components/Modules';
 export { default as stripesConnect } from './src/stripesConnect';
 export { default as Pluggable } from './src/Pluggable';
-export { setServicePoints, setCurServicePoint } from './src/loginServices';
+export { updateUser } from './src/loginServices';
 export { default as coreEvents } from './src/events';
 export { default as useOkapiKy } from './src/useOkapiKy';
 export { default as withOkapiKy } from './src/withOkapiKy';
@@ -35,3 +35,5 @@ export {
 export { supportedLocales } from './src/loginServices';
 export { supportedNumberingSystems } from './src/loginServices';
 export { userLocaleConfig } from './src/loginServices';
+export { default as queryLimit } from './src/queryLimit';
+export { default as init } from './src/init';

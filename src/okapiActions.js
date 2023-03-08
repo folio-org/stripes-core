@@ -114,38 +114,38 @@ function setSessionData(session) {
   };
 }
 
-function setCurrentServicePoint(servicePoint) {
+function setLoginData(loginData) {
   return {
-    type: 'SET_CURRENT_SERVICE_POINT',
-    servicePoint,
+    type: 'SET_LOGIN_DATA',
+    loginData,
   };
 }
 
-function setUserServicePoints(servicePoints) {
+function updateCurrentUser(data) {
   return {
-    type: 'SET_USER_SERVICE_POINTS',
-    servicePoints,
+    type: 'UPDATE_CURRENT_USER',
+    data,
   };
 }
 
 export {
-  setCurrentUser,
+  checkSSO,
   clearCurrentUser,
-  setCurrentPerms,
-  setLocale,
-  setTimezone,
-  setCurrency,
-  setPlugins,
-  setSinglePlugin,
-  setBindings,
-  setOkapiToken,
   clearOkapiToken,
   setAuthError,
-  setTranslations,
-  checkSSO,
+  setBindings,
+  setCurrency,
+  setCurrentPerms,
+  setCurrentUser,
+  setLocale,
+  setLoginData,
   setOkapiReady,
+  setOkapiToken,
+  setPlugins,
   setServerDown,
   setSessionData,
-  setCurrentServicePoint,
-  setUserServicePoints
+  setSinglePlugin,
+  setTimezone,
+  setTranslations,
+  updateCurrentUser,
 };

@@ -1,4 +1,7 @@
-import React from 'react';
+import React, { useContext } from 'react';
 
-const CalloutContext = React.createContext();
-export default CalloutContext;
+export const CalloutContext = React.createContext();
+
+export const useCallout = () => {
+  return useContext(CalloutContext);
+};

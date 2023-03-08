@@ -6,10 +6,9 @@ import { createBrowserHistory } from 'history';
 import { IntlProvider } from 'react-intl';
 import queryString from 'query-string';
 import { QueryClientProvider } from 'react-query';
-import { SWRConfig } from 'swr';
 import { ApolloProvider } from '@apollo/client';
 
-import ErrorBoundary from '@folio/stripes-components/lib/ErrorBoundary';
+import { ErrorBoundary } from '@folio/stripes-components';
 import { metadata, icons } from 'stripes-config';
 
 /* ConnectContext - formerly known as RootContext, now comes from stripes-connect, so stripes-connect
@@ -21,8 +20,7 @@ import initialReducers from '../../initialReducers';
 import enhanceReducer from '../../enhanceReducer';
 import createApolloClient from '../../createApolloClient';
 import createReactQueryClient from '../../createReactQueryClient';
-import createSwrOptions from '../../createSwrOptions';
-import { setSinglePlugin, setBindings, setOkapiToken, setTimezone, setCurrency } from '../../okapiActions';
+import { setSinglePlugin, setBindings, setOkapiToken, setTimezone, setCurrency, updateCurrentUser } from '../../okapiActions';
 import { loadTranslations, checkOkapiSession } from '../../loginServices';
 import { getQueryResourceKey, getCurrentModule } from '../../locationService';
 import Stripes from '../../Stripes';
@@ -66,7 +64,6 @@ class Root extends Component {
 
     this.apolloClient = createApolloClient(okapi);
     this.reactQueryClient = createReactQueryClient();
-    this.swrOptions = createSwrOptions();
   }
 
   getChildContext() {
@@ -138,6 +135,7 @@ class Root extends Component {
       setLocale: (localeValue) => { loadTranslations(store, localeValue, defaultTranslations); },
       setTimezone: (timezoneValue) => { store.dispatch(setTimezone(timezoneValue)); },
       setCurrency: (currencyValue) => { store.dispatch(setCurrency(currencyValue)); },
+      updateUser: (userValue) => { store.dispatch(updateCurrentUser(userValue)); },
       plugins: plugins || {},
       setSinglePlugin: (key, value) => { store.dispatch(setSinglePlugin(key, value)); },
       bindings,
@@ -155,25 +153,24 @@ class Root extends Component {
         <ConnectContext.Provider value={{ addReducer: this.addReducer, addEpic: this.addEpic, store }}>
           <ApolloProvider client={this.apolloClient}>
             <QueryClientProvider client={this.reactQueryClient}>
-              <SWRConfig value={this.swrOptions}>
-                <IntlProvider
-                  locale={locale}
-                  key={locale}
-                  timeZone={timezone}
-                  currency={currency}
-                  messages={translations}
-                  textComponent={Fragment}
-                  onError={config?.suppressIntlErrors ? () => {} : undefined}
-                  defaultRichTextElements={this.defaultRichTextElements}
-                >
-                  <RootWithIntl
-                    stripes={stripes}
-                    token={token}
-                    disableAuth={disableAuth}
-                    history={history}
-                  />
-                </IntlProvider>
-              </SWRConfig>
+              <IntlProvider
+                locale={locale}
+                key={locale}
+                timeZone={timezone}
+                currency={currency}
+                messages={translations}
+                textComponent={Fragment}
+                onError={config?.suppressIntlErrors ? () => {} : undefined}
+                onWarn={config?.suppressIntlWarnings ? () => {} : undefined}
+                defaultRichTextElements={this.defaultRichTextElements}
+              >
+                <RootWithIntl
+                  stripes={stripes}
+                  token={token}
+                  disableAuth={disableAuth}
+                  history={history}
+                />
+              </IntlProvider>
             </QueryClientProvider>
           </ApolloProvider>
         </ConnectContext.Provider>
@@ -247,19 +244,19 @@ Root.defaultProps = {
 
 function mapStateToProps(state) {
   return {
-    token: state.okapi.token,
-    currentUser: state.okapi.currentUser,
-    currentPerms: state.okapi.currentPerms,
-    locale: state.okapi.locale,
-    timezone: state.okapi.timezone,
-    currency: state.okapi.currency,
-    translations: state.okapi.translations,
-    plugins: state.okapi.plugins,
     bindings: state.okapi.bindings,
+    currency: state.okapi.currency,
+    currentPerms: state.okapi.currentPerms,
+    currentUser: state.okapi.currentUser,
     discovery: state.discovery,
-    okapiReady: state.okapi.okapiReady,
-    serverDown: state.okapi.serverDown,
+    locale: state.okapi.locale,
     okapi: state.okapi,
+    okapiReady: state.okapi.okapiReady,
+    plugins: state.okapi.plugins,
+    serverDown: state.okapi.serverDown,
+    timezone: state.okapi.timezone,
+    token: state.okapi.token,
+    translations: state.okapi.translations,
   };
 }
 

@@ -6,8 +6,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import sortBy from 'lodash/sortBy';
 
-import NavListItem from '@folio/stripes-components/lib/NavListItem';
-import NavListSection from '@folio/stripes-components/lib/NavListSection';
+import { NavListItem, NavListSection } from '@folio/stripes-components';
 
 import AppIcon from '../../../../AppIcon';
 import css from '../../AppList.css';

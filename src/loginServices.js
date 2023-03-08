@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import localforage from 'localforage';
 import { translations } from 'stripes-config';
 import rtlDetect from 'rtl-detect';
@@ -21,39 +20,40 @@ import {
   setOkapiReady,
   setServerDown,
   setSessionData,
-  setCurrentServicePoint,
-  setUserServicePoints,
+  setLoginData,
+  updateCurrentUser,
 } from './okapiActions';
 import processBadResponse from './processBadResponse';
 
 // export supported locales, i.e. the languages we provide translations for
 export const supportedLocales = [
   'ar',     // arabic
-  'zh-CN',  // chinese, china
-  'zh-TW',  // chinese, taiwan
+  'cs-CZ',  // czech, czechia
   'da-DK',  // danish, denmark
+  'de-DE',  // german, germany
   'en-GB',  // british english
   'en-SE',  // english, sweden
   'en-US',  // american english
+  'es-419', // latin american spanish
+  'es-ES',  // european spanish
+  'es',     // spanish
   'fr-FR',  // french, france
-  'de-DE',  // german, germany
   'he',     // hebrew
   'hi-IN',  // hindi, india
   'hu-HU',  // hugarian, hungry
+  'it-IT',  // italian, italy
   'ja',     // japanese
   'ko',     // korean
-  'it-IT',  // italian, italy
   'nb',     // norwegian bokmål"
   'nn',     // norwegian nynorsk
   'pl',     // polish
   'pt-BR',  // portuguese, brazil
   'pt-PT',  // portuguese, portugal
   'ru',     // russian
-  'es',     // spanish
-  'es-419', // latin american spanish
-  'es-ES',  // european spanish
   'sv',     // swedish
   'ur',     // urdu
+  'zh-CN',  // chinese, china
+  'zh-TW',  // chinese, taiwan
 ];
 
 // export supported numbering systems, i.e. the systems tenants may chose
@@ -85,7 +85,7 @@ function getHeaders(tenant, token) {
  *
  * @param {object} store a redux store
  *
- * @return boolean
+ * @returns {boolean}
  */
 function canReadConfig(store) {
   const perms = store.getState().okapi.currentPerms;
@@ -96,14 +96,18 @@ function canReadConfig(store) {
  * loadTranslations
  * return a promise that fetches translations for the given locale and then
  * dispatches the locale and translations.
- * @param {} store
- * @param {*} locale
- * @param {*} defaultTranslations
+ * @param {redux store} store
+ * @param {string} locale
+ * @param {object} defaultTranslations
  *
- * @return Promise
+ * @returns {Promise}
  */
 export function loadTranslations(store, locale, defaultTranslations = {}) {
   const parentLocale = locale.split('-')[0];
+  // Since moment.js don't support translations like it or it-IT-u-nu-latn
+  // we need to build string like it_IT for fetch call
+  const loadedLocale = locale.replace('-', '_').split('-')[0];
+  const momentLocale = locale.split('-', 2).join('-');
 
   // react-intl provides things like pt-BR.
   // lokalise provides things like pt_BR.
@@ -113,21 +117,32 @@ export function loadTranslations(store, locale, defaultTranslations = {}) {
 
   // Update dir- and lang-attributes on the HTML element
   // when the locale changes
-  document.documentElement.setAttribute('lang', parentLocale);
-  document.documentElement.setAttribute('dir', rtlDetect.getLangDir(locale));
+  document.documentElement.setAttribute('lang', locale);
+  document.documentElement.setAttribute('dir', rtlDetect.getLangDir(parentLocale));
 
   // Set locale for Moment.js (en is not importable as it is not stored separately)
   if (parentLocale === 'en') moment.locale(parentLocale);
   else {
-    import(`moment/locale/${parentLocale}`).then(() => {
-      moment.locale(parentLocale);
-    }).catch(e => {
-      // eslint-disable-next-line no-console
-      console.error(`Error loading locale ${parentLocale} for Moment.js`, e);
+    // For moment, we want to import and load the most-specific
+    // locale possible without the numbering system suffix,
+    // e.g. it-IT if available, falling back to it if that fails.
+    import(`moment/locale/${momentLocale}`).then(() => {
+      moment.locale(momentLocale);
+    }).catch(() => {
+      import(`moment/locale/${parentLocale}`).then(() => {
+        moment.locale(parentLocale);
+      }).catch(e => {
+        // eslint-disable-next-line no-console
+        console.error(`Error loading locale ${parentLocale} for Moment.js`, e);
+      });
     });
   }
 
-  return fetch(translations[region] ? translations[region] : translations[parentLocale])
+  // Here we put additional condition because languages
+  // like Japan we need to use like ja, but with numeric system
+  // Japan language builds like ja_u, that incorrect. We need to be safe from that bug.
+  return fetch(translations[region] ? translations[region] :
+    translations[loadedLocale] || translations[[parentLocale]])
     .then((response) => {
       if (response.ok) {
         response.json().then((stripesTranslations) => {
@@ -146,7 +161,7 @@ export function loadTranslations(store, locale, defaultTranslations = {}) {
  * @param {string} url location of locale information
  * @param {object} store redux store
  * @param {string} tenant
- * @returns Promise
+ * @returns {Promise}
  */
 function dispatchLocale(url, store, tenant) {
   return fetch(url,
@@ -173,15 +188,21 @@ function dispatchLocale(url, store, tenant) {
  * getLocale
  * return a promise that retrieves the tenant's locale-settings then
  * loads the translations and dispatches the timezone and currency.
- * @param {*} okapiUrl
- * @param {*} store
- * @param {*} tenant
+ * @param {string} okapiUrl
+ * @param {redux store} store
+ * @param {string} tenant
  *
- * @return Promise
+ * @returns {Promise}
  */
 export function getLocale(okapiUrl, store, tenant) {
+  const query = [
+    'module==ORG',
+    'configName == localeSettings',
+    '(cql.allRecords=1 NOT userId="" NOT code="")'
+  ].join(' AND ');
+
   return dispatchLocale(
-    `${okapiUrl}/configurations/entries?query=(module==ORG and configName==localeSettings)`,
+    `${okapiUrl}/configurations/entries?query=(${query})`,
     store,
     tenant
   );
@@ -195,7 +216,7 @@ export function getLocale(okapiUrl, store, tenant) {
  * @param {*} store
  * @param {*} tenant
  *
- * @return Promise
+ * @returns {Promise}
  */
 export function getUserLocale(okapiUrl, store, tenant, userId) {
   const query = Object.entries(userLocaleConfig)
@@ -216,7 +237,7 @@ export function getUserLocale(okapiUrl, store, tenant, userId) {
  * @param {*} store
  * @param {*} tenant
  *
- * return Promise
+ * @returns {Promise}
  */
 export function getPlugins(okapiUrl, store, tenant) {
   return fetch(`${okapiUrl}/configurations/entries?query=(module==PLUGINS)`,
@@ -241,6 +262,8 @@ export function getPlugins(okapiUrl, store, tenant) {
  * @param {} okapiUrl
  * @param {*} store
  * @param {*} tenant
+ *
+ * @returns {Promise}
  */
 export function getBindings(okapiUrl, store, tenant) {
   return fetch(`${okapiUrl}/configurations/entries?query=(module==ORG and configName==bindings)`,
@@ -273,12 +296,12 @@ export function getBindings(okapiUrl, store, tenant) {
  * loadResources
  * return a promise that retrieves the tenant's locale, user's locale,
  * plugins, and key-bindings from mod-configuration.
- * @param {} okapiUrl
- * @param {*} store
- * @param {*} tenant
- * @param {*} userId user's UUID
+ * @param {string} okapiUrl
+ * @param {redux store} store
+ * @param {string} tenant
+ * @param {string} userId user's UUID
  *
- * @return Promise
+ * @returns {Promise}
  */
 function loadResources(okapiUrl, store, tenant, userId) {
   let promises = [];
@@ -306,7 +329,7 @@ function loadResources(okapiUrl, store, tenant, userId) {
  * createOkapiSession
  * Remap the given data into a session object shaped like:
  * {
- *   user: { id, username, personal, servicePoints, curServicePoint }
+ *   user: { id, username, personal }
  *   perms: { permNameA: true, permNameB: true, ... }
  *   token: token
  * }
@@ -319,24 +342,21 @@ function loadResources(okapiUrl, store, tenant, userId) {
  * @param {*} token
  * @param {*} data
  *
- * @return Promise
+ * @returns {Promise}
  */
-function createOkapiSession(okapiUrl, store, tenant, token, data) {
-  const servicePoints = _.get(data, ['servicePointsUser', 'servicePoints'], []);
-  const curSpId = _.get(data, ['servicePointsUser', 'defaultServicePointId']);
-  const curServicePoint = (!curSpId && servicePoints.length === 1) ?
-    servicePoints[0] :
-    servicePoints.find(sp => sp.id === curSpId);
-
+export function createOkapiSession(okapiUrl, store, tenant, token, data) {
   const user = {
     id: data.user.id,
     username: data.user.username,
     ...data.user.personal,
-    servicePoints,
-    curServicePoint,
   };
 
+  // clear any auth-n errors
   store.dispatch(setAuthError(null));
+
+  // store the raw login response for future parsing by other modules
+  // e.g. if optional values are returned, e.g. see UISP-32
+  store.dispatch(setLoginData(data));
 
   // remap data's array of permission-names to set with
   // permission-names for keys and `true` for values
@@ -347,10 +367,13 @@ function createOkapiSession(okapiUrl, store, tenant, token, data) {
     user,
     perms,
   };
-  localforage.setItem('okapiSess', okapiSess);
-  store.dispatch(setSessionData(okapiSess));
 
-  return loadResources(okapiUrl, store, tenant, user.id);
+  return localforage.setItem('loginResponse', data)
+    .then(() => localforage.setItem('okapiSess', okapiSess))
+    .then(() => {
+      store.dispatch(setSessionData(okapiSess));
+      return loadResources(okapiUrl, store, tenant, user.id);
+    });
 }
 
 /**
@@ -359,40 +382,43 @@ function createOkapiSession(okapiUrl, store, tenant, token, data) {
  * if successful, dispatch the result to create a session
  * if not, clear the session and token.
  *
- * @param {} okapiUrl
- * @param {*} store
- * @param {*} tenant
- * @param {*} session
+ * @param {string} okapiUrl
+ * @param {redux store} store
+ * @param {string} tenant
+ * @param {object} session
  *
- * @return Promise
+ * @returns {Promise}
  */
-function validateUser(okapiUrl, store, tenant, session) {
+export function validateUser(okapiUrl, store, tenant, session) {
   return fetch(`${okapiUrl}/bl-users/_self`, { headers: getHeaders(tenant, session.token) }).then((resp) => {
-    if (resp.status >= 400) {
+    if (resp.ok) {
+      const { token, user, perms } = session;
+      return resp.json().then((data) => {
+        store.dispatch(setLoginData(data));
+        store.dispatch(setSessionData({ token, user, perms }));
+        return loadResources(okapiUrl, store, tenant, user.id);
+      });
+    } else {
       store.dispatch(clearCurrentUser());
       store.dispatch(clearOkapiToken());
-      localforage.removeItem('okapiSess');
-      return null;
-    } else {
-      const { token, user, perms } = session;
-      store.dispatch(setSessionData({ token, user, perms }));
-      return loadResources(okapiUrl, store, tenant, user.id);
+      return localforage.removeItem('okapiSess');
     }
-  }).catch(() => {
+  }).catch((error) => {
     store.dispatch(setServerDown());
+    return error;
   });
 }
 
 /**
  * getSSOEnabled
  * return a promise that fetches from /saml/check and dispatches checkSSO.
- * @param {*} okapiUrl
- * @param {*} store
- * @param {*} tenant
+ * @param {string} okapiUrl
+ * @param {redux store} store
+ * @param {string} tenant
  *
- * @return Promise
+ * @returns {Promise}
  */
-function getSSOEnabled(okapiUrl, store, tenant) {
+export function getSSOEnabled(okapiUrl, store, tenant) {
   return fetch(`${okapiUrl}/saml/check`, { headers: { 'X-Okapi-Tenant': tenant, 'Accept': 'application/json' } })
     .then((response) => {
       if (response.status >= 400) {
@@ -415,7 +441,7 @@ function getSSOEnabled(okapiUrl, store, tenant) {
  * handle the return from SSO:
  * for a POST binding, populate a form and submit it
  * for a GET binding, navigate to the requested location
- * @param {*} resp
+ * @param {object} resp fetch Response
  */
 function processSSOLoginResponse(resp) {
   if (resp.status < 400) {
@@ -445,36 +471,55 @@ function processSSOLoginResponse(resp) {
   }
 }
 
-function handleLoginError(dispatch, resp) {
-  localforage.removeItem('okapiSess');
-  processBadResponse(dispatch, resp);
-  dispatch(setOkapiReady());
+/**
+ * handleLoginError
+ * Clear out session data, dispatch authentication errors, then dispatch
+ * okapi-ready to indicate that we're ready to start fresh. Return the
+ * response-body, er, JSON, from the failed auth-n request.
+ *
+ * @param {function} dispatch store.dispatch
+ * @param {Response} resp HTTP response from a failed auth-n request
+ *
+ * @returns {Promise} resolving to the response's JSON
+ */
+export function handleLoginError(dispatch, resp) {
+  return localforage.removeItem('okapiSess')
+    .then(() => processBadResponse(dispatch, resp))
+    .then(responseBody => {
+      dispatch(setOkapiReady());
+      return responseBody;
+    });
 }
 
 /**
  * processOkapiSession
  * create a new okapi session with the response from either a username/password
  * authentication request or a bl-users/_self request.
- * @param {*} okapiUrl
- * @param {*} store
- * @param {*} tenant
- * @param {*} resp
- * @param {*} ssoToken
+ * @param {string} okapiUrl
+ * @param {redux store} store
+ * @param {string} tenant
+ * @param {Response} resp HTTP response
+ * @param {string} ssoToken
+ *
+ * @returns {Promise} resolving with login response body, rejecting with, ummmmm
  */
-function processOkapiSession(okapiUrl, store, tenant, resp, ssoToken) {
+export function processOkapiSession(okapiUrl, store, tenant, resp, ssoToken) {
   const token = resp.headers.get('X-Okapi-Token') || ssoToken;
   const { dispatch } = store;
 
-  if (resp.status >= 400) {
-    handleLoginError(dispatch, resp);
-  } else {
-    resp.json()
-      .then(json => createOkapiSession(okapiUrl, store, tenant, token, json))
-      .then(() => {
+  if (resp.ok) {
+    return resp.json()
+      .then(json => {
+        return createOkapiSession(okapiUrl, store, tenant, token, json)
+          .then(() => json);
+      })
+      .then((json) => {
         store.dispatch(setOkapiReady());
+        return json;
       });
+  } else {
+    return handleLoginError(dispatch, resp);
   }
-  return resp;
 }
 
 /**
@@ -483,9 +528,9 @@ function processOkapiSession(okapiUrl, store, tenant, resp, ssoToken) {
  * 2. Check if SSO (SAML) is enabled, dispatching check-sso actions
  * 3. dispatch set-okapi-ready.
  *
- * @param {*} okapiUrl
- * @param {*} store
- * @param {*} tenant
+ * @param {string} okapiUrl
+ * @param {redux store} store
+ * @param {string} tenant
  */
 export function checkOkapiSession(okapiUrl, store, tenant) {
   localforage.getItem('okapiSess')
@@ -504,10 +549,12 @@ export function checkOkapiSession(okapiUrl, store, tenant) {
  * requestLogin
  * authenticate with a username and password. return a promise that posts the values
  * and then processes the result to begin a session.
- * @param {*} okapiUrl
- * @param {*} store
- * @param {*} tenant
- * @param {*} data
+ * @param {string} okapiUrl
+ * @param {redux store} store
+ * @param {string} tenant
+ * @param {object} data
+ *
+ * @returns {Promise}
  */
 export function requestLogin(okapiUrl, store, tenant, data) {
   return fetch(`${okapiUrl}/bl-users/login?expandPermissions=true&fullPermissions=true`, {
@@ -521,13 +568,15 @@ export function requestLogin(okapiUrl, store, tenant, data) {
 /**
  * requestUserWithPerms
  * retrieve currently-authenticated user, then process the result to begin a session.
- * @param {*} okapiUrl
- * @param {*} store
- * @param {*} tenant
- * @param {*} token
+ * @param {string} okapiUrl
+ * @param {redux store} store
+ * @param {string} tenant
+ * @param {string} token
+ *
+ * @returns {Promise} Promise resolving to the response-body (JSON) of the request
  */
 export function requestUserWithPerms(okapiUrl, store, tenant, token) {
-  fetch(`${okapiUrl}/bl-users/_self?expandPermissions=true&fullPermissions=true`,
+  return fetch(`${okapiUrl}/bl-users/_self?expandPermissions=true&fullPermissions=true`,
     { headers: getHeaders(tenant, token) })
     .then(resp => processOkapiSession(okapiUrl, store, tenant, resp, token));
 }
@@ -535,8 +584,10 @@ export function requestUserWithPerms(okapiUrl, store, tenant, token) {
 /**
  * requestSSOLogin
  * authenticate via SSO/SAML
- * @param {*} okapiUrl
- * @param {*} tenant
+ * @param {string} okapiUrl
+ * @param {string} tenant
+ *
+ * @returns {Promise}
  */
 export function requestSSOLogin(okapiUrl, tenant) {
   const stripesUrl = (window.location.origin || `${window.location.protocol}//${window.location.host}`) + window.location.pathname;
@@ -544,7 +595,7 @@ export function requestSSOLogin(okapiUrl, tenant) {
   // to okapi and don't handle setting of the tenant in the HTTP header.
   // i.e. ordinarily, we'd just call ${okapiUrl}/saml/login.
   // https://s3.amazonaws.com/foliodocs/api/okapi/p/okapi.html#invoke_tenant__id_
-  fetch(`${okapiUrl}/_/invoke/tenant/${tenant}/saml/login`, {
+  return fetch(`${okapiUrl}/_/invoke/tenant/${tenant}/saml/login`, {
     method: 'POST',
     headers: { 'X-Okapi-tenant': tenant, 'Content-Type': 'application/json' },
     credentials: 'include',
@@ -554,31 +605,21 @@ export function requestSSOLogin(okapiUrl, tenant) {
 }
 
 /**
- * setCurServicePoint
- * 1. store the given service-point as the current one in locale storage,
- * 2. dispatch the current service-point
- * @param {} store
- * @param {*} servicePoint
+ * updateUser
+ * 1. concat the given data onto local-storage user and save it
+ * 2. dispatch updateCurrentUser, concating given data onto the session user
+ * @param {redux-store} store redux store
+ * @param {object} data
+ *
+ * @returns {Promise}
  */
-export function setCurServicePoint(store, servicePoint) {
-  localforage.getItem('okapiSess').then((sess) => {
-    sess.user.curServicePoint = servicePoint;
-    localforage.setItem('okapiSess', sess);
-    store.dispatch(setCurrentServicePoint(servicePoint));
-  });
-}
-
-/**
- * setServicePoints
- * 1. store the given list in locale storage,
- * 2. dispatch the list of service-points
- * @param {} store
- * @param {*} servicePoint
- */
-export function setServicePoints(store, servicePoints) {
-  localforage.getItem('okapiSess').then((sess) => {
-    sess.user.servicePoints = servicePoints;
-    localforage.setItem('okapiSess', sess);
-    store.dispatch(setUserServicePoints(servicePoints));
-  });
+export function updateUser(store, data) {
+  return localforage.getItem('okapiSess')
+    .then((sess) => {
+      sess.user = { ...sess.user, ...data };
+      return localforage.setItem('okapiSess', sess);
+    })
+    .then(() => {
+      store.dispatch(updateCurrentUser(data));
+    });
 }

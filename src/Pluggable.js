@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { modules } from 'stripes-config';
 import { withStripes } from './StripesContext';
@@ -6,30 +6,40 @@ import { ModuleHierarchyProvider } from './components';
 
 const Pluggable = (props) => {
   const plugins = modules.plugin || [];
+  const cachedPlugins = useMemo(() => {
+    const cached = [];
+    let best;
 
+    const wanted = props.stripes.plugins[props.type];
+    // "@@" is a special case of explicitly chosen "no plugin"
+    if (!wanted || wanted !== '@@') {
+      for (const name of Object.keys(plugins)) {
+        const m = plugins[name];
+        if (m.pluginType === props.type) {
+          best = m;
+          if (m.module === wanted) break;
+        }
+      }
 
-  let best;
+      if (best) {
+        const Child = props.stripes.connect(best.getModule());
 
-  const wanted = props.stripes.plugins[props.type];
-  // "@@" is a special case of explicitly chosen "no plugin"
-  if (!wanted || wanted !== '@@') {
-    for (const name of Object.keys(plugins)) {
-      const m = plugins[name];
-      if (m.pluginType === props.type) {
-        best = m;
-        if (m.module === wanted) break;
+        cached.push({
+          Child,
+          plugin: best.module
+        });
       }
     }
 
-    if (best) {
-      const Child = props.stripes.connect(best.getModule());
+    return cached;
+  }, [plugins]);
 
-      return (
-        <ModuleHierarchyProvider module={best.module}>
-          <Child {...props} actAs="plugin" />
-        </ModuleHierarchyProvider>
-      );
-    }
+  if (cachedPlugins.length) {
+    return cachedPlugins.map(({ plugin, Child }) => (
+      <ModuleHierarchyProvider module={plugin} key={plugin}>
+        <Child {...props} actAs="plugin" />
+      </ModuleHierarchyProvider>
+    ));
   }
 
   if (!props.children) return null;

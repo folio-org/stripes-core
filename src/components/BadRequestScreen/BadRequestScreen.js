@@ -1,7 +1,7 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import Headline from '@folio/stripes-components/lib/Headline';
+import { Headline } from '@folio/stripes-components';
 
 import AddContext from '../../AddContext';
 import Pluggable from '../../Pluggable';
@@ -31,7 +31,7 @@ const BadRequestScreen = () => {
             className={css.title}
           >
             <FormattedMessage
-              id="stripes-core.front.error.message"
+              id="stripes-core.front.error.general.message"
               values={{
                 url: window.location.href,
                 br: <br />,

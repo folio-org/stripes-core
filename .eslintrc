@@ -10,13 +10,18 @@
   },
   "overrides": [
     {
-      "files": [ "src/**/tests/*", "test/**/*" ],
+      "files": [ "src/**/tests/*", "test/**/*", "*test.js" ],
       "rules": {
         "func-names": "off",
         "no-unused-expressions": "off",
         "max-len": "off",
-        "one-var": "off"
+        "one-var": "off",
+        "react/prop-types": "off",
+        "import/prefer-default-export": "off"
       }
     }
-  ]
+  ],
+  "env": {
+    "jest": true
+  }
 }

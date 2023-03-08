@@ -1,10 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Button from '@folio/stripes-components/lib/Button';
-import Icon from '@folio/stripes-components/lib/Icon';
-import Layout from '@folio/stripes-components/lib/Layout';
 import classNames from 'classnames';
 import { Transition } from 'react-transition-group';
+
+import {
+  Button,
+  Icon,
+  Layout
+} from '@folio/stripes-components';
+
 import css from './Toast.css';
 
 const propTypes = {
