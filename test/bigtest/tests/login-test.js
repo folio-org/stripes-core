@@ -13,7 +13,7 @@ import translations from '../../../translations/stripes-core/en';
 const ErrorMessage = HTML.extend('message banner')
   .selector('[data-test-message-banner]');
 
-describe.only('Login', () => {
+describe('Login', () => {
   const { Link, Button: LoginButton } = Bigtest;
   const usernamefield = TextField({ id: 'input-username' });
   const passwordfield = TextField({ id: 'input-password' });

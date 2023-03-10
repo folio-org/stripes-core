@@ -6,17 +6,70 @@ import {
   beforeEach,
 } from 'mocha';
 
+import {
+  TextField,
+  HTML,
+  Bigtest,
+  Button,
+} from '@folio/stripes-testing';
+
 import setupApplication from '../helpers/setup-core-application';
 import always from '../helpers/always';
-import CreateResetPasswordInteractor from '../interactors/CreateResetPassword';
+// import CreateResetPasswordInteractor from '../interactors/CreateResetPassword';
 import ChangePasswordErrorPageInteractor from '../interactors/ChangePasswordErrorPage';
-import ChangePasswordConfirmationInteractor from '../interactors/ChangePasswordConfirmation';
-import LoginInteractor from '../interactors/login';
+// import ChangePasswordConfirmationInteractor from '../interactors/ChangePasswordConfirmation';
+import { Login as LoginInteractor } from '../interactors/common';
 
 import translations from '../../../translations/stripes-core/en';
 
-describe('Create/Reset password page', () => {
-  const CreateResetPasswordPage = new CreateResetPasswordInteractor('form[class^="form--"]');
+const labelInteractor = HTML.extend('label')
+  .selector('label')
+  .filters({
+    for: el => el.htmlFor
+  });
+
+const CreateResetPasswordInteractor = HTML.extend('create/reset password form')
+  .selector('form[class^="form--"]')
+  .filters({
+    error: el => el.querySelector('[data-test-message-banner]') !== null,
+    errorText: el => el.querySelector('[data-test-message-banner]')?.innerText || '',
+    newPasswordLabel: el => el.querySelectorAll('label')[0].textContent,
+    newPasswordValue: el => el.querySelector('#new-password').value,
+    newPasswordType: el => el.querySelector('#new-password').type,
+    confirmPasswordLabel: el => el.querySelectorAll('label')[1].textContent,
+    confirmPasswordValue: el => el.querySelector('#confirm-password').value,
+    confirmPasswordType: el => el.querySelector('#confirm-password').type,
+  })
+  .actions({
+    async fillIn({ find }, values) {
+      await find(TextField({ id: 'new-password' })).fillIn(values.newPassword);
+      await find(TextField({ id: 'confirm-password' })).fillIn(values.confirmPassword);
+    },
+    clickShowPassword: ({ find }) => find(Button(translations['button.showPassword'])).click(),
+    clickHidePassword: ({ find }) => find(Button(translations['button.hidePassword'])).click(),
+    clickSubmit: ({ find }) => find(Button({ text: translations.setPassword, disabled: false })).click(),
+  });
+
+const ChangePasswordErrorInteractor = HTML.extend('change password confirmation')
+  .selector('[data-test-change-password-error]')
+  .filters({
+    errorText: el => el.querySelector('[data-test-message]').innerText,
+  });
+
+const ChangePasswordConfirmationInteractor = HTML.extend('change password confirmation')
+  .selector('[data-test-change-password-confirmation]')
+  .filters({
+    heading: (el) => el.querySelector('h1').innerText,
+    errorText: el => el.querySelector('[data-test-message]').innerText,
+  })
+  .actions({
+    clickContinue: ({ find }) => find(Button('Continue to FOLIO')).click()
+  });
+
+describe.only('Create/Reset password page', () => {
+  const CreateResetPasswordPage = CreateResetPasswordInteractor();
+  const newPasswordField = TextField({ type: 'password', id: 'new-password' });
+  const confirmPasswordField = TextField({ type: 'password', id: 'confirm-password' });
 
   setupApplication({
     disableAuth: false,
@@ -27,309 +80,115 @@ describe('Create/Reset password page', () => {
     beforeEach(function () {
       return this.visit({
         pathname: '/reset-password/test',
-      }, () => {
-        expect(CreateResetPasswordPage.isPresent).to.be.true;
-      });
+      }, () => CreateResetPasswordPage.exists());
     });
 
     describe('default behavior', () => {
       describe('new password field', () => {
-        it('should be presented', () => {
-          expect(CreateResetPasswordPage.newPassword.isPresent).to.be.true;
-        });
+        it('should have a [type=password] field for new password', () => CreateResetPasswordPage.has({ newPasswordType: 'password' }));
 
-        it('should have type password', () => {
-          expect(CreateResetPasswordPage.newPassword.type).to.equal('password');
-        });
-
-        it('should have proper label', () => {
-          expect(CreateResetPasswordPage.newPassword.label).to.equal(translations['createResetPassword.newPassword']);
-        });
+        it('should contain a proper label for the new password field', () => labelInteractor({ text: translations['createResetPassword.newPassword'], for: 'new-password' }));
       });
 
       describe('confirm password field', () => {
-        it('should be presented', () => {
-          expect(CreateResetPasswordPage.confirmPassword.isPresent).to.be.true;
-        });
+        it('should have a [type=password] field for confirm password', () => CreateResetPasswordPage.has({ confirmPasswordType: 'password' }));
 
-        it('should have type password', () => {
-          expect(CreateResetPasswordPage.confirmPassword.type).to.equal('password');
-        });
-
-        it('should have proper label', () => {
-          expect(CreateResetPasswordPage.confirmPassword.label).to.equal(translations['createResetPassword.confirmPassword']);
-        });
+        it('should contain a proper label for the confirm password field', () => labelInteractor({ text: translations['createResetPassword.confirmPassword'], for: 'confirm-password' }));
       });
 
       describe('toggle mask button', () => {
-        it('should be presented', () => {
-          expect(CreateResetPasswordPage.toggleMask.isPresent).to.be.true;
-        });
-
-        it('should have proper text', () => {
-          expect(CreateResetPasswordPage.toggleMask.text).to.equal(translations['button.showPassword']);
-        });
+        it('should be presented', () => Button(translations['button.showPassword']).exists());
       });
 
       describe('submit button', () => {
-        it('should be presented', () => {
-          expect(CreateResetPasswordPage.submit.isPresent).to.be.true;
-        });
-
-        it('should have proper text', () => {
-          expect(CreateResetPasswordPage.submit.text).to.equal(translations.setPassword);
-        });
-
-        it('should be disabled', () => {
-          expect(CreateResetPasswordPage.submit.isDisabled).to.be.true;
-        });
+        it('should be present', () => Button({ text: translations.setPassword, disabled: true }).exists());
 
         describe('error message', () => {
-          it('should not be presented', always(() => {
-            expect(CreateResetPasswordPage.message.isPresent).to.be.false;
-          }));
+          it('should not be presented', always(() => CreateResetPasswordPage.has({ error: false })));
         });
       });
 
       describe('same passwords insertion', () => {
-        beforeEach(async function () {
-          const { newPassword, confirmPassword } = CreateResetPasswordPage;
-
-          await newPassword.fillAndBlur('test');
-          await confirmPassword.fillAndBlur('test');
+        beforeEach(async () => {
+          await CreateResetPasswordPage.fillIn({ newPassword: 'test', confirmPassword: 'test' });
         });
 
         describe('new password field', () => {
-          it('should be presented', always(() => {
-            expect(CreateResetPasswordPage.newPassword.isPresent).to.be.true;
-          }));
+          it('should be presented', always(() => newPasswordField.exists()));
 
-          it('should have type password', always(() => {
-            expect(CreateResetPasswordPage.newPassword.type).to.equal('password');
-          }));
+          it('should have proper label', always(() => CreateResetPasswordPage.has({ newPasswordLabel: translations['createResetPassword.newPassword'] })));
 
-          it('should have proper label', always(() => {
-            expect(CreateResetPasswordPage.newPassword.label).to.equal(translations['createResetPassword.newPassword']);
-          }));
-
-          it('should have inserted password', () => {
-            expect(CreateResetPasswordPage.newPassword.val).to.equal('test');
-          });
+          it('should have inserted password', () => CreateResetPasswordPage.has({ newPasswordValue: 'test' }));
         });
 
         describe('confirm password field', () => {
-          it('should be presented', always(() => {
-            expect(CreateResetPasswordPage.confirmPassword.isPresent).to.be.true;
-          }));
+          it('should be presented', always(() => confirmPasswordField.exists()));
 
-          it('should have type password', always(() => {
-            expect(CreateResetPasswordPage.confirmPassword.type).to.equal('password');
-          }));
+          it('should have proper label', always(() => CreateResetPasswordPage.has({ confirmPasswordLabel: translations['createResetPassword.newPassword'] })));
 
-          it('should have proper label', always(() => {
-            expect(CreateResetPasswordPage.confirmPassword.label).to.equal(translations['createResetPassword.confirmPassword']);
-          }));
-
-          it('should have inserted password', () => {
-            expect(CreateResetPasswordPage.confirmPassword.val).to.equal('test');
-          });
+          it('should have inserted password', () => CreateResetPasswordPage.has({ confirmPasswordValue: 'test' }));
         });
 
         describe('toggle mask button', () => {
-          it('should be presented', always(() => {
-            expect(CreateResetPasswordPage.toggleMask.isPresent).to.be.true;
-          }));
-
-          it('should have proper text', always(() => {
-            expect(CreateResetPasswordPage.toggleMask.text).to.equal(translations['button.showPassword']);
-          }));
-
           describe('toggle mask from password to text', () => {
             beforeEach(async () => {
-              await CreateResetPasswordPage.toggleMask.toggleMaskButton();
+              await CreateResetPasswordPage.clickShowPassword();
             });
 
-            it('checks toggled button text', () => {
-              expect(CreateResetPasswordPage.toggleMask.text).to.equal(translations['button.hidePassword']);
-            });
+            it('checks toggled button text', () => Button(translations['button.hidePassword']).exists());
 
-            it('changes the type of the confirm password field to text', () => {
-              expect(CreateResetPasswordPage.confirmPassword.type).to.equal('text');
-            });
+            it('changes the type of the confirm password field to text', () => CreateResetPasswordPage.has({ confirmPasswordType: 'text' }));
 
-            it('changes the type of the new password field to text', () => {
-              expect(CreateResetPasswordPage.newPassword.type).to.equal('text');
-            });
+            it('changes the type of the new password field to text', () => CreateResetPasswordPage.has({ newPasswordType: 'text' }));
 
             describe('toggle mask from text to password', () => {
               beforeEach(async () => {
-                await CreateResetPasswordPage.toggleMask.toggleMaskButton();
+                await CreateResetPasswordPage.clickHidePassword();
               });
 
-              it('checks toggled button text', () => {
-                expect(CreateResetPasswordPage.toggleMask.text).to.equal(translations['button.showPassword']);
-              });
+              it('checks toggled button text', () => Button(translations['button.showPassword']).exists());
 
-              it('changes the type of the confirm password field to text', () => {
-                expect(CreateResetPasswordPage.confirmPassword.type).to.equal('password');
-              });
+              it('changes the type of the confirm password field to text', () => CreateResetPasswordPage.has({ confirmPasswordType: 'password' }));
 
-              it('changes the type of the new password field to text', () => {
-                expect(CreateResetPasswordPage.newPassword.type).to.equal('password');
-              });
+              it('changes the type of the new password field to text', () => CreateResetPasswordPage.has({ confirmPasswordType: 'password' }));
             });
           });
         });
 
         describe('submit button', () => {
-          it('should be presented', always(() => {
-            expect(CreateResetPasswordPage.submit.isPresent).to.be.true;
-          }));
-
-          it('should have proper text', always(() => {
-            expect(CreateResetPasswordPage.submit.text).to.equal(translations.setPassword);
-          }));
-
-          it('should be active', always(() => {
-            expect(CreateResetPasswordPage.submit.isDisabled).to.be.false;
-          }));
+          it('should be active', always(() => Button({ text: translations.setPassword, disabled: false })));
 
           describe('error message', () => {
-            it('should not be presented', always(() => {
-              expect(CreateResetPasswordPage.message.isPresent).to.be.false;
-            }));
+            it('should not be presented', always(() => CreateResetPasswordPage.has({ error: false })));
           });
         });
       });
 
       describe('different passwords insertion', () => {
-        beforeEach(async function () {
-          const { newPassword, confirmPassword } = CreateResetPasswordPage;
-
-          await newPassword.fillAndBlur('test-test');
-          await confirmPassword.fillAndBlur('test');
+        beforeEach(async () => {
+          await CreateResetPasswordPage.fillIn({ newPassword: 'test-test', confirmPassword: 'test' });
         });
 
         describe('new password field', () => {
-          it('should be presented', always(() => {
-            expect(CreateResetPasswordPage.newPassword.isPresent).to.be.true;
-          }));
-
-          it('should have type password', always(() => {
-            expect(CreateResetPasswordPage.newPassword.type).to.equal('password');
-          }));
-
-          it('should have proper label', always(() => {
-            expect(CreateResetPasswordPage.newPassword.label).to.equal(translations['createResetPassword.newPassword']);
-          }));
-
-          it('should have inserted password', () => {
-            expect(CreateResetPasswordPage.newPassword.val).to.equal('test-test');
-          });
+          it('should have inserted password', () => CreateResetPasswordPage.has({ newPasswordValue: 'test-test' }));
         });
 
         describe('confirm password field', () => {
-          it('should be presented', always(() => {
-            expect(CreateResetPasswordPage.confirmPassword.isPresent).to.be.true;
-          }));
-
-          it('should have type password', always(() => {
-            expect(CreateResetPasswordPage.confirmPassword.type).to.equal('password');
-          }));
-
-          it('should have proper label', always(() => {
-            expect(CreateResetPasswordPage.confirmPassword.label).to.equal(translations['createResetPassword.confirmPassword']);
-          }));
-
-          it('should have inserted password', () => {
-            expect(CreateResetPasswordPage.confirmPassword.val).to.equal('test');
-          });
-        });
-
-        describe('toggle mask button', () => {
-          it('should be presented', always(() => {
-            expect(CreateResetPasswordPage.toggleMask.isPresent).to.be.true;
-          }));
-
-          it('should have proper text', always(() => {
-            expect(CreateResetPasswordPage.toggleMask.text).to.equal(translations['button.showPassword']);
-          }));
-
-          describe('toggle mask from password to text', () => {
-            beforeEach(async () => {
-              await CreateResetPasswordPage.toggleMask.toggleMaskButton();
-            });
-
-            it('checks toggled button text', () => {
-              expect(CreateResetPasswordPage.toggleMask.text).to.equal(translations['button.hidePassword']);
-            });
-
-            it('changes the type of the form fields to text', () => {
-              expect(CreateResetPasswordPage.confirmPassword.type).to.equal('text');
-            });
-
-            it('changes the type of the form fields to text', () => {
-              expect(CreateResetPasswordPage.newPassword.type).to.equal('text');
-            });
-
-            describe('toggle mask from text to password', () => {
-              beforeEach(async () => {
-                await CreateResetPasswordPage.toggleMask.toggleMaskButton();
-              });
-
-              it('checks toggled button text', () => {
-                expect(CreateResetPasswordPage.toggleMask.text).to.equal(translations['button.showPassword']);
-              });
-
-              it('changes the type of the form fields to text', () => {
-                expect(CreateResetPasswordPage.confirmPassword.type).to.equal('password');
-              });
-
-              it('changes the type of the form fields to text', () => {
-                expect(CreateResetPasswordPage.newPassword.type).to.equal('password');
-              });
-            });
-          });
+          it('should have inserted password', () => CreateResetPasswordPage.has({ confirmPasswordValue: 'test' }));
         });
 
         describe('submit button', () => {
-          it('should be presented', always(() => {
-            expect(CreateResetPasswordPage.submit.isPresent).to.be.true;
-          }));
-
-          it('should have proper text', always(() => {
-            expect(CreateResetPasswordPage.submit.text).to.equal(translations.setPassword);
-          }));
-
-          it('should be disabled', () => {
-            expect(CreateResetPasswordPage.submit.isDisabled).to.be.true;
-          });
+          it('should be disabled', always(() => Button({ text: translations.setPassword, disabled: true }).exists()));
 
           describe('error message', () => {
-            it('should be presented', () => {
-              expect(CreateResetPasswordPage.message.isPresent).to.be.true;
-            });
-
-            it('should have proper text', () => {
-              expect(CreateResetPasswordPage.message.text).to.equal(translations['errors.password.match.error']);
-            });
+            it('should present error message', () => CreateResetPasswordPage.has({ error: true }));
           });
         });
       });
     });
 
     describe('successful submission', () => {
-      const ChangePasswordConfirmation = new ChangePasswordConfirmationInteractor();
-      const {
-        newPassword,
-        confirmPassword,
-        submitForm,
-      } = CreateResetPasswordPage;
-      const {
-        heading,
-        message,
-        redirect,
-      } = ChangePasswordConfirmation;
+      const confirmation = new ChangePasswordConfirmationInteractor();
 
       setupApplication({
         disableAuth: false,
@@ -341,60 +200,29 @@ describe('Create/Reset password page', () => {
 
       beforeEach(async function () {
         await this.visit('/reset-password/test');
-        await newPassword.fillAndBlur('test');
-        await confirmPassword.fillAndBlur('test');
-        await submitForm.clickSubmit();
+        await CreateResetPasswordPage.fillIn({ newPassword: 'test', confirmPassword: 'test' });
+        await CreateResetPasswordPage.clickSubmit();
       });
 
-      it('should display change password confirmation', () => {
-        expect(ChangePasswordConfirmation.isPresent).to.be.true;
-      });
+      it('should display change password confirmation', () => confirmation.exists());
 
-      it('should display a heading', () => {
-        expect(heading.isPresent).to.be.true;
-      });
+      it('should display the proper heading', () => confirmation.has({ heading: translations['label.congratulations'] }));
 
-      it('should have an appropriate content', () => {
-        expect(heading.text).to.equal(translations['label.congratulations']);
-      });
-
-      it('should display a message', () => {
-        expect(message.isPresent).to.be.true;
-      });
-
-      it('should have an appropriate content', () => {
-        expect(message.text).to.equal(translations['label.changed.password']);
-      });
-
-      it('should display a button', () => {
-        expect(redirect.isPresent).to.be.true;
-      });
+      it('should have an appropriate content', () => confirmation.has({ errorText: translations['label.changed.password'] }));
 
       describe('successful submission: redirect', () => {
         beforeEach(async function () {
-          await redirect.clickContinue();
+          await confirmation.clickContinue();
         });
 
-        const login = new LoginInteractor('form[class^="form--"]');
+        it('should not display a passwordChanged view', () => confirmation.absent());
 
-        it('should not display a passwordChanged view', () => {
-          expect(ChangePasswordConfirmation.isPresent).to.be.false;
-        });
-
-        it('should display a login page', () => {
-          expect(login.isPresent).to.be.true;
-        });
+        it('should display a login page', () => LoginInteractor(translations['title.login']).exists());
       });
     });
 
     describe('non-successful submission: expired link', () => {
-      const ChangePasswordConfirmation = new ChangePasswordConfirmationInteractor();
-      const {
-        newPassword,
-        confirmPassword,
-        submitForm,
-        message,
-      } = CreateResetPasswordPage;
+      const confirmation = new ChangePasswordConfirmationInteractor();
 
       setupApplication({
         disableAuth: false,
@@ -405,36 +233,17 @@ describe('Create/Reset password page', () => {
 
       beforeEach(async function () {
         await this.visit('/reset-password/test');
-        await newPassword.fillAndBlur('test');
-        await confirmPassword.fillAndBlur('test');
-        await submitForm.clickSubmit();
+        await CreateResetPasswordPage.fillIn({ newPassword: 'test', confirmPassword: 'test' });
+        await CreateResetPasswordPage.clickSubmit();
       });
 
-      it('should not display change password confirmation', () => {
-        expect(ChangePasswordConfirmation.isPresent).to.be.false;
-      });
+      it('should not display change password confirmation', () => confirmation.absent());
 
-      it('should display CreateResetPassword page', () => {
-        expect(CreateResetPasswordPage.isPresent).to.be.true;
-      });
-
-      it('should present an error message', () => {
-        expect(message.isPresent).to.be.true;
-      });
-
-      it('should have an appropriate text content', () => {
-        expect(message.text).to.equal(translations['errors.link.expired']);
-      });
+      it('should have an appropriate text content', () => CreateResetPasswordPage.has({ errorText: translations['errors.link.expired'] }));
     });
 
     describe('non-successful submission: invalid link', () => {
-      const ChangePasswordConfirmation = new ChangePasswordConfirmationInteractor();
-      const {
-        newPassword,
-        confirmPassword,
-        submitForm,
-        message,
-      } = CreateResetPasswordPage;
+      const confirmation = ChangePasswordConfirmationInteractor();
 
       setupApplication({
         disableAuth: false,
@@ -446,36 +255,17 @@ describe('Create/Reset password page', () => {
 
       beforeEach(async function () {
         this.visit('/reset-password/test');
-        await newPassword.fillAndBlur('test');
-        await confirmPassword.fillAndBlur('test');
-        await submitForm.clickSubmit();
+        await CreateResetPasswordPage.fillIn({ newPassword: 'test', confirmPassword: 'test' });
+        await CreateResetPasswordPage.clickSubmit();
       });
 
-      it('should not display change password confirmation', () => {
-        expect(ChangePasswordConfirmation.isPresent).to.be.false;
-      });
+      it('should not display change password confirmation', () => confirmation.absent());
 
-      it('should display CreateResetPassword page', () => {
-        expect(CreateResetPasswordPage.isPresent).to.be.true;
-      });
-
-      it('should present an error message', () => {
-        expect(message.isPresent).to.be.true;
-      });
-
-      it('should have an appropriate text content', () => {
-        expect(message.text).to.equal(translations['errors.link.invalid']);
-      });
+      it('should present an error message', () => CreateResetPasswordPage.has({ errorText: translations['errors.link.invalid'] }));
     });
 
     describe('non-successful submission: client error', () => {
-      const ChangePasswordConfirmation = new ChangePasswordConfirmationInteractor();
-      const {
-        newPassword,
-        confirmPassword,
-        submitForm,
-        message,
-      } = CreateResetPasswordPage;
+      const confirmation = ChangePasswordConfirmationInteractor();
 
       setupApplication({
         disableAuth: false,
@@ -484,32 +274,18 @@ describe('Create/Reset password page', () => {
 
       beforeEach(async function () {
         this.visit('/reset-password/test');
-        await newPassword.fillAndBlur('test');
-        await confirmPassword.fillAndBlur('test');
-        await submitForm.clickSubmit();
+        await CreateResetPasswordPage.fillIn({ newPassword: 'test', confirmPassword: 'test' });
+        await CreateResetPasswordPage.clickSubmit();
       });
 
-      it('should not display change password confirmation', () => {
-        expect(ChangePasswordConfirmation.isPresent).to.be.false;
-      });
+      it('should not display change password confirmation', () => confirmation.absent());
 
-      it('should display CreateResetPassword page', () => {
-        expect(CreateResetPasswordPage.isPresent).to.be.true;
-      });
-
-      it('should present an error message', () => {
-        expect(message.isPresent).to.be.true;
-      });
-
-      it('should have an appropriate text content', () => {
-        expect(message.text).to.equal(translations['errors.link.invalid']);
-      });
+      it('should have an appropriate text content', () => CreateResetPasswordPage.has({ errorText: translations['errors.link.invalid'] }));
     });
   });
 
   describe('invalid token scenario', () => {
-    const ChangePasswordErrorPage = new ChangePasswordErrorPageInteractor();
-    const { message } = ChangePasswordErrorPage;
+    const errorPage = ChangePasswordErrorInteractor();
 
     describe('invalid token: default', () => {
       setupApplication({
@@ -522,18 +298,10 @@ describe('Create/Reset password page', () => {
       beforeEach(function () {
         return this.visit({
           pathname: '/reset-password/test'
-        }, () => {
-          expect(ChangePasswordErrorPage.isPresent).to.be.true;
-        });
+        }, () => errorPage.exists());
       });
 
-      it('should display an error message', () => {
-        expect(message.isPresent).to.be.true;
-      });
-
-      it('should have an appropriate content', () => {
-        expect(message.text).to.equal(translations['errors.link.invalid']);
-      });
+      it('should have an appropriate content', () => errorPage.has({ errorText: translations['errors.link.invalid'] }));
     });
 
     describe('invalid token', () => {
@@ -547,18 +315,10 @@ describe('Create/Reset password page', () => {
       beforeEach(function () {
         return this.visit({
           pathname: '/reset-password/test/'
-        }, () => {
-          expect(ChangePasswordErrorPage.isPresent).to.be.true;
-        });
+        }, () => errorPage.exists());
       });
 
-      it('should display an error message', () => {
-        expect(message.isPresent).to.be.true;
-      });
-
-      it('should have an appropriate content', () => {
-        expect(message.text).to.equal(translations['errors.link.invalid']);
-      });
+      it('should have an appropriate content', () => errorPage.has({ errorText: translations['errors.link.invalid'] }));
     });
 
     describe('expired token', () => {
@@ -572,18 +332,10 @@ describe('Create/Reset password page', () => {
       beforeEach(function () {
         return this.visit({
           pathname: '/reset-password/test/'
-        }, () => {
-          expect(ChangePasswordErrorPage.isPresent).to.be.true;
-        });
+        }, () => errorPage.exists());
       });
 
-      it('should display an error message', () => {
-        expect(message.isPresent).to.be.true;
-      });
-
-      it('should have an appropriate content', () => {
-        expect(message.text).to.equal(translations['errors.link.expired']);
-      });
+      it('should have an appropriate content', () => errorPage.has({ errorText: translations['errors.link.expired'] }));
     });
 
     describe('used token', () => {
@@ -597,18 +349,10 @@ describe('Create/Reset password page', () => {
       beforeEach(function () {
         return this.visit({
           pathname: '/reset-password/test/'
-        }, () => {
-          expect(ChangePasswordErrorPage.isPresent).to.be.true;
-        });
+        }, () => errorPage.exists());
       });
 
-      it('should display an error message', () => {
-        expect(message.isPresent).to.be.true;
-      });
-
-      it('should have an appropriate content', () => {
-        expect(message.text).to.equal(translations['errors.link.used']);
-      });
+      it('should have an appropriate content', () => errorPage.has({ errorText: translations['errors.link.used'] }));
     });
     describe('system error', () => {
       setupApplication({
@@ -621,18 +365,10 @@ describe('Create/Reset password page', () => {
       beforeEach(function () {
         return this.visit({
           pathname: '/reset-password/test/'
-        }, () => {
-          expect(ChangePasswordErrorPage.isPresent).to.be.true;
-        });
+        }, () => errorPage.exists());
       });
 
-      it('should display an error message', () => {
-        expect(message.isPresent).to.be.true;
-      });
-
-      it('should have an appropriate content', () => {
-        expect(message.text).to.equal(translations['errors.default.server.error']);
-      });
+      it('should have an appropriate content', () => errorPage.has({ errorText: translations['errors.default.server.error'] }));
     });
   });
 });
