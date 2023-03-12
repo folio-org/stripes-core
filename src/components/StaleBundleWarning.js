@@ -26,6 +26,21 @@ import { FormattedMessage } from 'react-intl';
 import { Button, MessageBanner } from '@folio/stripes-components';
 import { useStripes } from '../StripesContext';
 
+export const queryFn = async (config, kyImpl) => {
+  if (typeof config?.path !== 'string') return null;
+  try {
+    if (typeof config?.header === 'string') {
+      const res = await kyImpl(config.path, { method: 'head' });
+      return res.headers.get(config.header);
+    } else {
+      return await kyImpl.get(config.path).text();
+    }
+  } catch (e) {
+    console.warn(`Error checking for new bundle ${e}`); // eslint-disable-line no-console
+    return null;
+  }
+};
+
 const StaleBundleWarning = () => {
   const stripes = useStripes();
   const config = stripes?.config?.staleBundleWarning;
@@ -35,20 +50,7 @@ const StaleBundleWarning = () => {
 
   const query = useQuery({
     queryKey: ['StaleBundleWarning'],
-    queryFn: async () => {
-      if (typeof config?.path !== 'string') return null;
-      try {
-        if (typeof config?.header === 'string') {
-          const res = await ky(config.path, { method: 'head' });
-          return res.headers.get(config.header);
-        } else {
-          return await ky.get(config.path).text();
-        }
-      } catch (e) {
-        console.warn(`Error checking for new bundle ${e}`); // eslint-disable-line no-console
-        return null;
-      }
-    },
+    queryFn: () => queryFn(config, ky),
     staleTime: refetchInterval,
     refetchInterval,
     enabled: !stale,
@@ -65,6 +67,7 @@ const StaleBundleWarning = () => {
   return (
     <MessageBanner type="warning" show={stale}>
       <FormattedMessage id="stripes-core.stale.warning" />
+      {' '}
       <Button buttonStyle="link" onClick={() => window.location.reload(true)} marginBottom0>
         <FormattedMessage id="stripes-core.stale.reload" />
       </Button>
