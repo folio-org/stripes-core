@@ -6,6 +6,7 @@
 * Move `miragejs` to dev-deps; remove `clean` script and `rimraf`. Refs STCOR-668, STCOR-681.
 * If you choose a numbering system and language in Settings > Tenant > Language and localization, saving the new values does not change the locale. Fixes STCOR-696.
 * Align version of `@folio/stripes-connect` in dev/peer deps. Refs STCOR-705.
+* Use 'Log in' consistently. Refs STCOR-697.
 * Unpin `moment` to reflect what is provided in platforms. Refs STCOR-706, STRIPES-678.
 
 ## [9.0.0](https://github.com/folio-org/stripes-core/tree/v9.0.0) (2023-01-30)
