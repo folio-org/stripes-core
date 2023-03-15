@@ -148,5 +148,8 @@
   "routeErrorBoundary.sub": "An error occurred on this page and it could not be loaded.",
   "routeErrorBoundary.goToAppHomeLabel": "Return to home",
   "routeErrorBoundary.goToModuleHomeLabel": "Return to {name} landing page",
-  "routeErrorBoundary.goToModuleSettingsHomeLabel": "Return to {name} settings"
+  "routeErrorBoundary.goToModuleSettingsHomeLabel": "Return to {name} settings",
+
+  "stale.warning": "The application has changed on the server and needs to be refreshed.",
+  "stale.reload": "Click here to reload."
 }
