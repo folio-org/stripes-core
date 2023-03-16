@@ -128,8 +128,5 @@
     "react-router-dom": "^5.2.0",
     "redux-observable": "^1.2.0",
     "rxjs": "^6.6.3"
-  },
-  "resolutions": {
-    "moment": "~2.24.0"
   }
 }

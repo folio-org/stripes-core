@@ -92,7 +92,7 @@
   "loggingIn": "Logging in...",
   "settings": "Settings",
   "folioSettings": "FOLIO settings",
-  "loginViaSSO": "Login via SSO",
+  "loginViaSSO": "Log in via SSO",
   "setPassword": "Set password",
   "settingPassword": "Setting password...",
   "settingSystemInfo": "System information",
@@ -113,10 +113,10 @@
   "errors.default.error": "Sorry, the information entered does not match our records.",
   "errors.username.incorrect": "This FOLIO account cannot be located. Please contact your FOLIO systems administrator.",
   "errors.password.incorrect": "Bad credentials",
-  "errors.password.incorrect.warn.user": "You have entered the wrong username or password for the third time. You have two more tries to login before your account will be locked.",
+  "errors.password.incorrect.warn.user": "You have entered the wrong username or password for the third time. You have two more tries to log in before your account will be locked.",
   "errors.password.incorrect.block.user": "For security purposes, your account has been locked. Please contact your FOLIO System Administrator to reset your password.",
   "errors.user.blocked": "For security purposes, your account has been locked. Please try again or contact your FOLIO System Administrator.",
-  "errors.user.timeout": "Your session has expired. Please login again to resume your session.",
+  "errors.user.timeout": "Your session has expired. Please log in again to resume your session.",
   "errors.password.match.error": "Password does not match. Retype your password.",
   "errors.password.lastTenPasswords.invalid": "Previously used password. Please enter a new password.",
   "errors.email.invalid": "Please enter a valid email address.",
@@ -148,5 +148,8 @@
   "routeErrorBoundary.sub": "An error occurred on this page and it could not be loaded.",
   "routeErrorBoundary.goToAppHomeLabel": "Return to home",
   "routeErrorBoundary.goToModuleHomeLabel": "Return to {name} landing page",
-  "routeErrorBoundary.goToModuleSettingsHomeLabel": "Return to {name} settings"
+  "routeErrorBoundary.goToModuleSettingsHomeLabel": "Return to {name} settings",
+
+  "stale.warning": "The application has changed on the server and needs to be refreshed.",
+  "stale.reload": "Click here to reload."
 }
