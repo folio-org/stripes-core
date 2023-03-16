@@ -4,6 +4,7 @@
 
 import React from 'react';
 import { before, beforeEach, it, describe } from 'mocha';
+import { converge } from '@folio/stripes-testing';
 import { expect } from 'chai';
 import setupApplication from '../helpers/setup-application';
 import AppContextMenu from '../../../src/components/MainNav/CurrentApp/AppContextMenu';
@@ -60,9 +61,11 @@ describe('CurrentApp', () => {
       await this.visit('/dummy-app-with-app-context-menu');
     });
 
-    it('Should render a context menu toggle button', () => {
-      expect(currentApp.contextMenuToggleButton.isPresent).to.equal(true);
-    });
+    it('Should render a context menu toggle button', () => converge(() => {
+      if (!(currentApp.contextMenuToggleButton.isPresent)) {
+        throw new Error(`expected ${currentApp.contextMenuToggleButton.isPresent} to be true`);
+      }
+    }));
 
     describe('Clicking the context menu toggle button', () => {
       beforeEach(async () => {

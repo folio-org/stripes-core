@@ -1,8 +1,7 @@
 import { describe, beforeEach, it } from 'mocha';
-import { expect } from 'chai';
 
 import React, { Component } from 'react';
-
+import { converge } from '@folio/stripes-testing';
 import setupApplication from '../helpers/setup-core-application';
 import AboutInteractor from '../interactors/about';
 
@@ -34,8 +33,8 @@ describe('About', () => {
       this.visit('/settings/about');
     });
 
-    it('has one installed app', function () {
-      expect(about.installedApps()).to.have.lengthOf(1);
-    });
+    it('has one installed app', () => converge(() => {
+      if (!(about.installedApps().length === 1)) throw new Error(`expected ${about.installedApps().length} to be 1`);
+    }));
   });
 });

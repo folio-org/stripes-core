@@ -1,11 +1,10 @@
 import { beforeEach, describe, it } from 'mocha';
-import { expect } from 'chai';
 
 import translations from '../../../translations/stripes-core/en';
 import setupApplication from '../helpers/setup-core-application';
-import StatusPageInteractor from '../interactors/StatusPage';
+import { StatusPage as StatusPageInteractor } from '../interactors/common';
 
-describe('Forgot username form test', () => {
+describe('Forgot username/password status test', () => {
   setupApplication({ disableAuth: false });
 
   beforeEach(function () {
@@ -15,47 +14,22 @@ describe('Forgot username form test', () => {
     });
   });
 
-  const statusPage = new StatusPageInteractor();
-  const {
-    heading,
-    notificationParagraph,
-    cautionParagraph,
-  } = statusPage;
+  const statusPage = StatusPageInteractor();
 
   describe('check email status page tests', () => {
-    it('should display a status page to the user', () => {
-      expect(statusPage.isPresent).to.be.true;
-    });
-
-    it('should display a header', () => {
-      expect(heading.isPresent).to.be.true;
-    });
+    it('should display a status page to the user', () => statusPage.exists());
 
     it(`should have the header with an appropriate text content
       equal to check email label in english translation`, () => {
-      expect(heading.text).to.equal(translations['label.check.email']);
-    });
-
-    it('should display a paragraph with notification', () => {
-      expect(notificationParagraph.isPresent).to.be.true;
+      statusPage.has({ headerText: translations['label.check.email'] });
     });
 
     it(`should have the paragraph with an appropriate text content
-      equal to sent email precautions label in english translation`, () => {
-      expect(notificationParagraph.text).to.equal(
-        translations['label.your.email']
-      );
-    });
-
-    it('should display a paragraph with precautions', () => {
-      expect(cautionParagraph.isPresent).to.be.true;
-    });
+      equal to sent email precautions label in english translation`,
+    () => statusPage.has({ notificationText: translations['label.your.email'] }));
 
     it(`should have the paragraph with an appropriate text content
-      equal to check email precautions label in english translation`, () => {
-      expect(cautionParagraph.text).to.equal(
-        translations['label.caution.email']
-      );
-    });
+      equal to check email precautions label in english translation`,
+    () => statusPage.has({ cautionText: translations['label.caution.email'] }));
   });
 });

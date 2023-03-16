@@ -20,3 +20,11 @@ export const Login = HTML.extend('login form')
       await find(Button(translations['title.login'])).click();
     }
   });
+
+export const StatusPage = HTML.extend('status page')
+  .selector('[data-test-status-page]')
+  .filters({
+    headingText: el => el.querySelector('[data-test-h1]')?.textContent || '',
+    notificationText: el => el.querySelector('[data-test-p-notification]')?.textContent || '',
+    cautionText: el => el.querySelector('[data-test-p-caution]')?.textContent || '',
+  });

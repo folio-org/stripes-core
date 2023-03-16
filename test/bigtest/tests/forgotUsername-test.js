@@ -5,10 +5,41 @@ import {
 } from 'mocha';
 import { expect } from 'chai';
 
+import {
+  TextField,
+  Button,
+  HTML,
+  MessageBanner,
+} from '@folio/stripes-testing';
+
 import translations from '../../../translations/stripes-core/en';
 import setupApplication from '../helpers/setup-core-application';
 import always from '../helpers/always';
-import ForgotUsernameInteractor from '../interactors/ForgotUsername';
+// import ForgotUsernameInteractor from '../interactors/ForgotUsername';
+import { StatusPage as StatusPageInteractor } from '../interactors/common';
+
+const ForgotUsernameInteractor = HTML.extend('forgot username')
+  .selector('form[class^="form--"]')
+  .filters({
+    headingText: el => el.querySelector('[data-test-h1]')?.textContent || '',
+    submitDisabled: el => el.querySelector('button[disabled]') !== null,
+    callToActionText: el => el.querySelector('[data-test-p]')?.textContent || '',
+  })
+  .actions({
+    fillIn : async ({ find }, value) => {
+      await find(TextField()).fillIn(value);
+    },
+    clickSubmit: async ({ find }) => {
+      await find(Button({ type: 'submit' })).click();
+    },
+    fillAndSubmit: async ({ find }, value) => {
+      await find(TextField()).fillIn(value);
+      await find(Button({ type: 'submit' })).click();
+    }
+  });
+
+const ErrorsContainerInteractor = MessageBanner.extend('errors container')
+  .selector('[data-test-errors]');
 
 describe('Forgot username form test', () => {
   setupApplication({ disableAuth: false });
@@ -17,104 +48,49 @@ describe('Forgot username form test', () => {
     this.visit('/forgot-username');
   });
 
-  const forgotUsernamePage = new ForgotUsernameInteractor();
-  const {
-    inputField,
-    submitButton,
-    mainHeading,
-    callToActionParagraph,
-    errorsWrapper,
-    errorsWrapper: { errorsContainer },
-    statusPage,
-    statusPage: {
-      heading: statusPageHeading,
-      notificationParagraph,
-      cautionParagraph,
-    },
-  } = forgotUsernamePage;
+  const forgotUsernamePage = ForgotUsernameInteractor();
   const invalidInput = 'asdfgh12345';
   const nonExistingRecord = '12345';
   const existingRecord = '127-699-8925';
 
   describe('forgot form text input field tests', () => {
-    it('should display a field to enter the email or phone number', () => {
-      expect(inputField.isPresent).to.be.true;
-    });
+    it('should display a field to enter the email or phone number', () => TextField().exists());
 
-    it('should have an empty value', () => {
-      expect(inputField.val).to.equal('');
-    });
+    it('should have an empty value', () => TextField().has({ value: '' }));
   });
 
   describe('forgot form submit button tests', () => {
-    it('should display a "Continue" button to submit a request', () => {
-      expect(submitButton.isPresent).to.be.true;
-    });
-
-    it('should have a disabled "Continue" button by default', () => {
-      expect(submitButton.isDisabled).to.be.true;
-    });
+    it('should display a disabled "Continue" button to submit a request', () => Button({ type: 'submit', disabled: true }).exists());
   });
 
   describe('forgot form submit button test after filling the input', () => {
     beforeEach(async () => {
-      await inputField.fillInput(invalidInput);
+      await forgotUsernamePage.fillIn(invalidInput);
     });
 
-    it('should have an enabled submit button', always(() => {
-      expect(submitButton.isDisabled).to.be.false;
-    }));
+    it('should have an enabled submit button', always(() => forgotUsernamePage.has({ submitDisabled: false })));
   });
 
   describe('forgot form headings tests', () => {
-    it('should display the heading', () => {
-      expect(mainHeading.isPresent).to.be.true;
-    });
+    it('should have the main heading content equal to forgot username label', () => forgotUsernamePage.has({ headingText: translations['label.forgotUsername'] }));
 
-    it('should have the main heading content equal to forgot username label', () => {
-      expect(mainHeading.text).to.equal(translations['label.forgotUsername']);
-    });
-
-    it('should display the paragraph', () => {
-      expect(callToActionParagraph.isPresent).to.be.true;
-    });
-
-    it('should have the paragraph content equal to forgot username or password call to action label', () => {
-      expect(callToActionParagraph.text).to.equal(
-        translations['label.forgotUsernameCallToAction']
-      );
-    });
+    it('should have the paragraph content equal to forgot username or password call to action label', () => forgotUsernamePage.has({ callToActionText: translations['label.forgotUsernameCallToAction'] }));
   });
 
   describe('error container initial behaviour', () => {
     describe('forgot form error container integration test', () => {
-      it('should display the error container wrapper', () => {
-        expect(errorsWrapper.isPresent).to.be.true;
-      });
-
-      it('should not display the error container', always(() => {
-        expect(errorsContainer.isPresent).to.be.false;
-      }));
+      it('should not display the error container', always(() => ErrorsContainerInteractor({ visible: false }).exists()));
     });
   });
 
   describe('forgot form submission behaviour tests', () => {
+    const errorsContainer = ErrorsContainerInteractor();
     describe('forgot form validation tests', () => {
       beforeEach(async () => {
-        await inputField.fillInput(invalidInput);
-        await submitButton.click();
+        await forgotUsernamePage.fillAndSubmit(invalidInput);
       });
 
-      it('should display an error container if the input is not a valid email',
-        () => {
-          expect(errorsContainer.isPresent).to.be.true;
-        });
-
-      it('should have an appropriate error text content', () => {
-        expect(errorsContainer.text).to.equal(
-          translations['errors.email.invalid']
-        );
-      });
+      it('should have an appropriate error text content if the input doesn\'t contain a valid email', () => errorsContainer.has({ text: translations['errors.email.invalid'] }));
     });
 
     describe('forgot form submission failed: no account found', () => {
@@ -125,19 +101,10 @@ describe('Forgot username form test', () => {
 
       beforeEach(async function () {
         this.visit('/forgot-username');
-        await inputField.fillInput(nonExistingRecord);
-        await submitButton.click();
+        await forgotUsernamePage.fillAndSubmit(nonExistingRecord);
       });
 
-      it('should display an error container if the input does not match any record', () => {
-        expect(errorsContainer.isPresent).to.be.true;
-      });
-
-      it('should should have an appropriate error text content', () => {
-        expect(errorsContainer.text).to.equal(
-          translations['errors.unable.locate.account']
-        );
-      });
+      it('should should have an appropriate error text content', () => errorsContainer.has({ text: translations['errors.unable.locate.account'] }));
     });
 
     describe('forgot form submission failed: no account found - default', () => {
@@ -148,19 +115,10 @@ describe('Forgot username form test', () => {
 
       beforeEach(async function () {
         this.visit('/forgot-username');
-        await inputField.fillInput(nonExistingRecord);
-        await submitButton.click();
+        await forgotUsernamePage.fillAndSubmit(nonExistingRecord);
       });
 
-      it('should display an error container if the input does not match any record', () => {
-        expect(errorsContainer.isPresent).to.be.true;
-      });
-
-      it('should should have an appropriate error text content', () => {
-        expect(errorsContainer.text).to.equal(
-          translations['errors.unable.locate.account']
-        );
-      });
+      it('should should have an appropriate error text content', () => errorsContainer.has({ text: translations['errors.unable.locate.account'] }));
     });
 
     describe('forgot form submission failed: multiple accounts found', () => {
@@ -171,19 +129,10 @@ describe('Forgot username form test', () => {
 
       beforeEach(async function () {
         this.visit('/forgot-username');
-        await inputField.fillInput(nonExistingRecord);
-        await submitButton.click();
+        await forgotUsernamePage.fillAndSubmit(nonExistingRecord);
       });
 
-      it('should display an error container if the input matches many accounts', () => {
-        expect(errorsContainer.isPresent).to.be.true;
-      });
-
-      it('should should have an appropriate error text content', () => {
-        expect(errorsContainer.text).to.equal(
-          translations['errors.forgotten.username.found.multiple.users']
-        );
-      });
+      it('should should have an appropriate error text content', () => errorsContainer.has({ text: translations['errors.forgotten.username.found.multiple.users'] }));
     });
 
     describe('forgot form submission failed: server error', () => {
@@ -194,19 +143,10 @@ describe('Forgot username form test', () => {
 
       beforeEach(async function () {
         this.visit('/forgot-username');
-        await inputField.fillInput(nonExistingRecord);
-        await submitButton.click();
+        await forgotUsernamePage.fillAndSubmit(nonExistingRecord);
       });
 
-      it('should display an error container if server error occurred', () => {
-        expect(errorsContainer.isPresent).to.be.true;
-      });
-
-      it('should should have an appropriate error text content', () => {
-        expect(errorsContainer.text).to.equal(
-          translations['errors.default.server.error']
-        );
-      });
+      it('should should have an appropriate error text content', () => errorsContainer.has({ text: translations['errors.default.server.error'] }));
     });
 
     describe('forgot form submission failed: account locked', () => {
@@ -217,22 +157,16 @@ describe('Forgot username form test', () => {
 
       beforeEach(async function () {
         this.visit('/forgot-username');
-        await inputField.fillInput(nonExistingRecord);
-        await submitButton.click();
+        await forgotUsernamePage.fillAndSubmit(nonExistingRecord);
       });
 
-      it('should display an error container if server error occurred', () => {
-        expect(errorsContainer.isPresent).to.be.true;
-      });
+      it('should display an error container if server error occurred', () => errorsContainer.exists());
 
-      it('should should have an appropriate error text content', () => {
-        expect(errorsContainer.text).to.equal(
-          translations['errors.forgotten.password.found.inactive']
-        );
-      });
+      it('should should have an appropriate error text content', () => errorsContainer.has({ text: translations['errors.forgotten.password.found.inactive'] }));
     });
 
     describe('forgot form successful submission behaviour', () => {
+      const statusPage = StatusPageInteractor();
       setupApplication({
         disableAuth: false,
         scenarios: ['forgotUsernameSuccess'],
@@ -240,41 +174,16 @@ describe('Forgot username form test', () => {
 
       beforeEach(async function () {
         this.visit('/forgot-username');
-        await inputField.fillInput(existingRecord);
-        await submitButton.click();
+        await forgotUsernamePage.fillAndSubmit(existingRecord);
       });
 
-      it('should not display an error container if the input match any record in DB', always(() => {
-        expect(errorsContainer.isPresent).to.be.false;
-      }));
+      it('should not display an error container if the input match any record in DB', () => ErrorsContainerInteractor({ visible: false }).exists());
 
-      it('should be redirected to the Check email status page', () => {
-        expect(statusPage.isPresent).to.be.true;
-      });
+      it('should be redirected to the Check email status page', () => statusPage.exists());
 
-      it('should display a header', () => {
-        expect(statusPageHeading.isPresent).to.be.true;
-      });
+      it('should have the header with an appropriate text content equal to check email label', () => statusPage.has({ headingText: translations['label.check.email'] }));
 
-      it('should have the header with an appropriate text content equal to check email label', () => {
-        expect(statusPageHeading.text).to.equal(
-          translations['label.check.email']
-        );
-      });
-
-      it('should display a paragraph with notification', () => {
-        expect(notificationParagraph.isPresent).to.be.true;
-      });
-
-      it('should display a paragraph with precautions', () => {
-        expect(cautionParagraph.isPresent).to.be.true;
-      });
-
-      it('should have the paragraph with an appropriate text content equal to check email precautions label', () => {
-        expect(cautionParagraph.text).to.equal(
-          translations['label.caution.email']
-        );
-      });
+      it('should have the paragraph with an appropriate text content equal to check email precautions label', () => statusPage.has({ cautionText: translations['label.caution.email'] }));
     });
   });
 });

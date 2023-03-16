@@ -66,7 +66,7 @@ const ChangePasswordConfirmationInteractor = HTML.extend('change password confir
     clickContinue: ({ find }) => find(Button('Continue to FOLIO')).click()
   });
 
-describe.only('Create/Reset password page', () => {
+describe('Create/Reset password page', () => {
   const CreateResetPasswordPage = CreateResetPasswordInteractor();
   const newPasswordField = TextField({ type: 'password', id: 'new-password' });
   const confirmPasswordField = TextField({ type: 'password', id: 'confirm-password' });
