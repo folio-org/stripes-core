@@ -140,5 +140,7 @@
     "front.error.setPassword.message": "Please log out of your current FOLIO session to set password. Once logged out please try to set your password with this link again.",
     "title.noPermission": "No permission",
     "front.error.noPermission": "You don't have permission to view this app/record",
-    "button.duplicate": "Duplicado"
+    "button.duplicate": "Duplicado",
+    "stale.warning": "La aplicación ha cambiado en el servidor y necesita ser actualizada.",
+    "stale.reload": "Haga clic aquí para recargar."
 }
