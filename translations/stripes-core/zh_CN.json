@@ -140,5 +140,7 @@
     "front.error.setPassword.message": "请退出当前的 FOLIO 会话以设置密码。退出后，请尝试再次使用此链接设置密码。",
     "title.noPermission": "没有权限",
     "front.error.noPermission": "您无权查看此应用/记录",
-    "button.duplicate": "复制"
+    "button.duplicate": "复制",
+    "stale.warning": "The application has changed on the server and needs to be refreshed.",
+    "stale.reload": "Click here to reload."
 }

@@ -122,7 +122,7 @@
     "errors.password.whiteSpace.invalid": "The password must not contain whitespaces.",
     "mainnav.myProfileAriaLabel": "My profile",
     "mainnav.skipMainNavigation": "Skip Main Navigation",
-    "errors.user.timeout": "Your session has expired. Please login again to resume your session.",
+    "errors.user.timeout": "Your session has expired. Please log in again to resume your session.",
     "errors.password.consecutiveWhitespaces.invalid": "The password must not contain consecutive white space characters.",
     "about.missingModuleCount": "{count, number} missing {count, plural, one {interface} other {interfaces}}",
     "about.incompatibleModuleCount": "{count, number} incompatible interface {count, plural, one {version} other {versions}}",
@@ -140,5 +140,7 @@
     "front.error.setPassword.message": "Please log out of your current FOLIO session to set password. Once logged out please try to set your password with this link again.",
     "title.noPermission": "No permission",
     "front.error.noPermission": "You don't have permission to view this app/record",
-    "button.duplicate": "Duplicate"
+    "button.duplicate": "Duplicate",
+    "stale.warning": "The application has changed on the server and needs to be refreshed.",
+    "stale.reload": "Click here to reload."
 }
