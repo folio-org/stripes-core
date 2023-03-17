@@ -4,11 +4,17 @@
 
 import React from 'react';
 import { before, beforeEach, it, describe } from 'mocha';
-import { converge } from '@folio/stripes-testing';
-import { expect } from 'chai';
+import { Bigtest, DropdownMenu, including } from '@folio/stripes-testing';
 import setupApplication from '../helpers/setup-application';
 import AppContextMenu from '../../../src/components/MainNav/CurrentApp/AppContextMenu';
-import CurrentAppInteractor from '../interactors/CurrentApp';
+
+const { Link, Button } = Bigtest;
+
+const HomeButton = Link.extend('home button')
+  .selector('[data-test-current-app-home-button]')
+  .filters({
+    ariaLabel: el => el.ariaLabel
+  });
 
 const DummyAppWithContextMenu = () => (
   <div>
@@ -25,7 +31,8 @@ const DummyAppWithContextMenu = () => (
 const DummyAppWithoutContextMenu = () => <div />;
 
 describe('CurrentApp', () => {
-  const currentApp = new CurrentAppInteractor();
+  const homeButton = HomeButton('Dummy app without context menu');
+  const contextDropdownToggle = Button(including('Dummy app with context menu'));
 
   before(async () => {
     await new Promise((resolve) => {
@@ -61,20 +68,14 @@ describe('CurrentApp', () => {
       await this.visit('/dummy-app-with-app-context-menu');
     });
 
-    it('Should render a context menu toggle button', () => converge(() => {
-      if (!(currentApp.contextMenuToggleButton.isPresent)) {
-        throw new Error(`expected ${currentApp.contextMenuToggleButton.isPresent} to be true`);
-      }
-    }));
+    it('Should render a context menu toggle button', () => contextDropdownToggle.exists());
 
     describe('Clicking the context menu toggle button', () => {
       beforeEach(async () => {
-        await currentApp.contextMenuToggleButton.click();
+        await contextDropdownToggle.click();
       });
 
-      it('Should open the app context menu dropdown', () => {
-        expect(currentApp.contextMenu.isPresent).to.equal(true);
-      });
+      it('Should open the app context menu dropdown', () => DropdownMenu().exists());
     });
   });
 
@@ -83,19 +84,14 @@ describe('CurrentApp', () => {
       await this.visit('/dummy-app-without-app-context-menu');
     });
 
-    it('Should render a home button', () => {
-      expect(currentApp.homeButton.isPresent).to.equal(true);
-    });
+    it('Should render a home button', () => homeButton.exists());
 
     it('Should have an aria-label equal to: "Current open application: {displayName} (Click to go home)"', () => {
-      expect(currentApp.homeButton.ariaLabel).to.equal('Current open application: Dummy app without context menu (Click to go home)');
+      return homeButton.has({ ariaLabel: 'Current open application: Dummy app without context menu (Click to go home)' });
     });
   });
 
   describe('When on the initial route (no active app)', () => {
-    it('Should render a heading with a label of "FOLIO"', () => {
-      expect(currentApp.homeButton.isPresent).to.equal(true);
-      expect(currentApp.homeButton.label).to.equal('FOLIO');
-    });
+    it('Should render a heading with a label of "FOLIO"', () => HomeButton('FOLIO').exists());
   });
 });
