@@ -140,5 +140,7 @@
     "front.error.setPassword.message": "Por favor, saia de sua sessão atual do FOLIO para definir a senha. Uma vez desconectado, tente definir sua senha com este link novamente.",
     "title.noPermission": "Sem permissão",
     "front.error.noPermission": "Você não tem permissão para ver este aplicativo/registro",
-    "button.duplicate": "Duplicar"
+    "button.duplicate": "Duplicar",
+    "stale.warning": "O aplicativo foi alterado no servidor e precisa ser atualizado.",
+    "stale.reload": "Clique aqui para recarregar."
 }

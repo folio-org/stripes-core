@@ -140,5 +140,7 @@
     "front.error.setPassword.message": "암호를 설정하려면 현재 FOLIO 세션에서 로그아웃하십시오. 로그아웃한 후 이 링크를 사용하여 비밀번호를 다시 설정해 보십시오.",
     "title.noPermission": "권한 없음",
     "front.error.noPermission": "이 앱/레코드를 볼 수 있는 권한이 없습니다.",
-    "button.duplicate": "복제"
+    "button.duplicate": "복제",
+    "stale.warning": "The application has changed on the server and needs to be refreshed.",
+    "stale.reload": "Click here to reload."
 }
