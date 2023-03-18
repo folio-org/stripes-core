@@ -140,5 +140,7 @@
     "front.error.setPassword.message": "يرجى تسجيل الخروج من جلسة فوليو الحالية لتعيين كلمة المرور. بمجرد تسجيل الخروج، يرجى محاولة تعيين كلمة المرور الخاصة بك باستخدام هذا الرابط مرة أخرى.",
     "title.noPermission": "لا توجد صلاحية",
     "front.error.noPermission": "ليس لديك صلاحية لعرض هذا التطبيق/التسجيلة",
-    "button.duplicate": "تكرار"
+    "button.duplicate": "تكرار",
+    "stale.warning": "The application has changed on the server and needs to be refreshed.",
+    "stale.reload": "Click here to reload."
 }
