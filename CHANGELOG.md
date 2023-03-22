@@ -8,6 +8,7 @@
 * Align version of `@folio/stripes-connect` in dev/peer deps. Refs STCOR-705.
 * Use 'Log in' consistently. Refs STCOR-697.
 * Unpin `moment` to reflect what is provided in platforms. Refs STCOR-706, STRIPES-678.
+* Expose additional functionality so it can be consumed via other modules. Refs STCOR-711.
 
 ## [9.0.0](https://github.com/folio-org/stripes-core/tree/v9.0.0) (2023-01-30)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v8.3.0...v9.0.0)
