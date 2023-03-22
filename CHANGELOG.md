@@ -1,5 +1,9 @@
 # Change history for stripes-core
 
+## 9.0.7 In Progress
+
+* Expose additional functionality so it can be consumed via other modules. Refs STCOR-711.
+
 ## [9.0.6](https://github.com/folio-org/stripes-core/tree/v9.0.6) (2023-04-03)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v9.0.5...v9.0.6)
 
