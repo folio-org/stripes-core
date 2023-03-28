@@ -106,7 +106,7 @@
     "createResetPassword.header": "选择一个密码",
     "createResetPassword.newPassword": "新建密码",
     "createResetPassword.confirmPassword": "确认密码",
-    "errors.password.incorrect.warn.user": "您第三次输入了错误的用户名或密码。在您的帐户被锁定之前，您还有两次尝试登录。",
+    "errors.password.incorrect.warn.user": "您第三次输入了错误的用户名或密码。在您的账户被锁定之前，您还有两次尝试登录。",
     "errors.password.incorrect.block.user": "出于安全考虑，您的帐户已被锁定。请联系您的FOLIO系统管理员以重置密码。",
     "settingSystemInfo": "系统信息",
     "settingChoose": "选择设置",
@@ -122,7 +122,7 @@
     "errors.password.whiteSpace.invalid": "密码不得包含空格。",
     "mainnav.myProfileAriaLabel": "我的个人资料",
     "mainnav.skipMainNavigation": "跳过主导航",
-    "errors.user.timeout": "会话已过期。请再次登录以恢复会话。",
+    "errors.user.timeout": "会话已过期。请重新登录以恢复会话。",
     "errors.password.consecutiveWhitespaces.invalid": "密码不能包含连续的空格字符。",
     "about.missingModuleCount": "{count, number}缺少{count, plural, one {接口} other {接口}}",
     "about.incompatibleModuleCount": "{count, number}不兼容的接口{count, plural, one {版本} other {版本}}",
@@ -141,6 +141,6 @@
     "title.noPermission": "没有权限",
     "front.error.noPermission": "您无权查看此应用/记录",
     "button.duplicate": "复制",
-    "stale.warning": "The application has changed on the server and needs to be refreshed.",
-    "stale.reload": "Click here to reload."
+    "stale.warning": "应用程序在服务器上发生了变化，需要刷新。",
+    "stale.reload": "单击此处重新加载。"
 }
