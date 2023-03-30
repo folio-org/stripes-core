@@ -1,5 +1,9 @@
 # Change history for stripes-core
 
+## 9.0.5 IN PROGRESS
+
+* Correctly set app-icons' z-index. Refs STCOR-707.
+
 ## [9.0.4](https://github.com/folio-org/stripes-core/tree/v9.0.4) (2023-03-15)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v9.0.3...v9.0.4)
 
