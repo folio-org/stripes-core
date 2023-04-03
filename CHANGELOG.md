@@ -1,5 +1,10 @@
 # Change history for stripes-core
 
+## [9.0.6](https://github.com/folio-org/stripes-core/tree/v9.0.6) (2023-04-03)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v9.0.5...v9.0.6)
+
+* `console.log` cleanup
+
 ## [9.0.5](https://github.com/folio-org/stripes-core/tree/v9.0.5) (2023-03-31)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v9.0.4...v9.0.5)
 
