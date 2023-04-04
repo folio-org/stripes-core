@@ -1,5 +1,10 @@
 # Change history for stripes-core
 
+## [9.0.8](https://github.com/folio-org/stripes-core/tree/v9.0.8) (2023-04-04)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v9.0.7...v9.0.8)
+
+* Export additional components under STCOR-711.
+
 ## [9.0.7](https://github.com/folio-org/stripes-core/tree/v9.0.7) (2023-04-04)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v9.0.6...v9.0.7)
 
