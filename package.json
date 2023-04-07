@@ -18,7 +18,8 @@
     "test/bigtest",
     "CHANGELOG.md",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "doc"
   ],
   "scripts": {
     "prepublish": "yarn transpile",
