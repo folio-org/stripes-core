@@ -14,7 +14,11 @@
   "style": "dist/style.css",
   "files": [
     "dist",
-    "translations"
+    "translations",
+    "test/bigtest",
+    "CHANGELOG.md",
+    "README.md",
+    "LICENSE"
   ],
   "scripts": {
     "prepublish": "yarn transpile",
