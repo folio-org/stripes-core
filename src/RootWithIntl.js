@@ -40,6 +40,7 @@ import StaleBundleWarning from './components/StaleBundleWarning';
 import { StripesContext } from './StripesContext';
 import { CalloutContext } from './CalloutContext';
 import AuthnLogin from './components/AuthnLogin';
+import RegistryLoader from './components/RegistryLoader';
 
 const RootWithIntl = ({ stripes, token = '', isAuthenticated = false, disableAuth, history = {}, queryClient }) => {
   const connect = connectFor('@folio/core', stripes.epics, stripes.logger);
@@ -53,7 +54,8 @@ const RootWithIntl = ({ stripes, token = '', isAuthenticated = false, disableAut
   return (
     <StripesContext.Provider value={connectedStripes}>
       <CalloutContext.Provider value={callout}>
-        <ModuleTranslator>
+        <RegistryLoader>
+          <ModuleTranslator>
           <TitleManager>
             <HotKeys
               keyMap={connectedStripes.bindings}
@@ -176,7 +178,8 @@ const RootWithIntl = ({ stripes, token = '', isAuthenticated = false, disableAut
               </Provider>
             </HotKeys>
           </TitleManager>
-        </ModuleTranslator>
+          </ModuleTranslator>
+        </RegistryLoader>
       </CalloutContext.Provider>
     </StripesContext.Provider>
   );
