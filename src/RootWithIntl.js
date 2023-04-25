@@ -37,6 +37,7 @@ import {
 import StaleBundleWarning from './components/StaleBundleWarning';
 import { StripesContext } from './StripesContext';
 import { CalloutContext } from './CalloutContext';
+import RegistryLoader from './components/RegistryLoader';
 
 class RootWithIntl extends React.Component {
   static propTypes = {
@@ -77,7 +78,7 @@ class RootWithIntl extends React.Component {
     return (
       <StripesContext.Provider value={stripes}>
         <CalloutContext.Provider value={this.state.callout}>
-          <ModuleTranslator>
+          <RegistryLoader>
             <TitleManager>
               <HotKeys
                 keyMap={stripes.bindings}
@@ -168,7 +169,7 @@ class RootWithIntl extends React.Component {
                 </Provider>
               </HotKeys>
             </TitleManager>
-          </ModuleTranslator>
+          </RegistryLoader>
         </CalloutContext.Provider>
       </StripesContext.Provider>
     );

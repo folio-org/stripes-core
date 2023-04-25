@@ -1,10 +1,11 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { modules } from 'stripes-config';
+import { useModules } from './ModulesContext';
 import { withStripes } from './StripesContext';
 import { ModuleHierarchyProvider } from './components';
 
 const Pluggable = (props) => {
+  const modules = useModules();
   const plugins = modules.plugin || [];
   const cachedPlugins = useMemo(() => {
     const cached = [];
