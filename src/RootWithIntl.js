@@ -18,7 +18,6 @@ import {
   MainContainer,
   MainNav,
   ModuleContainer,
-  ModuleTranslator,
   TitledRoute,
   Front,
   SSOLanding,

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { useModules } from './ModulesContext';
 import { withStripes } from './StripesContext';
 import { ModuleHierarchyProvider } from './components';
+import loadRemoteComponent from './loadRemoteComponent';
 
 const Pluggable = (props) => {
   const modules = useModules();
@@ -23,7 +24,8 @@ const Pluggable = (props) => {
       }
 
       if (best) {
-        const Child = props.stripes.connect(best.getModule());
+        const RemoteComponent = React.lazy(() => loadRemoteComponent(best.url, best.name));
+        const Child = props.stripes.connect(RemoteComponent);
 
         cached.push({
           Child,
