@@ -1,5 +1,10 @@
 # Change history for stripes-core
 
+## [8.3.2](https://github.com/folio-org/stripes-core/tree/v8.3.2) (2023-04-26)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v8.3.1...v8.3.2)
+
+* Console cleanup.
+
 ## [8.3.1](https://github.com/folio-org/stripes-core/tree/v8.3.1) (2022-11-28)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v8.3.0...v8.3.1)
 
