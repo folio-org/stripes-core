@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { useIntl } from 'react-intl';
 
 import { ModulesContext } from '../ModulesContext';
+import loadRemoteComponent from '../loadRemoteComponent';
 
 // TODO: should this be handled by registry?
 const parseModules = (remotes) => {
@@ -41,6 +42,15 @@ const RegistryLoader = ({ children }) => {
       const registry = await response.json();
       const remotes = Object.entries(registry.remotes).map(([name, metadata]) => ({ name, ...metadata }));
       const parsedModules = translateModules(parseModules(remotes));
+      const { handler: handlerModules } = parsedModules;
+
+      // prefetch all handlers so they can be executed in a sync way.
+      if (handlerModules) {
+        await Promise.all(handlerModules.map(async (module) => {
+          const component = await loadRemoteComponent(module.url, module.name);
+          module.getModule = () => component?.default;
+        }));
+      }
 
       setModules(parsedModules);
     };
