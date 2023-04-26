@@ -9,7 +9,6 @@ import { QueryClientProvider } from 'react-query';
 import { ApolloProvider } from '@apollo/client';
 
 import { ErrorBoundary } from '@folio/stripes-components';
-import { metadata, icons } from 'stripes-config';
 
 import { ConnectContext } from '@folio/stripes-connect';
 import initialReducers from '../../initialReducers';
@@ -28,11 +27,6 @@ import './Root.css';
 
 import { withModules } from '../Modules';
 import { FFetch } from './FFetch';
-
-if (!metadata) {
-  // eslint-disable-next-line no-console
-  console.error('No metadata harvested from package files, so you will not get app icons. Probably the stripes-core in your Stripes CLI is too old. Try `yarn global upgrade @folio/stripes-cli`');
-}
 
 class Root extends Component {
   constructor(...args) {
@@ -150,8 +144,6 @@ class Root extends Component {
       locale,
       timezone,
       currency,
-      metadata,
-      icons,
       setLocale: (localeValue) => { loadTranslations(store, localeValue, defaultTranslations); },
       setTimezone: (timezoneValue) => { store.dispatch(setTimezone(timezoneValue)); },
       setCurrency: (currencyValue) => { store.dispatch(setCurrency(currencyValue)); },

@@ -17,7 +17,6 @@ import {
   MainContainer,
   MainNav,
   ModuleContainer,
-  ModuleTranslator,
   TitledRoute,
   Front,
   OIDCRedirect,

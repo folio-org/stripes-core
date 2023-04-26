@@ -27,6 +27,7 @@ const AppRoutes = ({ modules, stripes }) => {
       const connect = connectFor(module.module, stripes.epics, stripes.logger);
 
       let ModuleComponent;
+
       try {
         ModuleComponent = connect(RemoteComponent);
       } catch (error) {
