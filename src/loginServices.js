@@ -402,8 +402,6 @@ export function createOkapiSession(okapiUrl, store, tenant, token, data) {
  * @returns {Promise}
  */
 export function validateUser(okapiUrl, store, tenant, session) {
-  console.log('validate user', store.getState().okapi);
-
   return fetch(`${okapiUrl}/bl-users/_self`, { headers: getHeaders(tenant, session.token) }).then((resp) => {
     if (resp.ok) {
       const { token, user, perms, consortium } = session;
