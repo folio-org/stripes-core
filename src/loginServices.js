@@ -3,6 +3,7 @@ import { translations } from 'stripes-config';
 import rtlDetect from 'rtl-detect';
 import moment from 'moment';
 
+import { fetchCurrentConsortiumData } from './consortiaService';
 import { discoverServices } from './discoverServices';
 
 import {
@@ -22,6 +23,9 @@ import {
   setSessionData,
   setLoginData,
   updateCurrentUser,
+  checkConsortia,
+  setCurrentTenant,
+  clearConsortiumData,
 } from './okapiActions';
 import processBadResponse from './processBadResponse';
 
@@ -325,6 +329,14 @@ function loadResources(okapiUrl, store, tenant, userId) {
   return Promise.all(promises);
 }
 
+export async function requestConsortiumData(store, data) {
+  const interfaces = store.getState().discovery.interfaces;
+
+  if (!interfaces.consortia) return Promise.resolve({});
+
+  return fetchCurrentConsortiumData(store, data);
+}
+
 /**
  * createOkapiSession
  * Remap the given data into a session object shaped like:
@@ -390,17 +402,27 @@ export function createOkapiSession(okapiUrl, store, tenant, token, data) {
  * @returns {Promise}
  */
 export function validateUser(okapiUrl, store, tenant, session) {
+  console.log('validate user', store.getState().okapi);
+
   return fetch(`${okapiUrl}/bl-users/_self`, { headers: getHeaders(tenant, session.token) }).then((resp) => {
     if (resp.ok) {
-      const { token, user, perms } = session;
+      const { token, user, perms, consortium } = session;
       return resp.json().then((data) => {
         store.dispatch(setLoginData(data));
-        store.dispatch(setSessionData({ token, user, perms }));
-        return loadResources(okapiUrl, store, tenant, user.id);
+        store.dispatch(setSessionData({ token, user, perms, consortium }));
+        return loadResources(okapiUrl, store, tenant, user.id)
+          .then(res => {
+            const activeTenant = consortium?.activeAffiliation?.tenantId || tenant;
+            store.dispatch(setCurrentTenant(activeTenant));
+
+            return res;
+          });
       });
     } else {
       store.dispatch(clearCurrentUser());
       store.dispatch(clearOkapiToken());
+      store.dispatch(clearConsortiumData());
+      store.dispatch(setCurrentTenant(tenant));
       return localforage.removeItem('okapiSess');
     }
   }).catch((error) => {
@@ -507,10 +529,13 @@ export function processOkapiSession(okapiUrl, store, tenant, resp, ssoToken) {
   const token = resp.headers.get('X-Okapi-Token') || ssoToken;
   const { dispatch } = store;
 
+  console.log('okapi status __', store.getState().okapi.okapiReady);
+
   if (resp.ok) {
     return resp.json()
       .then(json => {
         return createOkapiSession(okapiUrl, store, tenant, token, json)
+          .then(() => requestConsortiumData(store, json))
           .then(() => json);
       })
       .then((json) => {

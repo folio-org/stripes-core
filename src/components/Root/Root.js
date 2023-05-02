@@ -20,6 +20,7 @@ import initialReducers from '../../initialReducers';
 import enhanceReducer from '../../enhanceReducer';
 import createApolloClient from '../../createApolloClient';
 import createReactQueryClient from '../../createReactQueryClient';
+import { consortiumShape } from '../../constants';
 import { setSinglePlugin, setBindings, setOkapiToken, setTimezone, setCurrency, updateCurrentUser } from '../../okapiActions';
 import { loadTranslations, checkOkapiSession } from '../../loginServices';
 import { getQueryResourceKey, getCurrentModule } from '../../locationService';
@@ -107,7 +108,7 @@ class Root extends Component {
   }
 
   render() {
-    const { logger, store, epics, config, okapi, actionNames, token, disableAuth, currentUser, currentPerms, locale, defaultTranslations, timezone, currency, plugins, bindings, discovery, translations, history, serverDown } = this.props;
+    const { logger, store, epics, config, okapi, actionNames, token, disableAuth, currentUser, currentPerms, locale, defaultTranslations, timezone, currency, plugins, bindings, discovery, translations, history, serverDown, consortium } = this.props;
 
     if (serverDown) {
       return <div>Error: server is down.</div>;
@@ -145,6 +146,7 @@ class Root extends Component {
         user: currentUser,
         perms: currentPerms,
       },
+      consortium,
       connect(X) { return X; },
     });
 
@@ -230,6 +232,7 @@ Root.propTypes = {
   }),
   okapiReady: PropTypes.bool,
   serverDown: PropTypes.bool,
+  consortium: consortiumShape,
 };
 
 Root.defaultProps = {
@@ -246,6 +249,7 @@ function mapStateToProps(state) {
   return {
     bindings: state.okapi.bindings,
     currency: state.okapi.currency,
+    consortium: state.okapi.consortium,
     currentPerms: state.okapi.currentPerms,
     currentUser: state.okapi.currentUser,
     discovery: state.discovery,

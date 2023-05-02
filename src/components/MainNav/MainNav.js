@@ -12,7 +12,11 @@ import { Icon } from '@folio/stripes-components';
 
 import { withModules } from '../Modules';
 import { LastVisitedContext } from '../LastVisited';
-import { clearOkapiToken, clearCurrentUser } from '../../okapiActions';
+import {
+  clearOkapiToken,
+  clearCurrentUser,
+  clearConsortiumData,
+} from '../../okapiActions';
 import { resetStore } from '../../mainActions';
 import { getLocale } from '../../loginServices';
 import {
@@ -126,6 +130,7 @@ class MainNav extends Component {
     return getLocale(okapi.url, this.store, okapi.tenant).then(() => {
       this.store.dispatch(clearOkapiToken());
       this.store.dispatch(clearCurrentUser());
+      this.store.dispatch(clearConsortiumData());
       this.store.dispatch(resetStore());
       localforage.removeItem('okapiSess');
     });

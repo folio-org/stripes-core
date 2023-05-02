@@ -4,6 +4,12 @@ export default function okapiReducer(state = {}, action) {
       return Object.assign({}, state, { token: action.token });
     case 'CLEAR_OKAPI_TOKEN':
       return Object.assign({}, state, { token: null });
+    case 'SET_CONSORTIUM_DATA':
+      return Object.assign({}, state, { consortium: action.consortium });
+    case 'CLEAR_CONSORTIUM_DATA':
+      return Object.assign({}, state, { consortium: null });
+    case 'SET_CURRENT_TENANT':
+      return Object.assign({}, state, { tenant: action.tenant });
     case 'SET_CURRENT_USER':
       return Object.assign({}, state, { currentUser: action.currentUser });
     case 'SET_LOCALE':
@@ -25,8 +31,14 @@ export default function okapiReducer(state = {}, action) {
     case 'CLEAR_CURRENT_USER':
       return Object.assign({}, state, { currentUser: {}, currentPerms: {} });
     case 'SET_SESSION_DATA': {
-      const { perms, user, token } = action.session;
-      return { ...state, currentUser: user, currentPerms: perms, token };
+      const { perms, user, token, consortium } = action.session;
+      return {
+        ...state,
+        consortium,
+        currentUser: user,
+        currentPerms: perms,
+        token,
+      };
     }
     case 'SET_AUTH_FAILURE':
       return Object.assign({}, state, { authFailure: action.message });

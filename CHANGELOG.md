@@ -10,6 +10,8 @@
 * Unpin `moment` to reflect what is provided in platforms. Refs STCOR-706, STRIPES-678.
 * Expose additional functionality so it can be consumed via other modules. Refs STCOR-711.
 * Apps icons replaced with blue rectangle on apps menu. Refs STCOR-707.
+* Display consortium active affiliation in the profile dropdown trigger. Refs STCOR-690.
+* Support switch consortium active affiliation. Refs STCOR-690.
 
 ## [9.0.0](https://github.com/folio-org/stripes-core/tree/v9.0.0) (2023-01-30)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v8.3.0...v9.0.0)

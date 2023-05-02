@@ -11,6 +11,26 @@ function clearCurrentUser() {
   };
 }
 
+function setConsortiumData(consortium) {
+  return {
+    type: 'SET_CONSORTIUM_DATA',
+    consortium,
+  };
+}
+
+function clearConsortiumData() {
+  return {
+    type: 'CLEAR_CONSORTIUM_DATA',
+  };
+}
+
+function setCurrentTenant(tenant) {
+  return {
+    type: 'SET_CURRENT_TENANT',
+    tenant,
+  };
+}
+
 function setCurrentPerms(currentPerms) {
   return {
     type: 'SET_CURRENT_PERMS',
@@ -130,12 +150,15 @@ function updateCurrentUser(data) {
 
 export {
   checkSSO,
+  clearConsortiumData,
   clearCurrentUser,
   clearOkapiToken,
   setAuthError,
   setBindings,
+  setConsortiumData,
   setCurrency,
   setCurrentPerms,
+  setCurrentTenant,
   setCurrentUser,
   setLocale,
   setLoginData,

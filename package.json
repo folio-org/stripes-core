@@ -28,6 +28,7 @@
       "configuration": "2.0"
     },
     "optionalOkapiInterfaces": {
+      "consortia": "1.0",
       "login-saml": "2.0"
     },
     "permissionSets": [

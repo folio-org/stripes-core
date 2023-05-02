@@ -17,6 +17,7 @@ import {
   NavListSection,
 } from '@folio/stripes-components';
 
+import { consortiumShape } from '../../../constants';
 import NavButton from '../NavButton';
 import css from './ProfileDropdown.css';
 import { withModules } from '../../Modules';
@@ -35,6 +36,7 @@ class ProfileDropdown extends Component {
         showPerms: PropTypes.bool,
         showHomeLink: PropTypes.bool,
       }),
+      consortium: consortiumShape,
       hasPerm: PropTypes.func,
       okapi: PropTypes.object,
       user: PropTypes.shape({
@@ -125,6 +127,12 @@ class ProfileDropdown extends Component {
     this.setState(({ dropdownOpen }) => ({
       dropdownOpen: !dropdownOpen
     }));
+  }
+
+  getConsortiumData() {
+    const { stripes: { consortium } } = this.props;
+
+    return consortium || {};
   }
 
   getUserData() {
@@ -228,7 +236,6 @@ class ProfileDropdown extends Component {
 
   renderProfileTrigger = ({ getTriggerProps, open }) => {
     const { intl } = this.props;
-    const servicePointName = get(this.getUserData(), 'curServicePoint.name', null);
 
     return (
       <NavButton
@@ -236,16 +243,28 @@ class ProfileDropdown extends Component {
         selected={open}
         className={css.button}
         icon={this.getProfileImage()}
-        label={servicePointName ? (
-          <>
-            <span className={css.button__label}>
-              {servicePointName}
-            </span>
-            <Icon icon={open ? 'caret-up' : 'caret-down'} />
-          </>
-        ) : null}
+        label={this.renderProfileTriggerLabel({ open })}
         {...getTriggerProps()}
       />
+    );
+  }
+
+  renderProfileTriggerLabel = ({ open }) => {
+    const servicePointName = get(this.getUserData(), 'curServicePoint.name', null);
+    const activeAffiliationName = get(this.getConsortiumData(), 'activeAffiliation.tenantName', null);
+
+    const withLabel = Boolean(servicePointName || activeAffiliationName);
+
+    return (
+      withLabel ? (
+        <>
+          <span className={css.button__label}>
+            {activeAffiliationName && <span>{activeAffiliationName}</span>}
+            {servicePointName && <span>{servicePointName}</span>}
+          </span>
+          <Icon icon={open ? 'caret-up' : 'caret-down'} />
+        </>
+      ) : null
     );
   }
 
