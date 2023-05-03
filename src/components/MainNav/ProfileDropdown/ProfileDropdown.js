@@ -62,11 +62,7 @@ class ProfileDropdown extends Component {
     this.createHandlerComponent = this.createHandlerComponent.bind(this);
     this.navigateByUrl = this.navigateByUrl.bind(this);
 
-    const modulesWithLinks = this.getModulesWithLinks();
-    this.userLinks = modulesWithLinks.reduce((acc, m) => {
-      const links = m.links.userDropdown.map((link, index) => this.createLink(link, index, m));
-      return acc.concat(links);
-    }, []);
+    this.userLinks = this.getDropdownMenuLinks();
   }
 
   setInitialState(callback) {
@@ -75,7 +71,16 @@ class ProfileDropdown extends Component {
     }, callback);
   }
 
-  getModulesWithLinks() {
+  getDropdownMenuLinks = () => {
+    const modulesWithLinks = this.getModulesWithLinks();
+
+    return modulesWithLinks.reduce((acc, m) => {
+      const links = m.links.userDropdown.map((link, index) => this.createLink(link, index, m));
+      return acc.concat(links);
+    }, []);
+  }
+
+  getModulesWithLinks = () => {
     const { modules } = this.props;
     return ([].concat(...Object.values(modules)))
       .filter(({ links }) => links && Array.isArray(links.userDropdown));
@@ -124,6 +129,9 @@ class ProfileDropdown extends Component {
   }
 
   toggleDropdown() {
+    // Get items after rechecking for item visibility
+    this.userLinks = this.getDropdownMenuLinks();
+
     this.setState(({ dropdownOpen }) => ({
       dropdownOpen: !dropdownOpen
     }));
