@@ -23,7 +23,6 @@ import {
   setSessionData,
   setLoginData,
   updateCurrentUser,
-  checkConsortia,
   setCurrentTenant,
   clearConsortiumData,
 } from './okapiActions';
@@ -330,9 +329,9 @@ function loadResources(okapiUrl, store, tenant, userId) {
 }
 
 export async function requestConsortiumData(store, data) {
-  const interfaces = store.getState().discovery.interfaces;
+  const interfaces = store.getState().discovery?.interfaces;
 
-  if (!interfaces.consortia) return Promise.resolve({});
+  if (!interfaces?.consortia) return Promise.resolve();
 
   return fetchCurrentConsortiumData(store, data);
 }
@@ -526,8 +525,6 @@ export function handleLoginError(dispatch, resp) {
 export function processOkapiSession(okapiUrl, store, tenant, resp, ssoToken) {
   const token = resp.headers.get('X-Okapi-Token') || ssoToken;
   const { dispatch } = store;
-
-  console.log('okapi status __', store.getState().okapi.okapiReady);
 
   if (resp.ok) {
     return resp.json()

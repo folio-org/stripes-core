@@ -5,6 +5,7 @@ import {
   handleLoginError,
   loadTranslations,
   processOkapiSession,
+  requestConsortiumData,
   supportedLocales,
   supportedNumberingSystems,
   updateUser,
@@ -31,6 +32,7 @@ import {
 } from './okapiActions';
 
 import { defaultErrors } from './constants';
+import { fetchCurrentConsortiumData } from './consortiaService';
 
 
 
@@ -38,6 +40,10 @@ jest.mock('localforage', () => ({
   getItem: jest.fn(() => Promise.resolve({ user: {} })),
   setItem: jest.fn(() => Promise.resolve()),
   removeItem: jest.fn(() => Promise.resolve()),
+}));
+
+jest.mock('./consortiaService', () => ({
+  fetchCurrentConsortiumData: jest.fn().mockResolvedValue(),
 }));
 
 // fetch success: resolve promise with ok == true and $data in json()
@@ -292,5 +298,50 @@ describe('updateUser', () => {
     const data = { thunder: 'chicken' };
     await updateUser(store, data);
     expect(store.dispatch).toHaveBeenCalledWith(updateCurrentUser(data));
+  });
+});
+
+describe('requestConsortiumData', () => {
+  const data = { user: { id: 'user-id' } };
+  const consortiumData = { id: 'consortium-id' };
+
+  beforeEach(() => {
+    fetchCurrentConsortiumData
+      .mockClear()
+      .mockResolvedValue(consortiumData);
+  });
+
+  describe('consortia is enabled', () => {
+    const store = {
+      getState: jest.fn(() => ({
+        discovery: {
+          interfaces: {
+            consortia: '1.0',
+          },
+        },
+      })),
+    };
+
+    it('should fetch and return data for current consortium', async () => {
+      const result = await requestConsortiumData(store, data);
+
+      expect(result).toEqual(consortiumData);
+      expect(fetchCurrentConsortiumData).toBeCalledWith(store, data);
+    });
+  });
+
+  describe('consortia is not enabled', () => {
+    const store = {
+      getState: jest.fn(() => ({
+        discovery: { interfaces: {} },
+      })),
+    };
+
+    it('should return promise without data and not fetch consortium data', async () => {
+      const result = await requestConsortiumData(store, data);
+
+      expect(result).toBeUndefined();
+      expect(fetchCurrentConsortiumData).not.toBeCalled();
+    });
   });
 });

@@ -161,7 +161,8 @@ class ProfileDropdown extends Component {
         alt={user.name}
         ariaLabel={user.name}
         className={css.avatar}
-      />);
+      />
+    );
   }
 
   navigateByUrl(link) {
