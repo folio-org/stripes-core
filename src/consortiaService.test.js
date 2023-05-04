@@ -1,9 +1,9 @@
 import localforage from 'localforage';
 
 import {
+  fetchConsortia,
   fetchConsortiumTenants,
   fetchConsortiumUserAffiliations,
-  fetchCurrentConsortium,
   fetchCurrentConsortiumData,
   updateConsortium,
 } from './consortiaService';
@@ -122,11 +122,11 @@ describe('consortiaService', () => {
     });
   });
 
-  describe('fetchCurrentConsortium', () => {
+  describe('fetchConsortia', () => {
     it('should fetch and return current consortium', async () => {
       mockFetchSuccess();
 
-      const response = await fetchCurrentConsortium(defaultOkapiUrl, defaultOkapiTenant).then(res => res.json());
+      const response = await fetchConsortia(defaultOkapiUrl, defaultOkapiTenant).then(res => res.json());
 
       expect(global.fetch).toBeCalledWith(
         `${defaultOkapiUrl}/consortia`,

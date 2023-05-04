@@ -6,12 +6,14 @@ import {
   setCurrentTenant,
 } from './okapiActions';
 
-// TODO: update docs comment
 /**
  * updateConsortium
- * 1. concat the given data onto consortium state
- * 2. dispatch setConsortiumData, concating given data onto the consortium state
- * @param {redux-store} store redux store
+ *
+ * 1. concat the given data onto local-storage consortium and save it;
+ * 2. dispatch setConsortiumData, concating given data onto the session consortium;
+ * 3. dispatch setCurrentTenant if updates contain 'activeAffiliation'.
+ *
+ * @param {redux-store} store
  * @param {object} data
  *
  * @returns {void}
@@ -28,9 +30,17 @@ export function updateConsortium(store, data, defaultTenant = okapi.tenant) {
     });
 }
 
-// TODO: add docs comments
-
-export const fetchCurrentConsortium = (okapiUrl, tenant) => {
+/**
+ * fetchConsortia
+ *
+ * Retrieve a list of consortia.
+ *
+ * @param {string} okapiUrl
+ * @param {string} tenant
+ *
+ * @returns {Promise}
+ */
+export const fetchConsortia = (okapiUrl, tenant) => {
   return fetch(`${okapiUrl}/consortia`, {
     headers: {
       'X-Okapi-Tenant': tenant,
@@ -39,6 +49,18 @@ export const fetchCurrentConsortium = (okapiUrl, tenant) => {
   });
 };
 
+/**
+ * fetchConsortiumTenants
+ *
+ * Retrieve a list of tenants related to the specified consortium.
+ *
+ * @param {string} okapiUrl
+ * @param {string} tenant
+ * @param {Object} options
+ * @param {string} options.consortiumId
+ *
+ * @returns {Promise}
+ */
 export const fetchConsortiumTenants = (okapiUrl, tenant, { consortiumId }) => {
   return fetch(`${okapiUrl}/consortia/${consortiumId}/tenants`, {
     headers: {
@@ -48,6 +70,20 @@ export const fetchConsortiumTenants = (okapiUrl, tenant, { consortiumId }) => {
   });
 };
 
+/**
+ * fetchConsortiumTenants
+ *
+ * Retrieve a list of affiliations between users and tenants in the specified consortium.
+ *
+ * @param {string} okapiUrl
+ * @param {string} tenant
+ * @param {string} token
+ * @param {Object} options
+ * @param {string} options.consortiumId
+ * @param {string} options.userId
+ *
+ * @returns {Promise}
+ */
 export const fetchConsortiumUserAffiliations = (okapiUrl, tenant, token, { consortiumId, userId }) => {
   return fetch(`${okapiUrl}/consortia/${consortiumId}/user-tenants?userId=${userId}`, {
     headers: {
@@ -58,12 +94,23 @@ export const fetchConsortiumUserAffiliations = (okapiUrl, tenant, token, { conso
   });
 };
 
-// TODO: test for both consortia and non-consortia tenants
+/**
+ * fetchCurrentConsortiumData
+ *
+ * 1. Fetch data related to current consortium;
+ * 2. Update consortium in okapi session;
+ * 3. Update current tenant.
+ *
+ * @param {redux-store} store
+ * @param {object} data
+ *
+ * @returns {void}
+ */
 export const fetchCurrentConsortiumData = (store, data) => {
   const centralTenant = okapi.tenant;
   const { token, url } = store.getState().okapi;
 
-  return fetchCurrentConsortium(url, centralTenant)
+  return fetchConsortia(url, centralTenant)
     .then(resp => resp.json().then(json => (json.totalRecords ? json.consortia[0] : {})))
     .then(consortium => {
       const consortiumId = consortium.id;
