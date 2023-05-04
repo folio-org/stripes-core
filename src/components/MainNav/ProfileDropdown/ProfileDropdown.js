@@ -185,7 +185,7 @@ class ProfileDropdown extends Component {
      * if setting is active in stripes config
      */
     let perms = null;
-    if (stripes.config && stripes.config.showPerms) {
+    if (stripes.config?.showPerms) {
       perms = (
         <IntlConsumer>
           {
@@ -226,7 +226,7 @@ class ProfileDropdown extends Component {
         <NavList>
           <NavListSection>
             {
-              (!stripes.config || !stripes.config.showHomeLink) ?
+              (!stripes.config?.showHomeLink) ?
                 null :
                 <NavListItem id="clickable-home" type="button" onClick={this.onHome}>
                   <FormattedMessage id="stripes-core.front.home" />
