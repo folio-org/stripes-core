@@ -29,6 +29,7 @@ import {
   setSessionData,
   setLoginData,
   updateCurrentUser,
+  setCurrentTenant,
 } from './okapiActions';
 
 import { defaultErrors } from './constants';
@@ -44,6 +45,10 @@ jest.mock('localforage', () => ({
 
 jest.mock('./consortiaService', () => ({
   fetchCurrentConsortiumData: jest.fn().mockResolvedValue(),
+}));
+
+jest.mock('./discoverServices', () => ({
+  discoverServices: jest.fn().mockResolvedValue(),
 }));
 
 // fetch success: resolve promise with ok == true and $data in json()
@@ -253,6 +258,12 @@ describe('validateUser', () => {
   it('handles valid user', async () => {
     const store = {
       dispatch: jest.fn(),
+      getState: () => ({
+        okapi: {
+          withoutOkapi: false,
+          currentPerms: {},
+        },
+      }),
     };
 
     const data = { monkey: 'bagel' };
@@ -270,6 +281,7 @@ describe('validateUser', () => {
     await validateUser('url', store, 'tenant', session);
     expect(store.dispatch).toHaveBeenCalledWith(setLoginData(data));
     expect(store.dispatch).toHaveBeenCalledWith(setSessionData({ token, user, perms }));
+    expect(store.dispatch).toHaveBeenCalledWith(setCurrentTenant('tenant'));
 
     mockFetchCleanUp();
   });
