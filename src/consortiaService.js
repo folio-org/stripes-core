@@ -46,7 +46,7 @@ export const fetchConsortia = (okapiUrl, tenant) => {
       'X-Okapi-Tenant': tenant,
       'Content-Type': 'application/json',
     },
-  });
+  }).then(resp => resp.json());
 };
 
 /**
@@ -67,7 +67,7 @@ export const fetchConsortiumTenants = (okapiUrl, tenant, { consortiumId }) => {
       'X-Okapi-Tenant': tenant,
       'Content-Type': 'application/json',
     },
-  });
+  }).then(resp => resp.json());
 };
 
 /**
@@ -91,7 +91,7 @@ export const fetchConsortiumUserAffiliations = (okapiUrl, tenant, token, { conso
       'X-Okapi-Token': token,
       'Content-Type': 'application/json',
     },
-  });
+  }).then(resp => resp.json());
 };
 
 /**
@@ -110,7 +110,7 @@ export const fetchCurrentConsortiumData = async (store, data) => {
   try {
     const centralTenant = okapi.tenant;
     const { token, url } = store.getState().okapi;
-    const { consortia, totalRecords } = await fetchConsortia(url, centralTenant).then(resp => resp.json());
+    const { consortia, totalRecords } = await fetchConsortia(url, centralTenant);
     const consortium = totalRecords ? consortia[0] : {};
     const consortiumId = consortium.id;
 
@@ -124,13 +124,13 @@ export const fetchCurrentConsortiumData = async (store, data) => {
         url,
         centralTenant,
         { consortiumId },
-      ).then(resp => resp.json()),
+      ),
       fetchConsortiumUserAffiliations(
         url,
         centralTenant,
         token,
         { consortiumId, userId: data.user.id },
-      ).then(resp => resp.json()),
+      ),
     ]);
 
     const primaryAffiliation = userAffiliations?.find(({ isPrimary }) => Boolean(isPrimary));

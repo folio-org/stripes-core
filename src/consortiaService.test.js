@@ -126,7 +126,7 @@ describe('consortiaService', () => {
     it('should fetch and return current consortium', async () => {
       mockFetchSuccess();
 
-      const response = await fetchConsortia(defaultOkapiUrl, defaultOkapiTenant).then(res => res.json());
+      const response = await fetchConsortia(defaultOkapiUrl, defaultOkapiTenant);
 
       expect(global.fetch).toBeCalledWith(
         `${defaultOkapiUrl}/consortia`,
@@ -150,7 +150,7 @@ describe('consortiaService', () => {
         defaultOkapiUrl,
         defaultOkapiTenant,
         options,
-      ).then(res => res.json());
+      );
 
       expect(global.fetch).toBeCalledWith(
         `${defaultOkapiUrl}/consortia/${options.consortiumId}/tenants`,
@@ -178,7 +178,7 @@ describe('consortiaService', () => {
         defaultOkapiTenant,
         token,
         options,
-      ).then(res => res.json());
+      );
 
       expect(global.fetch).toBeCalledWith(
         `${defaultOkapiUrl}/consortia/${options.consortiumId}/user-tenants?userId=${options.userId}`,
