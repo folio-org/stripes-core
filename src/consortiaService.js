@@ -106,59 +106,48 @@ export const fetchConsortiumUserAffiliations = (okapiUrl, tenant, token, { conso
  *
  * @returns {void}
  */
-export const fetchCurrentConsortiumData = (store, data) => {
-  const centralTenant = okapi.tenant;
-  const { token, url } = store.getState().okapi;
+export const fetchCurrentConsortiumData = async (store, data) => {
+  try {
+    const centralTenant = okapi.tenant;
+    const { token, url } = store.getState().okapi;
+    const { consortia, totalRecords } = await fetchConsortia(url, centralTenant).then(resp => resp.json());
+    const consortium = totalRecords ? consortia[0] : {};
+    const consortiumId = consortium.id;
 
-  return fetchConsortia(url, centralTenant)
-    .then(resp => resp.json().then(json => (json.totalRecords ? json.consortia[0] : {})))
-    .then(consortium => {
-      const consortiumId = consortium.id;
+    if (!consortiumId) return Promise.resolve();
 
-      if (!consortiumId) return Promise.resolve();
-
-      return Promise.all([
-        fetchConsortiumTenants(
-          url,
-          centralTenant,
-          { consortiumId },
-        ).then(resp => resp.json()),
-        fetchConsortiumUserAffiliations(
-          url,
-          centralTenant,
-          token,
-          { consortiumId, userId: data.user.id },
-        ).then(resp => resp.json()),
-      ]).then(([consortiumTenants, userAffiliations]) => ({
-        consortium,
-        consortiumTenants,
-        userAffiliations,
-      }));
-    })
-    .then(resolved => {
-      if (!resolved) return Promise.resolve();
-
-      const {
-        consortium,
-        consortiumTenants,
-        userAffiliations,
-      } = resolved;
-      const primaryAffiliation = userAffiliations?.userTenants?.find(({ isPrimary }) => Boolean(isPrimary));
-
-      const consortiumData = {
-        ...consortium,
-        tenants: consortiumTenants?.tenants,
+    const [
+      { tenants },
+      { userTenants: userAffiliations },
+    ] = await Promise.all([
+      fetchConsortiumTenants(
+        url,
         centralTenant,
-        activeAffiliation: primaryAffiliation,
-        userPrimaryTenant: primaryAffiliation?.tenantId,
-        userAffiliations: userAffiliations?.userTenants,
-      };
+        { consortiumId },
+      ).then(resp => resp.json()),
+      fetchConsortiumUserAffiliations(
+        url,
+        centralTenant,
+        token,
+        { consortiumId, userId: data.user.id },
+      ).then(resp => resp.json()),
+    ]);
 
-      updateConsortium(store, consortiumData, centralTenant);
+    const primaryAffiliation = userAffiliations?.find(({ isPrimary }) => Boolean(isPrimary));
 
-      return consortiumData;
-    })
-    .catch((e) => {
-      console.error('Failed to load consortium data', e);
-    });
+    const consortiumData = {
+      ...consortium,
+      tenants,
+      centralTenant,
+      activeAffiliation: primaryAffiliation,
+      userPrimaryTenant: primaryAffiliation?.tenantId,
+      userAffiliations,
+    };
+
+    updateConsortium(store, consortiumData, centralTenant);
+
+    return consortiumData;
+  } catch (error) {
+    return console.error('Failed to load consortium data', error);
+  }
 };
