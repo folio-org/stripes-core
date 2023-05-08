@@ -1,4 +1,4 @@
-// import localforage from 'localforage';
+import localforage from 'localforage';
 
 import {
   createOkapiSession,
@@ -8,6 +8,7 @@ import {
   supportedLocales,
   supportedNumberingSystems,
   updateUser,
+  updateTenant,
   validateUser,
 } from './loginServices';
 
@@ -46,6 +47,7 @@ const mockFetchSuccess = (data) => {
     Promise.resolve({
       ok: true,
       json: () => Promise.resolve(data),
+      headers: new Map(),
     })
   ));
 };
@@ -244,11 +246,12 @@ describe('validateUser', () => {
     mockFetchCleanUp();
   });
 
-  it('handles valid user', async () => {
+  it('handles valid user with empty tenant in session', async () => {
     const store = {
       dispatch: jest.fn(),
     };
 
+    const tenant = 'tenant';
     const data = { monkey: 'bagel' };
     const token = 'token';
     const user = { id: 'id' };
@@ -261,9 +264,36 @@ describe('validateUser', () => {
 
     mockFetchSuccess(data);
 
-    await validateUser('url', store, 'tenant', session);
+    await validateUser('url', store, tenant, session);
     expect(store.dispatch).toHaveBeenCalledWith(setLoginData(data));
-    expect(store.dispatch).toHaveBeenCalledWith(setSessionData({ token, user, perms }));
+    expect(store.dispatch).toHaveBeenCalledWith(setSessionData({ token, user, perms, tenant }));
+
+    mockFetchCleanUp();
+  });
+
+  it('handles valid user with tenant in session', async () => {
+    const store = {
+      dispatch: jest.fn(),
+    };
+
+    const tenant = 'tenant';
+    const sessionTenant = 'sessionTenant';
+    const data = { monkey: 'bagel' };
+    const token = 'token';
+    const user = { id: 'id' };
+    const perms = [];
+    const session = {
+      token,
+      user,
+      perms,
+      tenant: sessionTenant,
+    };
+
+    mockFetchSuccess(data);
+
+    await validateUser('url', store, tenant, session);
+    expect(store.dispatch).toHaveBeenCalledWith(setLoginData(data));
+    expect(store.dispatch).toHaveBeenCalledWith(setSessionData({ token, user, perms, tenant: sessionTenant }));
 
     mockFetchCleanUp();
   });
@@ -292,5 +322,46 @@ describe('updateUser', () => {
     const data = { thunder: 'chicken' };
     await updateUser(store, data);
     expect(store.dispatch).toHaveBeenCalledWith(updateCurrentUser(data));
+  });
+});
+
+describe('updateTenant', () => {
+  const okapi = {
+    currentPerms: {},
+  };
+  const store = {
+    dispatch: jest.fn(),
+    getState: jest.fn().mockReturnValue({ okapi }),
+  };
+  const tenant = 'test';
+  const data = {
+    user: {},
+    permissions: {
+      permissions: [],
+    },
+  };
+
+  beforeEach(() => {
+    localforage.setItem.mockClear();
+    store.dispatch.mockClear();
+  });
+
+  it('should set tenant in session', async () => {
+    mockFetchSuccess(data);
+    await updateTenant(okapi, store, tenant);
+    mockFetchCleanUp();
+
+    expect(localforage.setItem).toHaveBeenCalledWith('okapiSess', {
+      user: {},
+      tenant,
+    });
+  });
+
+  it('should "relogin" user with new tenant', async () => {
+    mockFetchSuccess(data);
+    await updateTenant(okapi, store, tenant);
+    mockFetchCleanUp();
+
+    expect(store.dispatch).toHaveBeenCalledWith(setLoginData(data));
   });
 });

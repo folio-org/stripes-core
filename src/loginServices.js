@@ -362,10 +362,13 @@ export function createOkapiSession(okapiUrl, store, tenant, token, data) {
   // permission-names for keys and `true` for values
   const perms = Object.assign({}, ...data.permissions.permissions.map(p => ({ [p.permissionName]: true })));
   store.dispatch(setCurrentPerms(perms));
+
+  const sessionTenant = data.tenant || tenant;
   const okapiSess = {
     token,
     user,
     perms,
+    tenant: sessionTenant,
   };
 
   return localforage.setItem('loginResponse', data)
@@ -390,13 +393,14 @@ export function createOkapiSession(okapiUrl, store, tenant, token, data) {
  * @returns {Promise}
  */
 export function validateUser(okapiUrl, store, tenant, session) {
-  return fetch(`${okapiUrl}/bl-users/_self`, { headers: getHeaders(tenant, session.token) }).then((resp) => {
+  const { token, user, perms, tenant: sessionTenant = tenant } = session;
+
+  return fetch(`${okapiUrl}/bl-users/_self`, { headers: getHeaders(sessionTenant, token) }).then((resp) => {
     if (resp.ok) {
-      const { token, user, perms } = session;
       return resp.json().then((data) => {
         store.dispatch(setLoginData(data));
-        store.dispatch(setSessionData({ token, user, perms }));
-        return loadResources(okapiUrl, store, tenant, user.id);
+        store.dispatch(setSessionData({ token, user, perms, tenant: sessionTenant }));
+        return loadResources(okapiUrl, store, sessionTenant, user.id);
       });
     } else {
       store.dispatch(clearCurrentUser());
@@ -622,4 +626,22 @@ export function updateUser(store, data) {
     .then(() => {
       store.dispatch(updateCurrentUser(data));
     });
+}
+
+/**
+ * updateTenant
+ * 1. concat the given data onto local-storage tenant and save it
+ * 2. update full user info based on new tenant
+  * @param {string} okapiUrl okapi url
+ * @param {redux-store} store redux store
+ * @param {object} data
+ *
+ * @returns {Promise}
+ */
+export async function updateTenant(okapi, store, tenant) {
+  const okapiSess = await localforage.getItem('okapiSess');
+
+  await localforage.setItem('okapiSess', { ...okapiSess, tenant });
+
+  await requestUserWithPerms(okapi.url, store, tenant, okapi.token);
 }
