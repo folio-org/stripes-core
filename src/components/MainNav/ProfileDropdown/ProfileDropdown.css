@@ -24,9 +24,16 @@
 
 .button__label {
   margin: 0 0.35rem;
-  display: inline-block;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: start;
   max-width: 15rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  
+  & span {
+    width: 100%;
+    text-align: start;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }
