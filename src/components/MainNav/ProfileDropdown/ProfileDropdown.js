@@ -79,7 +79,13 @@ class ProfileDropdown extends Component {
 
   getModulesWithLinks = () => {
     const { modules } = this.props;
-    return ([].concat(...Object.values(modules)))
+    return Object.values(modules)
+      .flat()
+      .filter((module, index, self) => {
+        return index === self.findIndex((m) => (
+          m.module === module.module
+        ));
+      })
       .filter(({ links }) => links && Array.isArray(links.userDropdown));
   }
 
