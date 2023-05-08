@@ -20,7 +20,15 @@ class HandlerManager extends React.Component {
   constructor(props) {
     super(props);
     const { event, stripes, modules, data } = props;
-    this.components = getEventHandlers(event, stripes, Object.values(modules).flat(), data);
+    const uniqueModules = Object.values(modules)
+      .flat()
+      .filter((module, index, self) => {
+        return index === self.findIndex((m) => (
+          m.module === module.module
+        ));
+      });
+
+    this.components = getEventHandlers(event, stripes, uniqueModules, data);
   }
 
   render() {
