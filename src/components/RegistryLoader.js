@@ -25,11 +25,10 @@ const appTranslations = [];
 
 /**
  * loadTranslations
- * return a promise that fetches translations for the given app and then
+ * return a promise that fetches translations for the given module and then
  * dispatches the translations.
- * @param {redux store} store
- * @param {string} locale
- * @param {string} url
+ * @param {object} stripes
+ * @param {object} module info read from the registry
  *
  * @returns {Promise}
  */
@@ -55,7 +54,7 @@ const loadTranslations = (stripes, module) => {
     return fetch(`${url}/translations/${region}.json`)
       .then((response) => {
         if (response.ok) {
-          response.json().then((translations) => {
+          return response.json().then((translations) => {
             // translation entries look like "key: val"
             // but we want "ui-${app}.key: val"
             const prefix = module.name.replace('folio_', 'ui-');
@@ -64,13 +63,16 @@ const loadTranslations = (stripes, module) => {
               keyed[`${prefix}.${key}`] = translations[key];
             });
 
-            console.log(`translations for ${prefix}`, keyed);
-            stripes.store.dispatch(setTranslations({ ...stripes.okapi.translations, ...keyed }));
+            // I thought dispatch was synchronous, but without a return
+            // statement here the calling function's invocations of
+            // formatMessage() don't see the updated values in the store
+            return stripes.store.dispatch(setTranslations({ ...stripes.okapi.translations, ...keyed }));
           });
+        } else {
+          throw new Error(`Could not load translations for ${module}`);
         }
       });
   } else {
-    console.log(`ALREADY loaded tx for ${module.name} from ${url}/translations/${region}.json`);
     return Promise.resolve();
   }
 };
@@ -82,14 +84,17 @@ const RegistryLoader = ({ stripes, children }) => {
 
   useEffect(() => {
     const translateModule = (module) => {
-      console.log(`translating ${module.module}`);
-      return loadTranslations(stripes, module).then(() => {
-        return {
-          ...module,
-          displayName: module.displayName ? formatMessage({ id: module.displayName }) : undefined,
-        };
-      });
-      // await loadTranslations(stripes, module, appTranslations);
+      return loadTranslations(stripes, module)
+        .then(() => {
+          return {
+            ...module,
+            displayName: module.displayName ? formatMessage({ id: module.displayName }) : undefined,
+          };
+        })
+        .catch(e => {
+          // eslint-disable-next-line no-console
+          console.error(e);
+        });
     };
 
     const translateModules = async ({ app, plugin, settings, handler }) => ({
