@@ -261,10 +261,10 @@ class ProfileDropdown extends Component {
     const servicePointName = userData?.curServicePoint?.name;
     const tenantName = userData?.tenants?.find(({ id }) => id === okapi.tenant)?.name;
 
-    const withLabel = Boolean(servicePointName || tenantName);
+    const hasLabel = Boolean(servicePointName || tenantName);
 
     return (
-      withLabel ? (
+      hasLabel ? (
         <>
           <span className={css.button__label}>
             {tenantName && <span>{tenantName}</span>}
