@@ -25,8 +25,10 @@ export default function okapiReducer(state = {}, action) {
     case 'CLEAR_CURRENT_USER':
       return Object.assign({}, state, { currentUser: {}, currentPerms: {} });
     case 'SET_SESSION_DATA': {
-      const { perms, user, token } = action.session;
-      return { ...state, currentUser: user, currentPerms: perms, token };
+      const { perms, user, token, tenant } = action.session;
+      const sessionTenant = tenant || state.tenant;
+
+      return { ...state, currentUser: user, currentPerms: perms, token, tenant: sessionTenant };
     }
     case 'SET_AUTH_FAILURE':
       return Object.assign({}, state, { authFailure: action.message });
