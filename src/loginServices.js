@@ -375,7 +375,7 @@ export function createOkapiSession(okapiUrl, store, tenant, token, data) {
     .then(() => localforage.setItem('okapiSess', okapiSess))
     .then(() => {
       store.dispatch(setSessionData(okapiSess));
-      return loadResources(okapiUrl, store, tenant, user.id);
+      return loadResources(okapiUrl, store, sessionTenant, user.id);
     });
 }
 
