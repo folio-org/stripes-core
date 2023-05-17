@@ -13,9 +13,12 @@ import {
   Headline,
 } from '@folio/stripes-components';
 
+import coreEvents from '../../events';
+import { stripesShape } from '../../Stripes';
 import SSOLogin from '../SSOLogin';
 import OrganizationLogo from '../OrganizationLogo';
 import AuthErrorsContainer from '../AuthErrorsContainer';
+import HandlerManager from '../HandlerManager';
 import FieldLabel from '../CreateResetPassword/components/FieldLabel';
 
 import styles from './Login.css';
@@ -26,6 +29,7 @@ class Login extends Component {
     authErrors: PropTypes.arrayOf(PropTypes.object),
     onSubmit: PropTypes.func.isRequired,
     handleSSOLogin: PropTypes.func.isRequired,
+    stripes: stripesShape.isRequired,
   };
 
   static defaultProps = {
@@ -39,6 +43,7 @@ class Login extends Component {
       handleSSOLogin,
       ssoActive,
       onSubmit,
+      stripes,
     } = this.props;
 
     return (
@@ -82,6 +87,20 @@ class Login extends Component {
                           </Headline>
                         </Col>
                       </Row>
+
+                      {
+                        authErrors?.length > 0 && (
+                          <div>
+                            <HandlerManager
+                              key={authErrors.map(({ code }) => code).join(',')}
+                              event={coreEvents.LOGIN_ERROR}
+                              stripes={stripes}
+                              data={authErrors}
+                            />
+                          </div>
+                        )
+                      }
+
                       <div data-test-new-username-field>
                         <Row center="xs">
                           <Col xs={6}>

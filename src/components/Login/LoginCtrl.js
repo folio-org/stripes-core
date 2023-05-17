@@ -12,6 +12,7 @@ import {
   requestSSOLogin,
 } from '../../loginServices';
 import { setAuthError } from '../../okapiActions';
+import { stripesShape } from '../../Stripes';
 import Login from './Login';
 
 class LoginCtrl extends Component {
@@ -29,6 +30,7 @@ class LoginCtrl extends Component {
     location: PropTypes.shape({
       pathname: PropTypes.string.isRequired,
     }).isRequired,
+    stripes: stripesShape.isRequired,
   };
 
   static contextType = ConnectContext;
@@ -66,10 +68,11 @@ class LoginCtrl extends Component {
   }
 
   render() {
-    const { authFailure, ssoEnabled } = this.props;
+    const { authFailure, ssoEnabled, stripes } = this.props;
 
     return (
       <Login
+        stripes={stripes}
         onSubmit={this.handleSubmit}
         authErrors={authFailure}
         handleSSOLogin={this.handleSSOLogin}
