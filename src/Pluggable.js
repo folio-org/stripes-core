@@ -1,5 +1,6 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, Suspense } from 'react';
 import PropTypes from 'prop-types';
+import { Icon } from '@folio/stripes-components';
 import { useModules } from './ModulesContext';
 import { withStripes } from './StripesContext';
 import { ModuleHierarchyProvider } from './components';
@@ -35,12 +36,14 @@ const Pluggable = (props) => {
     }
 
     return cached;
-  }, [plugins]);
+  }, [plugins, props.type]);
 
   if (cachedPlugins.length) {
     return cachedPlugins.map(({ plugin, Child }) => (
       <ModuleHierarchyProvider module={plugin} key={plugin}>
-        <Child {...props} actAs="plugin" />
+        <Suspense fallback={<Icon icon="spinner-ellipsis" />}>
+          <Child {...props} actAs="plugin" />
+        </Suspense>
       </ModuleHierarchyProvider>
     ));
   }
