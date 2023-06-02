@@ -114,7 +114,7 @@ class CreateResetPasswordControl extends Component {
       headers: {
         'Content-Type': 'application/json',
         'x-okapi-token': token,
-        'x-okapi-tenant': getTenant(location),
+        'x-okapi-tenant': getTenant(stripes, location),
       },
       ...(body && { body: JSON.stringify(body) }),
     })
