@@ -7,15 +7,19 @@ import processBadResponse from '../../processBadResponse';
 import { stripesShape } from '../../Stripes';
 import { setAuthError } from '../../okapiActions';
 import { defaultErrors } from '../../constants';
+import OrganizationLogo from '../OrganizationLogo';
 
 import CreateResetPassword from './CreateResetPassword';
 import PasswordHasNotChanged from './components/PasswordHasNotChanged';
 import PasswordSuccessfullyChanged from './components/PasswordSuccessfullyChanged';
-import OrganizationLogo from '../OrganizationLogo';
+import { getTenant } from './utils';
 
 class CreateResetPasswordControl extends Component {
   static propTypes = {
     authFailure: PropTypes.arrayOf(PropTypes.object),
+    location: PropTypes.shape({
+      search: PropTypes.string.isRequired,
+    }),
     match: PropTypes.shape({
       params: PropTypes.shape({
         token: PropTypes.string.isRequired,
@@ -87,12 +91,8 @@ class CreateResetPasswordControl extends Component {
 
   makeCall = (body) => {
     const {
-      stripes: {
-        okapi: {
-          url,
-          tenant,
-        }
-      },
+      stripes,
+      location,
       match: {
         params: {
           token,
@@ -101,6 +101,11 @@ class CreateResetPasswordControl extends Component {
       handleBadResponse,
     } = this.props;
     const { isValidToken } = this.state;
+    const {
+      okapi: {
+        url,
+      },
+    } = stripes;
 
     const path = `${url}/bl-users/password-reset/${isValidToken ? 'reset' : 'validate'}`;
 
@@ -109,7 +114,7 @@ class CreateResetPasswordControl extends Component {
       headers: {
         'Content-Type': 'application/json',
         'x-okapi-token': token,
-        'x-okapi-tenant': tenant,
+        'x-okapi-tenant': getTenant(stripes, location),
       },
       ...(body && { body: JSON.stringify(body) }),
     })
