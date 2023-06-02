@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { connect as reduxConnect } from 'react-redux';
+import queryString from 'query-string';
 
 import processBadResponse from '../../processBadResponse';
 import { stripesShape } from '../../Stripes';
@@ -16,6 +17,9 @@ import OrganizationLogo from '../OrganizationLogo';
 class CreateResetPasswordControl extends Component {
   static propTypes = {
     authFailure: PropTypes.arrayOf(PropTypes.object),
+    location: PropTypes.shape({
+      search: PropTypes.string.isRequired,
+    }),
     match: PropTypes.shape({
       params: PropTypes.shape({
         token: PropTypes.string.isRequired,
@@ -85,12 +89,28 @@ class CreateResetPasswordControl extends Component {
     }
   };
 
+  getTenant = () => {
+    const {
+      stripes: {
+        okapi: {
+          tenant: originalTenant,
+        }
+      },
+      location: {
+        search,
+      },
+    } = this.props;
+
+    const tenant = search ? queryString.parse(search).tenant : undefined;
+
+    return tenant || originalTenant;
+  }
+
   makeCall = (body) => {
     const {
       stripes: {
         okapi: {
           url,
-          tenant,
         }
       },
       match: {
@@ -109,7 +129,7 @@ class CreateResetPasswordControl extends Component {
       headers: {
         'Content-Type': 'application/json',
         'x-okapi-token': token,
-        'x-okapi-tenant': tenant,
+        'x-okapi-tenant': this.getTenant(),
       },
       ...(body && { body: JSON.stringify(body) }),
     })
