@@ -2,17 +2,17 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { connect as reduxConnect } from 'react-redux';
-import queryString from 'query-string';
 
 import processBadResponse from '../../processBadResponse';
 import { stripesShape } from '../../Stripes';
 import { setAuthError } from '../../okapiActions';
 import { defaultErrors } from '../../constants';
+import OrganizationLogo from '../OrganizationLogo';
 
 import CreateResetPassword from './CreateResetPassword';
 import PasswordHasNotChanged from './components/PasswordHasNotChanged';
 import PasswordSuccessfullyChanged from './components/PasswordSuccessfullyChanged';
-import OrganizationLogo from '../OrganizationLogo';
+import { getTenant } from './utils';
 
 class CreateResetPasswordControl extends Component {
   static propTypes = {
@@ -89,30 +89,10 @@ class CreateResetPasswordControl extends Component {
     }
   };
 
-  getTenant = () => {
-    const {
-      stripes: {
-        okapi: {
-          tenant: originalTenant,
-        }
-      },
-      location: {
-        search,
-      },
-    } = this.props;
-
-    const tenant = search ? queryString.parse(search).tenant : undefined;
-
-    return tenant || originalTenant;
-  }
-
   makeCall = (body) => {
     const {
-      stripes: {
-        okapi: {
-          url,
-        }
-      },
+      stripes,
+      location,
       match: {
         params: {
           token,
@@ -121,6 +101,11 @@ class CreateResetPasswordControl extends Component {
       handleBadResponse,
     } = this.props;
     const { isValidToken } = this.state;
+    const {
+      okapi: {
+        url,
+      },
+    } = stripes;
 
     const path = `${url}/bl-users/password-reset/${isValidToken ? 'reset' : 'validate'}`;
 
@@ -129,7 +114,7 @@ class CreateResetPasswordControl extends Component {
       headers: {
         'Content-Type': 'application/json',
         'x-okapi-token': token,
-        'x-okapi-tenant': this.getTenant(),
+        'x-okapi-tenant': getTenant(location),
       },
       ...(body && { body: JSON.stringify(body) }),
     })
