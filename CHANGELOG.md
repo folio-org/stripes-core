@@ -13,6 +13,7 @@
 * Display consortium active affiliation in the profile dropdown trigger. Refs STCOR-689.
 * Support switch consortium active affiliation. Refs STCOR-690.
 * Use tenant query param for password reset. Refs STCOR-724.
+* Improve login error message when back-end not ready. Refs STCOR-723.
 
 ## [9.0.0](https://github.com/folio-org/stripes-core/tree/v9.0.0) (2023-01-30)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v8.3.0...v9.0.0)
