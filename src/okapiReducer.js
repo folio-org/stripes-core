@@ -88,7 +88,7 @@ export default function okapiReducer(state = {}, action) {
     case OKAPI_REDUCER_ACTIONS.SET_AUTH_FAILURE:
       return Object.assign({}, state, { authFailure: action.message });
     case OKAPI_REDUCER_ACTIONS.SET_TRANSLATIONS:
-      return Object.assign({}, state, { translations: action.translations });
+      return { ...state, translations: { ...state.translations, ...action.translations } };
     case OKAPI_REDUCER_ACTIONS.CHECK_SSO:
       return Object.assign({}, state, { ssoEnabled: action.ssoEnabled });
     case OKAPI_REDUCER_ACTIONS.OKAPI_READY:
