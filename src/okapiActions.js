@@ -128,7 +128,16 @@ function updateCurrentUser(data) {
   };
 }
 
+function addIcon(key, icon) {
+  return {
+    type: 'ADD_ICON',
+    key,
+    icon
+  };
+}
+
 export {
+  addIcon,
   checkSSO,
   clearCurrentUser,
   clearOkapiToken,

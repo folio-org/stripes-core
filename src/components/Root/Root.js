@@ -19,7 +19,7 @@ import initialReducers from '../../initialReducers';
 import enhanceReducer from '../../enhanceReducer';
 import createApolloClient from '../../createApolloClient';
 import createReactQueryClient from '../../createReactQueryClient';
-import { setSinglePlugin, setBindings, setOkapiToken, setTimezone, setCurrency, updateCurrentUser } from '../../okapiActions';
+import { addIcon, setSinglePlugin, setBindings, setOkapiToken, setTimezone, setCurrency, updateCurrentUser } from '../../okapiActions';
 import { loadTranslations, checkOkapiSession } from '../../loginServices';
 import { getQueryResourceKey, getCurrentModule } from '../../locationService';
 import Stripes from '../../Stripes';
@@ -101,7 +101,7 @@ class Root extends Component {
   }
 
   render() {
-    const { logger, store, epics, config, okapi, actionNames, token, disableAuth, currentUser, currentPerms, locale, defaultTranslations, timezone, currency, plugins, bindings, discovery, translations, history, serverDown } = this.props;
+    const { logger, store, epics, config, okapi, actionNames, token, disableAuth, currentUser, currentPerms, icons, locale, defaultTranslations, timezone, currency, plugins, bindings, discovery, translations, history, serverDown } = this.props;
 
     if (serverDown) {
       return <div>Error: server is down.</div>;
@@ -124,7 +124,9 @@ class Root extends Component {
       locale,
       timezone,
       currency,
-      setLocale: (localeValue) => { loadTranslations(store, localeValue, defaultTranslations); },
+      icons,
+      addIcon: (key, icon) => { store.dispatch(addIcon(key, icon)); },
+      setLocale: (localeValue, tx) => { return loadTranslations(store, localeValue, { ...defaultTranslations, ...tx }); },
       setTimezone: (timezoneValue) => { store.dispatch(setTimezone(timezoneValue)); },
       setCurrency: (currencyValue) => { store.dispatch(setCurrency(currencyValue)); },
       updateUser: (userValue) => { store.dispatch(updateCurrentUser(userValue)); },
@@ -144,7 +146,7 @@ class Root extends Component {
       <ErrorBoundary>
         <ConnectContext.Provider value={{ addReducer: this.addReducer, addEpic: this.addEpic, store }}>
           <ApolloProvider client={this.apolloClient}>
-            <QueryClientProvider client={this.reactQueryClient} contextSharing={true} >
+            <QueryClientProvider client={this.reactQueryClient} contextSharing>
               <IntlProvider
                 locale={locale}
                 key={locale}
@@ -190,6 +192,7 @@ Root.propTypes = {
   currentUser: PropTypes.object,
   epics: PropTypes.object,
   locale: PropTypes.string,
+  icons: PropTypes.object,
   defaultTranslations: PropTypes.object,
   timezone: PropTypes.string,
   currency: PropTypes.string,
@@ -232,6 +235,7 @@ Root.defaultProps = {
   currency: 'USD',
   okapiReady: false,
   serverDown: false,
+  icons: {},
 };
 
 function mapStateToProps(state) {
@@ -241,6 +245,7 @@ function mapStateToProps(state) {
     currentPerms: state.okapi.currentPerms,
     currentUser: state.okapi.currentUser,
     discovery: state.discovery,
+    icons: state.okapi.icons,
     locale: state.okapi.locale,
     okapi: state.okapi,
     okapiReady: state.okapi.okapiReady,
