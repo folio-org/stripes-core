@@ -144,7 +144,7 @@ class Root extends Component {
       <ErrorBoundary>
         <ConnectContext.Provider value={{ addReducer: this.addReducer, addEpic: this.addEpic, store }}>
           <ApolloProvider client={this.apolloClient}>
-            <QueryClientProvider client={this.reactQueryClient}>
+            <QueryClientProvider client={this.reactQueryClient} contextSharing={true} >
               <IntlProvider
                 locale={locale}
                 key={locale}
