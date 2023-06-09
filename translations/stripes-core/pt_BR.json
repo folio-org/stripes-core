@@ -102,7 +102,7 @@
     "errors.forgotten.password.found.multiple.users": "As informações fornecidas estão vinculadas a várias contas do Folio. Entre em contato com o administrador do sistema Folio para redefinir sua senha.",
     "errors.forgotten.username.found.multiple.users": "Este e-mail ou número de telefone está vinculado a várias contas do Folio. Entre em contato com o administrador do sistema Folio.",
     "errors.forgotten.password.found.inactive": "Sua conta está bloqueada no momento. Entre em contato com o administrador do sistema FOLIO para redefinir sua senha",
-    "errors.default.server.error": "Erro no sistema. Não é possível localizar a conta do Folio. Por favor, tente novamente.",
+    "errors.default.server.error": "Erro no sistema. Por favor, aguarde alguns minutos e tente novamente.",
     "createResetPassword.header": "Escolha uma senha",
     "createResetPassword.newPassword": "Nova senha",
     "createResetPassword.confirmPassword": "Confirme a senha",

@@ -102,7 +102,7 @@
     "errors.forgotten.password.found.multiple.users": "The information provided is tied to multiple Folio accounts. Please contact your Folio system administrator to reset your password.",
     "errors.forgotten.username.found.multiple.users": "This email or phone number is tied to multiple Folio accounts. Please contact your Folio system administrator.",
     "errors.forgotten.password.found.inactive": "あなたのアカウントは現在ロックされています。 FOLIOシステム管理者に連絡して、パスワードをリセットしてください",
-    "errors.default.server.error": "System error. Unable to locate Folio account. Please try again.",
+    "errors.default.server.error": "System error. Please wait a few minutes and try again.",
     "createResetPassword.header": "パスワードを選択する",
     "createResetPassword.newPassword": "新しいパスワード",
     "createResetPassword.confirmPassword": "パスワードの確認",
