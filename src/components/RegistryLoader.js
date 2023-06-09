@@ -146,7 +146,9 @@ const RegistryLoader = ({ stripes, children }) => {
     };
 
     fetchRegistry();
-  }, [stripes, formatMessage]);
+  // We know what we are doing here so just ignore the dependency warning about 'formatMessage'
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <ModulesContext.Provider value={modules}>
