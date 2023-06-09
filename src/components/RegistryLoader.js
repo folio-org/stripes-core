@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { useIntl } from 'react-intl';
 import { okapi } from 'stripes-config';
 
-import { addIcon, setLocale, setTranslations } from '../okapiActions';
+import { addIcon, setTranslations } from '../okapiActions';
 import { ModulesContext } from '../ModulesContext';
 import loadRemoteComponent from '../loadRemoteComponent';
 
@@ -21,8 +21,6 @@ const parseModules = (remotes) => {
 
 // TODO: pass it via stripes config
 const registryUrl = okapi.registryUrl;
-
-const appTranslations = [];
 
 /**
  * loadTranslations
@@ -42,7 +40,7 @@ const loadTranslations = (stripes, module) => {
   // somehow adopted for our files in Lokalise).
   const locale = stripes.locale.split('-u-nu-')[0].replace('-', '_');
   const url = `${module.host}:${module.port}/translations/${locale}.json`;
-  stripes.logger.log('core', `loading ${locale} translations for ${module.name}`)
+  stripes.logger.log('core', `loading ${locale} translations for ${module.name}`);
 
   return fetch(url)
     .then((response) => {
@@ -56,19 +54,13 @@ const loadTranslations = (stripes, module) => {
             keyed[`${prefix}.${key}`] = translations[key];
           });
 
-          console.log(`was ${stripes.okapi.translations['ui-users.filters.status.active']}`)
-
           const tx = { ...stripes.okapi.translations, ...keyed };
 
           stripes.store.dispatch(setTranslations(tx));
 
-
           // const tx = { ...stripes.okapi.translations, ...keyed };
           // console.log(`filters.status.active: ${tx['ui-users.filters.status.active']}`)
-          return stripes.setLocale(stripes.locale, tx).then(() => {
-            console.log(`now ${stripes.okapi.translations['ui-users.filters.status.active']}`)
-
-          });
+          return stripes.setLocale(stripes.locale, tx);
         });
       } else {
         throw new Error(`Could not load translations for ${module}`);
@@ -108,6 +100,7 @@ const RegistryLoader = ({ stripes, children }) => {
   useEffect(() => {
     const loadModuleAssets = (module) => {
       loadIcons(stripes, module);
+
       return loadTranslations(stripes, module)
         .then(() => {
           return {
