@@ -1,4 +1,5 @@
 export const OKAPI_REDUCER_ACTIONS = {
+  ADD_ICON: 'ADD_ICON',
   CHECK_SSO: 'CHECK_SSO',
   CLEAR_CURRENT_USER: 'CLEAR_CURRENT_USER',
   CLEAR_OKAPI_TOKEN: 'CLEAR_OKAPI_TOKEN',
@@ -133,6 +134,8 @@ export default function okapiReducer(state = {}, action) {
     case OKAPI_REDUCER_ACTIONS.TOGGLE_RTR_MODAL: {
       return { ...state, rtrModalIsVisible: action.isVisible };
     }
+    case OKAPI_REDUCER_ACTIONS.ADD_ICON:
+      return { ...state, icons: { ...state.icons, [action.key]: action.icon } };
 
     default:
       return state;

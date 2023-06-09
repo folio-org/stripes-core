@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useIntl } from 'react-intl';
+import { okapi } from 'stripes-config';
 
-import { setTranslations } from '../okapiActions';
+import { addIcon, setTranslations } from '../okapiActions';
 import { ModulesContext } from '../ModulesContext';
 import loadRemoteComponent from '../loadRemoteComponent';
 
@@ -19,9 +20,7 @@ const parseModules = (remotes) => {
 };
 
 // TODO: pass it via stripes config
-const registryUrl = 'http://localhost:3001/registry';
-
-const appTranslations = [];
+const registryUrl = okapi.registryUrl;
 
 /**
  * loadTranslations
@@ -33,57 +32,75 @@ const appTranslations = [];
  * @returns {Promise}
  */
 const loadTranslations = (stripes, module) => {
-  const url = `${module.host}:${module.port}`;
+  // construct a fully-qualified URL to load.
+  //
+  // locale strings include a name plus optional region and numbering system.
+  // we only care about the name and region. this stripes the numberin system
+  // and converts from kebab-case (the IETF standard) to snake_case (which we
+  // somehow adopted for our files in Lokalise).
+  const locale = stripes.locale.split('-u-nu-')[0].replace('-', '_');
+  const url = `${module.host}:${module.port}/translations/${locale}.json`;
+  stripes.logger.log('core', `loading ${locale} translations for ${module.name}`);
 
-  const parentLocale = stripes.locale.split('-')[0];
-  // Since moment.js don't support translations like it or it-IT-u-nu-latn
-  // we need to build string like it_IT for fetch call
-  const loadedLocale = stripes.locale.replace('-', '_').split('-')[0];
-
-  // react-intl provides things like pt-BR.
-  // lokalise provides things like pt_BR.
-  // so we have to translate '-' to '_' because the translation libraries
-  // don't know how to talk to each other. sheesh.
-  const region = stripes.locale.replace('-', '_');
-
-  // Here we put additional condition because languages
-  // like Japan we need to use like ja, but with numeric system
-  // Japan language builds like ja_u, that incorrect. We need to be safe from that bug.
-  if (!appTranslations.includes(url)) {
-    appTranslations.push(url);
-    return fetch(`${url}/translations/${region}.json`)
-      .then((response) => {
-        if (response.ok) {
-          return response.json().then((translations) => {
-            // translation entries look like "key: val"
-            // but we want "ui-${app}.key: val"
-            const prefix = module.name.replace('folio_', 'ui-');
-            const keyed = [];
-            Object.keys(translations).forEach(key => {
-              keyed[`${prefix}.${key}`] = translations[key];
-            });
-
-            // I thought dispatch was synchronous, but without a return
-            // statement here the calling function's invocations of
-            // formatMessage() don't see the updated values in the store
-            return stripes.store.dispatch(setTranslations({ ...stripes.okapi.translations, ...keyed }));
+  return fetch(url)
+    .then((response) => {
+      if (response.ok) {
+        return response.json().then((translations) => {
+          // 1. translation entries look like "key: val"; we want "ui-${app}.key: val"
+          // 2. module.name is snake_case (I have no idea why); we want kebab-case
+          const prefix = module.name.replace('folio_', 'ui-').replaceAll('_', '-');
+          const keyed = [];
+          Object.keys(translations).forEach(key => {
+            keyed[`${prefix}.${key}`] = translations[key];
           });
-        } else {
-          throw new Error(`Could not load translations for ${module}`);
-        }
-      });
-  } else {
-    return Promise.resolve();
-  }
+
+          const tx = { ...stripes.okapi.translations, ...keyed };
+
+          stripes.store.dispatch(setTranslations(tx));
+
+          // const tx = { ...stripes.okapi.translations, ...keyed };
+          // console.log(`filters.status.active: ${tx['ui-users.filters.status.active']}`)
+          return stripes.setLocale(stripes.locale, tx);
+        });
+      } else {
+        throw new Error(`Could not load translations for ${module}`);
+      }
+    });
 };
 
+/**
+ * loadIcons
+ * Register remotely-hosted icons with stripes by dispatching addIcon
+ * for each element of the module's icons array.
+ *
+ * @param {object} stripes
+ * @param {object} module info read from the registry
+ *
+ * @returns {void}
+ */
+const loadIcons = (stripes, module) => {
+  if (module.icons && module.icons.length) {
+    stripes.logger.log('core', `loading icons for ${module.module}`);
+    module.icons.forEach(i => {
+      const icon = {
+        [i.name]: {
+          src: `${module.host}:${module.port}/icons/${i.name}.svg`,
+          alt: i.title,
+        }
+      };
+      stripes.store.dispatch(addIcon(module.module, icon));
+    });
+  }
+};
 
 const RegistryLoader = ({ stripes, children }) => {
   const { formatMessage } = useIntl();
   const [modules, setModules] = useState();
 
   useEffect(() => {
-    const translateModule = (module) => {
+    const loadModuleAssets = (module) => {
+      loadIcons(stripes, module);
+
       return loadTranslations(stripes, module)
         .then(() => {
           return {
@@ -97,18 +114,17 @@ const RegistryLoader = ({ stripes, children }) => {
         });
     };
 
-    const translateModules = async ({ app, plugin, settings, handler }) => ({
-      app: await Promise.all(app.map(translateModule)),
-      plugin: await Promise.all(plugin.map(translateModule)),
-      settings: await Promise.all(settings.map(translateModule)),
-      handler: await Promise.all(handler.map(translateModule)),
+    const loadModules = async ({ app, plugin, settings, handler }) => ({
+      app: await Promise.all(app.map(loadModuleAssets)),
+      plugin: await Promise.all(plugin.map(loadModuleAssets)),
+      settings: await Promise.all(settings.map(loadModuleAssets)),
+      handler: await Promise.all(handler.map(loadModuleAssets)),
     });
 
     const fetchRegistry = async () => {
-      const response = await fetch(registryUrl);
-      const registry = await response.json();
+      const registry = await fetch(registryUrl).then((response) => response.json());
       const remotes = Object.entries(registry.remotes).map(([name, metadata]) => ({ name, ...metadata }));
-      const parsedModules = await translateModules(parseModules(remotes));
+      const parsedModules = await loadModules(parseModules(remotes));
       const { handler: handlerModules } = parsedModules;
 
       // prefetch all handlers so they can be executed in a sync way.
