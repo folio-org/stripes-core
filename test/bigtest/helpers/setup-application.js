@@ -1,11 +1,12 @@
-import ReactDOM from 'react-dom';
 import { beforeEach } from '@bigtest/mocha';
-import { setupAppForTesting, visit, location } from '@bigtest/react';
+import { visit, location } from '@bigtest/react';
 import localforage from 'localforage';
 import { reset } from '@folio/stripes-connect';
 
 // load these styles for our tests
 import '@folio/stripes-components/lib/global.css';
+
+import { setupAppForTesting } from './setupAppForTesting';
 
 import startMirage from '../network/start';
 
@@ -19,6 +20,7 @@ import {
   setCookies,
   clearCookies,
 } from './stripes-config';
+
 
 const { assign } = Object;
 
@@ -96,9 +98,6 @@ export default function setupApplication({
         this.app = null;
       }
     });
-
-    // set the root to 100% height
-    document.getElementById(mountId).style.height = '100%';
 
     // setup react validators
     Object.defineProperties(this, {
