@@ -102,7 +102,7 @@
     "errors.forgotten.password.found.multiple.users": "Poskytnuté informace jsou vázány na více účtů Folio. Pro obnovení hesla se obraťte na správce systému Folio.",
     "errors.forgotten.username.found.multiple.users": "Tento e-mail nebo telefonní číslo je spojeno s více účty Folio. Obraťte se na správce systému Folio.",
     "errors.forgotten.password.found.inactive": "Váš účet je momentálně uzamčen. Pro obnovení hesla se obraťte na správce systému FOLIO",
-    "errors.default.server.error": "Chyba systému. Nelze najít účet Folio. Prosím zkuste to znovu.",
+    "errors.default.server.error": "Systémová chyba. Počkejte prosím několik minut a zkuste to znovu.",
     "createResetPassword.header": "Zvolte heslo",
     "createResetPassword.newPassword": "Nové heslo",
     "createResetPassword.confirmPassword": "Potvrzení hesla",
