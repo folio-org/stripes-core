@@ -26,9 +26,9 @@
   margin: 0 0.35rem;
   display: inline-flex;
   flex-direction: column;
-  align-items: start;
+  align-items: flex-start;
   max-width: 15rem;
-  
+
   & span {
     width: 100%;
     text-align: start;
