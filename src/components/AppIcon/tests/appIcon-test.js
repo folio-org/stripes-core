@@ -3,7 +3,7 @@
  */
 
 import React from 'react';
-import { beforeEach, it, describe } from '@bigtest/mocha';
+import { beforeEach, it, describe } from 'mocha';
 import { expect } from 'chai';
 
 import { mount } from '../../../../test/bigtest/helpers/render-helpers';

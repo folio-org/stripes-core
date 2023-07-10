@@ -1,5 +1,5 @@
 import ReactDOM from 'react-dom';
-import { beforeEach } from '@bigtest/mocha';
+import { beforeEach } from 'mocha';
 import { setupAppForTesting, visit, location } from '@bigtest/react';
 import localforage from 'localforage';
 import { reset } from '@folio/stripes-connect';

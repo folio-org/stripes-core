@@ -1,6 +1,6 @@
 import React, { Component, useContext } from 'react';
 
-import { describe, beforeEach, it } from '@bigtest/mocha';
+import { describe, beforeEach, it } from 'mocha';
 import { expect } from 'chai';
 
 
