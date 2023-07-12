@@ -35,6 +35,9 @@ export {
   withLastVisited,
 } from './src/components';
 
+/* Queries */
+export { useChunkedCQLFetch } from './src/queries';
+
 /* misc */
 export { supportedLocales } from './src/loginServices';
 export { supportedNumberingSystems } from './src/loginServices';
