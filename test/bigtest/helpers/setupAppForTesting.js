@@ -2,8 +2,7 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { createMemoryHistory as createHistory } from 'history';
 
-
-import { clearContext, setContext, getContext } from './context';
+import { clearContext, setContext, getContext } from '@folio/stripes-testing/bigtest';
 
 /**
  * Creates a div with an ID and appends it into the `$root` element.
@@ -13,14 +12,6 @@ import { clearContext, setContext, getContext } from './context';
  * @param {Node} $root - Element to append the div into
  * @returns {Node} The appended div element
  */
-// function __insertNode(id, $root) {
-//   let $node = document.createElement('div');
-//   $node.id = id;
-//   $root.appendChild($node);
-//   return $node;
-// }
-
-let $root = null;
 let $container = null;
 function insertNode() {
   if (!$container) {
@@ -29,9 +20,7 @@ function insertNode() {
     document.body.appendChild($container);
   }
 
-  $root = createRoot($container);
-
-  return $root;
+  return createRoot($container);
 }
 
 /**
@@ -64,6 +53,14 @@ export function cleanup() {
     });
 }
 
+/**
+ * TestComponent mounts the given component in a container
+ * that occupies the full viewport, then calls the callback
+ * via a ref after cDM.
+ * @param {React.component} component React component to instantiate
+ * @param {function} callback function to call after cDM
+ * @returns
+ */
 const TestComponent = ({ component, callback }) => (
   <div style={{ width: '100vh', height: '100vw' }} ref={callback}>{component}</div>
 );
@@ -141,6 +138,9 @@ function mount(Component, options = {}) {
  * @returns {Boolean} If the prop is accepted or not
  */
 function hasPropType(Component, propType) {
+  // yes, we know these prop-types are from an external component
+  // and that they could change at any time. _that
+  // eslint-disable-next-line react/forbid-foreign-prop-types
   return !!Component.propTypes && propType in Component.propTypes;
 }
 
@@ -208,10 +208,10 @@ function hasPropType(Component, propType) {
  * mounted in the DOM
  */
 export function setupAppForTesting(App, options = {}) {
-  let { props = {}, ...mountOptions } = options;
+  const { props: originalProps = {}, ...mountOptions } = options;
 
   // ensure we don't mutate the incoming object
-  props = Object.assign({}, props);
+  const props = Object.assign({}, originalProps);
 
   // create an in-memory history object
   if (hasPropType(App, 'history') && !('history' in props)) {

@@ -17,9 +17,6 @@ export async function mount(component) {
   await setupAppForTesting(ComponentHarness, {
     mountId: 'testing-root',
   });
-
-  // set the root to 100% height
-  document.getElementById('testing-root').style.height = '100%';
 }
 
 /**

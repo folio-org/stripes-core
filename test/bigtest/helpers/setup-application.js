@@ -1,15 +1,14 @@
 import { beforeEach } from '@bigtest/mocha';
-import { visit, location } from '@bigtest/react';
 import localforage from 'localforage';
+
 import { reset } from '@folio/stripes-connect';
+import { visit, location } from '@folio/stripes-testing/bigtest';
 
 // load these styles for our tests
 import '@folio/stripes-components/lib/global.css';
 
 import { setupAppForTesting } from './setupAppForTesting';
-
 import startMirage from '../network/start';
-
 import App from '../../../src/App';
 
 import {
@@ -20,7 +19,6 @@ import {
   setCookies,
   clearCookies,
 } from './stripes-config';
-
 
 const { assign } = Object;
 
