@@ -1,4 +1,9 @@
-import { useCallback, useEffect, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState
+} from 'react';
 import { useQueries } from 'react-query';
 
 import { chunk } from 'lodash';
@@ -39,7 +44,7 @@ const useChunkedCQLFetch = ({
   const { enabled: queryEnabled = true, ...queryOptions } = passedQueryOptions;
 
   // Deduplicate incoming ID list
-  const ids = passedIds.filter((id, ind, arr) => arr.indexOf(id) === ind);
+  const ids = useMemo(() => [...new Set(passedIds)], [passedIds]);
 
   const chunkedItems = chunk(ids, STEP_SIZE);
   // chunkedItems will be an array of arrays of size CONCURRENT_REQUESTS * STEP_SIZE
