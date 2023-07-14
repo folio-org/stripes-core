@@ -10,6 +10,18 @@ import useOkapiKy from '../useOkapiKy';
 jest.mock('../useOkapiKy');
 jest.mock('../StripesContext');
 
+const makeid = (length) => {
+  let result = '';
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const charactersLength = characters.length;
+  let counter = 0;
+  while (counter < length) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    counter += 1;
+  }
+  return result;
+};
+
 const baseOptions = {
   endpoint: 'users',
   ids: [
@@ -121,6 +133,27 @@ describe('Given useChunkedCQLFetch', () => {
       });
 
       expect(result.current.itemQueries?.length).toEqual(1);
+    });
+  });
+
+  describe('works with an id list of > 300 ids', () => {
+    it('sets up 1 fetch for the 5 unique ids', async () => {
+      const largeIdSet = [];
+      for (let i = 0; i < 350; i++) {
+        largeIdSet.push(makeid(5));
+      }
+
+      const { result, waitFor } = renderHook(() => useChunkedCQLFetch({
+        ...baseOptions,
+        ids: largeIdSet,
+      }), { wrapper });
+
+      await waitFor(() => {
+        const loadingQueries = result.current.itemQueries?.filter(iq => iq.isLoading);
+        return loadingQueries.length === 0;
+      });
+
+      expect(result.current.itemQueries?.length).toEqual(6);
     });
   });
 });
