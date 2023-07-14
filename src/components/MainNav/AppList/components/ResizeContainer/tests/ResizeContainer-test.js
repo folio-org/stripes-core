@@ -35,7 +35,7 @@ const EXPECTED_HIDDEN_ITEMS = ITEMS.length - EXPECTED_VISIBLE_ITEMS;
 const ResizeContainerMock = ({ items, wrapperWidth, itemWidth, hideAllWidth, offset, withRTL }) => {
   return (
     <div dir={withRTL ? 'rtl' : 'ltr'}>
-      <div style={{ maxWidth: wrapperWidth, backgroundColor: 'green', height: 100 }}>
+      <div style={{ width: wrapperWidth, backgroundColor: 'green', height: 100 }}>
         <ResizeContainer className="my-test-interactor" items={items} hideAllWidth={hideAllWidth} offset={offset}>
           {({ hiddenItems }) => (
             <div style={{ display: 'flex', flex: 1, minWidth: 0, justifyContent: 'flex-end' }}>
