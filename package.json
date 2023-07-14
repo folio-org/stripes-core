@@ -50,7 +50,7 @@
     "@folio/stripes-components": "^11.1.0",
     "@folio/stripes-connect": "^8.1.0",
     "@folio/stripes-logger": "^1.0.0",
-    "@folio/stripes-testing": "folio-org/stripes-testing#UITEST-108",
+    "@folio/stripes-testing": "^3.1.0",
     "@formatjs/cli": "^4.2.2",
     "@jest/globals": "^28.0.1",
     "@testing-library/dom": "^8.13.0",
