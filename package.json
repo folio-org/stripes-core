@@ -46,8 +46,8 @@
     "@bigtest/mocha": "^0.5.1",
     "@folio/eslint-config-stripes": "^7.0.0",
     "@folio/stripes-cli": "^3.0.0",
-    "@folio/stripes-components": "^11.1.0",
-    "@folio/stripes-connect": "^8.1.0",
+    "@folio/stripes-components": "^12.0.0",
+    "@folio/stripes-connect": "^9.1.0",
     "@folio/stripes-logger": "^1.0.0",
     "@folio/stripes-testing": "^3.1.0",
     "@formatjs/cli": "^4.2.2",
@@ -114,8 +114,8 @@
     "use-deep-compare": "^1.1.0"
   },
   "peerDependencies": {
-    "@folio/stripes-components": "^11.0.0",
-    "@folio/stripes-connect": "^8.1.0",
+    "@folio/stripes-components": "^12.0.0",
+    "@folio/stripes-connect": "^9.0.0",
     "@folio/stripes-logger": "^1.0.0",
     "moment": "^2.29.0",
     "react": "^18.2.0",
