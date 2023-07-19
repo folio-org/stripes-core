@@ -2,7 +2,7 @@ import {
   QueryClient,
   QueryClientProvider,
 } from 'react-query';
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook, waitFor } from '@testing-library/react';
 
 import useOkapiEnv from './useOkapiEnv';
 import { useStripes } from '../StripesContext';
@@ -48,10 +48,14 @@ describe('Given useOkapiEnv', () => {
         </QueryClientProvider>
       );
 
-      const { result, waitFor } = renderHook(() => useOkapiEnv({}), { wrapper });
+      const { result } = renderHook(() => useOkapiEnv({}), { wrapper });
 
+      // waitFor retries until it stops catching an error
+      // so we convert isLoading from being truthy to being errory
       await waitFor(() => {
-        return !result.current.isLoading;
+        if (result.current.isLoading) {
+          throw new Error('Kaboom');
+        }
       });
 
       expect(result.current.data).toEqual({ MONKEY: 'bagel' });
@@ -80,10 +84,14 @@ describe('Given useOkapiEnv', () => {
         </QueryClientProvider>
       );
 
-      const { result, waitFor } = renderHook(() => useOkapiEnv({}), { wrapper });
+      const { result } = renderHook(() => useOkapiEnv({}), { wrapper });
 
+      // waitFor retries until it stops catching an error
+      // so we convert isLoading from being truthy to being errory
       await waitFor(() => {
-        return !!result.current.error;
+        if (result.current.isLoading) {
+          throw new Error('Kaboom');
+        }
       });
 
       expect(result.current.error.message).toMatch(/okapi.env.list/);
