@@ -1,6 +1,6 @@
 # Change history for stripes-core
 
-## 9.1.0 IN PROGRESS
+## 10.0.0 IN PROGRESS
 
 * Close app-context menu when its wrapper is undefined, which it will be when switching among apps. Fixes STCOR-680.
 * Move `miragejs` to dev-deps; remove `clean` script and `rimraf`. Refs STCOR-668, STCOR-681.
@@ -15,6 +15,7 @@
 * Use tenant query param for password reset. Refs STCOR-724.
 * Improve login error message when back-end not ready. Refs STCOR-723.
 * Replace `align-items: start` with `flex-start`; it is more widely supported. Refs STCOR-722.
+* Added `consortiaServices` utils to hold common consortia helpers. Refs STCOR-733.
 
 ## [9.0.0](https://github.com/folio-org/stripes-core/tree/v9.0.0) (2023-01-30)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v8.3.0...v9.0.0)
