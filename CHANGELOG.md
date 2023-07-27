@@ -16,6 +16,7 @@
 * Improve login error message when back-end not ready. Refs STCOR-723.
 * Replace `align-items: start` with `flex-start`; it is more widely supported. Refs STCOR-722.
 * *BREAKING* bump `react` to `v18`, and dev-deps accordingly. Refs STCOR-729.
+* Added `consortiaServices` utils to hold common consortia helpers. Refs STCOR-733.
 
 ## [9.0.0](https://github.com/folio-org/stripes-core/tree/v9.0.0) (2023-01-30)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v8.3.0...v9.0.0)
