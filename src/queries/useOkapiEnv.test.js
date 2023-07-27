@@ -2,7 +2,7 @@ import {
   QueryClient,
   QueryClientProvider,
 } from 'react-query';
-import { renderHook, waitFor } from '@testing-library/react';
+import { renderHook, waitFor } from '@folio/jest-config-stripes/testing-library/react';
 
 import useOkapiEnv from './useOkapiEnv';
 import { useStripes } from '../StripesContext';
