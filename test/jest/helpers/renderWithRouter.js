@@ -1,7 +1,7 @@
 import React from 'react';
 import { IntlProvider } from 'react-intl';
 import { Router } from 'react-router-dom';
-import { render } from '@testing-library/react';
+import { render } from '@folio/jest-config-stripes/testing-library/react';
 import { createMemoryHistory } from 'history';
 import componentsTranslations from '@folio/stripes-components/translations/stripes-components/en';
 import stripesCoreTranslations from '../../../translations/stripes-core/en';
