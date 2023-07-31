@@ -1,6 +1,8 @@
 import {
   checkIfUserInCentralTenant,
   checkIfUserInMemberTenant,
+  checkIfSharedRecord,
+  checkIfLocalRecord,
 } from './consortiaServices';
 
 describe('consortiaServices', () => {
@@ -104,6 +106,61 @@ describe('consortiaServices', () => {
         };
 
         expect(checkIfUserInMemberTenant(stripes)).toBeTruthy();
+      });
+    });
+  });
+
+  describe('checkIfSharedRecord', () => {
+    describe('when source contains the `CONSORTIUM-` prefix', () => {
+      it('should return true', () => {
+        const source = 'CONSORTIUM-FOLIO';
+        const stripes = {};
+
+        expect(checkIfSharedRecord(stripes, source)).toBeTruthy();
+      });
+    });
+
+    describe('when the user is in the central tenant', () => {
+      it('should return true', () => {
+        const source = 'FOLIO';
+        const stripes = {
+          hasInterface: jest.fn().mockReturnValue(true),
+          okapi: {
+            tenant: 'consortia',
+          },
+          user: {
+            user: {
+              consortium: {
+                centralTenantId: 'consortia',
+              },
+            },
+          },
+        };
+
+        expect(checkIfSharedRecord(stripes, source)).toBeTruthy();
+      });
+    });
+  });
+
+  describe('checkIfLocalRecord', () => {
+    describe('when the source is either `FOLIO` or `MARC` and the user is in a member tenant', () => {
+      it('should return true', () => {
+        const source = 'FOLIO';
+        const stripes = {
+          hasInterface: jest.fn().mockReturnValue(true),
+          okapi: {
+            tenant: 'university',
+          },
+          user: {
+            user: {
+              consortium: {
+                centralTenantId: 'consortia',
+              },
+            },
+          },
+        };
+
+        expect(checkIfLocalRecord(stripes, source)).toBeTruthy();
       });
     });
   });

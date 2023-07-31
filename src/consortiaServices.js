@@ -15,3 +15,11 @@ export function checkIfUserInMemberTenant(stripes) {
 
   return stripes.okapi.tenant !== stripes.user.user?.consortium?.centralTenantId;
 }
+
+export function checkIfSharedRecord(stripes, source) {
+  return source.includes('CONSORTIUM-') || checkIfUserInCentralTenant(stripes);
+}
+
+export function checkIfLocalRecord(stripes, source) {
+  return ['MARC', 'FOLIO'].includes(source) && checkIfUserInMemberTenant(stripes);
+}
