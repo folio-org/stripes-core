@@ -220,14 +220,16 @@ export function loadTranslations(store, locale, defaultTranslations = {}) {
   // Here we put additional condition because languages
   // like Japan we need to use like ja, but with numeric system
   // Japan language builds like ja_u, that incorrect. We need to be safe from that bug.
-  return fetch(translations[region] ? translations[region] :
-    translations[loadedLocale] || translations[[parentLocale]])
+  const translationsUrl = translations[region] ?? (translations[loadedLocale] || translations[parentLocale]);
+  return fetch(translationsUrl)
     .then((response) => {
       if (response.ok) {
-        response.json().then((stripesTranslations) => {
+        return response.json().then((stripesTranslations) => {
           store.dispatch(setTranslations(Object.assign(stripesTranslations, defaultTranslations)));
           store.dispatch(setLocale(locale));
         });
+      } else {
+        return Promise.reject(new Error(`Could not load translations from ${translationsUrl}`));
       }
     });
 }

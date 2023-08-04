@@ -1,13 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { useIntl } from 'react-intl';
 import { okapi } from 'stripes-config';
 
-import { addIcon, setTranslations } from '../okapiActions';
 import { ModulesContext } from '../ModulesContext';
 import loadRemoteComponent from '../loadRemoteComponent';
 
-// TODO: should this be handled by registry?
+/**
+ * parseModules
+ * Map the list of applications to a hash keyed by acts-as type (app, plugin,
+ * settings, handler) where the value of each is an array of corresponding
+ * applications.
+ *
+ * @param {array} remotes
+ * @returns {app: [], plugin: [], settings: [], handler: []}
+ */
 const parseModules = (remotes) => {
   const modules = { app: [], plugin: [], settings: [], handler: [] };
 
@@ -19,13 +25,11 @@ const parseModules = (remotes) => {
   return modules;
 };
 
-// TODO: pass it via stripes config
-const registryUrl = okapi.registryUrl;
-
 /**
  * loadTranslations
- * return a promise that fetches translations for the given module and then
- * dispatches the translations.
+ * return a promise that fetches translations for the given module,
+ * dispatches setLocale, and then returns the translations.
+ *
  * @param {object} stripes
  * @param {object} module info read from the registry
  *
@@ -56,11 +60,12 @@ const loadTranslations = (stripes, module) => {
 
           const tx = { ...stripes.okapi.translations, ...keyed };
 
-          stripes.store.dispatch(setTranslations(tx));
+          // stripes.store.dispatch(setTranslations(tx));
 
           // const tx = { ...stripes.okapi.translations, ...keyed };
           // console.log(`filters.status.active: ${tx['ui-users.filters.status.active']}`)
-          return stripes.setLocale(stripes.locale, tx);
+          stripes.setLocale(stripes.locale, tx);
+          return tx;
         });
       } else {
         throw new Error(`Could not load translations for ${module}`);
@@ -82,52 +87,92 @@ const loadIcons = (stripes, module) => {
   if (module.icons && module.icons.length) {
     stripes.logger.log('core', `loading icons for ${module.module}`);
     module.icons.forEach(i => {
+      stripes.logger.log('core', `  > ${i.name}`);
+
       const icon = {
         [i.name]: {
           src: `${module.host}:${module.port}/icons/${i.name}.svg`,
           alt: i.title,
         }
       };
-      stripes.store.dispatch(addIcon(module.module, icon));
+      stripes.addIcon(module.module, icon);
     });
   }
 };
 
+/**
+ * loadModuleAssets
+ * Load a module's icons, translations, and sounds.
+ * @param {object} stripes
+ * @param {object} module info read from the registry
+ * @returns {} copy of the module, plus the key `displayName` containing its localized name
+ */
+const loadModuleAssets = (stripes, module) => {
+  // register icons
+  loadIcons(stripes, module);
+
+  // register sounds
+  // TODO loadSounds(stripes, module);
+
+  // register translations
+  return loadTranslations(stripes, module)
+    .then((tx) => {
+      return {
+        ...module,
+        // tx[module.displayName] instead of formatMessage({ id: module.displayName})
+        // because ... I'm not sure exactly. I suspect the answer is that we're doing
+        // something async somewhere but not realizing it, and therefore not returning
+        // a promise. thus, loadTranslations returns before it's actually done loading
+        // translations, and calling formatMessage(...) here executes before the new
+        // values are loaded.
+        //
+        // TODO: update when modules are served with compiled translations
+        displayName: module.displayName ? tx[module.displayName] : module.module,
+      };
+    })
+    .catch(e => {
+      // eslint-disable-next-line no-console
+      console.error(e);
+    });
+};
+
+/**
+ * loadModules
+ * NB: this means multi-type modules, i.e. those like `actsAs: [app, settings]`
+ * will be loaded multiple times. I'm not sure that's right.
+ * @param {props}
+ * @returns Promise
+ */
+const loadModules = async ({ app, plugin, settings, handler, stripes }) => ({
+  app: await Promise.all(app.map(i => loadModuleAssets(stripes, i))),
+  plugin: await Promise.all(plugin.map(i => loadModuleAssets(stripes, i))),
+  settings: await Promise.all(settings.map(i => loadModuleAssets(stripes, i))),
+  handler: await Promise.all(handler.map(i => loadModuleAssets(stripes, i))),
+});
+
+
+/**
+ * Registry Loader
+ * @param {object} stripes
+ * @param {*} children
+ * @returns
+ */
 const RegistryLoader = ({ stripes, children }) => {
-  const { formatMessage } = useIntl();
   const [modules, setModules] = useState();
 
+  // read the list of registered apps from the registry,
   useEffect(() => {
-    const loadModuleAssets = (module) => {
-      loadIcons(stripes, module);
-
-      return loadTranslations(stripes, module)
-        .then(() => {
-          return {
-            ...module,
-            displayName: module.displayName ? formatMessage({ id: module.displayName }) : undefined,
-          };
-        })
-        .catch(e => {
-          // eslint-disable-next-line no-console
-          console.error(e);
-        });
-    };
-
-    const loadModules = async ({ app, plugin, settings, handler }) => ({
-      app: await Promise.all(app.map(loadModuleAssets)),
-      plugin: await Promise.all(plugin.map(loadModuleAssets)),
-      settings: await Promise.all(settings.map(loadModuleAssets)),
-      handler: await Promise.all(handler.map(loadModuleAssets)),
-    });
-
     const fetchRegistry = async () => {
-      const registry = await fetch(registryUrl).then((response) => response.json());
+      // read the list of registered apps
+      const registry = await fetch(okapi.registryUrl).then((response) => response.json());
+
+      // remap registry from an object shaped like { key1: app1, key2: app2, ...}
+      // to an array shaped like [ { name: key1, ...app1 }, { name: key2, ...app2 } ...]
       const remotes = Object.entries(registry.remotes).map(([name, metadata]) => ({ name, ...metadata }));
-      const parsedModules = await loadModules(parseModules(remotes));
-      const { handler: handlerModules } = parsedModules;
+      const parsedModules = await loadModules({ stripes, ...parseModules(remotes) });
 
       // prefetch all handlers so they can be executed in a sync way.
+      const { handler: handlerModules } = parsedModules;
       if (handlerModules) {
         await Promise.all(handlerModules.map(async (module) => {
           const component = await loadRemoteComponent(module.url, module.name);
@@ -139,8 +184,8 @@ const RegistryLoader = ({ stripes, children }) => {
     };
 
     fetchRegistry();
-  // We know what we are doing here so just ignore the dependency warning about 'formatMessage'
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // We know what we are doing here so just ignore the dependency warning about 'formatMessage'
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
