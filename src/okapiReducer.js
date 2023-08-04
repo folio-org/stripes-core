@@ -134,8 +134,34 @@ export default function okapiReducer(state = {}, action) {
     case OKAPI_REDUCER_ACTIONS.TOGGLE_RTR_MODAL: {
       return { ...state, rtrModalIsVisible: action.isVisible };
     }
-    case OKAPI_REDUCER_ACTIONS.ADD_ICON:
-      return { ...state, icons: { ...state.icons, [action.key]: action.icon } };
+
+    /**
+     * state.icons looks like
+     * {
+     *   "@folio/some-app": {
+     *     app: { alt, src},
+     *     otherIcon: { alt, src }
+     *   },
+     *   "@folio/other-app": { app: ...}
+     * }
+     *
+     * action.key looks like @folio/some-app or @folio/other-app
+     * action.icon looks like { alt: ... } or { otherIcon: ... }
+     */
+    case OKAPI_REDUCER_ACTIONS.ADD_ICON: {
+      let val = action.icon;
+
+      // if there are already icons defined for this key,
+      // add this payload to them
+      if (state.icons?.[action.key]) {
+        val = {
+          ...state.icons[action.key],
+          ...action.icon,
+        };
+      }
+
+      return { ...state, icons: { ...state.icons, [action.key]: val } };
+    }
 
     default:
       return state;
