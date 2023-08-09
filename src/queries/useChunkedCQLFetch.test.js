@@ -2,7 +2,8 @@ import {
   QueryClient,
   QueryClientProvider,
 } from 'react-query';
-import { renderHook } from '@testing-library/react-hooks';
+
+import { renderHook, waitFor } from '@folio/jest-config-stripes/testing-library/react';
 
 import useChunkedCQLFetch from './useChunkedCQLFetch';
 import useOkapiKy from '../useOkapiKy';
@@ -68,7 +69,7 @@ describe('Given useChunkedCQLFetch', () => {
 
   describe('sets up correct number of fetches', () => {
     it('sets up 1 fetch for the 5 ids by default', async () => {
-      const { result, waitFor } = renderHook(() => useChunkedCQLFetch({
+      const { result } = renderHook(() => useChunkedCQLFetch({
         ...baseOptions
       }), { wrapper });
 
@@ -82,7 +83,7 @@ describe('Given useChunkedCQLFetch', () => {
     });
 
     it('sets up 3 fetches for the 5 ids when STEP_SIZE = 2', async () => {
-      const { result, waitFor } = renderHook(() => useChunkedCQLFetch({
+      const { result } = renderHook(() => useChunkedCQLFetch({
         ...baseOptions,
         STEP_SIZE: 2
       }), { wrapper });
@@ -97,7 +98,7 @@ describe('Given useChunkedCQLFetch', () => {
     });
 
     it('sets up 5 fetches for the 5 ids when STEP_SIZE = 1', async () => {
-      const { result, waitFor } = renderHook(() => useChunkedCQLFetch({
+      const { result } = renderHook(() => useChunkedCQLFetch({
         ...baseOptions,
         STEP_SIZE: 1
       }), { wrapper });
@@ -114,7 +115,7 @@ describe('Given useChunkedCQLFetch', () => {
 
   describe('deduplicates ids as expected', () => {
     it('sets up 1 fetch for the 5 unique ids', async () => {
-      const { result, waitFor } = renderHook(() => useChunkedCQLFetch({
+      const { result } = renderHook(() => useChunkedCQLFetch({
         ...baseOptions,
         ids: [
           ...baseOptions.ids,
@@ -143,7 +144,7 @@ describe('Given useChunkedCQLFetch', () => {
         largeIdSet.push(makeid(5));
       }
 
-      const { result, waitFor } = renderHook(() => useChunkedCQLFetch({
+      const { result } = renderHook(() => useChunkedCQLFetch({
         ...baseOptions,
         ids: largeIdSet,
       }), { wrapper });
