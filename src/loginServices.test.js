@@ -1,6 +1,7 @@
 import localforage from 'localforage';
 
 import {
+  spreadUserWithPerms,
   createOkapiSession,
   handleLoginError,
   loadTranslations,
@@ -329,39 +330,29 @@ describe('updateTenant', () => {
   const okapi = {
     currentPerms: {},
   };
-  const store = {
-    dispatch: jest.fn(),
-    getState: jest.fn().mockReturnValue({ okapi }),
-  };
   const tenant = 'test';
   const data = {
-    user: {},
+    user: {
+      id: 'userId',
+      username: 'testuser',
+    },
     permissions: {
-      permissions: [],
+      permissions: [{ permissionName: 'test.permissions' }],
     },
   };
 
   beforeEach(() => {
     localforage.setItem.mockClear();
-    store.dispatch.mockClear();
   });
 
-  it('should set tenant in session', async () => {
+  it('should set tenant and updated user in session', async () => {
     mockFetchSuccess(data);
-    await updateTenant(okapi, store, tenant);
+    await updateTenant(okapi, tenant);
     mockFetchCleanUp();
 
     expect(localforage.setItem).toHaveBeenCalledWith('okapiSess', {
-      user: {},
+      ...spreadUserWithPerms(data),
       tenant,
     });
-  });
-
-  it('should "relogin" user with new tenant', async () => {
-    mockFetchSuccess(data);
-    await updateTenant(okapi, store, tenant);
-    mockFetchCleanUp();
-
-    expect(store.dispatch).toHaveBeenCalledWith(setLoginData(data));
   });
 });

@@ -35,9 +35,13 @@ export {
   withLastVisited,
 } from './src/components';
 
+/* Queries */
+export { useChunkedCQLFetch } from './src/queries';
+
 /* misc */
 export { supportedLocales } from './src/loginServices';
 export { supportedNumberingSystems } from './src/loginServices';
 export { userLocaleConfig } from './src/loginServices';
+export * from './src/consortiaServices';
 export { default as queryLimit } from './src/queryLimit';
 export { default as init } from './src/init';
