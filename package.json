@@ -84,7 +84,7 @@
     "react-cookie": "^4.0.3",
     "react-final-form": "^6.3.0",
     "react-query": "^3.6.0",
-    "react-titled": "^1.0.0",
+    "react-titled": "^2.0.0",
     "react-transform-catch-errors": "^1.0.2",
     "react-transition-group": "^4.4.5",
     "redux": "^4.0.0",
