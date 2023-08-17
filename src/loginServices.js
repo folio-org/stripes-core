@@ -326,6 +326,28 @@ function loadResources(okapiUrl, store, tenant, userId) {
 }
 
 /**
+ * spreadUserWithPerms
+ * return an object { user, perms } based on response from bl-users/self.
+ *
+ * @param {object} userWithPerms
+ *
+ * @returns {object}
+ */
+export function spreadUserWithPerms(userWithPerms) {
+  const user = {
+    id: userWithPerms.user.id,
+    username: userWithPerms.user.username,
+    ...userWithPerms.user.personal,
+  };
+
+  // remap data's array of permission-names to set with
+  // permission-names for keys and `true` for values
+  const perms = Object.assign({}, ...userWithPerms.permissions.permissions.map(p => ({ [p.permissionName]: true })));
+
+  return { user, perms };
+}
+
+/**
  * createOkapiSession
  * Remap the given data into a session object shaped like:
  * {
@@ -345,12 +367,6 @@ function loadResources(okapiUrl, store, tenant, userId) {
  * @returns {Promise}
  */
 export function createOkapiSession(okapiUrl, store, tenant, token, data) {
-  const user = {
-    id: data.user.id,
-    username: data.user.username,
-    ...data.user.personal,
-  };
-
   // clear any auth-n errors
   store.dispatch(setAuthError(null));
 
@@ -358,9 +374,8 @@ export function createOkapiSession(okapiUrl, store, tenant, token, data) {
   // e.g. if optional values are returned, e.g. see UISP-32
   store.dispatch(setLoginData(data));
 
-  // remap data's array of permission-names to set with
-  // permission-names for keys and `true` for values
-  const perms = Object.assign({}, ...data.permissions.permissions.map(p => ({ [p.permissionName]: true })));
+  const { user, perms } = spreadUserWithPerms(data);
+
   store.dispatch(setCurrentPerms(perms));
 
   const sessionTenant = data.tenant || tenant;
@@ -570,6 +585,22 @@ export function requestLogin(okapiUrl, store, tenant, data) {
 }
 
 /**
+ * fetchUserWithPerms
+ * retrieve currently-authenticated user
+ * @param {string} okapiUrl
+ * @param {string} tenant
+ * @param {string} token
+ *
+ * @returns {Promise} Promise resolving to the response of the request
+ */
+function fetchUserWithPerms(okapiUrl, tenant, token) {
+  return fetch(
+    `${okapiUrl}/bl-users/_self?expandPermissions=true&fullPermissions=true`,
+    { headers: getHeaders(tenant, token) },
+  );
+}
+
+/**
  * requestUserWithPerms
  * retrieve currently-authenticated user, then process the result to begin a session.
  * @param {string} okapiUrl
@@ -580,8 +611,7 @@ export function requestLogin(okapiUrl, store, tenant, data) {
  * @returns {Promise} Promise resolving to the response-body (JSON) of the request
  */
 export function requestUserWithPerms(okapiUrl, store, tenant, token) {
-  return fetch(`${okapiUrl}/bl-users/_self?expandPermissions=true&fullPermissions=true`,
-    { headers: getHeaders(tenant, token) })
+  return fetchUserWithPerms(okapiUrl, tenant, token)
     .then(resp => processOkapiSession(okapiUrl, store, tenant, resp, token));
 }
 
@@ -630,18 +660,17 @@ export function updateUser(store, data) {
 
 /**
  * updateTenant
- * 1. concat the given data onto local-storage tenant and save it
- * 2. update full user info based on new tenant
-  * @param {string} okapiUrl okapi url
- * @param {redux-store} store redux store
- * @param {object} data
+ * 1. prepare user info for requested tenant
+ * 2. update okapi session
+ * @param {object} okapi
+ * @param {string} tenant
  *
  * @returns {Promise}
  */
-export async function updateTenant(okapi, store, tenant) {
+export async function updateTenant(okapi, tenant) {
   const okapiSess = await localforage.getItem('okapiSess');
+  const userWithPermsResponse = await fetchUserWithPerms(okapi.url, tenant, okapi.token);
+  const userWithPerms = await userWithPermsResponse.json();
 
-  await localforage.setItem('okapiSess', { ...okapiSess, tenant });
-
-  await requestUserWithPerms(okapi.url, store, tenant, okapi.token);
+  await localforage.setItem('okapiSess', { ...okapiSess, tenant, ...spreadUserWithPerms(userWithPerms) });
 }
