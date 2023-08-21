@@ -74,6 +74,7 @@ class ForgotPasswordForm extends Component {
                     autoComplete="on"
                     autoCapitalize="none"
                     autoFocus
+                    placeholder="Enter email or phone"
                   />
                 </div>
                 <Button
