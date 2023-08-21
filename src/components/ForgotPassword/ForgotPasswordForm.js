@@ -78,7 +78,7 @@ class ForgotPasswordForm extends Component {
                     autoComplete="on"
                     autoCapitalize="none"
                     autoFocus
-                    placeholder={formatMessage({ id: 'stripes-core.placeholder.forgotPassowrd' })}
+                    placeholder={formatMessage({ id: 'stripes-core.placeholder.forgotPassword' })}
                   />
                 </div>
                 <Button
