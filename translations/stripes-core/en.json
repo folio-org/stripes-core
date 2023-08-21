@@ -145,6 +145,9 @@
   "createResetPassword.confirmPassword": "Confirm Password",
   "createResetPassword.ruleTemplate": "Must {description}",
 
+  "placeholder.forgotPassword": "Enter email or phone",
+  "placeholder.forgotUsername": "Enter email or phone",
+
   "routeErrorBoundary.sub": "An error occurred on this page and it could not be loaded.",
   "routeErrorBoundary.goToAppHomeLabel": "Return to home",
   "routeErrorBoundary.goToModuleHomeLabel": "Return to {name} landing page",
