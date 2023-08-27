@@ -142,5 +142,7 @@
     "front.error.noPermission": "Você não tem permissão para ver este aplicativo/registro",
     "button.duplicate": "Duplicar",
     "stale.warning": "O aplicativo foi alterado no servidor e precisa ser atualizado.",
-    "stale.reload": "Clique aqui para recarregar."
+    "stale.reload": "Clique aqui para recarregar.",
+    "placeholder.forgotPassword": "Enter email or phone",
+    "placeholder.forgotUsername": "Enter email or phone"
 }

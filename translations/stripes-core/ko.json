@@ -142,5 +142,7 @@
     "front.error.noPermission": "이 앱/레코드를 볼 수 있는 권한이 없습니다.",
     "button.duplicate": "복제",
     "stale.warning": "The application has changed on the server and needs to be refreshed.",
-    "stale.reload": "Click here to reload."
+    "stale.reload": "Click here to reload.",
+    "placeholder.forgotPassword": "Enter email or phone",
+    "placeholder.forgotUsername": "Enter email or phone"
 }

@@ -142,5 +142,7 @@
     "front.error.noPermission": "You don't have permission to view this app/record",
     "button.duplicate": "複製",
     "stale.warning": "サーバー上でアプリケーションが変更されたため、更新する必要があります。",
-    "stale.reload": "ここをクリックしてリロードしてください。"
+    "stale.reload": "ここをクリックしてリロードしてください。",
+    "placeholder.forgotPassword": "Enter email or phone",
+    "placeholder.forgotUsername": "Enter email or phone"
 }
