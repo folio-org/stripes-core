@@ -141,6 +141,8 @@
     "title.noPermission": "Bez povolení",
     "front.error.noPermission": "K zobrazení této aplikace/záznamu nemáte oprávnění",
     "button.duplicate": "Duplikovat",
-    "stale.warning": "Aplikace se na serveru změnila a je třeba ji aktualizovat.",
-    "stale.reload": "Klikněte zde pro opětovné načtení."
+    "stale.warning": "Aplikace se na serveru změnila a je třeba ji obnovit.",
+    "stale.reload": "Klikněte zde pro opětovné načtení.",
+    "placeholder.forgotPassword": "Zadejte e-mail nebo telefon",
+    "placeholder.forgotUsername": "Zadejte e-mail nebo telefon"
 }
