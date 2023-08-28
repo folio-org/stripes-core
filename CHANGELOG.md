@@ -19,6 +19,7 @@
 * Added `consortiaServices` utils to hold common consortia helpers. Refs STCOR-733.
 * Bump `@formatjs/cli` to `^6.1.3`.
 * Forgot password and Forgot username : add placeholder to input box. Refs STCOR-728.
+* Include `yarn.lock`. Refs STCOR-679.
 
 ## [9.0.0](https://github.com/folio-org/stripes-core/tree/v9.0.0) (2023-01-30)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v8.3.0...v9.0.0)
