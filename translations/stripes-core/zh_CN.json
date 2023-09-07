@@ -101,7 +101,7 @@
     "errors.link.used": "您选择的密码链接已过期或已被使用。请联系您的Folio管理员以获取新链接。",
     "errors.forgotten.password.found.multiple.users": "提供的信息与多个Folio帐户相关联。请与Folio系统管理员联系以重置密码。",
     "errors.forgotten.username.found.multiple.users": "此电子邮件或电话号码与多个Folio帐户绑定。请联系您的Folio系统管理员。",
-    "errors.forgotten.password.found.inactive": "您的帐户目前已被锁定。请联系您的FOLIO系统管理员以重置密码",
+    "errors.forgotten.password.found.inactive": "您的账户目前已被锁定。请联系FOLIO系统管理员以重置密码",
     "errors.default.server.error": "系统错误。请稍等几分钟，然后再试一次。",
     "createResetPassword.header": "选择一个密码",
     "createResetPassword.newPassword": "新建密码",
@@ -143,6 +143,6 @@
     "button.duplicate": "复制",
     "stale.warning": "应用程序在服务器上发生了变化，需要刷新。",
     "stale.reload": "单击此处重新加载。",
-    "placeholder.forgotPassword": "Enter email or phone",
-    "placeholder.forgotUsername": "Enter email or phone"
+    "placeholder.forgotPassword": "输入电子邮件或电话",
+    "placeholder.forgotUsername": "输入电子邮件或电话"
 }
