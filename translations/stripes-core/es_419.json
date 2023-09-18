@@ -144,5 +144,5 @@
     "stale.warning": "La aplicación ha cambiado en el servidor y necesita ser actualizada.",
     "stale.reload": "Haga clic aquí para recargar.",
     "placeholder.forgotPassword": "Enter email or phone",
-    "placeholder.forgotUsername": "Enter email or phone"
+    "placeholder.forgotUsername": "Introduce email o teléfono"
 }
