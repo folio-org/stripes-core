@@ -21,6 +21,7 @@
 * Forgot password and Forgot username : add placeholder to input box. Refs STCOR-728.
 * Include `yarn.lock`. Refs STCOR-679.
 * *BREAKING* bump `react-intl` to `v6.4.4`. Refs STCOR-744.
+* Bump `stylelint` to `v15` and `stylelint-config-standard` to `v34`. Refs STCOR-745.
 
 ## [9.0.0](https://github.com/folio-org/stripes-core/tree/v9.0.0) (2023-01-30)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v8.3.0...v9.0.0)
