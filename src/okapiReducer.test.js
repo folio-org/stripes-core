@@ -1,6 +1,12 @@
 import okapiReducer from './okapiReducer';
 
 describe('okapiReducer', () => {
+  it('SET_IS_AUTHENTICATED', () => {
+    const isAuthenticated = true;
+    const o = okapiReducer({}, { type: 'SET_IS_AUTHENTICATED', isAuthenticated: true });
+    expect(o).toMatchObject({ isAuthenticated });
+  });
+
   it('SET_LOGIN_DATA', () => {
     const loginData = 'loginData';
     const o = okapiReducer({}, { type: 'SET_LOGIN_DATA', loginData });
