@@ -378,6 +378,7 @@ export async function logout(okapiUrl, store) {
       return fetch(`${okapiUrl}/authn/logout`, {
         method: 'POST',
         mode: 'cors',
+        credentials: 'include'
       });
     });
 }
@@ -668,7 +669,7 @@ export function validateUser(okapiUrl, store, tenant, session) {
       });
     } else {
       console.error('>>> validateUser !resp.ok');
-      return logout(store);
+      return logout(okapiUrl, store);
     }
   }).catch((error) => {
     console.error('validateUser', error);

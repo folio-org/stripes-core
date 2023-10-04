@@ -121,7 +121,7 @@ class MainNav extends Component {
     const { okapi } = this.store.getState();
 
     return getLocale(okapi.url, this.store, okapi.tenant)
-      .then(sessionLogout(this.store));
+      .then(sessionLogout(okapi.url, this.store));
   }
 
   // return the user to the login screen, but after logging in they will be brought to the default screen.
