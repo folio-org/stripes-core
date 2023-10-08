@@ -21,9 +21,6 @@ const IS_ROTATING_INTERVAL = 100;
 /** log all event */
 const log = (message, ...rest) => {
   console.log(`-- (rtr-sw) -- (rtr-sw) ${message}`, rest);
-  // console.log('-- (rtr-sw) wtf is my logger?', logger)
-  // console.log(typeof logger?.log)
-  //
   // if (logger) {
   //   logger.log('-- (rtr-sw) rtr-sw', message);
   // }
@@ -120,8 +117,6 @@ const rtr = async (event) => {
       if (res.ok) {
         return res.json();
       }
-
-      console.error('----> rtr failure')
 
       // rtr failure. return an error message if we got one.
       return res.json()
