@@ -11,7 +11,12 @@ let okapiUrl = null;
 /** categorical logger object */
 let logger = null;
 
+/** lock to indicate whether a rotation request is already in progress */
 let isRotating = false;
+/** how many times to check the lock before giving up */
+const IS_ROTATING_RETRIES = 100;
+/** how long to wait before rechecking the lock, in milliseconds (100 * 100) === 10 seconds */
+const IS_ROTATING_INTERVAL = 100;
 
 /** log all event */
 const log = (message, ...rest) => {
@@ -87,19 +92,22 @@ const rtr = async (event) => {
   console.log('-- (rtr-sw) ** RTR ...');
 
   // if several fetches trigger rtr in a short window, all but the first will
-  // fail because the RT will be stale once processed during the first request.
-  // locking rtr with isRotating prevents multiple requests from firing, and
-  //
+  // fail because the RT will be stale after the first request rotates it.
+  // the sentinel isRotating indicates that rtr has already started and therefore
+  // should not start again; instead, we just need to wait until it finishes.
+  // waiting happens in a for-loop that waits a few milliseconds and then rechecks
+  // isRotating. hopefully, that process goes smoothly, but we'll give up after
+  // IS_ROTATING_RETRIES * IS_ROTATING_INTERVAL milliseconds and return failure.
   if (isRotating) {
-    // try for ten seconds then give up
-    // for 1 ... 100
-    //     if ! isRotating return resolve
-    // return reject
-    while (isRotating) {
-      // console.log('-- (rtr-sw) **    is rotating; waiting 100');
-      await new Promise(resolve => setTimeout(resolve, 100));
+    for (let i = 0; i < IS_ROTATING_RETRIES; i++) {
+      console.log(`-- (rtr-sw) **    is rotating; waiting ${IS_ROTATING_INTERVAL}ms`);
+      await new Promise(resolve => setTimeout(resolve, IS_ROTATING_INTERVAL));
+      if (!isRotating) {
+        return Promise.resolve();
+      }
     }
-    return Promise.resolve();
+    // all is lost
+    return Promise.reject(new Error('in-process RTR timed out'));
   }
 
   isRotating = true;
@@ -112,6 +120,8 @@ const rtr = async (event) => {
       if (res.ok) {
         return res.json();
       }
+
+      console.error('----> rtr failure')
 
       // rtr failure. return an error message if we got one.
       return res.json()
@@ -145,17 +155,36 @@ const rtr = async (event) => {
  * @returns boolean true if the AT is valid or the request is always permissible
  */
 const isPermissibleRequest = (req) => {
+  if (isValidAT()) {
+    return true;
+  }
+
   const permissible = [
-    '/authn/logout',
     '/authn/refresh',
     '/bl-users/_self',
     '/bl-users/login-with-expiry',
     '/saml/check',
   ];
 
-  const ret = permissible.find(i => req.url.startsWith(`${okapiUrl}${i}`));
-  // console.log(`-- (rtr-sw) ret is ${ret} for ${req.url}`, req.url);
-  return (isValidAT() || !!ret);
+  // console.log(`-- (rtr-sw) AT invalid for ${req.url}`);
+  return !!permissible.find(i => req.url.startsWith(`${okapiUrl}${i}`));
+};
+
+/**
+ * isLogoutRequest
+ * Logout requests are always permissible but need special handling
+ * because they should never fail.
+ *
+ * @param {Request} req clone of the original event.request object
+ * @returns boolean true if the request URL matches a logout URL
+ */
+const isLogoutRequest = (req) => {
+  const permissible = [
+    '/authn/logout',
+  ];
+
+  // console.log(`-- (rtr-sw) logout request ${req.url}`);
+  return !!permissible.find(i => req.url.startsWith(`${okapiUrl}${i}`));
 };
 
 /**
@@ -168,6 +197,27 @@ const isPermissibleRequest = (req) => {
 const isOkapiRequest = (req) => {
   // console.log(`-- (rtr-sw) isOkapiRequest: ${new URL(req.url).origin} === ${okapiUrl}`);
   return new URL(req.url).origin === okapiUrl;
+};
+
+/**
+ * passThroughWithRT
+ * Perform RTR then return the original fetch.
+ *
+ * @param {Event} event
+ * @returns Promise
+ */
+const passThroughWithRT = (event) => {
+  const req = event.request.clone();
+  return rtr(event)
+    .then(() => {
+      console.log('-- (rtr-sw) => post-rtr-fetch', req.url);
+      return fetch(event.request, { credentials: 'include' });
+    })
+    .catch((rtre) => {
+      messageToClient(event, { type: 'RTR_ERROR', error: rtre });
+      // return Promise.resolve('kill me, kill me softly');
+      return Promise.reject(new Error(rtre));
+    });
 };
 
 /**
@@ -187,18 +237,33 @@ const isOkapiRequest = (req) => {
 const passThroughWithAT = (event) => {
   console.log('-- (rtr-sw)    (valid AT or authn request)');
   return fetch(event.request, { credentials: 'include' })
+    .then(response => {
+      if (response.ok) {
+        return response;
+      } else {
+        // we thought the AT was valid but it wasn't, so try again.
+        // if we fail this time, we're done.
+        console.log('-- (rtr-sw)    (whoops, invalid AT; retrying)');
+        return passThroughWithRT(event);
+      }
+    });
+};
+
+/**
+ * passThroughLogout
+ * The logout request should never fail, even if it fails.
+ * That is, if it fails, we just pretend like it never happened
+ * instead of blowing up and causing somebody to get stuck in the
+ * logout process.
+ * @param {Event} event
+ * @returns Promise
+ */
+const passThroughLogout = (event) => {
+  console.log('-- (rtr-sw)    (logout request)');
+  return fetch(event.request, { credentials: 'include' })
     .catch(e => {
-      console.log('-- (rtr-sw)    (whoops, invalid AT; retrying)', e);
-      // we thought the AT was valid but it wasn't, so try again.
-      // if we fail this time, we're done.
-      return rtr(event)
-        .then(() => {
-          return fetch(event.request, { credentials: 'include' });
-        })
-        .catch((rtre) => {
-          console.error(rtre); // eslint-disable-line no-console
-          throw new Error(rtre);
-        });
+      console.error('-- (rtr-sw) logout failure', e); // eslint-disable-line no-console
+      return Promise.resolve();
     });
 };
 
@@ -211,30 +276,29 @@ const passThroughWithAT = (event) => {
  * @returns Promise
  * @throws if any fetch fails
  */
-const passThrough = async (event) => {
+const passThrough = (event) => {
   const req = event.request.clone();
 
   // okapi requests are subject to RTR
   if (isOkapiRequest(req)) {
-    console.log('-- (rtr-sw) => fetch', req.url);
+    console.log('-- (rtr-sw) => will fetch', req.url);
+    if (isLogoutRequest(req)) {
+      return passThroughLogout(event);
+    }
+
     if (isPermissibleRequest(req)) {
       return passThroughWithAT(event);
     }
 
     if (isValidRT()) {
       console.log('-- (rtr-sw) =>      valid RT');
-      return rtr(event)
-        .then(() => {
-          return fetch(event.request, { credentials: 'include' });
-        })
-        .catch(error => {
-          messageToClient(event, { type: 'RTR_ERROR', error });
-          return Promise.reject(new Error(error));
-        });
+      return passThroughWithRT(event);
     }
 
-    messageToClient(event, { type: 'RTR_ERROR', error: 'Invalid RT' });
-    return Promise.reject(new Error('Invalid RT'));
+    // kill me softly, letting the top-level handler pick up the failure
+    messageToClient(event, { type: 'RTR_ERROR', error: 'AT/RT failure' });
+    // return Promise.resolve('actually this did not resolve but we want to die softly')
+    return Promise.reject(new Error(`Invalid RT; could not fetch ${req.url}`));
   }
 
   // default: pass requests through to the network
