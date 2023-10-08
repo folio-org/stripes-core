@@ -1,5 +1,5 @@
 import localforage from 'localforage';
-import { translations } from 'stripes-config';
+import { config, translations } from 'stripes-config';
 import rtlDetect from 'rtl-detect';
 import moment from 'moment';
 import createInactivityTimer from 'inactivity-timer';
@@ -26,6 +26,7 @@ import {
   updateCurrentUser,
 } from './okapiActions';
 import processBadResponse from './processBadResponse';
+import configureLogger from './configureLogger';
 
 // export supported locales, i.e. the languages we provide translations for
 export const supportedLocales = [
@@ -65,15 +66,16 @@ export const supportedNumberingSystems = [
   'arab',  // Arabic-Hindi (٠ ١ ٢ ٣ ٤ ٥ ٦ ٧ ٨ ٩)
 ];
 
+/** name for the session key in local storage */
 const SESSION_NAME = 'okapiSess';
-/** session length in milliseconds */
-const SESSION_LENGTH = 10 * 1000;
 
 // export config values for storing user locale
 export const userLocaleConfig = {
   'configName': 'localeSettings',
   'module': '@folio/stripes-core',
 };
+
+const logger = configureLogger(config);
 
 function getHeaders(tenant) {
   return {
@@ -373,14 +375,13 @@ export async function logout(okapiUrl, store) {
   store.dispatch(setIsAuthenticated(false));
   store.dispatch(clearCurrentUser());
   store.dispatch(resetStore());
-  return localforage.removeItem(SESSION_NAME)
-    .then(() => {
-      return fetch(`${okapiUrl}/authn/logout`, {
-        method: 'POST',
-        mode: 'cors',
-        credentials: 'include'
-      });
-    });
+  return fetch(`${okapiUrl}/authn/logout`, {
+    method: 'POST',
+    mode: 'cors',
+    credentials: 'include'
+  })
+    .then(localforage.removeItem(SESSION_NAME))
+    .then(localforage.removeItem('loginResponse'));
 }
 
 /**
@@ -391,31 +392,21 @@ export async function logout(okapiUrl, store) {
  * time the event-listener pings the existing timer will be cancelled
  * and a new one started to keep the session alive.
  *
- * @param {redux-store} store
+ * @param {string} okapiUrl to pass to logout
+ * @param {redux-store} store to pass to logout
+ * @param {object} tokenExpiration shaped like { atExpires, rtExpires }
+ *   where each is a millisecond-resolution timestamp
  */
-let idleTimer = null;
-let lastActive = Date.now();
-const startIdleTimer = (okapiUrl, store) => {
-  // @@ in reality,
-  // @@ idleTimer = SESSION_LENGTH is rtExpires - Date.now()
-  idleTimer = createInactivityTimer(SESSION_LENGTH, () => {
-    // @@
-    console.log(`logging out; no activity since ${new Date(lastActive).toISOString()}`);
-    logout(okapiUrl, store);
-  });
-
-  // ###
-  // if (idleTimer) {
-  //   clearTimeout(idleTimer);
-  // }
-
-  // // @@ in reality,
-  // // @@ idleTimer = setTimeout(logout, rtExpires - Date.now());
-  // idleTimer = setTimeout(() => {
-  //   console.log(`logging out; no activity since ${new Date(lastActive).toISOString()}`);
-  //   logout();
-  // }, SESSION_LENGTH);
-};
+// let idleTimer = null;
+// let lastActive = Date.now();
+// const startIdleTimer = (okapiUrl, store, tokenExpiration) => {
+//   // const threshold = 10 * 1000;
+//   const threshold = tokenExpiration.rtExpires - Date.now();
+//   idleTimer = createInactivityTimer(threshold, () => {
+//     logger.log('rtr', `logging out; no activity since ${new Date(lastActive).toISOString()}`);
+//     logout(okapiUrl, store);
+//   });
+// };
 
 /**
  * dispatchTokenExpiration
@@ -426,13 +417,12 @@ const dispatchTokenExpiration = (tokenExpiration) => {
     .then((reg) => {
       const sw = reg.active;
       if (sw) {
-        const message = { type: 'TOKEN_EXPIRATION', tokenExpiration };
-        console.log('<= sending', message); console.trace();
+        const message = { source: '@folio/stripes-core', type: 'TOKEN_EXPIRATION', tokenExpiration };
+        logger.log('rtr', '<= sending', message);
         sw.postMessage(message);
       } else {
         console.warn('could not dispatch message; no active registration');
       }
-
     });
 };
 
@@ -441,6 +431,7 @@ const dispatchTokenExpiration = (tokenExpiration) => {
  * Remap the given data into a session object shaped like:
  * {
  *   user: { id, username, personal }
+ *   tenant: string,
  *   perms: { permNameA: true, permNameB: true, ... }
  *   isAuthenticated: boolean,
  *   tokenExpiration: { atExpires, rtExpires }
@@ -467,9 +458,13 @@ export function createOkapiSession(okapiUrl, store, tenant, data) {
 
   store.dispatch(setCurrentPerms(perms));
 
+  // if we can't parse tokenExpiration data, e.g. because data comes from `/bl-users/_self`
+  // which doesn't provide it, then set an invalid AT value and a near-future (+10 minutes) RT value.
+  // the invalid AT will prompt an RTR cycle which will either give us new AT/RT values
+  // (if the RT was valid) or throw an RTR_ERROR (if the RT was not valid).
   const tokenExpiration = {
-    atExpires: new Date(data.tokenExpiration.accessTokenExpiration).getTime(),
-    rtExpires: new Date(data.tokenExpiration.refreshTokenExpiration).getTime(),
+    atExpires: data.tokenExpiration?.accessTokenExpiration ? new Date(data.tokenExpiration.accessTokenExpiration).getTime() : -1,
+    rtExpires: data.tokenExpiration?.refreshTokenExpiration ? new Date(data.tokenExpiration.refreshTokenExpiration).getTime() : Date.now() + (10 * 60 * 1000),
   };
 
   const sessionTenant = data.tenant || tenant;
@@ -483,7 +478,6 @@ export function createOkapiSession(okapiUrl, store, tenant, data) {
 
   // provide token-expiration info to the service worker
   dispatchTokenExpiration(tokenExpiration);
-  startIdleTimer(okapiUrl, store);
 
   return localforage.setItem('loginResponse', data)
     .then(() => localforage.setItem(SESSION_NAME, okapiSess))
@@ -498,34 +492,53 @@ export function createOkapiSession(okapiUrl, store, tenant, data) {
  * addDocumentListeners
  * Attach document-level event handlers for keydown and mousedown in order to
  * track when the session is idle
+ *
+ * @param {object} okapiConfig okapi attribute from stripes-config
+ * @param {object} store redux-store
  */
-export function addDocumentListeners() {
+export function addDocumentListeners(okapiConfig, store) {
   // on any event, set the last-access timestamp and restart the inactivity timer.
   // if the access token has expired, renew it.
-  ['keydown', 'mousedown'].forEach((event) => {
-    document.addEventListener(event, () => {
-      localforage.getItem(SESSION_NAME)
-        .then(session => {
-          if (session?.isAuthenticated && idleTimer) {
-            idleTimer.signal();
-            // @@ remove this; it's just for debugging
-            lastActive = Date.now();
-            // @@ startIdleTimer();
-          }
-        });
-    });
-  });
-
-  // document.addEventListener(event, () => {
-  //   this.setLastAccess();
-  //   if (this.inactivityTimer) {
-  //     this.inactivityTimer.signal();
-  //   }
-
-  //   if (!this.accessTokenIsValid()) {
-  //     this.exchangeRefresh();
-  //   }
+  // ['keydown', 'mousedown'].forEach((event) => {
+  //   document.addEventListener(event, () => {
+  //     localforage.getItem(SESSION_NAME)
+  //       .then(session => {
+  //         if (session?.isAuthenticated && idleTimer) {
+  //           idleTimer.signal();
+  //           // @@ remove this; it's just for debugging
+  //           lastActive = Date.now();
+  //         }
+  //       });
+  //   });
   // });
+
+  if ('serviceWorker' in navigator) {
+    //
+    // listen for messages
+    // the only message we expect to receive tells us that RTR happened
+    // so we need to update our expiration timestamps
+    navigator.serviceWorker.addEventListener('message', (e) => {
+      if (e.data.source === '@folio/stripes-core') {
+        console.info('-- (rtr) <= reading', e.data);
+        if (e.data.type === 'TOKEN_EXPIRATION') {
+          // @@ store.setItem is async but we don't care about the response
+          // localforage.setItem('tokenExpiration', e.data.tokenExpiration);
+          console.log(`-- (rtr) atExpires ${e.data.tokenExpiration.atExpires}`);
+          console.log(`-- (rtr) rtExpires ${e.data.tokenExpiration.rtExpires}`);
+        }
+
+        if (e.data.type === 'RTR_ERROR') {
+          console.error('-- (rtr) rtr error; logging out', e.data.error);
+
+          store.dispatch(setIsAuthenticated(false));
+          store.dispatch(clearCurrentUser());
+          store.dispatch(resetStore());
+          localforage.removeItem(SESSION_NAME)
+            .then(localforage.removeItem('loginResponse'));
+        }
+      }
+    });
+  }
 }
 
 /**
@@ -652,27 +665,58 @@ export function processOkapiSession(okapiUrl, store, tenant, resp) {
  *
  * @returns {Promise}
  */
-//@@
 export function validateUser(okapiUrl, store, tenant, session) {
-  const { tenant: sessionTenant = tenant } = session;
-
+  const { user, perms, tenant: sessionTenant = tenant } = session;
+  console.log('validateUser; existing session');
   return fetch(`${okapiUrl}/bl-users/_self`, {
     headers: getHeaders(sessionTenant),
     credentials: 'include',
     mode: 'cors',
   }).then((resp) => {
     if (resp.ok) {
-      console.log('>>> validateUser::resp.ok');
       return resp.json().then((data) => {
-        console.log('session', session);
-        createOkapiSession(okapiUrl, store, tenant, data);
+        // clear any auth-n errors
+        store.dispatch(setAuthError(null));
+        store.dispatch(setLoginData(data));
+
+        // if we can't parse tokenExpiration data, e.g. because data comes from `/bl-users/_self`
+        // which doesn't provide it, then set an invalid AT value and a near-future (+10 minutes) RT value.
+        // the invalid AT will prompt an RTR cycle which will either give us new AT/RT values
+        // (if the RT was valid) or throw an RTR_ERROR (if the RT was not valid).
+        const tokenExpiration = {
+          atExpires: -1,
+          rtExpires: Date.now() + (10 * 60 * 1000),
+        };
+        // provide token-expiration info to the service worker
+        dispatchTokenExpiration(tokenExpiration);
+
+        store.dispatch(setSessionData({
+          isAuthenticated: true,
+          user,
+          perms,
+          tenant: sessionTenant,
+          tokenExpiration,
+        }));
+        return loadResources(okapiUrl, store, sessionTenant, user.id);
+
+        /*
+
+        store.dispatch(setCurrentPerms(data.permissions.permissions));
+
+        return localforage.setItem('loginResponse', data)
+          .then(() => localforage.setItem(SESSION_NAME, okapiSess))
+          .then(() => {
+            store.dispatch(setIsAuthenticated(true));
+            store.dispatch(setSessionData(okapiSess));
+            return loadResources(okapiUrl, store, sessionTenant, user.id);
+          });
+          */
       });
     } else {
-      console.error('>>> validateUser !resp.ok');
       return logout(okapiUrl, store);
     }
   }).catch((error) => {
-    console.error('validateUser', error);
+    console.error(error);
     store.dispatch(setServerDown());
     return error;
   });

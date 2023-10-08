@@ -40,7 +40,7 @@ class Root extends Component {
   constructor(...args) {
     super(...args);
 
-    const { modules, history, okapi } = this.props;
+    const { modules, history, okapi, store } = this.props;
 
     this.reducers = { ...initialReducers };
     this.epics = {};
@@ -66,7 +66,7 @@ class Root extends Component {
     this.reactQueryClient = createReactQueryClient();
 
     // document-level event handlers
-    addDocumentListeners();
+    addDocumentListeners(okapi, store);
   }
 
   getChildContext() {

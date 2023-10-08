@@ -11,10 +11,10 @@
  * reload.
  *
  * @param {string} okapiUrl
- * @param {object} store any object that supports the localforage API
+ * @param {function} callback function to call when receiving any message
  * @return void
  */
-export const registerServiceWorker = async (okapiUrl, store) => {
+export const registerServiceWorker = async (okapiUrl, logger) => {
   if ('serviceWorker' in navigator) {
     try {
       let sw = null;
@@ -28,20 +28,23 @@ export const registerServiceWorker = async (okapiUrl, store) => {
         });
       if (registration.installing) {
         sw = registration.installing;
-        console.log('=> Service worker installing');
+        logger.log('rtr', 'Service worker installing');
       } else if (registration.waiting) {
         sw = registration.waiting;
-        console.log('=> Service worker installed');
+        logger.log('rtr', 'Service worker installed');
       } else if (registration.active) {
         sw = registration.active;
-        console.log('=> Service worker active');
+        logger.log('rtr', 'Service worker active');
       }
 
       //
       // send SW an OKAPI_URL message
       //
       if (sw) {
-        sw.postMessage({ type: 'OKAPI_URL', value: okapiUrl });
+        logger.log('rtr', '<= sending OKAPI_URL', sw);
+        sw.postMessage({ source: '@folio/stripes-core', type: 'OKAPI_URL', value: okapiUrl });
+        logger.log('rtr', '<= sending LOGGER');
+        sw.postMessage({ source: '@folio/stripes-core', type: 'LOGGER', value: logger });
       } else {
         console.error('SW NOT AVAILABLE');
       }
@@ -54,22 +57,22 @@ export const registerServiceWorker = async (okapiUrl, store) => {
     // the only message we expect to receive tells us that RTR happened
     // so we need to update our expiration timestamps
     //
-    navigator.serviceWorker.addEventListener('message', (e) => {
-      console.info('<= reading', e.data);
-      if (e.data.type === 'TOKEN_EXPIRATION') {
-        // @@ store.setItem is async but we don't care about the response
-        store.setItem('tokenExpiration', e.data.tokenExpiration);
-        console.log(`atExpires ${e.data.tokenExpiration.atExpires}`);
-        console.log(`rtExpires ${e.data.tokenExpiration.rtExpires}`);
-      }
-    });
+    // navigator.serviceWorker.addEventListener('message', (e) => {
+    //   console.info('<= reading', e.data);
+    //   if (e.data.type === 'TOKEN_EXPIRATION') {
+    //     // @@ store.setItem is async but we don't care about the response
+    //     store.setItem('tokenExpiration', e.data.tokenExpiration);
+    //     console.log(`atExpires ${e.data.tokenExpiration.atExpires}`);
+    //     console.log(`rtExpires ${e.data.tokenExpiration.rtExpires}`);
+    //   }
+    // });
 
     // talk to me, goose
     if (navigator.serviceWorker.controller) {
-      console.log(`This page is currently controlled by: ${navigator.serviceWorker.controller}`);
+      logger.log('rtr', 'This page is currently controlled by: ', navigator.serviceWorker.controller);
     }
     navigator.serviceWorker.oncontrollerchange = () => {
-      console.log(`This page is now controlled by ${navigator.serviceWorker.controller}`);
+      logger.log('rtr', 'This page is now controlled by: ', navigator.serviceWorker.controller);
     };
   }
 };
@@ -86,5 +89,3 @@ export const unregisterServiceWorker = async () => {
       });
   }
 };
-
-registerServiceWorker();

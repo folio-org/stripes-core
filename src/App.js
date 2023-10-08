@@ -11,6 +11,7 @@ import gatherActions from './gatherActions';
 import { destroyStore } from './mainActions';
 
 import Root from './components/Root';
+import { registerServiceWorker } from './serviceWorkerRegistration';
 
 export default class StripesCore extends Component {
   static propTypes = {
@@ -30,6 +31,8 @@ export default class StripesCore extends Component {
     this.epics = configureEpics(connectErrorEpic);
     this.store = configureStore(initialState, this.logger, this.epics);
     this.actionNames = gatherActions();
+
+    registerServiceWorker(okapiConfig.url, this.logger);
   }
 
   componentWillUnmount() {
