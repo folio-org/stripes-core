@@ -21,6 +21,7 @@ import {
   setOkapiReady,
   setServerDown,
   setSessionData,
+  setTokenExpiration,
   setLoginData,
   updateCurrentUser,
 } from './okapiActions';
@@ -465,47 +466,29 @@ export function createOkapiSession(okapiUrl, store, tenant, data) {
 }
 
 /**
- * addDocumentListeners
- * Attach document-level event handlers for keydown and mousedown in order to
- * track when the session is idle
+ * addServiceWorkerListeners
+ * Listen for messages posted by service workers
+ * * TOKEN_EXPIRATION: update the redux store
+ * * RTR_ERROR: logout
  *
  * @param {object} okapiConfig okapi attribute from stripes-config
  * @param {object} store redux-store
  */
-export function addDocumentListeners(okapiConfig, store) {
-  // on any event, set the last-access timestamp and restart the inactivity timer.
-  // if the access token has expired, renew it.
-  // ['keydown', 'mousedown'].forEach((event) => {
-  //   document.addEventListener(event, () => {
-  //     localforage.getItem(SESSION_NAME)
-  //       .then(session => {
-  //         if (session?.isAuthenticated && idleTimer) {
-  //           idleTimer.signal();
-  //           // @@ remove this; it's just for debugging
-  //           lastActive = Date.now();
-  //         }
-  //       });
-  //   });
-  // });
-
+export function addServiceWorkerListeners(okapiConfig, store) {
   if ('serviceWorker' in navigator) {
-    //
-    // listen for messages
-    // the only message we expect to receive tells us that RTR happened
-    // so we need to update our expiration timestamps
     navigator.serviceWorker.addEventListener('message', (e) => {
       if (e.data.source === '@folio/stripes-core') {
-        console.info('-- (rtr) <= reading', e.data);
+        // RTR happened: update token expiration timestamps in our store
         if (e.data.type === 'TOKEN_EXPIRATION') {
-          // @@ store.setItem is async but we don't care about the response
-          // localforage.setItem('tokenExpiration', e.data.tokenExpiration);
-          console.log(`-- (rtr) atExpires ${e.data.tokenExpiration.atExpires}`);
-          console.log(`-- (rtr) rtExpires ${e.data.tokenExpiration.rtExpires}`);
+          store.dispatch(setTokenExpiration({
+            atExpires: new Date(e.data.tokenExpiration.atExpires).toISOString(),
+            rtExpires: new Date(e.data.tokenExpiration.rtExpires).toISOString(),
+          }));
         }
 
+        // RTR failed: we have no cookies; logout
         if (e.data.type === 'RTR_ERROR') {
-          console.error('-- (rtr) rtr error; logging out', e.data.error);
-
+          console.error('-- (rtr) rtr error; logging out', e.data.error); // eslint-disable-line no-console
           store.dispatch(setIsAuthenticated(false));
           store.dispatch(clearCurrentUser());
           store.dispatch(resetStore());
@@ -643,7 +626,6 @@ export function processOkapiSession(okapiUrl, store, tenant, resp) {
  */
 export function validateUser(okapiUrl, store, tenant, session) {
   const { user, perms, tenant: sessionTenant = tenant } = session;
-  console.log('validateUser; existing session');
   return fetch(`${okapiUrl}/bl-users/_self`, {
     headers: getHeaders(sessionTenant),
     credentials: 'include',
@@ -655,10 +637,11 @@ export function validateUser(okapiUrl, store, tenant, session) {
         store.dispatch(setAuthError(null));
         store.dispatch(setLoginData(data));
 
-        // if we can't parse tokenExpiration data, e.g. because data comes from `/bl-users/_self`
-        // which doesn't provide it, then set an invalid AT value and a near-future (+10 minutes) RT value.
-        // the invalid AT will prompt an RTR cycle which will either give us new AT/RT values
-        // (if the RT was valid) or throw an RTR_ERROR (if the RT was not valid).
+        // If the request succeeded, we know the AT must be valid, but the
+        // response body from this endpoint doesn't include token-expiration
+        // data. So ... we set a near-future RT and an already-expired AT.
+        // On the next request, the expired AT will prompt an RTR cycle and
+        // we'll get real expiration values then.
         const tokenExpiration = {
           atExpires: -1,
           rtExpires: Date.now() + (10 * 60 * 1000),
@@ -674,19 +657,6 @@ export function validateUser(okapiUrl, store, tenant, session) {
           tokenExpiration,
         }));
         return loadResources(okapiUrl, store, sessionTenant, user.id);
-
-        /*
-
-        store.dispatch(setCurrentPerms(data.permissions.permissions));
-
-        return localforage.setItem('loginResponse', data)
-          .then(() => localforage.setItem(SESSION_NAME, okapiSess))
-          .then(() => {
-            store.dispatch(setIsAuthenticated(true));
-            store.dispatch(setSessionData(okapiSess));
-            return loadResources(okapiUrl, store, sessionTenant, user.id);
-          });
-          */
       });
     } else {
       return logout(okapiUrl, store);

@@ -21,7 +21,7 @@ import enhanceReducer from '../../enhanceReducer';
 import createApolloClient from '../../createApolloClient';
 import createReactQueryClient from '../../createReactQueryClient';
 import { setSinglePlugin, setBindings, setIsAuthenticated, setTimezone, setCurrency, updateCurrentUser } from '../../okapiActions';
-import { addDocumentListeners, loadTranslations, checkOkapiSession } from '../../loginServices';
+import { addServiceWorkerListeners, loadTranslations, checkOkapiSession } from '../../loginServices';
 import { getQueryResourceKey, getCurrentModule } from '../../locationService';
 import Stripes from '../../Stripes';
 import RootWithIntl from '../../RootWithIntl';
@@ -65,8 +65,8 @@ class Root extends Component {
     this.apolloClient = createApolloClient(okapi);
     this.reactQueryClient = createReactQueryClient();
 
-    // document-level event handlers
-    addDocumentListeners(okapi, store);
+    // service-worker message listeners
+    addServiceWorkerListeners(okapi, store);
   }
 
   getChildContext() {

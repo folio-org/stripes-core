@@ -122,6 +122,13 @@ function updateCurrentUser(data) {
   };
 }
 
+function setTokenExpiration(tokenExpiration) {
+  return {
+    type: 'SET_TOKEN_EXPIRATION',
+    tokenExpiration,
+  };
+}
+
 export {
   checkSSO,
   clearCurrentUser,
@@ -139,6 +146,7 @@ export {
   setSessionData,
   setSinglePlugin,
   setTimezone,
+  setTokenExpiration,
   setTranslations,
   updateCurrentUser,
 };
