@@ -18,7 +18,6 @@ export const registerServiceWorker = async (okapiConfig, logger) => {
   if ('serviceWorker' in navigator) {
     try {
       let sw = null;
-
       //
       // register
       //
@@ -38,34 +37,23 @@ export const registerServiceWorker = async (okapiConfig, logger) => {
       }
 
       //
-      // send SW an OKAPI_URL message
+      // send SW okapi config details and a logger.
+      // the corresponding listener is configured in App.js in order for it
+      // to recieve some additional config values (i.e. the redux store)
+      // which are necessary for processing failures (so we can clear out
+      // said store on logout).
       //
       if (sw) {
-        logger.log('rtr', '<= sending OKAPI_URL', sw);
+        logger.log('rtr', 'sending OKAPI_CONFIG');
         sw.postMessage({ source: '@folio/stripes-core', type: 'OKAPI_CONFIG', value: okapiConfig });
-        logger.log('rtr', '<= sending LOGGER');
+        logger.log('rtr', 'sending LOGGER', logger);
         sw.postMessage({ source: '@folio/stripes-core', type: 'LOGGER', value: logger });
       } else {
-        console.error('SW NOT AVAILABLE');
+        console.error('(rtr) service worker not available');
       }
     } catch (error) {
-      console.error(`=> Registration failed with ${error}`);
+      console.error(`(rtr) service worker registration failed with ${error}`);
     }
-
-    //
-    // listen for messages
-    // the only message we expect to receive tells us that RTR happened
-    // so we need to update our expiration timestamps
-    //
-    // navigator.serviceWorker.addEventListener('message', (e) => {
-    //   console.info('<= reading', e.data);
-    //   if (e.data.type === 'TOKEN_EXPIRATION') {
-    //     // @@ store.setItem is async but we don't care about the response
-    //     store.setItem('tokenExpiration', e.data.tokenExpiration);
-    //     console.log(`atExpires ${e.data.tokenExpiration.atExpires}`);
-    //     console.log(`rtExpires ${e.data.tokenExpiration.rtExpires}`);
-    //   }
-    // });
 
     // talk to me, goose
     if (navigator.serviceWorker.controller) {

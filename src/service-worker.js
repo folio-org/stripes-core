@@ -1,6 +1,48 @@
 /* eslint no-console: 0 */
-
 /* eslint no-restricted-globals: ["off", "self"] */
+
+/**
+ * TLDR: perform refresh-token-rotation for Okapi-bound requests.
+ *
+ * The gory details:
+ * This service worker acts as a proxy betwen the browser and the network,
+ * intercepting all fetch requests. Those not bound for Okapi are simply
+ * passed along; the rest are intercepted in an attempt to make sure the
+ * accompanying access-token (provided in an http-only cookie) is valid.
+ *
+ * The install and activate listeners are configured to cause this worker
+ * to activate immediately and begin controlling all clients.
+ *
+ * The message listener receives config values and changes, such as
+ * setting the okapi URL and tenant, as well as resetting the timeouts
+ * for the AT and RT, which can be used to force RTR. Only messages with
+ * a data.source attribute === @folio/stripes-core are read. Likewise,
+ * messages sent via client.postMessage() use the same data.source attribute.
+ *
+ * The fetch listener and the function it delegates to, passThrough, is
+ * where things get interesting. The basic workflow is to check whether
+ * a request is bound for Okapi an intercept it in order to perform RTR
+ * if necessary, or to let the request pass through.
+ *
+ * Although JS cannot read the _actual_ timeouts for the AT and RT,
+ * those timeouts are also returned in the request-body of the login
+ * and refresh endpoints, and those are the values used here to
+ * determine whether the AT and RT are expected to be valid. If a request's
+ * AT appears valid, or if the request is destined for an endpoint that
+ * does not require authorization, the request is passed through. If the
+ * AT has expired, an RTR request executes first and then the original
+ * request executes after the RTR promise has resolved.
+ *
+ * When RTR succeeds, a new message with type === TOKEN_EXPIRATION is
+ * sent to clients with timeouts from the rotation request in the attribute
+ * 'tokenExpiration'. The response is a resolved Promise.
+ *
+ * When RTR fails, a new message with type === RTR_ERROR is sent to clients
+ * with additional details in the attribute 'error'. The response is a
+ * rejected Promise.
+ *
+ */
+
 
 /** { atExpires, rtExpires } both are JS millisecond timestamps */
 let tokenExpiration = null;
@@ -11,7 +53,7 @@ let okapiUrl = null;
 let okapiTenant = null;
 
 /** categorical logger object */
-let logger = null;
+// let logger = null;
 
 /** lock to indicate whether a rotation request is already in progress */
 let isRotating = false;
@@ -19,14 +61,6 @@ let isRotating = false;
 const IS_ROTATING_RETRIES = 100;
 /** how long to wait before rechecking the lock, in milliseconds (100 * 100) === 10 seconds */
 const IS_ROTATING_INTERVAL = 100;
-
-/** log all event */
-const log = (message, ...rest) => {
-  console.log(`-- (rtr-sw) -- (rtr-sw) ${message}`, rest);
-  // if (logger) {
-  //   logger.log('-- (rtr-sw) rtr-sw', message);
-  // }
-};
 
 /**
  * isValidAT
@@ -163,7 +197,10 @@ const isPermissibleRequest = (req) => {
   const permissible = [
     '/authn/refresh',
     '/bl-users/_self',
+    '/bl-users/forgotten/password',
+    '/bl-users/forgotten/username',
     '/bl-users/login-with-expiry',
+    '/bl-users/password-reset',
     '/saml/check',
   ];
 
@@ -202,7 +239,8 @@ const isOkapiRequest = (req) => {
 
 /**
  * passThroughWithRT
- * Perform RTR then return the original fetch.
+ * Perform RTR then return the original fetch. on error, post an RTR_ERROR
+ * message to clients and return an empty response in a resolving promise.
  *
  * @param {Event} event
  * @returns Promise
@@ -215,9 +253,13 @@ const passThroughWithRT = (event) => {
       return fetch(event.request, { credentials: 'include' });
     })
     .catch((rtre) => {
+      // kill me softly: send an empty response body, which allows the fetch
+      // to return without error while the clients catch up, read the RTR_ERROR
+      // and handle it, hopefully by logging out.
+      // Promise.reject() here would result in every single fetch in every
+      // single application needing to thoughtfully handle RTR_ERROR responses.
       messageToClient(event, { type: 'RTR_ERROR', error: rtre });
-      // return Promise.resolve('kill me, kill me softly');
-      return Promise.reject(new Error(rtre));
+      return Promise.resolve(new Response({}));
     });
 };
 
@@ -272,7 +314,9 @@ const passThroughLogout = (event) => {
  * passThrough
  * Inspect event.request to determine whether it's an okapi request.
  * If it is, make sure its AT is valid or perform RTR before executing it.
- * If it isn't, execute it immediately.
+ * If it isn't, execute it immediately. If RTR fails catastrophically,
+ * post an RTR_ERROR message to clients and return an empty Response in a
+ * resolving promise in order to let the top-level error-handler pick it up.
  * @param {Event} event
  * @returns Promise
  * @throws if any fetch fails
@@ -296,10 +340,13 @@ const passThrough = (event) => {
       return passThroughWithRT(event);
     }
 
-    // kill me softly, letting the top-level handler pick up the failure
+    // kill me softly: send an empty response body, which allows the fetch
+    // to return without error while the clients catch up, read the RTR_ERROR
+    // and handle it, hopefully by logging out.
+    // Promise.reject() here would result in every single fetch in every
+    // single application needing to thoughtfully handle RTR_ERROR responses.
     messageToClient(event, { type: 'RTR_ERROR', error: 'AT/RT failure' });
-    // return Promise.resolve('actually this did not resolve but we want to die softly')
-    return Promise.reject(new Error(`Invalid RT; could not fetch ${req.url}`));
+    return Promise.resolve(new Response({}));
   }
 
   // default: pass requests through to the network
@@ -330,12 +377,6 @@ self.addEventListener('activate', async (event) => {
   event.waitUntil(self.clients.claim());
 });
 
-// self.addEventListener('activate', async (event) => {
-//   console.info('=> activate', event);
-//   clients.claim();
-//   // event.waitUntil(clients.claim());
-// });
-
 /**
  * eventListener: message
  * listen for messages from @folio/stripes-core clients and dispatch them accordingly.
@@ -348,9 +389,13 @@ self.addEventListener('message', async (event) => {
       okapiTenant = event.data.value.tenant;
     }
 
-    if (event.data.type === 'LOGGER') {
-      logger = event.data.value;
-    }
+    // for reasons unclear to me, this does not work. the value comes through
+    // as a simple object rather than an instand of Logger. calling logger.log()
+    // generates an error, "TypeError: logger.log is not a function", although
+    // it's possible to call it immediately before passing it here. A mystery.
+    // if (event.data.type === 'LOGGER') {
+    //   logger = event.data.value;
+    // }
 
     if (event.data.type === 'TOKEN_EXPIRATION') {
       tokenExpiration = event.data.tokenExpiration;
@@ -363,10 +408,5 @@ self.addEventListener('message', async (event) => {
  * intercept fetches
  */
 self.addEventListener('fetch', async (event) => {
-  // const clone = event.request.clone();
-  // console.log('-- (rtr-sw) => fetch', clone.url)
-
-  // console.log('-- (rtr-sw) => fetch') // , clone.url)
   event.respondWith(passThrough(event));
 });
-

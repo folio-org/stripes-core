@@ -22,7 +22,6 @@ import {
   // setPlugins,
   // setBindings,
   // setTranslations,
-  clearOkapiToken,
   setAuthError,
   // checkSSO,
   setOkapiReady,
@@ -310,7 +309,6 @@ describe('validateUser', () => {
 
     await validateUser('url', store, 'tenant', {});
     expect(store.dispatch).toHaveBeenCalledWith(clearCurrentUser());
-    expect(store.dispatch).toHaveBeenCalledWith(clearOkapiToken());
     mockFetchCleanUp();
   });
 });

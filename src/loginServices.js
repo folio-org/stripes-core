@@ -2,7 +2,6 @@ import localforage from 'localforage';
 import { config, translations } from 'stripes-config';
 import rtlDetect from 'rtl-detect';
 import moment from 'moment';
-import createInactivityTimer from 'inactivity-timer';
 
 import { discoverServices } from './discoverServices';
 import { resetStore } from './mainActions';
@@ -385,34 +384,10 @@ export async function logout(okapiUrl, store) {
 }
 
 /**
- * startIdleTimer
- * Start a timer that should last the length of the session,
- * calling the timeout-handler if/when it expires. This function
- * should be called by event-listener that tracks activity: each
- * time the event-listener pings the existing timer will be cancelled
- * and a new one started to keep the session alive.
- *
- * @param {string} okapiUrl to pass to logout
- * @param {redux-store} store to pass to logout
- * @param {object} tokenExpiration shaped like { atExpires, rtExpires }
- *   where each is a millisecond-resolution timestamp
- */
-// let idleTimer = null;
-// let lastActive = Date.now();
-// const startIdleTimer = (okapiUrl, store, tokenExpiration) => {
-//   // const threshold = 10 * 1000;
-//   const threshold = tokenExpiration.rtExpires - Date.now();
-//   idleTimer = createInactivityTimer(threshold, () => {
-//     logger.log('rtr', `logging out; no activity since ${new Date(lastActive).toISOString()}`);
-//     logout(okapiUrl, store);
-//   });
-// };
-
-/**
- * dispatchTokenExpiration
+ * postTokenExpiration
  * send SW a TOKEN_EXPIRATION message
  */
-const dispatchTokenExpiration = (tokenExpiration) => {
+const postTokenExpiration = (tokenExpiration) => {
   navigator.serviceWorker.ready
     .then((reg) => {
       const sw = reg.active;
@@ -421,6 +396,7 @@ const dispatchTokenExpiration = (tokenExpiration) => {
         logger.log('rtr', '<= sending', message);
         sw.postMessage(message);
       } else {
+        // eslint-disable-next-line no-console
         console.warn('could not dispatch message; no active registration');
       }
     });
@@ -477,7 +453,7 @@ export function createOkapiSession(okapiUrl, store, tenant, data) {
   };
 
   // provide token-expiration info to the service worker
-  dispatchTokenExpiration(tokenExpiration);
+  postTokenExpiration(tokenExpiration);
 
   return localforage.setItem('loginResponse', data)
     .then(() => localforage.setItem(SESSION_NAME, okapiSess))
@@ -688,7 +664,7 @@ export function validateUser(okapiUrl, store, tenant, session) {
           rtExpires: Date.now() + (10 * 60 * 1000),
         };
         // provide token-expiration info to the service worker
-        dispatchTokenExpiration(tokenExpiration);
+        postTokenExpiration(tokenExpiration);
 
         store.dispatch(setSessionData({
           isAuthenticated: true,
@@ -716,7 +692,7 @@ export function validateUser(okapiUrl, store, tenant, session) {
       return logout(okapiUrl, store);
     }
   }).catch((error) => {
-    console.error(error);
+    console.error(error); // eslint-disable-line no-console
     store.dispatch(setServerDown());
     return error;
   });
