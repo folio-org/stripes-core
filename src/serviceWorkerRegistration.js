@@ -10,11 +10,11 @@
  * immediately claims control. Otherwise, no RTR would occur until after a
  * reload.
  *
- * @param {string} okapiUrl
+ * @param {object} okapi config object
  * @param {function} callback function to call when receiving any message
  * @return void
  */
-export const registerServiceWorker = async (okapiUrl, logger) => {
+export const registerServiceWorker = async (okapiConfig, logger) => {
   if ('serviceWorker' in navigator) {
     try {
       let sw = null;
@@ -42,7 +42,7 @@ export const registerServiceWorker = async (okapiUrl, logger) => {
       //
       if (sw) {
         logger.log('rtr', '<= sending OKAPI_URL', sw);
-        sw.postMessage({ source: '@folio/stripes-core', type: 'OKAPI_URL', value: okapiUrl });
+        sw.postMessage({ source: '@folio/stripes-core', type: 'OKAPI_CONFIG', value: okapiConfig });
         logger.log('rtr', '<= sending LOGGER');
         sw.postMessage({ source: '@folio/stripes-core', type: 'LOGGER', value: logger });
       } else {

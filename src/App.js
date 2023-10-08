@@ -32,7 +32,7 @@ export default class StripesCore extends Component {
     this.store = configureStore(initialState, this.logger, this.epics);
     this.actionNames = gatherActions();
 
-    registerServiceWorker(okapiConfig.url, this.logger);
+    registerServiceWorker(okapiConfig, this.logger);
   }
 
   componentWillUnmount() {

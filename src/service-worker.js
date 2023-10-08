@@ -8,6 +8,8 @@ let tokenExpiration = null;
 /** string FQDN including protocol, e.g. https://some-okapi.somewhere.org */
 let okapiUrl = null;
 
+let okapiTenant = null;
+
 /** categorical logger object */
 let logger = null;
 
@@ -109,6 +111,10 @@ const rtr = async (event) => {
 
   isRotating = true;
   return fetch(`${okapiUrl}/authn/refresh`, {
+    headers: {
+      'content-type': 'application/json',
+      'x-okapi-tenant': okapiTenant,
+    },
     method: 'POST',
     credentials: 'include',
     mode: 'cors',
@@ -332,14 +338,14 @@ self.addEventListener('activate', async (event) => {
 
 /**
  * eventListener: message
- * listen for messages from clients and dispatch them accordingly.
- * OKAPI_URL: store
+ * listen for messages from @folio/stripes-core clients and dispatch them accordingly.
  */
 self.addEventListener('message', async (event) => {
   if (event.data.source === '@folio/stripes-core') {
     console.info('-- (rtr-sw) reading', event.data);
-    if (event.data.type === 'OKAPI_URL') {
-      okapiUrl = event.data.value;
+    if (event.data.type === 'OKAPI_CONFIG') {
+      okapiUrl = event.data.value.url;
+      okapiTenant = event.data.value.tenant;
     }
 
     if (event.data.type === 'LOGGER') {
