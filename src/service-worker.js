@@ -11,6 +11,8 @@ let okapiUrl = null;
 /** categorical logger object */
 let logger = null;
 
+let isRotating = false;
+
 /** log all event */
 const log = (message, ...rest) => {
   console.log(`-- (rtr-sw) -- (rtr-sw) ${message}`, rest);
@@ -81,8 +83,26 @@ const messageToClient = async (event, message) => {
  * @returns Promise
  * @throws if RTR fails
  */
-const rtr = (event) => {
+const rtr = async (event) => {
   console.log('-- (rtr-sw) ** RTR ...');
+
+  // if several fetches trigger rtr in a short window, all but the first will
+  // fail because the RT will be stale once processed during the first request.
+  // locking rtr with isRotating prevents multiple requests from firing, and
+  //
+  if (isRotating) {
+    // try for ten seconds then give up
+    // for 1 ... 100
+    //     if ! isRotating return resolve
+    // return reject
+    while (isRotating) {
+      // console.log('-- (rtr-sw) **    is rotating; waiting 100');
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+    return Promise.resolve();
+  }
+
+  isRotating = true;
   return fetch(`${okapiUrl}/authn/refresh`, {
     method: 'POST',
     credentials: 'include',
@@ -96,6 +116,8 @@ const rtr = (event) => {
       // rtr failure. return an error message if we got one.
       return res.json()
         .then(json => {
+          isRotating = false;
+
           if (json.errors[0]) {
             throw new Error(`${json.errors[0].message} (${json.errors[0].code})`);
           } else {
@@ -105,6 +127,7 @@ const rtr = (event) => {
     })
     .then(json => {
       console.log('-- (rtr-sw) **     success!');
+      isRotating = false;
       tokenExpiration = {
         atExpires: new Date(json.accessTokenExpiration).getTime(),
         rtExpires: new Date(json.refreshTokenExpiration).getTime(),
@@ -201,7 +224,9 @@ const passThrough = async (event) => {
     if (isValidRT()) {
       console.log('-- (rtr-sw) =>      valid RT');
       return rtr(event)
-        .then(fetch(event.request, { credentials: 'include' }))
+        .then(() => {
+          return fetch(event.request, { credentials: 'include' });
+        })
         .catch(error => {
           messageToClient(event, { type: 'RTR_ERROR', error });
           return Promise.reject(new Error(error));
