@@ -62,8 +62,8 @@
     "react-redux": "^8.0.5",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
-    "stylelint": "^8.2.0",
-    "stylelint-config-standard": "^17.0.0",
+    "stylelint": "^15.10.3",
+    "stylelint-config-standard": "^34.0.0",
     "stylelint-junit-formatter": "^0.2.1"
   },
   "dependencies": {
