@@ -22,6 +22,7 @@
 * Include `yarn.lock`. Refs STCOR-679.
 * *BREAKING* bump `react-intl` to `v6.4.4`. Refs STCOR-744.
 * Bump `stylelint` to `v15` and `stylelint-config-standard` to `v34`. Refs STCOR-745.
+* Read ky timeout from stripes-config value. Refs STCOR-594.
 * *BREAKING* use cookies and RTR instead of directly handling the JWT. Refs STCOR-671, FOLIO-3627.
 
 ## [9.0.0](https://github.com/folio-org/stripes-core/tree/v9.0.0) (2023-01-30)
