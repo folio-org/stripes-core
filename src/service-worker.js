@@ -65,21 +65,23 @@ const IS_ROTATING_INTERVAL = 100;
 /**
  * isValidAT
  * return true if tokenExpiration.atExpires is in the future
+ * @param {object} te tokenExpiration shaped like { atExpires, rtExpires }
  * @returns boolean
  */
-const isValidAT = () => {
-  console.log(`-- (rtr-sw) => at expires ${new Date(tokenExpiration?.atExpires || null).toISOString()}`);
-  return !!(tokenExpiration?.atExpires > Date.now());
+export const isValidAT = (te) => {
+  console.log(`-- (rtr-sw) => at expires ${new Date(te?.atExpires || null).toISOString()}`);
+  return !!(te?.atExpires > Date.now());
 };
 
 /**
  * isValidRT
  * return true if tokenExpiration.rtExpires is in the future
+ * @param {object} te tokenExpiration shaped like { atExpires, rtExpires }
  * @returns boolean
  */
-const isValidRT = () => {
-  console.log(`-- (rtr-sw) => rt expires ${new Date(tokenExpiration?.rtExpires || null).toISOString()}`);
-  return !!(tokenExpiration?.rtExpires > Date.now());
+export const isValidRT = (te) => {
+  console.log(`-- (rtr-sw) => rt expires ${new Date(te?.rtExpires || null).toISOString()}`);
+  return !!(te?.rtExpires > Date.now());
 };
 
 /**
@@ -89,7 +91,7 @@ const isValidRT = () => {
  * @param {*} message
  * @returns void
  */
-const messageToClient = async (event, message) => {
+export const messageToClient = async (event, message) => {
   // Exit early if we don't have access to the client.
   // Eg, if it's cross-origin.
   if (!event.clientId) {
@@ -121,7 +123,7 @@ const messageToClient = async (event, message) => {
  * @returns Promise
  * @throws if RTR fails
  */
-const rtr = async (event) => {
+export const rtr = async (event) => {
   console.log('-- (rtr-sw) ** RTR ...');
 
   // if several fetches trigger rtr in a short window, all but the first will
@@ -163,7 +165,7 @@ const rtr = async (event) => {
         .then(json => {
           isRotating = false;
 
-          if (json.errors[0]) {
+          if (Array.isArray(json.errors) && json.errors[0]) {
             throw new Error(`${json.errors[0].message} (${json.errors[0].code})`);
           } else {
             throw new Error('RTR response failure');
@@ -187,10 +189,12 @@ const rtr = async (event) => {
  * Others are only permissible if the Access Token is still valid.
  *
  * @param {Request} req clone of the original event.request object
+ * @param {object} te token expiration shaped like { atExpires, rtExpires }
+ * @param {string} oUrl Okapi URL
  * @returns boolean true if the AT is valid or the request is always permissible
  */
-const isPermissibleRequest = (req) => {
-  if (isValidAT()) {
+export const isPermissibleRequest = (req, te, oUrl) => {
+  if (isValidAT(te)) {
     return true;
   }
 
@@ -205,7 +209,7 @@ const isPermissibleRequest = (req) => {
   ];
 
   // console.log(`-- (rtr-sw) AT invalid for ${req.url}`);
-  return !!permissible.find(i => req.url.startsWith(`${okapiUrl}${i}`));
+  return !!permissible.find(i => req.url.startsWith(`${oUrl}${i}`));
 };
 
 /**
@@ -214,15 +218,16 @@ const isPermissibleRequest = (req) => {
  * because they should never fail.
  *
  * @param {Request} req clone of the original event.request object
+ * @param {string} oUrl okapi URL
  * @returns boolean true if the request URL matches a logout URL
  */
-const isLogoutRequest = (req) => {
+export const isLogoutRequest = (req, oUrl) => {
   const permissible = [
     '/authn/logout',
   ];
 
   // console.log(`-- (rtr-sw) logout request ${req.url}`);
-  return !!permissible.find(i => req.url.startsWith(`${okapiUrl}${i}`));
+  return !!permissible.find(i => req.url.startsWith(`${oUrl}${i}`));
 };
 
 /**
@@ -230,11 +235,12 @@ const isLogoutRequest = (req) => {
  * Return true if the request origin matches our okapi URL, i.e. if this is a
  * request that needs to include a valid AT.
  * @param {Request} req
+ * @param {string} oUrl okapi URL
  * @returns boolean
  */
-const isOkapiRequest = (req) => {
+export const isOkapiRequest = (req, oUrl) => {
   // console.log(`-- (rtr-sw) isOkapiRequest: ${new URL(req.url).origin} === ${okapiUrl}`);
-  return new URL(req.url).origin === okapiUrl;
+  return new URL(req.url).origin === oUrl;
 };
 
 /**
@@ -301,12 +307,13 @@ const passThroughWithAT = (event) => {
  * @param {Event} event
  * @returns Promise
  */
-const passThroughLogout = (event) => {
+export const passThroughLogout = (event) => {
   console.log('-- (rtr-sw)    (logout request)');
   return fetch(event.request, { credentials: 'include' })
     .catch(e => {
+      // kill me softly: return an empty response to allow graceful failure
       console.error('-- (rtr-sw) logout failure', e); // eslint-disable-line no-console
-      return Promise.resolve();
+      return Promise.resolve(new Response({}));
     });
 };
 
@@ -318,24 +325,26 @@ const passThroughLogout = (event) => {
  * post an RTR_ERROR message to clients and return an empty Response in a
  * resolving promise in order to let the top-level error-handler pick it up.
  * @param {Event} event
+ * @param {object} te tokenExpiration shaped like { atExpires, rtExpires }
+ * @param {string} oUrl okapiUrl
  * @returns Promise
  * @throws if any fetch fails
  */
-const passThrough = (event) => {
+export const passThrough = (event, te, oUrl) => {
   const req = event.request.clone();
 
   // okapi requests are subject to RTR
-  if (isOkapiRequest(req)) {
+  if (isOkapiRequest(req, oUrl)) {
     console.log('-- (rtr-sw) => will fetch', req.url);
-    if (isLogoutRequest(req)) {
+    if (isLogoutRequest(req, oUrl)) {
       return passThroughLogout(event);
     }
 
-    if (isPermissibleRequest(req)) {
+    if (isPermissibleRequest(req, te, oUrl)) {
       return passThroughWithAT(event);
     }
 
-    if (isValidRT()) {
+    if (isValidRT(te)) {
       console.log('-- (rtr-sw) =>      valid RT');
       return passThroughWithRT(event);
     }
@@ -408,5 +417,5 @@ self.addEventListener('message', async (event) => {
  * intercept fetches
  */
 self.addEventListener('fetch', async (event) => {
-  event.respondWith(passThrough(event));
+  event.respondWith(passThrough(event, tokenExpiration, okapiUrl));
 });
