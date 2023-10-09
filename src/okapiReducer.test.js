@@ -24,7 +24,6 @@ describe('okapiReducer', () => {
     const initialState = {
       perms: [],
       user: {},
-      token: 'qwerty',
       tenant: 'central',
     };
     const session = {
@@ -35,7 +34,6 @@ describe('okapiReducer', () => {
           username: 'admin',
         }
       },
-      token: 'ytrewq',
       tenant: 'institutional',
     };
     const o = okapiReducer(initialState, { type: 'SET_SESSION_DATA', session });

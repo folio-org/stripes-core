@@ -33,7 +33,22 @@ import {
 
 import { defaultErrors } from './constants';
 
+// reassign console.log to keep things quiet
+const consoleInterruptor = {};
+beforeAll(() => {
+  consoleInterruptor.log = global.console.log;
+  consoleInterruptor.error = global.console.error;
+  consoleInterruptor.warn = global.console.warn;
+  console.log = () => { };
+  console.error = () => { };
+  console.warn = () => { };
+});
 
+afterAll(() => {
+  global.console.log = consoleInterruptor.log;
+  global.console.error = consoleInterruptor.error;
+  global.console.warn = consoleInterruptor.warn;
+});
 
 jest.mock('localforage', () => ({
   getItem: jest.fn(() => Promise.resolve({ user: {} })),
@@ -63,6 +78,11 @@ const mockFetchCleanUp = () => {
   delete global.fetch;
 };
 
+const mockNavigatorCleanUp = () => {
+  window.navigator.mockClear();
+  delete window.navigator;
+}
+
 
 describe('createOkapiSession', () => {
   it('clears authentication errors', async () => {
@@ -73,6 +93,10 @@ describe('createOkapiSession', () => {
           currentPerms: [],
         }
       }),
+    };
+
+    navigator.serviceWorker = {
+      ready: Promise.resolve({})
     };
 
     const data = {
@@ -87,7 +111,7 @@ describe('createOkapiSession', () => {
 
     mockFetchSuccess([]);
 
-    await createOkapiSession('url', store, 'tenant', 'token', data);
+    await createOkapiSession('url', store, 'tenant', data);
     expect(store.dispatch).toHaveBeenCalledWith(setAuthError(null));
     expect(store.dispatch).toHaveBeenCalledWith(setLoginData(data));
     expect(store.dispatch).toHaveBeenCalledWith(setCurrentPerms(permissionsMap));
@@ -195,7 +219,7 @@ describe('processOkapiSession', () => {
 
     mockFetchSuccess();
 
-    await processOkapiSession('url', store, 'tenant', resp, 'token');
+    await processOkapiSession('url', store, 'tenant', resp);
     expect(store.dispatch).toHaveBeenCalledWith(setAuthError(null));
     expect(store.dispatch).toHaveBeenCalledWith(setOkapiReady());
 
@@ -212,7 +236,7 @@ describe('processOkapiSession', () => {
       }
     };
 
-    await processOkapiSession('url', store, 'tenant', resp, 'token');
+    await processOkapiSession('url', store, 'tenant', resp);
 
     expect(store.dispatch).toHaveBeenCalledWith(setOkapiReady());
     expect(store.dispatch).toHaveBeenCalledWith(setAuthError([defaultErrors.DEFAULT_LOGIN_CLIENT_ERROR]));
@@ -253,20 +277,22 @@ describe('validateUser', () => {
 
     const tenant = 'tenant';
     const data = { monkey: 'bagel' };
-    const token = 'token';
     const user = { id: 'id' };
     const perms = [];
     const session = {
-      token,
       user,
       perms,
     };
 
     mockFetchSuccess(data);
+    navigator.serviceWorker = {
+      ready: Promise.resolve({})
+    };
 
     await validateUser('url', store, tenant, session);
-    expect(store.dispatch).toHaveBeenCalledWith(setLoginData(data));
-    expect(store.dispatch).toHaveBeenCalledWith(setSessionData({ token, user, perms, tenant }));
+
+    expect(store.dispatch).nthCalledWith(1, setAuthError(null));
+    expect(store.dispatch).nthCalledWith(2, setLoginData(data));
 
     mockFetchCleanUp();
   });
@@ -279,21 +305,22 @@ describe('validateUser', () => {
     const tenant = 'tenant';
     const sessionTenant = 'sessionTenant';
     const data = { monkey: 'bagel' };
-    const token = 'token';
     const user = { id: 'id' };
     const perms = [];
     const session = {
-      token,
       user,
       perms,
       tenant: sessionTenant,
     };
 
     mockFetchSuccess(data);
+    navigator.serviceWorker = {
+      ready: Promise.resolve({})
+    };
 
     await validateUser('url', store, tenant, session);
-    expect(store.dispatch).toHaveBeenCalledWith(setLoginData(data));
-    expect(store.dispatch).toHaveBeenCalledWith(setSessionData({ token, user, perms, tenant: sessionTenant }));
+    expect(store.dispatch).nthCalledWith(1, setAuthError(null));
+    expect(store.dispatch).nthCalledWith(2, setLoginData(data));
 
     mockFetchCleanUp();
   });

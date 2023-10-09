@@ -10,9 +10,6 @@ import {
   rtr,
 } from './service-worker';
 
-
-global.fetch = jest.fn()
-
 // reassign console.log to keep things quiet
 const consoleInterruptor = {};
 beforeAll(() => {

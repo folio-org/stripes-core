@@ -646,7 +646,9 @@ export function validateUser(okapiUrl, store, tenant, session) {
           atExpires: -1,
           rtExpires: Date.now() + (10 * 60 * 1000),
         };
-        // provide token-expiration info to the service worker
+        // provide token-expiration info to the service-worker
+        // it returns a promise, but we don't await; the service-worker
+        // can operate asynchronously and that's just fine.
         postTokenExpiration(tokenExpiration);
 
         store.dispatch(setSessionData({
