@@ -1,25 +1,6 @@
 # Change history for stripes-core
 
-## [10.0.4](https://github.com/folio-org/stripes-core/tree/v10.0.4) (2023-11-13)
-[Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.0.3...v10.0.4)
-
-* Provide empty `service-worker.js`. Refs STCOR-671.
-
-## [10.0.3](https://github.com/folio-org/stripes-core/tree/v10.0.3) (2023-11-10)
-[Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.0.2...v10.0.3)
-
-* Revert "Use cookies and RTR" until further notice. Refs FOLIO-3627.
-* Ensure `<AppIcon>` is not cut off when app name is long. Refs STCOR-752.
-
-## [10.0.2](https://github.com/folio-org/stripes-core/tree/v10.0.2) (2023-11-06)
-[Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.0.1...v10.0.2)
-
-* Use cookies and RTR instead of directly handling the JWT. Refs STCOR-671, STCOR-754, STCOR-756, FOLIO-3627.
-
-## [10.0.1](https://github.com/folio-org/stripes-core/tree/v10.0.1) (2023-10-25)
-[Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.0.0...v10.0.1)
-
-* Export `validateUser`. Refs STCOR-749.
+## 10.1.0 IN PROGRESS
 
 ## [10.0.0](https://github.com/folio-org/stripes-core/tree/v10.0.0) (2023-10-11)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v9.0.0...v10.0.0)
