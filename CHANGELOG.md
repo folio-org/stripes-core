@@ -2,6 +2,8 @@
 
 ## 10.1.0 IN PROGRESS
 
+* Provide optional tenant argument to `useOkapiKy` hook. Refs STCOR-747.
+
 ## [10.0.0](https://github.com/folio-org/stripes-core/tree/v10.0.0) (2023-10-11)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v9.0.0...v10.0.0)
 
@@ -26,7 +28,6 @@
 * *BREAKING* bump `react-intl` to `v6.4.4`. Refs STCOR-744.
 * Bump `stylelint` to `v15` and `stylelint-config-standard` to `v34`. Refs STCOR-745.
 * Read ky timeout from stripes-config value. Refs STCOR-594.
-* Provide optional tenant argument to `useOkapiKy` hook. Refs STCOR-747.
 
 ## [9.0.0](https://github.com/folio-org/stripes-core/tree/v9.0.0) (2023-01-30)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v8.3.0...v9.0.0)
