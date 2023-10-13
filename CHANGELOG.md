@@ -2,6 +2,8 @@
 
 ## 10.1.0 IN PROGRESS
 
+* Provide optional tenant argument to `useOkapiKy` hook. Refs STCOR-747.
+
 ## [10.0.0](https://github.com/folio-org/stripes-core/tree/v10.0.0) (2023-10-11)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v9.0.0...v10.0.0)
 
