@@ -1,6 +1,9 @@
 # Change history for stripes-core
 
-## 10.0.0 IN PROGRESS
+## 10.1.0 IN PROGRESS
+
+## [10.0.0](https://github.com/folio-org/stripes-core/tree/v10.0.0) (2023-10-11)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v9.0.0...v10.0.0)
 
 * Close app-context menu when its wrapper is undefined, which it will be when switching among apps. Fixes STCOR-680.
 * Move `miragejs` to dev-deps; remove `clean` script and `rimraf`. Refs STCOR-668, STCOR-681.
