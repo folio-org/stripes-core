@@ -15,7 +15,7 @@ export default ({ tenant } = {}) => {
       ]
     },
     mode: 'cors',
-    prefix: url,
+    prefixUrl: url,
     retry: 0,
     timeout,
   });
