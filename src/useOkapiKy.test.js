@@ -76,7 +76,7 @@ describe('useOkapiKy', () => {
       }
     };
 
-    const { result } = renderHook(() => useOkapiKy('monkey'));
+    const { result } = renderHook(() => useOkapiKy({ tenant: 'monkey' }));
     result.current.hooks.beforeRequest[0](r);
 
     expect(r.headers.set).toHaveBeenCalledWith('X-Okapi-Tenant', 'monkey');
