@@ -1,5 +1,9 @@
 # Change history for stripes-core
 
+## 10.0.1 IN PROGRESS
+
+* Avoid private path when import `validateUser` function. Refs STCOR-749.
+
 ## [10.0.0](https://github.com/folio-org/stripes-core/tree/v10.0.0) (2023-10-11)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v9.0.0...v10.0.0)
 
