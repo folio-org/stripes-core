@@ -14,14 +14,14 @@
  * @param {function} callback function to call when receiving any message
  * @return void
  */
-export const registerServiceWorker = async (okapiConfig, logger) => {
+export const registerServiceWorker = async (okapiConfig, config) => {
   if ('serviceWorker' in navigator) {
     try {
       let sw = null;
       //
       // register
       //
-      const registration = await navigator.serviceWorker.register('/service-worker.js', { scope: './' })
+      const registration = await navigator.serviceWorker.register(new URL('./service-worker.js', window.location.origin), { scope: './' })
         .then(reg => {
           return reg.update();
         });
@@ -47,7 +47,7 @@ export const registerServiceWorker = async (okapiConfig, logger) => {
         logger.log('rtr', 'sending OKAPI_CONFIG');
         sw.postMessage({ source: '@folio/stripes-core', type: 'OKAPI_CONFIG', value: okapiConfig });
         logger.log('rtr', 'sending LOGGER', logger);
-        sw.postMessage({ source: '@folio/stripes-core', type: 'LOGGER', value: logger });
+        sw.postMessage({ source: '@folio/stripes-core', type: 'LOGGER', value: { categories: config.logCategories } });
       } else {
         console.error('(rtr) service worker not available');
       }

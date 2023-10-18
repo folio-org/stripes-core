@@ -52,8 +52,8 @@ let okapiUrl = null;
 
 let okapiTenant = null;
 
-/** categorical logger object */
-// let logger = null;
+/** whether to emit console logs */
+let shouldLog = false;
 
 /** lock to indicate whether a rotation request is already in progress */
 let isRotating = false;
@@ -69,7 +69,7 @@ const IS_ROTATING_INTERVAL = 100;
  * @returns boolean
  */
 export const isValidAT = (te) => {
-  // console.log(`-- (rtr-sw) => at expires ${new Date(te?.atExpires || null).toISOString()}`);
+  if (shouldLog) console.log(`-- (rtr-sw) => at expires ${new Date(te?.atExpires || null).toISOString()}`);
   return !!(te?.atExpires > Date.now());
 };
 
@@ -80,7 +80,7 @@ export const isValidAT = (te) => {
  * @returns boolean
  */
 export const isValidRT = (te) => {
-  // console.log(`-- (rtr-sw) => rt expires ${new Date(te?.rtExpires || null).toISOString()}`);
+  if (shouldLog) console.log(`-- (rtr-sw) => rt expires ${new Date(te?.rtExpires || null).toISOString()}`);
   return !!(te?.rtExpires > Date.now());
 };
 
@@ -95,7 +95,7 @@ export const messageToClient = async (event, message) => {
   // Exit early if we don't have access to the client.
   // Eg, if it's cross-origin.
   if (!event.clientId) {
-    // console.log('-- (rtr-sw) PASSTHROUGH: no clientId');
+    if (shouldLog) console.log('-- (rtr-sw) PASSTHROUGH: no clientId');
     return;
   }
 
@@ -104,12 +104,12 @@ export const messageToClient = async (event, message) => {
   // Exit early if we don't get the client.
   // Eg, if it closed.
   if (!client) {
-    // console.log('-- (rtr-sw) PASSTHROUGH: no client');
+    if (shouldLog) console.log('-- (rtr-sw) PASSTHROUGH: no client');
     return;
   }
 
   // Send a message to the client.
-  // console.log('-- (rtr-sw) => sending', message);
+  if (shouldLog) console.log('-- (rtr-sw) => sending', message);
   client.postMessage({ ...message, source: '@folio/stripes-core' });
 };
 
@@ -124,7 +124,7 @@ export const messageToClient = async (event, message) => {
  * @throws if RTR fails
  */
 export const rtr = async (event) => {
-  // console.log('-- (rtr-sw) ** RTR ...');
+  if (shouldLog) console.log('-- (rtr-sw) ** RTR ...');
 
   // if several fetches trigger rtr in a short window, all but the first will
   // fail because the RT will be stale after the first request rotates it.
@@ -135,7 +135,7 @@ export const rtr = async (event) => {
   // IS_ROTATING_RETRIES * IS_ROTATING_INTERVAL milliseconds and return failure.
   if (isRotating) {
     for (let i = 0; i < IS_ROTATING_RETRIES; i++) {
-      // console.log(`-- (rtr-sw) **    is rotating; waiting ${IS_ROTATING_INTERVAL}ms`);
+      if (shouldLog) console.log(`-- (rtr-sw) **    is rotating; waiting ${IS_ROTATING_INTERVAL}ms`);
       await new Promise(resolve => setTimeout(resolve, IS_ROTATING_INTERVAL));
       if (!isRotating) {
         return Promise.resolve();
@@ -173,7 +173,7 @@ export const rtr = async (event) => {
         });
     })
     .then(json => {
-      // console.log('-- (rtr-sw) **     success!');
+      if (shouldLog) console.log('-- (rtr-sw) **     success!');
       isRotating = false;
       tokenExpiration = {
         atExpires: new Date(json.accessTokenExpiration).getTime(),
@@ -208,7 +208,7 @@ export const isPermissibleRequest = (req, te, oUrl) => {
     '/saml/check',
   ];
 
-  // // console.log(`-- (rtr-sw) AT invalid for ${req.url}`);
+  // console.log(`-- (rtr-sw) AT invalid for ${req.url}`);
   return !!permissible.find(i => req.url.startsWith(`${oUrl}${i}`));
 };
 
@@ -226,7 +226,7 @@ export const isLogoutRequest = (req, oUrl) => {
     '/authn/logout',
   ];
 
-  // console.log(`-- (rtr-sw) logout request ${req.url}`);
+  if (shouldLog) console.log(`-- (rtr-sw) logout request ${req.url}`);
   return !!permissible.find(i => req.url.startsWith(`${oUrl}${i}`));
 };
 
@@ -239,7 +239,7 @@ export const isLogoutRequest = (req, oUrl) => {
  * @returns boolean
  */
 export const isOkapiRequest = (req, oUrl) => {
-  // console.log(`-- (rtr-sw) isOkapiRequest: ${new URL(req.url).origin} === ${okapiUrl}`);
+  if (shouldLog) console.log(`-- (rtr-sw) isOkapiRequest: ${new URL(req.url).origin} === ${okapiUrl}`);
   return new URL(req.url).origin === oUrl;
 };
 
@@ -254,8 +254,8 @@ export const isOkapiRequest = (req, oUrl) => {
 const passThroughWithRT = (event) => {
   return rtr(event)
     .then(() => {
-      // const req = event.request.clone();
-      // console.log('-- (rtr-sw) => post-rtr-fetch', req.url);
+      const req = event.request.clone();
+      if (shouldLog) console.log('-- (rtr-sw) => post-rtr-fetch', req.url);
       return fetch(event.request, { credentials: 'include' });
     })
     .catch((rtre) => {
@@ -284,7 +284,7 @@ const passThroughWithRT = (event) => {
  * @throws if any fetch fails
  */
 const passThroughWithAT = (event) => {
-  // console.log('-- (rtr-sw)    (valid AT or authn request)');
+  if (shouldLog) console.log('-- (rtr-sw)    (valid AT or authn request)');
   return fetch(event.request, { credentials: 'include' })
     .then(response => {
       if (response.ok) {
@@ -292,7 +292,7 @@ const passThroughWithAT = (event) => {
       } else {
         // we thought the AT was valid but it wasn't, so try again.
         // if we fail this time, we're done.
-        // console.log('-- (rtr-sw)    (whoops, invalid AT; retrying)');
+        if (shouldLog) console.log('-- (rtr-sw)    (whoops, invalid AT; retrying)');
         return passThroughWithRT(event);
       }
     });
@@ -308,7 +308,7 @@ const passThroughWithAT = (event) => {
  * @returns Promise
  */
 export const passThroughLogout = (event) => {
-  // console.log('-- (rtr-sw)    (logout request)');
+  if (shouldLog) console.log('-- (rtr-sw)    (logout request)');
   return fetch(event.request, { credentials: 'include' })
     .catch(e => {
       // kill me softly: return an empty response to allow graceful failure
@@ -335,7 +335,7 @@ export const passThrough = (event, te, oUrl) => {
 
   // okapi requests are subject to RTR
   if (isOkapiRequest(req, oUrl)) {
-    // console.log('-- (rtr-sw) => will fetch', req.url);
+    if (shouldLog) console.log('-- (rtr-sw) => will fetch', req.url);
     if (isLogoutRequest(req, oUrl)) {
       return passThroughLogout(event);
     }
@@ -345,7 +345,7 @@ export const passThrough = (event, te, oUrl) => {
     }
 
     if (isValidRT(te)) {
-      // console.log('-- (rtr-sw) =>      valid RT');
+      if (shouldLog) console.log('-- (rtr-sw) =>      valid RT');
       return passThroughWithRT(event);
     }
 
@@ -371,8 +371,8 @@ export const passThrough = (event, te, oUrl) => {
  * install
  * on install, force this SW to be the active SW
  */
-self.addEventListener('install', (_event) => {
-  // console.log('-- (rtr-sw) => install', event);
+self.addEventListener('install', (event) => {
+  if (shouldLog) console.log('-- (rtr-sw) => install', event);
   return self.skipWaiting();
 });
 
@@ -382,7 +382,7 @@ self.addEventListener('install', (_event) => {
  * even those that loaded before this SW was registered.
  */
 self.addEventListener('activate', async (event) => {
-  // console.log('-- (rtr-sw) => activate', event);
+  if (shouldLog) console.log('-- (rtr-sw) => activate', event);
   event.waitUntil(self.clients.claim());
 });
 
@@ -392,19 +392,15 @@ self.addEventListener('activate', async (event) => {
  */
 self.addEventListener('message', async (event) => {
   if (event.data.source === '@folio/stripes-core') {
-    console.info('-- (rtr-sw) reading', event.data);
+    if (shouldLog) console.info('-- (rtr-sw) reading', event.data);
     if (event.data.type === 'OKAPI_CONFIG') {
       okapiUrl = event.data.value.url;
       okapiTenant = event.data.value.tenant;
     }
 
-    // for reasons unclear to me, this does not work. the value comes through
-    // as a simple object rather than an instand of Logger. calling logger.log()
-    // generates an error, "TypeError: logger.log is not a function", although
-    // it's possible to call it immediately before passing it here. A mystery.
-    // if (event.data.type === 'LOGGER') {
-    //   logger = event.data.value;
-    // }
+    if (event.data.type === 'LOGGER_CONFIG') {
+      shouldLog = !!event.data.value.categories?.split(',').some(cat => cat === 'rtr-sw');
+    }
 
     if (event.data.type === 'TOKEN_EXPIRATION') {
       tokenExpiration = event.data.tokenExpiration;
