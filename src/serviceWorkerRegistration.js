@@ -10,11 +10,12 @@
  * immediately claims control. Otherwise, no RTR would occur until after a
  * reload.
  *
- * @param {object} okapi config object
- * @param {function} callback function to call when receiving any message
+ * @param {object} okapiConfig okapi object from stripes.config.js
+ * @param {object} config config object from stripes.config.js
+ * @param {object} logger stripes logger
  * @return void
  */
-export const registerServiceWorker = async (okapiConfig, config) => {
+export const registerServiceWorker = async (okapiConfig, config, logger) => {
   if ('serviceWorker' in navigator) {
     try {
       let sw = null;

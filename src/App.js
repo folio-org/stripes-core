@@ -36,7 +36,7 @@ export default class StripesCore extends Component {
     // the service worker functions as a proxy between between the browser
     // and the network, intercepting ALL fetch requests to make sure they
     // are accompanied by a valid access-token.
-    registerServiceWorker(okapiConfig, config);
+    registerServiceWorker(okapiConfig, config, this.logger);
   }
 
   componentWillUnmount() {
