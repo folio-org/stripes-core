@@ -48,7 +48,7 @@ export const registerServiceWorker = async (okapiConfig, config, logger) => {
         logger.log('rtr', 'sending OKAPI_CONFIG');
         sw.postMessage({ source: '@folio/stripes-core', type: 'OKAPI_CONFIG', value: okapiConfig });
         logger.log('rtr', 'sending LOGGER', logger);
-        sw.postMessage({ source: '@folio/stripes-core', type: 'LOGGER', value: { categories: config.logCategories } });
+        sw.postMessage({ source: '@folio/stripes-core', type: 'LOGGER_CONFIG', value: { categories: config.logCategories } });
       } else {
         console.error('(rtr) service worker not available');
       }
