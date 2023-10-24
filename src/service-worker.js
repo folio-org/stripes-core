@@ -185,7 +185,7 @@ export const rtr = async (event) => {
 
 /**
  * isPermissibleRequest
- * Some requests are always permissible, e.g. auth-n and token-rotation.
+ * Some requests are always permissible, e.g. auth-n and forgot-password.
  * Others are only permissible if the Access Token is still valid.
  *
  * @param {Request} req clone of the original event.request object
@@ -199,8 +199,6 @@ export const isPermissibleRequest = (req, te, oUrl) => {
   }
 
   const permissible = [
-    '/authn/refresh',
-    '/bl-users/_self',
     '/bl-users/forgotten/password',
     '/bl-users/forgotten/username',
     '/bl-users/login-with-expiry',
