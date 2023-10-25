@@ -72,30 +72,21 @@
 /**
  * Sizes
  */
-.appIcon.large {
-  min-width: 48px;
-}
-
+.appIcon.large,
 .large .icon {
   height: 48px;
   min-width: 48px;
   width: 48px;
 }
 
-.appIcon.medium {
-  min-width: 24px;
-}
-
+.appIcon.medium,
 .medium .icon {
   width: 24px;
   min-width: 24px;
   height: 24px;
 }
 
-.appIcon.small {
-  min-width: 14px;
-}
-
+.appIcon.small,
 .small .icon {
   width: 14px;
   min-width: 14px;
