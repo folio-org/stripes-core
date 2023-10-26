@@ -115,68 +115,58 @@ describe('messageToClient', () => {
 });
 
 describe('isPermissibleRequest', () => {
-  it('accepts endpoints when AT is valid', () => {
-    const req = { url: 'monkey' };
-    const te = { atExpires: Date.now() + 1000, rtExpires: Date.now() + 1000 };
-    expect(isPermissibleRequest(req, te, '')).toBe(true);
-  });
-
-  describe('accepts endpoints that do not require authorization', () => {
-    it('/authn/refresh', () => {
-      const req = { url: '/authn/refresh' };
-      const te = {};
-
-      expect(isPermissibleRequest(req, te, '')).toBe(true);
-    });
-
-    it('/bl-users/_self', () => {
-      const req = { url: '/bl-users/_self' };
-      const te = {};
-
-      expect(isPermissibleRequest(req, te, '')).toBe(true);
-    });
-
-    it('/bl-users/forgotten/password', () => {
-      const req = { url: '/bl-users/forgotten/password' };
-      const te = {};
-
-      expect(isPermissibleRequest(req, te, '')).toBe(true);
-    });
-
-    it('/bl-users/forgotten/username', () => {
-      const req = { url: '/bl-users/forgotten/username' };
-      const te = {};
-
-      expect(isPermissibleRequest(req, te, '')).toBe(true);
-    });
-
-    it('/bl-users/login-with-expiry', () => {
-      const req = { url: '/bl-users/login-with-expiry' };
-      const te = {};
-
-      expect(isPermissibleRequest(req, te, '')).toBe(true);
-    });
-
-    it('/bl-users/password-reset', () => {
-      const req = { url: '/bl-users/password-reset' };
-      const te = {};
-
-      expect(isPermissibleRequest(req, te, '')).toBe(true);
-    });
-
-    it('/saml/check', () => {
-      const req = { url: '/saml/check' };
-      const te = {};
-
+  describe('when AT is valid', () => {
+    it('when AT is valid, accepts any endpoint', () => {
+      const req = { url: 'monkey' };
+      const te = { atExpires: Date.now() + 1000, rtExpires: Date.now() + 1000 };
       expect(isPermissibleRequest(req, te, '')).toBe(true);
     });
   });
 
-  it('rejects unknown endpoints', () => {
-    const req = { url: '/monkey/bagel/is/not/known/to/stripes/at/least/i/hope/not' };
-    const te = {};
+  describe('when AT is invalid or missing', () => {
+    describe('accepts known endpoints that do not require authorization', () => {
+      it('/bl-users/forgotten/password', () => {
+        const req = { url: '/bl-users/forgotten/password' };
+        const te = {};
 
-    expect(isPermissibleRequest(req, te, '')).toBe(false);
+        expect(isPermissibleRequest(req, te, '')).toBe(true);
+      });
+
+      it('/bl-users/forgotten/username', () => {
+        const req = { url: '/bl-users/forgotten/username' };
+        const te = {};
+
+        expect(isPermissibleRequest(req, te, '')).toBe(true);
+      });
+
+      it('/bl-users/login-with-expiry', () => {
+        const req = { url: '/bl-users/login-with-expiry' };
+        const te = {};
+
+        expect(isPermissibleRequest(req, te, '')).toBe(true);
+      });
+
+      it('/bl-users/password-reset', () => {
+        const req = { url: '/bl-users/password-reset' };
+        const te = {};
+
+        expect(isPermissibleRequest(req, te, '')).toBe(true);
+      });
+
+      it('/saml/check', () => {
+        const req = { url: '/saml/check' };
+        const te = {};
+
+        expect(isPermissibleRequest(req, te, '')).toBe(true);
+      });
+    });
+
+    it('rejects unknown endpoints', () => {
+      const req = { url: '/monkey/bagel/is/not/known/to/stripes/at/least/i/hope/not' };
+      const te = {};
+
+      expect(isPermissibleRequest(req, te, '')).toBe(false);
+    });
   });
 });
 
@@ -296,7 +286,8 @@ describe('passThrough', () => {
       expect(res).toEqual(response);
     });
 
-    it('requests with valid ATs succeed', async () => {
+    // request was valid, response is success; we should receive response
+    it('requests with valid ATs succeed with success response', async () => {
       const oUrl = 'https://trinity.edu';
       const req = { url: `${oUrl}/manhattan` };
       const event = {
@@ -307,6 +298,31 @@ describe('passThrough', () => {
       const tokenExpiration = { atExpires: Date.now() + 10000 };
 
       const response = { ok: true };
+      global.fetch = jest.fn(() => Promise.resolve(response));
+
+      const res = await passThrough(event, tokenExpiration, oUrl);
+      expect(res).toEqual(response);
+    });
+
+    // request was valid, response is error; we should receive response
+    it('requests with valid ATs succeed with error response', async () => {
+      const oUrl = 'https://trinity.edu';
+      const req = { url: `${oUrl}/manhattan` };
+      const event = {
+        request: {
+          clone: () => req,
+        }
+      };
+      const tokenExpiration = { atExpires: Date.now() + 10000 };
+
+      const response = {
+        ok: false,
+        status: 403,
+        headers: { 'content-type': 'text/plain' },
+        clone: () => ({
+          text: () => Promise.resolve('Access for user \'barbie\' (c0ffeeee-dead-beef-dead-coffeecoffee) requires permission: pink.is.the.new.black')
+        }),
+      };
       global.fetch = jest.fn(() => Promise.resolve(response));
 
       const res = await passThrough(event, tokenExpiration, oUrl);
@@ -328,7 +344,13 @@ describe('passThrough', () => {
 
       const response = 'los alamos';
       global.fetch = jest.fn()
-        .mockReturnValueOnce(Promise.resolve({ ok: false }))
+        .mockReturnValueOnce(Promise.resolve({
+          status: 403,
+          headers: { 'content-type': 'text/plain' },
+          clone: () => ({
+            text: () => Promise.resolve('Token missing, access requires permission:'),
+          }),
+        }))
         .mockReturnValueOnce(Promise.resolve({
           ok: true,
           json: () => Promise.resolve({
