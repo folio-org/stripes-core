@@ -285,14 +285,27 @@ const passThroughWithAT = (event) => {
   if (shouldLog) console.log('-- (rtr-sw)    (valid AT or authn request)');
   return fetch(event.request, { credentials: 'include' })
     .then(response => {
-      if (response.ok) {
-        return response;
-      } else {
-        // we thought the AT was valid but it wasn't, so try again.
-        // if we fail this time, we're done.
-        if (shouldLog) console.log('-- (rtr-sw)    (whoops, invalid AT; retrying)');
-        return passThroughWithRT(event);
+      // Handle three different situations:
+      // 1. 403: AT was expired (try RTR)
+      // 2. 403: AT was valid but corresponding permissions were insufficent (return response)
+      // 3. *: Anything else (return response)
+      if (response.status === 403 && response.headers['content-type'] === 'text/plain') {
+        return response.clone().text()
+          .then(text => {
+            // we thought the AT was valid but it wasn't, so try again.
+            // if we fail this time, we're done.
+            if (text.startsWith('Token missing')) {
+              if (shouldLog) console.log('-- (rtr-sw)    (whoops, invalid AT; retrying)');
+              return passThroughWithRT(event);
+            }
+
+            // we got a 403 but not related to RTR; just pass it along
+            return response;
+          });
       }
+
+      // any other response should just be returned as-is
+      return response;
     });
 };
 
