@@ -404,7 +404,7 @@ self.addEventListener('message', (event) => {
   // only accept events whose origin matches this window's origin,
   // i.e. if this is a same-origin event. Browsers allow cross-origin
   // message exchange, but we're only interested in the events we control.
-  if ((!event.origin) || (!event.origin === self.location.origin)) {
+  if ((!event.origin) || (event.origin !== self.location.origin)) {
     return;
   }
 
