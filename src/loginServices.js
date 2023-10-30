@@ -477,6 +477,13 @@ export function createOkapiSession(okapiUrl, store, tenant, data) {
 export function addServiceWorkerListeners(okapiConfig, store) {
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.addEventListener('message', (e) => {
+      // only accept events whose origin matches this window's origin,
+      // i.e. if this is a same-origin event. Browsers allow cross-origin
+      // message exchange, but we're only interested in the events we control.
+      if ((!e.origin) || (!e.origin === window.location.origin)) {
+        return;
+      }
+
       if (e.data.source === '@folio/stripes-core') {
         // RTR happened: update token expiration timestamps in our store
         if (e.data.type === 'TOKEN_EXPIRATION') {

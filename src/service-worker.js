@@ -402,6 +402,13 @@ self.addEventListener('activate', (event) => {
  * listen for messages from @folio/stripes-core clients and dispatch them accordingly.
  */
 self.addEventListener('message', (event) => {
+  // only accept events whose origin matches this window's origin,
+  // i.e. if this is a same-origin event. Browsers allow cross-origin
+  // message exchange, but we're only interested in the events we control.
+  if ((!event.origin) || (!event.origin === self.location.origin)) {
+    return;
+  }
+
   if (event.data.source === '@folio/stripes-core') {
     if (shouldLog) console.info('-- (rtr-sw) reading', event.data);
     if (event.data.type === 'OKAPI_CONFIG') {
