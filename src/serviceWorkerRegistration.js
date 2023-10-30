@@ -3,8 +3,8 @@
 /**
  * registerSW
  * * register SW
- * * send SW the Okapi URL.
- * * listen for messages sent from SW
+ * * send SW okapi details via an OKAPI_CONFIG message.
+ * * send SW log category details via a LOGGER_CONFIG message.
  * Note that although normally a page must be reloaded after a service worker
  * has been installed in order for the page to be controlled, this one
  * immediately claims control. Otherwise, no RTR would occur until after a
