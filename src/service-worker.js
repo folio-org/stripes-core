@@ -206,7 +206,7 @@ export const isPermissibleRequest = (req, te, oUrl) => {
     '/saml/check',
   ];
 
-  // console.log(`-- (rtr-sw) AT invalid for ${req.url}`);
+  if (shouldLog) console.log(`-- (rtr-sw) AT invalid for ${req.url}`);
   return !!permissible.find(i => req.url.startsWith(`${oUrl}${i}`));
 };
 
