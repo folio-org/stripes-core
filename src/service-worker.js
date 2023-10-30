@@ -392,7 +392,7 @@ self.addEventListener('install', (event) => {
  * on activate, force this SW to control all in-scope clients,
  * even those that loaded before this SW was registered.
  */
-self.addEventListener('activate', async (event) => {
+self.addEventListener('activate', (event) => {
   if (shouldLog) console.log('-- (rtr-sw) => activate', event);
   event.waitUntil(self.clients.claim());
 });
@@ -401,7 +401,7 @@ self.addEventListener('activate', async (event) => {
  * eventListener: message
  * listen for messages from @folio/stripes-core clients and dispatch them accordingly.
  */
-self.addEventListener('message', async (event) => {
+self.addEventListener('message', (event) => {
   if (event.data.source === '@folio/stripes-core') {
     if (shouldLog) console.info('-- (rtr-sw) reading', event.data);
     if (event.data.type === 'OKAPI_CONFIG') {
@@ -423,6 +423,6 @@ self.addEventListener('message', async (event) => {
  * eventListener: fetch
  * intercept fetches
  */
-self.addEventListener('fetch', async (event) => {
+self.addEventListener('fetch', (event) => {
   event.respondWith(passThrough(event, tokenExpiration, okapiUrl));
 });
