@@ -224,7 +224,6 @@ export const isLogoutRequest = (req, oUrl) => {
     '/authn/logout',
   ];
 
-  if (shouldLog) console.log(`-- (rtr-sw) logout request ${req.url}`);
   return !!permissible.find(i => req.url.startsWith(`${oUrl}${i}`));
 };
 
