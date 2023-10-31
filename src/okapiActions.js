@@ -61,16 +61,10 @@ function setBindings(bindings) {
   };
 }
 
-function setOkapiToken(token) {
+function setIsAuthenticated(b) {
   return {
-    type: 'SET_OKAPI_TOKEN',
-    token,
-  };
-}
-
-function clearOkapiToken() {
-  return {
-    type: 'CLEAR_OKAPI_TOKEN',
+    type: 'SET_IS_AUTHENTICATED',
+    isAuthenticated: Boolean(b),
   };
 }
 
@@ -128,24 +122,31 @@ function updateCurrentUser(data) {
   };
 }
 
+function setTokenExpiration(tokenExpiration) {
+  return {
+    type: 'SET_TOKEN_EXPIRATION',
+    tokenExpiration,
+  };
+}
+
 export {
   checkSSO,
   clearCurrentUser,
-  clearOkapiToken,
   setAuthError,
   setBindings,
   setCurrency,
   setCurrentPerms,
   setCurrentUser,
+  setIsAuthenticated,
   setLocale,
   setLoginData,
   setOkapiReady,
-  setOkapiToken,
   setPlugins,
   setServerDown,
   setSessionData,
   setSinglePlugin,
   setTimezone,
+  setTokenExpiration,
   setTranslations,
   updateCurrentUser,
 };

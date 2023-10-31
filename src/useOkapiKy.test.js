@@ -15,7 +15,6 @@ describe('useOkapiKy', () => {
       locale: 'klingon',
       tenant: 'tenant',
       timeout: 271828,
-      token: 'token',
       url: 'https://whatever.com'
     };
 
@@ -36,7 +35,6 @@ describe('useOkapiKy', () => {
 
     expect(r.headers.set).toHaveBeenCalledWith('Accept-Language', okapi.locale);
     expect(r.headers.set).toHaveBeenCalledWith('X-Okapi-Tenant', okapi.tenant);
-    expect(r.headers.set).toHaveBeenCalledWith('X-Okapi-Token', okapi.token);
   });
 
   it('provides default values if stripes lacks them', async () => {
@@ -63,7 +61,6 @@ describe('useOkapiKy', () => {
     const okapi = {
       tenant: 'tenant',
       timeout: 271828,
-      token: 'token',
       url: 'https://whatever.com'
     };
 
