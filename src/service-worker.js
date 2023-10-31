@@ -63,6 +63,31 @@ const IS_ROTATING_RETRIES = 100;
 const IS_ROTATING_INTERVAL = 100;
 
 /**
+ * TTL_WINDOW
+ * How much of a token's TTL can elapse before it is considered expired?
+ * This helps us avoid a race-like condition where a token expires in the
+ * gap between when we check whether we think it's expired and when we use
+ * it to authorize a new request. Say the last RTR response took a long time
+ * to arrive, so it was generated at 12:34:56 but we didn't process it until
+ * 12:34:59. That could cause problems if (just totally hypothetically) we
+ * had an application (again, TOTALLY hypothetically) that was polling every
+ * five seconds and one of its requests landed in that three-second gap. Oh,
+ * hey STCOR-754, what are you doing here?
+ *
+ * So this is a buffer. Instead of letting a token be used up until the very
+ * last second of its life, we'll consider it expired a little early. This will
+ * cause RTR to happen a little early (i.e. a little more frequently) but that
+ * should be OK since it increases our confidence that when an AT accompanies
+ * the RTR request it is still valid.
+ *
+ * Value is a float, 0 to 1, inclusive. Closer to 0 means more frequent
+ * rotation; 1 means a token is valid up the very last moment of its TTL.
+ * 0.95 is just a SWAG at a "likely to be useful" value. Given a 600 second
+ * TTL (the current default for ATs) it corresponds to 570 seconds.
+ */
+export const TTL_WINDOW = 0.95;
+
+/**
  * isValidAT
  * return true if tokenExpiration.atExpires is in the future
  * @param {object} te tokenExpiration shaped like { atExpires, rtExpires }
@@ -70,7 +95,7 @@ const IS_ROTATING_INTERVAL = 100;
  */
 export const isValidAT = (te) => {
   if (shouldLog) console.log(`-- (rtr-sw) => at expires ${new Date(te?.atExpires || null).toISOString()}`);
-  return !!(te?.atExpires > Date.now());
+  return !!(te?.atExpires * TTL_WINDOW > Date.now());
 };
 
 /**
@@ -81,7 +106,7 @@ export const isValidAT = (te) => {
  */
 export const isValidRT = (te) => {
   if (shouldLog) console.log(`-- (rtr-sw) => rt expires ${new Date(te?.rtExpires || null).toISOString()}`);
-  return !!(te?.rtExpires > Date.now());
+  return !!(te?.rtExpires * TTL_WINDOW > Date.now());
 };
 
 /**
