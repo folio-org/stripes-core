@@ -82,10 +82,10 @@ const IS_ROTATING_INTERVAL = 100;
  *
  * Value is a float, 0 to 1, inclusive. Closer to 0 means more frequent
  * rotation; 1 means a token is valid up the very last moment of its TTL.
- * 0.95 is just a SWAG at a "likely to be useful" value. Given a 600 second
- * TTL (the current default for ATs) it corresponds to 570 seconds.
+ * 0.8 is just a SWAG at a "likely to be useful" value. Given a 600 second
+ * TTL (the current default for ATs) it corresponds to 480 seconds.
  */
-export const TTL_WINDOW = 0.95;
+export const TTL_WINDOW = 0.8;
 
 /**
  * isValidAT
