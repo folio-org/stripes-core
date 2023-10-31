@@ -22,7 +22,7 @@ export const registerServiceWorker = async (okapiConfig, config, logger) => {
       //
       // register
       //
-      const registration = await navigator.serviceWorker.register(new URL('./service-worker.js', window.location.origin), { scope: './' })
+      const registration = await navigator.serviceWorker.register(new URL('./service-worker.js', window.location.origin), { scope: '/' })
         .then(reg => {
           return reg.update();
         });
