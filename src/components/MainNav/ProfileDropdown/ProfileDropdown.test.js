@@ -71,7 +71,7 @@ describe('ProfileDropdown', () => {
   it('should display current consortium (if enabled) in the dropdown trigger', () => {
     renderProfileDropdown();
 
-    expect(screen.getByText('Central office')).toBeInTheDocument();
+    expect(screen.getByText(/mainnav.myProfileAriaLabel/)).toBeInTheDocument();
   });
 
   it('should display module profile dropdown item', () => {
