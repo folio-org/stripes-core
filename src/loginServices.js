@@ -664,18 +664,17 @@ export function validateUser(okapiUrl, store, tenant, session) {
           rtExpires: Date.now() + (10 * 60 * 1000),
         };
         // provide token-expiration info to the service-worker
-        // it returns a promise, but we don't await; the service-worker
-        // can operate asynchronously and that's just fine.
-        postTokenExpiration(tokenExpiration);
-
-        store.dispatch(setSessionData({
-          isAuthenticated: true,
-          user,
-          perms,
-          tenant: sessionTenant,
-          tokenExpiration,
-        }));
-        return loadResources(okapiUrl, store, sessionTenant, user.id);
+        return postTokenExpiration(tokenExpiration)
+          .then(() => {
+            store.dispatch(setSessionData({
+              isAuthenticated: true,
+              user,
+              perms,
+              tenant: sessionTenant,
+              tokenExpiration,
+            }));
+            return loadResources(okapiUrl, store, sessionTenant, user.id);
+          });
       });
     } else {
       return logout(okapiUrl, store);
