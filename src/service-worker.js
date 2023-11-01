@@ -94,8 +94,9 @@ export const TTL_WINDOW = 0.8;
  * @returns boolean
  */
 export const isValidAT = (te) => {
-  if (shouldLog) console.log(`-- (rtr-sw) => at expires ${new Date(te?.atExpires || null).toISOString()}`);
-  return !!(te?.atExpires * TTL_WINDOW > Date.now());
+  const isValid = !!(te?.atExpires > Date.now());
+  if (shouldLog) console.log(`-- (rtr-sw) => at isValid? ${isValid}; expires ${new Date(te?.atExpires || null).toISOString()}`);
+  return isValid;
 };
 
 /**
@@ -105,8 +106,9 @@ export const isValidAT = (te) => {
  * @returns boolean
  */
 export const isValidRT = (te) => {
-  if (shouldLog) console.log(`-- (rtr-sw) => rt expires ${new Date(te?.rtExpires || null).toISOString()}`);
-  return !!(te?.rtExpires * TTL_WINDOW > Date.now());
+  const isValid = !!(te?.rtExpires > Date.now());
+  if (shouldLog) console.log(`-- (rtr-sw) => rt isValid? ${isValid}; expires ${new Date(te?.rtExpires || null).toISOString()}`);
+  return isValid;
 };
 
 /**
@@ -137,6 +139,20 @@ export const messageToClient = async (event, message) => {
   if (shouldLog) console.log('-- (rtr-sw) => sending', message);
   client.postMessage({ ...message, source: '@folio/stripes-core' });
 };
+
+/**
+ * handleTokenExpiration
+ * Set the AT and RT token expirations to the fraction of their TTL given by
+ * TTL_WINDOW. e.g. if a token should be valid for 100 more seconds and TTL_WINDOW
+ * is 0.8, set to the expiration time to 80 seconds from now.
+ *
+ * @param {object} value { tokenExpiration: { atExpires, rtExpires }} both are millisecond timestamps
+ * @returns { tokenExpiration: { atExpires, rtExpires }} both are millisecond timestamps
+ */
+export const handleTokenExpiration = (value) => ({
+  atExpires: Date.now() + ((value.tokenExpiration.atExpires - Date.now()) * TTL_WINDOW),
+  rtExpires: Date.now() + ((value.tokenExpiration.rtExpires - Date.now()) * TTL_WINDOW),
+});
 
 /**
  * rtr
@@ -200,11 +216,14 @@ export const rtr = async (event) => {
     .then(json => {
       if (shouldLog) console.log('-- (rtr-sw) **     success!');
       isRotating = false;
-      tokenExpiration = {
-        atExpires: new Date(json.accessTokenExpiration).getTime(),
-        rtExpires: new Date(json.refreshTokenExpiration).getTime(),
-      };
-      messageToClient(event, { type: 'TOKEN_EXPIRATION', tokenExpiration });
+      tokenExpiration = handleTokenExpiration({
+        tokenExpiration: {
+          atExpires: new Date(json.accessTokenExpiration).getTime(),
+          rtExpires: new Date(json.refreshTokenExpiration).getTime(),
+        }
+      });
+
+      messageToClient(event, { type: 'TOKEN_EXPIRATION', value: { tokenExpiration } });
     });
 };
 
@@ -287,7 +306,7 @@ const passThroughWithRT = (event) => {
       // Promise.reject() here would result in every single fetch in every
       // single application needing to thoughtfully handle RTR_ERROR responses.
       messageToClient(event, { type: 'RTR_ERROR', error: rtre });
-      return Promise.resolve(new Response({}));
+      return Promise.resolve(new Response(JSON.stringify({})));
     });
 };
 
@@ -348,7 +367,7 @@ export const passThroughLogout = (event) => {
     .catch(e => {
       // kill me softly: return an empty response to allow graceful failure
       console.error('-- (rtr-sw) logout failure', e); // eslint-disable-line no-console
-      return Promise.resolve(new Response({}));
+      return Promise.resolve(new Response(JSON.stringify({})));
     });
 };
 
@@ -389,8 +408,8 @@ export const passThrough = (event, te, oUrl) => {
     // and handle it, hopefully by logging out.
     // Promise.reject() here would result in every single fetch in every
     // single application needing to thoughtfully handle RTR_ERROR responses.
-    messageToClient(event, { type: 'RTR_ERROR', error: 'AT/RT failure' });
-    return Promise.resolve(new Response({}));
+    messageToClient(event, { type: 'RTR_ERROR', error: `AT/RT failure accessing ${req.url}` });
+    return Promise.resolve(new Response(JSON.stringify({})));
   }
 
   // default: pass requests through to the network
@@ -435,17 +454,21 @@ self.addEventListener('message', (event) => {
 
   if (event.data.source === '@folio/stripes-core') {
     if (shouldLog) console.info('-- (rtr-sw) reading', event.data);
+
+    // OKAPI_CONFIG
     if (event.data.type === 'OKAPI_CONFIG') {
       okapiUrl = event.data.value.url;
       okapiTenant = event.data.value.tenant;
     }
 
+    // LOGGER_CONFIG
     if (event.data.type === 'LOGGER_CONFIG') {
       shouldLog = !!event.data.value.categories?.split(',').some(cat => cat === 'rtr-sw');
     }
 
+    // TOKEN_EXPIRATION
     if (event.data.type === 'TOKEN_EXPIRATION') {
-      tokenExpiration = event.data.tokenExpiration;
+      tokenExpiration = handleTokenExpiration(event.data.value);
     }
   }
 });
