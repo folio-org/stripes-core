@@ -98,7 +98,7 @@
   "settingSystemInfo": "System information",
   "settingChoose": "Choose settings",
 
-  "mainnav.showAllApplicationsButtonLabel": "Apps",
+  "mainnav.showAllApplicationsButtonLabel": "All applications",
   "mainnav.showAllApplicationsButtonAriaLabel": "All applications",
   "mainnav.currentAppAriaLabel": "Current open application: {appName} (Click to go home)",
   "mainnav.topLevelLabel": "Primary",
