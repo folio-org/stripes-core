@@ -387,20 +387,25 @@ export async function logout(okapiUrl, store) {
 /**
  * postTokenExpiration
  * send SW a TOKEN_EXPIRATION message
+ * @returns {Promise}
  */
 const postTokenExpiration = (tokenExpiration) => {
-  navigator.serviceWorker.ready
-    .then((reg) => {
-      const sw = reg.active;
-      if (sw) {
-        const message = { source: '@folio/stripes-core', type: 'TOKEN_EXPIRATION', tokenExpiration };
-        logger.log('rtr', '<= sending', message);
-        sw.postMessage(message);
-      } else {
-        // eslint-disable-next-line no-console
-        console.warn('could not dispatch message; no active registration');
-      }
-    });
+  if ('serviceWorker' in navigator) {
+    return navigator.serviceWorker.ready
+      .then((reg) => {
+        const sw = reg.active;
+        if (sw) {
+          const message = { source: '@folio/stripes-core', type: 'TOKEN_EXPIRATION', value: { tokenExpiration } };
+          logger.log('rtr', '<= sending', message);
+          sw.postMessage(message);
+        } else {
+          logger.log('rtr', 'error, could not send TOKEN_EXPIRATION message; no ServiceWorker is active');
+        }
+      });
+  }
+
+  logger.log('rtr', 'error, could not send TOKEN_EXPIRATION message; navigator.serviceWorker is empty');
+  return Promise.resolve();
 };
 
 /**
@@ -454,9 +459,8 @@ export function createOkapiSession(okapiUrl, store, tenant, data) {
   };
 
   // provide token-expiration info to the service worker
-  postTokenExpiration(tokenExpiration);
-
-  return localforage.setItem('loginResponse', data)
+  return postTokenExpiration(tokenExpiration)
+    .then(localforage.setItem('loginResponse', data))
     .then(() => localforage.setItem(SESSION_NAME, okapiSess))
     .then(() => {
       store.dispatch(setIsAuthenticated(true));
@@ -486,14 +490,14 @@ export const handleServiceWorkerMessage = (event, store) => {
     // RTR happened: update token expiration timestamps in our store
     if (event.data.type === 'TOKEN_EXPIRATION') {
       store.dispatch(setTokenExpiration({
-        atExpires: new Date(event.data.tokenExpiration.atExpires).toISOString(),
-        rtExpires: new Date(event.data.tokenExpiration.rtExpires).toISOString(),
+        atExpires: new Date(event.data.value.tokenExpiration.atExpires).toISOString(),
+        rtExpires: new Date(event.data.value.tokenExpiration.rtExpires).toISOString(),
       }));
     }
 
     // RTR failed: we have no cookies; logout
     if (event.data.type === 'RTR_ERROR') {
-      console.error('-- (rtr) rtr error; logging out', event.data.error); // eslint-disable-line no-console
+      logger.log('rtr', 'rtr error; logging out', event.data.error);
       store.dispatch(setIsAuthenticated(false));
       store.dispatch(clearCurrentUser());
       store.dispatch(resetStore());
@@ -508,6 +512,8 @@ export function addServiceWorkerListeners(okapiConfig, store) {
     navigator.serviceWorker.addEventListener('message', (e) => {
       handleServiceWorkerMessage(e, store);
     });
+  } else {
+    logger.log('rtr', 'error; navigator.serviceWorker is empty');
   }
 }
 
