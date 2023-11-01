@@ -141,6 +141,20 @@ export const messageToClient = async (event, message) => {
 };
 
 /**
+ * handleTokenExpiration
+ * Set the AT and RT token expirations to the fraction of their TTL given by
+ * TTL_WINDOW. e.g. if a token should be valid for 100 more seconds and TTL_WINDOW
+ * is 0.8, set to the expiration time to 80 seconds from now.
+ *
+ * @param {object} value { tokenExpiration: { atExpires, rtExpires }} both are millisecond timestamps
+ * @returns { tokenExpiration: { atExpires, rtExpires }} both are millisecond timestamps
+ */
+export const handleTokenExpiration = (value) => ({
+  atExpires: Date.now() + ((value.tokenExpiration.atExpires - Date.now()) * TTL_WINDOW),
+  rtExpires: Date.now() + ((value.tokenExpiration.rtExpires - Date.now()) * TTL_WINDOW),
+});
+
+/**
  * rtr
  * exchange an RT for a new one.
  * Make a POST request to /authn/refresh, including the current credentials,
@@ -202,11 +216,14 @@ export const rtr = async (event) => {
     .then(json => {
       if (shouldLog) console.log('-- (rtr-sw) **     success!');
       isRotating = false;
-      tokenExpiration = {
-        atExpires: new Date(json.accessTokenExpiration).getTime(),
-        rtExpires: new Date(json.refreshTokenExpiration).getTime(),
-      };
-      messageToClient(event, { type: 'TOKEN_EXPIRATION', value: tokenExpiration });
+      tokenExpiration = handleTokenExpiration({
+        tokenExpiration: {
+          atExpires: new Date(json.accessTokenExpiration).getTime(),
+          rtExpires: new Date(json.refreshTokenExpiration).getTime(),
+        }
+      });
+
+      messageToClient(event, { type: 'TOKEN_EXPIRATION', value: { tokenExpiration } });
     });
 };
 
@@ -403,20 +420,6 @@ export const passThrough = (event, te, oUrl) => {
       return Promise.reject(new Error(e));
     });
 };
-
-/**
- * handleTokenExpiration
- * Set the AT and RT token expirations to the fraction of their TTL given by
- * TTL_WINDOW. e.g. if a token should be valid for 100 more seconds and TTL_WINDOW
- * is 0.8, set to the expiration time to 80 seconds from now.
- *
- * @param {object} value { tokenExpiration: { atExpires, rtExpires }} both are millisecond timestamps
- * @returns { tokenExpiration: { atExpires, rtExpires }} both are millisecond timestamps
- */
-export const handleTokenExpiration = (value) => ({
-  atExpires: Date.now() + ((value.tokenExpiration.atExpires - Date.now()) * TTL_WINDOW),
-  rtExpires: Date.now() + ((value.tokenExpiration.rtExpires - Date.now()) * TTL_WINDOW),
-});
 
 /**
  * install
