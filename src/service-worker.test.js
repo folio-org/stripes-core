@@ -1,4 +1,5 @@
 import {
+  handleTokenExpiration,
   isLogoutRequest,
   isOkapiRequest,
   isPermissibleRequest,
@@ -26,12 +27,8 @@ afterAll(() => {
 });
 
 describe('isValidAT', () => {
-  it('returns true for ATs with 95% or more of their TTL remaining', () => {
-    expect(isValidAT({ atExpires: (Date.now() / TTL_WINDOW) + 10000 })).toBe(true);
-  });
-
-  it('returns false for ATs 5% or less of their TTL remaining', () => {
-    expect(isValidAT({ atExpires: Date.now() + 1000 })).toBe(false);
+  it('returns true for valid ATs', () => {
+    expect(isValidAT({ atExpires: Date.now() + 1000 })).toBe(true);
   });
 
   it('returns false for expired ATs', () => {
@@ -45,11 +42,7 @@ describe('isValidAT', () => {
 
 describe('isValidRT', () => {
   it('returns true for valid RTs', () => {
-    expect(isValidRT({ rtExpires: (Date.now() / TTL_WINDOW) + 1000 })).toBe(true);
-  });
-
-  it('returns false for RTs 5% or less of their TTL remaining', () => {
-    expect(isValidRT({ rtExpires: Date.now() + 1000 })).toBe(false);
+    expect(isValidRT({ rtExpires: Date.now() + 1000 })).toBe(true);
   });
 
   it('returns false for expired RTs', () => {
@@ -515,3 +508,25 @@ describe('rtr', () => {
   });
 });
 
+describe('handleTokenExpiration', () => {
+  const testWindow = (token) => {
+    const now = Date.now();
+    const window = 1000;
+    const data = {
+      tokenExpiration: {
+        [token]: now + window,
+      },
+    };
+
+    const result = handleTokenExpiration(data);
+    expect(parseFloat(result[token] - now).toPrecision(2)).toEqual(parseFloat(TTL_WINDOW * window).toPrecision(2));
+  };
+
+  it(`shrinks AT's validity window to ${parseFloat(TTL_WINDOW * 100).toPrecision(2)}% of original size`, () => {
+    testWindow('atExpires');
+  });
+
+  it(`shrinks RT's validity window to ${parseFloat(TTL_WINDOW * 100).toPrecision(2)}% of original size`, () => {
+    testWindow('rtExpires');
+  });
+});
