@@ -4,6 +4,7 @@
 
 * Use cookies and RTR instead of directly handling the JWT. Refs STCOR-671, FOLIO-3627.
 * Shrink the token lifespan so we are less likely to use an expired one. Refs STCOR-754.
+* Correctly evaluate token lifespan; use consistent protocol for service worker messages. Refs STCOR-756.
 
 ## [10.0.1](https://github.com/folio-org/stripes-core/tree/v10.0.1) (2023-10-25)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.0.0...v10.0.1)

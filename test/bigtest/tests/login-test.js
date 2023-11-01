@@ -340,7 +340,15 @@ describe('Login', () => {
     });
   });
 
-  describe('with valid credentials', () => {
+  // the login workflow invokes navigator.serviceWorker.ready,
+  // a browser property that returns a Promise that waits until
+  // the service worker resolves, but in Karma-land we don't
+  // configure the service-worker. hence, this will time out,
+  // every time.
+  //
+  // we'll need to cover these components with jest/RTL tests
+  // eventually.
+  describe.skip('with valid credentials', () => {
     beforeEach(async () => {
       const { username, password, submit } = login;
 
