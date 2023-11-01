@@ -289,7 +289,7 @@ const passThroughWithRT = (event) => {
       // Promise.reject() here would result in every single fetch in every
       // single application needing to thoughtfully handle RTR_ERROR responses.
       messageToClient(event, { type: 'RTR_ERROR', error: rtre });
-      return Promise.resolve(new Response({}));
+      return Promise.resolve(new Response(JSON.stringify({})));
     });
 };
 
@@ -350,7 +350,7 @@ export const passThroughLogout = (event) => {
     .catch(e => {
       // kill me softly: return an empty response to allow graceful failure
       console.error('-- (rtr-sw) logout failure', e); // eslint-disable-line no-console
-      return Promise.resolve(new Response({}));
+      return Promise.resolve(new Response(JSON.stringify({})));
     });
 };
 
