@@ -1,6 +1,7 @@
 # Change history for stripes-core
 
-## 10.0.2 IN PROGRESS
+## [10.0.2](https://github.com/folio-org/stripes-core/tree/v10.0.2) (2023-11-06)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.0.1...v10.0.2)
 
 * Use cookies and RTR instead of directly handling the JWT. Refs STCOR-671, STCOR-754, STCOR-756, FOLIO-3627.
 
