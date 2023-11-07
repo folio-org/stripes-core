@@ -425,7 +425,6 @@ export const passThrough = (event, te, oUrl) => {
  * on install, force this SW to be the active SW
  */
 self.addEventListener('install', (event) => {
-  console.log('in install', self.stripesConfig);
   if (shouldLog) console.log('-- (rtr-sw) => install', event);
   return self.skipWaiting();
 });
