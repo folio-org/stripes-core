@@ -43,14 +43,12 @@
  *
  */
 
+import { okapiUrl, okapiTenant } from 'micro-stripes-config.js';
 
 /** { atExpires, rtExpires } both are JS millisecond timestamps */
 let tokenExpiration = null;
 
 /** string FQDN including protocol, e.g. https://some-okapi.somewhere.org */
-let okapiUrl = null;
-
-let okapiTenant = null;
 
 /** whether to emit console logs */
 let shouldLog = false;
@@ -62,6 +60,7 @@ const IS_ROTATING_RETRIES = 100;
 /** how long to wait before rechecking the lock, in milliseconds (100 * 100) === 10 seconds */
 const IS_ROTATING_INTERVAL = 100;
 
+console.log('okapiUrl', okapiUrl, 'okapiTenant', okapiTenant);
 /**
  * TTL_WINDOW
  * How much of a token's TTL can elapse before it is considered expired?
@@ -426,6 +425,7 @@ export const passThrough = (event, te, oUrl) => {
  * on install, force this SW to be the active SW
  */
 self.addEventListener('install', (event) => {
+  console.log('in install', self.stripesConfig);
   if (shouldLog) console.log('-- (rtr-sw) => install', event);
   return self.skipWaiting();
 });
@@ -456,10 +456,10 @@ self.addEventListener('message', (event) => {
     if (shouldLog) console.info('-- (rtr-sw) reading', event.data);
 
     // OKAPI_CONFIG
-    if (event.data.type === 'OKAPI_CONFIG') {
-      okapiUrl = event.data.value.url;
-      okapiTenant = event.data.value.tenant;
-    }
+    // if (event.data.type === 'OKAPI_CONFIG') {
+    //   okapiUrl = event.data.value.url;
+    //   okapiTenant = event.data.value.tenant;
+    // }
 
     // LOGGER_CONFIG
     if (event.data.type === 'LOGGER_CONFIG') {
