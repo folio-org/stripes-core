@@ -179,7 +179,7 @@ function dispatchLocale(url, store, tenant) {
     .then((response) => {
       if (response.status === 200) {
         response.json().then((json) => {
-          if (json.configs.length) {
+          if (json.configs?.length) {
             const localeValues = JSON.parse(json.configs[0].value);
             const { locale, timezone, currency } = localeValues;
             if (locale) {
@@ -258,7 +258,7 @@ export function getPlugins(okapiUrl, store, tenant) {
     .then((response) => {
       if (response.status < 400) {
         response.json().then((json) => {
-          const configs = json.configs.reduce((acc, val) => ({
+          const configs = json.configs?.reduce((acc, val) => ({
             ...acc,
             [val.configName]: val.value,
           }), {});
@@ -291,7 +291,7 @@ export function getBindings(okapiUrl, store, tenant) {
       } else {
         response.json().then((json) => {
           const configs = json.configs;
-          if (configs.length > 0) {
+          if (Array.isArray(configs) && configs.length > 0) {
             const string = configs[0].value;
             try {
               const tmp = JSON.parse(string);
@@ -387,10 +387,12 @@ export async function logout(okapiUrl, store) {
 /**
  * postTokenExpiration
  * send SW a TOKEN_EXPIRATION message
+ * @param {object} tokenExpiration shaped like { atExpires, rtExpires} where both are millisecond timestamps
+ *
  * @returns {Promise}
  */
-const postTokenExpiration = (tokenExpiration) => {
-  if ('serviceWorker' in navigator) {
+export const postTokenExpiration = (tokenExpiration) => {
+  if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
     return navigator.serviceWorker.ready
       .then((reg) => {
         const sw = reg.active;
