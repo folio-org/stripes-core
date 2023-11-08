@@ -4,6 +4,13 @@
 /**
  * TLDR: perform refresh-token-rotation for Okapi-bound requests.
  *
+ * Critical reading:
+ * @see https://web.dev/articles/service-worker-mindset#watch_out_for_global_state
+ * @see https://web.dev/articles/service-worker-lifecycle#shift-reload
+ *
+ * The (rather opaque) specification:
+ * @see https://www.w3.org/TR/service-workers/
+ *
  * The gory details:
  * This service worker acts as a proxy betwen the browser and the network,
  * intercepting all fetch requests. Those not bound for Okapi are simply
@@ -43,14 +50,10 @@
  *
  */
 
+import { okapiUrl, okapiTenant } from 'micro-stripes-config';
 
 /** { atExpires, rtExpires } both are JS millisecond timestamps */
 let tokenExpiration = null;
-
-/** string FQDN including protocol, e.g. https://some-okapi.somewhere.org */
-let okapiUrl = null;
-
-let okapiTenant = null;
 
 /** whether to emit console logs */
 let shouldLog = false;
@@ -454,12 +457,6 @@ self.addEventListener('message', (event) => {
 
   if (event.data.source === '@folio/stripes-core') {
     if (shouldLog) console.info('-- (rtr-sw) reading', event.data);
-
-    // OKAPI_CONFIG
-    if (event.data.type === 'OKAPI_CONFIG') {
-      okapiUrl = event.data.value.url;
-      okapiTenant = event.data.value.tenant;
-    }
 
     // LOGGER_CONFIG
     if (event.data.type === 'LOGGER_CONFIG') {

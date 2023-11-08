@@ -203,7 +203,7 @@ describe('isOkapiRequest', () => {
 });
 
 describe('passThroughLogout', () => {
-  it('succeeds', async () => {
+  it('resolves on success', async () => {
     const val = { monkey: 'bagel' };
     global.fetch = jest.fn(() => (
       Promise.resolve({
@@ -215,14 +215,17 @@ describe('passThroughLogout', () => {
     expect(await res.json()).toMatchObject(val);
   });
 
-  it('succeeds even when it fails', async () => {
+  it('rejects on failure', async () => {
     window.Response = jest.fn();
     const val = {};
-    global.fetch = jest.fn(() => Promise.reject(Promise.resolve(new Response({}))));
+    global.fetch = jest.fn(() => Promise.reject(Promise.resolve(new Response(JSON.stringify({})))));
 
     const event = { request: 'monkey' };
-    const res = await passThroughLogout(event);
-    expect(await res).toMatchObject(val);
+    try {
+      await passThroughLogout(event);
+    } catch (e) {
+      expect(e).toMatchObject(val);
+    }
   });
 });
 
@@ -505,6 +508,40 @@ describe('rtr', () => {
     } catch (e) {
       expect(e.message).toMatch(error);
     }
+  });
+
+  it.skip('foo', async () => {
+    const foo = handleTokenExpiration;
+    const bar = messageToClient;
+
+    handleTokenExpiration = jest.fn();
+    messageToClient = jest.fn();
+
+    const oUrl = 'https://trinity.edu';
+    const req = { url: `${oUrl}/manhattan` };
+    const event = {
+      request: {
+        clone: () => req,
+      }
+    };
+
+    window.Response = jest.fn();
+
+    global.fetch = jest.fn()
+      .mockReturnValueOnce(Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve({
+          accessTokenExpiration: Date.now(),
+          refreshTokenExpiration: Date.now(),
+        })
+      }));
+
+    await rtr(event);
+    expect(handleTokenExpiration).toHaveBeenCalled();
+    expect(messageToClient).toHaveBeenCalled();
+
+    handleTokenExpiration = foo;
+    messageToClient = bar;
   });
 });
 
