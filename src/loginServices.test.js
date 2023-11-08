@@ -96,6 +96,7 @@ describe('createOkapiSession', () => {
 
     const postMessage = jest.fn();
     navigator.serviceWorker = {
+      controller: true,
       ready: Promise.resolve({
         active: {
           postMessage,
@@ -309,6 +310,7 @@ describe('validateUser', () => {
 
     const postMessage = jest.fn();
     navigator.serviceWorker = {
+      controller: true,
       ready: Promise.resolve({
         active: {
           postMessage,

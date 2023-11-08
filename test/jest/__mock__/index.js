@@ -1,3 +1,4 @@
+import './microStripesConfig.mock';
 import './stripesConfig.mock';
 import './intl.mock';
 import './stripesIcon.mock';
