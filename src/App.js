@@ -11,7 +11,6 @@ import gatherActions from './gatherActions';
 import { destroyStore } from './mainActions';
 
 import Root from './components/Root';
-import { registerServiceWorker } from './serviceWorkerRegistration';
 
 export default class StripesCore extends Component {
   static propTypes = {
@@ -31,12 +30,6 @@ export default class StripesCore extends Component {
     this.epics = configureEpics(connectErrorEpic);
     this.store = configureStore(initialState, this.logger, this.epics);
     this.actionNames = gatherActions();
-
-    // register a service worker, providing okapi and stripes config details.
-    // the service worker functions as a proxy between between the browser
-    // and the network, intercepting ALL fetch requests to make sure they
-    // are accompanied by a valid access-token.
-    registerServiceWorker(okapiConfig, config, this.logger);
   }
 
   componentWillUnmount() {

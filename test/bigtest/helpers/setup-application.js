@@ -41,6 +41,7 @@ export default function setupApplication({
     // when auth is disabled, add a fake user to the store
     if (disableAuth) {
       initialState.okapi = {
+        token: 'test',
         currentUser: assign({
           id: 'test',
           username: 'testuser',
@@ -50,8 +51,7 @@ export default function setupApplication({
           addresses: [],
           servicePoints: []
         }, currentUser),
-        currentPerms: permissions,
-        isAuthenticated: true,
+        currentPerms: permissions
       };
     } else {
       initialState.okapi = {
@@ -74,14 +74,9 @@ export default function setupApplication({
 
         if (userLoggedIn) {
           localforage.setItem('okapiSess', {
-            isAuthenticated: true,
+            token: initialState.okapi.token,
             user: initialState.okapi.currentUser,
             perms: initialState.okapi.currentPerms,
-            tenant: 'tenant',
-            tokenExpiration: {
-              atExpires: Date.now() + (10 * 60 * 1000),
-              rtExpires: Date.now() + (10 * 60 * 1000),
-            },
           });
         }
 
