@@ -126,7 +126,9 @@ class MainNav extends Component {
 
   // return the user to the login screen, but after logging in they will be brought to the default screen.
   logout() {
-    console.clear(); // eslint-disable-line no-console
+    if (!config.preserveConsole) {
+      console.clear(); // eslint-disable-line no-console
+    }
     this.returnToLogin().then(() => {
       this.props.history.push('/');
     });
