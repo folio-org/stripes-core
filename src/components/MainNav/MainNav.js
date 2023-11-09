@@ -5,7 +5,7 @@ import { compose } from 'redux';
 import { injectIntl } from 'react-intl';
 import { withRouter } from 'react-router';
 
-import { branding } from 'stripes-config';
+import { branding, config } from 'stripes-config';
 
 import { Icon } from '@folio/stripes-components';
 
