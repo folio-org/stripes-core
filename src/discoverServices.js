@@ -1,8 +1,9 @@
 import { some } from 'lodash';
 
-function getHeaders(tenant) {
+function getHeaders(tenant, token) {
   return {
     'X-Okapi-Tenant': tenant,
+    'X-Okapi-Token': token,
     'Content-Type': 'application/json'
   };
 }
@@ -11,9 +12,7 @@ function fetchOkapiVersion(store) {
   const okapi = store.getState().okapi;
 
   return fetch(`${okapi.url}/_/version`, {
-    headers: getHeaders(okapi.tenant),
-    credentials: 'include',
-    mode: 'cors',
+    headers: getHeaders(okapi.tenant, okapi.token)
   }).then((response) => { // eslint-disable-line consistent-return
     if (response.status >= 400) {
       store.dispatch({ type: 'DISCOVERY_FAILURE', code: response.status });
@@ -32,9 +31,7 @@ function fetchModules(store) {
   const okapi = store.getState().okapi;
 
   return fetch(`${okapi.url}/_/proxy/tenants/${okapi.tenant}/modules?full=true`, {
-    headers: getHeaders(okapi.tenant),
-    credentials: 'include',
-    mode: 'cors',
+    headers: getHeaders(okapi.tenant, okapi.token)
   }).then((response) => { // eslint-disable-line consistent-return
     if (response.status >= 400) {
       store.dispatch({ type: 'DISCOVERY_FAILURE', code: response.status });

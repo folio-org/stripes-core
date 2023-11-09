@@ -1,5 +1,9 @@
 # Change history for stripes-core
 
+## 10.0.3 IN PROGRESS
+
+* Revert "Use cookies and RTR" until further notice. Refs FOLIO-3627.
+
 ## [10.0.2](https://github.com/folio-org/stripes-core/tree/v10.0.2) (2023-11-06)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.0.1...v10.0.2)
 
@@ -34,7 +38,6 @@
 * *BREAKING* bump `react-intl` to `v6.4.4`. Refs STCOR-744.
 * Bump `stylelint` to `v15` and `stylelint-config-standard` to `v34`. Refs STCOR-745.
 * Read ky timeout from stripes-config value. Refs STCOR-594.
-* *BREAKING* use cookies and RTR instead of directly handling the JWT. Refs STCOR-671, FOLIO-3627.
 
 ## [9.0.0](https://github.com/folio-org/stripes-core/tree/v9.0.0) (2023-01-30)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v8.3.0...v9.0.0)
