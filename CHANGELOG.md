@@ -9,6 +9,7 @@
 * Shrink the token lifespan so we are less likely to use an expired one. Refs STCOR-754.
 * Correctly evaluate token lifespan; use consistent protocol for service worker messages. Refs STCOR-756.
 * Allow console to be preserved on logout. STCOR-761.
+* Do not catch and reject non-okapi request errors. Refs STCOR-759, UILDP-129.
 
 ## [10.0.0](https://github.com/folio-org/stripes-core/tree/v10.0.0) (2023-10-11)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v9.0.0...v10.0.0)
