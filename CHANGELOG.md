@@ -6,10 +6,7 @@
 * Avoid private path when import `validateUser` function. Refs STCOR-749.
 * Ensure `<AppIcon>` is not cut off when app name is long. Refs STCOR-752.
 * Use cookies and RTR instead of directly handling the JWT. Refs STCOR-671, FOLIO-3627.
-* Shrink the token lifespan so we are less likely to use an expired one. Refs STCOR-754.
-* Correctly evaluate token lifespan; use consistent protocol for service worker messages. Refs STCOR-756.
 * Allow console to be preserved on logout. STCOR-761.
-* Do not catch and reject non-okapi request errors. Refs STCOR-759, UILDP-129.
 
 ## [10.0.0](https://github.com/folio-org/stripes-core/tree/v10.0.0) (2023-10-11)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v9.0.0...v10.0.0)
@@ -35,7 +32,6 @@
 * *BREAKING* bump `react-intl` to `v6.4.4`. Refs STCOR-744.
 * Bump `stylelint` to `v15` and `stylelint-config-standard` to `v34`. Refs STCOR-745.
 * Read ky timeout from stripes-config value. Refs STCOR-594.
-* *BREAKING* use cookies and RTR instead of directly handling the JWT. Refs STCOR-671, FOLIO-3627.
 
 ## [9.0.0](https://github.com/folio-org/stripes-core/tree/v9.0.0) (2023-01-30)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v8.3.0...v9.0.0)
