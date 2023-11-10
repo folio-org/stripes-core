@@ -11,20 +11,6 @@ import useOkapiKy from '../useOkapiKy';
 jest.mock('../useOkapiKy');
 jest.mock('../StripesContext');
 
-// reassign console.log to keep things quiet
-const consoleInterruptor = {};
-beforeAll(() => {
-  consoleInterruptor.log = global.console.log;
-  consoleInterruptor.error = global.console.error;
-  console.log = () => { };
-  console.error = () => { };
-});
-
-afterAll(() => {
-  global.console.log = consoleInterruptor.log;
-  global.console.error = consoleInterruptor.error;
-});
-
 // set query retries to false. otherwise, react-query will thoughtfully
 // (but unhelpfully, in the context of testing) retry a failed query
 // several times causing the test to timeout when what we really want

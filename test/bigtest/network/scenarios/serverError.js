@@ -1,3 +1,3 @@
 export default (server) => {
-  server.post('bl-users/login-with-expiry', {}, 500);
+  server.post('bl-users/login', {}, 500);
 };
