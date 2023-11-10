@@ -8,7 +8,6 @@ import {
   passThrough,
   passThroughLogout,
   rtr,
-  TTL_WINDOW,
 } from './service-worker';
 
 // reassign console.log to keep things quiet
@@ -26,12 +25,8 @@ afterAll(() => {
 });
 
 describe('isValidAT', () => {
-  it('returns true for ATs with 95% or more of their TTL remaining', () => {
-    expect(isValidAT({ atExpires: (Date.now() / TTL_WINDOW) + 10000 })).toBe(true);
-  });
-
-  it('returns false for ATs 5% or less of their TTL remaining', () => {
-    expect(isValidAT({ atExpires: Date.now() + 1000 })).toBe(false);
+  it('returns true for valid ATs', () => {
+    expect(isValidAT({ atExpires: Date.now() + 1000 })).toBe(true);
   });
 
   it('returns false for expired ATs', () => {
@@ -44,12 +39,8 @@ describe('isValidAT', () => {
 });
 
 describe('isValidRT', () => {
-  it('returns true for valid RTs', () => {
-    expect(isValidRT({ rtExpires: (Date.now() / TTL_WINDOW) + 1000 })).toBe(true);
-  });
-
-  it('returns false for RTs 5% or less of their TTL remaining', () => {
-    expect(isValidRT({ rtExpires: Date.now() + 1000 })).toBe(false);
+  it('returns true for valid ATs', () => {
+    expect(isValidRT({ rtExpires: Date.now() + 1000 })).toBe(true);
   });
 
   it('returns false for expired RTs', () => {
@@ -127,7 +118,7 @@ describe('isPermissibleRequest', () => {
   describe('when AT is valid', () => {
     it('when AT is valid, accepts any endpoint', () => {
       const req = { url: 'monkey' };
-      const te = { atExpires: (Date.now() / TTL_WINDOW) + 1000, rtExpires: (Date.now() / TTL_WINDOW) + 1000 };
+      const te = { atExpires: Date.now() + 1000, rtExpires: Date.now() + 1000 };
       expect(isPermissibleRequest(req, te, '')).toBe(true);
     });
   });
@@ -304,7 +295,7 @@ describe('passThrough', () => {
           clone: () => req,
         }
       };
-      const tokenExpiration = { atExpires: (Date.now() / TTL_WINDOW) + 10000 };
+      const tokenExpiration = { atExpires: Date.now() + 10000 };
 
       const response = { ok: true };
       global.fetch = jest.fn(() => Promise.resolve(response));
@@ -322,7 +313,7 @@ describe('passThrough', () => {
           clone: () => req,
         }
       };
-      const tokenExpiration = { atExpires: (Date.now() / TTL_WINDOW) + 10000 };
+      const tokenExpiration = { atExpires: Date.now() + 10000 };
 
       const response = {
         ok: false,
@@ -347,8 +338,8 @@ describe('passThrough', () => {
         }
       };
       const tokenExpiration = {
-        atExpires: (Date.now() / TTL_WINDOW) + 1000, // at says it's valid, but ok == false
-        rtExpires: (Date.now() / TTL_WINDOW) + 1000
+        atExpires: Date.now() + 1000, // at says it's valid, but ok == false
+        rtExpires: Date.now() + 1000
       };
 
       const response = 'los alamos';
@@ -382,7 +373,7 @@ describe('passThrough', () => {
       };
       const tokenExpiration = {
         atExpires: Date.now() - 1000,
-        rtExpires: (Date.now() / TTL_WINDOW) + 1000
+        rtExpires: Date.now() + 1000
       };
 
       const response = 'los alamos';
