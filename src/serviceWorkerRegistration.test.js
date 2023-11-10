@@ -27,11 +27,13 @@ describe('registerServiceWorker', () => {
 
         await registerServiceWorker(okapiConfig, config, l);
 
+        const oConfig = { source: '@folio/stripes-core', type: 'OKAPI_CONFIG', value: okapiConfig };
         const lConfig = { source: '@folio/stripes-core', type: 'LOGGER_CONFIG', value: { categories: config.logCategories } };
 
-        expect(sw.postMessage).toHaveBeenCalledWith(lConfig);
+        expect(sw.postMessage).toHaveBeenNthCalledWith(1, oConfig);
+        expect(sw.postMessage).toHaveBeenNthCalledWith(2, lConfig);
         expect(typeof navigator.serviceWorker.oncontrollerchange).toBe('function');
-        expect(l.log).toHaveBeenCalledTimes(3);
+        expect(l.log).toHaveBeenCalledTimes(4);
       });
     };
 

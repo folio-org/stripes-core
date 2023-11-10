@@ -1,3 +1,5 @@
+/* eslint no-console: 0 */
+
 /**
  * registerSW
  * * register SW
@@ -55,12 +57,11 @@ export const registerServiceWorker = async (okapiConfig, config, logger) => {
     }
 
     // talk to me, goose
+    if (navigator.serviceWorker.controller) {
+      logger.log('rtr', 'This page is currently controlled by: ', navigator.serviceWorker.controller);
+    }
     navigator.serviceWorker.oncontrollerchange = () => {
-      if (navigator.serviceWorker.controller) {
-        logger.log('rtr', 'This page is currently controlled by: ', navigator.serviceWorker.controller);
-      } else {
-        logger.log('rtr', 'SERVICE WORKER NOT ACTIVE');
-      }
+      logger.log('rtr', 'This page is now controlled by: ', navigator.serviceWorker.controller);
     };
   }
 };

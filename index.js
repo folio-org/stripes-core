@@ -45,7 +45,4 @@ export { userLocaleConfig } from './src/loginServices';
 export * from './src/consortiaServices';
 export { default as queryLimit } from './src/queryLimit';
 export { default as init } from './src/init';
-
-/* RTR and service worker */
-export { postTokenExpiration } from './src/loginServices';
 export { registerServiceWorker, unregisterServiceWorker } from './src/serviceWorkerRegistration';

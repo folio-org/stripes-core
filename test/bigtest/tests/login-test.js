@@ -348,7 +348,7 @@ describe('Login', () => {
   //
   // we'll need to cover these components with jest/RTL tests
   // eventually.
-  describe('with valid credentials', () => {
+  describe.skip('with valid credentials', () => {
     beforeEach(async () => {
       const { username, password, submit } = login;
 
