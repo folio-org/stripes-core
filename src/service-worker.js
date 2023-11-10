@@ -1,1 +1,1 @@
-const funky = 'chicken';
+export default () => 'future of libraries is open';
