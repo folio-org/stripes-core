@@ -417,7 +417,11 @@ export const passThrough = (event, te, oUrl) => {
 
   // default: pass requests through to the network
   // console.log('-- (rtr-sw) passThrough NON-OKAPI', req.url)
-  return fetch(event.request);
+  return fetch(event.request, { credentials: 'include' })
+    .catch(e => {
+      console.error(e); // eslint-disable-line no-console
+      return Promise.reject(new Error(e));
+    });
 };
 
 /**

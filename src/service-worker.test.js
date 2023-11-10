@@ -268,7 +268,7 @@ describe('passThrough', () => {
       try {
         await passThrough(event, tokenExpiration, oUrl);
       } catch (e) {
-        expect(e).toEqual(error);
+        expect(e).toMatchObject(new Error(error));
       }
     });
   });
