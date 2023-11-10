@@ -11,7 +11,6 @@ import gatherActions from './gatherActions';
 import { destroyStore } from './mainActions';
 import { unregisterServiceWorker } from './serviceWorkerRegistration';
 
-
 import Root from './components/Root';
 
 export default class StripesCore extends Component {

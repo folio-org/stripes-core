@@ -47,4 +47,3 @@ export { default as queryLimit } from './src/queryLimit';
 export { default as init } from './src/init';
 
 export { registerServiceWorker, unregisterServiceWorker } from './src/serviceWorkerRegistration';
-
