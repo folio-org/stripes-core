@@ -5,8 +5,8 @@
 * Provide optional tenant argument to `useOkapiKy` hook. Refs STCOR-747.
 * Avoid private path when import `validateUser` function. Refs STCOR-749.
 * Ensure `<AppIcon>` is not cut off when app name is long. Refs STCOR-752.
-* Use cookies and RTR instead of directly handling the JWT. Refs STCOR-671, FOLIO-3627.
 * Allow console to be preserved on logout. STCOR-761.
+* Export `unregisterServiceWorker` to eliminate zombie service workers. Refs FOLIO-3627.
 
 ## [10.0.0](https://github.com/folio-org/stripes-core/tree/v10.0.0) (2023-10-11)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v9.0.0...v10.0.0)
