@@ -4,6 +4,7 @@ import { isEqual, find } from 'lodash';
 import { compose } from 'redux';
 import { injectIntl } from 'react-intl';
 import { withRouter } from 'react-router';
+import localforage from 'localforage';
 
 import { branding, config } from 'stripes-config';
 
@@ -11,7 +12,9 @@ import { Icon } from '@folio/stripes-components';
 
 import { withModules } from '../Modules';
 import { LastVisitedContext } from '../LastVisited';
-import { getLocale, logout as sessionLogout } from '../../loginServices';
+import { clearOkapiToken, clearCurrentUser } from '../../okapiActions';
+import { resetStore } from '../../mainActions';
+import { getLocale } from '../../loginServices';
 import {
   updateQueryResource,
   getLocationQuery,
@@ -120,8 +123,12 @@ class MainNav extends Component {
   returnToLogin() {
     const { okapi } = this.store.getState();
 
-    return getLocale(okapi.url, this.store, okapi.tenant)
-      .then(sessionLogout(okapi.url, this.store));
+    return getLocale(okapi.url, this.store, okapi.tenant).then(() => {
+      this.store.dispatch(clearOkapiToken());
+      this.store.dispatch(clearCurrentUser());
+      this.store.dispatch(resetStore());
+      localforage.removeItem('okapiSess');
+    });
   }
 
   // return the user to the login screen, but after logging in they will be brought to the default screen.

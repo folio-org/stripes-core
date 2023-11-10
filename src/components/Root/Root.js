@@ -20,8 +20,8 @@ import initialReducers from '../../initialReducers';
 import enhanceReducer from '../../enhanceReducer';
 import createApolloClient from '../../createApolloClient';
 import createReactQueryClient from '../../createReactQueryClient';
-import { setSinglePlugin, setBindings, setIsAuthenticated, setTimezone, setCurrency, updateCurrentUser } from '../../okapiActions';
-import { addServiceWorkerListeners, loadTranslations, checkOkapiSession } from '../../loginServices';
+import { setSinglePlugin, setBindings, setOkapiToken, setTimezone, setCurrency, updateCurrentUser } from '../../okapiActions';
+import { loadTranslations, checkOkapiSession } from '../../loginServices';
 import { getQueryResourceKey, getCurrentModule } from '../../locationService';
 import Stripes from '../../Stripes';
 import RootWithIntl from '../../RootWithIntl';
@@ -40,7 +40,7 @@ class Root extends Component {
   constructor(...args) {
     super(...args);
 
-    const { modules, history, okapi, store } = this.props;
+    const { modules, history, okapi } = this.props;
 
     this.reducers = { ...initialReducers };
     this.epics = {};
@@ -64,9 +64,6 @@ class Root extends Component {
 
     this.apolloClient = createApolloClient(okapi);
     this.reactQueryClient = createReactQueryClient();
-
-    // service-worker message listeners
-    addServiceWorkerListeners(okapi, store);
   }
 
   getChildContext() {
@@ -110,7 +107,7 @@ class Root extends Component {
   }
 
   render() {
-    const { logger, store, epics, config, okapi, actionNames, isAuthenticated, disableAuth, currentUser, currentPerms, locale, defaultTranslations, timezone, currency, plugins, bindings, discovery, translations, history, serverDown } = this.props;
+    const { logger, store, epics, config, okapi, actionNames, token, disableAuth, currentUser, currentPerms, locale, defaultTranslations, timezone, currency, plugins, bindings, discovery, translations, history, serverDown } = this.props;
 
     if (serverDown) {
       return <div>Error: server is down.</div>;
@@ -128,7 +125,7 @@ class Root extends Component {
       config,
       okapi,
       withOkapi: this.withOkapi,
-      setIsAuthenticated: (val) => { store.dispatch(setIsAuthenticated(val)); },
+      setToken: (val) => { store.dispatch(setOkapiToken(val)); },
       actionNames,
       locale,
       timezone,
@@ -169,7 +166,7 @@ class Root extends Component {
               >
                 <RootWithIntl
                   stripes={stripes}
-                  isAuthenticated={isAuthenticated}
+                  token={token}
                   disableAuth={disableAuth}
                   history={history}
                 />
@@ -194,7 +191,7 @@ Root.propTypes = {
     getState: PropTypes.func.isRequired,
     replaceReducer: PropTypes.func.isRequired,
   }),
-  isAuthenticated: PropTypes.bool,
+  token: PropTypes.string,
   disableAuth: PropTypes.bool.isRequired,
   logger: PropTypes.object.isRequired,
   currentPerms: PropTypes.object,
@@ -252,13 +249,13 @@ function mapStateToProps(state) {
     currentPerms: state.okapi.currentPerms,
     currentUser: state.okapi.currentUser,
     discovery: state.discovery,
-    isAuthenticated: state.okapi.isAuthenticated,
     locale: state.okapi.locale,
     okapi: state.okapi,
     okapiReady: state.okapi.okapiReady,
     plugins: state.okapi.plugins,
     serverDown: state.okapi.serverDown,
     timezone: state.okapi.timezone,
+    token: state.okapi.token,
     translations: state.okapi.translations,
   };
 }

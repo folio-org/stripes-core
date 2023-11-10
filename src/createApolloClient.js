@@ -1,10 +1,10 @@
 import { InMemoryCache, ApolloClient } from '@apollo/client';
 
-const createClient = ({ url, tenant }) => (new ApolloClient({
+const createClient = ({ url, tenant, token }) => (new ApolloClient({
   uri: `${url}/graphql`,
-  credentials: 'include',
   headers: {
     'X-Okapi-Tenant': tenant,
+    'X-Okapi-Token': token,
   },
   cache: new InMemoryCache(),
 }));
