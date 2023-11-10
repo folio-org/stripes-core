@@ -1,9 +1,10 @@
 # Change history for stripes-core
 
-## 10.0.3 IN PROGRESS
+## [10.0.3](https://github.com/folio-org/stripes-core/tree/v10.0.3) (2023-11-10)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.0.2...v10.0.3)
 
-<<<<<<< HEAD
 * Revert "Use cookies and RTR" until further notice. Refs FOLIO-3627.
+* Ensure `<AppIcon>` is not cut off when app name is long. Refs STCOR-752.
 
 ## [10.0.2](https://github.com/folio-org/stripes-core/tree/v10.0.2) (2023-11-06)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.0.1...v10.0.2)
@@ -14,11 +15,6 @@
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.0.0...v10.0.1)
 
 * Export `validateUser`. Refs STCOR-749.
-=======
-* Provide optional tenant argument to `useOkapiKy` hook. Refs STCOR-747.
-* Avoid private path when import `validateUser` function. Refs STCOR-749.
-* Ensure `<AppIcon>` is not cut off when app name is long. Refs STCOR-752.
->>>>>>> 2a0a3282 ([STCOR-752]: Ensure <AppIcon> is not cut off (for real this time) (#1358))
 
 ## [10.0.0](https://github.com/folio-org/stripes-core/tree/v10.0.0) (2023-10-11)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v9.0.0...v10.0.0)
