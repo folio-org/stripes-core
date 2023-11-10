@@ -128,11 +128,9 @@ describe('createOkapiSession', () => {
     const message = {
       source: '@folio/stripes-core',
       type: 'TOKEN_EXPIRATION',
-      value: {
-        tokenExpiration: {
-          atExpires: new Date('2023-11-06T18:05:33Z').getTime(),
-          rtExpires: new Date('2023-10-30T18:15:33Z').getTime(),
-        },
+      tokenExpiration: {
+        atExpires: new Date('2023-11-06T18:05:33Z').getTime(),
+        rtExpires: new Date('2023-10-30T18:15:33Z').getTime(),
       }
     };
     expect(postMessage).toHaveBeenCalledWith(message);
@@ -328,12 +326,10 @@ describe('validateUser', () => {
     const message = {
       source: '@folio/stripes-core',
       type: 'TOKEN_EXPIRATION',
-      value: {
-        tokenExpiration: {
-          atExpires: -1,
-          rtExpires: new Date(now).getTime() + (10 * 60 * 1000),
-        },
-      },
+      tokenExpiration: {
+        atExpires: -1,
+        rtExpires: new Date(now).getTime() + (10 * 60 * 1000),
+      }
     };
     expect(postMessage).toHaveBeenCalledWith(message);
 
@@ -484,7 +480,7 @@ describe('handleServiceWorkerMessage', () => {
         data: {
           source: '@folio/stripes-core',
           type: 'TOKEN_EXPIRATION',
-          value: { tokenExpiration },
+          tokenExpiration,
         }
       };
 
