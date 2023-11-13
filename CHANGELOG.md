@@ -1,5 +1,9 @@
 # Change history for stripes-core
 
+## 10.0.4 IN PROGRESS
+
+* Provide empty `service-worker.js`. Refs STCOR-671.
+
 ## [10.0.3](https://github.com/folio-org/stripes-core/tree/v10.0.3) (2023-11-10)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.0.2...v10.0.3)
 
