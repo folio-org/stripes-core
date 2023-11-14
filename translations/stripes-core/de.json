@@ -141,8 +141,8 @@
     "title.noPermission": "Keine Berechtigung",
     "front.error.noPermission": "Sie haben keine Berechtigung, diese App/diesen Datensatz aufzurufen",
     "button.duplicate": "Duplizieren",
-    "stale.warning": "The application has changed on the server and needs to be refreshed.",
-    "stale.reload": "Click here to reload.",
-    "placeholder.forgotPassword": "Enter email or phone",
-    "placeholder.forgotUsername": "Enter email or phone"
+    "stale.warning": "Die Anwendung hat sich auf dem Server geändert und muss neu geladen werden.",
+    "stale.reload": "Zum Neuladen hier klicken.",
+    "placeholder.forgotPassword": "E-Mail oder Telefonnummer eingeben",
+    "placeholder.forgotUsername": "E-Mail oder Telefonnummer eingeben"
 }
