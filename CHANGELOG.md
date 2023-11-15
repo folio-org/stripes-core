@@ -7,6 +7,7 @@
 * Ensure `<AppIcon>` is not cut off when app name is long. Refs STCOR-752.
 * Allow console to be preserved on logout. STCOR-761.
 * Export `unregisterServiceWorker` to eliminate zombie service workers. Refs FOLIO-3627.
+* handle access-control via cookies. Refs STCOR-671.
 
 ## [10.0.0](https://github.com/folio-org/stripes-core/tree/v10.0.0) (2023-10-11)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v9.0.0...v10.0.0)
