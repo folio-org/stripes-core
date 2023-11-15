@@ -9,7 +9,6 @@ const withOkapiKy = (WrappedComponent) => {
       stripes: PropTypes.shape({
         okapi: PropTypes.shape({
           tenant: PropTypes.string.isRequired,
-          token: PropTypes.string.isRequired,
           url: PropTypes.string.isRequired,
         }).isRequired,
       }).isRequired,
@@ -17,14 +16,13 @@ const withOkapiKy = (WrappedComponent) => {
 
     constructor(props) {
       super();
-      const { tenant, token, url } = props.stripes.okapi;
+      const { tenant, url } = props.stripes.okapi;
       this.okapiKy = ky.create({
         prefixUrl: url,
         hooks: {
           beforeRequest: [
             request => {
               request.headers.set('X-Okapi-Tenant', tenant);
-              request.headers.set('X-Okapi-Token', token);
             }
           ]
         }

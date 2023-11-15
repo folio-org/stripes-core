@@ -29,6 +29,13 @@ export default function configure() {
     launchDescriptor : {}
   }]);
 
+  this.get('/service-worker.js', {
+    monkey: 'bagel'
+  });
+  this.get('/_/env', {
+    monkey: 'bagel'
+  });
+
   this.get('/saml/check', {
     ssoEnabled: false
   });
@@ -43,11 +50,10 @@ export default function configure() {
   });
   this.post('/bl-users/password-reset/reset', {}, 401);
 
+  this.post('/authn/logout', {}, 204);
 
-  this.post('/bl-users/login', () => {
-    return new Response(201, {
-      'X-Okapi-Token': `myOkapiToken:${Date.now()}`
-    }, {
+  this.post('/bl-users/login-with-expiry', () => {
+    return new Response(201, {}, {
       user: {
         id: 'test',
         username: 'testuser',

@@ -1,5 +1,5 @@
 export default (server) => {
-  server.post('bl-users/login', {
+  server.post('bl-users/login-with-expiry', {
     errorMessage: JSON.stringify(
       { errors: [
         {
