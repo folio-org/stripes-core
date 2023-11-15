@@ -26,8 +26,9 @@
  *
  */
 
-import localforage from 'localforage';
 import { okapi } from 'stripes-config';
+import { getTokenExpiry, setTokenExpiry } from './token-util';
+import { RTRError } from './Errors';
 
 /** how many times to check the lock before giving up */
 const IS_ROTATING_RETRIES = 100;
@@ -90,6 +91,8 @@ export const isOkapiRequest = (resource, oUrl) => {
     return resource.startsWith(oUrl);
   } else if (resource instanceof URL) {
     return undefined.origin.startsWith(oUrl);
+  } else if (resource instanceof Request) {
+    return resource.url.startsWith(oUrl);
   }
 
   console.warn('Unexpected resource', resource); // eslint-disable-line no-console
@@ -183,48 +186,50 @@ export class FFetch {
     }
 
     this.isRotating = true;
-    return this.ogFetch.apply(global, [`${okapi.url}/authn/refresh`, {
-      headers: {
-        'content-type': 'application/json',
-        'x-okapi-tenant': okapi.tenant,
-      },
-      method: 'POST',
-      credentials: 'include',
-      mode: 'cors',
-    }])
-      .then(res => {
-        if (res.ok) {
-          return res.json();
-        }
+    try {
+      return this.ogFetch.apply(global, [`${okapi.url}/authn/refresh`, {
+        headers: {
+          'content-type': 'application/json',
+          'x-okapi-tenant': okapi.tenant,
+        },
+        method: 'POST',
+        credentials: 'include',
+        mode: 'cors',
+      }])
+        .then(res => {
+          if (res.ok) {
+            return res.json();
+          }
 
-        // rtr failure. return an error message if we got one.
-        return res.json()
-          .then(json => {
-            this.isRotating = false;
+          // rtr failure. return an error message if we got one.
+          return res.json()
+            .then(json => {
+              this.isRotating = false;
 
-            if (Array.isArray(json.errors) && json.errors[0]) {
-              throw new Error(`${json.errors[0].message} (${json.errors[0].code})`);
-            } else {
-              throw new Error('RTR response failure');
+              if (Array.isArray(json.errors) && json.errors[0]) {
+                throw new Error(`${json.errors[0].message} (${json.errors[0].code})`);
+              } else {
+                throw new Error('RTR response failure');
+              }
+            });
+        })
+        .then(json => {
+          this.logger.log('rtr', '**     success!');
+          this.isRotating = false;
+          return adjustTokenExpiration({
+            tokenExpiration: {
+              atExpires: new Date(json.accessTokenExpiration).getTime(),
+              rtExpires: new Date(json.refreshTokenExpiration).getTime(),
             }
           });
-      })
-      .then(json => {
-        this.logger.log('rtr', '**     success!');
-        this.isRotating = false;
-        return adjustTokenExpiration({
-          tokenExpiration: {
-            atExpires: new Date(json.accessTokenExpiration).getTime(),
-            rtExpires: new Date(json.refreshTokenExpiration).getTime(),
-          }
+        })
+        .then(te => {
+          return setTokenExpiry(te);
         });
-      })
-      .then(te => {
-        return localforage.getItem('okapiSess')
-          .then(sdata => {
-            return localforage.setItem('okapiSess', { ...sdata, tokenExpiration: te });
-          });
-      });
+    } catch (err) {
+      // failed fetch from RTR service.
+      throw new RTRError(err);
+    }
   };
 
   /**
@@ -358,31 +363,39 @@ export class FFetch {
     // okapi requests are subject to RTR
     if (isOkapiRequest(resource, okapi.url)) {
       this.logger.log('rtr', 'will fetch', resource);
-      if (isLogoutRequest(resource, okapi.url)) {
-        return this.passThroughLogout(resource, options);
-      }
+      try {
+        if (isLogoutRequest(resource, okapi.url)) {
+          return this.passThroughLogout(resource, options);
+        }
 
-      const sdata = await localforage.getItem('okapiSess');
-      if (this.isPermissibleRequest(resource, sdata?.tokenExpiration, okapi.url)) {
-        return this.passThroughWithAT(resource, options);
-      }
+        const te = await getTokenExpiry();
+        if (this.isPermissibleRequest(resource, te, okapi.url)) {
+          return this.passThroughWithAT(resource, options);
+        }
 
-      if (isValidRT(sdata?.tokenExpiration, this.logger)) {
-        this.logger.log('rtr', '     valid RT');
-        return this.passThroughWithRT(resource, options);
-      }
+        if (isValidRT(te, this.logger)) {
+          this.logger.log('rtr', '     valid RT');
+          return this.passThroughWithRT(resource, options);
+        }
 
-      // kill me softly: send an empty response body, which allows the fetch
-      // to return without error while the clients catch up, read the RTR_ERROR
-      // and handle it, hopefully by logging out.
-      // Promise.reject() here would result in every single fetch in every
-      // single application needing to thoughtfully handle RTR_ERROR responses.
-      // @@this.messageToClient(event, { type: 'RTR_ERROR', error: `AT/RT failure accessing ${req.url}` });
-      return Promise.resolve(new Response(JSON.stringify({})));
+        // kill me softly: send an empty response body, which allows the fetch
+        // to return without error while the clients catch up, read the RTR_ERROR
+        // and handle it, hopefully by logging out.
+        // Promise.reject() here would result in every single fetch in every
+        // single application needing to thoughtfully handle RTR_ERROR responses.
+        // @@this.messageToClient(event, { type: 'RTR_ERROR', error: `AT/RT failure accessing ${req.url}` });
+        return Promise.resolve(new Response(JSON.stringify({})));
+      } catch (err) {
+        if (err instanceof RTRError) {
+          // implement retries?
+          // logout?
+          console.log('caught an rtr error, ma!');
+        }
+      }
     }
 
     // default: pass requests through to the network
-    // console.log('-- (rtr-sw) passThrough NON-OKAPI', req.url)
+    // console.log('-- (rtr-sw) passThrough NON-OKAPI', resource);
     return Promise.resolve(this.ogFetch.apply(global, [resource, options]));
   };
 }
