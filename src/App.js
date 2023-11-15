@@ -11,7 +11,8 @@ import gatherActions from './gatherActions';
 import { destroyStore } from './mainActions';
 
 import Root from './components/Root';
-import { registerServiceWorker } from './serviceWorkerRegistration';
+// import { registerServiceWorker } from './serviceWorkerRegistration';
+import FolioFetch from './folio-fetch';
 
 export default class StripesCore extends Component {
   static propTypes = {
@@ -36,7 +37,8 @@ export default class StripesCore extends Component {
     // the service worker functions as a proxy between between the browser
     // and the network, intercepting ALL fetch requests to make sure they
     // are accompanied by a valid access-token.
-    registerServiceWorker(okapiConfig, config, this.logger);
+    // registerServiceWorker(okapiConfig, config, this.logger);
+    this.ffetch = new FolioFetch();
   }
 
   componentWillUnmount() {

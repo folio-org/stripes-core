@@ -50,7 +50,12 @@
  *
  */
 
-import { okapiUrl, okapiTenant } from 'micro-stripes-config';
+import { okapi } from 'stripes-config';
+
+const {
+  url: okapiUrl,
+  tenant: okapiTenant
+} = okapi;
 
 /** { atExpires, rtExpires } both are JS millisecond timestamps */
 let tokenExpiration = null;
@@ -327,9 +332,9 @@ const passThroughWithRT = (event) => {
  * @returns Promise
  * @throws if any fetch fails
  */
-const passThroughWithAT = (event) => {
+export const passThroughWithAT = (event, handler) => {
   if (shouldLog) console.log('-- (rtr-sw)    (valid AT or authn request)');
-  return fetch(event.request, { credentials: 'include' })
+  return handler(event.request, { credentials: 'include' })
     .then(response => {
       // Handle three different situations:
       // 1. 403: AT was expired (try RTR)

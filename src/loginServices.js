@@ -392,21 +392,21 @@ export async function logout(okapiUrl, store) {
  * @returns {Promise}
  */
 export const postTokenExpiration = (tokenExpiration) => {
-  if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
-    return navigator.serviceWorker.ready
-      .then((reg) => {
-        const sw = reg.active;
-        if (sw) {
-          const message = { source: '@folio/stripes-core', type: 'TOKEN_EXPIRATION', value: { tokenExpiration } };
-          logger.log('rtr', '<= sending', message);
-          sw.postMessage(message);
-        } else {
-          logger.log('rtr', 'error, could not send TOKEN_EXPIRATION message; no ServiceWorker is active');
-        }
-      });
-  }
+  // if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+  //   return navigator.serviceWorker.ready
+  //     .then((reg) => {
+  //       const sw = reg.active;
+  //       if (sw) {
+  //         const message = { source: '@folio/stripes-core', type: 'TOKEN_EXPIRATION', value: { tokenExpiration } };
+  //         logger.log('rtr', '<= sending', message);
+  //         sw.postMessage(message);
+  //       } else {
+  //         logger.log('rtr', 'error, could not send TOKEN_EXPIRATION message; no ServiceWorker is active');
+  //       }
+  //     });
+  // }
 
-  logger.log('rtr', 'error, could not send TOKEN_EXPIRATION message; navigator.serviceWorker is empty');
+  // logger.log('rtr', 'error, could not send TOKEN_EXPIRATION message; navigator.serviceWorker is empty');
   return Promise.resolve();
 };
 
