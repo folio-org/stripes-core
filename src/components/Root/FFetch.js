@@ -1,11 +1,10 @@
 /**
- * TLDR: override global fetch to perform refresh-token-rotation for Okapi requests.
+ * TLDR: override global fetch to perform token-rotation for FOLIO API requests.
  *
  * The gory details:
- * The fetch listener and the function it delegates to, passThrough, is
- * where things get interesting. The basic workflow is to check whether
- * a request is bound for Okapi and intercept it in order to perform RTR
- * if necessary, or to let the request pass through.
+ * The basic workflow is to check whether a request is bound for a FOLIO API,
+ * intercepting those that are and making sure they are accompanied by
+ * valid tokens.
  *
  * Although JS cannot read the _actual_ timeouts for the AT and RT,
  * those timeouts are also returned in the request-body of the login
@@ -14,22 +13,27 @@
  * AT appears valid, or if the request is destined for an endpoint that
  * does not require authorization, the request is passed through. If the
  * AT has expired, an RTR request executes first and then the original
- * request executes after the RTR promise has resolved.
+ * request executes after the RTR promise resolves and new expiration data
+ * is cached locally (in an instance variable) and in local storage (to
+ * support the case where multiple tabs are open and one tab performs RTR
+ * without the other knowing).
  *
- * When RTR succeeds, a new message with type === TOKEN_EXPIRATION is
- * sent to clients with timeouts from the rotation request in the attribute
- * 'tokenExpiration'. The response is a resolved Promise.
+ * Fetches can fail in a variety of ways, but there are really only two
+ * categories that are relevant here:
  *
- * When RTR fails, a new message with type === RTR_ERROR is sent to clients
- * with additional details in the attribute 'error'. The response is a
- * rejected Promise.
+ * 1 Failure due to RTR
+ * 2 Failure due to anything else
+ *
+ * RTR failures should cause logout since they indicate an expired or
+ * otherwise invalid RT, which is unrecoverable. Other request failures
+ * should be handled locally within the applications that initiated the
+ * requests.
  *
  */
 
 import { okapi } from 'stripes-config';
 import { getTokenExpiry, setTokenExpiry } from './token-util';
 import { RTRError } from './Errors';
-import OXHR from './OXHR';
 
 /** how many times to check the lock before giving up */
 const IS_ROTATING_RETRIES = 100;
