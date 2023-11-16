@@ -29,6 +29,7 @@
 import { okapi } from 'stripes-config';
 import { getTokenExpiry, setTokenExpiry } from './token-util';
 import { RTRError } from './Errors';
+import OXHR from './OXHR';
 
 /** how many times to check the lock before giving up */
 const IS_ROTATING_RETRIES = 100;
@@ -90,7 +91,7 @@ export const isOkapiRequest = (resource, oUrl) => {
   if (typeof resource === 'string') {
     return resource.startsWith(oUrl);
   } else if (resource instanceof URL) {
-    return undefined.origin.startsWith(oUrl);
+    return resource.origin.startsWith(oUrl);
   } else if (resource instanceof Request) {
     return resource.url.startsWith(oUrl);
   }
@@ -144,6 +145,9 @@ export class FFetch {
     // save a reference to fetch, and then reassign the global :scream:
     this.ogFetch = global.fetch;
     global.fetch = this.nkotbFetch; // eslint-disable-line no-global-assign
+
+    this.NativeXHR = global.XMLHttpRequest;
+    global.XMLHttpRequest = OXHR;
   }
 
   /** { atExpires, rtExpires } both are JS millisecond timestamps */
@@ -272,7 +276,7 @@ export class FFetch {
     return this.rtr()
       .then(() => {
         this.logger.log('rtr', 'post-rtr-fetch', resource);
-        return this.ogFetch.apply(global, [resource, options]);
+        return this.ogFetch.apply(global, [resource, { ...options, credentials: 'include' }]);
       })
       .catch((rtre) => {
         // kill me softly: send an empty response body, which allows the fetch
@@ -301,7 +305,7 @@ export class FFetch {
    */
   passThroughWithAT = (resource, options) => {
     this.logger.log('rtr', '   (valid AT or authn request)');
-    return this.ogFetch.apply(global, [resource, options])
+    return this.ogFetch.apply(global, [resource, { ...options, credentials: 'include' }])
       .then(response => {
         // Handle three different situations:
         // 1. 403: AT was expired (try RTR)
