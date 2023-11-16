@@ -1,11 +1,10 @@
 /**
- * TLDR: override global fetch to perform refresh-token-rotation for Okapi requests.
+ * TLDR: override global fetch to perform token-rotation for FOLIO API requests.
  *
  * The gory details:
- * The fetch listener and the function it delegates to, passThrough, is
- * where things get interesting. The basic workflow is to check whether
- * a request is bound for Okapi and intercept it in order to perform RTR
- * if necessary, or to let the request pass through.
+ * The basic workflow is to check whether a request is bound for a FOLIO API,
+ * intercepting those that are and making sure they are accompanied by
+ * valid tokens.
  *
  * Although JS cannot read the _actual_ timeouts for the AT and RT,
  * those timeouts are also returned in the request-body of the login
@@ -14,21 +13,27 @@
  * AT appears valid, or if the request is destined for an endpoint that
  * does not require authorization, the request is passed through. If the
  * AT has expired, an RTR request executes first and then the original
- * request executes after the RTR promise has resolved.
+ * request executes after the RTR promise resolves and new expiration data
+ * is cached locally (in an instance variable) and in local storage (to
+ * support the case where multiple tabs are open and one tab performs RTR
+ * without the other knowing).
  *
- * When RTR succeeds, a new message with type === TOKEN_EXPIRATION is
- * sent to clients with timeouts from the rotation request in the attribute
- * 'tokenExpiration'. The response is a resolved Promise.
+ * Fetches can fail in a variety of ways, but there are really only two
+ * categories that are relevant here:
  *
- * When RTR fails, a new message with type === RTR_ERROR is sent to clients
- * with additional details in the attribute 'error'. The response is a
- * rejected Promise.
+ * 1 Failure due to RTR
+ * 2 Failure due to anything else
+ *
+ * RTR failures should cause logout since they indicate an expired or
+ * otherwise invalid RT, which is unrecoverable. Other request failures
+ * should be handled locally within the applications that initiated the
+ * requests.
  *
  */
 
 import { okapi } from 'stripes-config';
 import { getTokenExpiry, setTokenExpiry } from './token-util';
-import { RTRError } from './Errors';
+import { RTRError, UnexpectedResourceError } from './Errors';
 import OXHR from './OXHR';
 
 /** how many times to check the lock before giving up */
@@ -63,47 +68,91 @@ const IS_ROTATING_INTERVAL = 100;
 const TTL_WINDOW = 0.8;
 
 /**
- * isLogoutRequest
- * Logout requests are always permissible but need special handling
- * because they should never fail.
+ * resourceMapper
+ * Given a resource that represent a URL in some form (a string
+ * such as "https://barbenheimer-for-best-picture.com" or a URL object
+ * or a Request object), and a function that expects a string, extract
+ * the URL as a string and pass it to the function. Throw if the
+ * resource doesn't represent a known type.
  *
- * @param {Request} req clone of the original event.request object
- * @param {string} oUrl okapi URL
- * @returns boolean true if the request URL matches a logout URL
+ * @param {string|URL|Request} resource
+ * @param {*} fx function to call
+ * @returns boolean
+ * @throws UnexpectedResourceError if resource is not a string, URL, or Request
+ */
+export const resourceMapper = (resource, fx) => {
+  if (typeof resource === 'string') {
+    return fx(resource);
+  } else if (resource instanceof URL) {
+    return fx(resource.origin);
+  } else if (resource instanceof Request) {
+    return fx(resource.url);
+  }
+
+  throw new UnexpectedResourceError(resource);
+};
+
+/**
+ * isLogoutRequest
+ * Return true if the given resource is a logout request; false otherwise.
+ *
+ * @param {*} resource one of string, URL, Request
+ * @param {string} oUrl FOLIO API origin
+ * @returns boolean
  */
 export const isLogoutRequest = (resource, oUrl) => {
   const permissible = [
     '/authn/logout',
   ];
 
-  return !!permissible.find(i => resource.startsWith(`${oUrl}${i}`));
+  const isLogoutResource = (string) => {
+    return !!permissible.find(i => string.startsWith(`${oUrl}${i}`));
+  };
+
+  try {
+    return resourceMapper(resource, isLogoutResource);
+  } catch (rme) {
+    if (rme instanceof UnexpectedResourceError) {
+      console.warn(rme.message, resource); // eslint-disable-line no-console
+      return false;
+    }
+
+    throw rme;
+  }
 };
 
 /**
- * isOkapiRequest
- * Return true if the request origin matches our okapi URL, i.e. if this is a
- * request that needs to include a valid AT.
- * @param {Request} req
- * @param {string} oUrl okapi URL
+ * isFolioApiRequest
+ * Return true if the resource origin matches FOLIO's API origin, i.e. if
+ * this is a request that needs to include a valid AT.
+ *
+ * @param {*} resource one of string, URL, request
+ * @param {string} oUrl FOLIO API origin
  * @returns boolean
  */
-export const isOkapiRequest = (resource, oUrl) => {
-  if (typeof resource === 'string') {
-    return resource.startsWith(oUrl);
-  } else if (resource instanceof URL) {
-    return resource.origin.startsWith(oUrl);
-  } else if (resource instanceof Request) {
-    return resource.url.startsWith(oUrl);
-  }
+export const isFolioApiRequest = (resource, oUrl) => {
+  const isFolioApiResource = (string) => {
+    return string.startsWith(oUrl);
+  };
 
-  console.warn('Unexpected resource', resource); // eslint-disable-line no-console
-  return false;
+  try {
+    return resourceMapper(resource, isFolioApiResource);
+  } catch (rme) {
+    if (rme instanceof UnexpectedResourceError) {
+      console.warn(rme.message, resource); // eslint-disable-line no-console
+      return false;
+    }
+
+    throw rme;
+  }
 };
 
 /**
  * isValidAT
- * return true if tokenExpiration.atExpires is in the future
+ * Return true if tokenExpiration.atExpires is in the future; false otherwise.
+ *
  * @param {object} te tokenExpiration shaped like { atExpires, rtExpires }
+ * @param {@folio/stripes/logger} logger
  * @returns boolean
  */
 export const isValidAT = (te, logger) => {
@@ -114,8 +163,10 @@ export const isValidAT = (te, logger) => {
 
 /**
  * isValidRT
- * return true if tokenExpiration.rtExpires is in the future
+ * Return true if tokenExpiration.rtExpires is in the future; false otherwise.
+ *
  * @param {object} te tokenExpiration shaped like { atExpires, rtExpires }
+ * @param {@folio/stripes/logger} logger
  * @returns boolean
  */
 export const isValidRT = (te, logger) => {
@@ -163,7 +214,7 @@ export class FFetch {
    * Make a POST request to /authn/refresh, including the current credentials,
    * and send a TOKEN_EXPIRATION event to clients that includes the new AT/RT
    * expiration timestamps.
-   * @param {Event} event
+   *
    * @returns Promise
    * @throws if RTR fails
    */
@@ -190,50 +241,46 @@ export class FFetch {
     }
 
     this.isRotating = true;
-    try {
-      return this.ogFetch.apply(global, [`${okapi.url}/authn/refresh`, {
-        headers: {
-          'content-type': 'application/json',
-          'x-okapi-tenant': okapi.tenant,
-        },
-        method: 'POST',
-        credentials: 'include',
-        mode: 'cors',
-      }])
-        .then(res => {
-          if (res.ok) {
-            return res.json();
-          }
+    return this.ogFetch.apply(global, [`${okapi.url}/authn/refresh`, {
+      headers: {
+        'content-type': 'application/json',
+        'x-okapi-tenant': okapi.tenant,
+      },
+      method: 'POST',
+      credentials: 'include',
+      mode: 'cors',
+    }])
+      .then(res => {
+        if (res.ok) {
+          return res.json();
+        }
 
-          // rtr failure. return an error message if we got one.
-          return res.json()
-            .then(json => {
-              this.isRotating = false;
-
-              if (Array.isArray(json.errors) && json.errors[0]) {
-                throw new Error(`${json.errors[0].message} (${json.errors[0].code})`);
-              } else {
-                throw new Error('RTR response failure');
-              }
-            });
-        })
-        .then(json => {
-          this.logger.log('rtr', '**     success!');
-          this.isRotating = false;
-          return adjustTokenExpiration({
-            tokenExpiration: {
-              atExpires: new Date(json.accessTokenExpiration).getTime(),
-              rtExpires: new Date(json.refreshTokenExpiration).getTime(),
+        // rtr failure. return an error message if we got one.
+        return res.json()
+          .then(json => {
+            this.isRotating = false;
+            if (Array.isArray(json.errors) && json.errors[0]) {
+              throw new RTRError(`${json.errors[0].message} (${json.errors[0].code})`);
+            } else {
+              throw new RTRError('RTR response failure');
             }
           });
-        })
-        .then(te => {
-          return setTokenExpiry(te);
+      })
+      .then(json => {
+        this.logger.log('rtr', '**     success!');
+        this.isRotating = false;
+        return adjustTokenExpiration({
+          tokenExpiration: {
+            atExpires: new Date(json.accessTokenExpiration).getTime(),
+            rtExpires: new Date(json.refreshTokenExpiration).getTime(),
+          }
         });
-    } catch (err) {
-      // failed fetch from RTR service.
-      throw new RTRError(err);
-    }
+      })
+      .then(te => {
+        // @@dispatchEvent(RTR rotation event)
+        this.tokenExpiration = te;
+        return setTokenExpiry(te);
+      });
   };
 
   /**
@@ -241,9 +288,9 @@ export class FFetch {
    * Some requests are always permissible, e.g. auth-n and forgot-password.
    * Others are only permissible if the Access Token is still valid.
    *
-   * @param {Request} req clone of the original event.request object
+   * @param {*} resource one of string, URL, Request
    * @param {object} te token expiration shaped like { atExpires, rtExpires }
-   * @param {string} oUrl Okapi URL
+   * @param {string} oUrl FOLIO API origin
    * @returns boolean true if the AT is valid or the request is always permissible
    */
   isPermissibleRequest = (resource, te, oUrl) => {
@@ -259,33 +306,37 @@ export class FFetch {
       '/saml/check',
     ];
 
-    this.logger.log('rtr', `AT invalid for ${resource}`);
-    return !!permissible.find(i => resource.startsWith(`${oUrl}${i}`));
-  };
+    const isPermissibleResource = (string) => {
+      return !!permissible.find(i => string.startsWith(`${oUrl}${i}`));
+    };
 
+    this.logger.log('rtr', `AT invalid for resource ${resource}`);
+    try {
+      return resourceMapper(resource, isPermissibleResource);
+    } catch (rme) {
+      if (rme instanceof UnexpectedResourceError) {
+        console.warn(rme.message, resource); // eslint-disable-line no-console
+        return false;
+      }
+
+      throw rme;
+    }
+  };
 
   /**
    * passThroughWithRT
    * Perform RTR then return the original fetch. on error, post an RTR_ERROR
    * message to clients and return an empty response in a resolving promise.
    *
-   * @param {Event} event
+   * @param {*} resource one of string, URL, Request
+   * @params {object} options
    * @returns Promise
    */
   passThroughWithRT = (resource, options) => {
     return this.rtr()
       .then(() => {
         this.logger.log('rtr', 'post-rtr-fetch', resource);
-        return this.ogFetch.apply(global, [resource, { ...options, credentials: 'include' }]);
-      })
-      .catch((rtre) => {
-        // kill me softly: send an empty response body, which allows the fetch
-        // to return without error while the clients catch up, read the RTR_ERROR
-        // and handle it, hopefully by logging out.
-        // Promise.reject() here would result in every single fetch in every
-        // single application needing to thoughtfully handle RTR_ERROR responses.
-        console.error(rtre);
-        return Promise.resolve(new Response(JSON.stringify({})));
+        return this.ogFetch.apply(global, [resource, options]);
       });
   };
 
@@ -299,7 +350,9 @@ export class FFetch {
    * yay, pass through the fetch as we originally intended because now we
    * know the AT will be valid. If RTR fails, then it doesn't matter about
    * Lou Reed. He may be god. We're still throwing an Error.
-   * @param {Event} event
+   *
+   * @param {*} resource and resource acceptable to fetch()
+   * @param {object} options
    * @returns Promise
    * @throws if any fetch fails
    */
@@ -308,7 +361,7 @@ export class FFetch {
     return this.ogFetch.apply(global, [resource, { ...options, credentials: 'include' }])
       .then(response => {
         // Handle three different situations:
-        // 1. 403: AT was expired (try RTR)
+        // 1. 403 (which should be a 401): AT was expired (try RTR)
         // 2. 403: AT was valid but corresponding permissions were insufficent (return response)
         // 3. *: Anything else (return response)
         if (response.status === 403 && response.headers['content-type'] === 'text/plain') {
@@ -337,7 +390,9 @@ export class FFetch {
    * That is, if it fails, we just pretend like it never happened
    * instead of blowing up and causing somebody to get stuck in the
    * logout process.
-   * @param {Event} event
+   *
+   * @param {*} resource any resource acceptable to fetch()
+   * @param {object} options
    * @returns Promise
    */
   passThroughLogout = (resource, options) => {
@@ -352,54 +407,54 @@ export class FFetch {
 
   /**
    * passThrough
-   * Inspect event.request to determine whether it's an okapi request.
+   * Inspect resource to determine whether it's a FOLIO API request.
    * If it is, make sure its AT is valid or perform RTR before executing it.
    * If it isn't, execute it immediately. If RTR fails catastrophically,
-   * post an RTR_ERROR message to clients and return an empty Response in a
-   * resolving promise in order to let the top-level error-handler pick it up.
-   * @param {Event} event
-   * @param {object} te tokenExpiration shaped like { atExpires, rtExpires }
-   * @param {string} oUrl okapiUrl
+   * post an RTR_ERROR event (so a global event handler can pick up the error)
+   * and return Promise.resolve with a dummy Response to avoid blowing up
+   * application-local error handlers (er, the lack of application-level error
+   * handlers).
+   *
+   * @param {*} resource one of string, URL, Request
+   * @param {object} options
    * @returns Promise
    * @throws if any fetch fails
    */
   nkotbFetch = async (resource, options) => {
-    // okapi requests are subject to RTR
-    if (isOkapiRequest(resource, okapi.url)) {
+    // FOLIO API requests are subject to RTR
+    if (isFolioApiRequest(resource, okapi.url)) {
       this.logger.log('rtr', 'will fetch', resource);
       try {
         if (isLogoutRequest(resource, okapi.url)) {
           return this.passThroughLogout(resource, options);
         }
 
-        const te = await getTokenExpiry();
-        if (this.isPermissibleRequest(resource, te, okapi.url)) {
+        // if our cached tokens appear to have expired, pull them from storage.
+        // maybe another window updated them for us without us knowing.
+        if (!isValidAT(this.tokenExpiration, this.logger)) {
+          this.logger.log('rtr', 'local tokens expired; fetching from storage');
+          this.tokenExpiration = await getTokenExpiry();
+        }
+
+        if (this.isPermissibleRequest(resource, this.tokenExpiration, okapi.url)) {
           return this.passThroughWithAT(resource, options);
         }
 
-        if (isValidRT(te, this.logger)) {
-          this.logger.log('rtr', '     valid RT');
-          return this.passThroughWithRT(resource, options);
-        }
-
-        // kill me softly: send an empty response body, which allows the fetch
-        // to return without error while the clients catch up, read the RTR_ERROR
-        // and handle it, hopefully by logging out.
-        // Promise.reject() here would result in every single fetch in every
-        // single application needing to thoughtfully handle RTR_ERROR responses.
-        // @@this.messageToClient(event, { type: 'RTR_ERROR', error: `AT/RT failure accessing ${req.url}` });
-        return Promise.resolve(new Response(JSON.stringify({})));
+        return this.passThroughWithRT(resource, options);
       } catch (err) {
+        // if we got an RTR error, that's on us; logout!
+        // every other problem is somebody else's problem
+        // and we rethrow for them to handle it.
         if (err instanceof RTRError) {
-          // implement retries?
-          // logout?
-          console.log('caught an rtr error, ma!');
+          console.error('caught an rtr error, ma!');
+          // @@ dispatchEvent(RTR failure)
+        } else {
+          throw err;
         }
       }
     }
 
     // default: pass requests through to the network
-    // console.log('-- (rtr-sw) passThrough NON-OKAPI', resource);
     return Promise.resolve(this.ogFetch.apply(global, [resource, options]));
   };
 }
