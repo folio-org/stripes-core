@@ -61,6 +61,19 @@ function setBindings(bindings) {
   };
 }
 
+function setOkapiToken(token) {
+  return {
+    type: 'SET_OKAPI_TOKEN',
+    token,
+  };
+}
+
+function clearOkapiToken() {
+  return {
+    type: 'CLEAR_OKAPI_TOKEN',
+  }
+}
+
 function setIsAuthenticated(b) {
   return {
     type: 'SET_IS_AUTHENTICATED',
@@ -132,6 +145,7 @@ function setTokenExpiration(tokenExpiration) {
 export {
   checkSSO,
   clearCurrentUser,
+  clearOkapiToken,
   setAuthError,
   setBindings,
   setCurrency,
@@ -141,6 +155,7 @@ export {
   setLocale,
   setLoginData,
   setOkapiReady,
+  setOkapiToken,
   setPlugins,
   setServerDown,
   setSessionData,
