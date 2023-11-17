@@ -8,6 +8,7 @@ import { resetStore } from './mainActions';
 
 import {
   clearCurrentUser,
+  clearOkapiToken,
   setCurrentPerms,
   setLocale,
   setTimezone,
@@ -21,12 +22,13 @@ import {
   setOkapiReady,
   setServerDown,
   setSessionData,
-  setTokenExpiration,
   setLoginData,
   updateCurrentUser,
 } from './okapiActions';
 import processBadResponse from './processBadResponse';
 import configureLogger from './configureLogger';
+
+import { RTR_ERROR_EVENT } from './components/Root/Errors';
 
 // export supported locales, i.e. the languages we provide translations for
 export const supportedLocales = [
@@ -77,10 +79,11 @@ export const userLocaleConfig = {
 
 const logger = configureLogger(config);
 
-function getHeaders(tenant) {
+function getHeaders(tenant, token) {
   return {
     'X-Okapi-Tenant': tenant,
     'Content-Type': 'application/json',
+    ...(token && { 'X-Okapi-Token': token }),
   };
 }
 
@@ -172,7 +175,7 @@ export function loadTranslations(store, locale, defaultTranslations = {}) {
  */
 function dispatchLocale(url, store, tenant) {
   return fetch(url, {
-    headers: getHeaders(tenant),
+    headers: getHeaders(tenant, store.getState().okapi.token),
     credentials: 'include',
     mode: 'cors',
   })
@@ -251,7 +254,7 @@ export function getUserLocale(okapiUrl, store, tenant, userId) {
  */
 export function getPlugins(okapiUrl, store, tenant) {
   return fetch(`${okapiUrl}/configurations/entries?query=(module==PLUGINS)`, {
-    headers: getHeaders(tenant),
+    headers: getHeaders(tenant, store.getState().okapi.token),
     credentials: 'include',
     mode: 'cors',
   })
@@ -280,7 +283,7 @@ export function getPlugins(okapiUrl, store, tenant) {
  */
 export function getBindings(okapiUrl, store, tenant) {
   return fetch(`${okapiUrl}/configurations/entries?query=(module==ORG and configName==bindings)`, {
-    headers: getHeaders(tenant),
+    headers: getHeaders(tenant, store.getState().okapi.token),
     credentials: 'include',
     mode: 'cors',
   })
@@ -423,14 +426,15 @@ export const postTokenExpiration = (tokenExpiration) => {
  * Dispatch the session object, then return a Promise that fetches
  * and dispatches tenant resources.
  *
- * @param {*} okapiUrl
- * @param {*} store
- * @param {*} tenant
+ * @param {string} okapiUrl
+ * @param {object} store
+ * @param {string} tenant
+ * @param {string} token
  * @param {*} data
  *
  * @returns {Promise}
  */
-export function createOkapiSession(okapiUrl, store, tenant, data) {
+export function createOkapiSession(okapiUrl, store, tenant, token, data) {
   // clear any auth-n errors
   store.dispatch(setAuthError(null));
 
@@ -453,6 +457,7 @@ export function createOkapiSession(okapiUrl, store, tenant, data) {
 
   const sessionTenant = data.tenant || tenant;
   const okapiSess = {
+    token,
     isAuthenticated: true,
     user,
     perms,
@@ -472,51 +477,38 @@ export function createOkapiSession(okapiUrl, store, tenant, data) {
 }
 
 /**
- * handleServiceWorkerMessage
- * Handle messages posted by service workers
- * * TOKEN_EXPIRATION: update the redux store
- * * RTR_ERROR: logout
+ * handleRtrError
+ * Clear out the redux store and logout.
  *
- * @param {Event} event
- * @param {object} store redux-store
+ * @param {*} event
+ * @param {*} store
+ * @returns void
  */
-export const handleServiceWorkerMessage = (event, store) => {
-  // only accept events whose origin matches this window's origin,
-  // i.e. if this is a same-origin event. Browsers allow cross-origin
-  // message exchange, but we're only interested in the events we control.
-  if ((!event.origin) || (event.origin !== window.location.origin)) {
-    return;
-  }
-
-  if (event.data.source === '@folio/stripes-core') {
-    // RTR happened: update token expiration timestamps in our store
-    if (event.data.type === 'TOKEN_EXPIRATION') {
-      store.dispatch(setTokenExpiration({
-        atExpires: new Date(event.data.value.tokenExpiration.atExpires).toISOString(),
-        rtExpires: new Date(event.data.value.tokenExpiration.rtExpires).toISOString(),
-      }));
-    }
-
-    // RTR failed: we have no cookies; logout
-    if (event.data.type === 'RTR_ERROR') {
-      logger.log('rtr', 'rtr error; logging out', event.data.error);
-      store.dispatch(setIsAuthenticated(false));
-      store.dispatch(clearCurrentUser());
-      store.dispatch(resetStore());
-      localforage.removeItem(SESSION_NAME)
-        .then(localforage.removeItem('loginResponse'));
-    }
-  }
+export const handleRtrError = (event, store) => {
+  logger.log('rtr', 'rtr error; logging out', event.detail);
+  store.dispatch(setIsAuthenticated(false));
+  store.dispatch(clearCurrentUser());
+  store.dispatch(resetStore());
+  localforage.removeItem(SESSION_NAME)
+    .then(localforage.removeItem('loginResponse'));
 };
 
-export function addServiceWorkerListeners(okapiConfig, store) {
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.addEventListener('message', (e) => {
-      handleServiceWorkerMessage(e, store);
-    });
-  } else {
-    logger.log('rtr', 'error; navigator.serviceWorker is empty');
-  }
+/**
+ * addRtrEventListeners
+ * RTR_ERROR_EVENT: RTR error, logout
+ * RTR_ROTATION_EVENT: configure a timer for auto-logout
+ *
+ * @param {*} okapiConfig
+ * @param {*} store
+ */
+export function addRtrEventListeners(okapiConfig, store) {
+  document.addEventListener(RTR_ERROR_EVENT, (e) => {
+    handleRtrError(e, store);
+  });
+
+  // document.addEventListener(RTR_ROTATION_EVENT, (e) => {
+  //   handleRtrRotation(e, store);
+  // });
 }
 
 /**
@@ -612,13 +604,14 @@ export function handleLoginError(dispatch, resp) {
  *
  * @returns {Promise} resolving with login response body, rejecting with, ummmmm
  */
-export function processOkapiSession(okapiUrl, store, tenant, resp) {
+export function processOkapiSession(okapiUrl, store, tenant, resp, ssoToken) {
+  const token = resp.headers.get('X-Okapi-Token') || ssoToken;
   const { dispatch } = store;
 
   if (resp.ok) {
     return resp.json()
       .then(json => {
-        return createOkapiSession(okapiUrl, store, tenant, json)
+        return createOkapiSession(okapiUrl, store, tenant, token, json)
           .then(() => json);
       })
       .then((json) => {
@@ -723,7 +716,8 @@ export function checkOkapiSession(okapiUrl, store, tenant) {
  * @returns {Promise}
  */
 export function requestLogin(okapiUrl, store, tenant, data) {
-  return fetch(`${okapiUrl}/bl-users/login-with-expiry?expandPermissions=true&fullPermissions=true`, {
+  const loginPath = config.useSecureTokens ? 'login-with-expiry' : 'login';
+  return fetch(`${okapiUrl}/bl-users/${loginPath}?expandPermissions=true&fullPermissions=true`, {
     body: JSON.stringify(data),
     credentials: 'include',
     headers: { 'X-Okapi-Tenant': tenant, 'Content-Type': 'application/json' },
@@ -741,10 +735,10 @@ export function requestLogin(okapiUrl, store, tenant, data) {
  *
  * @returns {Promise} Promise resolving to the response of the request
  */
-function fetchUserWithPerms(okapiUrl, tenant) {
+function fetchUserWithPerms(okapiUrl, tenant, token) {
   return fetch(
     `${okapiUrl}/bl-users/_self?expandPermissions=true&fullPermissions=true`,
-    { headers: getHeaders(tenant) },
+    { headers: getHeaders(tenant, token) },
   );
 }
 
@@ -757,9 +751,9 @@ function fetchUserWithPerms(okapiUrl, tenant) {
  *
  * @returns {Promise} Promise resolving to the response-body (JSON) of the request
  */
-export function requestUserWithPerms(okapiUrl, store, tenant) {
-  return fetchUserWithPerms(okapiUrl, tenant)
-    .then(resp => processOkapiSession(okapiUrl, store, tenant, resp));
+export function requestUserWithPerms(okapiUrl, store, tenant, token) {
+  return fetchUserWithPerms(okapiUrl, tenant, token)
+    .then(resp => processOkapiSession(okapiUrl, store, tenant, resp, token));
 }
 
 /**
