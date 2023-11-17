@@ -1,6 +1,6 @@
 import localforage from 'localforage';
 
-import { UnexpectedResourceError } from './Errors';
+import { RTRError, UnexpectedResourceError } from './Errors';
 import {
   getTokenSess,
   getTokenExpiry,
@@ -11,6 +11,8 @@ import {
   isValidRT,
   resourceMapper,
   rtr,
+  IS_ROTATING_INTERVAL,
+  IS_ROTATING_RETRIES
 } from './token-util';
 
 describe('isFolioApiRequest', () => {
@@ -118,16 +120,127 @@ describe('resourceMapper', () => {
   });
 });
 
-describe.skip('rtr', () => {
-  const context = {
-    isRotating: true,
-    logger: {
-      log: jest.fn(),
-    },
-    tokenExpiration: {},
-  };
+describe('rtr', () => {
+  it('isRotating: timing out throws an error', async () => {
+    const context = {
+      isRotating: true,
+      logger: {
+        log: jest.fn(),
+      },
+    };
 
-  it('on error with JSON, returns it', async () => {
+    let ex = null;
+    await rtr(context)
+      .catch(e => {
+        ex = e;
+      });
+
+    expect(ex instanceof RTRError).toBe(true);
+  }, IS_ROTATING_INTERVAL * IS_ROTATING_RETRIES + 10000);
+
+  it('isRotating: resolves when rotation completes', async () => {
+    const context = {
+      isRotating: true,
+      logger: {
+        log: jest.fn(),
+      },
+    };
+
+    let ex = null;
+
+    setTimeout(() => {
+      context.isRotating = false;
+    }, IS_ROTATING_INTERVAL);
+
+    await rtr(context)
+      .catch(e => {
+        ex = e;
+      });
+
+    expect(ex).toBe(null);
+  });
+
+  it('rotates', async () => {
+    const context = {
+      isRotating: false,
+      logger: {
+        log: (a, b) => { console.log(`${a} ${b}`); },
+      },
+      nativeFetch: {
+        apply: () => Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({
+            accessTokenExpiration: '2023-11-17T10:39:15.000Z',
+            refreshTokenExpiration: '2023-11-27T10:39:15.000Z'
+          }),
+        })
+      }
+    };
+
+    let ex = null;
+    const res = await rtr(context)
+      .catch(e => {
+        ex = e;
+      });
+
+    expect(res.tokenExpiration).toBeTruthy();
+    expect(ex).toBe(null);
+  });
+
+  it('on known error, throws error', async () => {
+    const errors = [{ message: 'Actually I love my Birkenstocks', code: 'Chacos are nice, too. Also Tevas' }];
+    const context = {
+      isRotating: false,
+      logger: {
+        log: (a, b) => { console.log(`${a} ${b}`); },
+      },
+      nativeFetch: {
+        apply: () => Promise.resolve({
+          ok: false,
+          json: () => Promise.resolve({
+            errors,
+          }),
+        })
+      }
+    };
+
+    let ex = null;
+    await rtr(context)
+      .catch(e => {
+        ex = e;
+      });
+
+    expect(ex instanceof RTRError).toBe(true);
+    expect(ex.message).toMatch(errors[0].message);
+    expect(ex.message).toMatch(errors[0].code);
+  });
+
+
+  it('on unknown error, throws generic error', async () => {
+    const errors = [{ message: 'Actually I love my Birkenstocks', code: 'Chacos are nice, too. Also Tevas' }];
+    const context = {
+      isRotating: false,
+      logger: {
+        log: (a, b) => { console.log(`${a} ${b}`); },
+      },
+      nativeFetch: {
+        apply: () => Promise.resolve({
+          ok: false,
+          json: () => Promise.resolve({}),
+        })
+      }
+    };
+
+    let ex = null;
+    await rtr(context)
+      .catch(e => {
+        ex = e;
+      });
+
+    expect(ex instanceof RTRError).toBe(true);
+  });
+
+  it.skip('times out during', async () => {
     const oUrl = 'https://trinity.edu';
     const req = { url: `${oUrl}/manhattan` };
     const event = {
@@ -153,7 +266,7 @@ describe.skip('rtr', () => {
     }
   });
 
-  it('on unknown error, throws a generic error', async () => {
+  it.skip('on unknown error, throws a generic error', async () => {
     const oUrl = 'https://trinity.edu';
     const req = { url: `${oUrl}/manhattan` };
     const event = {

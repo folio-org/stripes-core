@@ -25,13 +25,13 @@ import { RTRError, UnexpectedResourceError } from './Errors';
  * 0.8 is just a SWAG at a "likely to be useful" value. Given a 600 second
  * TTL (the current default for ATs) it corresponds to 480 seconds.
  */
-const TTL_WINDOW = 0.8;
+export const TTL_WINDOW = 0.8;
 
 /** how many times to check the lock before giving up */
-const IS_ROTATING_RETRIES = 100;
+export const IS_ROTATING_RETRIES = 100;
 
 /** how long to wait before rechecking the lock, in milliseconds (100 * 100) === 10 seconds */
-const IS_ROTATING_INTERVAL = 100;
+export const IS_ROTATING_INTERVAL = 100;
 
 /**
  * getTokenSess
@@ -222,7 +222,7 @@ export const rtr = async (context) => {
       }
     }
     // all is lost
-    return Promise.reject(new Error('in-process RTR timed out'));
+    return Promise.reject(new RTRError('in-process RTR timed out'));
   }
 
   context.isRotating = true;
@@ -243,7 +243,7 @@ export const rtr = async (context) => {
       // rtr failure. return an error message if we got one.
       return res.json()
         .then(json => {
-          this.isRotating = false;
+          context.isRotating = false;
           if (Array.isArray(json.errors) && json.errors[0]) {
             throw new RTRError(`${json.errors[0].message} (${json.errors[0].code})`);
           } else {
