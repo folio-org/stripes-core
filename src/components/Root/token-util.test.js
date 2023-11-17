@@ -164,7 +164,7 @@ describe('rtr', () => {
     const context = {
       isRotating: false,
       logger: {
-        log: (a, b) => { console.log(`${a} ${b}`); },
+        log: jest.fn(),
       },
       nativeFetch: {
         apply: () => Promise.resolve({
@@ -192,7 +192,7 @@ describe('rtr', () => {
     const context = {
       isRotating: false,
       logger: {
-        log: (a, b) => { console.log(`${a} ${b}`); },
+        log: jest.fn(),
       },
       nativeFetch: {
         apply: () => Promise.resolve({
@@ -217,16 +217,18 @@ describe('rtr', () => {
 
 
   it('on unknown error, throws generic error', async () => {
-    const errors = [{ message: 'Actually I love my Birkenstocks', code: 'Chacos are nice, too. Also Tevas' }];
+    const error = 'I love my Birkenstocks. Chacos are nice, too. Also Tevas'
     const context = {
       isRotating: false,
       logger: {
-        log: (a, b) => { console.log(`${a} ${b}`); },
+        log: jest.fn(),
       },
       nativeFetch: {
         apply: () => Promise.resolve({
           ok: false,
-          json: () => Promise.resolve({}),
+          json: () => Promise.resolve({
+            error,
+          }),
         })
       }
     };
@@ -238,57 +240,7 @@ describe('rtr', () => {
       });
 
     expect(ex instanceof RTRError).toBe(true);
-  });
-
-  it.skip('times out during', async () => {
-    const oUrl = 'https://trinity.edu';
-    const req = { url: `${oUrl}/manhattan` };
-    const event = {
-      request: {
-        clone: () => req,
-      }
-    };
-
-    const error = { message: 'los', code: 'alamos' };
-    window.Response = jest.fn();
-
-    global.fetch = jest.fn()
-      .mockReturnValueOnce(Promise.resolve({
-        ok: false,
-        json: () => Promise.resolve({ errors: [error] })
-      }));
-
-    try {
-      await rtr(context);
-    } catch (e) {
-      expect(e.message).toMatch(error.message);
-      expect(e.message).toMatch(error.code);
-    }
-  });
-
-  it.skip('on unknown error, throws a generic error', async () => {
-    const oUrl = 'https://trinity.edu';
-    const req = { url: `${oUrl}/manhattan` };
-    const event = {
-      request: {
-        clone: () => req,
-      }
-    };
-
-    const error = 'RTR response failure';
-    window.Response = jest.fn();
-
-    global.fetch = jest.fn()
-      .mockReturnValueOnce(Promise.resolve({
-        ok: false,
-        json: () => Promise.resolve(error)
-      }));
-
-    try {
-      await rtr(context);
-    } catch (e) {
-      expect(e.message).toMatch(error);
-    }
+    expect(ex.message).toMatch('RTR response failure');
   });
 });
 
