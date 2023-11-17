@@ -33,15 +33,38 @@ const IS_ROTATING_RETRIES = 100;
 /** how long to wait before rechecking the lock, in milliseconds (100 * 100) === 10 seconds */
 const IS_ROTATING_INTERVAL = 100;
 
+/**
+ * getTokenSess
+ * simple wrapper around access to values stored in localforage
+ * to insulate RTR functions from that API.
+ *
+ * @returns {object}
+ */
 export const getTokenSess = async () => {
   return localForage.getItem('okapiSess');
 };
 
+/**
+ * getTokenSess
+ * simple wrapper around access to values stored in localforage
+ * to insulate RTR functions from that API.
+ *
+ * @returns {object} shaped like { atExpires, rtExpires }; each is a millisecond timestamp
+ */
 export const getTokenExpiry = async () => {
   const sess = await getTokenSess();
   return new Promise((resolve) => resolve(sess?.tokenExpiration));
 };
 
+/**
+ * getTokenSess
+ * simple wrapper around access to values stored in localforage
+ * to insulate RTR functions from that API. Supplement the existing
+ * session with updated token expiration data.
+ *
+ * @param {object} shaped like { atExpires, rtExpires }; each is a millisecond timestamp
+ * @returns {object} updated session object
+ */
 export const setTokenExpiry = async (te) => {
   const sess = await getTokenSess();
   return localForage.setItem('okapiSess', { ...sess, tokenExpiration: te });
@@ -128,17 +151,46 @@ export const isFolioApiRequest = (resource, oUrl) => {
 };
 
 /**
+ * isValidAT
+ * Return true if tokenExpiration.atExpires is in the future; false otherwise.
+ *
+ * @param {object} te tokenExpiration shaped like { atExpires, rtExpires }
+ * @param {@folio/stripes/logger} logger
+ * @returns boolean
+ */
+export const isValidAT = (te, logger) => {
+  const isValid = !!(te?.atExpires > Date.now());
+  logger.log('rtr', `AT isValid? ${isValid}; expires ${new Date(te?.atExpires || null).toISOString()}`);
+  return isValid;
+};
+
+/**
+ * isValidRT
+ * Return true if tokenExpiration.rtExpires is in the future; false otherwise.
+ *
+ * @param {object} te tokenExpiration shaped like { atExpires, rtExpires }
+ * @param {@folio/stripes/logger} logger
+ * @returns boolean
+ */
+export const isValidRT = (te, logger) => {
+  const isValid = !!(te?.rtExpires > Date.now());
+  logger.log('rtr', `RT isValid? ${isValid}; expires ${new Date(te?.rtExpires || null).toISOString()}`);
+  return isValid;
+};
+
+/**
  * adjustTokenExpiration
  * Set the AT and RT token expirations to the fraction of their TTL given by
  * TTL_WINDOW. e.g. if a token should be valid for 100 more seconds and TTL_WINDOW
  * is 0.8, set to the expiration time to 80 seconds from now.
  *
  * @param {object} value { tokenExpiration: { atExpires, rtExpires }} both are millisecond timestamps
+ * @param {number} fraction float in the range (0..1]
  * @returns { tokenExpiration: { atExpires, rtExpires }} both are millisecond timestamps
  */
-export const adjustTokenExpiration = (value) => ({
-  atExpires: Date.now() + ((value.tokenExpiration.atExpires - Date.now()) * TTL_WINDOW),
-  rtExpires: Date.now() + ((value.tokenExpiration.rtExpires - Date.now()) * TTL_WINDOW),
+export const adjustTokenExpiration = (value, fraction) => ({
+  atExpires: Date.now() + ((value.tokenExpiration.atExpires - Date.now()) * fraction),
+  rtExpires: Date.now() + ((value.tokenExpiration.rtExpires - Date.now()) * fraction),
 });
 
 /**
@@ -174,7 +226,7 @@ export const rtr = async (context) => {
   }
 
   context.isRotating = true;
-  return context.ogFetch.apply(global, [`${okapi.url}/authn/refresh`, {
+  return context.nativeFetch.apply(global, [`${okapi.url}/authn/refresh`, {
     headers: {
       'content-type': 'application/json',
       'x-okapi-tenant': okapi.tenant,
@@ -207,7 +259,7 @@ export const rtr = async (context) => {
           atExpires: new Date(json.accessTokenExpiration).getTime(),
           rtExpires: new Date(json.refreshTokenExpiration).getTime(),
         }
-      });
+      }, TTL_WINDOW);
     })
     .then(te => {
       // @@dispatchEvent(RTR rotation event)
