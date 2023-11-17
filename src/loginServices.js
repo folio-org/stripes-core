@@ -8,6 +8,7 @@ import { resetStore } from './mainActions';
 
 import {
   clearCurrentUser,
+  clearOkapiToken,
   setCurrentPerms,
   setLocale,
   setTimezone,
@@ -78,10 +79,11 @@ export const userLocaleConfig = {
 
 const logger = configureLogger(config);
 
-function getHeaders(tenant) {
+function getHeaders(tenant, token) {
   return {
     'X-Okapi-Tenant': tenant,
     'Content-Type': 'application/json',
+    ...(token && { 'X-Okapi-Token': token }),
   };
 }
 
@@ -173,7 +175,7 @@ export function loadTranslations(store, locale, defaultTranslations = {}) {
  */
 function dispatchLocale(url, store, tenant) {
   return fetch(url, {
-    headers: getHeaders(tenant),
+    headers: getHeaders(tenant, store.getState().okapi.token),
     credentials: 'include',
     mode: 'cors',
   })
@@ -252,7 +254,7 @@ export function getUserLocale(okapiUrl, store, tenant, userId) {
  */
 export function getPlugins(okapiUrl, store, tenant) {
   return fetch(`${okapiUrl}/configurations/entries?query=(module==PLUGINS)`, {
-    headers: getHeaders(tenant),
+    headers: getHeaders(tenant, store.getState().okapi.token),
     credentials: 'include',
     mode: 'cors',
   })
@@ -281,7 +283,7 @@ export function getPlugins(okapiUrl, store, tenant) {
  */
 export function getBindings(okapiUrl, store, tenant) {
   return fetch(`${okapiUrl}/configurations/entries?query=(module==ORG and configName==bindings)`, {
-    headers: getHeaders(tenant),
+    headers: getHeaders(tenant, store.getState().okapi.token),
     credentials: 'include',
     mode: 'cors',
   })
@@ -424,14 +426,15 @@ export const postTokenExpiration = (tokenExpiration) => {
  * Dispatch the session object, then return a Promise that fetches
  * and dispatches tenant resources.
  *
- * @param {*} okapiUrl
- * @param {*} store
- * @param {*} tenant
+ * @param {string} okapiUrl
+ * @param {object} store
+ * @param {string} tenant
+ * @param {string} token
  * @param {*} data
  *
  * @returns {Promise}
  */
-export function createOkapiSession(okapiUrl, store, tenant, data) {
+export function createOkapiSession(okapiUrl, store, tenant, token, data) {
   // clear any auth-n errors
   store.dispatch(setAuthError(null));
 
@@ -454,6 +457,7 @@ export function createOkapiSession(okapiUrl, store, tenant, data) {
 
   const sessionTenant = data.tenant || tenant;
   const okapiSess = {
+    token,
     isAuthenticated: true,
     user,
     perms,
@@ -600,13 +604,14 @@ export function handleLoginError(dispatch, resp) {
  *
  * @returns {Promise} resolving with login response body, rejecting with, ummmmm
  */
-export function processOkapiSession(okapiUrl, store, tenant, resp) {
+export function processOkapiSession(okapiUrl, store, tenant, resp, ssoToken) {
+  const token = resp.headers.get('X-Okapi-Token') || ssoToken;
   const { dispatch } = store;
 
   if (resp.ok) {
     return resp.json()
       .then(json => {
-        return createOkapiSession(okapiUrl, store, tenant, json)
+        return createOkapiSession(okapiUrl, store, tenant, token, json)
           .then(() => json);
       })
       .then((json) => {
@@ -711,7 +716,8 @@ export function checkOkapiSession(okapiUrl, store, tenant) {
  * @returns {Promise}
  */
 export function requestLogin(okapiUrl, store, tenant, data) {
-  return fetch(`${okapiUrl}/bl-users/login-with-expiry?expandPermissions=true&fullPermissions=true`, {
+  const loginPath = config.useSecureTokens ? 'login-with-expiry' : 'login';
+  return fetch(`${okapiUrl}/bl-users/${loginPath}?expandPermissions=true&fullPermissions=true`, {
     body: JSON.stringify(data),
     credentials: 'include',
     headers: { 'X-Okapi-Tenant': tenant, 'Content-Type': 'application/json' },
@@ -729,10 +735,10 @@ export function requestLogin(okapiUrl, store, tenant, data) {
  *
  * @returns {Promise} Promise resolving to the response of the request
  */
-function fetchUserWithPerms(okapiUrl, tenant) {
+function fetchUserWithPerms(okapiUrl, tenant, token) {
   return fetch(
     `${okapiUrl}/bl-users/_self?expandPermissions=true&fullPermissions=true`,
-    { headers: getHeaders(tenant) },
+    { headers: getHeaders(tenant, token) },
   );
 }
 
@@ -745,9 +751,9 @@ function fetchUserWithPerms(okapiUrl, tenant) {
  *
  * @returns {Promise} Promise resolving to the response-body (JSON) of the request
  */
-export function requestUserWithPerms(okapiUrl, store, tenant) {
-  return fetchUserWithPerms(okapiUrl, tenant)
-    .then(resp => processOkapiSession(okapiUrl, store, tenant, resp));
+export function requestUserWithPerms(okapiUrl, store, tenant, token) {
+  return fetchUserWithPerms(okapiUrl, tenant, token)
+    .then(resp => processOkapiSession(okapiUrl, store, tenant, resp, token));
 }
 
 /**

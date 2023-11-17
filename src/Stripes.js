@@ -49,6 +49,7 @@ export const stripesShape = PropTypes.shape({
     ]),
     okapiReady: PropTypes.bool,
     tenant: PropTypes.string.isRequired,
+    token: PropTypes.string,
     isAuthenticated: PropTypes.bool,
     translations: PropTypes.object,
     url: PropTypes.string.isRequired,
@@ -61,6 +62,7 @@ export const stripesShape = PropTypes.shape({
   setLocale: PropTypes.func.isRequired,
   setSinglePlugin: PropTypes.func.isRequired,
   setTimezone: PropTypes.func.isRequired,
+  setToken: PropTypes.func.isRequired,
   store: PropTypes.shape({
     dispatch: PropTypes.func.isRequired,
     getState: PropTypes.func.isRequired,
