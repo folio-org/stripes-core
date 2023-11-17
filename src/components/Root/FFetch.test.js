@@ -1,7 +1,6 @@
-import React from 'react';
-import { render, screen, act, waitFor } from '@folio/jest-config-stripes/testing-library/react';
-import { log, error } from 'console';
+import { log } from 'console';
 import { FFetch } from './FFetch';
+import { RTRError } from './token-util';
 
 var mockGetItem = jest.fn(() => new Promise((resolve) => resolve(item)));
 
@@ -94,8 +93,27 @@ describe('FFetch class', () => {
     });
   });
 
+  describe('Calling an okapi fetch with valid token, but failing request...', () => {
+    it('returns response from failed fetch, only calls fetch once.', async () => {
+      mockFetch.mockResolvedValue('success')
+      .mockResolvedValueOnce(new Response(
+        'An error occurred',
+        {
+          status: 403,
+          headers: {
+            'content-type': 'text/plain',
+          },
+        }))
+      const testFfetch = new FFetch({logger: { log }})
+      const response = await global.fetch('okapiUrl', { testOption: 'test' });
+      const message = await response.text();
+      expect(mockFetch.mock.calls).toHaveLength(1);
+      expect(message).toEqual('An error occurred');
+    });
+  });
+
   describe('Calling an okapi fetch with missing token and failing rotation...', () => {
-    it('triggers rtr...calls fetch 2 times, failed call, failed token call', async () => {
+    it('triggers rtr...calls fetch 2 times, failed call, failed token call, throws error', async () => {
       mockFetch.mockResolvedValue('success')
       .mockResolvedValueOnce(new Response(
         'Token missing',
@@ -107,9 +125,43 @@ describe('FFetch class', () => {
         }))
         .mockRejectedValueOnce(new Error('token error message'));
       const testFfetch = new FFetch({logger: { log }})
-      const response = await global.fetch('okapiUrl', { testOption: 'test' });
-      expect(mockFetch.mock.calls).toHaveLength(2);
-      expect(mockFetch.mock.calls[1][0]).toEqual('okapiUrl/authn/refresh');
+      try {
+        const response = await global.fetch('okapiUrl', { testOption: 'test' });
+      } catch (e) {
+        expect(e.toString()).toEqual('Error: token error message');
+        expect(mockFetch.mock.calls).toHaveLength(2);
+        expect(mockFetch.mock.calls[1][0]).toEqual('okapiUrl/authn/refresh');
+      }
+    });
+  });
+
+  describe('Calling an okapi fetch with missing token and reported error from auth service...', () => {
+    it('throws an RTR error', async () => {
+      mockFetch.mockResolvedValue('success')
+      .mockResolvedValueOnce(new Response(
+        'Token missing',
+        {
+          status: 403,
+          headers: {
+            'content-type': 'text/plain',
+          },
+        }))
+        .mockResolvedValueOnce(new Response(
+          JSON.stringify({errors: ['missing token-getting ability']}),
+          {
+            status: 303,
+            headers: {
+              'content-type': 'application/json',
+            }
+          }));
+      const testFfetch = new FFetch({logger: { log }});
+        try {
+          const response = await global.fetch('okapiUrl', { testOption: 'test' });
+        } catch (e) {
+          expect(e instanceof RTRError).toBeTrue;
+          expect(mockFetch.mock.calls).toHaveLength(2);
+          expect(mockFetch.mock.calls[1][0]).toEqual('okapiUrl/authn/refresh');
+        }
     });
   });
 });
