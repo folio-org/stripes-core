@@ -1,3 +1,5 @@
+/* eslint-disable import/prefer-default-export */
+
 /**
  * TLDR: override global fetch to perform token-rotation for FOLIO API requests.
  *
@@ -32,45 +34,17 @@
  */
 
 import { okapi } from 'stripes-config';
-import { getTokenExpiry, rtr, resourceMapper, isFolioApiRequest, isLogoutRequest } from './token-util';
-import { RTRError, UnexpectedResourceError } from './Errors';
+import { rtr, isFolioApiRequest, isLogoutRequest } from './token-util';
+import { RTRError } from './Errors';
 import FXHR from './FXHR';
-
-/**
- * isValidAT
- * Return true if tokenExpiration.atExpires is in the future; false otherwise.
- *
- * @param {object} te tokenExpiration shaped like { atExpires, rtExpires }
- * @param {@folio/stripes/logger} logger
- * @returns boolean
- */
-export const isValidAT = (te, logger) => {
-  const isValid = !!(te?.atExpires > Date.now());
-  logger.log('rtr', `AT isValid? ${isValid}; expires ${new Date(te?.atExpires || null).toISOString()}`);
-  return isValid;
-};
-
-/**
- * isValidRT
- * Return true if tokenExpiration.rtExpires is in the future; false otherwise.
- *
- * @param {object} te tokenExpiration shaped like { atExpires, rtExpires }
- * @param {@folio/stripes/logger} logger
- * @returns boolean
- */
-export const isValidRT = (te, logger) => {
-  const isValid = !!(te?.rtExpires > Date.now());
-  logger.log('rtr', `RT isValid? ${isValid}; expires ${new Date(te?.rtExpires || null).toISOString()}`);
-  return isValid;
-};
 
 export class FFetch {
   constructor({ logger }) {
     this.logger = logger;
     logger.log('rtr', 'BETTER START HANGIN\' TOUGH; WE\'RE GONNA OVERRIDE FETCH');
     // save a reference to fetch, and then reassign the global :scream:
-    this.ogFetch = global.fetch;
-    global.fetch = this.nkotbFetch; // eslint-disable-line no-global-assign
+    this.nativeFetch = global.fetch;
+    global.fetch = this.ffetch; // eslint-disable-line no-global-assign
 
     this.NativeXHR = global.XMLHttpRequest;
     global.XMLHttpRequest = FXHR(this);
@@ -82,46 +56,6 @@ export class FFetch {
   /** lock to indicate whether a rotation request is already in progress */
   // @@ needs to be stored in localforage???
   isRotating = false;
-
-  /**
-   * isPermissibleRequest
-   * Some requests are always permissible, e.g. auth-n and forgot-password.
-   * Others are only permissible if the Access Token is still valid.
-   *
-   * @param {*} resource one of string, URL, Request
-   * @param {object} te token expiration shaped like { atExpires, rtExpires }
-   * @param {string} oUrl FOLIO API origin
-   * @returns boolean true if the AT is valid or the request is always permissible
-   */
-  isPermissibleRequest = (resource, te, oUrl) => {
-    if (isValidAT(te, this.logger)) {
-      return true;
-    }
-
-    const permissible = [
-      '/bl-users/forgotten/password',
-      '/bl-users/forgotten/username',
-      '/bl-users/login-with-expiry',
-      '/bl-users/password-reset',
-      '/saml/check',
-    ];
-
-    const isPermissibleResource = (string) => {
-      return !!permissible.find(i => string.startsWith(`${oUrl}${i}`));
-    };
-
-    this.logger.log('rtr', `AT invalid for resource ${resource}`);
-    try {
-      return resourceMapper(resource, isPermissibleResource);
-    } catch (rme) {
-      if (rme instanceof UnexpectedResourceError) {
-        console.warn(rme.message, resource); // eslint-disable-line no-console
-        return false;
-      }
-
-      throw rme;
-    }
-  };
 
   /**
    * passThroughWithRT
@@ -136,7 +70,7 @@ export class FFetch {
     return rtr(this)
       .then(() => {
         this.logger.log('rtr', 'post-rtr-fetch', resource);
-        return this.ogFetch.apply(global, [resource, options]);
+        return this.nativeFetch.apply(global, [resource, options]);
       });
   };
 
@@ -156,33 +90,7 @@ export class FFetch {
    * @returns Promise
    * @throws if any fetch fails
    */
-  passThroughWithAT = (resource, options) => {
-    this.logger.log('rtr', '   (valid AT or authn request)');
-    return this.ogFetch.apply(global, [resource, { ...options, credentials: 'include' }])
-      .then(response => {
-        // Handle three different situations:
-        // 1. 403 (which should be a 401): AT was expired (try RTR)
-        // 2. 403: AT was valid but corresponding permissions were insufficent (return response)
-        // 3. *: Anything else (return response)
-        if (response.status === 403 && response.headers['content-type'] === 'text/plain') {
-          return response.clone().text()
-            .then(text => {
-              // we thought the AT was valid but it wasn't, so try again.
-              // if we fail this time, we're done.
-              if (text.startsWith('Token missing')) {
-                this.logger.log('rtr', '   (whoops, invalid AT; retrying)');
-                return this.passThroughWithRT(resource, options);
-              }
 
-              // we got a 403 but not related to RTR; just pass it along
-              return response;
-            });
-        }
-
-        // any other response should just be returned as-is
-        return response;
-      });
-  };
 
   /**
    * passThroughLogout
@@ -197,7 +105,7 @@ export class FFetch {
    */
   passThroughLogout = (resource, options) => {
     this.logger.log('rtr', '   (logout request)');
-    return this.ogFetch.apply(global, [resource, { ...options, credentials: 'include' }])
+    return this.nativeFetch.apply(global, [resource, { ...options, credentials: 'include' }])
       .catch(e => {
         // kill me softly: return an empty response to allow graceful failure
         console.error('-- (rtr-sw) logout failure', e); // eslint-disable-line no-console
@@ -208,6 +116,16 @@ export class FFetch {
   /**
    * passThrough
    * Inspect resource to determine whether it's a FOLIO API request.
+   *
+   * Given we believe the AT to be valid, pass the fetch through.
+   * If it fails, maybe our beliefs were wrong, maybe everything is wrong,
+   * maybe there is no God, or there are many gods, or god is a she, or
+   * she is a he, or Lou Reed is god. Or maybe we were just wrong about the
+   * AT and we need to conduct token rotation, so try that. If RTR succeeds,
+   * yay, pass through the fetch as we originally intended because now we
+   * know the AT will be valid. If RTR fails, then it doesn't matter about
+   * Lou Reed. He may be god. We're still throwing an Error.
+   *
    * If it is, make sure its AT is valid or perform RTR before executing it.
    * If it isn't, execute it immediately. If RTR fails catastrophically,
    * post an RTR_ERROR event (so a global event handler can pick up the error)
@@ -215,32 +133,45 @@ export class FFetch {
    * application-local error handlers (er, the lack of application-level error
    * handlers).
    *
-   * @param {*} resource one of string, URL, Request
+   * @param {*} resource any resource acceptable to fetch()
    * @param {object} options
    * @returns Promise
    * @throws if any fetch fails
    */
-  nkotbFetch = async (resource, options) => {
+  ffetch = async (resource, options) => {
     // FOLIO API requests are subject to RTR
     if (isFolioApiRequest(resource, okapi.url)) {
       this.logger.log('rtr', 'will fetch', resource);
       try {
+        // logout requests must not fail
         if (isLogoutRequest(resource, okapi.url)) {
           return this.passThroughLogout(resource, options);
         }
 
-        // if our cached tokens appear to have expired, pull them from storage.
-        // maybe another window updated them for us without us knowing.
-        if (!isValidAT(this.tokenExpiration, this.logger)) {
-          this.logger.log('rtr', 'local tokens expired; fetching from storage');
-          this.tokenExpiration = await getTokenExpiry();
-        }
+        return this.nativeFetch.apply(global, [resource, options])
+          .then(response => {
+            // Handle three different situations:
+            // 1. 403 (which should be a 401): AT was expired (try RTR)
+            // 2. 403: AT was valid but corresponding permissions were insufficent (return response)
+            // 3. *: Anything else (return response)
+            if (response.status === 403 && response.headers.get('content-type') === 'text/plain') {
+              return response.clone().text()
+                .then(text => {
+                  // we thought the AT was valid but it wasn't, so try again.
+                  // if we fail this time, we're done.
+                  if (text.startsWith('Token missing')) {
+                    this.logger.log('rtr', '   (whoops, invalid AT; retrying)');
+                    return this.passThroughWithRT(resource, options);
+                  }
 
-        if (this.isPermissibleRequest(resource, this.tokenExpiration, okapi.url)) {
-          return this.passThroughWithAT(resource, options);
-        }
+                  // we got a 403 but not related to RTR; just pass it along
+                  return response;
+                });
+            }
 
-        return this.passThroughWithRT(resource, options);
+            // any other response should just be returned as-is
+            return response;
+          });
       } catch (err) {
         // if we got an RTR error, that's on us; logout!
         // every other problem is somebody else's problem
@@ -255,6 +186,6 @@ export class FFetch {
     }
 
     // default: pass requests through to the network
-    return Promise.resolve(this.ogFetch.apply(global, [resource, options]));
+    return Promise.resolve(this.nativeFetch.apply(global, [resource, options]));
   };
 }
