@@ -21,12 +21,13 @@ import {
   setOkapiReady,
   setServerDown,
   setSessionData,
-  setTokenExpiration,
   setLoginData,
   updateCurrentUser,
 } from './okapiActions';
 import processBadResponse from './processBadResponse';
 import configureLogger from './configureLogger';
+
+import { RTR_ERROR_EVENT } from './components/Root/Errors';
 
 // export supported locales, i.e. the languages we provide translations for
 export const supportedLocales = [
@@ -472,51 +473,38 @@ export function createOkapiSession(okapiUrl, store, tenant, data) {
 }
 
 /**
- * handleServiceWorkerMessage
- * Handle messages posted by service workers
- * * TOKEN_EXPIRATION: update the redux store
- * * RTR_ERROR: logout
+ * handleRtrError
+ * Clear out the redux store and logout.
  *
- * @param {Event} event
- * @param {object} store redux-store
+ * @param {*} event
+ * @param {*} store
+ * @returns void
  */
-export const handleServiceWorkerMessage = (event, store) => {
-  // only accept events whose origin matches this window's origin,
-  // i.e. if this is a same-origin event. Browsers allow cross-origin
-  // message exchange, but we're only interested in the events we control.
-  if ((!event.origin) || (event.origin !== window.location.origin)) {
-    return;
-  }
-
-  if (event.data.source === '@folio/stripes-core') {
-    // RTR happened: update token expiration timestamps in our store
-    if (event.data.type === 'TOKEN_EXPIRATION') {
-      store.dispatch(setTokenExpiration({
-        atExpires: new Date(event.data.value.tokenExpiration.atExpires).toISOString(),
-        rtExpires: new Date(event.data.value.tokenExpiration.rtExpires).toISOString(),
-      }));
-    }
-
-    // RTR failed: we have no cookies; logout
-    if (event.data.type === 'RTR_ERROR') {
-      logger.log('rtr', 'rtr error; logging out', event.data.error);
-      store.dispatch(setIsAuthenticated(false));
-      store.dispatch(clearCurrentUser());
-      store.dispatch(resetStore());
-      localforage.removeItem(SESSION_NAME)
-        .then(localforage.removeItem('loginResponse'));
-    }
-  }
+export const handleRtrError = (event, store) => {
+  logger.log('rtr', 'rtr error; logging out', event.detail);
+  store.dispatch(setIsAuthenticated(false));
+  store.dispatch(clearCurrentUser());
+  store.dispatch(resetStore());
+  localforage.removeItem(SESSION_NAME)
+    .then(localforage.removeItem('loginResponse'));
 };
 
-export function addServiceWorkerListeners(okapiConfig, store) {
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.addEventListener('message', (e) => {
-      handleServiceWorkerMessage(e, store);
-    });
-  } else {
-    logger.log('rtr', 'error; navigator.serviceWorker is empty');
-  }
+/**
+ * addRtrEventListeners
+ * RTR_ERROR_EVENT: RTR error, logout
+ * RTR_ROTATION_EVENT: configure a timer for auto-logout
+ *
+ * @param {*} okapiConfig
+ * @param {*} store
+ */
+export function addRtrEventListeners(okapiConfig, store) {
+  document.addEventListener(RTR_ERROR_EVENT, (e) => {
+    handleRtrError(e, store);
+  });
+
+  // document.addEventListener(RTR_ROTATION_EVENT, (e) => {
+  //   handleRtrRotation(e, store);
+  // });
 }
 
 /**
