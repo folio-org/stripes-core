@@ -67,11 +67,11 @@ export class FFetch {
    * @returns Promise
    */
   passThroughWithRT = async (resource, options) => {
-    return rtr(this)
-      .then(() => {
-        this.logger.log('rtr', 'post-rtr-fetch', resource);
-        return this.nativeFetch.apply(global, [resource, options]);
-      });
+    this.logger.log('rtr', 'pre-rtr-fetch', resource);
+    return rtr(this).then(() => {
+      this.logger.log('rtr', 'post-rtr-fetch', resource);
+      return this.nativeFetch.apply(global, [resource, options]);
+    });
   };
 
   /**
@@ -128,6 +128,14 @@ export class FFetch {
         return this.passThroughLogout(resource, options);
       }
 
+      // never seem to enter this block :/
+      // this means LOTS of requests fail, but then correctly wait in the
+      // passThroughWithRT call below. WHY??? Why don't they just wait
+      // here instead???
+      if (this.isRotating) {
+        this.logger.log('rtr', 'preeee-rtr-fetch', resource);
+        await rtr(this);
+      }
       return this.nativeFetch.apply(global, [resource, options])
         .then(response => {
           // Handle three different situations:
