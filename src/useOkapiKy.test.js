@@ -1,5 +1,4 @@
-import ky from 'ky';
-import { renderHook, waitFor } from '@folio/jest-config-stripes/testing-library/react';
+import { renderHook } from '@folio/jest-config-stripes/testing-library/react';
 
 import { useStripes } from './StripesContext';
 import useOkapiKy from './useOkapiKy';

@@ -9,7 +9,7 @@ import { QueryClientProvider } from 'react-query';
 import { ApolloProvider } from '@apollo/client';
 
 import { ErrorBoundary } from '@folio/stripes-components';
-import { metadata, icons, config } from 'stripes-config';
+import { metadata, icons } from 'stripes-config';
 
 /* ConnectContext - formerly known as RootContext, now comes from stripes-connect, so stripes-connect
 * is providing the infrastructure for store connectivity to the system. This eliminates a circular

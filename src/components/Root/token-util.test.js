@@ -217,7 +217,7 @@ describe('rtr', () => {
 
 
   it('on unknown error, throws generic error', async () => {
-    const error = 'I love my Birkenstocks. Chacos are nice, too. Also Tevas'
+    const error = 'I love my Birkenstocks. Chacos are nice, too. Also Tevas';
     const context = {
       isRotating: false,
       logger: {
