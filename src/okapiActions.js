@@ -71,7 +71,7 @@ function setOkapiToken(token) {
 function clearOkapiToken() {
   return {
     type: 'CLEAR_OKAPI_TOKEN',
-  }
+  };
 }
 
 function setIsAuthenticated(b) {
