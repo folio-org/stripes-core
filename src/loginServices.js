@@ -377,6 +377,7 @@ export function spreadUserWithPerms(userWithPerms) {
 export async function logout(okapiUrl, store) {
   store.dispatch(setIsAuthenticated(false));
   store.dispatch(clearCurrentUser());
+  store.dispatch(clearOkapiToken());
   store.dispatch(resetStore());
   return fetch(`${okapiUrl}/authn/logout`, {
     method: 'POST',
@@ -386,32 +387,6 @@ export async function logout(okapiUrl, store) {
     .then(localforage.removeItem(SESSION_NAME))
     .then(localforage.removeItem('loginResponse'));
 }
-
-/**
- * postTokenExpiration
- * send SW a TOKEN_EXPIRATION message
- * @param {object} tokenExpiration shaped like { atExpires, rtExpires} where both are millisecond timestamps
- *
- * @returns {Promise}
- */
-export const postTokenExpiration = (tokenExpiration) => {
-  if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
-    return navigator.serviceWorker.ready
-      .then((reg) => {
-        const sw = reg.active;
-        if (sw) {
-          const message = { source: '@folio/stripes-core', type: 'TOKEN_EXPIRATION', value: { tokenExpiration } };
-          logger.log('rtr', '<= sending', message);
-          sw.postMessage(message);
-        } else {
-          logger.log('rtr', 'error, could not send TOKEN_EXPIRATION message; no ServiceWorker is active');
-        }
-      });
-  }
-
-  logger.log('rtr', 'error, could not send TOKEN_EXPIRATION message; navigator.serviceWorker is empty');
-  return Promise.resolve();
-};
 
 /**
  * createOkapiSession
@@ -466,8 +441,7 @@ export function createOkapiSession(okapiUrl, store, tenant, token, data) {
   };
 
   // provide token-expiration info to the service worker
-  return postTokenExpiration(tokenExpiration)
-    .then(localforage.setItem('loginResponse', data))
+  return localforage.setItem('loginResponse', data)
     .then(() => localforage.setItem(SESSION_NAME, okapiSess))
     .then(() => {
       store.dispatch(setIsAuthenticated(true));
@@ -637,9 +611,9 @@ export function processOkapiSession(okapiUrl, store, tenant, resp, ssoToken) {
  * @returns {Promise}
  */
 export function validateUser(okapiUrl, store, tenant, session) {
-  const { user, perms, tenant: sessionTenant = tenant } = session;
+  const { token, user, perms, tenant: sessionTenant = tenant } = session;
   return fetch(`${okapiUrl}/bl-users/_self`, {
-    headers: getHeaders(sessionTenant),
+    headers: getHeaders(sessionTenant, token),
     credentials: 'include',
     mode: 'cors',
   }).then((resp) => {
@@ -658,18 +632,16 @@ export function validateUser(okapiUrl, store, tenant, session) {
           atExpires: -1,
           rtExpires: Date.now() + (10 * 60 * 1000),
         };
-        // provide token-expiration info to the service-worker
-        return postTokenExpiration(tokenExpiration)
-          .then(() => {
-            store.dispatch(setSessionData({
-              isAuthenticated: true,
-              user,
-              perms,
-              tenant: sessionTenant,
-              tokenExpiration,
-            }));
-            return loadResources(okapiUrl, store, sessionTenant, user.id);
-          });
+
+        store.dispatch(setSessionData({
+          isAuthenticated: true,
+          user,
+          perms,
+          tenant: sessionTenant,
+          token,
+          tokenExpiration,
+        }));
+        return loadResources(okapiUrl, store, sessionTenant, user.id);
       });
     } else {
       return logout(okapiUrl, store);

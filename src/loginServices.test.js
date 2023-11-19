@@ -3,7 +3,6 @@ import localforage from 'localforage';
 import {
   createOkapiSession,
   handleLoginError,
-  handleServiceWorkerMessage,
   loadTranslations,
   processOkapiSession,
   spreadUserWithPerms,
@@ -13,8 +12,6 @@ import {
   updateUser,
   validateUser,
 } from './loginServices';
-
-import { resetStore } from './mainActions';
 
 import {
   clearCurrentUser,
@@ -31,7 +28,7 @@ import {
   setOkapiReady,
   setServerDown,
   // setSessionData,
-  setTokenExpiration,
+  // setTokenExpiration,
   setLoginData,
   updateCurrentUser,
 } from './okapiActions';
@@ -84,7 +81,7 @@ const mockFetchCleanUp = () => {
 };
 
 describe('createOkapiSession', () => {
-  it('clears authentication errors and sends a TOKEN_EXPIRATION message', async () => {
+  it('clears authentication errors', async () => {
     const store = {
       dispatch: jest.fn(),
       getState: () => ({
@@ -92,16 +89,6 @@ describe('createOkapiSession', () => {
           currentPerms: [],
         }
       }),
-    };
-
-    const postMessage = jest.fn();
-    navigator.serviceWorker = {
-      controller: true,
-      ready: Promise.resolve({
-        active: {
-          postMessage,
-        }
-      })
     };
 
     const te = {
@@ -121,22 +108,11 @@ describe('createOkapiSession', () => {
     const permissionsMap = { a: true, b: true };
     mockFetchSuccess([]);
 
-    await createOkapiSession('url', store, 'tenant', data);
+    await createOkapiSession('url', store, 'tenant', 'token', data);
+    expect(store.dispatch).toHaveBeenCalledWith(setIsAuthenticated(true));
     expect(store.dispatch).toHaveBeenCalledWith(setAuthError(null));
     expect(store.dispatch).toHaveBeenCalledWith(setLoginData(data));
     expect(store.dispatch).toHaveBeenCalledWith(setCurrentPerms(permissionsMap));
-
-    const message = {
-      source: '@folio/stripes-core',
-      type: 'TOKEN_EXPIRATION',
-      value: {
-        tokenExpiration: {
-          atExpires: new Date('2023-11-06T18:05:33Z').getTime(),
-          rtExpires: new Date('2023-10-30T18:15:33Z').getTime(),
-        },
-      }
-    };
-    expect(postMessage).toHaveBeenCalledWith(message);
 
     mockFetchCleanUp();
   });
@@ -308,36 +284,14 @@ describe('validateUser', () => {
 
     mockFetchSuccess(data);
 
-    const postMessage = jest.fn();
-    navigator.serviceWorker = {
-      controller: true,
-      ready: Promise.resolve({
-        active: {
-          postMessage,
-        }
-      })
-    };
-
     // set a fixed system time so date math is stable
     const now = new Date('2023-10-30T19:34:56.000Z');
     jest.useFakeTimers().setSystemTime(now);
 
     await validateUser('url', store, tenant, session);
 
-    expect(store.dispatch).nthCalledWith(1, setAuthError(null));
-    expect(store.dispatch).nthCalledWith(2, setLoginData(data));
-
-    const message = {
-      source: '@folio/stripes-core',
-      type: 'TOKEN_EXPIRATION',
-      value: {
-        tokenExpiration: {
-          atExpires: -1,
-          rtExpires: new Date(now).getTime() + (10 * 60 * 1000),
-        },
-      },
-    };
-    expect(postMessage).toHaveBeenCalledWith(message);
+    expect(store.dispatch).toHaveBeenNthCalledWith(1, setAuthError(null));
+    expect(store.dispatch).toHaveBeenNthCalledWith(2, setLoginData(data));
 
     mockFetchCleanUp();
   });
@@ -359,13 +313,10 @@ describe('validateUser', () => {
     };
 
     mockFetchSuccess(data);
-    navigator.serviceWorker = {
-      ready: Promise.resolve({})
-    };
 
     await validateUser('url', store, tenant, session);
-    expect(store.dispatch).nthCalledWith(1, setAuthError(null));
-    expect(store.dispatch).nthCalledWith(2, setLoginData(data));
+    expect(store.dispatch).toHaveBeenNthCalledWith(1, setAuthError(null));
+    expect(store.dispatch).toHaveBeenNthCalledWith(2, setLoginData(data));
 
     mockFetchCleanUp();
   });
