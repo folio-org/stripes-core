@@ -67,11 +67,11 @@ export class FFetch {
    * @returns Promise
    */
   passThroughWithRT = async (resource, options) => {
-    return rtr(this)
-      .then(() => {
-        this.logger.log('rtr', 'post-rtr-fetch', resource);
-        return this.nativeFetch.apply(global, [resource, options]);
-      });
+    this.logger.log('rtr', 'pre-rtr-fetch', resource);
+    return rtr(this).then(() => {
+      this.logger.log('rtr', 'post-rtr-fetch', resource);
+      return this.nativeFetch.apply(global, [resource, options]);
+    });
   };
 
   /**
@@ -130,38 +130,26 @@ export class FFetch {
 
       return this.nativeFetch.apply(global, [resource, options])
         .then(response => {
-          // Handle three different situations:
-          // 1. 403 (which should be a 401): AT was expired (try RTR)
-          // 2. 403: AT was valid but corresponding permissions were insufficent (return response)
-          // 3. *: Anything else (return response)
-          if (response.status === 403 && response.headers.get('content-type') === 'text/plain') {
-            return response.clone().text()
-              .then(async (text) => {
-                // if the request failed due to a missing token, attempt RTR.
-                // if we fail this time, we're done.
-                if (text.startsWith('Token missing')) {
-                  this.logger.log('rtr', '   (whoops, invalid AT; retrying)');
-                  return this.passThroughWithRT(resource, options)
-                    .catch(err => {
-                      if (err instanceof RTRError) {
-                        console.error('RTR failure', err); // eslint-disable-line no-console
-                        document.dispatchEvent(new Event(RTR_ERROR_EVENT, { detail: err }));
-                        return Promise.resolve(new Response(JSON.stringify({})));
-                      }
-
-                      // we don't expect to end up here because if we do,
-                      // it means RTR failed, but not with an RTR-related
-                      // error. that would certainly be unexpected.
-                      throw err;
-                    });
+          // if the request failed due to a missing token, attempt RTR (which
+          // will then replay the original fetch if it succeeds), or die softly
+          // if it fails. return any other response as-is.
+          if (response.status === 400) {
+            this.logger.log('rtr', '   (whoops, invalid AT; retrying)');
+            return this.passThroughWithRT(resource, options)
+              .catch(err => {
+                if (err instanceof RTRError) {
+                  console.error('RTR failure', err); // eslint-disable-line no-console
+                  document.dispatchEvent(new Event(RTR_ERROR_EVENT, { detail: err }));
+                  return Promise.resolve(new Response(JSON.stringify({})));
                 }
 
-                // we got a 403 but not related to RTR; just pass it along
-                return response;
+                // we don't expect to end up here because if we do,
+                // it means RTR failed, but not with an RTR-related
+                // error. that would certainly be unexpected.
+                throw err;
               });
           }
 
-          // any other response should just be returned as-is
           return response;
         });
     }
