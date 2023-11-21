@@ -6,17 +6,16 @@ import localforage from 'localforage';
 import { log } from 'console';
 import { FFetch } from './FFetch';
 import { RTRError } from './Errors';
-
-// defining mockGetItem with const or let causes it to fail with
-// ReferenceError: Cannot access 'mockGetItem' before initialization
-// but var works fine
-//
-// eslint-disable-next-line no-var
-var mockGetItem = jest.fn((item) => new Promise((resolve) => resolve(item)));
+import { getOkapiSession, getTokenExpiry, setTokenExpiry } from '../../loginServices';
 
 jest.mock('localforage', () => ({
   setItem: () => new Promise((resolve) => resolve()),
-  getItem: jest.fn(mockGetItem)
+  getItem: () => Promise.resolve({
+    tokenExpiration: {
+      atExpires: Date.now() + (10 * 60 * 1000),
+      rtExpires: Date.now() + (10 * 60 * 1000),
+    },
+  }),
 }));
 
 jest.mock('stripes-config', () => ({
@@ -28,6 +27,8 @@ jest.mock('stripes-config', () => ({
   }
 }),
 { virtual: true });
+
+
 
 const mockFetch = jest.fn();
 
@@ -63,6 +64,7 @@ describe('FFetch class', () => {
   describe('logging out fails', () => {
     it('calls native fetch once to log out', async () => {
       mockFetch.mockImplementationOnce(() => new Promise((res, rej) => rej()));
+
       const testFfetch = new FFetch({ logger: { log } });
       const response = await global.fetch('okapiUrl/authn/logout', { testOption: 'test' });
       expect(mockFetch.mock.calls).toHaveLength(1);
@@ -86,7 +88,7 @@ describe('FFetch class', () => {
         .mockResolvedValueOnce(new Response(
           'Token missing',
           {
-            status: 400,
+            status: 403,
             headers: {
               'content-type': 'text/plain',
             },
