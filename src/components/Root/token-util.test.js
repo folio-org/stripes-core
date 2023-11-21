@@ -1,10 +1,5 @@
-import localforage from 'localforage';
-
 import { RTRError, UnexpectedResourceError } from './Errors';
 import {
-  getTokenSess,
-  getTokenExpiry,
-  setTokenExpiry,
   isFolioApiRequest,
   isLogoutRequest,
   isValidAT,
@@ -12,7 +7,6 @@ import {
   resourceMapper,
   rtr,
   IS_ROTATING_INTERVAL,
-  IS_ROTATING_RETRIES
 } from './token-util';
 
 describe('isFolioApiRequest', () => {
@@ -227,49 +221,3 @@ describe('rtr', () => {
   });
 });
 
-describe('localforage session wrapper', () => {
-  it('getTokenSess retrieves a session object', async () => {
-    const o = { user: {} };
-    localforage.getItem = jest.fn(() => Promise.resolve(o));
-
-    const s = await getTokenSess();
-    expect(s).toMatchObject(o);
-  });
-
-  describe('getTokenExpiry', () => {
-    it('finds tokenExpiration', async () => {
-      const o = { tokenExpiration: { trinity: 'cowboy junkies' } };
-      localforage.getItem = jest.fn(() => Promise.resolve(o));
-
-      const s = await getTokenExpiry();
-      expect(s).toMatchObject(o.tokenExpiration);
-    });
-
-    it('handles missing tokenExpiration', async () => {
-      const o = { nobody: 'here but us chickens' };
-      localforage.getItem = jest.fn(() => Promise.resolve(o));
-
-      const s = await getTokenExpiry();
-      expect(s).toBeFalsy();
-    });
-  });
-
-  it('setTokenExpiry set', async () => {
-    const o = {
-      margo: 'timmins',
-      margot: 'margot with a t looks better',
-      also: 'i thought we were talking about margot robbie?',
-      tokenExpiration: 'time out of mind',
-    };
-    localforage.getItem = () => Promise.resolve(o);
-    localforage.setItem = (k, v) => Promise.resolve(v);
-
-    const te = {
-      trinity: 'cowboy junkies',
-      sweet: 'james',
-    };
-
-    const s = await setTokenExpiry(te);
-    expect(s).toMatchObject({ ...o, tokenExpiration: te });
-  });
-});

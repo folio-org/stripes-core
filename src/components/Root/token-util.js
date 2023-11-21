@@ -1,5 +1,6 @@
-import localForage from 'localforage';
 import { okapi } from 'stripes-config';
+
+import { setTokenExpiry } from '../../loginServices';
 import { RTRError, UnexpectedResourceError } from './Errors';
 
 /**
@@ -33,42 +34,6 @@ export const IS_ROTATING_RETRIES = 100;
 /** how long to wait before rechecking the lock, in milliseconds (100 * 100) === 10 seconds */
 export const IS_ROTATING_INTERVAL = 100;
 
-/**
- * getTokenSess
- * simple wrapper around access to values stored in localforage
- * to insulate RTR functions from that API.
- *
- * @returns {object}
- */
-export const getTokenSess = async () => {
-  return localForage.getItem('okapiSess');
-};
-
-/**
- * getTokenSess
- * simple wrapper around access to values stored in localforage
- * to insulate RTR functions from that API.
- *
- * @returns {object} shaped like { atExpires, rtExpires }; each is a millisecond timestamp
- */
-export const getTokenExpiry = async () => {
-  const sess = await getTokenSess();
-  return new Promise((resolve) => resolve(sess?.tokenExpiration));
-};
-
-/**
- * getTokenSess
- * simple wrapper around access to values stored in localforage
- * to insulate RTR functions from that API. Supplement the existing
- * session with updated token expiration data.
- *
- * @param {object} shaped like { atExpires, rtExpires }; each is a millisecond timestamp
- * @returns {object} updated session object
- */
-export const setTokenExpiry = async (te) => {
-  const sess = await getTokenSess();
-  return localForage.setItem('okapiSess', { ...sess, tokenExpiration: te });
-};
 
 /**
  * resourceMapper

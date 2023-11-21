@@ -35,8 +35,20 @@
  */
 
 import { okapi } from 'stripes-config';
-import { rtr, isFolioApiRequest, isLogoutRequest } from './token-util';
-import { RTRError, RTR_ERROR_EVENT } from './Errors';
+import { getTokenExpiry } from '../../loginServices';
+import {
+  isFolioApiRequest,
+  isLogoutRequest,
+  isValidAT,
+  isValidRT,
+  resourceMapper,
+  rtr,
+} from './token-util';
+import {
+  RTR_ERROR_EVENT,
+  RTRError,
+  UnexpectedResourceError,
+} from './Errors';
 import FXHR from './FXHR';
 
 export class FFetch {
@@ -59,20 +71,112 @@ export class FFetch {
   isRotating = false;
 
   /**
+   * isPermissibleRequest
+   * Some requests are always permissible, e.g. auth-n and forgot-password.
+   * Others are only permissible if the Access Token is still valid.
+   *
+   * @param {Request} req clone of the original event.request object
+   * @param {object} te token expiration shaped like { atExpires, rtExpires }
+   * @param {string} oUrl Okapi URL
+   * @returns boolean true if the AT is valid or the request is always permissible
+   */
+  isPermissibleRequest = (resource, te, oUrl) => {
+    if (isValidAT(te, this.logger)) {
+      return true;
+    }
+
+    const isPermissibleResource = (string) => {
+      const permissible = [
+        '/bl-users/forgotten/password',
+        '/bl-users/forgotten/username',
+        '/bl-users/login-with-expiry',
+        '/bl-users/password-reset',
+        '/saml/check',
+      ];
+
+      this.logger.log('rtr', `AT invalid for ${resource}`);
+      return !!permissible.find(i => string.startsWith(`${oUrl}${i}`));
+    };
+
+
+    try {
+      return resourceMapper(resource, isPermissibleResource);
+    } catch (rme) {
+      if (rme instanceof UnexpectedResourceError) {
+        console.warn(rme.message, resource); // eslint-disable-line no-console
+        return false;
+      }
+
+      throw rme;
+    }
+  };
+
+  /**
    * passThroughWithRT
-   * Perform RTR then return the response to the original request.
+   * Perform RTR then execute the original request.
+   * If RTR fails, dispatch RTR_ERROR_EVENT and die softly.
    *
    * @param {*} resource one of string, URL, Request
    * @params {object} options
    * @returns Promise
    */
-  passThroughWithRT = async (resource, options) => {
+  passThroughWithRT = (resource, options) => {
     this.logger.log('rtr', 'pre-rtr-fetch', resource);
-    return rtr(this).then(() => {
-      this.logger.log('rtr', 'post-rtr-fetch', resource);
-      return this.nativeFetch.apply(global, [resource, options]);
-    });
+    return rtr(this)
+      .then(() => {
+        this.logger.log('rtr', 'post-rtr-fetch', resource);
+        return this.nativeFetch.apply(global, [resource, options]);
+      })
+      .catch(err => {
+        if (err instanceof RTRError) {
+          console.error('RTR failure', err); // eslint-disable-line no-console
+          document.dispatchEvent(new Event(RTR_ERROR_EVENT, { detail: err }));
+          return Promise.resolve(new Response(JSON.stringify({})));
+        }
+
+        throw err;
+      });
   };
+
+  /**
+   * passThroughWithAT
+   * Given we believe the AT to be valid, pass the fetch through.
+   * If it fails, maybe our beliefs were wrong, maybe everything is wrong,
+   * maybe there is no God, or there are many gods, or god is a she, or
+   * she is a he, or Lou Reed is god. Or maybe we were just wrong about the
+   * AT and we need to conduct token rotation, so try that. If RTR succeeds,
+   * it'll pass through the fetch as we originally intended because now we
+   * know the AT will be valid. If RTR fails, then it doesn't matter about
+   * Lou Reed. He may be god, but this is out of our hands now.
+   *
+   * @param {*} resource any resource acceptable to fetch()
+   * @param {*} options
+   * @returns Promise
+   */
+  passThroughWithAT = (resource, options) => {
+    return this.nativeFetch.apply(global, [resource, options])
+      .then(response => {
+        // if the request failed due to a missing token, attempt RTR (which
+        // will then replay the original fetch if it succeeds), or die softly
+        // if it fails. return any other response as-is.
+        if (response.status === 403 && response.headers.get('content-type') === 'text/plain') {
+          const res = response.clone();
+          return res.text()
+            .then(text => {
+              if (text.startsWith('Token missing')) {
+                this.logger.log('rtr', '   (whoops, invalid AT; retrying)');
+                return this.passThroughWithRT(resource, options);
+              }
+
+              // yes, we got a 403, but not an RTR 403. leave that to the
+              // original application to handle. it's not our problem.
+              return response;
+            });
+        }
+
+        return response;
+      });
+  }
 
   /**
    * passThroughLogout
@@ -88,9 +192,9 @@ export class FFetch {
   passThroughLogout = (resource, options) => {
     this.logger.log('rtr', '   (logout request)');
     return this.nativeFetch.apply(global, [resource, { ...options, credentials: 'include' }])
-      .catch(e => {
+      .catch(err => {
         // kill me softly: return an empty response to allow graceful failure
-        console.error('-- (rtr-sw) logout failure', e); // eslint-disable-line no-console
+        console.error('-- (rtr-sw) logout failure', err); // eslint-disable-line no-console
         return Promise.resolve(new Response(JSON.stringify({})));
       });
   };
@@ -128,30 +232,29 @@ export class FFetch {
         return this.passThroughLogout(resource, options);
       }
 
-      return this.nativeFetch.apply(global, [resource, options])
-        .then(response => {
-          // if the request failed due to a missing token, attempt RTR (which
-          // will then replay the original fetch if it succeeds), or die softly
-          // if it fails. return any other response as-is.
-          if (response.status === 400) {
-            this.logger.log('rtr', '   (whoops, invalid AT; retrying)');
-            return this.passThroughWithRT(resource, options)
-              .catch(err => {
-                if (err instanceof RTRError) {
-                  console.error('RTR failure', err); // eslint-disable-line no-console
-                  document.dispatchEvent(new Event(RTR_ERROR_EVENT, { detail: err }));
-                  return Promise.resolve(new Response(JSON.stringify({})));
-                }
+      // if our cached tokens appear to have expired, pull them from storage.
+      // maybe another window updated them for us without us knowing.
+      if (!isValidAT(this.tokenExpiration, this.logger)) {
+        this.logger.log('rtr', 'local tokens expired; fetching from storage');
+        this.tokenExpiration = await getTokenExpiry();
+      }
 
-                // we don't expect to end up here because if we do,
-                // it means RTR failed, but not with an RTR-related
-                // error. that would certainly be unexpected.
-                throw err;
-              });
-          }
+      // AT is valid or unnecessary; execute the fetch
+      if (this.isPermissibleRequest(resource, this.tokenExpiration, okapi.url)) {
+        return this.passThroughWithAT(resource, options);
+      }
 
-          return response;
-        });
+      // AT was expired, but RT is valid; perform RTR then execute the fetch
+      if (isValidRT(this.tokenExpiration, this.logger)) {
+        return this.passThroughWithRT(resource, options);
+      }
+
+      // AT is expired. RT is expired. It's the end of the world as we know it.
+      // So, maybe Michael Stipe is god. Oh, wait, crap, he lost his religion.
+      // Look, RTR is complicated, what do you want?
+      console.error('All tokens expired'); // eslint-disable-line no-console
+      document.dispatchEvent(new Event(RTR_ERROR_EVENT, { detail: 'All tokens expired' }));
+      return Promise.resolve(new Response(JSON.stringify({})));
     }
 
     // default: pass requests through to the network

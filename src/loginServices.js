@@ -71,6 +71,44 @@ export const supportedNumberingSystems = [
 /** name for the session key in local storage */
 const SESSION_NAME = 'okapiSess';
 
+/**
+ * getTokenSess
+ * simple wrapper around access to values stored in localforage
+ * to insulate RTR functions from that API.
+ *
+ * @returns {object}
+ */
+export const getOkapiSession = async () => {
+  return localforage.getItem(SESSION_NAME);
+};
+
+/**
+ * getTokenSess
+ * simple wrapper around access to values stored in localforage
+ * to insulate RTR functions from that API.
+ *
+ * @returns {object} shaped like { atExpires, rtExpires }; each is a millisecond timestamp
+ */
+export const getTokenExpiry = async () => {
+  const sess = await getOkapiSession();
+  return new Promise((resolve) => resolve(sess?.tokenExpiration));
+};
+
+/**
+ * getTokenSess
+ * simple wrapper around access to values stored in localforage
+ * to insulate RTR functions from that API. Supplement the existing
+ * session with updated token expiration data.
+ *
+ * @param {object} shaped like { atExpires, rtExpires }; each is a millisecond timestamp
+ * @returns {object} updated session object
+ */
+export const setTokenExpiry = async (te) => {
+  const sess = await getOkapiSession();
+  return localforage.setItem(SESSION_NAME, { ...sess, tokenExpiration: te });
+};
+
+
 // export config values for storing user locale
 export const userLocaleConfig = {
   'configName': 'localeSettings',
@@ -354,14 +392,14 @@ function loadResources(okapiUrl, store, tenant, userId) {
  */
 export function spreadUserWithPerms(userWithPerms) {
   const user = {
-    id: userWithPerms.user.id,
-    username: userWithPerms.user.username,
-    ...userWithPerms.user.personal,
+    id: userWithPerms?.user?.id,
+    username: userWithPerms?.user?.username,
+    ...userWithPerms?.user?.personal,
   };
 
   // remap data's array of permission-names to set with
   // permission-names for keys and `true` for values
-  const perms = Object.assign({}, ...userWithPerms.permissions.permissions.map(p => ({ [p.permissionName]: true })));
+  const perms = Object.assign({}, ...userWithPerms?.permissions?.permissions.map(p => ({ [p.permissionName]: true })));
 
   return { user, perms };
 }
@@ -664,7 +702,7 @@ export function validateUser(okapiUrl, store, tenant, session) {
  * @param {string} tenant
  */
 export function checkOkapiSession(okapiUrl, store, tenant) {
-  localforage.getItem(SESSION_NAME)
+  getOkapiSession()
     .then((sess) => {
       return sess !== null ? validateUser(okapiUrl, store, tenant, sess) : null;
     })
@@ -761,7 +799,7 @@ export function requestSSOLogin(okapiUrl, tenant) {
  * @returns {Promise}
  */
 export function updateUser(store, data) {
-  return localforage.getItem(SESSION_NAME)
+  return getOkapiSession()
     .then((sess) => {
       sess.user = { ...sess.user, ...data };
       return localforage.setItem(SESSION_NAME, sess);
@@ -781,7 +819,7 @@ export function updateUser(store, data) {
  * @returns {Promise}
  */
 export async function updateTenant(okapi, tenant) {
-  const okapiSess = await localforage.getItem(SESSION_NAME);
+  const okapiSess = await getOkapiSession();
   const userWithPermsResponse = await fetchUserWithPerms(okapi.url, tenant);
   const userWithPerms = await userWithPermsResponse.json();
 
