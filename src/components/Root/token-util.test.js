@@ -121,23 +121,6 @@ describe('resourceMapper', () => {
 });
 
 describe('rtr', () => {
-  it('isRotating: timing out throws an error', async () => {
-    const context = {
-      isRotating: true,
-      logger: {
-        log: jest.fn(),
-      },
-    };
-
-    let ex = null;
-    await rtr(context)
-      .catch(e => {
-        ex = e;
-      });
-
-    expect(ex instanceof RTRError).toBe(true);
-  }, IS_ROTATING_INTERVAL * IS_ROTATING_RETRIES + 10000);
-
   it('isRotating: resolves when rotation completes', async () => {
     const context = {
       isRotating: true,

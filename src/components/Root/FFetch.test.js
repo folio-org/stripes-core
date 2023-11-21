@@ -86,7 +86,7 @@ describe('FFetch class', () => {
         .mockResolvedValueOnce(new Response(
           'Token missing',
           {
-            status: 403,
+            status: 400,
             headers: {
               'content-type': 'text/plain',
             },
