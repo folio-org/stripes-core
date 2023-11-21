@@ -206,65 +206,51 @@ export const adjustTokenExpiration = (value, fraction) => ({
 export const rtr = async (context) => {
   context.logger.log('rtr', '** RTR ...');
 
-  // if several fetches trigger rtr in a short window, all but the first will
-  // fail because the RT will be stale after the first request rotates it.
-  // the sentinel isRotating indicates that rtr has already started and therefore
-  // should not start again; instead, we just need to wait until it finishes.
-  // waiting happens in a for-loop that waits a few milliseconds and then rechecks
-  // isRotating. hopefully, that process goes smoothly, but we'll give up after
-  // IS_ROTATING_RETRIES * IS_ROTATING_INTERVAL milliseconds and return failure.
-  if (context.isRotating) {
-    for (let i = 0; i < IS_ROTATING_RETRIES; i++) {
-      context.logger.log('rtr', `**    is rotating; waiting ${IS_ROTATING_INTERVAL}ms`);
-      await new Promise(resolve => setTimeout(resolve, IS_ROTATING_INTERVAL));
-      if (!context.isRotating) {
-        return Promise.resolve();
-      }
-    }
-    // all is lost
-    return Promise.reject(new RTRError('in-process RTR timed out'));
+  if (!context.isRotating) {
+    context.isRotating = true;
+    context.rtrPromise = context.nativeFetch.apply(global, [`${okapi.url}/authn/refresh`, {
+      headers: {
+        'content-type': 'application/json',
+        'x-okapi-tenant': okapi.tenant,
+      },
+      method: 'POST',
+      credentials: 'include',
+      mode: 'cors',
+    }])
+      .then(res => {
+        if (res.ok) {
+          return res.json();
+        }
+        // rtr failure. return an error message if we got one.
+        return res.json()
+          .then(json => {
+            context.isRotating = false;
+            if (Array.isArray(json.errors) && json.errors[0]) {
+              throw new RTRError(`${json.errors[0].message} (${json.errors[0].code})`);
+            } else {
+              throw new RTRError('RTR response failure');
+            }
+          });
+      })
+      .then(json => {
+        context.logger.log('rtr', '**     success!');
+        const te = adjustTokenExpiration({
+          tokenExpiration: {
+            atExpires: new Date(json.accessTokenExpiration).getTime(),
+            rtExpires: new Date(json.refreshTokenExpiration).getTime(),
+          }
+        }, TTL_WINDOW);
+        context.tokenExpiration = te;
+        return setTokenExpiry(te);
+      })
+      .finally(() => {
+        // @@dispatchEvent(RTR rotation event)
+        context.isRotating = false;
+      });
+  } else {
+    context.logger.log('rtr', 'rotation is already pending!');
   }
 
-  context.isRotating = true;
-  return context.nativeFetch.apply(global, [`${okapi.url}/authn/refresh`, {
-    headers: {
-      'content-type': 'application/json',
-      'x-okapi-tenant': okapi.tenant,
-    },
-    method: 'POST',
-    credentials: 'include',
-    mode: 'cors',
-  }])
-    .then(res => {
-      if (res.ok) {
-        return res.json();
-      }
-
-      // rtr failure. return an error message if we got one.
-      return res.json()
-        .then(json => {
-          context.isRotating = false;
-          if (Array.isArray(json.errors) && json.errors[0]) {
-            throw new RTRError(`${json.errors[0].message} (${json.errors[0].code})`);
-          } else {
-            throw new RTRError('RTR response failure');
-          }
-        });
-    })
-    .then(json => {
-      context.logger.log('rtr', '**     success!');
-      context.isRotating = false;
-      return adjustTokenExpiration({
-        tokenExpiration: {
-          atExpires: new Date(json.accessTokenExpiration).getTime(),
-          rtExpires: new Date(json.refreshTokenExpiration).getTime(),
-        }
-      }, TTL_WINDOW);
-    })
-    .then(te => {
-      // @@dispatchEvent(RTR rotation event)
-      context.tokenExpiration = te;
-      return setTokenExpiry(te);
-    });
+  return context.rtrPromise;
 };
 
