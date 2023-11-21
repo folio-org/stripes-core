@@ -2,33 +2,16 @@
 // FFetch for the reassign globals side-effect in its constructor.
 /* eslint-disable no-unused-vars */
 
-// import localforage from 'localforage';
-import LIServices from '../../loginServices';
 import { log } from 'console';
+import { getTokenExpiry } from '../../loginServices';
 import { FFetch } from './FFetch';
 import { RTRError, UnexpectedResourceError } from './Errors';
-const { getTokenExpiry } = LIServices;
 
 jest.mock('../../loginServices', () => ({
   ...(jest.requireActual('../../loginServices')),
   setTokenExpiry: jest.fn(() => Promise.resolve()),
   getTokenExpiry: jest.fn(() => Promise.resolve())
 }));
-
-// jest.mock('localforage', () => ({
-//   ...(jest.requireActual('localforage')),
-//   __esModule: true,
-//   setItem: () => new Promise((resolve) => resolve()),
-//   getItem: jest.fn(() => {
-//     console.log('mock getItem');
-//     return Promise.resolve({
-//     tokenExpiration: {
-//       atExpires: Date.now() + (10 * 60 * 1000),
-//       rtExpires: Date.now() + (10 * 60 * 1000),
-//     },
-//   });
-// }),
-// }));
 
 jest.mock('stripes-config', () => ({
   url: 'okapiUrl',
@@ -132,7 +115,7 @@ describe('FFetch class', () => {
         .mockResolvedValueOnce(new Response(JSON.stringify({
           accessTokenExpiration: new Date().getTime() + 1000,
           refreshTokenExpiration: new Date().getTime() + 2000,
-        }), { ok: true }))
+        }), { ok: true }));
       const testFfetch = new FFetch({ logger: { log } });
       const response = await global.fetch('okapiUrl', { testOption: 'test' });
       expect(mockFetch.mock.calls).toHaveLength(2);
