@@ -2,21 +2,33 @@
 // FFetch for the reassign globals side-effect in its constructor.
 /* eslint-disable no-unused-vars */
 
-import localforage from 'localforage';
+// import localforage from 'localforage';
+import LIServices from '../../loginServices';
 import { log } from 'console';
 import { FFetch } from './FFetch';
-import { RTRError } from './Errors';
-import { getOkapiSession, getTokenExpiry, setTokenExpiry } from '../../loginServices';
+import { RTRError, UnexpectedResourceError } from './Errors';
+const { getTokenExpiry } = LIServices;
 
-jest.mock('localforage', () => ({
-  setItem: () => new Promise((resolve) => resolve()),
-  getItem: () => Promise.resolve({
-    tokenExpiration: {
-      atExpires: Date.now() + (10 * 60 * 1000),
-      rtExpires: Date.now() + (10 * 60 * 1000),
-    },
-  }),
+jest.mock('../../loginServices', () => ({
+  ...(jest.requireActual('../../loginServices')),
+  setTokenExpiry: jest.fn(() => Promise.resolve()),
+  getTokenExpiry: jest.fn(() => Promise.resolve())
 }));
+
+// jest.mock('localforage', () => ({
+//   ...(jest.requireActual('localforage')),
+//   __esModule: true,
+//   setItem: () => new Promise((resolve) => resolve()),
+//   getItem: jest.fn(() => {
+//     console.log('mock getItem');
+//     return Promise.resolve({
+//     tokenExpiration: {
+//       atExpires: Date.now() + (10 * 60 * 1000),
+//       rtExpires: Date.now() + (10 * 60 * 1000),
+//     },
+//   });
+// }),
+// }));
 
 jest.mock('stripes-config', () => ({
   url: 'okapiUrl',
@@ -35,6 +47,10 @@ const mockFetch = jest.fn();
 describe('FFetch class', () => {
   beforeEach(() => {
     global.fetch = mockFetch;
+    getTokenExpiry.mockResolvedValue({
+      atExpires: Date.now() + (10 * 60 * 1000),
+      rtExpires: Date.now() + (10 * 60 * 1000),
+    });
   });
 
   afterEach(() => {
@@ -103,6 +119,25 @@ describe('FFetch class', () => {
       expect(mockFetch.mock.calls).toHaveLength(3);
       expect(mockFetch.mock.calls[1][0]).toEqual('okapiUrl/authn/refresh');
       expect(response).toEqual('success');
+    });
+  });
+
+  describe('Calling an okapi fetch with expired AT...', () => {
+    it('triggers rtr...calls fetch 2 times - token call, successful call', async () => {
+      getTokenExpiry.mockResolvedValueOnce({
+        atExpires: Date.now() - (10 * 60 * 1000),
+        rtExpires: Date.now() + (10 * 60 * 1000),
+      });
+      mockFetch.mockResolvedValue('token rotation success')
+        .mockResolvedValueOnce(new Response(JSON.stringify({
+          accessTokenExpiration: new Date().getTime() + 1000,
+          refreshTokenExpiration: new Date().getTime() + 2000,
+        }), { ok: true }))
+      const testFfetch = new FFetch({ logger: { log } });
+      const response = await global.fetch('okapiUrl', { testOption: 'test' });
+      expect(mockFetch.mock.calls).toHaveLength(2);
+      expect(mockFetch.mock.calls[0][0]).toEqual('okapiUrl/authn/refresh');
+      expect(response).toEqual('token rotation success');
     });
   });
 
@@ -178,6 +213,59 @@ describe('FFetch class', () => {
         expect(e instanceof RTRError).toBeTrue;
         expect(mockFetch.mock.calls).toHaveLength(2);
         expect(mockFetch.mock.calls[1][0]).toEqual('okapiUrl/authn/refresh');
+      }
+    });
+  });
+
+  describe('Calling an okapi fetch when all tokens are expired', () => {
+    it('triggers an RTR error', async () => {
+      getTokenExpiry.mockResolvedValueOnce({
+        atExpires: Date.now() - (10 * 60 * 1000),
+        rtExpires: Date.now() - (10 * 60 * 1000),
+      });
+      mockFetch.mockResolvedValue('success')
+        .mockResolvedValueOnce(new Response(
+          JSON.stringify({ errors: ['missing token-getting ability'] }),
+          {
+            status: 303,
+            headers: {
+              'content-type': 'application/json',
+            }
+          }
+        ));
+      const testFfetch = new FFetch({ logger: { log } });
+      try {
+        await global.fetch('okapiUrl', { testOption: 'test' });
+      } catch (e) {
+        expect(e instanceof RTRError).toBeTrue;
+        expect(mockFetch.mock.calls).toHaveLength(2);
+        expect(mockFetch.mock.calls[1][0]).toEqual('okapiUrl/authn/refresh');
+      }
+    });
+  });
+
+  describe('Calling an okapi fetch with a malformed resource', () => {
+    it('triggers an Unexpected Resource Error', async () => {
+      getTokenExpiry.mockResolvedValueOnce({
+        atExpires: Date.now() - (10 * 60 * 1000),
+        rtExpires: Date.now() - (10 * 60 * 1000),
+      });
+      mockFetch.mockResolvedValue('success')
+        .mockResolvedValueOnce(new Response(
+          JSON.stringify({ errors: ['missing token-getting ability'] }),
+          {
+            status: 303,
+            headers: {
+              'content-type': 'application/json',
+            }
+          }
+        ));
+      const testFfetch = new FFetch({ logger: { log } });
+      try {
+        await global.fetch({ foo: 'okapiUrl' }, { testOption: 'test' });
+      } catch (e) {
+        expect(e instanceof UnexpectedResourceError).toBeTrue;
+        expect(mockFetch.mock.calls).toHaveLength(0);
       }
     });
   });
