@@ -2,7 +2,7 @@ import { okapi } from 'stripes-config';
 import { isFolioApiRequest, rtr } from './token-util';
 
 export default (deps) => {
-  return class FXHRClass extends global.XMLHttpRequest {
+  return class FXHRClass extends XMLHttpRequest {
     constructor() {
       super();
       this.shouldEnsureToken = false;
@@ -10,13 +10,13 @@ export default (deps) => {
     }
 
     open = (method, url) => {
-      this.FFetchContext.logger.log('rtr', 'capture XHR.open');
+      this.FFetchContext.logger?.log('rtr', 'capture XHR.open');
       this.shouldEnsureToken = isFolioApiRequest(url, okapi.url);
       super.open(method, url);
     }
 
     send = async (payload) => {
-      this.FFetchContext.logger.log('rtr', 'capture XHR send');
+      this.FFetchContext.logger?.log('rtr', 'capture XHR send');
       if (this.shouldEnsureToken) {
         await rtr(this.FFetchContext)
           .then(() => {
