@@ -21,8 +21,8 @@ class TitleManager extends React.Component {
   static defaultProps = { prefix: '' }
 
   renderTitle = (currentTitle) => {
-    const { prefix, page, record } = this.props;
-    const postfix = (this.props.stripes.config || {}).platformName || APP;
+    const { prefix, page, record, stripes } = this.props;
+    const postfix = stripes.config?.platformName || APP;
 
     if (typeof currentTitle !== 'string') return '';
 
