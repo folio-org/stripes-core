@@ -66,7 +66,7 @@ class Root extends Component {
     this.apolloClient = createApolloClient(okapi);
     this.reactQueryClient = createReactQueryClient();
 
-    if (config.useSecureTokens) {
+    if (this.props.config.useSecureTokens) {
       this.ffetch = new FFetch({ logger: this.props.logger });
     }
   }
