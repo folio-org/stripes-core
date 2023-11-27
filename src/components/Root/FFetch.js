@@ -51,6 +51,11 @@ import {
 } from './Errors';
 import FXHR from './FXHR';
 
+const OKAPI_FETCH_OPTIONS = {
+  credentials: 'include',
+  mode: 'cors',
+};
+
 export class FFetch {
   constructor({ logger }) {
     this.logger = logger;
@@ -125,7 +130,7 @@ export class FFetch {
     return rtr(this)
       .then(() => {
         this.logger.log('rtr', 'post-rtr-fetch', resource);
-        return this.nativeFetch.apply(global, [resource, options]);
+        return this.nativeFetch.apply(global, [resource, options && { ...options, ...OKAPI_FETCH_OPTIONS }]);
       })
       .catch(err => {
         if (err instanceof RTRError) {
@@ -154,7 +159,7 @@ export class FFetch {
    * @returns Promise
    */
   passThroughWithAT = (resource, options) => {
-    return this.nativeFetch.apply(global, [resource, options])
+    return this.nativeFetch.apply(global, [resource, options && { ...options, ...OKAPI_FETCH_OPTIONS }])
       .then(response => {
         // if the request failed due to a missing token, attempt RTR (which
         // will then replay the original fetch if it succeeds), or die softly
@@ -191,7 +196,7 @@ export class FFetch {
    */
   passThroughLogout = (resource, options) => {
     this.logger.log('rtr', '   (logout request)');
-    return this.nativeFetch.apply(global, [resource, { ...options, credentials: 'include' }])
+    return this.nativeFetch.apply(global, [resource, options && { ...options, ...OKAPI_FETCH_OPTIONS }])
       .catch(err => {
         // kill me softly: return an empty response to allow graceful failure
         console.error('-- (rtr-sw) logout failure', err); // eslint-disable-line no-console
