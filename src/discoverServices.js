@@ -1,8 +1,9 @@
 import { some } from 'lodash';
 
-function getHeaders(tenant) {
+function getHeaders(tenant, token) {
   return {
     'X-Okapi-Tenant': tenant,
+    ...(token && { 'X-Okapi-Token': token }),
     'Content-Type': 'application/json'
   };
 }
@@ -11,7 +12,7 @@ function fetchOkapiVersion(store) {
   const okapi = store.getState().okapi;
 
   return fetch(`${okapi.url}/_/version`, {
-    headers: getHeaders(okapi.tenant),
+    headers: getHeaders(okapi.tenant, okapi.token),
     credentials: 'include',
     mode: 'cors',
   }).then((response) => { // eslint-disable-line consistent-return
@@ -32,7 +33,7 @@ function fetchModules(store) {
   const okapi = store.getState().okapi;
 
   return fetch(`${okapi.url}/_/proxy/tenants/${okapi.tenant}/modules?full=true`, {
-    headers: getHeaders(okapi.tenant),
+    headers: getHeaders(okapi.tenant, okapi.token),
     credentials: 'include',
     mode: 'cors',
   }).then((response) => { // eslint-disable-line consistent-return
