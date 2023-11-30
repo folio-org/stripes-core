@@ -171,8 +171,9 @@ export const adjustTokenExpiration = (value, fraction) => ({
 export const rtr = async (context) => {
   context.logger.log('rtr', '** RTR ...');
 
-  if (!context.isRotating) {
-    context.isRotating = true;
+  const isRotating = localStorage.getItem('isRotating');
+  if (isRotating === 'false' || isRotating === null) {
+    localStorage.setItem('isRotating', 'true');
     context.rtrPromise = context.nativeFetch.apply(global, [`${okapi.url}/authn/refresh`, {
       headers: {
         'content-type': 'application/json',
@@ -184,11 +185,13 @@ export const rtr = async (context) => {
     }])
       .then(res => {
         if (res.ok) {
+          localStorage.setItem('isRotating', 'false');
           return res.json();
         }
         // rtr failure. return an error message if we got one.
         return res.json()
           .then(json => {
+            localStorage.setItem('isRotating', 'false');
             context.isRotating = false;
             if (Array.isArray(json.errors) && json.errors[0]) {
               throw new RTRError(`${json.errors[0].message} (${json.errors[0].code})`);
@@ -210,10 +213,30 @@ export const rtr = async (context) => {
       })
       .finally(() => {
         // @@dispatchEvent(RTR rotation event)
-        context.isRotating = false;
+        localStorage.setItem('isRotating', 'false');
       });
   } else {
+    /* if `isRotating` is true in local storage, and context doesn't have
+    * an rtrPromise already, we're possibly on a new tab.
+    * In this case, we set up our own promise for this tab,
+    * and listen for localStorage to update with `isRotating === false`
+    * after that, we'll resolve our tab's rtr promise and be back to our
+    * originally scheduled data fetching.
+    */
     context.logger.log('rtr', 'rotation is already pending!');
+    if (!context.rtrPromise) {
+      context.rtrPromise = new Promise((res) => {
+        context.logger.log('fingers crossed, waiting for first tab to resolve its RTR');
+        const storageHandler = () => {
+          if (localStorage.getItem('isRotating') === 'false') {
+            window.removeEventListener('storage', storageHandler);
+            context.logger.log('rtr', 'token rotation has resolved, continue as usual!');
+            res();
+          }
+        };
+        window.addEventListener('storage', storageHandler);
+      });
+    }
   }
 
   return context.rtrPromise;
