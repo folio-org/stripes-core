@@ -224,19 +224,17 @@ export const rtr = async (context) => {
     * originally scheduled data fetching.
     */
     context.logger.log('rtr', 'rotation is already pending!');
-    if (!context.rtrPromise) {
-      context.rtrPromise = new Promise((res) => {
-        context.logger.log('rtr', 'fingers crossed, waiting for first tab to resolve its RTR');
-        const storageHandler = () => {
-          if (localStorage.getItem('isRotating') === 'false') {
-            window.removeEventListener('storage', storageHandler);
-            context.logger.log('rtr', 'token rotation has resolved, continue as usual!');
-            res();
-          }
-        };
-        window.addEventListener('storage', storageHandler);
-      });
-    }
+    context.rtrPromise = new Promise((res) => {
+      context.logger.log('rtr', 'fingers crossed, waiting for first tab to resolve its RTR');
+      const storageHandler = () => {
+        if (localStorage.getItem('isRotating') === 'false') {
+          window.removeEventListener('storage', storageHandler);
+          context.logger.log('rtr', 'token rotation has resolved, continue as usual!');
+          res();
+        }
+      };
+      window.addEventListener('storage', storageHandler);
+    });
   }
 
   return context.rtrPromise;
