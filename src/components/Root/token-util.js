@@ -226,7 +226,7 @@ export const rtr = async (context) => {
     context.logger.log('rtr', 'rotation is already pending!');
     if (!context.rtrPromise) {
       context.rtrPromise = new Promise((res) => {
-        context.logger.log('fingers crossed, waiting for first tab to resolve its RTR');
+        context.logger.log('rtr', 'fingers crossed, waiting for first tab to resolve its RTR');
         const storageHandler = () => {
           if (localStorage.getItem('isRotating') === 'false') {
             window.removeEventListener('storage', storageHandler);
