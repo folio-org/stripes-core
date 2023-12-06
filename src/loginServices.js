@@ -28,7 +28,7 @@ import {
 import processBadResponse from './processBadResponse';
 import configureLogger from './configureLogger';
 
-import { RTR_ERROR_EVENT } from './components/Root/Errors';
+import { RTR_ERROR_EVENT } from './components/Root/Events';
 
 // export supported locales, i.e. the languages we provide translations for
 export const supportedLocales = [
