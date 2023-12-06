@@ -45,10 +45,13 @@ import {
   rtr,
 } from './token-util';
 import {
-  RTR_ERROR_EVENT,
   RTRError,
   UnexpectedResourceError,
 } from './Errors';
+import {
+  RTR_ERROR_EVENT,
+} from './Events';
+
 import FXHR from './FXHR';
 
 const OKAPI_FETCH_OPTIONS = {

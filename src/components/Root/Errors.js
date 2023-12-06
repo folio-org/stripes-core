@@ -25,5 +25,3 @@ export class UnexpectedResourceError extends Error {
     this.resource = resource;
   }
 }
-
-export const RTR_ERROR_EVENT = '@folio/stripes/core::RTRError';
