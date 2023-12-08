@@ -127,8 +127,9 @@ class MainNav extends Component {
       this.store.dispatch(clearOkapiToken());
       this.store.dispatch(clearCurrentUser());
       this.store.dispatch(resetStore());
-      localforage.removeItem('okapiSess');
-    });
+    })
+      .then(localforage.removeItem('okapiSess'))
+      .then(localforage.removeItem('loginResponse'));
   }
 
   // return the user to the login screen, but after logging in they will be brought to the default screen.
@@ -137,7 +138,7 @@ class MainNav extends Component {
       console.clear(); // eslint-disable-line no-console
     }
     this.returnToLogin().then(() => {
-      this.props.history.push('/');
+      this.props.history.push('/logout');
     });
   }
 

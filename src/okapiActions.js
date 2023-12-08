@@ -128,6 +128,13 @@ function updateCurrentUser(data) {
   };
 }
 
+function setOkapiTenant(payload) {
+  return {
+    type: 'SET_OKAPI_TENANT',
+    payload
+  };
+}
+
 export {
   checkSSO,
   clearCurrentUser,
@@ -148,4 +155,5 @@ export {
   setTimezone,
   setTranslations,
   updateCurrentUser,
+  setOkapiTenant
 };

@@ -13,6 +13,7 @@ import { Callout, HotKeys } from '@folio/stripes-components';
 
 import ModuleRoutes from './moduleRoutes';
 import events from './events';
+import Redirect from './components/Redirect';
 
 import {
   MainContainer,
@@ -21,6 +22,8 @@ import {
   ModuleTranslator,
   TitledRoute,
   Front,
+  OIDCRedirect,
+  OIDCLanding,
   SSOLanding,
   SSORedirect,
   Settings,
@@ -37,6 +40,8 @@ import {
 import StaleBundleWarning from './components/StaleBundleWarning';
 import { StripesContext } from './StripesContext';
 import { CalloutContext } from './CalloutContext';
+import PreLoginLanding from './components/PreLoginLanding';
+import { setOkapiTenant } from './okapiActions';
 
 class RootWithIntl extends React.Component {
   static propTypes = {
@@ -45,6 +50,9 @@ class RootWithIntl extends React.Component {
       epics: PropTypes.object,
       logger: PropTypes.object.isRequired,
       clone: PropTypes.func.isRequired,
+      config: PropTypes.object.isRequired,
+      okapi: PropTypes.object.isRequired,
+      store: PropTypes.object.isRequired
     }).isRequired,
     token: PropTypes.string,
     disableAuth: PropTypes.bool.isRequired,
@@ -58,10 +66,40 @@ class RootWithIntl extends React.Component {
 
   state = { callout: null };
 
+  handleSelectTenant = (tenant, clientId) => {
+    localStorage.setItem('tenant', JSON.stringify({ tenantName: tenant, clientId }));
+    this.props.stripes.store.dispatch(setOkapiTenant({ clientId, tenant }));
+  }
+
   setCalloutRef = (ref) => {
     this.setState({
       callout: ref,
     });
+  }
+
+  singleTenantAuthnUrl = () => {
+    const { okapi } = this.props.stripes;
+    const redirectUri = `${window.location.protocol}//${window.location.host}/oidc-landing`;
+
+    return `${okapi.authnUrl}/realms/${okapi.tenant}/protocol/openid-connect/auth?client_id=${okapi.clientId}&response_type=code&redirect_uri=${redirectUri}&scope=openid`;
+  }
+
+  renderLoginComponent() {
+    const { config, okapi } = this.props.stripes;
+
+    if (okapi.authnUrl) {
+      if (config.isSingleTenant) {
+        return <Redirect to={this.singleTenantAuthnUrl()} />;
+      }
+      return <PreLoginLanding
+        onSelectTenant={this.handleSelectTenant}
+      />;
+    }
+
+    return <Login
+      autoLogin={config.autoLogin}
+      stripes={this.props.stripes}
+    />;
   }
 
   render() {
@@ -73,6 +111,17 @@ class RootWithIntl extends React.Component {
 
     const connect = connectFor('@folio/core', this.props.stripes.epics, this.props.stripes.logger);
     const stripes = this.props.stripes.clone({ connect });
+
+    const logoutUrl = `${stripes.okapi.authnUrl}/realms/${stripes.okapi.tenant}/protocol/openid-connect/logout?client_id=${stripes.okapi.clientId}&post_logout_redirect_uri=${window.location.protocol}//${window.location.host}`;
+    const LoginComponent = stripes.okapi.authnUrl ?
+      <PreLoginLanding
+        onSelectTenant={this.handleSelectTenant}
+      />
+      :
+      <Login
+        autoLogin={stripes.config.autoLogin}
+        stripes={stripes}
+      />;
 
     return (
       <StripesContext.Provider value={stripes}>
@@ -113,6 +162,12 @@ class RootWithIntl extends React.Component {
                                     component={<SSORedirect stripes={stripes} />}
                                   />
                                   <TitledRoute
+                                    name="oidcRedirect"
+                                    path="/oidc-landing"
+                                    key="oidc-landing"
+                                    component={<OIDCRedirect stripes={stripes} />}
+                                  />
+                                  <TitledRoute
                                     name="settings"
                                     path="/settings"
                                     component={<Settings stripes={stripes} />}
@@ -139,6 +194,13 @@ class RootWithIntl extends React.Component {
                           key="sso-landing"
                         />
                         <TitledRoute
+                          name="oidcLanding"
+                          exact
+                          path="/oidc-landing"
+                          component={<CookiesProvider><OIDCLanding stripes={stripes} /></CookiesProvider>}
+                          key="oidc-landing"
+                        />
+                        <TitledRoute
                           name="forgotPassword"
                           path="/forgot-password"
                           component={<ForgotPasswordCtrl stripes={stripes} />}
@@ -154,13 +216,13 @@ class RootWithIntl extends React.Component {
                           component={<CheckEmailStatusPage />}
                         />
                         <TitledRoute
+                          name="logout"
+                          path="/logout"
+                          component={<Redirect to={logoutUrl} />}
+                        />
+                        <TitledRoute
                           name="login"
-                          component={
-                            <Login
-                              autoLogin={stripes.config.autoLogin}
-                              stripes={stripes}
-                            />
-                          }
+                          component={this.renderLoginComponent()}
                         />
                       </Switch>
                     }
