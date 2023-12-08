@@ -1,0 +1,13 @@
+@import "@folio/stripes-components/lib/variables.css";
+
+.container {
+  margin-top: 12vh;
+}
+
+button.submitButton {
+  height: 44px;
+  max-height: 100%;
+  margin-top: 1.5rem;
+  font-size: var(--font-size-medium);
+}
+
