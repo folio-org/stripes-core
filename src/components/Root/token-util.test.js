@@ -276,7 +276,7 @@ describe('rtr', () => {
 
     let ex = null;
     try {
-      await rtr(context)
+      await rtr(context);
     } catch (e) {
       ex = e;
     }
