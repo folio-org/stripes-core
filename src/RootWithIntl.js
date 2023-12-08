@@ -20,6 +20,8 @@ import {
   ModuleTranslator,
   TitledRoute,
   Front,
+  OIDCRedirect,
+  OIDCLanding,
   SSOLanding,
   SSORedirect,
   Settings,
@@ -89,6 +91,12 @@ const RootWithIntl = ({ stripes, token = '', isAuthenticated = false, disableAut
                                   component={<SSORedirect stripes={connectedStripes} />}
                                 />
                                 <TitledRoute
+                                  name="oidcRedirect"
+                                  path="/oidc-landing"
+                                  key="oidc-landing"
+                                  component={<OIDCRedirect stripes={stripes} />}
+                                />
+                                <TitledRoute
                                   name="logoutTimeout"
                                   path="/logout-timeout"
                                   component={<LogoutTimeout />}
@@ -125,6 +133,13 @@ const RootWithIntl = ({ stripes, token = '', isAuthenticated = false, disableAut
                         path="/sso-landing"
                         component={<CookiesProvider><SSOLanding stripes={connectedStripes} /></CookiesProvider>}
                         key="sso-landing"
+                      />
+                      <TitledRoute
+                        name="oidcLanding"
+                        exact
+                        path="/oidc-landing"
+                        component={<CookiesProvider><OIDCLanding stripes={stripes} /></CookiesProvider>}
+                        key="oidc-landing"
                       />
                       <TitledRoute
                         name="forgotPassword"

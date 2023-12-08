@@ -10,6 +10,7 @@
 * Provide `useUserTenantPermissions` hook. Refs STCOR-830.
 * Load DayJS locale data as part of `loginServices`. STCOR-771.
 * Turn on `<StrictMode>`; ignore it with `stripes.config.js` `disableStrictMode: true`. Refs STCOR-841.
+* Use keycloak URLs in place of users-bl for tenant-switch. Refs US1153537.
 * Make branding optional. Refs STCOR-847.
 * Idle-session timeout and "Keep working?" modal. Refs STCOR-776.
 * Implement password validation for Login Page. Refs STCOR-741.
