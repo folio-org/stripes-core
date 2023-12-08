@@ -120,8 +120,13 @@ class MainNav extends Component {
   returnToLogin() {
     const { okapi } = this.store.getState();
 
-    return getLocale(okapi.url, this.store, okapi.tenant)
-      .then(sessionLogout(okapi.url, this.store));
+    return getLocale(okapi.url, this.store, okapi.tenant).then(() => {
+      this.store.dispatch(clearOkapiToken());
+      this.store.dispatch(clearCurrentUser());
+      this.store.dispatch(resetStore());
+    })
+      .then(localforage.removeItem('okapiSess'))
+      .then(localforage.removeItem('loginResponse'));
   }
 
   // return the user to the login screen, but after logging in they will be brought to the default screen.
@@ -130,7 +135,7 @@ class MainNav extends Component {
       console.clear(); // eslint-disable-line no-console
     }
     this.returnToLogin().then(() => {
-      this.props.history.push('/');
+      this.props.history.push('/logout');
     });
   }
 
