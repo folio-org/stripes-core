@@ -135,6 +135,13 @@ function updateCurrentUser(data) {
   };
 }
 
+function setOkapiTenant(payload) {
+  return {
+    type: 'SET_OKAPI_TENANT',
+    payload
+  };
+}
+
 function setTokenExpiration(tokenExpiration) {
   return {
     type: 'SET_TOKEN_EXPIRATION',
@@ -164,4 +171,5 @@ export {
   setTokenExpiration,
   setTranslations,
   updateCurrentUser,
+  setOkapiTenant
 };

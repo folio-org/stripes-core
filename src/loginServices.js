@@ -1,5 +1,5 @@
 import localforage from 'localforage';
-import { config, translations } from 'stripes-config';
+import { config, okapi, translations } from 'stripes-config';
 import rtlDetect from 'rtl-detect';
 import moment from 'moment';
 
@@ -49,7 +49,7 @@ export const supportedLocales = [
   'it-IT',  // italian, italy
   'ja',     // japanese
   'ko',     // korean
-  'nb',     // norwegian bokmål"
+  'nb',     // norwegian bokmål
   'nn',     // norwegian nynorsk
   'pl',     // polish
   'pt-BR',  // portuguese, brazil
@@ -352,15 +352,16 @@ export function getBindings(okapiUrl, store, tenant) {
 /**
  * loadResources
  * return a promise that retrieves the tenant's locale, user's locale,
- * plugins, and key-bindings from mod-configuration.
- * @param {string} okapiUrl
+ * plugins, and key-bindings from mod-configuration, as well as retreiving
+ * module information directly from okapi.
+ *
  * @param {redux store} store
  * @param {string} tenant
  * @param {string} userId user's UUID
  *
  * @returns {Promise}
  */
-function loadResources(okapiUrl, store, tenant, userId) {
+function loadResources(store, tenant, userId) {
   let promises = [];
 
   // tenant's locale, plugin, bindings, and user's locale are all stored
@@ -368,10 +369,10 @@ function loadResources(okapiUrl, store, tenant, userId) {
   // read-permission for configuration entries.
   if (canReadConfig(store)) {
     promises = [
-      getLocale(okapiUrl, store, tenant),
-      getUserLocale(okapiUrl, store, tenant, userId),
-      getPlugins(okapiUrl, store, tenant),
-      getBindings(okapiUrl, store, tenant),
+      getLocale(okapi.url, store, tenant),
+      getUserLocale(okapi.url, store, tenant, userId),
+      getPlugins(okapi.url, store, tenant),
+      getBindings(okapi.url, store, tenant),
     ];
   }
 
@@ -454,7 +455,6 @@ export async function logout(okapiUrl, store) {
  * Dispatch the session object, then return a Promise that fetches
  * and dispatches tenant resources.
  *
- * @param {string} okapiUrl
  * @param {object} store
  * @param {string} tenant
  * @param {string} token
@@ -462,7 +462,9 @@ export async function logout(okapiUrl, store) {
  *
  * @returns {Promise}
  */
-export function createOkapiSession(okapiUrl, store, tenant, token, data) {
+export function createOkapiSession(store, tenant, token, data) {
+  // @@ new StripesSession(store, data);
+
   // clear any auth-n errors
   store.dispatch(setAuthError(null));
 
@@ -499,7 +501,7 @@ export function createOkapiSession(okapiUrl, store, tenant, token, data) {
     .then(() => {
       store.dispatch(setIsAuthenticated(true));
       store.dispatch(setSessionData(okapiSess));
-      return loadResources(okapiUrl, store, sessionTenant, user.id);
+      return loadResources(store, sessionTenant, user.id);
     });
 }
 
@@ -624,21 +626,32 @@ export function handleLoginError(dispatch, resp) {
  * processOkapiSession
  * create a new okapi session with the response from either a username/password
  * authentication request or a bl-users/_self request.
- * @param {string} okapiUrl
+ * response body is shaped like
+ * {
+    'access_token': 'SOME_STRING',
+    'expires_in': 420,
+    'refresh_expires_in': 1800,
+    'refresh_token': 'SOME_STRING',
+    'token_type': 'Bearer',
+    'not-before-policy': 0,
+    'session_state': 'SOME_UUID',
+    'scope': 'profile email'
+ * }
+ *
  * @param {redux store} store
  * @param {string} tenant
  * @param {Response} resp HTTP response
  *
  * @returns {Promise} resolving with login response body, rejecting with, ummmmm
  */
-export function processOkapiSession(okapiUrl, store, tenant, resp, ssoToken) {
-  const token = resp.headers.get('X-Okapi-Token') || ssoToken;
+export function processOkapiSession(store, tenant, resp, ssoToken) {
   const { dispatch } = store;
 
   if (resp.ok) {
     return resp.json()
       .then(json => {
-        return createOkapiSession(okapiUrl, store, tenant, token, json)
+        const token = json.access_token || ssoToken;
+        return createOkapiSession(store, tenant, token, json)
           .then(() => json);
       })
       .then((json) => {
@@ -733,7 +746,7 @@ export function checkOkapiSession(okapiUrl, store, tenant) {
  * requestLogin
  * authenticate with a username and password. return a promise that posts the values
  * and then processes the result to begin a session.
- * @param {string} okapiUrl
+ * @param {object} okapi object from stripes.config.js
  * @param {redux store} store
  * @param {string} tenant
  * @param {object} data
@@ -741,15 +754,29 @@ export function checkOkapiSession(okapiUrl, store, tenant) {
  * @returns {Promise}
  */
 export function requestLogin(okapiUrl, store, tenant, data) {
-  const loginPath = config.useSecureTokens ? 'login-with-expiry' : 'login';
-  return fetch(`${okapiUrl}/bl-users/${loginPath}?expandPermissions=true&fullPermissions=true`, {
-    body: JSON.stringify(data),
-    credentials: 'include',
-    headers: { 'X-Okapi-Tenant': tenant, 'Content-Type': 'application/json' },
-    method: 'POST',
-    mode: 'cors',
-  })
-    .then(resp => processOkapiSession(okapiUrl, store, tenant, resp));
+  // got Keycloak?
+  if (okapi.authnUrl) {
+    return fetch(okapi.authnUrl, {
+      method: 'POST',
+      body: new URLSearchParams({
+        ...data,
+        'grant_type': 'password',
+        'client_id': okapi.clientId,
+        'client_secret': okapi.clientSecret,
+      })
+    })
+      .then(resp => processOkapiSession(store, tenant, resp));
+  } else {
+    // legacy built-in authentication
+    const loginPath = config.useSecureTokens ? 'login-with-expiry' : 'login';
+    return fetch(`${okapiUrl}/bl-users/${loginPath}?expandPermissions=true&fullPermissions=true`, {
+      body: JSON.stringify(data),
+      credentials: 'include',
+      headers: { 'X-Okapi-Tenant': tenant, 'Content-Type': 'application/json' },
+      method: 'POST',
+      mode: 'cors',
+    })
+    .then(resp => processOkapiSession(store, tenant, resp));
 }
 
 /**
@@ -763,8 +790,9 @@ export function requestLogin(okapiUrl, store, tenant, data) {
  * @returns {Promise} Promise resolving to the response of the request
  */
 function fetchUserWithPerms(okapiUrl, tenant, token, rtrIgnore = false) {
+  const usersPath = okapi.authnUrl ? 'users-keycloak' : 'bl-users';
   return fetch(
-    `${okapiUrl}/bl-users/_self?expandPermissions=true&fullPermissions=true`,
+    `${okapiUrl}/${usersPath}/_self?expandPermissions=true&fullPermissions=true`,
     {
       headers: getHeaders(tenant, token),
       rtrIgnore,
@@ -783,7 +811,15 @@ function fetchUserWithPerms(okapiUrl, tenant, token, rtrIgnore = false) {
  */
 export function requestUserWithPerms(okapiUrl, store, tenant, token) {
   return fetchUserWithPerms(okapiUrl, tenant, token, !token)
-    .then(resp => processOkapiSession(okapiUrl, store, tenant, resp, token));
+    .then((resp) => {
+      if (resp.ok) {
+        return processOkapiSession(store, tenant, resp, token);
+      } else {
+        return resp.json().then((error) => {
+          throw error;
+        });
+      }
+    });
 }
 
 /**
@@ -833,7 +869,7 @@ export function updateUser(store, data) {
  * updateTenant
  * 1. prepare user info for requested tenant
  * 2. update okapi session
- * @param {object} okapi
+ * @param {object} okapiConfig
  * @param {string} tenant
  *
  * @returns {Promise}

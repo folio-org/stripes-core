@@ -17,6 +17,8 @@ export { default as SSOLogin } from './SSOLogin';
 export { default as SystemSkeleton } from './SystemSkeleton';
 export { default as TitledRoute } from './TitledRoute';
 export { default as TitleManager } from './TitleManager';
+export { default as OIDCLanding } from './OIDCLanding';
+export { default as OIDCRedirect } from './OIDCRedirect';
 export { default as SSOLanding } from './SSOLanding';
 export { default as SSORedirect } from './SSORedirect';
 export { default as RouteErrorBoundary } from './RouteErrorBoundary';

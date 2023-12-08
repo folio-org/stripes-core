@@ -12,7 +12,6 @@ import {
   List,
   Loading
 } from '@folio/stripes-components';
-import AboutEnabledModules from './AboutEnabledModules';
 import AboutInstallMessages from './AboutInstallMessages';
 import WarningBanner from './WarningBanner';
 import { withModules } from '../Modules';
@@ -101,15 +100,49 @@ const About = (props) => {
     );
   }
 
-  const modules = _.get(props.stripes, ['discovery', 'modules']) || {};
+  const applications =
+    _.get(props.stripes, ['discovery', 'applications']) || {};
   const interfaces = _.get(props.stripes, ['discovery', 'interfaces']) || {};
   const isLoadingFinished = _.get(props.stripes, ['discovery', 'isFinished']);
-  const nm = Object.keys(modules).length;
-  const ni = Object.keys(interfaces).length;
-  const ConnectedAboutEnabledModules = props.stripes.connect(AboutEnabledModules);
+  const na = Object.keys(applications).length;
+
   const unknownMsg = <FormattedMessage id="stripes-core.about.unknown" />;
-  const numModulesMsg = <FormattedMessage id="stripes-core.about.moduleCount" values={{ count: nm }} />;
-  const numInterfacesMsg = <FormattedMessage id="stripes-core.about.interfaceCount" values={{ count: ni }} />;
+  const numApplicationsMsg = (
+    <FormattedMessage
+      id="stripes-core.about.applicationCount"
+      values={{ count: na }}
+    />
+  );
+
+  const renderInterfaces = (list) => {
+    return (
+      <List
+        listStyle="square"
+        listClass={css.paddingLeftOfListItems}
+        items={list}
+        itemFormatter={(item) => <li key={item.name}>{item.name}</li>}
+      />
+    );
+  };
+  const renderModules = (list) => {
+    return (
+      <List
+        listStyle="bullet"
+        listClass={css.paddingLeftOfListItems}
+        items={list}
+        itemFormatter={(item) => {
+          return (
+            <li>
+              <Headline weight="medium" margin="xx-small">
+                {item.name}
+              </Headline>
+              {renderInterfaces(item.interfaces)}
+            </li>
+          );
+        }}
+      />
+    );
+  };
 
   return (
     <Pane
@@ -128,6 +161,24 @@ const About = (props) => {
       )}
       <AboutInstallMessages stripes={props.stripes} />
       <div className={css.versionsContainer}>
+        <div className={css.versionsColumn}>
+          <Headline size="large">
+            <FormattedMessage id="stripes-core.about.applicationsVersionsTitle" />
+          </Headline>
+          <Headline>{numApplicationsMsg}</Headline>
+          {Object.values(applications)
+            .map((app) => {
+              return (
+                <ul key={app.name}>
+                  <li>
+                    <Headline>{app.name}</Headline>
+                    {renderModules(app.modules)}
+                  </li>
+                </ul>
+              );
+            })}
+        </div>
+
         <div className={css.versionsColumn}>
           <Headline size="large">
             <FormattedMessage id="stripes-core.about.userInterface" />
@@ -165,16 +216,14 @@ const About = (props) => {
             ]}
             itemFormatter={item => (<li key={item.key}>{item.value}</li>)}
           />
+
           <br />
-          <div data-test-stripes-core-about-module-versions>
-            {Object.keys(props.modules).map(key => listModules(key, props.modules[key]))}
-          </div>
-        </div>
-        <div className={css.versionsColumn}>
           <Headline size="large">
             <FormattedMessage id="stripes-core.about.okapiServices" />
           </Headline>
-          <Headline>Okapi</Headline>
+          <Headline>
+            <FormattedMessage id="stripes-core.about.foundation" />
+          </Headline>
           <List
             listStyle="bullets"
             itemFormatter={(item, i) => (<li key={i}>{item}</li>)}
@@ -185,31 +234,6 @@ const About = (props) => {
             ]}
           />
           <br />
-          <Headline>{numModulesMsg}</Headline>
-          <ConnectedAboutEnabledModules tenantid={_.get(props.stripes, ['okapi', 'tenant']) || unknownMsg} availableModules={modules} />
-          <Headline size="small">
-            <FormattedMessage id="stripes-core.about.legendKey" />
-          </Headline>
-          <FormattedMessage
-            id="stripes-core.about.notEnabledModules"
-            tagName="p"
-            values={{
-              span: chunks => <span className={css.isEmptyMessage}>{chunks}</span>
-            }}
-          />
-          <br />
-          <Headline>{numInterfacesMsg}</Headline>
-          <List
-            listStyle="bullets"
-            items={Object.keys(interfaces).sort()}
-            itemFormatter={key => (
-              <li key={key}>
-                {`${key} ${interfaces[key]}`}
-              </li>
-            )}
-          />
-        </div>
-        <div className={css.versionsColumn}>
           <Headline size="large">
             <FormattedMessage id="stripes-core.about.uiOrServiceDependencies" />
           </Headline>
