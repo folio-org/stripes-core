@@ -6,6 +6,9 @@ import {
   isValidRT,
   resourceMapper,
   rtr,
+  shouldRotate,
+  RTR_IS_ROTATING,
+  RTR_MAX_AGE,
 } from './token-util';
 import { RTR_SUCCESS_EVENT } from './Events';
 
@@ -117,7 +120,6 @@ describe('resourceMapper', () => {
 describe('rtr', () => {
   it('rotates', async () => {
     const context = {
-      isRotating: false,
       logger: {
         log: jest.fn(),
       },
@@ -146,15 +148,14 @@ describe('rtr', () => {
 
   describe('handles simultaneous rotation', () => {
     beforeEach(() => {
-      localStorage.setItem('isRotating', 'true');
+      localStorage.setItem(RTR_IS_ROTATING, Date.now());
     });
     afterEach(() => {
-      localStorage.setItem('isRotating', 'false');
+      localStorage.removeItem(RTR_IS_ROTATING);
     });
 
     it('same window (RTR_SUCCESS_EVENT)', async () => {
       const context = {
-        isRotating: false,
         logger: {
           log: jest.fn(),
         },
@@ -174,7 +175,7 @@ describe('rtr', () => {
       }, 500);
 
       setTimeout(() => {
-        localStorage.setItem('isRotating', 'false');
+        localStorage.removeItem(RTR_IS_ROTATING);
         window.dispatchEvent(new Event(RTR_SUCCESS_EVENT));
       }, 1000);
 
@@ -191,7 +192,6 @@ describe('rtr', () => {
 
     it('multiple window (storage event)', async () => {
       const context = {
-        isRotating: false,
         logger: {
           log: jest.fn(),
         },
@@ -211,7 +211,7 @@ describe('rtr', () => {
       }, 500);
 
       setTimeout(() => {
-        localStorage.setItem('isRotating', 'false');
+        localStorage.removeItem(RTR_IS_ROTATING);
         window.dispatchEvent(new Event('storage'));
       }, 1000);
 
@@ -232,7 +232,6 @@ describe('rtr', () => {
   it('on known error, throws error', async () => {
     const errors = [{ message: 'Actually I love my Birkenstocks', code: 'Chacos are nice, too. Also Tevas' }];
     const context = {
-      isRotating: false,
       logger: {
         log: jest.fn(),
       },
@@ -262,7 +261,6 @@ describe('rtr', () => {
   it('on unknown error, throws generic error', async () => {
     const error = 'I love my Birkenstocks. Chacos are nice, too. Also Tevas';
     const context = {
-      isRotating: false,
       logger: {
         log: jest.fn(),
       },
@@ -288,3 +286,27 @@ describe('rtr', () => {
   });
 });
 
+describe('shouldRotate', () => {
+  afterEach(() => {
+    localStorage.removeItem(RTR_IS_ROTATING);
+  });
+
+  const logger = {
+    log: jest.fn(),
+  };
+
+  it('returns true if key is absent', () => {
+    localStorage.removeItem(RTR_IS_ROTATING);
+    expect(shouldRotate(logger)).toBe(true);
+  });
+
+  it('returns true if key is expired', () => {
+    localStorage.setItem(RTR_IS_ROTATING, Date.now() - (RTR_MAX_AGE + 1000));
+    expect(shouldRotate(logger)).toBe(true);
+  });
+
+  it('returns false if key is active', () => {
+    localStorage.setItem(RTR_IS_ROTATING, Date.now() - 1);
+    expect(shouldRotate(logger)).toBe(false);
+  });
+});

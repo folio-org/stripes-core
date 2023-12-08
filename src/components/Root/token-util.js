@@ -5,7 +5,7 @@ import { RTRError, UnexpectedResourceError } from './Errors';
 import { RTR_SUCCESS_EVENT } from './Events';
 
 /**
- * TTL_WINDOW
+ * RTR_TTL_WINDOW (float)
  * How much of a token's TTL can elapse before it is considered expired?
  * This helps us avoid a race-like condition where a token expires in the
  * gap between when we check whether we think it's expired and when we use
@@ -22,12 +22,35 @@ import { RTR_SUCCESS_EVENT } from './Events';
  * should be OK since it increases our confidence that when an AT accompanies
  * the RTR request it is still valid.
  *
- * Value is a float, 0 to 1, inclusive. Closer to 0 means more frequent
- * rotation; 1 means a token is valid up the very last moment of its TTL.
- * 0.8 is just a SWAG at a "likely to be useful" value. Given a 600 second
- * TTL (the current default for ATs) it corresponds to 480 seconds.
+ * 0 < value < 1. Closer to 0 means more frequent rotation. Closer to 1 means
+ * closer to the exact value of its TTL. 0.8 is just a SWAG at a "likely to be
+ * useful" value. Given a 600 second TTL (the current default for ATs) it
+ * corresponds to 480 seconds.
  */
-export const TTL_WINDOW = 0.8;
+export const RTR_TTL_WINDOW = 0.8;
+
+/** localstorage flag indicating whether an RTR request is already under way. */
+export const RTR_IS_ROTATING = '@folio/stripes/core::rtrIsRotating';
+
+/**
+ * RTR_MAX_AGE (int)
+ * How long do we let a refresh request last before we consider it stale?
+ *
+ * When RTR begins, the current time in milliseconds (i.e. Date.now()) is
+ * cached in localStorage and the existence of that value is used as a flag
+ * in subsequent requests to indicate that they just need to wait for the
+ * existing RTR request to complete rather than starting another RTR request
+ * (which would fail due to reusing the same RT). The flag is cleared in a
+ * `finally` clause, so it should _always_ get cleared, but closing a window
+ * mid-rotation allows the flag to get stuck. If the flag is present but no
+ * rotation request is actually in progress, rotation will never happen.
+ *
+ * Thus this value, a time (in milliseconds) representing the max-age of an
+ * rtr request before it is considered stale/ignorable.
+ *
+ * Time in milliseconds
+ */
+export const RTR_MAX_AGE = 2000;
 
 /**
  * resourceMapper
@@ -140,8 +163,8 @@ export const isValidRT = (te, logger) => {
 /**
  * adjustTokenExpiration
  * Set the AT and RT token expirations to the fraction of their TTL given by
- * TTL_WINDOW. e.g. if a token should be valid for 100 more seconds and TTL_WINDOW
- * is 0.8, set to the expiration time to 80 seconds from now.
+ * RTR_TTL_WINDOW. e.g. if a token should be valid for 100 more seconds and
+ * RTR_TTL_WINDOW is 0.8, set to the expiration time to 80 seconds from now.
  *
  * @param {object} value { tokenExpiration: { atExpires, rtExpires }} both are millisecond timestamps
  * @param {number} fraction float in the range (0..1]
@@ -151,6 +174,36 @@ export const adjustTokenExpiration = (value, fraction) => ({
   atExpires: Date.now() + ((value.tokenExpiration.atExpires - Date.now()) * fraction),
   rtExpires: Date.now() + ((value.tokenExpiration.rtExpires - Date.now()) * fraction),
 });
+
+/**
+ * shouldRotate
+ * Return true if we should start a new rotation request, false if a request is
+ * already pending.
+ *
+ * When RTR begins, the current time in milliseconds (i.e. Date.now()) is
+ * cached in localStorage and the existence of that value is used as a flag
+ * in subsequent requests to indicate that they should wait for that request
+ * rather then firing a new one. If that flag isn't properly cleared when the
+ * RTR request completes, it will block future RTR requests since it will
+ * appear that a request is already in-progress. Thus, instead of merely
+ * checking for the presence of the flag, this function ALSO checks the age
+ * of that flag. If the flag is older than RTR_MAX_AGE it is considered
+ * stale, indicating a new request should begin.
+ *
+ * @param {@folio/stripes/logger} logger
+ * @returns boolean
+ */
+export const shouldRotate = (logger) => {
+  const rotationTimestamp = localStorage.getItem(RTR_IS_ROTATING);
+  if (rotationTimestamp) {
+    if (Date.now() - rotationTimestamp < RTR_MAX_AGE) {
+      return false;
+    }
+    logger.log('rtr', 'rotation request is stale');
+  }
+
+  return true;
+};
 
 /**
  * rtr
@@ -185,10 +238,9 @@ export const adjustTokenExpiration = (value, fraction) => ({
 export const rtr = async (context) => {
   context.logger.log('rtr', '** RTR ...');
 
-  const isRotating = localStorage.getItem('isRotating');
   let rtrPromise = null;
-  if (isRotating === 'false' || isRotating === null) {
-    localStorage.setItem('isRotating', 'true');
+  if (shouldRotate(context.logger)) {
+    localStorage.setItem(RTR_IS_ROTATING, `${Date.now()}`);
     rtrPromise = context.nativeFetch.apply(global, [`${okapi.url}/authn/refresh`, {
       headers: {
         'content-type': 'application/json',
@@ -205,7 +257,7 @@ export const rtr = async (context) => {
         // rtr failure. return an error message if we got one.
         return res.json()
           .then(json => {
-            localStorage.setItem('isRotating', 'false');
+            localStorage.removeItem(RTR_IS_ROTATING);
             if (Array.isArray(json.errors) && json.errors[0]) {
               throw new RTRError(`${json.errors[0].message} (${json.errors[0].code})`);
             } else {
@@ -220,12 +272,12 @@ export const rtr = async (context) => {
             atExpires: new Date(json.accessTokenExpiration).getTime(),
             rtExpires: new Date(json.refreshTokenExpiration).getTime(),
           }
-        }, TTL_WINDOW);
+        }, RTR_TTL_WINDOW);
         context.tokenExpiration = te;
         return setTokenExpiry(te);
       })
       .finally(() => {
-        localStorage.setItem('isRotating', 'false');
+        localStorage.removeItem(RTR_IS_ROTATING);
         window.dispatchEvent(new Event(RTR_SUCCESS_EVENT));
       });
   } else {
@@ -239,9 +291,8 @@ export const rtr = async (context) => {
     // it resolves.
     context.logger.log('rtr', 'rotation is already pending!');
     rtrPromise = new Promise((res) => {
-      context.logger.log('rtr', 'fingers crossed, waiting for first tab to resolve its RTR');
       const rotationHandler = () => {
-        if (localStorage.getItem('isRotating') === 'false') {
+        if (localStorage.getItem(RTR_IS_ROTATING) === null) {
           window.removeEventListener(RTR_SUCCESS_EVENT, rotationHandler);
           window.removeEventListener('storage', rotationHandler);
           context.logger.log('rtr', 'token rotation has resolved, continue as usual!');
@@ -261,4 +312,3 @@ export const rtr = async (context) => {
 
   return rtrPromise;
 };
-

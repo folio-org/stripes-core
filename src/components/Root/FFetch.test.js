@@ -2,7 +2,6 @@
 // FFetch for the reassign globals side-effect in its constructor.
 /* eslint-disable no-unused-vars */
 
-import { log } from 'console';
 import { getTokenExpiry } from '../../loginServices';
 import { FFetch } from './FFetch';
 import { RTRError, UnexpectedResourceError } from './Errors';
@@ -23,7 +22,7 @@ jest.mock('stripes-config', () => ({
 }),
 { virtual: true });
 
-
+const log = jest.fn();
 
 const mockFetch = jest.fn();
 
