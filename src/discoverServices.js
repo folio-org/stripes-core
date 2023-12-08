@@ -214,13 +214,6 @@ function fetchModules(store) {
   });
 }
 
-/*
- * This function probes Okapi to discover what versions of what
- * interfaces are supported by the services that it is proxying
- * for. This information can be used to configure the UI at run-time
- * (e.g. not attempting to fetch loan information for a
- * non-circulating library that doesn't provide the circ interface)
- */
 export function discoverServices(store) {
   const promises = [];
   if (config.tenantOptions) {
@@ -235,7 +228,6 @@ export function discoverServices(store) {
     store.dispatch({ type: 'DISCOVERY_FINISHED' });
   });
 }
-
 
 export function discoveryReducer(state = {}, action) {
   switch (action.type) {

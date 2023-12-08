@@ -1,1 +1,1 @@
-export { default } from './LoginCtrl';
+export { default } from './Login';

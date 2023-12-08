@@ -100,11 +100,8 @@ const OIDCLanding = () => {
           <FormattedMessage id="errors.saml.missingToken" />
         </div>
         <div>
-          <h3>code</h3>
-          {potp}
-          <h3>error</h3>
           <code>
-            {JSON.stringify(samlError, null, 2)}
+            {JSON.stringify(samlError.current, null, 2)}
           </code>
         </div>
         <Redirect to="/" />
