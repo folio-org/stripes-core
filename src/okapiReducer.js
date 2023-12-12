@@ -10,6 +10,8 @@ export default function okapiReducer(state = {}, action) {
       return Object.assign({}, state, { token: null });
     case 'SET_CURRENT_USER':
       return Object.assign({}, state, { currentUser: action.currentUser });
+    case 'SET_IS_AUTHENTICATED':
+      return Object.assign({}, state, { isAuthenticated: action.isAuthenticated });
     case 'SET_LOCALE':
       return Object.assign({}, state, { locale: action.locale });
     case 'SET_TIMEZONE':
@@ -26,13 +28,15 @@ export default function okapiReducer(state = {}, action) {
       return Object.assign({}, state, { currentPerms: action.currentPerms });
     case 'SET_LOGIN_DATA':
       return Object.assign({}, state, { loginData: action.loginData });
+    case 'SET_TOKEN_EXPIRATION':
+      return Object.assign({}, state, { loginData: { ...state.loginData, tokenExpiration: action.tokenExpiration } });
     case 'CLEAR_CURRENT_USER':
       return Object.assign({}, state, { currentUser: {}, currentPerms: {} });
     case 'SET_SESSION_DATA': {
-      const { perms, user, token, tenant } = action.session;
+      const { isAuthenticated, perms, tenant, token, user } = action.session;
       const sessionTenant = tenant || state.tenant;
 
-      return { ...state, currentUser: user, currentPerms: perms, token, tenant: sessionTenant };
+      return { ...state, currentUser: user, currentPerms: perms, isAuthenticated, tenant: sessionTenant, token };
     }
     case 'SET_AUTH_FAILURE':
       return Object.assign({}, state, { authFailure: action.message });

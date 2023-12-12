@@ -3,9 +3,9 @@ import { okapi as okapiConfig } from 'stripes-config';
 
 function getHeaders(tenant, token) {
   return {
-    'X-Okapi-Token': token,
     'X-Okapi-Tenant': tenant,
-    'Content-Type': 'application/json',
+    ...(token && { 'X-Okapi-Token': token }),
+    'Content-Type': 'application/json'
   };
 }
 
@@ -53,6 +53,23 @@ function parseApplicationDescriptor(store, descriptor) {
   list.push(dispatchApplication(descriptor));
 
   return Promise.all(list);
+  //@@
+  // return fetch(`${okapi.url}/_/version`, {
+  //   headers: getHeaders(okapi.tenant, okapi.token),
+  //   credentials: 'include',
+  //   mode: 'cors',
+  // }).then((response) => { // eslint-disable-line consistent-return
+  //   if (response.status >= 400) {
+  //     store.dispatch({ type: 'DISCOVERY_FAILURE', code: response.status });
+  //     return response;
+  //   } else {
+  //     return response.text().then((text) => {
+  //       store.dispatch({ type: 'DISCOVERY_OKAPI', version: text });
+  //     });
+  //   }
+  // }).catch((reason) => {
+  //   store.dispatch({ type: 'DISCOVERY_FAILURE', message: reason });
+  // });
 }
 
 /**
@@ -99,7 +116,10 @@ function fetchApplicationDetails(store) {
   const okapi = store.getState().okapi;
 
   return fetch(`${okapiConfig.applicationManagerUrl}/entitlements/${okapi.tenant}/applications?limit=${APP_MAX_COUNT}`, {
-    headers: getHeaders(okapi.tenant, okapi.token)
+    headers: getHeaders(okapi.tenant, okapi.token),
+    credentials: 'include',
+    mode: 'cors',
+
   })
     .then((response) => {
       if (response.ok) {
@@ -126,6 +146,29 @@ function fetchApplicationDetails(store) {
       console.error(`@@ COULD NOT RETRIEVE APPLICATIONS FOR ${okapi.tenant}`, reason);
       store.dispatch({ type: 'DISCOVERY_FAILURE', message: reason });
     });
+
+  // return fetch(`${okapi.url}/_/proxy/tenants/${okapi.tenant}/modules?full=true`, {
+  //   headers: getHeaders(okapi.tenant, okapi.token),
+  //   credentials: 'include',
+  //   mode: 'cors',
+  // }).then((response) => { // eslint-disable-line consistent-return
+  //   if (response.status >= 400) {
+  //     store.dispatch({ type: 'DISCOVERY_FAILURE', code: response.status });
+  //     return response;
+  //   } else {
+  //     return response.json().then((json) => {
+  //       store.dispatch({ type: 'DISCOVERY_SUCCESS', data: json });
+  //       return Promise.all(
+  //         json.map(entry => Promise.all([
+  //           store.dispatch({ type: 'DISCOVERY_INTERFACES', data: entry }),
+  //           store.dispatch({ type: 'DISCOVERY_PROVIDERS', data: entry }),
+  //         ]))
+  //       );
+  //     });
+  //   }
+  // }).catch((reason) => {
+  //   store.dispatch({ type: 'DISCOVERY_FAILURE', message: reason });
+  // });
 }
 
 /**
@@ -144,7 +187,9 @@ function fetchGatewayVersion(store) {
   const okapi = store.getState().okapi;
 
   return fetch(`${okapi.url}/version`, {
-    headers: getHeaders(okapi.tenant, okapi.token)
+    headers: getHeaders(okapi.tenant, okapi.token),
+    credentials: 'include',
+    mode: 'cors',
   }).then((response) => { // eslint-disable-line consistent-return
     if (response.status >= 400) {
       store.dispatch({ type: 'DISCOVERY_FAILURE', code: response.status });

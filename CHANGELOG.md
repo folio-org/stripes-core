@@ -8,6 +8,8 @@
 * Allow console to be preserved on logout. STCOR-761.
 * Export `unregisterServiceWorker` to eliminate zombie service workers. Refs FOLIO-3627.
 * Use keycloak URLs in place of users-bl for tenant-switch. Refs US1153537.
+* handle access-control via cookies. Refs STCOR-671.
+* disable login when cookies are disabled. Refs STCOR-762.
 
 ## [10.0.0](https://github.com/folio-org/stripes-core/tree/v10.0.0) (2023-10-11)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v9.0.0...v10.0.0)

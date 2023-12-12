@@ -59,6 +59,8 @@ const OIDCLanding = () => {
     if (otp) {
       fetch(`${okapi.url}/authn/token?code=${otp}&redirect-uri=${window.location.protocol}//${window.location.host}/oidc-landing`, {
         headers: { 'X-Okapi-tenant': okapi.tenant, 'Content-Type': 'application/json' },
+        credentials: 'include',
+        mode: 'cors',
       })
         .then((resp) => {
           if (resp.ok) {
