@@ -51,7 +51,7 @@ function PreLoginLanding({ onSelectTenant }) {
               <Button
                 buttonClass={styles.submitButton}
                 disabled={!okapi.tenant}
-                onClick={() => window.location.replace(getLoginUrl())}
+                onClick={() => window.location.assign(getLoginUrl())}
                 buttonStyle="primary"
                 fullWidth
               >
