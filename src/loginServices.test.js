@@ -113,7 +113,7 @@ describe('createOkapiSession', () => {
     const permissionsMap = { a: true, b: true };
     mockFetchSuccess([]);
 
-    await createOkapiSession('url', store, 'tenant', 'token', data);
+    await createOkapiSession(store, 'tenant', 'token', data);
     expect(store.dispatch).toHaveBeenCalledWith(setIsAuthenticated(true));
     expect(store.dispatch).toHaveBeenCalledWith(setAuthError(null));
     expect(store.dispatch).toHaveBeenCalledWith(setLoginData(data));
@@ -222,7 +222,7 @@ describe('processOkapiSession', () => {
 
     mockFetchSuccess();
 
-    await processOkapiSession('url', store, 'tenant', resp);
+    await processOkapiSession(store, 'tenant', resp, 'token');
     expect(store.dispatch).toHaveBeenCalledWith(setAuthError(null));
     expect(store.dispatch).toHaveBeenCalledWith(setOkapiReady());
 
@@ -239,7 +239,7 @@ describe('processOkapiSession', () => {
       }
     };
 
-    await processOkapiSession('url', store, 'tenant', resp);
+    await processOkapiSession(store, 'tenant', resp, 'token');
 
     expect(store.dispatch).toHaveBeenCalledWith(setOkapiReady());
     expect(store.dispatch).toHaveBeenCalledWith(setAuthError([defaultErrors.DEFAULT_LOGIN_CLIENT_ERROR]));
