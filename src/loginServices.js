@@ -777,6 +777,7 @@ export function requestLogin(okapiUrl, store, tenant, data) {
       mode: 'cors',
     })
     .then(resp => processOkapiSession(store, tenant, resp));
+  }
 }
 
 /**
