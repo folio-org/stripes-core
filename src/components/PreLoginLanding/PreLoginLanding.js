@@ -61,7 +61,8 @@ function PreLoginLanding({ onSelectTenant }) {
           </Row>
         </div>
       </div>
-    </main>);
+    </main>
+  );
 }
 
 PreLoginLanding.propTypes = {
