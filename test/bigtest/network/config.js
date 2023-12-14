@@ -8,6 +8,14 @@ export default function configure() {
   // okapi endpoints
   this.get('/_/version', () => '0.0.0');
 
+  this.get('/version', () => '0.0.0');
+
+  this.get('/entitlements/:tenant/applications', {
+    applicationDescriptors: [],
+    totalRecords: 1
+  });
+  this.get('/_/env', {});
+
   this.get('_/proxy/tenants/:id/modules', [{
     id : 'mod-users-42.0.0-EXAMPLE.12345',
     name : 'users',

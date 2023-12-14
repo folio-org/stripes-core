@@ -412,8 +412,9 @@ export function createOkapiSession(store, tenant, token, data) {
  */
 export function validateUser(okapiUrl, store, tenant, session) {
   const { token, user, perms, tenant: sessionTenant = tenant } = session;
+  const usersPath = okapi.authnUrl ? 'users-keycloak' : 'bl-users';
 
-  return fetch(`${okapiUrl}/users-keycloak/_self`, { headers: getHeaders(sessionTenant, token) }).then((resp) => {
+  return fetch(`${okapiUrl}/${usersPath}/_self`, { headers: getHeaders(sessionTenant, token) }).then((resp) => {
     if (resp.ok) {
       return resp.json().then((data) => {
         store.dispatch(setLoginData(data));
@@ -590,16 +591,27 @@ export function checkOkapiSession(okapiUrl, store, tenant) {
  * @returns {Promise}
  */
 export function requestLogin(_junk, store, tenant, data) {
-  return fetch(okapi.authnUrl, {
-    method: 'POST',
-    body: new URLSearchParams({
-      ...data,
-      'grant_type': 'password',
-      'client_id': okapi.clientId,
-      'client_secret': okapi.clientSecret,
+  // got Keycloak?
+  if (okapi.authnUrl) {
+    return fetch(okapi.authnUrl, {
+      method: 'POST',
+      body: new URLSearchParams({
+        ...data,
+        'grant_type': 'password',
+        'client_id': okapi.clientId,
+        'client_secret': okapi.clientSecret,
+      })
     })
-  })
-    .then(resp => processOkapiSession(store, tenant, resp));
+      .then(resp => processOkapiSession(store, tenant, resp));
+  } else {
+    // legacy built-in authentication
+    return fetch(`${okapi.url}/bl-users/login?expandPermissions=true&fullPermissions=true`, {
+      method: 'POST',
+      headers: { 'X-Okapi-Tenant': tenant, 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    })
+      .then(resp => processOkapiSession(store, tenant, resp));
+  }
 }
 
 /**
@@ -612,8 +624,9 @@ export function requestLogin(_junk, store, tenant, data) {
  * @returns {Promise} Promise resolving to the response of the request
  */
 function fetchUserWithPerms(okapiUrl, tenant, token) {
+  const usersPath = okapi.authnUrl ? 'users-keycloak' : 'bl-users';
   return fetch(
-    `${okapiUrl}/users-keycloak/_self?expandPermissions=true&fullPermissions=true`,
+    `${okapiUrl}/${usersPath}/_self?expandPermissions=true&fullPermissions=true`,
     { headers: getHeaders(tenant, token) },
   );
 }
