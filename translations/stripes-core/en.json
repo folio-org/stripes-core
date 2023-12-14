@@ -12,7 +12,7 @@
   "title.changePassword": "Change password",
   "title.noPermission": "No permission",
   "title.cookieEnabled": "Cookies are required to login. Please enable cookies and try again.",
-
+  "title.logout": "Log out",
   "front.welcome": "Welcome, the Future Of Libraries Is OPEN!",
   "front.home": "Home",
   "front.about": "Software versions",

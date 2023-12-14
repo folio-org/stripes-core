@@ -98,7 +98,7 @@ const APP_MAX_COUNT = 500;
 function fetchApplicationDetails(store) {
   const okapi = store.getState().okapi;
 
-  return fetch(`${okapiConfig.applicationManagerUrl}/entitlements/${okapi.tenant}/applications?limit=${APP_MAX_COUNT}`, {
+  return fetch(`${okapi.url}/entitlements/${okapi.tenant}/applications?limit=${APP_MAX_COUNT}`, {
     headers: getHeaders(okapi.tenant, okapi.token)
   })
     .then((response) => {
@@ -150,8 +150,8 @@ function fetchGatewayVersion(store) {
       store.dispatch({ type: 'DISCOVERY_FAILURE', code: response.status });
       return response;
     } else {
-      return response.json().then((res) => {
-        store.dispatch({ type: 'DISCOVERY_OKAPI', version: res.version });
+      return response.text().then((text) => {
+        store.dispatch({ type: 'DISCOVERY_OKAPI', version: text });
       });
     }
   }).catch((reason) => {
