@@ -266,7 +266,7 @@ class ProfileDropdown extends Component {
     return (
       hasLabel ? (
         <>
-          <span className={css.button__label}>
+          <span className={css.button__label} aria-label={`${tenantName} ${servicePointName} profile`}>
             {tenantName && <span>{tenantName}</span>}
             {servicePointName && <span>{servicePointName}</span>}
           </span>

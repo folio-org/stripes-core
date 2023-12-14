@@ -9,6 +9,7 @@
 * Export `unregisterServiceWorker` to eliminate zombie service workers. Refs FOLIO-3627.
 * Fix duplicated "FOLIO" in document title in some cases. Refs STCOR-767.
 * Refactor away from `color()` function. Refs STCOR-768.
+* Add arial-label for `ProfileDropdown.js`. Refs STCOR-753.
 
 ## [10.0.0](https://github.com/folio-org/stripes-core/tree/v10.0.0) (2023-10-11)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v9.0.0...v10.0.0)
