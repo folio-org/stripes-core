@@ -72,11 +72,12 @@ const OIDCLanding = () => {
           }
         })
         .catch(e => {
+          // eslint-disable-next-line no-console
           console.error('@@ Oh, snap, OTP exchange failed!', e);
           samlError.current = e;
         });
     }
-  }, [otp, store]);
+  }, [otp, store, okapi.tenant, okapi.url]);
 
   if (!otp) {
     return (
