@@ -185,9 +185,9 @@ describe('loadTranslations', () => {
       await waitFor(() => { expect(dayjs.locale()).toEqual('en'); });
     });
 
-    it('writes error to console if locale is unavailable ("le")', async () => {
+    it('writes error to console if locale is unavailable ("!e")', async () => {
       const mockConsoleError = jest.spyOn(console, 'error').mockImplementation(() => {});
-      loadDayJSLocale('le');
+      loadDayJSLocale('!e');
       await waitFor(() => { expect(mockConsoleError.mock.calls.length).toEqual(1); });
       await waitFor(() => { expect(dayjs.locale()).toEqual('en'); });
       mockConsoleError.mockRestore();
