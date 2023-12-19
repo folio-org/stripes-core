@@ -2,6 +2,9 @@ import localforage from 'localforage';
 import { translations } from 'stripes-config';
 import rtlDetect from 'rtl-detect';
 import moment from 'moment';
+import dayjs from 'dayjs';
+import availableLocales from 'dayjs/locale';
+
 
 import { discoverServices } from './discoverServices';
 
@@ -24,6 +27,10 @@ import {
   updateCurrentUser,
 } from './okapiActions';
 import processBadResponse from './processBadResponse';
+
+const isEnglishLang = (locale) => {
+  return /^en/.test(locale);
+};
 
 // export supported locales, i.e. the languages we provide translations for
 export const supportedLocales = [
@@ -93,6 +100,53 @@ function canReadConfig(store) {
 }
 
 /**
+ * loadDayJSLocale
+ * dynamically loads a DayJS locale and sets the global DayJS locale.
+ * @param {string} locale
+ * */
+export function loadDayJSLocale(locale) {
+  const parentLocale = locale.split('-')[0];
+  // Locale loading setup for DayJS
+  // 'en-US' is default and always loaded, so we don't even worry about loading another if the language is English.
+  if (locale !== 'en-US') {
+    /**
+     * Check for availability of locales - DayJS comes with a JSON list of available locales.
+     * We can check against that before attempting to load. We check for the full locale
+     * first, followed by the language if the full locale doesn't work.
+     */
+    let localeToLoad;
+    let available = availableLocales.findIndex(l => l.key === locale);
+    if (available !== -1) {
+      localeToLoad = locale;
+    } else {
+      available = availableLocales.findIndex(l => l.key === parentLocale);
+      if (available !== -1) {
+        localeToLoad = parentLocale;
+      } else {
+        // eslint-disable-next-line no-console
+        console.error(`${locale}/${parentLocale} unavailable for DayJS`);
+      }
+    }
+
+    if (localeToLoad) {
+      import(
+        /* webpackChunkName: "dayjs-locale-[request]" */
+        /* webpackExclude: /\.d\.ts$/ */
+        `dayjs/locale/${localeToLoad}`
+      ).then(() => {
+        dayjs.locale(localeToLoad);
+      }).catch(e => {
+        // eslint-disable-next-line no-console
+        console.error(`Error loading locale ${localeToLoad} for DayJS`, e);
+      });
+    }
+  } else {
+    // set locale to english in case we're transitioning away from a non-english locale.
+    dayjs.locale('en-US');
+  }
+}
+
+/**
  * loadTranslations
  * return a promise that fetches translations for the given locale and then
  * dispatches the locale and translations.
@@ -137,6 +191,8 @@ export function loadTranslations(store, locale, defaultTranslations = {}) {
       });
     });
   }
+
+  loadDayJSLocale(locale);
 
   // Here we put additional condition because languages
   // like Japan we need to use like ja, but with numeric system

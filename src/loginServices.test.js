@@ -1,5 +1,7 @@
 import localforage from 'localforage';
+import dayjs from 'dayjs';
 
+import { waitFor } from '@folio/jest-config-stripes/testing-library/react';
 import {
   spreadUserWithPerms,
   createOkapiSession,
@@ -11,6 +13,7 @@ import {
   updateUser,
   updateTenant,
   validateUser,
+  loadDayJSLocale,
 } from './loginServices';
 
 import {
@@ -166,6 +169,35 @@ describe('loadTranslations', () => {
       await loadTranslations(store, locale, {});
       expect(document.dir).toMatch('rtl');
       mockFetchCleanUp();
+    });
+  });
+
+  describe('DayJS locale loading', () => {
+    // beforeEach(() => { mockFetchSuccess({}); });
+    // afterEach(() => mockFetchCleanUp);
+    it('loads 2 letter locale ("ru")', async () => {
+      loadDayJSLocale('ru');
+      await waitFor(() => { expect(dayjs.locale()).toEqual('ru'); });
+    });
+
+    it('loads parent language locale ("en-SE")', async () => {
+      loadDayJSLocale('en-SE');
+      await waitFor(() => { expect(dayjs.locale()).toEqual('en'); });
+    });
+
+    it('writes error to console if locale is unavailable ("le")', async () => {
+      const mockConsoleError = jest.spyOn(console, 'error').mockImplementation(() => {});
+      loadDayJSLocale('le');
+      await waitFor(() => { expect(mockConsoleError.mock.calls.length).toEqual(1); });
+      await waitFor(() => { expect(dayjs.locale()).toEqual('en'); });
+      mockConsoleError.mockRestore();
+    });
+
+    it('resets locale if it is previously set to non-english locale', async () => {
+      loadDayJSLocale('ru');
+      await waitFor(() => { expect(dayjs.locale()).toEqual('ru'); });
+      loadDayJSLocale('en-US');
+      await waitFor(() => { expect(dayjs.locale()).toEqual('en'); });
     });
   });
 });
