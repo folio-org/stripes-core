@@ -28,10 +28,6 @@ import {
 } from './okapiActions';
 import processBadResponse from './processBadResponse';
 
-const isEnglishLang = (locale) => {
-  return /^en/.test(locale);
-};
-
 // export supported locales, i.e. the languages we provide translations for
 export const supportedLocales = [
   'ar',     // arabic
