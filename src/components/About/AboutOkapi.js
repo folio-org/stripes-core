@@ -54,7 +54,7 @@ const AboutOkapi = ({ modules }) => {
         <Headline>{numInterfacesMsg}</Headline>
         <List
           listStyle="bullets"
-          items={Object.keys(dinterfaces).sort()}
+          items={Object.keys(dinterfaces).sort((a, b) => a.localeCompare(b))}
           itemFormatter={key => (
             <li key={key}>
               {`${key} ${dinterfaces[key]}`}

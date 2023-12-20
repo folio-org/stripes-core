@@ -25,9 +25,10 @@ const AboutUIModuleDetails = ({ module, showDependencies }) => {
     return <FormattedMessage id="stripes-core.about.noDependencies" values={{ base }} />;
   }
 
-  const items = Object.keys(module.okapiInterfaces).sort().map(
-    (item) => `${item} ${module.okapiInterfaces[item]}`
-  );
+  const items = Object
+    .keys(module.okapiInterfaces)
+    .sort((a, b) => a.localeCompare(b))
+    .map((item) => `${item} ${module.okapiInterfaces[item]}`);
 
   return (
     <>
