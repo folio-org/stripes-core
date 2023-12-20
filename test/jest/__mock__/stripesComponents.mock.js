@@ -67,7 +67,7 @@ jest.mock('@folio/stripes-components', () => ({
   Label: jest.fn(({ children, ...rest }) => (
     <span {...rest}>{children}</span>
   )),
-  List: jest.fn(({ items, itemFormatter = (item, i) => (<li key={i}>{item}</li>)}) => (
+  List: jest.fn(({ items, itemFormatter = (item, i) => (<li key={i}>{item}</li>) }) => (
     <ul>
       [{items?.map((item, i) => itemFormatter(item, i))}]
     </ul>
