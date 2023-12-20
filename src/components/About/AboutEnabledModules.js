@@ -3,6 +3,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { List } from '@folio/stripes-components';
 
+import stripesConnect from '../../stripesConnect';
+
 class AboutEnabledModules extends React.Component {
   static manifest = Object.freeze({
     enabledModules: {
@@ -50,4 +52,4 @@ class AboutEnabledModules extends React.Component {
   }
 }
 
-export default AboutEnabledModules;
+export default stripesConnect(AboutEnabledModules);
