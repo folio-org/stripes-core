@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {
   Router,
   Switch,
+  Redirect as InternalRedirect
 } from 'react-router-dom';
 
 import { Provider } from 'react-redux';
@@ -84,6 +85,16 @@ class RootWithIntl extends React.Component {
     return `${okapi.authnUrl}/realms/${okapi.tenant}/protocol/openid-connect/auth?client_id=${okapi.clientId}&response_type=code&redirect_uri=${redirectUri}&scope=openid`;
   }
 
+  renderLogoutComponent() {
+    const { okapi } = this.props.stripes;
+
+    if (okapi.authnUrl) {
+      return <Redirect to={`${okapi.authnUrl}/realms/${okapi.tenant}/protocol/openid-connect/logout?client_id=${okapi.clientId}&post_logout_redirect_uri=${window.location.protocol}//${window.location.host}`} />;
+    }
+
+    return <InternalRedirect to="/" />;
+  }
+
   renderLoginComponent() {
     const { config, okapi } = this.props.stripes;
 
@@ -112,7 +123,6 @@ class RootWithIntl extends React.Component {
     const connect = connectFor('@folio/core', this.props.stripes.epics, this.props.stripes.logger);
     const stripes = this.props.stripes.clone({ connect });
 
-    const logoutUrl = `${stripes.okapi.authnUrl}/realms/${stripes.okapi.tenant}/protocol/openid-connect/logout?client_id=${stripes.okapi.clientId}&post_logout_redirect_uri=${window.location.protocol}//${window.location.host}`;
     const LoginComponent = stripes.okapi.authnUrl ?
       <PreLoginLanding
         onSelectTenant={this.handleSelectTenant}
@@ -218,7 +228,7 @@ class RootWithIntl extends React.Component {
                         <TitledRoute
                           name="logout"
                           path="/logout"
-                          component={<Redirect to={logoutUrl} />}
+                          component={this.renderLogoutComponent()}
                         />
                         <TitledRoute
                           name="login"
