@@ -85,7 +85,12 @@ const AboutOkapi = ({ modules }) => {
 };
 
 AboutOkapi.propTypes = {
-  modules: PropTypes.arrayOf(PropTypes.object),
+  modules: PropTypes.shape({
+    app: PropTypes.arrayOf(PropTypes.object),
+    plugin: PropTypes.arrayOf(PropTypes.object),
+    settings: PropTypes.arrayOf(PropTypes.object),
+    handler: PropTypes.arrayOf(PropTypes.object),
+  }),
 };
 
 export default withModules(AboutOkapi);
