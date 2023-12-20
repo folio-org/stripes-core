@@ -1,3 +1,6 @@
+/* shhhh, eslint, it's ok. we need "unused" imports for mocks */
+/* eslint-disable no-unused-vars */
+
 import {
   QueryClient,
   QueryClientProvider,
@@ -6,6 +9,8 @@ import {
   render,
   screen,
 } from '@folio/jest-config-stripes/testing-library/react';
+
+import { okapi as okapiConfig } from 'stripes-config';
 
 import AboutAPIGateway from './AboutAPIGateway';
 import AboutApplicationVersions from './AboutApplicationVersions';
@@ -16,8 +21,6 @@ import AboutStripes from './AboutStripes';
 import AboutUIDependencies from './AboutUIDependencies';
 import AboutUIModuleDetails from './AboutUIModuleDetails';
 import WarningBanner from './WarningBanner';
-
-import { okapi as okapiConfig } from 'stripes-config';
 
 import { useStripes } from '../../StripesContext';
 import About from './About';
@@ -35,7 +38,6 @@ jest.mock('./WarningBanner', () => () => 'WarningBanner');
 jest.mock('stripes-config', () => ({
   okapi: { tenantEntitlementUrl: true },
 }));
-
 
 // set query retries to false. otherwise, react-query will thoughtfully
 // (but unhelpfully, in the context of testing) retry a failed query

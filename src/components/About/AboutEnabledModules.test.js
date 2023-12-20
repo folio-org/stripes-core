@@ -1,10 +1,12 @@
+/* shhhh, eslint, it's ok. we need "unused" imports for mocks */
+/* eslint-disable no-unused-vars */
+
 import {
   render,
   screen,
 } from '@folio/jest-config-stripes/testing-library/react';
 
 import stripesConnect from '../../stripesConnect';
-
 import AboutEnabledModules from './AboutEnabledModules';
 
 jest.mock('../../stripesConnect', () => (Component) => Component);
