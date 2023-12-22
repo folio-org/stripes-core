@@ -46,7 +46,6 @@ import { setOkapiTenant } from './okapiActions';
 class RootWithIntl extends React.Component {
   static propTypes = {
     stripes: PropTypes.shape({
-      config: PropTypes.object,
       epics: PropTypes.object,
       logger: PropTypes.object.isRequired,
       clone: PropTypes.func.isRequired,
@@ -116,15 +115,6 @@ class RootWithIntl extends React.Component {
     const stripes = this.props.stripes.clone({ connect });
 
     const logoutUrl = `${stripes.okapi.authnUrl}/realms/${stripes.okapi.tenant}/protocol/openid-connect/logout?client_id=${stripes.okapi.clientId}&post_logout_redirect_uri=${window.location.protocol}//${window.location.host}`;
-    const LoginComponent = stripes.okapi.authnUrl ?
-      <PreLoginLanding
-        onSelectTenant={this.handleSelectTenant}
-      />
-      :
-      <Login
-        autoLogin={stripes.config.autoLogin}
-        stripes={stripes}
-      />;
 
     return (
       <StripesContext.Provider value={stripes}>
