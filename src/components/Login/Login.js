@@ -83,7 +83,6 @@ class LoginCtrl extends Component {
         </Row>);
 
     return (
-<<<<<<< HEAD
       <Form
         onSubmit={onSubmit}
         subscription={{ values: true }}
