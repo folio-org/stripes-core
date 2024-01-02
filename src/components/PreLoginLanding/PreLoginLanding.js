@@ -16,7 +16,7 @@ function PreLoginLanding({ onSelectTenant }) {
   const getLoginUrl = () => {
     if (!okapi.tenant) return '';
     if (okapi.authnUrl) {
-      return `${okapi.authnUrl}/realms/${okapi.tenant}/protocol/openid-connect/auth?client_id=${okapi.clientId}&response_type=code&redirect_uri=${redirectUri}&scope=openid`;
+      return `${okapi.authnUrl}/realms/${okapi.tenant}/protocol/openid-connect/auth?client_id=${okapi.clientId}&response_type=code&redirect_uri=${redirectUri}&scope=openid&isConsortium=true`;
     }
     return '';
   };
@@ -51,7 +51,7 @@ function PreLoginLanding({ onSelectTenant }) {
               <Button
                 buttonClass={styles.submitButton}
                 disabled={!okapi.tenant}
-                onClick={() => window.location.replace(getLoginUrl())}
+                onClick={() => window.location.assign(getLoginUrl())}
                 buttonStyle="primary"
                 fullWidth
               >
@@ -61,7 +61,8 @@ function PreLoginLanding({ onSelectTenant }) {
           </Row>
         </div>
       </div>
-    </main>);
+    </main>
+  );
 }
 
 PreLoginLanding.propTypes = {
