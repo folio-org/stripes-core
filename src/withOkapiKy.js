@@ -8,29 +8,33 @@ const withOkapiKy = (WrappedComponent) => {
     static propTypes = {
       stripes: PropTypes.shape({
         okapi: PropTypes.shape({
-          tenant: PropTypes.string.isRequired,
-          url: PropTypes.string.isRequired,
-          timeout: PropTypes.number,
           locale: PropTypes.string,
+          tenant: PropTypes.string.isRequired,
+          timeout: PropTypes.number,
+          token: PropTypes.string,
+          url: PropTypes.string.isRequired,
         }).isRequired,
       }).isRequired,
     };
 
     constructor(props) {
       super();
-      const { tenant, url, timeout = 30000, locale = 'en' } = props.stripes.okapi;
+      const { tenant, token, url, timeout = 30000, locale = 'en' } = props.stripes.okapi;
       this.okapiKy = ky.create({
         credentials: 'include',
-        prefixUrl: url,
         hooks: {
           beforeRequest: [
             request => {
-              request.headers.set('X-Okapi-Tenant', tenant);
               request.headers.set('Accept-Language', locale);
+              request.headers.set('X-Okapi-Tenant', tenant);
+              if (token) {
+                request.headers.set('X-Okapi-Token', token);
+              }
             }
           ]
         },
         mode: 'cors',
+        prefixUrl: url,
         retry: 0,
         timeout,
       });
