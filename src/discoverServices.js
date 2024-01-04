@@ -99,7 +99,9 @@ function fetchApplicationDetails(store) {
   const okapi = store.getState().okapi;
 
   return fetch(`${okapi.url}/entitlements/${okapi.tenant}/applications?limit=${APP_MAX_COUNT}`, {
-    headers: getHeaders(okapi.tenant, okapi.token)
+    credentials: 'include',
+    headers: getHeaders(okapi.tenant, okapi.token),
+    mode: 'cors',
   })
     .then((response) => {
       if (response.ok) {
@@ -144,7 +146,9 @@ function fetchGatewayVersion(store) {
   const okapi = store.getState().okapi;
 
   return fetch(`${okapi.url}/version`, {
-    headers: getHeaders(okapi.tenant, okapi.token)
+    credentials: 'include',
+    headers: getHeaders(okapi.tenant, okapi.token),
+    mode: 'cors',
   }).then((response) => { // eslint-disable-line consistent-return
     if (response.status >= 400) {
       store.dispatch({ type: 'DISCOVERY_FAILURE', code: response.status });
@@ -159,13 +163,76 @@ function fetchGatewayVersion(store) {
   });
 }
 
+function fetchOkapiVersion(store) {
+  const okapi = store.getState().okapi;
+
+  return fetch(`${okapi.url}/_/version`, {
+    credentials: 'include',
+    headers: getHeaders(okapi.tenant, okapi.token),
+    mode: 'cors',
+  }).then((response) => { // eslint-disable-line consistent-return
+    if (response.status >= 400) {
+      store.dispatch({ type: 'DISCOVERY_FAILURE', code: response.status });
+      return response;
+    } else {
+      return response.text().then((text) => {
+        store.dispatch({ type: 'DISCOVERY_OKAPI', version: text });
+      });
+    }
+  }).catch((reason) => {
+    store.dispatch({ type: 'DISCOVERY_FAILURE', message: reason });
+  });
+}
+
+function fetchModules(store) {
+  const okapi = store.getState().okapi;
+
+  return fetch(`${okapi.url}/_/proxy/tenants/${okapi.tenant}/modules?full=true`, {
+    credentials: 'include',
+    headers: getHeaders(okapi.tenant, okapi.token),
+    mode: 'cors',
+  }).then((response) => { // eslint-disable-line consistent-return
+    if (response.status >= 400) {
+      store.dispatch({ type: 'DISCOVERY_FAILURE', code: response.status });
+      return response;
+    } else {
+      return response.json().then((json) => {
+        store.dispatch({ type: 'DISCOVERY_SUCCESS', data: json });
+        return Promise.all(
+          json.map(entry => Promise.all([
+            store.dispatch({ type: 'DISCOVERY_INTERFACES', data: entry }),
+            store.dispatch({ type: 'DISCOVERY_PROVIDERS', data: entry }),
+          ]))
+        );
+      });
+    }
+  }).catch((reason) => {
+    store.dispatch({ type: 'DISCOVERY_FAILURE', message: reason });
+  });
+}
+
+/*
+ * This function probes Okapi to discover what versions of what
+ * interfaces are supported by the services that it is proxying
+ * for. This information can be used to configure the UI at run-time
+ * (e.g. not attempting to fetch loan information for a
+ * non-circulating library that doesn't provide the circ interface)
+ */
 export function discoverServices(store) {
-  const promises = [fetchApplicationDetails(store), fetchGatewayVersion(store)];
+  const promises = [];
+  if (okapiConfig.tenantEntitlementUrl) {
+    promises.push(fetchApplicationDetails(store));
+    promises.push(fetchGatewayVersion(store));
+  } else {
+    promises.push(fetchOkapiVersion(store));
+    promises.push(fetchModules(store));
+  }
 
   return Promise.all(promises).then(() => {
     store.dispatch({ type: 'DISCOVERY_FINISHED' });
   });
 }
+
 
 export function discoveryReducer(state = {}, action) {
   switch (action.type) {
