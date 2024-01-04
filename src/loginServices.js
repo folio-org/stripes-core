@@ -73,8 +73,8 @@ export const userLocaleConfig = {
 function getHeaders(tenant, token) {
   return {
     'X-Okapi-Tenant': tenant,
-    'X-Okapi-Token': token,
     'Content-Type': 'application/json',
+    ...(token && { 'X-Okapi-Token': token }),
   };
 }
 
@@ -166,7 +166,11 @@ export function loadTranslations(store, locale, defaultTranslations = {}) {
  */
 function dispatchLocale(url, store, tenant) {
   return fetch(url,
-    { headers: getHeaders(tenant, store.getState().okapi.token) })
+    {
+      credentials: 'include',
+      headers: getHeaders(tenant, store.getState().okapi.token),
+      mode: 'cors',
+    })
     .then((response) => {
       if (response.status === 200) {
         response.json().then((json) => {
@@ -242,7 +246,11 @@ export function getUserLocale(okapiUrl, store, tenant, userId) {
  */
 export function getPlugins(okapiUrl, store, tenant) {
   return fetch(`${okapiUrl}/configurations/entries?query=(module==PLUGINS)`,
-    { headers: getHeaders(tenant, store.getState().okapi.token) })
+    {
+      credentials: 'include',
+      headers: getHeaders(tenant, store.getState().okapi.token),
+      mode: 'cors',
+    })
     .then((response) => {
       if (response.status < 400) {
         response.json().then((json) => {
@@ -268,7 +276,11 @@ export function getPlugins(okapiUrl, store, tenant) {
  */
 export function getBindings(okapiUrl, store, tenant) {
   return fetch(`${okapiUrl}/configurations/entries?query=(module==ORG and configName==bindings)`,
-    { headers: getHeaders(tenant, store.getState().okapi.token) })
+    {
+      credentials: 'include',
+      headers: getHeaders(tenant, store.getState().okapi.token),
+      mode: 'cors',
+    })
     .then((response) => {
       let bindings = {};
       if (response.status >= 400) {
@@ -414,7 +426,12 @@ export function validateUser(okapiUrl, store, tenant, session) {
   const { token, user, perms, tenant: sessionTenant = tenant } = session;
   const usersPath = okapi.authnUrl ? 'users-keycloak' : 'bl-users';
 
-  return fetch(`${okapiUrl}/${usersPath}/_self`, { headers: getHeaders(sessionTenant, token) }).then((resp) => {
+  return fetch(`${okapiUrl}/${usersPath}/_self`,
+    {
+      credentials: 'include',
+      headers: getHeaders(sessionTenant, token),
+      mode: 'cors',
+    }).then((resp) => {
     if (resp.ok) {
       return resp.json().then((data) => {
         store.dispatch(setLoginData(data));
@@ -543,7 +560,7 @@ export function processOkapiSession(store, tenant, resp, ssoToken) {
   if (resp.ok) {
     return resp.json()
       .then(json => {
-        const token = json.access_token || ssoToken;
+        const token = resp.headers.get('X-Okapi-Token') || json.access_token || ssoToken;
         return createOkapiSession(store, tenant, token, json)
           .then(() => json);
       })
@@ -606,9 +623,11 @@ export function requestLogin(_junk, store, tenant, data) {
   } else {
     // legacy built-in authentication
     return fetch(`${okapi.url}/bl-users/login?expandPermissions=true&fullPermissions=true`, {
-      method: 'POST',
-      headers: { 'X-Okapi-Tenant': tenant, 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
+      credentials: 'include',
+      headers: { 'X-Okapi-Tenant': tenant, 'Content-Type': 'application/json' },
+      method: 'POST',
+      mode: 'cors',
     })
       .then(resp => processOkapiSession(store, tenant, resp));
   }
@@ -627,7 +646,11 @@ function fetchUserWithPerms(okapiUrl, tenant, token) {
   const usersPath = okapi.authnUrl ? 'users-keycloak' : 'bl-users';
   return fetch(
     `${okapiUrl}/${usersPath}/_self?expandPermissions=true&fullPermissions=true`,
-    { headers: getHeaders(tenant, token) },
+    {
+      credentials: 'include',
+      headers: getHeaders(tenant, token),
+      mode: 'cors',
+    },
   );
 }
 
