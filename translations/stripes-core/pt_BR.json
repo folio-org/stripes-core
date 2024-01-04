@@ -22,10 +22,10 @@
     "about.okapiServices": "Serviços do Okapi",
     "about.unknown": "Desconhecido",
     "about.version": "Versão {version}",
-    "about.forTenant": "Para o tenant {tenant}",
+    "about.forTenant": "Para o locatário {tenant}",
     "about.onUrl": "Na URL {url}",
     "about.legendKey": "Chave",
-    "about.notEnabledModules": "Módulos instalados que não estão disponíveis para este tenant são apresentados em <span>cinza</span>.",
+    "about.notEnabledModules": "Módulos instalados que não estão disponíveis para este locatário são apresentados em <span>cinza</span>.",
     "about.moduleCount": "{count, number} {count, plural, one {módulo} other {módulos}}",
     "about.interfaceCount": "{count, number} {count, plural, one {interface} other {interfaces}}",
     "about.uiOrServiceDependencies": "UI/service dependencies",
@@ -102,7 +102,7 @@
     "errors.forgotten.password.found.multiple.users": "As informações fornecidas estão vinculadas a várias contas do Folio. Entre em contato com o administrador do sistema Folio para redefinir sua senha.",
     "errors.forgotten.username.found.multiple.users": "Este e-mail ou número de telefone está vinculado a várias contas do Folio. Entre em contato com o administrador do sistema Folio.",
     "errors.forgotten.password.found.inactive": "Sua conta está bloqueada no momento. Entre em contato com o administrador do sistema FOLIO para redefinir sua senha",
-    "errors.default.server.error": "Erro no sistema. Não é possível localizar a conta do Folio. Por favor, tente novamente.",
+    "errors.default.server.error": "Erro no sistema. Por favor, aguarde alguns minutos e tente novamente.",
     "createResetPassword.header": "Escolha uma senha",
     "createResetPassword.newPassword": "Nova senha",
     "createResetPassword.confirmPassword": "Confirme a senha",
@@ -140,5 +140,9 @@
     "front.error.setPassword.message": "Por favor, saia de sua sessão atual do FOLIO para definir a senha. Uma vez desconectado, tente definir sua senha com este link novamente.",
     "title.noPermission": "Sem permissão",
     "front.error.noPermission": "Você não tem permissão para ver este aplicativo/registro",
-    "button.duplicate": "Duplicar"
+    "button.duplicate": "Duplicar",
+    "stale.warning": "O aplicativo foi alterado no servidor e precisa ser atualizado.",
+    "stale.reload": "Clique aqui para recarregar.",
+    "placeholder.forgotPassword": "Digite e-mail ou telefone",
+    "placeholder.forgotUsername": "Digite e-mail ou telefone"
 }

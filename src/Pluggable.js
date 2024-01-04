@@ -36,7 +36,7 @@ const Pluggable = (props) => {
 
   if (cachedPlugins.length) {
     return cachedPlugins.map(({ plugin, Child }) => (
-      <ModuleHierarchyProvider module={plugin}>
+      <ModuleHierarchyProvider module={plugin} key={plugin}>
         <Child {...props} actAs="plugin" />
       </ModuleHierarchyProvider>
     ));

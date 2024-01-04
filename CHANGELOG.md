@@ -1,12 +1,54 @@
 # Change history for stripes-core
 
-# 8.4.0 (IN PROGRESS)
+## 10.1.0 IN PROGRESS
+
+* Provide optional tenant argument to `useOkapiKy` hook. Refs STCOR-747.
+* Avoid private path when import `validateUser` function. Refs STCOR-749.
+* Ensure `<AppIcon>` is not cut off when app name is long. Refs STCOR-752.
+* Allow console to be preserved on logout. STCOR-761.
+* Export `unregisterServiceWorker` to eliminate zombie service workers. Refs FOLIO-3627.
+* Fix duplicated "FOLIO" in document title in some cases. Refs STCOR-767.
+* Refactor away from `color()` function. Refs STCOR-768.
+* Export `getEventHandler` to be able to create events in other modules. Refs STCOR-770.
+* Reset `stripes.config` on logout. Fixes STCOR-674.
+
+## [10.0.0](https://github.com/folio-org/stripes-core/tree/v10.0.0) (2023-10-11)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v9.0.0...v10.0.0)
+
+* Close app-context menu when its wrapper is undefined, which it will be when switching among apps. Fixes STCOR-680.
+* Move `miragejs` to dev-deps; remove `clean` script and `rimraf`. Refs STCOR-668, STCOR-681.
+* If you choose a numbering system and language in Settings > Tenant > Language and localization, saving the new values does not change the locale. Fixes STCOR-696.
+* Align version of `@folio/stripes-connect` in dev/peer deps. Refs STCOR-705.
+* Use 'Log in' consistently. Refs STCOR-697.
+* Unpin `moment` to reflect what is provided in platforms. Refs STCOR-706, STRIPES-678.
+* Expose additional functionality so it can be consumed via other modules. Refs STCOR-711.
+* Apps icons replaced with blue rectangle on apps menu. Refs STCOR-707.
+* Display consortium active affiliation in the profile dropdown trigger. Refs STCOR-689.
+* Support switch consortium active affiliation. Refs STCOR-690.
+* Use tenant query param for password reset. Refs STCOR-724.
+* Improve login error message when back-end not ready. Refs STCOR-723.
+* Replace `align-items: start` with `flex-start`; it is more widely supported. Refs STCOR-722.
+* *BREAKING* bump `react` to `v18`, and dev-deps accordingly. Refs STCOR-729.
+* Added `consortiaServices` utils to hold common consortia helpers. Refs STCOR-733.
+* Bump `@formatjs/cli` to `^6.1.3`.
+* Forgot password and Forgot username : add placeholder to input box. Refs STCOR-728.
+* Include `yarn.lock`. Refs STCOR-679.
+* *BREAKING* bump `react-intl` to `v6.4.4`. Refs STCOR-744.
+* Bump `stylelint` to `v15` and `stylelint-config-standard` to `v34`. Refs STCOR-745.
+* Read ky timeout from stripes-config value. Refs STCOR-594.
+
+## [9.0.0](https://github.com/folio-org/stripes-core/tree/v9.0.0) (2023-01-30)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v8.3.0...v9.0.0)
 
 * Allow suppression of `react-intl` warnings, in addition to errors. Refs STCOR-659.
 * Catastrophic Messaging | Return to MARC authority. Fixes STCOR-661.
 * Reset App Context Dropdown state when switching apps/unmounting. Fixes STCOR-664.
 * PasswordValidationField swallows error messages from API queries. Fixes STCOR-657.
-* Reset `stripes.config` on logout. Fixes STCOR-674.
+* Guarantee a single-row response to the tenant's locale-config query. Fixes STCOR-675.
+* *BREAKING*: Remove SWR, a POC that never took off. Refs STCOR-516, STCOR-611.
+* *BREAKING*: Upgrade `react-redux` to `v8`. Refs STCOR-678.
+* *BREAKING*: Remove `setServicePoints`, `setCurServicePoint`. Refs STCOR-650, UISP-32.
+* Switching service points not being captured in circulation log record. Refs STCOR-686
 
 ## [8.3.0](https://github.com/folio-org/stripes-core/tree/v8.2.0) (2022-06-14)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v8.2.0...v8.3.0)

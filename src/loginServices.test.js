@@ -1,15 +1,15 @@
 import localforage from 'localforage';
 
 import {
+  spreadUserWithPerms,
   createOkapiSession,
   handleLoginError,
   loadTranslations,
   processOkapiSession,
-  setCurServicePoint,
-  setServicePoints,
   supportedLocales,
   supportedNumberingSystems,
   updateUser,
+  updateTenant,
   validateUser,
 } from './loginServices';
 
@@ -17,20 +17,18 @@ import {
   clearCurrentUser,
   setCurrentPerms,
   setLocale,
-  setTimezone,
-  setCurrency,
-  setPlugins,
-  setBindings,
-  setTranslations,
+  // setTimezone,
+  // setCurrency,
+  // setPlugins,
+  // setBindings,
+  // setTranslations,
   clearOkapiToken,
   setAuthError,
-  checkSSO,
+  // checkSSO,
   setOkapiReady,
   setServerDown,
   setSessionData,
   setLoginData,
-  setCurrentServicePoint,
-  setUserServicePoints,
   updateCurrentUser,
 } from './okapiActions';
 
@@ -50,6 +48,7 @@ const mockFetchSuccess = (data) => {
     Promise.resolve({
       ok: true,
       json: () => Promise.resolve(data),
+      headers: new Map(),
     })
   ));
 };
@@ -221,28 +220,6 @@ describe('processOkapiSession', () => {
   });
 });
 
-describe('setCurServicePoint', () => {
-  it('dispatches setCurrentServicePoint', async () => {
-    const store = {
-      dispatch: jest.fn(),
-    };
-    const sp = 'monkey-bagel';
-    await setCurServicePoint(store, sp);
-    expect(store.dispatch).toHaveBeenCalledWith(setCurrentServicePoint(sp));
-  });
-});
-
-describe('setServicePoints', () => {
-  it('dispatches setUserServicePoints', async () => {
-    const store = {
-      dispatch: jest.fn(),
-    };
-    const data = ['thunder', 'chicken'];
-    await setServicePoints(store, data);
-    expect(store.dispatch).toHaveBeenCalledWith(setUserServicePoints(data));
-  });
-});
-
 describe('supportedLocales', () => {
   it('is an array of strings', () => {
     expect(Array.isArray(supportedLocales)).toBe(true);
@@ -270,11 +247,12 @@ describe('validateUser', () => {
     mockFetchCleanUp();
   });
 
-  it('handles valid user', async () => {
+  it('handles valid user with empty tenant in session', async () => {
     const store = {
       dispatch: jest.fn(),
     };
 
+    const tenant = 'tenant';
     const data = { monkey: 'bagel' };
     const token = 'token';
     const user = { id: 'id' };
@@ -287,9 +265,36 @@ describe('validateUser', () => {
 
     mockFetchSuccess(data);
 
-    await validateUser('url', store, 'tenant', session);
+    await validateUser('url', store, tenant, session);
     expect(store.dispatch).toHaveBeenCalledWith(setLoginData(data));
-    expect(store.dispatch).toHaveBeenCalledWith(setSessionData({ token, user, perms }));
+    expect(store.dispatch).toHaveBeenCalledWith(setSessionData({ token, user, perms, tenant }));
+
+    mockFetchCleanUp();
+  });
+
+  it('handles valid user with tenant in session', async () => {
+    const store = {
+      dispatch: jest.fn(),
+    };
+
+    const tenant = 'tenant';
+    const sessionTenant = 'sessionTenant';
+    const data = { monkey: 'bagel' };
+    const token = 'token';
+    const user = { id: 'id' };
+    const perms = [];
+    const session = {
+      token,
+      user,
+      perms,
+      tenant: sessionTenant,
+    };
+
+    mockFetchSuccess(data);
+
+    await validateUser('url', store, tenant, session);
+    expect(store.dispatch).toHaveBeenCalledWith(setLoginData(data));
+    expect(store.dispatch).toHaveBeenCalledWith(setSessionData({ token, user, perms, tenant: sessionTenant }));
 
     mockFetchCleanUp();
   });
@@ -318,5 +323,36 @@ describe('updateUser', () => {
     const data = { thunder: 'chicken' };
     await updateUser(store, data);
     expect(store.dispatch).toHaveBeenCalledWith(updateCurrentUser(data));
+  });
+});
+
+describe('updateTenant', () => {
+  const okapi = {
+    currentPerms: {},
+  };
+  const tenant = 'test';
+  const data = {
+    user: {
+      id: 'userId',
+      username: 'testuser',
+    },
+    permissions: {
+      permissions: [{ permissionName: 'test.permissions' }],
+    },
+  };
+
+  beforeEach(() => {
+    localforage.setItem.mockClear();
+  });
+
+  it('should set tenant and updated user in session', async () => {
+    mockFetchSuccess(data);
+    await updateTenant(okapi, tenant);
+    mockFetchCleanUp();
+
+    expect(localforage.setItem).toHaveBeenCalledWith('okapiSess', {
+      ...spreadUserWithPerms(data),
+      tenant,
+    });
   });
 });

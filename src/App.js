@@ -9,7 +9,7 @@ import configureLogger from './configureLogger';
 import configureStore from './configureStore';
 import gatherActions from './gatherActions';
 import { destroyStore } from './mainActions';
-import asciiBee from './asciiBee';
+import { unregisterServiceWorker } from './serviceWorkerRegistration';
 
 import Root from './components/Root';
 
@@ -28,12 +28,13 @@ export default class StripesCore extends Component {
     const initialState = merge({}, { okapi }, props.initialState);
 
     this.logger = configureLogger(config);
-    this.logger.log('core', `${asciiBee()}`);
-    this.logger.log('core', 'Starting Stripes ...');
-
     this.epics = configureEpics(connectErrorEpic);
     this.store = configureStore(initialState, this.logger, this.epics);
     this.actionNames = gatherActions();
+
+    // unregister any zombie service workers left over from RTR work
+    // prior to disabling RTR in PR #1371
+    unregisterServiceWorker();
   }
 
   componentWillUnmount() {

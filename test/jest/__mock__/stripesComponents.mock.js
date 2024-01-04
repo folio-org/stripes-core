@@ -68,6 +68,8 @@ jest.mock('@folio/stripes-components', () => ({
     <span {...rest}>{children}</span>
   )),
   Loading: () => <div>Loading</div>,
+  MessageBanner: jest.fn(({ show, children }) => { return show ? <>{children}</> : <></>; }),
+
   // oy, dismissible. we need to pull it out of props so it doesn't
   // get applied to the div as an attribute, which must have a string-value,
   // which will shame you in the console:

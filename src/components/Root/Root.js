@@ -6,7 +6,6 @@ import { createBrowserHistory } from 'history';
 import { IntlProvider } from 'react-intl';
 import queryString from 'query-string';
 import { QueryClientProvider } from 'react-query';
-import { SWRConfig } from 'swr';
 import { ApolloProvider } from '@apollo/client';
 
 import { ErrorBoundary } from '@folio/stripes-components';
@@ -21,7 +20,6 @@ import initialReducers from '../../initialReducers';
 import enhanceReducer from '../../enhanceReducer';
 import createApolloClient from '../../createApolloClient';
 import createReactQueryClient from '../../createReactQueryClient';
-import createSwrOptions from '../../createSwrOptions';
 import { setSinglePlugin, setBindings, setOkapiToken, setTimezone, setCurrency, updateCurrentUser } from '../../okapiActions';
 import { loadTranslations, checkOkapiSession } from '../../loginServices';
 import { getQueryResourceKey, getCurrentModule } from '../../locationService';
@@ -66,7 +64,6 @@ class Root extends Component {
 
     this.apolloClient = createApolloClient(okapi);
     this.reactQueryClient = createReactQueryClient();
-    this.swrOptions = createSwrOptions();
   }
 
   getChildContext() {
@@ -156,26 +153,24 @@ class Root extends Component {
         <ConnectContext.Provider value={{ addReducer: this.addReducer, addEpic: this.addEpic, store }}>
           <ApolloProvider client={this.apolloClient}>
             <QueryClientProvider client={this.reactQueryClient}>
-              <SWRConfig value={this.swrOptions}>
-                <IntlProvider
-                  locale={locale}
-                  key={locale}
-                  timeZone={timezone}
-                  currency={currency}
-                  messages={translations}
-                  textComponent={Fragment}
-                  onError={config?.suppressIntlErrors ? () => {} : undefined}
-                  onWarn={config?.suppressIntlWarnings ? () => {} : undefined}
-                  defaultRichTextElements={this.defaultRichTextElements}
-                >
-                  <RootWithIntl
-                    stripes={stripes}
-                    token={token}
-                    disableAuth={disableAuth}
-                    history={history}
-                  />
-                </IntlProvider>
-              </SWRConfig>
+              <IntlProvider
+                locale={locale}
+                key={locale}
+                timeZone={timezone}
+                currency={currency}
+                messages={translations}
+                textComponent={Fragment}
+                onError={config?.suppressIntlErrors ? () => {} : undefined}
+                onWarn={config?.suppressIntlWarnings ? () => {} : undefined}
+                defaultRichTextElements={this.defaultRichTextElements}
+              >
+                <RootWithIntl
+                  stripes={stripes}
+                  token={token}
+                  disableAuth={disableAuth}
+                  history={history}
+                />
+              </IntlProvider>
             </QueryClientProvider>
           </ApolloProvider>
         </ConnectContext.Provider>

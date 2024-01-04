@@ -55,7 +55,7 @@ button.navButton {
 .icon,
 .label {
   position: relative;
-  z-index: 2;
+  z-index: 4;
 }
 
 .navButton,

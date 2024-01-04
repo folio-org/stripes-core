@@ -133,12 +133,16 @@
     "logoutKeepSso": "Desconectarse de FOLIO, mantener sesión SSO",
     "mainnav.profileDropdown.locale": "Locale",
     "mainnav.profileDropdown.permissions": "Permisos",
-    "front.error.header": "404 Error",
+    "front.error.header": "Error 404",
     "errors.password.compromised.invalid": "The password must not be commonly-used, expected or compromised",
     "createResetPassword.ruleTemplate": "Must {description}",
     "front.error.general.message": "The requested URL {br}{url}{br} was not found on this server.",
     "front.error.setPassword.message": "Please log out of your current FOLIO session to set password. Once logged out please try to set your password with this link again.",
     "title.noPermission": "No permission",
     "front.error.noPermission": "You don't have permission to view this app/record",
-    "button.duplicate": "Duplicate"
+    "button.duplicate": "Duplicate",
+    "stale.warning": "The application has changed on the server and needs to be refreshed.",
+    "stale.reload": "Click here to reload.",
+    "placeholder.forgotPassword": "Introducir correo electrónico o teléfono",
+    "placeholder.forgotUsername": "Introducir correo electrónico o teléfono"
 }

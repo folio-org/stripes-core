@@ -6,7 +6,7 @@ import { injectIntl } from 'react-intl';
 import { withRouter } from 'react-router';
 import localforage from 'localforage';
 
-import { branding } from 'stripes-config';
+import { branding, config } from 'stripes-config';
 
 import { Icon } from '@folio/stripes-components';
 
@@ -138,7 +138,9 @@ class MainNav extends Component {
 
   // return the user to the login screen, but after logging in they will be brought to the default screen.
   logout() {
-    console.clear(); // eslint-disable-line no-console
+    if (!config.preserveConsole) {
+      console.clear(); // eslint-disable-line no-console
+    }
     this.returnToLogin().then(() => {
       this.props.history.push('/');
     });

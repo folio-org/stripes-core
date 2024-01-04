@@ -140,5 +140,9 @@
     "front.error.setPassword.message": "Bitte loggen Sie sich aus Ihrer aktuellen FOLIO-Sitzung aus, um Ihr Passwort zu setzen. Wenn Sie abgemeldet sind, versuchen Sie bitte erneut, Ihr Passwort über diesen Link zu setzen.",
     "title.noPermission": "Keine Berechtigung",
     "front.error.noPermission": "Sie haben keine Berechtigung, diese App/diesen Datensatz aufzurufen",
-    "button.duplicate": "Duplizieren"
+    "button.duplicate": "Duplizieren",
+    "stale.warning": "Die Anwendung hat sich auf dem Server geändert und muss neu geladen werden.",
+    "stale.reload": "Zum Neuladen hier klicken.",
+    "placeholder.forgotPassword": "E-Mail oder Telefonnummer eingeben",
+    "placeholder.forgotUsername": "E-Mail oder Telefonnummer eingeben"
 }
