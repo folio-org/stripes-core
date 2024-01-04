@@ -106,6 +106,7 @@
   "mainnav.appContextMenu": "Application context dropdown",
   "mainnav.myProfileAriaLabel": "My profile",
   "mainnav.skipMainNavigation": "Skip Main Navigation",
+  "mainnav.profile.ariaLabel": "{tenantName} {servicePointName} profile",
 
   "mainnav.profileDropdown.locale": "Locale",
   "mainnav.profileDropdown.permissions": "Permissions",

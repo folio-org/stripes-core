@@ -256,6 +256,7 @@ class ProfileDropdown extends Component {
   }
 
   renderProfileTriggerLabel = ({ open }) => {
+    const { intl } = this.props;
     const { okapi } = this.props.stripes;
     const userData = this.getUserData();
     const servicePointName = userData?.curServicePoint?.name;
@@ -266,7 +267,14 @@ class ProfileDropdown extends Component {
     return (
       hasLabel ? (
         <>
-          <span className={css.button__label} aria-label={`${tenantName} ${servicePointName} profile`}>
+          <span
+            className={css.button__label}
+            aria-label={intl.formatMessage({
+              id: 'stripes-core.mainnav.profile.ariaLabel',
+              tenantName,
+              servicePointName,
+            })}
+          >
             {tenantName && <span>{tenantName}</span>}
             {servicePointName && <span>{servicePointName}</span>}
           </span>
