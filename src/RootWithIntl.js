@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {
   Router,
   Switch,
+  Redirect as InternalRedirect
 } from 'react-router-dom';
 
 import { Provider } from 'react-redux';
@@ -43,13 +44,47 @@ import { CalloutContext } from './CalloutContext';
 import PreLoginLanding from './components/PreLoginLanding';
 import { setOkapiTenant } from './okapiActions';
 
+export const renderLogoutComponent = (stripes) => {
+  const { okapi } = stripes;
+
+  if (okapi.authnUrl) {
+    return <Redirect to={`${okapi.authnUrl}/realms/${okapi.tenant}/protocol/openid-connect/logout?client_id=${okapi.clientId}&post_logout_redirect_uri=${window.location.protocol}//${window.location.host}`} />;
+  }
+
+  return <InternalRedirect to="/" />;
+};
+
+export const renderLoginComponent = (stripes) => {
+  const { config, okapi } = stripes;
+
+  if (okapi.authnUrl) {
+    if (config.isSingleTenant) {
+      const redirectUri = `${window.location.protocol}//${window.location.host}/oidc-landing`;
+      const authnUri = `${okapi.authnUrl}/realms/${okapi.tenant}/protocol/openid-connect/auth?client_id=${okapi.clientId}&response_type=code&redirect_uri=${redirectUri}&scope=openid`;
+      return <Redirect to={authnUri} />;
+    }
+
+    const handleSelectTenant = (tenant, clientId) => {
+      localStorage.setItem('tenant', JSON.stringify({ tenantName: tenant, clientId }));
+      stripes.store.dispatch(setOkapiTenant({ tenant, clientId }));
+    };
+
+    return <PreLoginLanding onSelectTenant={handleSelectTenant} />;
+  }
+
+  return <Login
+    autoLogin={config.autoLogin}
+    stripes={stripes}
+  />;
+};
+
 class RootWithIntl extends React.Component {
   static propTypes = {
     stripes: PropTypes.shape({
+      clone: PropTypes.func.isRequired,
+      config: PropTypes.object,
       epics: PropTypes.object,
       logger: PropTypes.object.isRequired,
-      clone: PropTypes.func.isRequired,
-      config: PropTypes.object.isRequired,
       okapi: PropTypes.object.isRequired,
       store: PropTypes.object.isRequired
     }).isRequired,
@@ -67,40 +102,10 @@ class RootWithIntl extends React.Component {
 
   state = { callout: null };
 
-  handleSelectTenant = (tenant, clientId) => {
-    localStorage.setItem('tenant', JSON.stringify({ tenantName: tenant, clientId }));
-    this.props.stripes.store.dispatch(setOkapiTenant({ clientId, tenant }));
-  }
-
   setCalloutRef = (ref) => {
     this.setState({
       callout: ref,
     });
-  }
-
-  singleTenantAuthnUrl = () => {
-    const { okapi } = this.props.stripes;
-    const redirectUri = `${window.location.protocol}//${window.location.host}/oidc-landing`;
-
-    return `${okapi.authnUrl}/realms/${okapi.tenant}/protocol/openid-connect/auth?client_id=${okapi.clientId}&response_type=code&redirect_uri=${redirectUri}&scope=openid`;
-  }
-
-  renderLoginComponent() {
-    const { config, okapi } = this.props.stripes;
-
-    if (okapi.authnUrl) {
-      if (config.isSingleTenant) {
-        return <Redirect to={this.singleTenantAuthnUrl()} />;
-      }
-      return <PreLoginLanding
-        onSelectTenant={this.handleSelectTenant}
-      />;
-    }
-
-    return <Login
-      autoLogin={config.autoLogin}
-      stripes={this.props.stripes}
-    />;
   }
 
   render() {
@@ -113,8 +118,6 @@ class RootWithIntl extends React.Component {
 
     const connect = connectFor('@folio/core', this.props.stripes.epics, this.props.stripes.logger);
     const stripes = this.props.stripes.clone({ connect });
-
-    const logoutUrl = `${stripes.okapi.authnUrl}/realms/${stripes.okapi.tenant}/protocol/openid-connect/logout?client_id=${stripes.okapi.clientId}&post_logout_redirect_uri=${window.location.protocol}//${window.location.host}`;
 
     return (
       <StripesContext.Provider value={stripes}>
@@ -211,11 +214,11 @@ class RootWithIntl extends React.Component {
                         <TitledRoute
                           name="logout"
                           path="/logout"
-                          component={<Redirect to={logoutUrl} />}
+                          component={renderLogoutComponent(this.props.stripes)}
                         />
                         <TitledRoute
                           name="login"
-                          component={this.renderLoginComponent()}
+                          component={renderLoginComponent(this.props.stripes)}
                         />
                       </Switch>
                     }
