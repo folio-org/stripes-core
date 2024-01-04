@@ -680,7 +680,7 @@ export function processOkapiSession(store, tenant, resp, ssoToken) {
   if (resp.ok) {
     return resp.json()
       .then(json => {
-        const token = json.access_token || ssoToken;
+        const token = resp.headers.get('X-Okapi-Token') || json.access_token || ssoToken;
         return createOkapiSession(store, tenant, token, json)
           .then(() => json);
       })

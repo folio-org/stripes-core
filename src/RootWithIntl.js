@@ -197,4 +197,3 @@ RootWithIntl.propTypes = {
 };
 
 export default RootWithIntl;
-
