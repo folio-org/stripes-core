@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { FormattedDate } from 'react-intl';
 
 import {
@@ -9,6 +8,7 @@ import {
   useConfigurations,
   useOkapiEnv,
 } from '../../queries';
+import { useStripes } from '../../StripesContext';
 
 
 export function entryFor(config, code) {
@@ -75,20 +75,21 @@ export function installMessage(env, conf, stripesConf) {
  * @param {} props
  * @returns
  */
-const AboutInstallMessages = (props) => {
+const AboutInstallMessages = () => {
+  const stripes = useStripes();
   const aboutEnv = useOkapiEnv();
   const aboutConfig = useConfigurations({
     module: '@folio/stripes-core',
     configName: 'aboutInstall',
   });
 
-  const version = installVersion(aboutEnv.data, aboutConfig.data, props.stripes.config);
-  const date = installDate(aboutEnv.data, aboutConfig.data, props.stripes.config);
-  const message = installMessage(aboutEnv.data, aboutConfig.data, props.stripes.config);
+  const version = installVersion(aboutEnv.data, aboutConfig.data, stripes.config);
+  const date = installDate(aboutEnv.data, aboutConfig.data, stripes.config);
+  const message = installMessage(aboutEnv.data, aboutConfig.data, stripes.config);
 
   let formattedDate = '';
   if (date) {
-    formattedDate = <>(<FormattedDate value={date} />)</>;
+    formattedDate = <FormattedDate value={date} />;
   }
 
   return (
@@ -97,13 +98,6 @@ const AboutInstallMessages = (props) => {
       {message && <div>{message}</div>}
     </>
   );
-};
-
-AboutInstallMessages.propTypes = {
-  stripes: PropTypes.shape({
-    config: PropTypes.object,
-    hasPerm: PropTypes.func.isRequired,
-  }).isRequired,
 };
 
 export default AboutInstallMessages;
