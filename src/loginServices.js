@@ -2,7 +2,7 @@ import localforage from 'localforage';
 import { translations } from 'stripes-config';
 import rtlDetect from 'rtl-detect';
 import moment from 'moment';
-import dayjs from 'dayjs';
+import { dayjs } from '@folio/stripes-components';
 import availableLocales from 'dayjs/locale';
 
 
