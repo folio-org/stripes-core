@@ -1,5 +1,10 @@
 # Change history for stripes-core
 
+## 10.0.5
+
+* Opt-in: handle access-control via cookies. Refs STCOR-671.
+* Opt-in: disable login when cookies are disabled. Refs STCOR-762.
+
 ## [10.0.4](https://github.com/folio-org/stripes-core/tree/v10.0.4) (2023-11-13)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.0.3...v10.0.4)
 

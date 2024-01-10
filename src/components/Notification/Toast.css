@@ -42,7 +42,7 @@
   box-shadow: 0 4px 19px 0 rgba(0, 0, 0, 0.39);
 
   &.error {
-    background-color: color(var(--error, #900) tint(25%));
+    background-color: oklch(from var(--error) calc(l + 0.13) calc(c - 0.03) h);
     border-color: var(--error);
     color: #fff;
     box-shadow: 0 4px 19px 0 rgba(153, 0, 0, 0.39);
@@ -55,7 +55,7 @@
   }
 
   &.success {
-    background-color: color(var(--success, #060) tint(25%));
+    background-color: oklch(from var(--success) calc(l + 0.13) calc(c - 0.03) h);
     border-color: var(--success);
     color: #fff;
     box-shadow: 0 4px 19px 0 rgba(0, 112, 0, 0.39);
