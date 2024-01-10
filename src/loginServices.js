@@ -820,7 +820,7 @@ export function updateUser(store, data) {
  */
 export async function updateTenant(okapi, tenant) {
   const okapiSess = await getOkapiSession();
-  const userWithPermsResponse = await fetchUserWithPerms(okapi.url, tenant);
+  const userWithPermsResponse = await fetchUserWithPerms(okapi.url, tenant, okapi.token);
   const userWithPerms = await userWithPermsResponse.json();
 
   await localforage.setItem(SESSION_NAME, { ...okapiSess, tenant, ...spreadUserWithPerms(userWithPerms) });
