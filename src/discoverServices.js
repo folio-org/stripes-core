@@ -246,9 +246,9 @@ export function discoveryReducer(state = {}, action) {
             modules: action.data.moduleDescriptors.map((d) => {
               return {
                 name: d.id,
-                interfaces: d.provides.map((i) => {
+                interfaces: d.provides?.map((i) => {
                   return { name: i.id + ' ' + i.version };
-                }),
+                }) || [],
               };
             }),
           },
