@@ -15,6 +15,7 @@ import events from './events';
 
 // Process and cache "app" type modules and render the routes
 const AppRoutes = ({ modules, stripes }) => {
+  console.log(modules, "MODULES");
   // cache app modules
   const cachedModules = useMemo(() => {
     return modules.app.map(module => {

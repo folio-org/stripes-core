@@ -31,7 +31,9 @@ const useNamespace = (options = {}) => {
     const { ignoreParents, key } = opts;
     const { NAMESPACE_DELIMITER } = delimiters;
 
-    let namespace = ignoreParents ? moduleHierarchy.pop() : moduleHierarchy.join(NAMESPACE_DELIMITER);
+    let namespace = ignoreParents ? moduleHierarchy.pop() : moduleHierarchy?.join(NAMESPACE_DELIMITER);
+
+    console.log(namespace, "Namespace");
 
     if (key) {
       namespace += `${NAMESPACE_DELIMITER}${key}`;

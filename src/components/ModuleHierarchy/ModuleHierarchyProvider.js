@@ -5,6 +5,7 @@ import useModuleHierarchy from './useModuleHierarchy';
 
 const ModuleHierarchyProvider = ({ children, module }) => {
   const moduleHierarchy = useModuleHierarchy();
+  console.log(moduleHierarchy, 'module hierarchy')
   const currentModuleHierarchy = [module];
 
   if (moduleHierarchy) {
