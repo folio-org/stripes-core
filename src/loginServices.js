@@ -2,6 +2,7 @@ import localforage from 'localforage';
 import { translations } from 'stripes-config';
 import rtlDetect from 'rtl-detect';
 import moment from 'moment';
+import { loadDayJSLocale } from '@folio/stripes-components';
 
 import { discoverServices } from './discoverServices';
 
@@ -137,6 +138,8 @@ export function loadTranslations(store, locale, defaultTranslations = {}) {
       });
     });
   }
+
+  loadDayJSLocale(locale);
 
   // Here we put additional condition because languages
   // like Japan we need to use like ja, but with numeric system

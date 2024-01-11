@@ -10,6 +10,7 @@
 * Fix duplicated "FOLIO" in document title in some cases. Refs STCOR-767.
 * Refactor away from `color()` function. Refs STCOR-768.
 * Export `getEventHandler` to be able to create events in other modules. Refs STCOR-770.
+* Load DayJS locale data as part of `loginServices`. STCOR-771.
 
 ## [10.0.0](https://github.com/folio-org/stripes-core/tree/v10.0.0) (2023-10-11)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v9.0.0...v10.0.0)
