@@ -241,11 +241,20 @@ class ProfileDropdown extends Component {
   }
 
   renderProfileTrigger = ({ getTriggerProps, open }) => {
-    const { intl } = this.props;
+    const { intl, stripes: { okapi } } = this.props;
+    const userData = this.getUserData();
+    const servicePointName = userData?.curServicePoint?.name;
+    const tenantName = userData?.tenants?.find(({ id }) => id === okapi.tenant)?.name;
 
     return (
       <NavButton
-        ariaLabel={intl.formatMessage({ id: 'stripes-core.mainnav.myProfileAriaLabel' })}
+        ariaLabel={intl.formatMessage(
+          { id: 'stripes-core.mainnav.profile.ariaLabel' },
+          {
+            tenantName,
+            servicePointName,
+          }
+        )}
         selected={open}
         className={css.button}
         icon={this.getProfileImage()}
@@ -256,7 +265,6 @@ class ProfileDropdown extends Component {
   }
 
   renderProfileTriggerLabel = ({ open }) => {
-    const { intl } = this.props;
     const { okapi } = this.props.stripes;
     const userData = this.getUserData();
     const servicePointName = userData?.curServicePoint?.name;
@@ -267,16 +275,7 @@ class ProfileDropdown extends Component {
     return (
       hasLabel ? (
         <>
-          <span
-            className={css.button__label}
-            aria-label={intl.formatMessage(
-              { id: 'stripes-core.mainnav.profile.ariaLabel' },
-              {
-                tenantName,
-                servicePointName,
-              }
-            )}
-          >
+          <span className={css.button__label}>
             {tenantName && <span>{tenantName}</span>}
             {servicePointName && <span>{servicePointName}</span>}
           </span>
