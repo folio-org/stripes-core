@@ -249,7 +249,7 @@ class ProfileDropdown extends Component {
     return (
       <NavButton
         ariaLabel={intl.formatMessage(
-          { id: 'stripes-core.mainnav.profile.ariaLabel' },
+          { id: 'stripes-core.mainnav.myProfileAriaLabel' },
           {
             tenantName,
             servicePointName,
