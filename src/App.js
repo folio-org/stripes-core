@@ -25,7 +25,7 @@ export default class StripesCore extends Component {
     const parsedTenant = storedTenant ? JSON.parse(storedTenant) : undefined;
 
     const okapi = (typeof okapiConfig === 'object' && Object.keys(okapiConfig).length > 0)
-      ? { ...okapiConfig, tenant: parsedTenant?.tenantName || okapiConfig.tenant, clientId: parsedTenant?.clientId } : { withoutOkapi: true };
+      ? { ...okapiConfig, tenant: parsedTenant?.tenantName || okapiConfig.tenant, clientId: parsedTenant?.clientId || okapiConfig.clientId } : { withoutOkapi: true };
 
     const initialState = merge({}, { okapi }, props.initialState);
 
