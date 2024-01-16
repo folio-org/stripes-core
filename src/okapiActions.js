@@ -74,6 +74,13 @@ function clearOkapiToken() {
   };
 }
 
+function setIsAuthenticated(b) {
+  return {
+    type: 'SET_IS_AUTHENTICATED',
+    isAuthenticated: Boolean(b),
+  };
+}
+
 function setAuthError(message) {
   return {
     type: 'SET_AUTH_FAILURE',
@@ -135,6 +142,13 @@ function setOkapiTenant(payload) {
   };
 }
 
+function setTokenExpiration(tokenExpiration) {
+  return {
+    type: 'SET_TOKEN_EXPIRATION',
+    tokenExpiration,
+  };
+}
+
 export {
   checkSSO,
   clearCurrentUser,
@@ -144,6 +158,7 @@ export {
   setCurrency,
   setCurrentPerms,
   setCurrentUser,
+  setIsAuthenticated,
   setLocale,
   setLoginData,
   setOkapiReady,
@@ -153,6 +168,7 @@ export {
   setSessionData,
   setSinglePlugin,
   setTimezone,
+  setTokenExpiration,
   setTranslations,
   updateCurrentUser,
   setOkapiTenant

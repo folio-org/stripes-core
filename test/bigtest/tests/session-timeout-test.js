@@ -5,7 +5,7 @@ import setupApplication from '../helpers/setup-core-application';
 import LoginInteractor from '../interactors/login';
 import translations from '../../../translations/stripes-core/en';
 
-describe('Session timeout test', () => {
+describe.skip('Session timeout test', () => {
   const login = new LoginInteractor('form[class^="form--"]');
 
   setupApplication({

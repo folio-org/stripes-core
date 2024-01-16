@@ -89,12 +89,14 @@ class RootWithIntl extends React.Component {
       store: PropTypes.object.isRequired
     }).isRequired,
     token: PropTypes.string,
+    isAuthenticated: PropTypes.bool,
     disableAuth: PropTypes.bool.isRequired,
     history: PropTypes.shape({}),
   };
 
   static defaultProps = {
     token: '',
+    isAuthenticated: false,
     history: {},
   };
 
@@ -109,6 +111,7 @@ class RootWithIntl extends React.Component {
   render() {
     const {
       token,
+      isAuthenticated,
       disableAuth,
       history,
     } = this.props;
@@ -127,7 +130,7 @@ class RootWithIntl extends React.Component {
               >
                 <Provider store={stripes.store}>
                   <Router history={history}>
-                    { token || disableAuth ?
+                    { isAuthenticated || token || disableAuth ?
                       <>
                         <MainContainer>
                           <AppCtxMenuProvider>

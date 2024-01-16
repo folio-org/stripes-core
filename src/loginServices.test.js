@@ -1,17 +1,22 @@
 import localforage from 'localforage';
 
 import {
-  spreadUserWithPerms,
   createOkapiSession,
+  getOkapiSession,
+  getTokenExpiry,
   handleLoginError,
   loadTranslations,
   processOkapiSession,
+  setTokenExpiry,
+  spreadUserWithPerms,
   supportedLocales,
   supportedNumberingSystems,
-  updateUser,
   updateTenant,
+  updateUser,
   validateUser,
 } from './loginServices';
+
+
 
 import {
   clearCurrentUser,
@@ -22,19 +27,35 @@ import {
   // setPlugins,
   // setBindings,
   // setTranslations,
-  clearOkapiToken,
   setAuthError,
   // checkSSO,
+  setIsAuthenticated,
   setOkapiReady,
   setServerDown,
-  setSessionData,
+  // setSessionData,
+  // setTokenExpiration,
   setLoginData,
   updateCurrentUser,
 } from './okapiActions';
 
 import { defaultErrors } from './constants';
 
+// reassign console.log to keep things quiet
+const consoleInterruptor = {};
+beforeAll(() => {
+  consoleInterruptor.log = global.console.log;
+  consoleInterruptor.error = global.console.error;
+  consoleInterruptor.warn = global.console.warn;
+  console.log = () => { };
+  console.error = () => { };
+  console.warn = () => { };
+});
 
+afterAll(() => {
+  global.console.log = consoleInterruptor.log;
+  global.console.error = consoleInterruptor.error;
+  global.console.warn = consoleInterruptor.warn;
+});
 
 jest.mock('localforage', () => ({
   getItem: jest.fn(() => Promise.resolve({ user: {} })),
@@ -64,7 +85,6 @@ const mockFetchCleanUp = () => {
   delete global.fetch;
 };
 
-
 describe('createOkapiSession', () => {
   it('clears authentication errors', async () => {
     const store = {
@@ -76,19 +96,25 @@ describe('createOkapiSession', () => {
       }),
     };
 
+    const te = {
+      accessTokenExpiration: '2023-11-06T18:05:33Z',
+      refreshTokenExpiration: '2023-10-30T18:15:33Z',
+    };
+
     const data = {
       user: {
         id: 'user-id',
       },
       permissions: {
         permissions: [{ permissionName: 'a' }, { permissionName: 'b' }]
-      }
+      },
+      tokenExpiration: te,
     };
     const permissionsMap = { a: true, b: true };
-
     mockFetchSuccess([]);
 
     await createOkapiSession(store, 'tenant', 'token', data);
+    expect(store.dispatch).toHaveBeenCalledWith(setIsAuthenticated(true));
     expect(store.dispatch).toHaveBeenCalledWith(setAuthError(null));
     expect(store.dispatch).toHaveBeenCalledWith(setLoginData(data));
     expect(store.dispatch).toHaveBeenCalledWith(setCurrentPerms(permissionsMap));
@@ -196,7 +222,7 @@ describe('processOkapiSession', () => {
 
     mockFetchSuccess();
 
-    await processOkapiSession(store, 'tenant', resp, 'token');
+    await processOkapiSession(store, 'tenant', resp);
     expect(store.dispatch).toHaveBeenCalledWith(setAuthError(null));
     expect(store.dispatch).toHaveBeenCalledWith(setOkapiReady());
 
@@ -213,7 +239,7 @@ describe('processOkapiSession', () => {
       }
     };
 
-    await processOkapiSession(store, 'tenant', resp, 'token');
+    await processOkapiSession(store, 'tenant', resp);
 
     expect(store.dispatch).toHaveBeenCalledWith(setOkapiReady());
     expect(store.dispatch).toHaveBeenCalledWith(setAuthError([defaultErrors.DEFAULT_LOGIN_CLIENT_ERROR]));
@@ -254,20 +280,23 @@ describe('validateUser', () => {
 
     const tenant = 'tenant';
     const data = { monkey: 'bagel' };
-    const token = 'token';
     const user = { id: 'id' };
     const perms = [];
     const session = {
-      token,
       user,
       perms,
     };
 
     mockFetchSuccess(data);
 
+    // set a fixed system time so date math is stable
+    const now = new Date('2023-10-30T19:34:56.000Z');
+    jest.useFakeTimers().setSystemTime(now);
+
     await validateUser('url', store, tenant, session);
-    expect(store.dispatch).toHaveBeenCalledWith(setLoginData(data));
-    expect(store.dispatch).toHaveBeenCalledWith(setSessionData({ token, user, perms, tenant }));
+
+    expect(store.dispatch).toHaveBeenNthCalledWith(1, setAuthError(null));
+    expect(store.dispatch).toHaveBeenNthCalledWith(2, setLoginData(data));
 
     mockFetchCleanUp();
   });
@@ -280,11 +309,9 @@ describe('validateUser', () => {
     const tenant = 'tenant';
     const sessionTenant = 'sessionTenant';
     const data = { monkey: 'bagel' };
-    const token = 'token';
     const user = { id: 'id' };
     const perms = [];
     const session = {
-      token,
       user,
       perms,
       tenant: sessionTenant,
@@ -293,8 +320,8 @@ describe('validateUser', () => {
     mockFetchSuccess(data);
 
     await validateUser('url', store, tenant, session);
-    expect(store.dispatch).toHaveBeenCalledWith(setLoginData(data));
-    expect(store.dispatch).toHaveBeenCalledWith(setSessionData({ token, user, perms, tenant: sessionTenant }));
+    expect(store.dispatch).toHaveBeenNthCalledWith(1, setAuthError(null));
+    expect(store.dispatch).toHaveBeenNthCalledWith(2, setLoginData(data));
 
     mockFetchCleanUp();
   });
@@ -310,7 +337,6 @@ describe('validateUser', () => {
 
     await validateUser('url', store, 'tenant', {});
     expect(store.dispatch).toHaveBeenCalledWith(clearCurrentUser());
-    expect(store.dispatch).toHaveBeenCalledWith(clearOkapiToken());
     mockFetchCleanUp();
   });
 });
@@ -354,5 +380,52 @@ describe('updateTenant', () => {
       ...spreadUserWithPerms(data),
       tenant,
     });
+  });
+});
+
+describe('localforage session wrapper', () => {
+  it('getOkapiSession retrieves a session object', async () => {
+    const o = { user: {} };
+    localforage.getItem = jest.fn(() => Promise.resolve(o));
+
+    const s = await getOkapiSession();
+    expect(s).toMatchObject(o);
+  });
+
+  describe('getTokenExpiry', () => {
+    it('finds tokenExpiration', async () => {
+      const o = { tokenExpiration: { trinity: 'cowboy junkies' } };
+      localforage.getItem = jest.fn(() => Promise.resolve(o));
+
+      const s = await getTokenExpiry();
+      expect(s).toMatchObject(o.tokenExpiration);
+    });
+
+    it('handles missing tokenExpiration', async () => {
+      const o = { nobody: 'here but us chickens' };
+      localforage.getItem = jest.fn(() => Promise.resolve(o));
+
+      const s = await getTokenExpiry();
+      expect(s).toBeFalsy();
+    });
+  });
+
+  it('setTokenExpiry set', async () => {
+    const o = {
+      margo: 'timmins',
+      margot: 'margot with a t looks better',
+      also: 'i thought we were talking about margot robbie?',
+      tokenExpiration: 'time out of mind',
+    };
+    localforage.getItem = () => Promise.resolve(o);
+    localforage.setItem = (k, v) => Promise.resolve(v);
+
+    const te = {
+      trinity: 'cowboy junkies',
+      sweet: 'james',
+    };
+
+    const s = await setTokenExpiry(te);
+    expect(s).toMatchObject({ ...o, tokenExpiration: te });
   });
 });

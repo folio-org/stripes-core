@@ -4,8 +4,8 @@ import { okapi as okapiConfig } from 'stripes-config';
 function getHeaders(tenant, token) {
   return {
     'X-Okapi-Tenant': tenant,
-    'Content-Type': 'application/json',
     ...(token && { 'X-Okapi-Token': token }),
+    'Content-Type': 'application/json'
   };
 }
 

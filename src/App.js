@@ -9,7 +9,6 @@ import configureLogger from './configureLogger';
 import configureStore from './configureStore';
 import gatherActions from './gatherActions';
 import { destroyStore } from './mainActions';
-import { unregisterServiceWorker } from './serviceWorkerRegistration';
 
 import Root from './components/Root';
 
@@ -34,10 +33,6 @@ export default class StripesCore extends Component {
     this.epics = configureEpics(connectErrorEpic);
     this.store = configureStore(initialState, this.logger, this.epics);
     this.actionNames = gatherActions();
-
-    // unregister any zombie service workers left over from RTR work
-    // prior to disabling RTR in PR #1371
-    unregisterServiceWorker();
   }
 
   componentWillUnmount() {
