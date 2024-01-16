@@ -167,7 +167,7 @@ export class FFetch {
         // if the request failed due to a missing token, attempt RTR (which
         // will then replay the original fetch if it succeeds), or die softly
         // if it fails. return any other response as-is.
-        if (response.status === 403 && response.headers.get('content-type') === 'text/plain') {
+        if (response.status === 400 && response.headers.get('content-type') === 'text/plain') {
           const res = response.clone();
           return res.text()
             .then(text => {
@@ -176,7 +176,7 @@ export class FFetch {
                 return this.passThroughWithRT(resource, options);
               }
 
-              // yes, we got a 403, but not an RTR 403. leave that to the
+              // yes, we got a 4xx, but not an RTR 4xx. leave that to the
               // original application to handle. it's not our problem.
               return response;
             });
