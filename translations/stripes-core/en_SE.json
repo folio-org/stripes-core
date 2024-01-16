@@ -64,7 +64,6 @@
     "title.forgotUsername": "Forgot username?",
     "title.checkEmail": "Check your email",
     "title.changePassword": "Change password",
-    "title.cookieEnabled": "Cookies are required to login. Please enable cookies and try again.",
     "button.hidePassword": "Hide password",
     "button.showPassword": "Show password",
     "button.forgotPassword": "Forgot password?",
@@ -145,5 +144,6 @@
     "stale.warning": "The application has changed on the server and needs to be refreshed.",
     "stale.reload": "Click here to reload.",
     "placeholder.forgotPassword": "Enter email or phone",
-    "placeholder.forgotUsername": "Enter email or phone"
+    "placeholder.forgotUsername": "Enter email or phone",
+    "title.cookieEnabled": "Cookies are required to login. Please enable cookies and try again."
 }

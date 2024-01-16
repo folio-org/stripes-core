@@ -144,5 +144,6 @@
     "stale.warning": "应用程序在服务器上发生了变化，需要刷新。",
     "stale.reload": "单击此处重新加载。",
     "placeholder.forgotPassword": "输入电子邮件或电话",
-    "placeholder.forgotUsername": "输入电子邮件或电话"
+    "placeholder.forgotUsername": "输入电子邮件或电话",
+    "title.cookieEnabled": "Cookies are required to login. Please enable cookies and try again."
 }

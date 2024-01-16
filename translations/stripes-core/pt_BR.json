@@ -144,5 +144,6 @@
     "stale.warning": "O aplicativo foi alterado no servidor e precisa ser atualizado.",
     "stale.reload": "Clique aqui para recarregar.",
     "placeholder.forgotPassword": "Digite e-mail ou telefone",
-    "placeholder.forgotUsername": "Digite e-mail ou telefone"
+    "placeholder.forgotUsername": "Digite e-mail ou telefone",
+    "title.cookieEnabled": "Cookies are required to login. Please enable cookies and try again."
 }

@@ -144,5 +144,6 @@
     "stale.warning": "Aplikace se na serveru změnila a je třeba ji obnovit.",
     "stale.reload": "Klikněte zde pro opětovné načtení.",
     "placeholder.forgotPassword": "Zadejte e-mail nebo telefon",
-    "placeholder.forgotUsername": "Zadejte e-mail nebo telefon"
+    "placeholder.forgotUsername": "Zadejte e-mail nebo telefon",
+    "title.cookieEnabled": "Cookies are required to login. Please enable cookies and try again."
 }
