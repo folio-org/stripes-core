@@ -398,7 +398,7 @@ export function spreadUserWithPerms(userWithPerms) {
   };
 
   // remap permissions from [foo, bar, bat] to { foo: true, bar: true, ... }
-  const perms = userWithPerms?.permissions?.permissions.reduce((acc, i) => {
+  const perms = userWithPerms?.permissions?.permissions?.reduce((acc, i) => {
     acc[i.permissionName] = true;
     return acc;
   }, {});
