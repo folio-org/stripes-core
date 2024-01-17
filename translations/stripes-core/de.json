@@ -144,5 +144,6 @@
     "stale.warning": "Die Anwendung hat sich auf dem Server geändert und muss neu geladen werden.",
     "stale.reload": "Zum Neuladen hier klicken.",
     "placeholder.forgotPassword": "E-Mail oder Telefonnummer eingeben",
-    "placeholder.forgotUsername": "E-Mail oder Telefonnummer eingeben"
+    "placeholder.forgotUsername": "E-Mail oder Telefonnummer eingeben",
+    "title.cookieEnabled": "Cookies are required to login. Please enable cookies and try again."
 }
