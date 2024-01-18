@@ -241,11 +241,20 @@ class ProfileDropdown extends Component {
   }
 
   renderProfileTrigger = ({ getTriggerProps, open }) => {
-    const { intl } = this.props;
+    const { intl, stripes: { okapi } } = this.props;
+    const userData = this.getUserData();
+    const servicePointName = userData?.curServicePoint?.name;
+    const tenantName = userData?.tenants?.find(({ id }) => id === okapi.tenant)?.name;
 
     return (
       <NavButton
-        ariaLabel={intl.formatMessage({ id: 'stripes-core.mainnav.myProfileAriaLabel' })}
+        ariaLabel={intl.formatMessage(
+          { id: 'stripes-core.mainnav.myProfileAriaLabel' },
+          {
+            tenantName,
+            servicePointName,
+          }
+        )}
         selected={open}
         className={css.button}
         icon={this.getProfileImage()}

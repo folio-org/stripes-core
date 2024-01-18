@@ -41,6 +41,20 @@ class Login extends Component {
       onSubmit,
     } = this.props;
 
+    const cookieMessage = navigator.cookieEnabled ?
+      '' :
+      (
+        <Row center="xs">
+          <Col xs={6}>
+            <Headline
+              size="large"
+              tag="h3"
+            >
+              <FormattedMessage id="stripes-core.title.cookieEnabled" />
+            </Headline>
+          </Col>
+        </Row>);
+
     return (
       <Form
         onSubmit={onSubmit}
@@ -48,7 +62,7 @@ class Login extends Component {
         render={({ form, submitting, handleSubmit, submitSucceeded, values }) => {
           const { username } = values;
           const submissionStatus = submitting || submitSucceeded;
-          const buttonDisabled = submissionStatus || !(username);
+          const buttonDisabled = submissionStatus || !(username) || !(navigator.cookieEnabled);
           const buttonLabel = submissionStatus ? 'loggingIn' : 'login';
           return (
             <main>
@@ -82,6 +96,7 @@ class Login extends Component {
                           </Headline>
                         </Col>
                       </Row>
+                      { cookieMessage }
                       <div data-test-new-username-field>
                         <Row center="xs">
                           <Col xs={6}>
