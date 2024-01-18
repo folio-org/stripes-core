@@ -120,7 +120,7 @@
     "errors.password.keyboardSequence.invalid": "Heslo nesmí obsahovat pořadí klávesnice.",
     "errors.password.repeatingSymbols.invalid": "Heslo nesmí obsahovat stejný znak za sebou.",
     "errors.password.whiteSpace.invalid": "Heslo nesmí obsahovat mezery.",
-    "mainnav.myProfileAriaLabel": "Můj profil",
+    "mainnav.myProfileAriaLabel": "{tenantName} {servicePointName} profil",
     "mainnav.skipMainNavigation": "Přeskočit hlavní navigaci",
     "errors.user.timeout": "Vaše relace vypršela. Pro obnovení relace se prosím znovu přihlaste.",
     "errors.password.consecutiveWhitespaces.invalid": "Heslo nesmí obsahovat po sobě jdoucí prázdné znaky.",
