@@ -107,7 +107,8 @@ class CreateResetPasswordControl extends Component {
       },
     } = stripes;
 
-    const path = `${url}/bl-users/password-reset/${isValidToken ? 'reset' : 'validate'}`;
+    const interfacePath = stripes.hasInterface('users-keycloak') ? 'users-keycloak' : 'bl-users';
+    const path = `${url}/${interfacePath}/password-reset/${isValidToken ? 'reset' : 'validate'}`;
 
     fetch(path, {
       method: 'POST',
