@@ -84,7 +84,7 @@ button.submitButton {
   }
 }
 
-@media (max-height: 440px) {
+@media (height <= 440px) {
   .container {
     min-height: 330px;
   }
