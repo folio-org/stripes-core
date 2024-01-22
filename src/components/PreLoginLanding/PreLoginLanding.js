@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Button, Select, Col, Row } from '@folio/stripes-components';
 import { useIntl } from 'react-intl';
 import PropTypes from 'prop-types';
@@ -21,8 +21,11 @@ function PreLoginLanding({ onSelectTenant }) {
     return '';
   };
 
+  const submitButtonRef = useRef({ disabled: true });
+
   const handleChangeTenant = (e) => {
     const tenantName = e.target.value;
+    submitButtonRef.current.disabled = !tenantName;
     if (tenantName === '') {
       onSelectTenant('', '');
       return;
@@ -50,7 +53,8 @@ function PreLoginLanding({ onSelectTenant }) {
               />
               <Button
                 buttonClass={styles.submitButton}
-                disabled={!okapi.tenant}
+                disabled={submitButtonRef.current.disabled}
+                ref={submitButtonRef}
                 onClick={() => window.location.assign(getLoginUrl())}
                 buttonStyle="primary"
                 fullWidth
