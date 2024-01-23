@@ -2,7 +2,7 @@
 *.swp
 *.swo
 node_modules
-/.vscode
+.vscode/
 !test/webpack/node_modules/@folio/app2/node_modules/
 !test/webpack/node_modules/
 npm-debug.log
