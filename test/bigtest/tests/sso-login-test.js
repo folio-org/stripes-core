@@ -14,7 +14,7 @@ import SSOLandingInteractor from '../interactors/SSOLanding';
 // derivatives). The two types don't play nice together because of they way
 // the do (or don't) clean up their mount points after running.
 //
-describe.only('Login via SSO', () => {
+describe('Login via SSO', () => {
   describe('SSO redirect', () => {
     const sso = new SSOLandingInteractor();
     setupApplication({

@@ -28,4 +28,4 @@ export default (server) => {
       'permissions': ['configuration.entries.collection.get']
     }
   });
-}
+};
