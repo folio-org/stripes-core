@@ -34,7 +34,6 @@ const SSOLanding = () => {
     }
   }, [token, store]);
 
-  console.log('SSOLanding...');
   if (!token) {
     return (
       <div data-test-sso-error>
@@ -43,7 +42,6 @@ const SSOLanding = () => {
     );
   }
 
-  console.log('displaying message...');
   return (
     <div data-test-sso-success>
       <p>
