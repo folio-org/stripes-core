@@ -22,7 +22,7 @@ describe('Login via SSO', () => {
     });
 
     describe('Renders error without token', () => {
-      beforeEach(async function () {
+      beforeEach(function () {
         this.visit('/sso-landing');
       });
 
@@ -44,8 +44,7 @@ describe('Login via SSO', () => {
         }
       });
 
-      beforeEach(async function () {
-        await localforage.clear();
+      beforeEach(function () {
         this.visit('/sso-landing?ssoToken=c0ffee');
       });
 
