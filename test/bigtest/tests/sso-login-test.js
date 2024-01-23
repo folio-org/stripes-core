@@ -40,7 +40,7 @@ describe('Login via SSO', () => {
         scenarios: ['userWithPerms'],
         disableAuth: false,
         mirageOptions: {
-          timing: 20
+          timing: 100
         }
       });
 
