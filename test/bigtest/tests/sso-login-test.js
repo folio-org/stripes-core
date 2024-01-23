@@ -1,7 +1,7 @@
 import React from 'react';
 import { expect } from 'chai';
 import { beforeEach, it, describe } from '@bigtest/mocha';
-
+import localforage from 'localforage';
 import setupApplication from '../helpers/setup-core-application';
 import SSOLandingInteractor from '../interactors/SSOLanding';
 
@@ -14,14 +14,14 @@ import SSOLandingInteractor from '../interactors/SSOLanding';
 // derivatives). The two types don't play nice together because of they way
 // the do (or don't) clean up their mount points after running.
 //
-describe('Login via SSO', () => {
+describe.only('Login via SSO', () => {
   describe('SSO redirect', () => {
     const sso = new SSOLandingInteractor();
+    setupApplication({
+      disableAuth: false,
+    });
 
     describe('Renders error without token', () => {
-      setupApplication({
-        disableAuth: false,
-      });
       beforeEach(async function () {
         this.visit('/sso-landing');
       });
@@ -37,10 +37,15 @@ describe('Login via SSO', () => {
 
     describe('Reads token in params', () => {
       setupApplication({
+        scenarios: ['userWithPerms'],
         disableAuth: false,
+        mirageOptions: {
+          timing: 20
+        }
       });
 
       beforeEach(async function () {
+        await localforage.clear();
         this.visit('/sso-landing?ssoToken=c0ffee');
       });
 
