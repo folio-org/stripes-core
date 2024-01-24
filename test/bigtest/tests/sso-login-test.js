@@ -1,5 +1,6 @@
 import { expect } from 'chai';
-import { beforeEach, it, describe } from '@bigtest/mocha';
+import { beforeEach, afterEach, it, describe } from '@bigtest/mocha';
+import localforage from 'localforage';
 import { when } from '@bigtest/convergence';
 import setupApplication from '../helpers/setup-core-application';
 import SSOLandingInteractor from '../interactors/SSOLanding';
@@ -16,37 +17,20 @@ import SSOLandingInteractor from '../interactors/SSOLanding';
 describe('Login via SSO', () => {
   describe('SSO redirect', () => {
     const sso = new SSOLandingInteractor();
-    describe('Renders error without token', () => {
-      setupApplication({
-        disableAuth: false,
-      });
-
-      beforeEach(async function () {
-        this.visit('/sso-landing');
-        await when(() => document.getElementById('sso-landing'));
-      });
-
-      it('Shows error message', () => {
-        expect(sso.isError).to.be.true;
-      });
-
-      it('Does not show token message', () => {
-        expect(sso.isValid).to.be.false;
-      });
-    });
 
     describe('Reads token in params', () => {
       setupApplication({
         scenarios: ['userWithPerms'],
         disableAuth: false,
-        mirageOptions: {
-          timing: 100
-        }
       });
 
       beforeEach(async function () {
         this.visit('/sso-landing?ssoToken=c0ffee');
         await when(() => document.getElementById('sso-landing'));
+      });
+
+      afterEach(async () => {
+        await localforage.clear();
       });
 
       it('Shows token message', () => {
@@ -65,8 +49,31 @@ describe('Login via SSO', () => {
         await when(() => document.getElementById('sso-landing'));
       });
 
+      afterEach(async () => {
+        await localforage.clear();
+      });
+
       it('Shows token message', () => {
         expect(sso.isValid).to.be.true;
+      });
+    });
+
+    describe('Renders error without token', () => {
+      setupApplication({
+        disableAuth: false,
+      });
+
+      beforeEach(async function () {
+        this.visit('/sso-landing');
+        await when(() => document.getElementById('sso-landing'));
+      });
+
+      it('Shows error message', () => {
+        expect(sso.isError).to.be.true;
+      });
+
+      it('Does not show token message', () => {
+        expect(sso.isValid).to.be.false;
       });
     });
   });
