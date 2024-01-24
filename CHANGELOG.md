@@ -15,6 +15,7 @@
 * Add arial-label for `ProfileDropdown.js`. Refs STCOR-753.
 * Upgrade, configure stylelint. Refs STCOR-799.
 * Move `localforage.clear()` to `afterEach` for test suite. Refs STCOR-801.
+* Fix problem that user see error "You don't have permission to view this app/record" when have all necessary permission. Refs STCOR-800.
 
 ## [10.0.0](https://github.com/folio-org/stripes-core/tree/v10.0.0) (2023-10-11)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v9.0.0...v10.0.0)
