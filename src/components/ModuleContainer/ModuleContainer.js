@@ -7,6 +7,7 @@ const propTypes = {
 };
 
 function ModuleContainer(props) {
+  console.log('rendering module container');
   return (
     <main className={style.moduleContainer} id="ModuleContainer">{props.children}</main>
   );

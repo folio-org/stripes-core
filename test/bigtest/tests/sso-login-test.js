@@ -1,8 +1,6 @@
-import React from 'react';
 import { expect } from 'chai';
 import { beforeEach, it, describe } from '@bigtest/mocha';
 import { when } from '@bigtest/convergence';
-import localforage from 'localforage';
 import setupApplication from '../helpers/setup-core-application';
 import SSOLandingInteractor from '../interactors/SSOLanding';
 
@@ -18,11 +16,11 @@ import SSOLandingInteractor from '../interactors/SSOLanding';
 describe('Login via SSO', () => {
   describe('SSO redirect', () => {
     const sso = new SSOLandingInteractor();
-    setupApplication({
-      disableAuth: false,
-    });
-
     describe('Renders error without token', () => {
+      setupApplication({
+        disableAuth: false,
+      });
+
       beforeEach(async function () {
         this.visit('/sso-landing');
         await when(() => document.getElementById('sso-landing'));

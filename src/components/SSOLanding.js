@@ -35,6 +35,7 @@ const SSOLanding = () => {
   }, [token, store]);
 
   if (!token) {
+    console.log('rendering token error');
     return (
       <div data-test-sso-error id="sso-landing">
         No <code>ssoToken</code> cookie or query parameter
@@ -42,6 +43,7 @@ const SSOLanding = () => {
     );
   }
 
+  console.log('rendering token message');
   return (
     <div data-test-sso-success id="sso-landing">
       <p>
