@@ -1,6 +1,7 @@
 import React from 'react';
 import { expect } from 'chai';
 import { beforeEach, it, describe } from '@bigtest/mocha';
+import { when } from '@bigtest/convergence';
 import localforage from 'localforage';
 import setupApplication from '../helpers/setup-core-application';
 import SSOLandingInteractor from '../interactors/SSOLanding';
@@ -23,7 +24,8 @@ describe('Login via SSO', () => {
 
     describe('Renders error without token', () => {
       beforeEach(async function () {
-        await this.visit('/sso-landing');
+        this.visit('/sso-landing');
+        await when(() => document.getElementById('sso-landing'));
       });
 
       it('Shows error message', () => {
@@ -45,7 +47,8 @@ describe('Login via SSO', () => {
       });
 
       beforeEach(async function () {
-        await this.visit('/sso-landing?ssoToken=c0ffee');
+        this.visit('/sso-landing?ssoToken=c0ffee');
+        await when(() => document.getElementById('sso-landing'));
       });
 
       it('Shows token message', () => {
@@ -60,7 +63,8 @@ describe('Login via SSO', () => {
       });
 
       beforeEach(async function () {
-        await this.visit('/sso-landing');
+        this.visit('/sso-landing');
+        await when(() => document.getElementById('sso-landing'));
       });
 
       it('Shows token message', () => {

@@ -36,14 +36,14 @@ const SSOLanding = () => {
 
   if (!token) {
     return (
-      <div data-test-sso-error>
+      <div data-test-sso-error id="sso-landing">
         No <code>ssoToken</code> cookie or query parameter
       </div>
     );
   }
 
   return (
-    <div data-test-sso-success>
+    <div data-test-sso-success id="sso-landing">
       <p>
         Logged in with token <tt>{token}</tt> from {getParams()?.ssoToken ? 'param' : 'cookie'}.
       </p>
