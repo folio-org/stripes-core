@@ -22,8 +22,8 @@ describe('Login via SSO', () => {
     });
 
     describe('Renders error without token', () => {
-      beforeEach(function () {
-        this.visit('/sso-landing');
+      beforeEach(async function () {
+        await this.visit('/sso-landing');
       });
 
       it('Shows error message', () => {
@@ -44,8 +44,8 @@ describe('Login via SSO', () => {
         }
       });
 
-      beforeEach(function () {
-        this.visit('/sso-landing?ssoToken=c0ffee');
+      beforeEach(async function () {
+        await this.visit('/sso-landing?ssoToken=c0ffee');
       });
 
       it('Shows token message', () => {
@@ -60,7 +60,7 @@ describe('Login via SSO', () => {
       });
 
       beforeEach(async function () {
-        this.visit('/sso-landing');
+        await this.visit('/sso-landing');
       });
 
       it('Shows token message', () => {
