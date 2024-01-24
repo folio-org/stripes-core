@@ -1,7 +1,6 @@
-import React from 'react';
 import { expect } from 'chai';
-import { beforeEach, it, describe } from '@bigtest/mocha';
-
+import { beforeEach, afterEach, it, describe } from '@bigtest/mocha';
+import localforage from 'localforage';
 import setupApplication from '../helpers/setup-core-application';
 import SSOLandingInteractor from '../interactors/SSOLanding';
 
@@ -18,30 +17,17 @@ describe('Login via SSO', () => {
   describe('SSO redirect', () => {
     const sso = new SSOLandingInteractor();
 
-    describe('Renders error without token', () => {
-      setupApplication({
-        disableAuth: false,
-      });
-      beforeEach(async function () {
-        this.visit('/sso-landing');
-      });
-
-      it('Shows error message', () => {
-        expect(sso.isError).to.be.true;
-      });
-
-      it('Does not show token message', () => {
-        expect(sso.isValid).to.be.false;
-      });
-    });
-
     describe('Reads token in params', () => {
       setupApplication({
         disableAuth: false,
       });
 
-      beforeEach(async function () {
+      beforeEach(function () {
         this.visit('/sso-landing?ssoToken=c0ffee');
+      });
+
+      afterEach(async () => {
+        await localforage.clear();
       });
 
       it('Shows token message', () => {
@@ -55,12 +41,34 @@ describe('Login via SSO', () => {
         cookies: { ssoToken: 'c0ffee-c0ffee' },
       });
 
-      beforeEach(async function () {
+      beforeEach(function () {
         this.visit('/sso-landing');
+      });
+
+      afterEach(async () => {
+        await localforage.clear();
       });
 
       it('Shows token message', () => {
         expect(sso.isValid).to.be.true;
+      });
+    });
+
+    describe('Renders error without token', () => {
+      setupApplication({
+        disableAuth: false,
+      });
+
+      beforeEach(function () {
+        this.visit('/sso-landing');
+      });
+
+      it('Shows error message', () => {
+        expect(sso.isError).to.be.true;
+      });
+
+      it('Does not show token message', () => {
+        expect(sso.isValid).to.be.false;
       });
     });
   });
