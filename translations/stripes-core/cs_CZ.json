@@ -145,5 +145,5 @@
     "stale.reload": "Klikněte zde pro opětovné načtení.",
     "placeholder.forgotPassword": "Zadejte e-mail nebo telefon",
     "placeholder.forgotUsername": "Zadejte e-mail nebo telefon",
-    "title.cookieEnabled": "Cookies are required to login. Please enable cookies and try again."
+    "title.cookieEnabled": "Pro přihlášení jsou vyžadovány soubory cookie. Povolte soubory cookie a zkuste to znovu prosím."
 }
