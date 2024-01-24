@@ -68,6 +68,11 @@ export default function configure() {
       },
       'departments': [
       ]
+    },
+    'permissions' : {
+      permissions: [
+        'configuration.entries.collection.get'
+      ]
     }
   });
 
