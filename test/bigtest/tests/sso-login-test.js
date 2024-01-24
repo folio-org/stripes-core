@@ -1,7 +1,6 @@
 import { expect } from 'chai';
 import { beforeEach, afterEach, it, describe } from '@bigtest/mocha';
 import localforage from 'localforage';
-import { when } from '@bigtest/convergence';
 import setupApplication from '../helpers/setup-core-application';
 import SSOLandingInteractor from '../interactors/SSOLanding';
 
@@ -26,7 +25,6 @@ describe('Login via SSO', () => {
 
       beforeEach(async function () {
         this.visit('/sso-landing?ssoToken=c0ffee');
-        await when(() => document.getElementById('sso-landing'));
       });
 
       afterEach(async () => {
@@ -46,7 +44,6 @@ describe('Login via SSO', () => {
 
       beforeEach(async function () {
         this.visit('/sso-landing');
-        await when(() => document.getElementById('sso-landing'));
       });
 
       afterEach(async () => {
@@ -65,7 +62,6 @@ describe('Login via SSO', () => {
 
       beforeEach(async function () {
         this.visit('/sso-landing');
-        await when(() => document.getElementById('sso-landing'));
       });
 
       it('Shows error message', () => {
