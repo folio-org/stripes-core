@@ -21,18 +21,21 @@ describe('Login via SSO', () => {
     describe('Reads token in params', () => {
       setupApplication({
         disableAuth: false,
+        mirageOptions: {
+          timing: 1000
+        }
       });
 
       beforeEach(async function () {
         this.visit('/sso-landing?ssoToken=c0ffee');
-        await when(() => document.getElementById('sso-screen'));
       });
 
       afterEach(async () => {
         await localforage.clear();
       });
 
-      it('Shows token message', () => {
+      it.only('Shows token message', () => {
+        console.log('checking for sso message');
         expect(sso.isValid).to.be.true;
       });
     });
@@ -44,8 +47,9 @@ describe('Login via SSO', () => {
       });
 
       beforeEach(async function () {
+        await localforage.clear();
         this.visit('/sso-landing');
-        await when(() => document.getElementById('sso-screen'));
+        await when(() => (document.getElementById('sso-screen') !== null));
       });
 
       afterEach(async () => {
@@ -63,8 +67,9 @@ describe('Login via SSO', () => {
       });
 
       beforeEach(async function () {
+        await localforage.clear();
         this.visit('/sso-landing');
-        await when(() => document.getElementById('sso-screen'));
+        await when(() => (document.getElementById('sso-screen') !== null));
       });
 
       afterEach(async () => {
