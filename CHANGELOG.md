@@ -13,6 +13,7 @@
 * Opt-in: handle access-control via cookies. Refs STCOR-671.
 * Opt-in: disable login when cookies are disabled. Refs STCOR-762.
 * Add arial-label for `ProfileDropdown.js`. Refs STCOR-753.
+* Move `localforage.clear()` to `afterEach` for test suite. Refs STCOR-801.
 * Avoid calling `map` on `undefined` via optional-chaining. Refs STCOR-793.
 
 ## [10.0.0](https://github.com/folio-org/stripes-core/tree/v10.0.0) (2023-10-11)
