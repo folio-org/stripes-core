@@ -1,6 +1,5 @@
 import { expect } from 'chai';
-import { beforeEach, afterEach, it, describe } from '@bigtest/mocha';
-import localforage from 'localforage';
+import { beforeEach, it, describe } from '@bigtest/mocha';
 import setupApplication from '../helpers/setup-core-application';
 import SSOLandingInteractor from '../interactors/SSOLanding';
 
