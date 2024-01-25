@@ -77,6 +77,7 @@ class RootWithIntl extends React.Component {
     const connect = connectFor('@folio/core', this.props.stripes.epics, this.props.stripes.logger);
     const stripes = this.props.stripes.clone({ connect });
 
+    console.log(`isAuthenticated: ${isAuthenticated}, token: ${token}`);
     return (
       <StripesContext.Provider value={stripes}>
         <CalloutContext.Provider value={this.state.callout}>
