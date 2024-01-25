@@ -1,4 +1,4 @@
-import { beforeEach } from '@bigtest/mocha';
+import { beforeEach, afterEach } from '@bigtest/mocha';
 import localforage from 'localforage';
 
 import { reset } from '@folio/stripes-connect';
