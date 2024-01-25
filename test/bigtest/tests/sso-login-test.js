@@ -1,6 +1,7 @@
 import { expect } from 'chai';
 import { beforeEach, afterEach, it, describe } from '@bigtest/mocha';
 import localforage from 'localforage';
+import { when } from '@bigtest/convergence';
 import setupApplication from '../helpers/setup-core-application';
 import SSOLandingInteractor from '../interactors/SSOLanding';
 
@@ -22,8 +23,9 @@ describe('Login via SSO', () => {
         disableAuth: false,
       });
 
-      beforeEach(function () {
+      beforeEach(async function () {
         this.visit('/sso-landing?ssoToken=c0ffee');
+        await when(() => document.getElementById('sso-screen'));
       });
 
       afterEach(async () => {
@@ -41,8 +43,9 @@ describe('Login via SSO', () => {
         cookies: { ssoToken: 'c0ffee-c0ffee' },
       });
 
-      beforeEach(function () {
+      beforeEach(async function () {
         this.visit('/sso-landing');
+        await when(() => document.getElementById('sso-screen'));
       });
 
       afterEach(async () => {
@@ -59,8 +62,13 @@ describe('Login via SSO', () => {
         disableAuth: false,
       });
 
-      beforeEach(function () {
+      beforeEach(async function () {
         this.visit('/sso-landing');
+        await when(() => document.getElementById('sso-screen'));
+      });
+
+      afterEach(async () => {
+        await localforage.clear();
       });
 
       it('Shows error message', () => {
