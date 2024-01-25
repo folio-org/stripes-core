@@ -26,10 +26,6 @@ describe('Login via SSO', () => {
         this.visit('/sso-landing?ssoToken=c0ffee');
       });
 
-      afterEach(async () => {
-        await localforage.clear();
-      });
-
       it('Shows token message', () => {
         expect(sso.isValid).to.be.true;
       });
@@ -43,10 +39,6 @@ describe('Login via SSO', () => {
 
       beforeEach(function () {
         this.visit('/sso-landing');
-      });
-
-      afterEach(async () => {
-        await localforage.clear();
       });
 
       it('Shows token message', () => {
