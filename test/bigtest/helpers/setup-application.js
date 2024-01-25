@@ -95,7 +95,6 @@ export default function setupApplication({
         clearModules();
         clearCookies(cookies);
         reset();
-        localforage.clear();
         this.server?.shutdown();
         this.server = null;
         this.app = null;
@@ -107,5 +106,9 @@ export default function setupApplication({
       visit: { value: visit },
       location: { get: location },
     });
+  });
+
+  afterEach(async () => {
+    await localforage.clear();
   });
 }
