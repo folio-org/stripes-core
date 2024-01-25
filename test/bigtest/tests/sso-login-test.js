@@ -1,5 +1,6 @@
 import { expect } from 'chai';
-import { beforeEach, it, describe } from '@bigtest/mocha';
+import { beforeEach, afterEach, it, describe } from '@bigtest/mocha';
+import localforage from 'localforage';
 import setupApplication from '../helpers/setup-core-application';
 import SSOLandingInteractor from '../interactors/SSOLanding';
 
@@ -25,6 +26,10 @@ describe('Login via SSO', () => {
         this.visit('/sso-landing?ssoToken=c0ffee');
       });
 
+      afterEach(async () => {
+        await localforage.clear();
+      });
+
       it('Shows token message', () => {
         expect(sso.isValid).to.be.true;
       });
@@ -38,6 +43,10 @@ describe('Login via SSO', () => {
 
       beforeEach(function () {
         this.visit('/sso-landing');
+      });
+
+      afterEach(async () => {
+        await localforage.clear();
       });
 
       it('Shows token message', () => {
