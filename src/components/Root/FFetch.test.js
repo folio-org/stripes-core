@@ -80,8 +80,8 @@ describe('FFetch class', () => {
     });
   });
 
-  describe('Calling an okapi fetch with missing token...', () => {
-    it('triggers rtr...calls fetch 3 times, failed call, token call, successful call', async () => {
+  describe('Handles 4xx responses', () => {
+    it('400 token missing: triggers rtr...calls fetch 3 times, failed call, token call, successful call', async () => {
       mockFetch.mockResolvedValue('success')
         .mockResolvedValueOnce(new Response(
           'Token missing',
@@ -101,6 +101,80 @@ describe('FFetch class', () => {
       expect(mockFetch.mock.calls).toHaveLength(3);
       expect(mockFetch.mock.calls[1][0]).toEqual('okapiUrl/authn/refresh');
       expect(response).toEqual('success');
+    });
+
+    it('400 NOT token missing: bubbles failure up to the application', async () => {
+      mockFetch.mockResolvedValue(
+        new Response(
+          'Tolkien missing, send Frodo?',
+          {
+            status: 400,
+            headers: {
+              'content-type': 'text/plain',
+            },
+          }
+        ));
+      const testFfetch = new FFetch({ logger: { log } });
+      const response = await global.fetch('okapiUrl', { testOption: 'test' });
+      expect(mockFetch.mock.calls).toHaveLength(1);
+      expect(response.status).toEqual(400);
+    });
+
+    it('401 UnauthorizedException: triggers rtr...calls fetch 3 times, failed call, token call, successful call', async () => {
+      mockFetch.mockResolvedValue('success')
+        .mockResolvedValueOnce(new Response(
+          JSON.stringify({
+            'errors': [
+              {
+                'type': 'UnauthorizedException',
+                'code': 'authorization_error',
+                'message': 'Unauthorized'
+              }
+            ],
+            'total_records': 1
+          }),
+          {
+            status: 401,
+            headers: {
+              'content-type': 'application/json',
+            },
+          }
+        ))
+        .mockResolvedValueOnce(new Response(JSON.stringify({
+          accessTokenExpiration: new Date().getTime() + 1000,
+          refreshTokenExpiration: new Date().getTime() + 2000,
+        }), { ok: true }));
+      const testFfetch = new FFetch({ logger: { log } });
+      const response = await global.fetch('okapiUrl', { testOption: 'test' });
+      expect(mockFetch.mock.calls).toHaveLength(3);
+      expect(mockFetch.mock.calls[1][0]).toEqual('okapiUrl/authn/refresh');
+      expect(response).toEqual('success');
+    });
+
+    it('401 NOT UnauthorizedException: bubbles failure up to the application', async () => {
+      mockFetch.mockResolvedValue(
+        new Response(
+          JSON.stringify({
+            'errors': [
+              {
+                'type': 'AuthorizedException',
+                'code': 'chuck_brown',
+                'message': 'Gong!'
+              }
+            ],
+            'total_records': 1
+          }),
+          {
+            status: 401,
+            headers: {
+              'content-type': 'application/json',
+            },
+          }
+        ));
+      const testFfetch = new FFetch({ logger: { log } });
+      const response = (await global.fetch('okapiUrl', { testOption: 'test' }));
+      expect(mockFetch.mock.calls).toHaveLength(1);
+      expect(response.status).toEqual(401);
     });
   });
 

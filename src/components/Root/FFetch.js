@@ -164,9 +164,32 @@ export class FFetch {
   passThroughWithAT = (resource, options) => {
     return this.nativeFetch.apply(global, [resource, options && { ...options, ...OKAPI_FETCH_OPTIONS }])
       .then(response => {
-        // if the request failed due to a missing token, attempt RTR (which
-        // will then replay the original fetch if it succeeds), or die softly
-        // if it fails. return any other response as-is.
+        // certain 4xx responses indicate RTR problems (that need to be
+        // handled here) rather than application-specific problems (that need
+        // to bubble up to the applications themselves). Duplicate logic here
+        // is due to needing to parse different kinds of responses. Maybe it's
+        // JSON, maybe text. Srsly, Okapi??? :|
+        //
+        // 401/UnauthorizedException: from keycloak when the AT is missing
+        // 400/Token missing: from Okapi when the AT is missing
+        if (response.status === 401) {
+          const res = response.clone();
+          return res.json()
+            .then(message => {
+              if (Array.isArray(message.errors) && message.errors.length === 1) {
+                const error = message.errors[0];
+                if (error.type === 'UnauthorizedException' && error.code === 'authorization_error') {
+                  this.logger.log('rtr', '   (whoops, invalid AT; retrying)');
+                  return this.passThroughWithRT(resource, options);
+                }
+              }
+
+              // yes, it was a 401 but not a Keycloak 401:
+              // hand it back to the application to handle
+              return response;
+            });
+        }
+
         if (response.status === 400 && response.headers.get('content-type') === 'text/plain') {
           const res = response.clone();
           return res.text()
@@ -176,8 +199,8 @@ export class FFetch {
                 return this.passThroughWithRT(resource, options);
               }
 
-              // yes, we got a 4xx, but not an RTR 4xx. leave that to the
-              // original application to handle. it's not our problem.
+              // yes, it was a 400 but not an Okapi 400:
+              // hand it back to the application to handle
               return response;
             });
         }
