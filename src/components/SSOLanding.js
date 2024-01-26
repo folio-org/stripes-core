@@ -30,11 +30,10 @@ const SSOLanding = () => {
 
   useEffect(() => {
     if (token) {
-      setTimeout(() => requestUserWithPermsDeb(okapi.url, store, okapi.tenant, token), 1000);
+      requestUserWithPermsDeb(okapi.url, store, okapi.tenant, token);
     }
   }, [token, store]);
 
-  console.log('rendering ssolanding');
   if (!token) {
     return (
       <div data-test-sso-error id="sso-screen">
