@@ -16,6 +16,7 @@
 * Upgrade, configure stylelint. Refs STCOR-799.
 * Move `localforage.clear()` to `afterEach` for test suite. Refs STCOR-801.
 * Show app/record when you have permission for that. Refs STCOR-800.
+* Convert `<SSOLanding />` tests to jest. STCOR-798.
 
 ## [10.0.0](https://github.com/folio-org/stripes-core/tree/v10.0.0) (2023-10-11)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v9.0.0...v10.0.0)
