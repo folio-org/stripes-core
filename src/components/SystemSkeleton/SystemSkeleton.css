@@ -5,7 +5,7 @@
 @import "@folio/stripes-components/lib/variables";
 
 :root {
-  --skeleton-bg: rgba(255, 255, 255, 0.08);
+  --skeleton-bg: rgba(255 255 255 / 8%);
 }
 
 .skeleton {
@@ -65,8 +65,8 @@
 .skeletonHeader {
   padding: 0 8px;
   height: 56px;
-  background-color: rgba(0, 0, 0, 0.8);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.9);
+  background-color: rgba(0 0 0 / 80%);
+  border-bottom: 1px solid rgba(0 0 0 / 90%);
   justify-content: space-between;
 }
 

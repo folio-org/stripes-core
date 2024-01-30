@@ -12,7 +12,7 @@
   }
 }
 
-@media (max-height: 440px) {
+@media (height <= 440px) {
   .logo {
     margin-top: 0;
   }
@@ -38,7 +38,7 @@
   }
 }
 
-@media only screen and (min-width: 1300px) {
+@media only screen and (width >= 1300px) {
   .logo {
     margin-bottom: 20px;
   }
