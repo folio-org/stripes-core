@@ -43,29 +43,23 @@ describe('SSOLanding', () => {
     jest.resetAllMocks();
   });
 
-  describe('handles token within query parameters', () => {
-    it('processes login', () => {
-      useLocation.mockImplementation(() => ({ search: 'ssoToken=c0ffee' }));
-      render(<SSOLanding />);
-      expect(requestUserWithPerms.mock.calls).toHaveLength(1);
-      expect(screen.getByText(/Logged in with token.*param\.$/)).toBeInTheDocument();
-    });
+  it('handles token within query parameters', () => {
+    useLocation.mockImplementation(() => ({ search: 'ssoToken=c0ffee' }));
+    render(<SSOLanding />);
+    expect(requestUserWithPerms.mock.calls).toHaveLength(1);
+    expect(screen.getByText(/Logged in with token.*param\.$/)).toBeInTheDocument();
   });
 
-  describe('handles token within a cookie', () => {
-    it('processes login', () => {
-      useCookies.mockImplementation(() => ([{ ssoToken: 'c0ffee-c0ffee' }]));
-      render(<SSOLanding />);
-      expect(requestUserWithPerms.mock.calls).toHaveLength(1);
-      expect(screen.getByText(/Logged in with token.*cookie\.$/)).toBeInTheDocument();
-    });
+  it('handles token within a cookie', () => {
+    useCookies.mockImplementation(() => ([{ ssoToken: 'c0ffee-c0ffee' }]));
+    render(<SSOLanding />);
+    expect(requestUserWithPerms.mock.calls).toHaveLength(1);
+    expect(screen.getByText(/Logged in with token.*cookie\.$/)).toBeInTheDocument();
   });
 
-  describe('displays error with no token.', () => {
-    it('processes login', () => {
-      render(<SSOLanding />);
-      expect(requestUserWithPerms.mock.calls).toHaveLength(0);
-      expect(screen.getByText('No cookie or query parameter')).toBeInTheDocument();
-    });
+  it('displays error with no token.', () => {
+    render(<SSOLanding />);
+    expect(requestUserWithPerms.mock.calls).toHaveLength(0);
+    expect(screen.getByText('No cookie or query parameter')).toBeInTheDocument();
   });
 });
