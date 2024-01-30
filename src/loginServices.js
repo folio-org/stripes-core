@@ -397,9 +397,11 @@ export function spreadUserWithPerms(userWithPerms) {
     ...userWithPerms?.user?.personal,
   };
 
-  // remap data's array of permission-names to set with
-  // permission-names for keys and `true` for values
-  const perms = Object.assign({}, ...userWithPerms?.permissions?.permissions.map(p => ({ [p.permissionName]: true })));
+  // remap permissions from [foo, bar, bat] to { foo: true, bar: true, ... }
+  const perms = userWithPerms?.permissions?.permissions?.reduce((acc, i) => {
+    acc[i.permissionName] = true;
+    return acc;
+  }, {});
 
   return { user, perms };
 }
