@@ -44,6 +44,7 @@
 * Add `idName` and `limit` as passable props to `useChunkedCQLFetch`. Refs STCOR-821.
 * Check for valid token before rotating during XHR send. Refs STCOR-817.
 * Remove `autoComplete` from `<ForgotPassword>`, `<ForgotUsername>` fields. Refs STCOR-742.
+* Use keycloak URLs in place of users-bl for tenant-switch. Refs US1153537.
 
 ## [10.0.3](https://github.com/folio-org/stripes-core/tree/v10.0.3) (2023-11-10)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.0.2...v10.0.3)
@@ -60,6 +61,8 @@
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.0.0...v10.0.1)
 
 * Export `validateUser`. Refs STCOR-749.
+* Opt-in: handle access-control via cookies. Refs STCOR-671.
+* Opt-in: disable login when cookies are disabled. Refs STCOR-762.
 
 ## [10.0.0](https://github.com/folio-org/stripes-core/tree/v10.0.0) (2023-10-11)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v9.0.0...v10.0.0)
