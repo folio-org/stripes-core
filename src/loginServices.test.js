@@ -222,7 +222,7 @@ describe('processOkapiSession', () => {
 
     mockFetchSuccess();
 
-    await processOkapiSession(store, 'tenant', resp, 'token');
+    await processOkapiSession(store, 'tenant', resp);
     expect(store.dispatch).toHaveBeenCalledWith(setAuthError(null));
     expect(store.dispatch).toHaveBeenCalledWith(setOkapiReady());
 
@@ -239,7 +239,7 @@ describe('processOkapiSession', () => {
       }
     };
 
-    await processOkapiSession(store, 'tenant', resp, 'token');
+    await processOkapiSession(store, 'tenant', resp);
 
     expect(store.dispatch).toHaveBeenCalledWith(setOkapiReady());
     expect(store.dispatch).toHaveBeenCalledWith(setAuthError([defaultErrors.DEFAULT_LOGIN_CLIENT_ERROR]));
