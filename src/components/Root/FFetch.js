@@ -100,6 +100,7 @@ export class FFetch {
         '/bl-users/login-with-expiry',
         '/bl-users/password-reset',
         '/saml/check',
+        '/authn/token',
       ];
 
       this.logger.log('rtr', `AT invalid for ${resource}`);
