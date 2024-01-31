@@ -298,8 +298,8 @@ export function getUserLocale(okapiUrl, store, tenant, userId) {
  */
 export function getPlugins(okapiUrl, store, tenant) {
   return fetch(`${okapiUrl}/configurations/entries?query=(module==PLUGINS)`, {
-    headers: getHeaders(tenant, store.getState().okapi.token),
     credentials: 'include',
+    headers: getHeaders(tenant, store.getState().okapi.token),
     mode: 'cors',
   })
     .then((response) => {
@@ -391,7 +391,7 @@ function loadResources(store, tenant, userId) {
 
 /**
  * spreadUserWithPerms
- * return an object { user, perms } based on response from bl-users/self.
+ * return an object { user, perms } based on response from .../_self.
  *
  * @param {object} userWithPerms
  *
@@ -515,9 +515,9 @@ export async function logout(okapiUrl, store) {
  * Dispatch the session object, then return a Promise that fetches
  * and dispatches tenant resources.
  *
- * @param {object} store
- * @param {string} tenant
- * @param {string} token
+ * @param {object} store redux store
+ * @param {string} tenant tenant name
+ * @param {string} token access token [deprecated; prefer folioAccessToken cookie]
  * @param {*} data
  *
  * @returns {Promise}
@@ -536,7 +536,7 @@ export function createOkapiSession(store, tenant, token, data) {
 
   store.dispatch(setCurrentPerms(perms));
 
-  // if we can't parse tokenExpiration data, e.g. because data comes from `/bl-users/_self`
+  // if we can't parse tokenExpiration data, e.g. because data comes from `.../_self`
   // which doesn't provide it, then set an invalid AT value and a near-future (+10 minutes) RT value.
   // the invalid AT will prompt an RTR cycle which will either give us new AT/RT values
   // (if the RT was valid) or throw an RTR_ERROR (if the RT was not valid).
@@ -655,7 +655,7 @@ export function handleLoginError(dispatch, resp) {
 /**
  * processOkapiSession
  * create a new okapi session with the response from either a username/password
- * authentication request or a bl-users/_self request.
+ * authentication request or a .../_self request.
  * response body is shaped like
  * {
     'access_token': 'SOME_STRING',
@@ -695,7 +695,7 @@ export function processOkapiSession(store, tenant, resp, ssoToken) {
 
 /**
  * validateUser
- * return a promise that fetches from bl-users/_self.
+ * return a promise that fetches from .../_self.
  * if successful, dispatch the result to create a session
  * if not, clear the session and token.
  *
@@ -708,7 +708,9 @@ export function processOkapiSession(store, tenant, resp, ssoToken) {
  */
 export function validateUser(okapiUrl, store, tenant, session) {
   const { token, user, perms, tenant: sessionTenant = tenant } = session;
-  return fetch(`${okapiUrl}/bl-users/_self`, {
+  const usersPath = okapi.authnUrl ? 'users-keycloak' : 'bl-users';
+
+  return fetch(`${okapiUrl}/${usersPath}/_self`, {
     headers: getHeaders(sessionTenant, token),
     credentials: 'include',
     mode: 'cors',
@@ -737,8 +739,7 @@ export function validateUser(okapiUrl, store, tenant, session) {
           token,
           tokenExpiration,
         }));
-
-        return loadResources(okapiUrl, store, sessionTenant, user.id);
+        return loadResources(store, sessionTenant, user.id);
       });
     } else {
       store.dispatch(clearCurrentUser());

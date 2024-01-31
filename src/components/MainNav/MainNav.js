@@ -116,6 +116,14 @@ class MainNav extends Component {
     });
   }
 
+  // Return the user to the login screen, but after logging in they will return to their previous activity.
+  returnToLogin() {
+    const { okapi } = this.store.getState();
+
+    return getLocale(okapi.url, this.store, okapi.tenant)
+      .then(sessionLogout(okapi.url, this.store));
+  }
+
   // return the user to the login screen, but after logging in they will be brought to the default screen.
   logout() {
     const { okapi } = this.store.getState();
