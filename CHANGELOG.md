@@ -18,6 +18,7 @@
 * Show app/record when you have permission for that. Refs STCOR-800.
 * Convert `<SSOLanding />` tests to jest. STCOR-798.
 * Avoid calling `map` on `undefined` via optional-chaining. Refs STCOR-793.
+* Make `<Settings>` a functional component. Update connected modules when `stripes` object changes. Fixes STCOR-797.
 
 ## [10.0.0](https://github.com/folio-org/stripes-core/tree/v10.0.0) (2023-10-11)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v9.0.0...v10.0.0)
