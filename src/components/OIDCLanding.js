@@ -47,8 +47,7 @@ const OIDCLanding = () => {
   const otp = getOtp();
 
   /**
-   * Exchange the otp for an access token, then use it to retrieve
-   * the user
+   * Exchange the otp for AT/RT cookies, then retrieve the user.
    *
    * See https://ebscoinddev.atlassian.net/wiki/spaces/TEUR/pages/12419306/mod-login-keycloak#mod-login-keycloak-APIs
    * for additional details. May not be necessary for SAML-specific pages
@@ -58,12 +57,14 @@ const OIDCLanding = () => {
   useEffect(() => {
     if (otp) {
       fetch(`${okapi.url}/authn/token?code=${otp}&redirect-uri=${window.location.protocol}//${window.location.host}/oidc-landing`, {
+        credentials: 'include',
         headers: { 'X-Okapi-tenant': okapi.tenant, 'Content-Type': 'application/json' },
+        mode: 'cors',
       })
         .then((resp) => {
           if (resp.ok) {
             return resp.json().then((json) => {
-              return requestUserWithPermsDeb(okapi.url, store, okapi.tenant, json.okapiToken);
+              return requestUserWithPermsDeb(okapi.url, store, okapi.tenant);
             });
           } else {
             return resp.json().then((error) => {
