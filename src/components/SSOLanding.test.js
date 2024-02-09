@@ -18,6 +18,9 @@ jest.mock('react-router-dom', () => ({
 }));
 
 jest.mock('stripes-config', () => ({
+  config: {
+    useSecureTokens: true,
+  },
   okapi: {
     url: 'okapiUrl',
     tenant: 'okapiTenant'
@@ -61,5 +64,32 @@ describe('SSOLanding', () => {
     render(<SSOLanding />);
     expect(requestUserWithPerms.mock.calls).toHaveLength(0);
     expect(screen.getByText('No cookie or query parameter')).toBeInTheDocument();
+  });
+
+  describe('Tenant handling', () => {
+    it('handles tenant within query parameters', () => {
+      useLocation.mockImplementation(() => ({ search: 'ssoToken=c0ffee&tenant=okapiTenant' }));
+
+      render(<SSOLanding />);
+
+      const tenant = requestUserWithPerms.mock.calls[0][2];
+
+      expect(tenant).toEqual('okapiTenant');
+      expect(screen.getByText(/Logged in with token.*param\.$/)).toBeInTheDocument();
+    });
+
+    it('handles tenant within a cookie', () => {
+      useCookies.mockImplementation(() => ([{
+        tenant: 'okapiTenant',
+        ssoToken: 'c0ffee-c0ffee',
+      }]));
+
+      render(<SSOLanding />);
+
+      const tenant = requestUserWithPerms.mock.calls[0][2];
+
+      expect(tenant).toEqual('okapiTenant');
+      expect(screen.getByText(/Logged in with token.*cookie\.$/)).toBeInTheDocument();
+    });
   });
 });
