@@ -4,8 +4,9 @@ import { useLocation } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import queryString from 'query-string';
 import { useStore } from 'react-redux';
-import { okapi } from 'stripes-config';
+import { config, okapi } from 'stripes-config';
 
+import { parseJWT } from '../helpers';
 import { requestUserWithPerms } from '../loginServices';
 
 const requestUserWithPermsDeb = _.debounce(requestUserWithPerms, 5000, { leading: true, trailing: false });
@@ -28,11 +29,23 @@ const SSOLanding = () => {
 
   const token = getToken();
 
+  const getTenant = () => {
+    const params = getParams();
+    const tenant = config.useSecureTokens
+      ? cookies?.tenant || params?.tenant
+      // Legacy SAML SSO
+      : parseJWT(token)?.tenant;
+
+    return tenant || okapi.tenant;
+  };
+
+  const tenant = getTenant();
+
   useEffect(() => {
     if (token) {
-      requestUserWithPermsDeb(okapi.url, store, okapi.tenant, token);
+      requestUserWithPermsDeb(okapi.url, store, tenant, token);
     }
-  }, [token, store]);
+  }, [tenant, token, store]);
 
   if (!token) {
     return (
