@@ -1,5 +1,4 @@
-import { debounce } from 'lodash';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation, Redirect } from 'react-router-dom';
 import queryString from 'query-string';
 import { useStore } from 'react-redux';
@@ -7,12 +6,10 @@ import { FormattedMessage } from 'react-intl';
 
 import { Loading } from '@folio/stripes-components';
 
-import { requestUserWithPerms } from '../loginServices';
+import { requestUserWithPerms, setTokenExpiry } from '../loginServices';
 
 import css from './Front.css';
 import { useStripes } from '../StripesContext';
-
-const requestUserWithPermsDeb = debounce(requestUserWithPerms, 5000, { leading: true, trailing: false });
 
 /**
  * OIDCLanding: un-authenticated route handler for /sso-landing.
@@ -20,31 +17,19 @@ const requestUserWithPermsDeb = debounce(requestUserWithPerms, 5000, { leading: 
  * Reads one-time-code from URL params, exchanging it for an access_token
  * and then leveraging that to retrieve a user via requestUserWithPerms,
  * eventually dispatching session and Okapi-ready, resulting in a
- * re-render with a token present, i.e., authenticated.
+ * re-render of RoothWithIntl with prop isAuthenticated: true.
  *
  * @see RootWithIntl
  */
 const OIDCLanding = () => {
   const location = useLocation();
   const store = useStore();
-  const samlError = useRef();
+  // const samlError = useRef();
   const { okapi } = useStripes();
 
-  const getParams = () => {
-    const search = location.search;
-    if (!search) return undefined;
-    return queryString.parse(search) || {};
-  };
+  const [potp, setPotp] = useState();
+  const [samlError, setSamlError] = useState();
 
-  /**
-   * retrieve the OTP
-   * @returns {string}
-   */
-  const getOtp = () => {
-    return getParams()?.code;
-  };
-
-  const otp = getOtp();
 
   /**
    * Exchange the otp for AT/RT cookies, then retrieve the user.
@@ -55,7 +40,24 @@ const OIDCLanding = () => {
    * the response for SSO-y values or SAML-y values and act accordingly.
    */
   useEffect(() => {
+    const getParams = () => {
+      const search = location.search;
+      if (!search) return undefined;
+      return queryString.parse(search) || {};
+    };
+
+    /**
+     * retrieve the OTP
+     * @returns {string}
+     */
+    const getOtp = () => {
+      return getParams()?.code;
+    };
+
+    const otp = getOtp();
+
     if (otp) {
+      setPotp(otp);
       fetch(`${okapi.url}/authn/token?code=${otp}&redirect-uri=${window.location.protocol}//${window.location.host}/oidc-landing`, {
         credentials: 'include',
         headers: { 'X-Okapi-tenant': okapi.tenant, 'Content-Type': 'application/json' },
@@ -63,9 +65,16 @@ const OIDCLanding = () => {
       })
         .then((resp) => {
           if (resp.ok) {
-            return resp.json().then((json) => {
-              return requestUserWithPermsDeb(okapi.url, store, okapi.tenant);
-            });
+            return resp.json()
+              .then((json) => {
+                return setTokenExpiry({
+                  atExpires: json.accessTokenExpiration ? new Date(json.accessTokenExpiration) : Date.now() + (60 * 1000),
+                  rtExpires: json.refreshTokenExpiration ? new Date(json.refreshTokenExpiration) : Date.now() + (2 * 60 * 1000),
+                });
+              })
+              .then(() => {
+                return requestUserWithPerms(okapi.url, store, okapi.tenant);
+              });
           } else {
             return resp.json().then((error) => {
               throw error;
@@ -75,20 +84,28 @@ const OIDCLanding = () => {
         .catch(e => {
           // eslint-disable-next-line no-console
           console.error('@@ Oh, snap, OTP exchange failed!', e);
-          samlError.current = e;
+          setSamlError(e);
         });
     }
-  }, [otp, store, okapi.tenant, okapi.url]);
+    // we only want to run this effect once, on load.
+    // keycloak authentication will redirect here and the other deps will be constant:
+    // location.search: the query string; this will never change
+    // okapi.tenant, okapi.url: these are defined in stripes.config.js
+    // store: the redux store
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  if (!otp) {
+  if (samlError) {
     return (
       <div data-test-saml-error>
         <div>
           <FormattedMessage id="errors.saml.missingToken" />
         </div>
         <div>
+          <h3>code</h3>
+          {potp}
+          <h3>error</h3>
           <code>
-            {JSON.stringify(samlError.current, null, 2)}
+            {JSON.stringify(samlError, null, 2)}
           </code>
         </div>
         <Redirect to="/" />
@@ -103,7 +120,7 @@ const OIDCLanding = () => {
       </div>
       <div>
         <pre>
-          {JSON.stringify(samlError.current, null, 2)}
+          {JSON.stringify(samlError, null, 2)}
         </pre>
       </div>
     </div>
