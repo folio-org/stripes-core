@@ -10,7 +10,7 @@ export default ({ tenant } = {}) => {
       beforeRequest: [
         request => {
           request.headers.set('Accept-Language', locale);
-          request.headers.set('X-Okapi-Tenant', tenant ?? currentTenant);
+          request.headers.set('X-Okapi-Tenant', tenant || currentTenant);
           if (token) {
             request.headers.set('X-Okapi-Token', token);
           }
