@@ -45,9 +45,9 @@ import PreLoginLanding from './components/PreLoginLanding';
 import { setOkapiTenant } from './okapiActions';
 
 export const renderLogoutComponent = (stripes) => {
-  const { okapi } = stripes;
+  const { okapi, config } = stripes;
 
-  if (okapi.authnUrl) {
+  if (okapi.authnUrl && config.confirmLogout) {
     return <Redirect to={`${okapi.authnUrl}/realms/${okapi.tenant}/protocol/openid-connect/logout?client_id=${okapi.clientId}&post_logout_redirect_uri=${window.location.protocol}//${window.location.host}`} />;
   }
 
