@@ -64,7 +64,7 @@ export default class StripesCore extends Component {
           logger={this.logger}
           config={config}
           actionNames={this.actionNames}
-          disableAuth={(config && config.disableAuth) || false}
+          disableAuth={(config?.disableAuth) || false}
           {...props}
         />
       </StrictWrapper>
