@@ -10,6 +10,7 @@
 * Use keycloak URLs in place of users-bl for tenant-switch. Refs US1153537.
 * Opt-in: handle access-control via cookies. Refs STCOR-671.
 * Opt-in: disable login when cookies are disabled. Refs STCOR-762.
+* Convert `<SSOLanding />` tests to jest. STCOR-798.
 * Parse response from `/authn/token` to immediately store AT/RT expiration values. Refs STCOR-811.
 * Include `X-Okapi-Tenant` header in `/authn/logout` calls. Refs STCOR-812.
 
