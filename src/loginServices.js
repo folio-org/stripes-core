@@ -412,13 +412,18 @@ export function spreadUserWithPerms(userWithPerms) {
 
 /**
  * logout
- * dispatch events to clear the store, then clear the session too.
+ * dispatch events to clear the store, then clear the session,
+ * clear localStorage, and call `/authn/logout` to end the session
+ * on the server too.
  *
  * @param {object} redux store
  *
  * @returns {Promise}
  */
 export async function logout(okapiUrl, store) {
+  // tenant is necessary to populate the X-Okapi-Tenant header
+  // which is required in ECS environments
+  const { okapi: { tenant } } = store.getState();
   store.dispatch(setIsAuthenticated(false));
   store.dispatch(clearCurrentUser());
   store.dispatch(clearOkapiToken());
@@ -426,8 +431,10 @@ export async function logout(okapiUrl, store) {
   return fetch(`${okapiUrl}/authn/logout`, {
     method: 'POST',
     mode: 'cors',
-    credentials: 'include'
+    credentials: 'include',
+    headers: { 'X-Okapi-Tenant': tenant, 'Accept': 'application/json' },
   })
+    .then(localStorage.removeItem('tenant'))
     .then(localforage.removeItem(SESSION_NAME))
     .then(localforage.removeItem('loginResponse'));
 }
