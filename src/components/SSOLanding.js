@@ -32,7 +32,7 @@ const SSOLanding = () => {
   const getTenant = () => {
     const params = getParams();
     const tenant = config.useSecureTokens
-      ? cookies?.tenant || params?.tenant
+      ? params?.tenant
       // Legacy SAML SSO
       : parseJWT(token)?.tenant;
 
