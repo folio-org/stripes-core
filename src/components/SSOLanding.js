@@ -33,7 +33,6 @@ const SSOLanding = () => {
     const params = getParams();
     const tenant = config.useSecureTokens
       ? params?.tenant
-      // Legacy SAML SSO
       : parseJWT(token)?.tenant;
 
     return tenant || okapi.tenant;
@@ -42,15 +41,15 @@ const SSOLanding = () => {
   const tenant = getTenant();
 
   useEffect(() => {
-    if (token) {
+    if (tenant) {
       requestUserWithPermsDeb(okapi.url, store, tenant, token);
     }
   }, [tenant, token, store]);
 
-  if (!token) {
+  if (!tenant) {
     return (
       <div data-test-sso-error>
-        No <code>ssoToken</code> cookie or query parameter
+        No <code>tenant</code> in cookie or query parameter
       </div>
     );
   }
@@ -58,7 +57,7 @@ const SSOLanding = () => {
   return (
     <div data-test-sso-success>
       <p>
-        Logged in with token <tt>{token}</tt> from {getParams()?.ssoToken ? 'param' : 'cookie'}.
+        Logged in with tenant <tt>{tenant}</tt>.
       </p>
     </div>
   );

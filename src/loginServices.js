@@ -761,9 +761,14 @@ export function requestLogin(okapiUrl, store, tenant, data) {
  * @returns {Promise} Promise resolving to the response of the request
  */
 function fetchUserWithPerms(okapiUrl, tenant, token) {
+  const rtrIgnore = !token;
+
   return fetch(
     `${okapiUrl}/bl-users/_self?expandPermissions=true&fullPermissions=true`,
-    { headers: getHeaders(tenant, token) },
+    {
+      headers: getHeaders(tenant, token),
+      rtrIgnore,
+    },
   );
 }
 
