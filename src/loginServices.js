@@ -400,11 +400,23 @@ export function spreadUserWithPerms(userWithPerms) {
   };
 
   // remap data's array of permission-names to set with
-  // permission-names for keys and `true` for values
+  // permission-names for keys and `true` for values.
+  //
+  // userWithPerms is shaped differently depending on whether
+  // it comes from a login call or a `.../_self` call, which
+  // is just totally totally awesome. :|
+  // we'll parse it differently depending on what it looks like.
+
   let perms = {};
   const list = userWithPerms?.permissions?.permissions;
-  if (list && Array.isArray(list)) {
-    perms = Object.assign({}, ...list.map(p => ({ [p.permissionName]: true })));
+  if (list && Array.isArray(list) && list.length > 0) {
+    // _self sends data like ["foo", "bar", "bat"]
+    // login sends data like [{ "permissionName": "foo" }]
+    if (typeof list[0] === 'string') {
+      perms = Object.assign({}, ...list.map(p => ({ [p]: true })));
+    } else {
+      perms = Object.assign({}, ...list.map(p => ({ [p.permissionName]: true })));
+    }
   }
 
   return { user, perms };
