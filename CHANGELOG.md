@@ -55,6 +55,7 @@
 * Convert `<SSOLanding />` tests to jest. STCOR-798.
 * Parse response from `/authn/token` to immediately store AT/RT expiration values. Refs STCOR-811.
 * Include `X-Okapi-Tenant` header in `/authn/logout` calls. Refs STCOR-812.
+* Correctly parse `.../_self` permissions object. Refs STCOR-813.
 
 ## [10.0.0](https://github.com/folio-org/stripes-core/tree/v10.0.0) (2023-10-11)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v9.0.0...v10.0.0)
