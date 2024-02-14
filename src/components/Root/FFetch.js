@@ -100,6 +100,7 @@ export class FFetch {
         '/bl-users/login-with-expiry',
         '/bl-users/password-reset',
         '/saml/check',
+        `/_/invoke/tenant/${okapi.tenant}/saml/login`,
       ];
 
       this.logger.log('rtr', `AT invalid for ${resource}`);
@@ -261,6 +262,7 @@ export class FFetch {
       // So, maybe Michael Stipe is god. Oh, wait, crap, he lost his religion.
       // Look, RTR is complicated, what do you want?
       console.error('All tokens expired'); // eslint-disable-line no-console
+      debugger;
       document.dispatchEvent(new Event(RTR_ERROR_EVENT, { detail: 'All tokens expired' }));
       return Promise.resolve(new Response(JSON.stringify({})));
     }
