@@ -64,7 +64,7 @@ describe('RootWithIntl', () => {
     it('handles third-party logout', () => {
       const stripes = {
         okapi: { authnUrl: 'https://oppie.com' },
-        config: { confirmLogout: true },
+        config: { },
       };
       render(renderLogoutComponent(stripes));
 
