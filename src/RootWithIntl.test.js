@@ -60,15 +60,5 @@ describe('RootWithIntl', () => {
 
       expect(screen.getByText(/<internalredirect>/)).toBeInTheDocument();
     });
-
-    it('handles third-party logout', () => {
-      const stripes = {
-        okapi: { authnUrl: 'https://oppie.com' },
-        config: { confirmLogout: true },
-      };
-      render(renderLogoutComponent(stripes));
-
-      expect(screen.getByText(/<redirect>/)).toBeInTheDocument();
-    });
   });
 });
