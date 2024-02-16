@@ -329,6 +329,7 @@ describe('validateUser', () => {
   it('handles invalid user', async () => {
     const store = {
       dispatch: jest.fn(),
+      getState: () => ({ okapi: { tenant: 'monkey' } }),
     };
 
     global.fetch = jest.fn().mockImplementation(() => {
