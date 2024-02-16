@@ -44,13 +44,7 @@ import { CalloutContext } from './CalloutContext';
 import PreLoginLanding from './components/PreLoginLanding';
 import { setOkapiTenant } from './okapiActions';
 
-export const renderLogoutComponent = (stripes) => {
-  const { okapi, config } = stripes;
-
-  if (okapi.authnUrl && config.confirmLogout) {
-    return <Redirect to={`${okapi.authnUrl}/realms/${okapi.tenant}/protocol/openid-connect/logout?client_id=${okapi.clientId}&post_logout_redirect_uri=${window.location.protocol}//${window.location.host}`} />;
-  }
-
+export const renderLogoutComponent = () => {
   return <InternalRedirect to="/" />;
 };
 
@@ -214,7 +208,7 @@ class RootWithIntl extends React.Component {
                         <TitledRoute
                           name="logout"
                           path="/logout"
-                          component={renderLogoutComponent(this.props.stripes)}
+                          component={renderLogoutComponent()}
                         />
                         <TitledRoute
                           name="login"
