@@ -44,10 +44,6 @@ import { CalloutContext } from './CalloutContext';
 import PreLoginLanding from './components/PreLoginLanding';
 import { setOkapiTenant } from './okapiActions';
 
-export const renderLogoutComponent = () => {
-  return <InternalRedirect to="/" />;
-};
-
 export const renderLoginComponent = (stripes) => {
   const { config, okapi } = stripes;
 
@@ -208,7 +204,7 @@ class RootWithIntl extends React.Component {
                         <TitledRoute
                           name="logout"
                           path="/logout"
-                          component={renderLogoutComponent()}
+                          component={<InternalRedirect to="/" />}
                         />
                         <TitledRoute
                           name="login"
