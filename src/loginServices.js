@@ -450,8 +450,7 @@ export async function logout(okapiUrl, store) {
     .then(localforage.removeItem(SESSION_NAME))
     .then(localforage.removeItem('loginResponse'))
     .catch((error) => {
-      // eslint-disable-next-line no-console
-      console.log(`Error logging out: ${JSON.stringify(error)}`)
+      logger.log('logout', 'Error logging out', error)
     });
 }
 
