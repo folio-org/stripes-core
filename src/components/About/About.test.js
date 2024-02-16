@@ -36,7 +36,7 @@ jest.mock('./AboutUIModuleDetails', () => () => 'AboutUIModuleDetails');
 jest.mock('./WarningBanner', () => () => 'WarningBanner');
 
 jest.mock('stripes-config', () => ({
-  okapi: { tenantEntitlementUrl: true },
+  okapi: { tenantOptions: true },
 }));
 
 // set query retries to false. otherwise, react-query will thoughtfully
