@@ -400,11 +400,23 @@ export function spreadUserWithPerms(userWithPerms) {
   };
 
   // remap data's array of permission-names to set with
-  // permission-names for keys and `true` for values
+  // permission-names for keys and `true` for values.
+  //
+  // userWithPerms is shaped differently depending on whether
+  // it comes from a login call or a `.../_self` call, which
+  // is just totally totally awesome. :|
+  // we'll parse it differently depending on what it looks like.
+
   let perms = {};
   const list = userWithPerms?.permissions?.permissions;
-  if (list && Array.isArray(list)) {
-    perms = Object.assign({}, ...list.map(p => ({ [p.permissionName]: true })));
+  if (list && Array.isArray(list) && list.length > 0) {
+    // _self sends data like ["foo", "bar", "bat"]
+    // login sends data like [{ "permissionName": "foo" }]
+    if (typeof list[0] === 'string') {
+      perms = Object.assign({}, ...list.map(p => ({ [p]: true })));
+    } else {
+      perms = Object.assign({}, ...list.map(p => ({ [p.permissionName]: true })));
+    }
   }
 
   return { user, perms };
@@ -412,13 +424,18 @@ export function spreadUserWithPerms(userWithPerms) {
 
 /**
  * logout
- * dispatch events to clear the store, then clear the session too.
+ * dispatch events to clear the store, then clear the session,
+ * clear localStorage, and call `/authn/logout` to end the session
+ * on the server too.
  *
  * @param {object} redux store
  *
  * @returns {Promise}
  */
 export async function logout(okapiUrl, store) {
+  // tenant is necessary to populate the X-Okapi-Tenant header
+  // which is required in ECS environments
+  const { okapi: { tenant } } = store.getState();
   store.dispatch(setIsAuthenticated(false));
   store.dispatch(clearCurrentUser());
   store.dispatch(clearOkapiToken());
@@ -426,8 +443,10 @@ export async function logout(okapiUrl, store) {
   return fetch(`${okapiUrl}/authn/logout`, {
     method: 'POST',
     mode: 'cors',
-    credentials: 'include'
+    credentials: 'include',
+    headers: { 'X-Okapi-Tenant': tenant, 'Accept': 'application/json' },
   })
+    .then(localStorage.removeItem('tenant'))
     .then(localforage.removeItem(SESSION_NAME))
     .then(localforage.removeItem('loginResponse'));
 }

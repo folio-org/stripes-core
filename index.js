@@ -50,3 +50,5 @@ export { default as init } from './src/init';
 export { getOkapiSession, getTokenExpiry, setTokenExpiry } from './src/loginServices';
 
 export { registerServiceWorker, unregisterServiceWorker } from './src/serviceWorkerRegistration';
+
+export { getEventHandler } from './src/handlerService';
