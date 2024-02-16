@@ -446,7 +446,11 @@ export async function logout(okapiUrl, store) {
   })
     .then(localStorage.removeItem('tenant'))
     .then(localforage.removeItem(SESSION_NAME))
-    .then(localforage.removeItem('loginResponse'));
+    .then(localforage.removeItem('loginResponse'))
+    .catch((error) => {
+      // eslint-disable-next-line no-console
+      console.log(`Error logging out: ${JSON.stringify(error)}`)
+    });
 }
 
 /**
