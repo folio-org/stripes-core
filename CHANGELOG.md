@@ -10,6 +10,7 @@
 * Use keycloak URLs in place of users-bl for tenant-switch. Refs US1153537.
 * Opt-in: handle access-control via cookies. Refs STCOR-671.
 * Opt-in: disable login when cookies are disabled. Refs STCOR-762.
+* Simplify logout workflow to bypass keycloak confirmation page. Refs STCOR-803.
 
 ## [10.0.0](https://github.com/folio-org/stripes-core/tree/v10.0.0) (2023-10-11)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v9.0.0...v10.0.0)

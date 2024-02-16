@@ -429,7 +429,10 @@ export async function logout(okapiUrl, store) {
     credentials: 'include'
   })
     .then(localforage.removeItem(SESSION_NAME))
-    .then(localforage.removeItem('loginResponse'));
+    .then(localforage.removeItem('loginResponse'))
+    .catch((error) => {
+      logger.log('logout', 'Error logging out', error)
+    });
 }
 
 /**
