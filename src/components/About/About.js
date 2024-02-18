@@ -63,7 +63,7 @@ const About = (props) => {
       )}
       <AboutInstallMessages />
       <div className={css.versionsContainer}>
-        {okapiConfig.tenantOptions ? (
+        {okapiConfig.tenantEntitlementUrl ? (
           <>
             <div className={css.versionsColumn} data-test-stripes-core-about-module-versions>
               <AboutApplicationVersions message={numApplicationsMsg} applications={applications} />
