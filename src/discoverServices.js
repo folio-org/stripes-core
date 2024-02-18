@@ -220,7 +220,7 @@ function fetchModules(store) {
  */
 export function discoverServices(store) {
   const promises = [];
-  if (okapiConfig.tenantOptions) {
+  if (okapiConfig.tenantEntitlementUrl) {
     promises.push(fetchApplicationDetails(store));
     promises.push(fetchGatewayVersion(store));
   } else {
