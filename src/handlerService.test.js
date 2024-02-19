@@ -25,7 +25,7 @@ describe('getEventHandler', () => {
     const d = {};
 
     const h = getEventHandler(e, s, module, d);
-    expect(h).toMatchObject({ event: e, stripes: s, data: d })
+    expect(h).toMatchObject({ event: e, stripes: s, data: d });
   });
 });
 

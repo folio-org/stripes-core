@@ -1,5 +1,3 @@
-import { modules } from 'stripes-config';
-
 import gatherActions from './gatherActions';
 
 jest.mock('stripes-config', () => ({
