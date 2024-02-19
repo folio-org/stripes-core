@@ -19,6 +19,7 @@
 * Convert `<SSOLanding />` tests to jest. STCOR-798.
 * Avoid calling `map` on `undefined` via optional-chaining. Refs STCOR-793.
 * Make `<Settings>` a functional component. Update connected modules when `stripes` object changes. Fixes STCOR-797.
+* `useOkapiKy` uses || instead of ?? to apply current tenant id when override was not provided. Refs STCOR-814.
 * Correctly parse `.../_self` permissions object. Refs STCOR-813.
 
 ## [10.0.0](https://github.com/folio-org/stripes-core/tree/v10.0.0) (2023-10-11)
