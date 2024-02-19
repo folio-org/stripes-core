@@ -1,5 +1,5 @@
 import { some } from 'lodash';
-import { okapi as okapiConfig } from 'stripes-config';
+import { config } from 'stripes-config';
 
 function getHeaders(tenant, token) {
   return {
@@ -220,7 +220,7 @@ function fetchModules(store) {
  */
 export function discoverServices(store) {
   const promises = [];
-  if (okapiConfig.tenantEntitlementUrl) {
+  if (config.tenantOptions) {
     promises.push(fetchApplicationDetails(store));
     promises.push(fetchGatewayVersion(store));
   } else {
