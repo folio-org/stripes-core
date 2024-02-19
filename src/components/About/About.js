@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
-import { okapi as okapiConfig } from 'stripes-config';
+import { config } from 'stripes-config';
 import {
   Headline,
   Loading,
@@ -63,7 +63,7 @@ const About = (props) => {
       )}
       <AboutInstallMessages />
       <div className={css.versionsContainer}>
-        {okapiConfig.tenantEntitlementUrl ? (
+        {config.tenantOptions ? (
           <>
             <div className={css.versionsColumn} data-test-stripes-core-about-module-versions>
               <AboutApplicationVersions message={numApplicationsMsg} applications={applications} />
