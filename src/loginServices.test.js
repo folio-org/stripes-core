@@ -1,4 +1,5 @@
 import localforage from 'localforage';
+import { config } from 'stripes-config';
 
 import {
   createOkapiSession,
@@ -15,8 +16,6 @@ import {
   updateUser,
   validateUser,
 } from './loginServices';
-
-
 
 import {
   clearCurrentUser,
@@ -61,6 +60,19 @@ jest.mock('localforage', () => ({
   getItem: jest.fn(() => Promise.resolve({ user: {} })),
   setItem: jest.fn(() => Promise.resolve()),
   removeItem: jest.fn(() => Promise.resolve()),
+}));
+
+jest.mock('stripes-config', () => ({
+  config: {
+    tenantOptions: {
+      romulus: { name: 'romulus', clientId: 'romulus-application' },
+      remus: { name: 'remus', clientId: 'remus-application' },
+    }
+  },
+  okapi: {
+    authnUrl: 'https://authn.url',
+  },
+  translations: {}
 }));
 
 // fetch success: resolve promise with ok == true and $data in json()
