@@ -16,7 +16,7 @@ const mockFetchSuccess = (data) => {
   ));
 };
 
-// fetch failure: reject promise with $error
+// fetch error: resolve promise with ok: false
 const mockFetchError = () => {
   global.fetch = jest.fn().mockImplementation(() => (
     Promise.resolve({
@@ -27,6 +27,7 @@ const mockFetchError = () => {
   ));
 };
 
+// fetch failure: reject promise with $error
 const mockFetchFail = (error) => {
   global.fetch = jest.fn().mockImplementation(() => Promise.reject(error));
 };
