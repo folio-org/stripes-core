@@ -37,20 +37,20 @@
 import { okapi } from 'stripes-config';
 import { getTokenExpiry } from '../../loginServices';
 import {
+  adjustTokenExpiration,
   isFolioApiRequest,
   isLogoutRequest,
   isValidAT,
   isValidRT,
   resourceMapper,
   rtr,
+  RTR_TTL_WINDOW,
 } from './token-util';
 import {
   RTRError,
   UnexpectedResourceError,
 } from './Errors';
-import {
-  RTR_ERROR_EVENT,
-} from './Events';
+import EVENTS from '../../constants/events';
 
 import FXHR from './FXHR';
 
@@ -139,7 +139,7 @@ export class FFetch {
       .catch(err => {
         if (err instanceof RTRError) {
           console.error('RTR failure', err); // eslint-disable-line no-console
-          document.dispatchEvent(new Event(RTR_ERROR_EVENT, { detail: err }));
+          document.dispatchEvent(new Event(EVENTS.AUTHN.RTR_ERROR, { detail: err }));
           return Promise.resolve(new Response(JSON.stringify({})));
         }
 
@@ -268,7 +268,11 @@ export class FFetch {
       // maybe another window updated them for us without us knowing.
       if (!isValidAT(this.tokenExpiration, this.logger)) {
         this.logger.log('rtr', 'local tokens expired; fetching from storage');
-        this.tokenExpiration = await getTokenExpiry();
+
+        const rawTe = await getTokenExpiry();
+        if (rawTe) {
+          this.tokenExpiration = adjustTokenExpiration({ tokenExpiration: rawTe }, RTR_TTL_WINDOW);
+        }
       }
 
       // AT is valid or unnecessary; execute the fetch
@@ -284,8 +288,8 @@ export class FFetch {
       // AT is expired. RT is expired. It's the end of the world as we know it.
       // So, maybe Michael Stipe is god. Oh, wait, crap, he lost his religion.
       // Look, RTR is complicated, what do you want?
-      console.error('All tokens expired'); // eslint-disable-line no-console
-      document.dispatchEvent(new Event(RTR_ERROR_EVENT, { detail: 'All tokens expired' }));
+      console.error('All tokens expired', this.tokenExpiration); // eslint-disable-line no-console
+      document.dispatchEvent(new Event(EVENTS.AUTHN.RTR_ERROR, { detail: 'All tokens expired' }));
       return Promise.resolve(new Response(JSON.stringify({})));
     }
 

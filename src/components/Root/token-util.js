@@ -2,7 +2,8 @@ import { okapi } from 'stripes-config';
 
 import { setTokenExpiry } from '../../loginServices';
 import { RTRError, UnexpectedResourceError } from './Errors';
-import { RTR_SUCCESS_EVENT } from './Events';
+
+import EVENTS from '../../constants/events';
 
 /**
  * RTR_TTL_WINDOW (float)
@@ -209,15 +210,14 @@ export const shouldRotate = (logger) => {
  * rtr
  * exchange an RT for a new one.
  * Make a POST request to /authn/refresh, including the current credentials,
- * and send a TOKEN_EXPIRATION event to clients that includes the new AT/RT
+ * and send a EVENTS.AUTHN.RTR_SUCCESS event to clients that includes the new AT/RT
  * expiration timestamps.
  *
- * Since all windows share the same cookie, this means the must also share
+ * Since all windows share the same cookie, this means they must also share
  * rotation, and when rotation starts in one window requests in all others
  * must await the same promise. Thus, the isRotating flag is stored in
- * localstorage (rather than a local variable) where it is globally accessible,
- * rather than in a local variable (which would only be available in the scope
- * of a single window).
+ * localstorage where it is globally accessible rather than in a local
+ * variable which would only be available in the scope of a single window.
  *
  * The basic plot is for this function to return a promise that resolves when
  * rotation is finished. If rotation hasn't started, that's the rotation
@@ -230,8 +230,9 @@ export const shouldRotate = (logger) => {
  * 2 capturing the new expiration data, shrinking its TTL window, calling
  *   setTokenExpiry to push the new values to localstorage, and caching it
  *   on the calling context.
- * 3 dispatch RTR_SUCCESS_EVENT
+ * 3 dispatch EVENTS.AUTHN.RTR_SUCCESS
  *
+ * @argument {object} shaped like { logger, nativeFetch, tokenExpiration }
  * @returns Promise
  * @throws if RTR fails
  */
@@ -267,23 +268,25 @@ export const rtr = async (context) => {
       })
       .then(json => {
         context.logger.log('rtr', '**     success!');
-        const te = adjustTokenExpiration({
-          tokenExpiration: {
-            atExpires: new Date(json.accessTokenExpiration).getTime(),
-            rtExpires: new Date(json.refreshTokenExpiration).getTime(),
-          }
-        }, RTR_TTL_WINDOW);
-        context.tokenExpiration = te;
-        return setTokenExpiry(te);
+        const tokenExpiration = {
+          atExpires: new Date(json.accessTokenExpiration).getTime(),
+          rtExpires: new Date(json.refreshTokenExpiration).getTime(),
+        };
+
+        return setTokenExpiry(tokenExpiration)
+          .then(() => {
+            const adjustedTe = adjustTokenExpiration({ tokenExpiration }, RTR_TTL_WINDOW);
+            context.tokenExpiration = adjustedTe;
+            return adjustedTe;
+          });
       })
       .finally(() => {
         localStorage.removeItem(RTR_IS_ROTATING);
-        window.dispatchEvent(new Event(RTR_SUCCESS_EVENT));
       });
   } else {
     // isRotating is true, so rotation has already started.
     // create a new promise that resolves when it receives
-    // either an RTR_SUCCESS_EVENT or storage event and
+    // either an EVENTS.AUTHN.RTR_SUCCESS or storage event and
     // the isRotating value in storage is false, indicating rotation
     // has completed.
     //
@@ -293,14 +296,14 @@ export const rtr = async (context) => {
     rtrPromise = new Promise((res) => {
       const rotationHandler = () => {
         if (localStorage.getItem(RTR_IS_ROTATING) === null) {
-          window.removeEventListener(RTR_SUCCESS_EVENT, rotationHandler);
+          window.removeEventListener(EVENTS.AUTHN.RTR_SUCCESS, rotationHandler);
           window.removeEventListener('storage', rotationHandler);
           context.logger.log('rtr', 'token rotation has resolved, continue as usual!');
           res();
         }
       };
       // same window: listen for custom event
-      window.addEventListener(RTR_SUCCESS_EVENT, rotationHandler);
+      window.addEventListener(EVENTS.AUTHN.RTR_SUCCESS, rotationHandler);
 
       // other windows: listen for storage event
       // @see https://developer.mozilla.org/en-US/docs/Web/API/Window/storage_event
