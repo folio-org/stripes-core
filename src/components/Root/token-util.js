@@ -277,7 +277,7 @@ export const rtr = async (context) => {
           .then(() => {
             const adjustedTe = adjustTokenExpiration({ tokenExpiration }, RTR_TTL_WINDOW);
             context.tokenExpiration = adjustedTe;
-            return adjustedTe;
+            return { tokenExpiration: adjustedTe };
           });
       })
       .finally(() => {
