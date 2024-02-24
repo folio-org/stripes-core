@@ -121,8 +121,8 @@ export const eventManager = ({ channel }) => {
    */
   const emit = (t, m) => {
     const handleType = (eventType, message) => {
-      logger.log('event', `emit: ${t}`);
-      window.dispatchEvent(new CustomEvent(t, { detail: message }));
+      logger.log('event', `emit: ${eventType}`);
+      window.dispatchEvent(new CustomEvent(eventType, { detail: message }));
       bc.postMessage({
         type: eventType,
         message: m,
@@ -192,7 +192,7 @@ export const userLocaleConfig = {
   'module': '@folio/stripes-core',
 };
 
-function getHeaders(tenant, token) {
+export function getHeaders(tenant, token) {
   return {
     'X-Okapi-Tenant': tenant,
     'Content-Type': 'application/json',
@@ -210,7 +210,7 @@ function getHeaders(tenant, token) {
  *
  * @returns {boolean}
  */
-function canReadConfig(store) {
+export function canReadConfig(store) {
   const perms = store.getState().okapi.currentPerms;
   return perms['configuration.entries.collection.get'];
 }
