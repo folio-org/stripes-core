@@ -51,8 +51,7 @@ const KeepWorkingModal = ({ isVisible, expiry }) => {
       return new Date(remainingMillis).toISOString().substring(14, 19);
     }
 
-    console.error('Could not format', remainingMillis);
-    return <FormattedNumber value={0} />;
+x    return '0';
   };
 
   return (
@@ -65,7 +64,7 @@ const KeepWorkingModal = ({ isVisible, expiry }) => {
       }
     >
       <div>
-        <FormattedMessage id="stripes-core.idle-session.timeRemaining" />: {timestampFormatter(remainingMillis)}
+        <FormattedMessage id="stripes-core.idle-session.timeRemaining" />: {timestampFormatter()}
       </div>
     </Modal>
   );
