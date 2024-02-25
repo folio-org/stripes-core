@@ -51,7 +51,7 @@ const KeepWorkingModal = ({ isVisible, expiry }) => {
       return new Date(remainingMillis).toISOString().substring(14, 19);
     }
 
-x    return '0';
+    return '0';
   };
 
   return (
