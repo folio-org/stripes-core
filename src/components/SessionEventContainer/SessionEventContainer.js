@@ -9,6 +9,40 @@ import {
 import KeepWorkingModal from './KeepWorkingModal';
 import { useStripes } from '../../StripesContext';
 
+export const idleSessionWarningHandler = ({ stripes, setExpiry, setIsVisible }) => {
+  stripes.logger.log('session', EVENTS.AUTHN.IDLE_SESSION_WARNING);
+  return getTokenExpiry()
+    .then((te) => {
+      setExpiry(te.rtExpires);
+      setIsVisible(true);
+    });
+};
+
+export const rtrSuccessHandler = ({ stripes, setIsVisible, idleSessionTimer, data, emit, idleSeconds }) => {
+  stripes.logger.log('session', EVENTS.AUTHN.RTR_SUCCESS);
+  setIsVisible(false);
+  if (idleSessionTimer.current) {
+    clearTimeout(idleSessionTimer.current);
+  }
+
+  // reset the idle-session-timeout timer:
+  // if we received a new RT expiration with the event, use it.
+  // otherwise, retrieve the RT from storage and use that.
+  if (data?.rtExpires) {
+    const sessionTtl = data.rtExpires - Date.now();
+    idleSessionTimer.current = setTimeout(() => {
+      emit(EVENTS.AUTHN.IDLE_SESSION_WARNING);
+    }, (sessionTtl - (idleSeconds * 1000)));
+  } else {
+    return getTokenExpiry().then((te) => {
+      const sessionTtl = te.rtExpires - Date.now();
+      idleSessionTimer.current = setTimeout(() => {
+        emit(EVENTS.AUTHN.IDLE_SESSION_WARNING);
+      }, (sessionTtl - (idleSeconds * 1000)));
+    });
+  }
+};
+
 /**
  * SessionEventContainer
  * This component configures event-listeners for authentication-related events
@@ -36,38 +70,14 @@ const SessionEventContainer = () => {
 
     // session is idle; show modal
     listen(EVENTS.AUTHN.IDLE_SESSION_WARNING, () => {
-      stripes.logger.log('session', EVENTS.AUTHN.IDLE_SESSION_WARNING);
-      getTokenExpiry().then((te) => {
-        setExpiry(te.rtExpires);
-        setIsVisible(true);
-      });
+      idleSessionWarningHandler({ stripes, setExpiry, setIsVisible });
     });
 
     // RTR success; hide modal, reset session-idle timer
     listen(EVENTS.AUTHN.RTR_SUCCESS, (e, data) => {
-      stripes.logger.log('session', EVENTS.AUTHN.RTR_SUCCESS);
-      setIsVisible(false);
-      if (idleSessionTimer.current) {
-        clearTimeout(idleSessionTimer.current);
-      }
-
-      // reset the idle-session-timeout timer:
-      // if we received a new RT expiration with the event, use it.
-      // otherwise, retrieve the RT from storage and use that.
-      if (data?.rtExpires) {
-        const sessionTtl = data.rtExpires - Date.now();
-        idleSessionTimer.current = setTimeout(() => {
-          emit(EVENTS.AUTHN.IDLE_SESSION_WARNING);
-        }, (sessionTtl - (idleSeconds * 1000)));
-      } else {
-        getTokenExpiry().then((te) => {
-          const sessionTtl = te.rtExpires - Date.now();
-          idleSessionTimer.current = setTimeout(() => {
-            emit(EVENTS.AUTHN.IDLE_SESSION_WARNING);
-          }, (sessionTtl - (idleSeconds * 1000)));
-        });
-      }
+      rtrSuccessHandler({ stripes, setIsVisible, idleSessionTimer, data, emit, idleSeconds });
     });
+
 
     // initialize the idle-session timer us with cached RT expiration data
     getTokenExpiry().then((te) => {
