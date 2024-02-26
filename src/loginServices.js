@@ -771,7 +771,10 @@ export function checkOkapiSession(okapiUrl, store, tenant) {
       return sess?.user?.id ? validateUser(okapiUrl, store, tenant, sess) : null;
     })
     .then(() => {
-      return getSSOEnabled(okapiUrl, store, tenant);
+      if (store.getState().discovery?.interfaces?.['login-saml']) {
+        return getSSOEnabled(okapiUrl, store, tenant);
+      }
+      return Promise.resolve();
     })
     .finally(() => {
       store.dispatch(setOkapiReady());
