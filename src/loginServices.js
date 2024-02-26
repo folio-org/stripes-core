@@ -455,7 +455,7 @@ export async function logout(okapiUrl, store) {
     .then(localforage.removeItem('loginResponse'))
     .catch((error) => {
       // eslint-disable-next-line no-console
-      console.log(`Error logging out: ${JSON.stringify(error)}`)
+      console.log(`Error logging out: ${JSON.stringify(error)}`);
     });
 }
 
@@ -754,7 +754,10 @@ export function checkOkapiSession(okapiUrl, store, tenant) {
       return sess !== null ? validateUser(okapiUrl, store, tenant, sess) : null;
     })
     .then(() => {
-      return getSSOEnabled(okapiUrl, store, tenant);
+      if (store.getState().discovery?.interfaces?.['login-saml']) {
+        return getSSOEnabled(okapiUrl, store, tenant);
+      }
+      return Promise.resolve();
     })
     .finally(() => {
       store.dispatch(setOkapiReady());
