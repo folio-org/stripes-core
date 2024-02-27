@@ -74,22 +74,9 @@ jest.mock('@folio/stripes-components', () => ({
   )),
   Loading: () => <div>Loading</div>,
   MessageBanner: jest.fn(({ show, children }) => { return show ? <>{children}</> : <></>; }),
-
-  // oy, dismissible. we need to pull it out of props so it doesn't
-  // get applied to the div as an attribute, which must have a string-value,
-  // which will shame you in the console:
-  //
-  //     Warning: Received `true` for a non-boolean attribute `dismissible`.
-  //     If you want to write it to the DOM, pass a string instead: dismissible="true" or dismissible={value.toString()}.
-  //         in div (created by mockConstructor)
-  //
-  // is there a better way to throw it away? If we don't destructure and
-  // instead access props.label and props.children, then we get a test
-  // failure that the modal isn't visible. oy, dismissible.
-  Modal: jest.fn(({ children, label, dismissible, footer, ...rest }) => {
+  Modal: jest.fn(({ children, label, dismissible: _dismissible, footer, ...rest }) => {
     return (
       <div
-        data-test={dismissible ? '' : ''}
         {...rest}
       >
         <h1>{label}</h1>

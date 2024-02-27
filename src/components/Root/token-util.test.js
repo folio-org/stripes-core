@@ -10,7 +10,8 @@ import {
   RTR_IS_ROTATING,
   RTR_MAX_AGE,
 } from './token-util';
-import { RTR_SUCCESS_EVENT } from './Events';
+
+import { EVENTS } from '../../constants';
 
 describe('isFolioApiRequest', () => {
   it('accepts requests whose origin matches okapi\'s', () => {
@@ -171,12 +172,12 @@ describe('rtr', () => {
       };
 
       setTimeout(() => {
-        window.dispatchEvent(new Event(RTR_SUCCESS_EVENT));
+        window.dispatchEvent(new Event(EVENTS.AUTHN.RTR_SUCCESS));
       }, 500);
 
       setTimeout(() => {
         localStorage.removeItem(RTR_IS_ROTATING);
-        window.dispatchEvent(new Event(RTR_SUCCESS_EVENT));
+        window.dispatchEvent(new Event(EVENTS.AUTHN.RTR_SUCCESS));
       }, 1000);
 
       let ex = null;
