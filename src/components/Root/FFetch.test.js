@@ -2,7 +2,7 @@
 // FFetch for the reassign globals side-effect in its constructor.
 /* eslint-disable no-unused-vars */
 
-import { getTokenExpiry } from '../../loginServices';
+import { getTokenExpiry, setTokenExpiry } from '../../loginServices';
 import { FFetch } from './FFetch';
 import { RTRError, UnexpectedResourceError } from './Errors';
 
@@ -80,8 +80,18 @@ describe('FFetch class', () => {
     });
   });
 
+//<<<<<<< HEAD
   describe('Calling an okapi fetch with missing token...', () => {
     it('triggers rtr...calls fetch 3 times, failed call, token call, successful call', async () => {
+// =======
+//   describe('Handles 4xx responses', () => {
+//     it('400 token missing: triggers rtr...calls fetch 3 times, failed call, token call, successful call', async () => {
+//       setTokenExpiry.mockResolvedValueOnce({
+//         atExpires: Date.now() + (10 * 60 * 1000),
+//         rtExpires: Date.now() + (10 * 60 * 1000),
+//       });
+//
+// >>>>>>> 6aabfc5c (STCOR-776 show "Keep working?" prompt when session ages (#1431))
       mockFetch.mockResolvedValue('success')
         .mockResolvedValueOnce(new Response(
           'Token missing',
@@ -113,7 +123,8 @@ describe('FFetch class', () => {
               'content-type': 'text/plain',
             },
           }
-        ));
+        )
+      );
       const testFfetch = new FFetch({ logger: { log } });
       const response = await global.fetch('okapiUrl', { testOption: 'test' });
       expect(mockFetch.mock.calls).toHaveLength(1);
@@ -121,6 +132,11 @@ describe('FFetch class', () => {
     });
 
     it('401 UnauthorizedException: triggers rtr...calls fetch 3 times, failed call, token call, successful call', async () => {
+      setTokenExpiry.mockResolvedValueOnce({
+        atExpires: Date.now() + (10 * 60 * 1000),
+        rtExpires: Date.now() + (10 * 60 * 1000),
+      });
+
       mockFetch.mockResolvedValue('success')
         .mockResolvedValueOnce(new Response(
           JSON.stringify({
@@ -170,7 +186,8 @@ describe('FFetch class', () => {
               'content-type': 'application/json',
             },
           }
-        ));
+        )
+      );
       const testFfetch = new FFetch({ logger: { log } });
       const response = (await global.fetch('okapiUrl', { testOption: 'test' }));
       expect(mockFetch.mock.calls).toHaveLength(1);
@@ -180,6 +197,11 @@ describe('FFetch class', () => {
 
   describe('Calling an okapi fetch with expired AT...', () => {
     it('triggers rtr...calls fetch 2 times - token call, successful call', async () => {
+      setTokenExpiry.mockResolvedValueOnce({
+        atExpires: Date.now() - (10 * 60 * 1000),
+        rtExpires: Date.now() + (10 * 60 * 1000),
+      });
+
       getTokenExpiry.mockResolvedValueOnce({
         atExpires: Date.now() - (10 * 60 * 1000),
         rtExpires: Date.now() + (10 * 60 * 1000),
