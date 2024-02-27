@@ -159,12 +159,12 @@ describe('rtr', () => {
       };
 
       setTimeout(() => {
-        window.dispatchEvent(new Event(RTR_SUCCESS_EVENT));
+        window.dispatchEvent(new Event(EVENTS.AUTHN.RTR_SUCCESS));
       }, 500);
 
       setTimeout(() => {
         localStorage.removeItem(RTR_IS_ROTATING);
-        window.dispatchEvent(new Event(RTR_SUCCESS_EVENT));
+        window.dispatchEvent(new Event(EVENTS.AUTHN.RTR_SUCCESS));
       }, 1000);
 
       let ex = null;

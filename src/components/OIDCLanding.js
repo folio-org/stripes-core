@@ -68,8 +68,8 @@ const OIDCLanding = () => {
             return resp.json()
               .then((json) => {
                 return setTokenExpiry({
-                  atExpires: json.accessTokenExpiration ? new Date(json.accessTokenExpiration) : Date.now() + (60 * 1000),
-                  rtExpires: json.refreshTokenExpiration ? new Date(json.refreshTokenExpiration) : Date.now() + (2 * 60 * 1000),
+                  atExpires: json.accessTokenExpiration ? new Date(json.accessTokenExpiration).getTime() : Date.now() + (60 * 1000),
+                  rtExpires: json.refreshTokenExpiration ? new Date(json.refreshTokenExpiration).getTime() : Date.now() + (2 * 60 * 1000),
                 });
               })
               .then(() => {

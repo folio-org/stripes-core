@@ -37,6 +37,7 @@ import {
   ForgotUserNameCtrl,
   AppCtxMenuProvider,
   SessionEventContainer,
+  SessionEventContainer,
 } from './components';
 import StaleBundleWarning from './components/StaleBundleWarning';
 import { StripesContext } from './StripesContext';
