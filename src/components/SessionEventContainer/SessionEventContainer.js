@@ -41,6 +41,7 @@ export const rtrSuccessHandler = ({ stripes, setIsVisible, idleSessionTimer, dat
       }, (sessionTtl - (idleSeconds * 1000)));
     });
   }
+  return Promise.resolve();
 };
 
 /**

@@ -114,17 +114,20 @@ function fetchApplicationDetails(store) {
             return Promise.all(list);
           }
 
+          // eslint-disable-next-line no-console
           console.error(`>>> NO APPLICATIONS AVAILABLE FOR ${okapi.tenant}`, json);
           store.dispatch({ type: 'DISCOVERY_FAILURE', code: response.status });
           throw response;
         });
       } else {
+        // eslint-disable-next-line no-console
         console.error(`>>> COULD NOT RETRIEVE APPLICATIONS FOR ${okapi.tenant}`, response);
         store.dispatch({ type: 'DISCOVERY_FAILURE', code: response.status });
         throw response;
       }
     })
     .catch(reason => {
+      // eslint-disable-next-line no-console
       console.error(`@@ COULD NOT RETRIEVE APPLICATIONS FOR ${okapi.tenant}`, reason);
       store.dispatch({ type: 'DISCOVERY_FAILURE', message: reason });
     });

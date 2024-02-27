@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { FormattedMessage, FormattedNumber } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 
 import {
   Button,

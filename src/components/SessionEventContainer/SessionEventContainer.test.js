@@ -1,13 +1,12 @@
-import { render, screen } from '@folio/jest-config-stripes/testing-library/react';
-import userEvent from '@folio/jest-config-stripes/testing-library/user-event';
+import { render } from '@folio/jest-config-stripes/testing-library/react';
 
 import Harness from '../../../test/jest/helpers/harness';
 import SessionEventContainer, {
   idleSessionWarningHandler,
   rtrSuccessHandler,
 } from './SessionEventContainer';
-import { eventManager, getTokenExpiry } from '../../loginServices';
-import { CHANNELS, EVENTS } from '../../constants';
+import { getTokenExpiry } from '../../loginServices';
+import { EVENTS } from '../../constants';
 
 const listen = jest.fn();
 const emit = jest.fn();
