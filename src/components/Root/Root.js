@@ -21,7 +21,7 @@ import enhanceReducer from '../../enhanceReducer';
 import createApolloClient from '../../createApolloClient';
 import createReactQueryClient from '../../createReactQueryClient';
 import { setSinglePlugin, setBindings, setIsAuthenticated, setOkapiToken, setTimezone, setCurrency, updateCurrentUser } from '../../okapiActions';
-import { loadTranslations, checkOkapiSession, addRtrEventListeners } from '../../loginServices';
+import { loadTranslations, checkOkapiSession } from '../../loginServices';
 import { getQueryResourceKey, getCurrentModule } from '../../locationService';
 import Stripes from '../../Stripes';
 import RootWithIntl from '../../RootWithIntl';
@@ -41,7 +41,7 @@ class Root extends Component {
   constructor(...args) {
     super(...args);
 
-    const { modules, history, okapi, store } = this.props;
+    const { modules, history, okapi } = this.props;
 
     this.reducers = { ...initialReducers };
     this.epics = {};
@@ -71,7 +71,6 @@ class Root extends Component {
     // * configure document-level event listeners to listen for RTR events
     if (this.props.config.useSecureTokens) {
       this.ffetch = new FFetch({ logger: this.props.logger });
-      addRtrEventListeners(okapi, store);
     }
   }
 
