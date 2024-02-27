@@ -38,7 +38,7 @@ class Root extends Component {
   constructor(...args) {
     super(...args);
 
-    const { modules, history, okapi, store } = this.props;
+    const { modules, history, okapi } = this.props;
 
     this.reducers = { ...initialReducers };
     this.epics = {};

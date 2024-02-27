@@ -97,7 +97,7 @@ export const getTokenExpiry = async () => {
 };
 
 /**
- * getTokenSess
+ * setTokenSess
  * simple wrapper around access to values stored in localforage
  * to insulate RTR functions from that API. Supplement the existing
  * session with updated token expiration data.
@@ -110,7 +110,6 @@ export const setTokenExpiry = async (te) => {
   const val = { ...sess, tokenExpiration: te };
   return localforage.setItem(SESSION_NAME, val);
 };
-
 
 // export config values for storing user locale
 export const userLocaleConfig = {
@@ -136,7 +135,7 @@ function getHeaders(tenant, token) {
  *
  * @returns {boolean}
  */
-function canReadConfig(store) {
+export function canReadConfig(store) {
   const perms = store.getState().okapi.currentPerms;
   return perms?.['configuration.entries.collection.get'];
 }
@@ -424,6 +423,7 @@ export function spreadUserWithPerms(userWithPerms) {
   return { user, perms };
 }
 
+
 /**
  * logout
  * logout is a multi-part process, but this function is idempotent.
@@ -521,8 +521,6 @@ export async function logout(okapiUrl, store) {
  * @returns {Promise}
  */
 export function createOkapiSession(store, tenant, token, data) {
-  // @@ new StripesSession(store, data);
-
   // clear any auth-n errors
   store.dispatch(setAuthError(null));
 
@@ -534,15 +532,6 @@ export function createOkapiSession(store, tenant, token, data) {
 
   store.dispatch(setCurrentPerms(perms));
 
-  // if we can't parse tokenExpiration data, e.g. because data comes from `.../_self`
-  // which doesn't provide it, then set an invalid AT value and a near-future (+10 minutes) RT value.
-  // the invalid AT will prompt an RTR cycle which will either give us new AT/RT values
-  // (if the RT was valid) or throw an RTR_ERROR (if the RT was not valid).
-  const tokenExpiration = {
-    atExpires: data.tokenExpiration?.accessTokenExpiration ? new Date(data.tokenExpiration.accessTokenExpiration).getTime() : -1,
-    rtExpires: data.tokenExpiration?.refreshTokenExpiration ? new Date(data.tokenExpiration.refreshTokenExpiration).getTime() : Date.now() + (10 * 60 * 1000),
-  };
-
   const sessionTenant = data.tenant || tenant;
   const okapiSess = {
     token,
@@ -550,7 +539,6 @@ export function createOkapiSession(store, tenant, token, data) {
     user,
     perms,
     tenant: sessionTenant,
-    tokenExpiration,
   };
 
   // localStorage events emit across tabs so we can use it like a
@@ -560,7 +548,34 @@ export function createOkapiSession(store, tenant, token, data) {
   localStorage.setItem(SESSION_NAME, 'true');
 
   return localforage.setItem('loginResponse', data)
-    .then(() => localforage.setItem(SESSION_NAME, okapiSess))
+    .then(localforage.getItem(SESSION_NAME))
+    .then(sessionData => {
+      // for keycloak-based logins, token-expiration data was already
+      // pushed to storage, so we pull it out and reuse it here.
+      // for legacy logins, token-expiration data is available in the
+      // login response.
+      if (sessionData?.tokenExpiration) {
+        okapiSess.tokenExpiration = sessionData.tokenExpiration;
+      } else if (data.tokenExpiration) {
+        okapiSess.tokenExpiration = {
+          atExpires: new Date(data.tokenExpiration.accessTokenExpiration).getTime(),
+          rtExpires: new Date(data.tokenExpiration.refreshTokenExpiration).getTime(),
+        };
+      } else {
+        // somehow, we ended up here without any legit token-expiration values.
+        // that's not great, but in theory we only ended up here as a result
+        // of logging in, so let's punt and assume our cookies are valid.
+        // set an expired AT and RT 10 minutes into the future; the expired
+        // AT will kick off RTR, and on success we'll store real values as a result,
+        // or on failure we'll get kicked out. no harm, no foul.
+        okapiSess.tokenExpiration = {
+          atExpires: -1,
+          rtExpires: Date.now() + (10 * 60 * 1000),
+        };
+      }
+
+      return localforage.setItem(SESSION_NAME, okapiSess);
+    })
     .then(() => {
       store.dispatch(setIsAuthenticated(true));
       store.dispatch(setSessionData(okapiSess));
@@ -738,6 +753,7 @@ export function validateUser(okapiUrl, store, tenant, session) {
           token,
           tokenExpiration: session.tokenExpiration
         }));
+
         return loadResources(store, sessionTenant, user.id);
       });
     } else {
@@ -747,7 +763,7 @@ export function validateUser(okapiUrl, store, tenant, session) {
       });
     }
   }).catch((error) => {
-    console.error(error); // eslint-disable-line no-console
+    console.error('validateUser', { error }); // eslint-disable-line no-console
     store.dispatch(setServerDown());
     return error;
   });
