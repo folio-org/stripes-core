@@ -164,7 +164,7 @@ export const isRotating = () => {
  * rtr
  * exchange an RT for new tokens; dispatch RTR_ERROR_EVENT on error.
  *
- * Since all windows share the same cookie, this means they must also share
+ * Since all windows share the same cookie, this means the must also share
  * rotation, and when rotation starts in one window requests in all others
  * must await that promise. Thus, the RTR_IS_ROTATING flag is stored via
  * localStorage where it is globally accessible, rather than in a local

@@ -1,4 +1,4 @@
-import { render } from '@folio/jest-config-stripes/testing-library/react';
+import { render } from '@testing-library/react';
 import { createMemoryHistory } from 'history';
 
 import Harness from '../../../test/jest/helpers/harness';

@@ -2,7 +2,7 @@
 // FFetch for the reassign globals side-effect in its constructor.
 /* eslint-disable no-unused-vars */
 
-import { getTokenExpiry, setTokenExpiry } from '../../loginServices';
+import { getTokenExpiry } from '../../loginServices';
 import { FFetch } from './FFetch';
 import { RTRError, UnexpectedResourceError } from './Errors';
 
@@ -145,7 +145,6 @@ describe('FFetch class', () => {
     });
   });
 
-//<<<<<<< HEAD
   describe('Calling an okapi fetch with missing token...', () => {
     it('returns the error', async () => {
       mockFetch.mockResolvedValue('success')

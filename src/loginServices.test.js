@@ -1,10 +1,8 @@
 import localforage from 'localforage';
+import { config } from 'stripes-config';
 
 import {
-  canReadConfig,
   createOkapiSession,
-  eventManager,
-  getHeaders,
   getOkapiSession,
   getTokenExpiry,
   handleLoginError,
@@ -103,36 +101,6 @@ const mockFetchCleanUp = () => {
   delete global.fetch;
 };
 
-describe('canReadConfig', () => {
-  const p = 'configuration.entries.collection.get';
-  it('returns true when permission is present', () => {
-    const store = {
-      getState: () => ({
-        okapi: {
-          currentPerms: {
-            [p]: true,
-          }
-        }
-      }),
-    };
-
-    expect(canReadConfig(store)).toBeTruthy();
-  });
-
-  it('returns false when permission is absent', () => {
-    const store = {
-      getState: () => ({
-        okapi: {
-          currentPerms: {
-          }
-        }
-      }),
-    };
-
-    expect(canReadConfig(store)).toBeFalsy();
-  });
-});
-
 describe('createOkapiSession', () => {
   it('clears authentication errors', async () => {
     const store = {
@@ -170,43 +138,6 @@ describe('createOkapiSession', () => {
     mockFetchCleanUp();
   });
 });
-
-describe('eventManager', () => {
-  describe('listen', () => {
-    it('listens for an event', () => {
-      const f = jest.fn();
-      const em = eventManager({ channel: 'foo' });
-      em.listen('monkey', f);
-      em.emit('monkey');
-      expect(f).toHaveBeenCalled();
-    });
-
-    it('listens for a list of events', () => {
-      const f = jest.fn();
-      const em = eventManager({ channel: 'foo' });
-      const franz = ['Liszt', 'Hungarian', 'Raphsody'];
-      em.listen(franz, f);
-      em.emit(franz, 'asdf');
-      expect(f).toHaveBeenCalledTimes(franz.length);
-    });
-  });
-});
-
-describe('getHeaders', () => {
-  it('finds expected headers', () => {
-    const h = getHeaders('tenant', 'token');
-    expect(h['X-Okapi-Tenant']).toBe('tenant');
-    expect(h['Content-Type']).toBe('application/json');
-    expect(h['X-Okapi-Token']).toBe('token');
-  });
-
-  it('omits token when null', () => {
-    const h = getHeaders('tenant');
-    expect(h['X-Okapi-Tenant']).toBe('tenant');
-    expect(h['X-Okapi-Token']).toBeUndefined();
-  });
-});
-
 
 describe('handleLoginError', () => {
   it('dispatches setOkapiReady', async () => {
