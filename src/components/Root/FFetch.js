@@ -54,7 +54,6 @@ import {
   isFolioApiRequest,
   isLogoutRequest,
   rtr,
-  RTR_TTL_WINDOW,
 } from './token-util';
 import {
   RTRError,

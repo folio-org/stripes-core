@@ -97,7 +97,7 @@ export const getTokenExpiry = async () => {
 };
 
 /**
- * setTokenSess
+ * getTokenSess
  * simple wrapper around access to values stored in localforage
  * to insulate RTR functions from that API. Supplement the existing
  * session with updated token expiration data.
@@ -110,6 +110,7 @@ export const setTokenExpiry = async (te) => {
   const val = { ...sess, tokenExpiration: te };
   return localforage.setItem(SESSION_NAME, val);
 };
+
 
 // export config values for storing user locale
 export const userLocaleConfig = {
@@ -135,7 +136,7 @@ function getHeaders(tenant, token) {
  *
  * @returns {boolean}
  */
-export function canReadConfig(store) {
+function canReadConfig(store) {
   const perms = store.getState().okapi.currentPerms;
   return perms?.['configuration.entries.collection.get'];
 }
@@ -423,7 +424,6 @@ export function spreadUserWithPerms(userWithPerms) {
   return { user, perms };
 }
 
-
 /**
  * logout
  * logout is a multi-part process, but this function is idempotent.
@@ -521,6 +521,8 @@ export async function logout(okapiUrl, store) {
  * @returns {Promise}
  */
 export function createOkapiSession(store, tenant, token, data) {
+  // @@ new StripesSession(store, data);
+
   // clear any auth-n errors
   store.dispatch(setAuthError(null));
 
@@ -531,6 +533,15 @@ export function createOkapiSession(store, tenant, token, data) {
   const { user, perms } = spreadUserWithPerms(data);
 
   store.dispatch(setCurrentPerms(perms));
+
+  // if we can't parse tokenExpiration data, e.g. because data comes from `.../_self`
+  // which doesn't provide it, then set an invalid AT value and a near-future (+10 minutes) RT value.
+  // the invalid AT will prompt an RTR cycle which will either give us new AT/RT values
+  // (if the RT was valid) or throw an RTR_ERROR (if the RT was not valid).
+  const tokenExpiration = {
+    atExpires: data.tokenExpiration?.accessTokenExpiration ? new Date(data.tokenExpiration.accessTokenExpiration).getTime() : -1,
+    rtExpires: data.tokenExpiration?.refreshTokenExpiration ? new Date(data.tokenExpiration.refreshTokenExpiration).getTime() : Date.now() + (10 * 60 * 1000),
+  };
 
   const sessionTenant = data.tenant || tenant;
   const okapiSess = {
@@ -581,6 +592,41 @@ export function createOkapiSession(store, tenant, token, data) {
       store.dispatch(setSessionData(okapiSess));
       return loadResources(store, sessionTenant, user.id);
     });
+}
+
+/**
+ * handleRtrError
+ * Clear out the redux store and logout.
+ *
+ * @param {*} event
+ * @param {*} store
+ * @returns void
+ */
+export const handleRtrError = (event, store) => {
+  logger.log('rtr', 'rtr error; logging out', event.detail);
+  store.dispatch(setIsAuthenticated(false));
+  store.dispatch(clearCurrentUser());
+  store.dispatch(resetStore());
+  localforage.removeItem(SESSION_NAME)
+    .then(localforage.removeItem('loginResponse'));
+};
+
+/**
+ * addRtrEventListeners
+ * RTR_ERROR_EVENT: RTR error, logout
+ * RTR_ROTATION_EVENT: configure a timer for auto-logout
+ *
+ * @param {*} okapiConfig
+ * @param {*} store
+ */
+export function addRtrEventListeners(okapiConfig, store) {
+  document.addEventListener(RTR_ERROR_EVENT, (e) => {
+    handleRtrError(e, store);
+  });
+
+  // document.addEventListener(RTR_ROTATION_EVENT, (e) => {
+  //   handleRtrRotation(e, store);
+  // });
 }
 
 /**
@@ -763,7 +809,7 @@ export function validateUser(okapiUrl, store, tenant, session) {
       });
     }
   }).catch((error) => {
-    console.error('validateUser', { error }); // eslint-disable-line no-console
+    console.error(error); // eslint-disable-line no-console
     store.dispatch(setServerDown());
     return error;
   });
