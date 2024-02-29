@@ -37,7 +37,6 @@ import {
   ForgotPasswordCtrl,
   ForgotUserNameCtrl,
   AppCtxMenuProvider,
-  SessionEventContainer,
 } from './components';
 import StaleBundleWarning from './components/StaleBundleWarning';
 import { StripesContext } from './StripesContext';
@@ -138,7 +137,6 @@ class RootWithIntl extends React.Component {
                             { (stripes.okapi !== 'object' || stripes.discovery.isFinished) && (
                               <ModuleContainer id="content">
                                 <OverlayContainer />
-                                <SessionEventContainer />
                                 <Switch>
                                   <TitledRoute
                                     name="home"
