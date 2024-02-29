@@ -32,7 +32,6 @@ const Pluggable = (props) => {
     }
 
     return cached;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [plugins]);
 
   if (cachedPlugins.length) {
