@@ -157,4 +157,42 @@ describe('Given useChunkedCQLFetch', () => {
       expect(result.current.itemQueries?.length).toEqual(6);
     });
   });
+
+  describe('allows parameter overrides', () => {
+    it('sets up 1 fetch using alternate ID name', async () => {
+      const { result } = renderHook(() => useChunkedCQLFetch({
+        ...baseOptions,
+        idName: 'userId'
+      }), { wrapper });
+  
+      await waitFor(() => {
+        const loadingQueries = result.current.itemQueries?.filter(iq => iq.isLoading);
+  
+        return loadingQueries.length === 0;
+      });
+  
+      expect(result.current.itemQueries?.length).toEqual(1);
+    });
+  
+    it('sets up 2 fetches with custom limit', async () => {
+      const largeIdSet = [];
+      for (let i = 0; i < 100; i++) {
+        largeIdSet.push(makeid(5));
+      }
+
+      const { result } = renderHook(() => useChunkedCQLFetch({
+        ...baseOptions,
+        ids: largeIdSet,
+        limit: 100
+      }), { wrapper });
+
+      await waitFor(() => {
+        const loadingQueries = result.current.itemQueries?.filter(iq => iq.isLoading);
+        return loadingQueries.length === 0;
+      });
+
+      expect(result.current.itemQueries?.length).toEqual(2);
+    });
+  });
+
 });

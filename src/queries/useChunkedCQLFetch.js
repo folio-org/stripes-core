@@ -33,10 +33,12 @@ const useChunkedCQLFetch = ({
   CONCURRENT_REQUESTS = CONCURRENT_REQUESTS_DEFAULT, // Number of requests to make concurrently
   endpoint, // endpoint to hit to fetch items
   generateQueryKey, // Passed function to allow customised query keys
-  ids: passedIds, // List of ids to fetch
+  ids: passedIds, // List of IDs to fetch
+  idName = 'id', // Named ID field to use in the CQL query (i.e. id or userId)
+  limit = 1000, // Item limit to fetch on each request
   queryOptions: passedQueryOptions = {}, // Options to pass to each query
   reduceFunction, // Function to reduce fetched objects at the end into single array
-  STEP_SIZE = STEP_SIZE_DEFAULT // Number of ids fetch per request
+  STEP_SIZE = STEP_SIZE_DEFAULT // Number of IDs fetch per request
 }) => {
   const ky = useOkapiKy();
 
@@ -58,7 +60,7 @@ const useChunkedCQLFetch = ({
   const getQueryArray = useCallback(() => {
     const queryArray = [];
     chunkedItems.forEach((chunkedItem, chunkedItemIndex) => {
-      const query = `id==(${chunkedItem.join(' or ')})`;
+      const query = `${idName}==(${chunkedItem.join(' or ')})`;
       const queryKey = generateQueryKey ?
         generateQueryKey({
           CONCURRENT_REQUESTS,
@@ -72,7 +74,7 @@ const useChunkedCQLFetch = ({
         ['stripes-core', endpoint, chunkedItem];
       queryArray.push({
         queryKey,
-        queryFn: () => ky.get(`${endpoint}?limit=1000&query=${query}`).json(),
+        queryFn: () => ky.get(`${endpoint}?limit=${limit}&query=${query}`).json(),
         // Only enable once the previous slice has all been fetched
         enabled: queryEnabled && chunkedItemIndex < CONCURRENT_REQUESTS,
         ...queryOptions
