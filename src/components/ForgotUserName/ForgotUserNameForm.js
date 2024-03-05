@@ -78,7 +78,6 @@ class ForgotUserNameForm extends Component {
                     inputClass={formStyles.input}
                     validationEnabled={false}
                     hasClearIcon={false}
-                    autoComplete="on"
                     autoCapitalize="none"
                     autoFocus
                     placeholder={formatMessage({ id: 'stripes-core.placeholder.forgotUsername' })}
