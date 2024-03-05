@@ -113,7 +113,8 @@ describe('FFetch class', () => {
               'content-type': 'text/plain',
             },
           }
-        ));
+        )
+      );
       const testFfetch = new FFetch({ logger: { log } });
       const response = await global.fetch('okapiUrl', { testOption: 'test' });
       expect(mockFetch.mock.calls).toHaveLength(1);
@@ -170,7 +171,8 @@ describe('FFetch class', () => {
               'content-type': 'application/json',
             },
           }
-        ));
+        )
+      );
       const testFfetch = new FFetch({ logger: { log } });
       const response = (await global.fetch('okapiUrl', { testOption: 'test' }));
       expect(mockFetch.mock.calls).toHaveLength(1);

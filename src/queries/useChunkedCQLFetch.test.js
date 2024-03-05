@@ -164,16 +164,16 @@ describe('Given useChunkedCQLFetch', () => {
         ...baseOptions,
         idName: 'userId'
       }), { wrapper });
-  
+
       await waitFor(() => {
         const loadingQueries = result.current.itemQueries?.filter(iq => iq.isLoading);
-  
+
         return loadingQueries.length === 0;
       });
-  
+
       expect(result.current.itemQueries?.length).toEqual(1);
     });
-  
+
     it('sets up 2 fetches with custom limit', async () => {
       const largeIdSet = [];
       for (let i = 0; i < 100; i++) {
@@ -194,5 +194,4 @@ describe('Given useChunkedCQLFetch', () => {
       expect(result.current.itemQueries?.length).toEqual(2);
     });
   });
-
 });
