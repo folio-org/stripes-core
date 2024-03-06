@@ -21,7 +21,7 @@
 * Make `<Settings>` a functional component. Update connected modules when `stripes` object changes. Fixes STCOR-797.
 * `useOkapiKy` uses || instead of ?? to apply current tenant id when override was not provided. Refs STCOR-814.
 * Correctly parse `.../_self` permissions object. Refs STCOR-813.
-* Add `idName` and `limit` as passable parameters to `useChunkedCQLFetch`. Refs STCOR-821.
+* Add `idName` and `limit` as passable props to `useChunkedCQLFetch`. Refs STCOR-821.
 
 ## [10.0.0](https://github.com/folio-org/stripes-core/tree/v10.0.0) (2023-10-11)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v9.0.0...v10.0.0)
