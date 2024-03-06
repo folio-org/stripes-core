@@ -85,7 +85,7 @@ describe('FXHR', () => {
 
 
   it('Handles Errors during token rotation', async () => {
-    rtr.mockImplementationOnce(() => { throw new RTRError('rtr test failure'); });
+    rtr.mockRejectedValueOnce(new RTRError('rtr test failure'));
     getTokenExpiry.mockResolvedValue({
       atExpires: Date.now() - (10 * 60 * 1000),
       rtExpires: Date.now() + (10 * 60 * 1000),

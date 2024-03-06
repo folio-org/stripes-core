@@ -41,7 +41,7 @@ export default (deps) => {
             })
             .catch(err => {
               if (err instanceof RTRError) {
-                // console.error('RTR failure while attempting XHR', err); // eslint-disable-line no-console
+                console.error('RTR failure while attempting XHR', err); // eslint-disable-line no-console
                 document.dispatchEvent(new Event(RTR_ERROR_EVENT, { detail: err }));
               }
 
