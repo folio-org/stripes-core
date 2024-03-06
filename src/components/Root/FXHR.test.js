@@ -25,7 +25,7 @@ describe('FXHR', () => {
   let testXHR;
   beforeEach(() => {
     jest.clearAllMocks();
-    FakeXHR = FXHR({ logger: { log: () => {} } });
+    FakeXHR = FXHR({ tokenExpiration: { atExpires: Date.now(), rtExpires: Date.now() + 5000 }, logger: { log: () => {} } });
     testXHR = new FakeXHR();
   });
 
@@ -70,14 +70,35 @@ describe('FXHR', () => {
     expect(rtr.mock.calls).toHaveLength(0);
   });
 
-  it('Handles Token Errors', () => {
-    rtr.mockImplementationOnce(() => { throw new RTRError('test rotation failure'); });
+  it('If AT is invalid, but RT is valid, refresh the token before sending...', async () => {
+    getTokenExpiry.mockResolvedValue({
+      atExpires: Date.now() - (10 * 60 * 1000),
+      rtExpires: Date.now() + (10 * 60 * 1000),
+    });
+    testXHR.addEventListener('abort', mockHandler);
+    testXHR.open('POST', 'okapiUrl');
+    await testXHR.send(new ArrayBuffer(8));
+    expect(openSpy.mock.calls).toHaveLength(1);
+    expect(aelSpy.mock.calls).toHaveLength(1);
+    expect(rtr.mock.calls).toHaveLength(1);
+  });
+
+
+  it('Handles Errors during token rotation', async () => {
+    rtr.mockImplementationOnce(() => { throw new RTRError('rtr test failure'); });
+    getTokenExpiry.mockResolvedValue({
+      atExpires: Date.now() - (10 * 60 * 1000),
+      rtExpires: Date.now() + (10 * 60 * 1000),
+    });
+    let error = null;
     try {
       testXHR.addEventListener('abort', mockHandler);
       testXHR.open('POST', 'okapiUrl');
-      testXHR.send(new ArrayBuffer(8));
+      await testXHR.send(new ArrayBuffer(8));
     } catch (err) {
-      expect(err instanceof RTRError).toBeTrue;
+      error = err;
+    } finally {
+      expect(error instanceof RTRError).toBe(true);
     }
   });
 });
