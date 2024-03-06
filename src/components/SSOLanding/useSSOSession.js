@@ -48,7 +48,7 @@ const useSSOSession = () => {
     requestUserWithPerms(okapi.url, store, tenant, token)
       .then(() => {
         if (store.getState()?.okapi?.authFailure) {
-          return Promise.reject();
+          return Promise.reject(new Error('SSO Failed'));
         }
 
         return Promise.resolve();
