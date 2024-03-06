@@ -99,7 +99,7 @@ describe('SSOLanding', () => {
     const queryTenant = 'queryTenant';
     const store = useStore();
 
-    useLocation.mockReturnValue({ search: `tenant=${queryTenant}` });
+    useLocation.mockReturnValue({ search: `tenantId=${queryTenant}` });
     config.useSecureTokens = true;
 
     renderHook(() => useSSOSession());

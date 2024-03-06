@@ -25,7 +25,7 @@ const getToken = (cookies, params) => {
 
 const getTenant = (params, token) => {
   const tenant = config.useSecureTokens
-    ? params?.tenant
+    ? params?.tenantId
     : parseJWT(token)?.tenant;
 
   return tenant || okapi.tenant;
