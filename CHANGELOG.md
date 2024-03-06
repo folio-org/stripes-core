@@ -65,6 +65,7 @@
 * Export `getEventHandler` to be able to create events in other modules. Refs STCOR-770.
 * Simplify logout workflow to bypass keycloak confirmation page. Refs STCOR-803.
 * After login, only check SSO endpoints when `login-saml` interface is present. Refs STCOR-816.
+* Add `idName` and `limit` as passable props to `useChunkedCQLFetch`. Refs STCOR-821.
 
 ## [10.0.0](https://github.com/folio-org/stripes-core/tree/v10.0.0) (2023-10-11)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v9.0.0...v10.0.0)
