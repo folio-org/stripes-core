@@ -34,19 +34,17 @@ export default (deps) => {
           super.send(payload);
         } else if (isValidRT(this.FFetchContext.tokenExpiration, logger)) {
           logger.log('rtr', 'local RT valid, sending XHR...');
-          await rtr(this.FFetchContext)
-            .then(() => {
-              logger.log('rtr', 'local RTtoken refreshed, sending XHR...');
-              super.send(payload);
-            })
-            .catch(err => {
-              if (err instanceof RTRError) {
-                console.error('RTR failure while attempting XHR', err); // eslint-disable-line no-console
-                document.dispatchEvent(new Event(RTR_ERROR_EVENT, { detail: err }));
-              }
-
-              throw err;
-            });
+          try {
+            await rtr(this.FFetchContext);
+            logger.log('rtr', 'local RTtoken refreshed, sending XHR...');
+            super.send(payload);
+          } catch (err) {
+            if (err instanceof RTRError) {
+              console.error('RTR failure while attempting XHR', err); // eslint-disable-line no-console
+              document.dispatchEvent(new Event(RTR_ERROR_EVENT, { detail: err }));
+            }
+            throw err;
+          }
         } else {
           logger.log('rtr', 'All tokens expired when attempting to send XHR');
           document.dispatchEvent(new Event(RTR_ERROR_EVENT, { detail: 'All tokens expired when sending XHR' }));
