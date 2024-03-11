@@ -23,6 +23,7 @@
 * Correctly parse `.../_self` permissions object. Refs STCOR-813.
 * Add `idName` and `limit` as passable props to `useChunkedCQLFetch`. Refs STCOR-821.
 * Check for valid token before rotating during XHR send. Refs STCOR-817.
+* Remove `autoComplete` from `<ForgotPassword>`, `<ForgotUsername>` fields. Refs STCOR-742.
 
 ## [10.0.0](https://github.com/folio-org/stripes-core/tree/v10.0.0) (2023-10-11)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v9.0.0...v10.0.0)
