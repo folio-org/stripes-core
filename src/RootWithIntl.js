@@ -48,7 +48,7 @@ export const renderLogoutComponent = () => {
   return <InternalRedirect to="/" />;
 };
 
-export const LoginComponent = ({stripes}) => {
+export const renderLoginComponent = (stripes) => {
   const { config, okapi } = stripes;
 
   if (okapi.authnUrl) {
@@ -216,7 +216,7 @@ class RootWithIntl extends React.Component {
                         />
                         <TitledRoute
                           name="login"
-                          component={<LoginComponent stripes={this.props.stripes}/>}
+                          component={renderLoginComponent(this.props.stripes)}
                         />
                       </Switch>
                     }
