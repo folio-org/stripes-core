@@ -53,7 +53,7 @@ export const LoginComponent = ({stripes}) => {
 
   if (okapi.authnUrl) {
     if (config.isSingleTenant) {
-      const redirectUri = `${window.location.protocol}//${window.location.host}/oidc-landing?fwd=settings`;
+      const redirectUri = `${window.location.protocol}//${window.location.host}/oidc-landing${encodeURIComponent('?fwd=settings')}`;
       const authnUri = `${okapi.authnUrl}/realms/${okapi.tenant}/protocol/openid-connect/auth?client_id=${okapi.clientId}&response_type=code&redirect_uri=${redirectUri}&scope=openid`;
       return <Redirect to={authnUri} />;
     }
@@ -109,6 +109,10 @@ class RootWithIntl extends React.Component {
       disableAuth,
       history,
     } = this.props;
+
+    console.log(isAuthenticated, "isAuthenticated")
+
+    console.log(token, "token")
 
     const connect = connectFor('@folio/core', this.props.stripes.epics, this.props.stripes.logger);
     const stripes = this.props.stripes.clone({ connect });
