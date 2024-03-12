@@ -48,13 +48,14 @@ export const renderLogoutComponent = () => {
   return <InternalRedirect to="/" />;
 };
 
-export const renderLoginComponent = (stripes) => {
+export const LoginComponent = ({stripes}) => {
   const { config, okapi } = stripes;
 
   if (okapi.authnUrl) {
     if (config.isSingleTenant) {
       const redirectUri = `${window.location.protocol}//${window.location.host}/oidc-landing`;
-      const authnUri = `${okapi.authnUrl}/realms/${okapi.tenant}/protocol/openid-connect/auth?client_id=${okapi.clientId}&response_type=code&redirect_uri=${redirectUri}&scope=openid`;
+      const pathname = window.location.pathname;
+      const authnUri = `${okapi.authnUrl}/realms/${okapi.tenant}/protocol/openid-connect/auth?client_id=${okapi.clientId}&response_type=code&redirect_uri=${redirectUri}&unauthorized_redirect=${pathname}&scope=openid`;
       return <Redirect to={authnUri} />;
     }
 
@@ -212,7 +213,7 @@ class RootWithIntl extends React.Component {
                         />
                         <TitledRoute
                           name="login"
-                          component={renderLoginComponent(this.props.stripes)}
+                          component={<LoginComponent stripes={this.props.stripes}/>}
                         />
                       </Switch>
                     }
