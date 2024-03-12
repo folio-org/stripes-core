@@ -10,13 +10,13 @@ function PreLoginLanding({ onSelectTenant }) {
   const intl = useIntl();
   const { okapi, config: { tenantOptions = {} } } = useStripes();
 
-  const redirectUri = `${window.location.protocol}//${window.location.host}/oidc-landing`;
+  const redirectUri = `${window.location.protocol}//${window.location.host}/oidc-landing?fwd=${window.location.pathname}`;
   const options = Object.keys(tenantOptions).map(tenantName => ({ value: tenantName, label: tenantName }));
 
   const getLoginUrl = () => {
     if (!okapi.tenant) return '';
     if (okapi.authnUrl) {
-      return `${okapi.authnUrl}/realms/${okapi.tenant}/protocol/openid-connect/auth?client_id=${okapi.clientId}&response_type=code&redirect_uri=${redirectUri}&fwd=${window.location.pathname}&scope=openid&isConsortium=true`;
+      return `${okapi.authnUrl}/realms/${okapi.tenant}/protocol/openid-connect/auth?client_id=${okapi.clientId}&response_type=code&redirect_uri=${redirectUri}&scope=openid&isConsortium=true`;
     }
     return '';
   };
