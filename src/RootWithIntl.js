@@ -53,7 +53,7 @@ export const LoginComponent = ({stripes}) => {
 
   if (okapi.authnUrl) {
     if (config.isSingleTenant) {
-      const redirectUri = `${window.location.protocol}//${window.location.host}/oidc-landing`;
+      const redirectUri = `${window.location.protocol}//${window.location.host}/oidc-landing?fwd=settings`;
       const authnUri = `${okapi.authnUrl}/realms/${okapi.tenant}/protocol/openid-connect/auth?client_id=${okapi.clientId}&response_type=code&redirect_uri=${redirectUri}&scope=openid`;
       return <Redirect to={authnUri} />;
     }
