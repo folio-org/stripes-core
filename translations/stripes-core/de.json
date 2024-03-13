@@ -145,5 +145,5 @@
     "stale.reload": "Zum Neuladen hier klicken.",
     "placeholder.forgotPassword": "E-Mail oder Telefonnummer eingeben",
     "placeholder.forgotUsername": "E-Mail oder Telefonnummer eingeben",
-    "title.cookieEnabled": "Cookies are required to login. Please enable cookies and try again."
+    "title.cookieEnabled": "Für die Anmeldung werden Cookies benötigt. Bitte Cookies aktivieren und erneut versuchen."
 }
