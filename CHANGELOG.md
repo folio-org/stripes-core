@@ -8,7 +8,8 @@
 * Load DayJS locale data as part of `loginServices`. STCOR-771.
 * Turn on `<StrictMode>`; ignore it with `stripes.config.js` `disableStrictMode: true`. Refs STCOR-841.
 
-## 10.1.0 IN PROGRESS
+## [10.1.0](https://github.com/folio-org/stripes-core/tree/v10.1.0) (2024-03-12)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.0.0...v10.1.0)
 
 * Provide optional tenant argument to `useOkapiKy` hook. Refs STCOR-747.
 * Avoid private path when import `validateUser` function. Refs STCOR-749.
