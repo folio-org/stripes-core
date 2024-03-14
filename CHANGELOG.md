@@ -2,6 +2,9 @@
 
 ## 10.1.1 IN PROGRESS
 
+## [10.1.1](https://github.com/folio-org/stripes-core/tree/v10.1.1) (2024-03-25)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.1.0...v10.1.1)
+
 * Utilize the `tenant` procured through the SSO login process. Refs STCOR-769.
 * Remove tag-based selectors from Login, ResetPassword, Forgot UserName/Password form CSS. Refs STCOR-712.
 * Provide `useUserTenantPermissions` hook. Refs STCOR-830.
