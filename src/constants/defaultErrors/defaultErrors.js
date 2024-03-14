@@ -2,6 +2,7 @@ import {
   defaultErrorCodes,
   changePasswordErrorCodes,
   forgotFormErrorCodes,
+  ssoErrorCodes,
 } from '../index';
 
 const defaultErrors = {
@@ -24,7 +25,11 @@ const defaultErrors = {
   FORGOTTEN_USERNAME_CLIENT_ERROR: {
     code: forgotFormErrorCodes.UNABLE_LOCATE_ACCOUNT,
     type: 'error',
-  }
+  },
+  SSO_SESSION_FAILED_ERROR: {
+    code: ssoErrorCodes.SSO_SESSION_FAILED_ERROR,
+    type: 'error',
+  },
 };
 
 export default defaultErrors;

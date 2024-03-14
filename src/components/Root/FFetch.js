@@ -100,6 +100,7 @@ export class FFetch {
         '/bl-users/login-with-expiry',
         '/bl-users/password-reset',
         '/saml/check',
+        `/_/invoke/tenant/${okapi.tenant}/saml/login`
       ];
 
       this.logger.log('rtr', `AT invalid for ${resource}`);
@@ -230,7 +231,9 @@ export class FFetch {
    * @returns Promise
    * @throws if any fetch fails
    */
-  ffetch = async (resource, options) => {
+  ffetch = async (resource, ffOptions = {}) => {
+    const { rtrIgnore = false, ...options } = ffOptions;
+
     // FOLIO API requests are subject to RTR
     if (isFolioApiRequest(resource, okapi.url)) {
       this.logger.log('rtr', 'will fetch', resource);
@@ -248,7 +251,7 @@ export class FFetch {
       }
 
       // AT is valid or unnecessary; execute the fetch
-      if (this.isPermissibleRequest(resource, this.tokenExpiration, okapi.url)) {
+      if (rtrIgnore || this.isPermissibleRequest(resource, this.tokenExpiration, okapi.url)) {
         return this.passThroughWithAT(resource, options);
       }
 
