@@ -757,13 +757,18 @@ export function requestLogin(okapiUrl, store, tenant, data) {
  * retrieve currently-authenticated user
  * @param {string} okapiUrl
  * @param {string} tenant
+ * @param {string} token
+ * @param {boolean} rtrIgnore
  *
  * @returns {Promise} Promise resolving to the response of the request
  */
-function fetchUserWithPerms(okapiUrl, tenant, token) {
+function fetchUserWithPerms(okapiUrl, tenant, token, rtrIgnore = false) {
   return fetch(
     `${okapiUrl}/bl-users/_self?expandPermissions=true&fullPermissions=true`,
-    { headers: getHeaders(tenant, token) },
+    {
+      headers: getHeaders(tenant, token),
+      rtrIgnore,
+    },
   );
 }
 
@@ -777,7 +782,7 @@ function fetchUserWithPerms(okapiUrl, tenant, token) {
  * @returns {Promise} Promise resolving to the response-body (JSON) of the request
  */
 export function requestUserWithPerms(okapiUrl, store, tenant, token) {
-  return fetchUserWithPerms(okapiUrl, tenant, token)
+  return fetchUserWithPerms(okapiUrl, tenant, token, !token)
     .then(resp => processOkapiSession(okapiUrl, store, tenant, resp, token));
 }
 

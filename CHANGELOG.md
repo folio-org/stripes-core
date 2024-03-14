@@ -1,5 +1,9 @@
 # Change history for stripes-core
 
+## 10.1.1 IN PROGRESS
+
+* Utilize the `tenant` procured through the SSO login process. Refs STCOR-769.
+
 ## 10.1.0 IN PROGRESS
 
 * Provide optional tenant argument to `useOkapiKy` hook. Refs STCOR-747.
