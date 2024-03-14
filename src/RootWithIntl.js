@@ -29,7 +29,6 @@ import {
   Settings,
   HandlerManager,
   TitleManager,
-  Login,
   OverlayContainer,
   CreateResetPassword,
   CheckEmailStatusPage,
