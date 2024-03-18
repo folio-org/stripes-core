@@ -5,6 +5,7 @@ import PreLoginLanding from '../PreLoginLanding';
 import Login from '../Login';
 
 import { setOkapiTenant } from '../../okapiActions';
+import { setUnauthorizedPathToSession } from '../../loginServices';
 
 const AuthnLogin = ({ stripes }) => {
   const { config, okapi } = stripes;
@@ -14,7 +15,7 @@ const AuthnLogin = ({ stripes }) => {
     /** Store unauthorized pathname to session storage. Refs STCOR-789
     * @see OIDCRedirect
     */
-      sessionStorage.setItem('unauthorized_path', window.location.pathname);
+      setUnauthorizedPathToSession(window.location.pathname);
     }
     // we only want to run this effect once, on load.
     // okapi.authnUrl are defined in stripes.config.js
