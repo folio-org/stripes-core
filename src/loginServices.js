@@ -108,6 +108,17 @@ export const setTokenExpiry = async (te) => {
   return localforage.setItem(SESSION_NAME, { ...sess, tokenExpiration: te });
 };
 
+/**
+ * removeUnauthorizedPathFromSession, setUnauthorizedPathToSession, getUnauthorizedPathFromSession
+ * Add/remove/get unauthorized_path to/from session storage;
+ * Used to restore path if user is unauthorized.
+ * @see OIDCRedirect
+ */
+
+export const removeUnauthorizedPathFromSession = () => sessionStorage.removeItem('unauthorized_path');
+export const setUnauthorizedPathToSession = (pathname) => sessionStorage.setItem('unauthorized_path', pathname);
+export const getUnauthorizedPathFromSession = () => sessionStorage.getItem('unauthorized_path');
+
 
 // export config values for storing user locale
 export const userLocaleConfig = {
@@ -449,6 +460,7 @@ export async function logout(okapiUrl, store) {
     .then(localStorage.removeItem('tenant'))
     .then(localforage.removeItem(SESSION_NAME))
     .then(localforage.removeItem('loginResponse'))
+    .then(removeUnauthorizedPathFromSession)
     .catch((error) => {
       // eslint-disable-next-line no-console
       console.log(`Error logging out: ${JSON.stringify(error)}`);
