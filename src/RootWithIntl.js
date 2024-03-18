@@ -14,7 +14,6 @@ import { Callout, HotKeys } from '@folio/stripes-components';
 
 import ModuleRoutes from './moduleRoutes';
 import events from './events';
-import Redirect from './components/Redirect';
 
 import {
   MainContainer,
@@ -30,7 +29,6 @@ import {
   Settings,
   HandlerManager,
   TitleManager,
-  Login,
   OverlayContainer,
   CreateResetPassword,
   CheckEmailStatusPage,
@@ -41,35 +39,10 @@ import {
 import StaleBundleWarning from './components/StaleBundleWarning';
 import { StripesContext } from './StripesContext';
 import { CalloutContext } from './CalloutContext';
-import PreLoginLanding from './components/PreLoginLanding';
-import { setOkapiTenant } from './okapiActions';
+import AuthnLogin from './components/AuthnLogin';
 
 export const renderLogoutComponent = () => {
   return <InternalRedirect to="/" />;
-};
-
-export const renderLoginComponent = (stripes) => {
-  const { config, okapi } = stripes;
-
-  if (okapi.authnUrl) {
-    if (config.isSingleTenant) {
-      const redirectUri = `${window.location.protocol}//${window.location.host}/oidc-landing`;
-      const authnUri = `${okapi.authnUrl}/realms/${okapi.tenant}/protocol/openid-connect/auth?client_id=${okapi.clientId}&response_type=code&redirect_uri=${redirectUri}&scope=openid`;
-      return <Redirect to={authnUri} />;
-    }
-
-    const handleSelectTenant = (tenant, clientId) => {
-      localStorage.setItem('tenant', JSON.stringify({ tenantName: tenant, clientId }));
-      stripes.store.dispatch(setOkapiTenant({ tenant, clientId }));
-    };
-
-    return <PreLoginLanding onSelectTenant={handleSelectTenant} />;
-  }
-
-  return <Login
-    autoLogin={config.autoLogin}
-    stripes={stripes}
-  />;
 };
 
 class RootWithIntl extends React.Component {
@@ -212,7 +185,7 @@ class RootWithIntl extends React.Component {
                         />
                         <TitledRoute
                           name="login"
-                          component={renderLoginComponent(this.props.stripes)}
+                          component={<AuthnLogin stripes={this.props.stripes} />}
                         />
                       </Switch>
                     }
