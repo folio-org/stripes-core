@@ -57,8 +57,6 @@ describe('CreateResetPasswordControl', () => {
       </Provider>
     );
 
-    console.log(mockFetch.mock.lastCall[1].headers);
-
     expect(mockFetch.mock.lastCall[1].headers['x-okapi-token'] === '123').toBeTruthy();
   });
 });
