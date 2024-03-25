@@ -145,5 +145,6 @@
     "stale.reload": "Klikněte zde pro opětovné načtení.",
     "placeholder.forgotPassword": "Zadejte e-mail nebo telefon",
     "placeholder.forgotUsername": "Zadejte e-mail nebo telefon",
-    "title.cookieEnabled": "Pro přihlášení jsou vyžadovány soubory cookie. Povolte soubory cookie a zkuste to znovu prosím."
+    "title.cookieEnabled": "Pro přihlášení jsou vyžadovány soubory cookie. Povolte soubory cookie a zkuste to znovu prosím.",
+    "errors.sso.session.failed": "Problém komunikace se serverem. Prosím zkuste to znovu"
 }
