@@ -145,5 +145,6 @@
     "stale.reload": "单击此处重新加载。",
     "placeholder.forgotPassword": "输入电子邮件或电话",
     "placeholder.forgotUsername": "输入电子邮件或电话",
-    "title.cookieEnabled": "登录需要 Cookie。请启用Cookie，然后重试。"
+    "title.cookieEnabled": "登录需要 Cookie。请启用Cookie，然后重试。",
+    "errors.sso.session.failed": "SSO Login failed. Please try again"
 }

@@ -145,5 +145,6 @@
     "stale.reload": "Clique aqui para recarregar.",
     "placeholder.forgotPassword": "Digite e-mail ou telefone",
     "placeholder.forgotUsername": "Digite e-mail ou telefone",
-    "title.cookieEnabled": "Os cookies são necessários para fazer login. Por favor ative os cookies e tente novamente."
+    "title.cookieEnabled": "Os cookies são necessários para fazer login. Por favor ative os cookies e tente novamente.",
+    "errors.sso.session.failed": "Falha no login SSO. Por favor, tente novamente"
 }

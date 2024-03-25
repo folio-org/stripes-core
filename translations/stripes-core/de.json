@@ -145,5 +145,6 @@
     "stale.reload": "Zum Neuladen hier klicken.",
     "placeholder.forgotPassword": "E-Mail oder Telefonnummer eingeben",
     "placeholder.forgotUsername": "E-Mail oder Telefonnummer eingeben",
-    "title.cookieEnabled": "Für die Anmeldung werden Cookies benötigt. Bitte Cookies aktivieren und erneut versuchen."
+    "title.cookieEnabled": "Für die Anmeldung werden Cookies benötigt. Bitte Cookies aktivieren und erneut versuchen.",
+    "errors.sso.session.failed": "SSO Login failed. Please try again"
 }
