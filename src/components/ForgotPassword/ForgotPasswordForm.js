@@ -72,7 +72,7 @@ class ForgotPasswordForm extends Component {
                     type="text"
                     marginBottom0
                     fullWidth
-                    inputClass={formStyles.input}
+                    inputClass={formStyles.passForgotInput}
                     validationEnabled={false}
                     hasClearIcon={false}
                     autoCapitalize="none"
@@ -85,7 +85,7 @@ class ForgotPasswordForm extends Component {
                   id="clickable-login"
                   name="continue-button"
                   type="submit"
-                  buttonClass={formStyles.submitButton}
+                  buttonClass={formStyles.passForgotSubmitButton}
                   disabled={pristine}
                   fullWidth
                   marginBottom0
