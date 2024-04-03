@@ -9,9 +9,10 @@ import { Login } from './components';
 import PreLoginLanding from './components/PreLoginLanding';
 
 import {
-  renderLoginComponent,
   renderLogoutComponent
 } from './RootWithIntl';
+
+import AuthnLogin from './components/AuthnLogin';
 
 jest.mock('react-router-dom', () => ({
   Redirect: () => '<internalredirect>',
@@ -22,10 +23,10 @@ jest.mock('./components/Login', () => () => '<login>');
 jest.mock('./components/PreLoginLanding', () => () => '<preloginlanding>');
 
 describe('RootWithIntl', () => {
-  describe('renderLoginComponent', () => {
+  describe('AuthnLogin', () => {
     it('handles legacy login', () => {
       const stripes = { okapi: {}, config: {} };
-      render(renderLoginComponent(stripes));
+      render(<AuthnLogin stripes={stripes} />);
 
       expect(screen.getByText(/<login>/)).toBeInTheDocument();
     });
@@ -36,7 +37,7 @@ describe('RootWithIntl', () => {
           okapi: { authnUrl: 'https://barbie.com' },
           config: { isSingleTenant: true }
         };
-        render(renderLoginComponent(stripes));
+        render(<AuthnLogin stripes={stripes} />);
 
         expect(screen.getByText(/<redirect>/)).toBeInTheDocument();
       });
@@ -46,7 +47,7 @@ describe('RootWithIntl', () => {
           okapi: { authnUrl: 'https://oppie.com' },
           config: { },
         };
-        render(renderLoginComponent(stripes));
+        render(<AuthnLogin stripes={stripes} />);
 
         expect(screen.getByText(/<preloginlanding>/)).toBeInTheDocument();
       });

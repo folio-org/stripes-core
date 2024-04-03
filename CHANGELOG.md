@@ -1,13 +1,55 @@
 # Change history for stripes-core
 
-## 10.1.0 IN PROGRESS
+## 10.1.1 IN PROGRESS
+
+## [10.1.1](https://github.com/folio-org/stripes-core/tree/v10.1.1) (2024-03-25)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.1.0...v10.1.1)
+
+* Utilize the `tenant` procured through the SSO login process. Refs STCOR-769.
+* Use keycloak URLs in place of users-bl for tenant-switch. Refs US1153537.
+
+## [10.1.0](https://github.com/folio-org/stripes-core/tree/v10.1.0) (2024-03-12)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.0.0...v10.1.0)
 
 * Provide optional tenant argument to `useOkapiKy` hook. Refs STCOR-747.
 * Avoid private path when import `validateUser` function. Refs STCOR-749.
 * Ensure `<AppIcon>` is not cut off when app name is long. Refs STCOR-752.
 * Allow console to be preserved on logout. STCOR-761.
 * Export `unregisterServiceWorker` to eliminate zombie service workers. Refs FOLIO-3627.
+* Fix duplicated "FOLIO" in document title in some cases. Refs STCOR-767.
+* Refactor away from `color()` function. Refs STCOR-768.
+* Export `getEventHandler` to be able to create events in other modules. Refs STCOR-770.
+* Opt-in: handle access-control via cookies. Refs STCOR-671.
+* Opt-in: disable login when cookies are disabled. Refs STCOR-762.
+* Add arial-label for `ProfileDropdown.js`. Refs STCOR-753.
+* Upgrade, configure stylelint. Refs STCOR-799.
+* Move `localforage.clear()` to `afterEach` for test suite. Refs STCOR-801.
+* Show app/record when you have permission for that. Refs STCOR-800.
+* Convert `<SSOLanding />` tests to jest. STCOR-798.
+* Avoid calling `map` on `undefined` via optional-chaining. Refs STCOR-793.
+* Make `<Settings>` a functional component. Update connected modules when `stripes` object changes. Fixes STCOR-797.
+* `useOkapiKy` uses || instead of ?? to apply current tenant id when override was not provided. Refs STCOR-814.
+* Correctly parse `.../_self` permissions object. Refs STCOR-813.
+* Add `idName` and `limit` as passable props to `useChunkedCQLFetch`. Refs STCOR-821.
+* Check for valid token before rotating during XHR send. Refs STCOR-817.
+* Remove `autoComplete` from `<ForgotPassword>`, `<ForgotUsername>` fields. Refs STCOR-742.
 * Use keycloak URLs in place of users-bl for tenant-switch. Refs US1153537.
+
+## [10.0.3](https://github.com/folio-org/stripes-core/tree/v10.0.3) (2023-11-10)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.0.2...v10.0.3)
+
+* Revert "Use cookies and RTR" until further notice. Refs FOLIO-3627.
+* Ensure `<AppIcon>` is not cut off when app name is long. Refs STCOR-752.
+
+## [10.0.2](https://github.com/folio-org/stripes-core/tree/v10.0.2) (2023-11-06)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.0.1...v10.0.2)
+
+* Use cookies and RTR instead of directly handling the JWT. Refs STCOR-671, STCOR-754, STCOR-756, FOLIO-3627.
+
+## [10.0.1](https://github.com/folio-org/stripes-core/tree/v10.0.1) (2023-10-25)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.0.0...v10.0.1)
+
+* Export `validateUser`. Refs STCOR-749.
 * Opt-in: handle access-control via cookies. Refs STCOR-671.
 * Opt-in: disable login when cookies are disabled. Refs STCOR-762.
 * Convert `<SSOLanding />` tests to jest. STCOR-798.

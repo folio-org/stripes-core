@@ -13,3 +13,4 @@ artifacts
 dist
 junit.xml
 .vscode/launch.json
+.idea

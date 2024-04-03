@@ -101,7 +101,7 @@ export class FFetch {
         '/bl-users/password-reset',
         '/users-keycloak/password-reset',
         '/saml/check',
-        '/authn/token',
+        `/_/invoke/tenant/${okapi.tenant}/saml/login`
       ];
 
       this.logger.log('rtr', `AT invalid for ${resource}`);
@@ -200,9 +200,8 @@ export class FFetch {
                 this.logger.log('rtr', '   (whoops, invalid AT; retrying)');
                 return this.passThroughWithRT(resource, options);
               }
-
-              // yes, it was a 400 but not an Okapi 400:
-              // hand it back to the application to handle
+              // yes, we got a 4xx, but not an RTR 4xx. leave that to the
+              // original application to handle. it's not our problem.
               return response;
             });
         }
@@ -255,7 +254,9 @@ export class FFetch {
    * @returns Promise
    * @throws if any fetch fails
    */
-  ffetch = async (resource, options) => {
+  ffetch = async (resource, ffOptions = {}) => {
+    const { rtrIgnore = false, ...options } = ffOptions;
+
     // FOLIO API requests are subject to RTR
     if (isFolioApiRequest(resource, okapi.url)) {
       this.logger.log('rtr', 'will fetch', resource);
@@ -273,7 +274,7 @@ export class FFetch {
       }
 
       // AT is valid or unnecessary; execute the fetch
-      if (this.isPermissibleRequest(resource, this.tokenExpiration, okapi.url)) {
+      if (rtrIgnore || this.isPermissibleRequest(resource, this.tokenExpiration, okapi.url)) {
         return this.passThroughWithAT(resource, options);
       }
 

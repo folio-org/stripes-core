@@ -80,8 +80,8 @@ describe('FFetch class', () => {
     });
   });
 
-  describe('Handles 4xx responses', () => {
-    it('400 token missing: triggers rtr...calls fetch 3 times, failed call, token call, successful call', async () => {
+  describe('Calling an okapi fetch with missing token...', () => {
+    it('triggers rtr...calls fetch 3 times, failed call, token call, successful call', async () => {
       mockFetch.mockResolvedValue('success')
         .mockResolvedValueOnce(new Response(
           'Token missing',

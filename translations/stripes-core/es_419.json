@@ -144,5 +144,7 @@
     "stale.warning": "La aplicación ha cambiado en el servidor y necesita ser actualizada.",
     "stale.reload": "Haga clic aquí para recargar.",
     "placeholder.forgotPassword": "Enter email or phone",
-    "placeholder.forgotUsername": "Introduce email o teléfono"
+    "placeholder.forgotUsername": "Introduce email o teléfono",
+    "title.cookieEnabled": "Cookies are required to login. Please enable cookies and try again.",
+    "errors.sso.session.failed": "SSO Login failed. Please try again"
 }

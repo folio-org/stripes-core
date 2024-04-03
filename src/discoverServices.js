@@ -154,8 +154,8 @@ function fetchGatewayVersion(store) {
       store.dispatch({ type: 'DISCOVERY_FAILURE', code: response.status });
       return response;
     } else {
-      return response.json().then((res) => {
-        store.dispatch({ type: 'DISCOVERY_OKAPI', version: res.version });
+      return response.text().then((text) => {
+        store.dispatch({ type: 'DISCOVERY_OKAPI', version: text });
       });
     }
   }).catch((reason) => {
