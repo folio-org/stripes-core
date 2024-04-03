@@ -119,7 +119,7 @@ class Login extends Component {
                               name="username"
                               type="text"
                               component={TextField}
-                              inputClass={styles.input}
+                              inputClass={styles.loginInput}
                               autoComplete="username"
                               autoCapitalize="none"
                               validationEnabled={false}
@@ -156,7 +156,7 @@ class Login extends Component {
                               value=""
                               marginBottom0
                               fullWidth
-                              inputClass={styles.input}
+                              inputClass={styles.loginInput}
                               validationEnabled={false}
                               hasClearIcon={false}
                               autoComplete="current-password"
@@ -171,7 +171,7 @@ class Login extends Component {
                               buttonStyle="primary"
                               id="clickable-login"
                               type="submit"
-                              buttonClass={styles.submitButton}
+                              buttonClass={styles.loginSubmitButton}
                               disabled={buttonDisabled}
                               fullWidth
                               marginBottom0
