@@ -17,6 +17,19 @@
   width: 100%;
   outline: 0;
   text-align: center;
+
+  & .loginInput {
+    height: 44px;
+    padding: 8px;
+    font-size: var(--font-size-medium);
+  }
+
+  & .loginSubmitButton {
+    height: 44px;
+    max-height: 100%;
+    margin-top: 1.5rem;
+    font-size: var(--font-size-medium);
+  }
 }
 
 .formGroup {
@@ -32,19 +45,6 @@
   margin-top: 1rem;
 }
 
-input.input {
-  height: 44px;
-  padding: 8px;
-  font-size: var(--font-size-medium);
-}
-
-button.submitButton {
-  height: 44px;
-  max-height: 100%;
-  margin-top: 1.5rem;
-  font-size: var(--font-size-medium);
-}
-
 .link {
   display: block;
   width: 100%;
@@ -58,16 +58,19 @@ button.submitButton {
     min-height: initial;
   }
 
-  button.submitButton {
-    height: 60px;
-    font-size: var(--font-size-large);
+  .form {
+    & .loginSubmitButton {
+      height: 60px;
+      font-size: var(--font-size-large);
+    }
+
+    & .loginInput {
+      height: 60px;
+      padding: 15px;
+      font-size: var(--font-size-medium);
+    }
   }
 
-  input.input {
-    height: 60px;
-    padding: 15px;
-    font-size: var(--font-size-medium);
-  }
 }
 
 @media (--large-up) {
