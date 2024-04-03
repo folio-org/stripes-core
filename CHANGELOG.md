@@ -923,4 +923,3 @@
 ## [0.0.10](https://github.com/folio-org/stripes-core/tree/v0.0.10) (2017-02-24)
 
 * Requires v0.0.9 of `stripes-connect`.
-* First version to have a documented change-log. Each subsequent version will describe its differences from the previous one.
