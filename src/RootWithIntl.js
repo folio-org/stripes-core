@@ -14,7 +14,6 @@ import { Callout, HotKeys } from '@folio/stripes-components';
 
 import ModuleRoutes from './moduleRoutes';
 import events from './events';
-import Redirect from './components/Redirect';
 
 import {
   MainContainer,
@@ -40,8 +39,6 @@ import {
 import StaleBundleWarning from './components/StaleBundleWarning';
 import { StripesContext } from './StripesContext';
 import { CalloutContext } from './CalloutContext';
-import PreLoginLanding from './components/PreLoginLanding';
-import { setOkapiTenant } from './okapiActions';
 import AuthnLogin from './components/AuthnLogin';
 
 export const renderLogoutComponent = () => {

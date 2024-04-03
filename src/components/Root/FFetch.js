@@ -200,6 +200,7 @@ export class FFetch {
                 this.logger.log('rtr', '   (whoops, invalid AT; retrying)');
                 return this.passThroughWithRT(resource, options);
               }
+
               // yes, we got a 4xx, but not an RTR 4xx. leave that to the
               // original application to handle. it's not our problem.
               return response;
