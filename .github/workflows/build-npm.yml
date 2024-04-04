@@ -60,7 +60,7 @@ jobs:
           JOB_ID: ${{ github.run_number }}
 
       - name: Run yarn install
-        run: yarn install --ignore-scripts
+        run: yarn install
 
       - name: Run yarn list
         run: yarn info --name-only @folio/\*
