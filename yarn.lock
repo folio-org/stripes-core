@@ -2284,6 +2284,7 @@ __metadata:
     graphql: "npm:^16.0.0"
     history: "npm:^4.6.3"
     hoist-non-react-statics: "npm:^3.3.0"
+    jest: "npm:^29.7.0"
     jest-fetch-mock: "npm:^3.0.3"
     jwt-decode: "npm:^3.1.2"
     ky: "npm:^0.23.0"
@@ -10830,7 +10831,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest@npm:^29.5.0":
+"jest@npm:^29.5.0, jest@npm:^29.7.0":
   version: 29.7.0
   resolution: "jest@npm:29.7.0"
   dependencies:
