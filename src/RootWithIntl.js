@@ -144,7 +144,7 @@ class RootWithIntl extends React.Component {
                         <Callout ref={this.setCalloutRef} />
                       </> :
                       <Switch>
-                        {/* The ? after :token makes that part of the path optional, so that token may optionally 
+                        {/* The ? after :token makes that part of the path optional, so that token may optionally
                         be passed in via URL parameter to avoid length restrictions */}
                         <TitledRoute
                           name="CreateResetPassword"
