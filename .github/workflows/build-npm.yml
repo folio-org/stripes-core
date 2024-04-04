@@ -7,7 +7,7 @@
 # https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 
 # Common FOLIO configurable environment variables to set:
-#   - YARN_TEST_OPTIONS (options to pass to 'yarn test')
+#   - TEST_OPTIONS (options to pass to 'yarn test')
 #   - SQ_ROOT_DIR (root SQ directory to scan relative to top-level directory)
 #   - PUBLISH_MOD_DESCRIPTOR (boolean 'true' or 'false')
 #   - COMPILE_TRANSLATION_FILES (boolean 'true' or 'false')
@@ -19,7 +19,7 @@ on: [push, pull_request]
 jobs:
   build-npm:
     env:
-      YARN_TEST_OPTIONS: '--karma.singleRun --karma.browsers ChromeDocker --karma.reporters mocha junit --coverage'
+      TEST_OPTIONS: '--karma.singleRun --karma.browsers ChromeDocker --karma.reporters mocha junit --coverage'
       SQ_ROOT_DIR: './src'
       COMPILE_TRANSLATION_FILES: 'true'
       PUBLISH_MOD_DESCRIPTOR: 'true'
@@ -74,7 +74,7 @@ jobs:
         run: yarn formatjs-compile
 
       - name: Run yarn test
-        run: xvfb-run --server-args="-screen 0 1024x768x24" yarn test $YARN_TEST_OPTIONS
+        run: xvfb-run --server-args="-screen 0 1024x768x24" yarn test $TEST_OPTIONS
 
       - name: Generate FOLIO module descriptor
         if: ${{ env.PUBLISH_MOD_DESCRIPTOR == 'true' }}
