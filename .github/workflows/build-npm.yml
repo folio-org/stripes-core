@@ -49,7 +49,7 @@ jobs:
           always-auth: true
 
       - name: Set yarn config
-        run: yarn config set @folio:registry $FOLIO_NPM_REGISTRY
+        run: yarn config set npmScopes.folio.npmRegistryServer $FOLIO_NPM_REGISTRY
 
       - name: Set FOLIO NPM snapshot version
         run: |
@@ -63,7 +63,7 @@ jobs:
         run: yarn install --ignore-scripts
 
       - name: Run yarn list
-        run: yarn list --pattern @folio
+        run: yarn info --name-only @folio/\*
 
       - name: Run yarn lint
         run: yarn lint
@@ -160,8 +160,9 @@ jobs:
       - name: Set _auth in .npmrc
         if: ${{ github.ref == 'refs/heads/master' || github.ref  == 'refs/heads/main' }}
         run: |
-          npm config set @folio:registry $FOLIO_NPM_REGISTRY
-          npm config set //repository.folio.org/repository/npm-folioci/:_auth $NODE_AUTH_TOKEN
+          yarn config set npmScopes.folio.npmRegistryServer $FOLIO_NPM_REGISTRY
+          yarn config set npmScopes.folio.npmAlwaysAuth true
+          yarn config set npmScopes.folio.npmAuthToken $NPM_AUTH_TOKEN
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
@@ -175,7 +176,7 @@ jobs:
 
       - name: Publish NPM
         if: ${{ github.ref == 'refs/heads/master' || github.ref  == 'refs/heads/main' }}
-        run: npm publish
+        run: yarn npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
