@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useLayoutEffect } from 'react';
 import PropTypes from 'prop-types';
 import Redirect from '../Redirect';
 import PreLoginLanding from '../PreLoginLanding';
@@ -10,7 +10,7 @@ import { setUnauthorizedPathToSession } from '../../loginServices';
 const AuthnLogin = ({ stripes }) => {
   const { config, okapi } = stripes;
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (okapi.authnUrl) {
     /** Store unauthorized pathname to session storage. Refs STCOR-789
     * @see OIDCRedirect
