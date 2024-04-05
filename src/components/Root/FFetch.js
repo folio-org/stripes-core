@@ -99,6 +99,7 @@ export class FFetch {
         '/bl-users/forgotten/username',
         '/bl-users/login-with-expiry',
         '/bl-users/password-reset',
+        '/users-keycloak/password-reset',
         '/saml/check',
         `/_/invoke/tenant/${okapi.tenant}/saml/login`
       ];
