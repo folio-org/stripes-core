@@ -458,7 +458,6 @@ export async function logout(okapiUrl, store) {
     .then(localStorage.removeItem('tenant'))
     .then(localforage.removeItem(SESSION_NAME))
     .then(localforage.removeItem('loginResponse'))
-    .then(removeUnauthorizedPathFromSession)
     .catch((error) => {
       // eslint-disable-next-line no-console
       console.log(`Error logging out: ${JSON.stringify(error)}`);
@@ -804,7 +803,7 @@ export function requestLogin(okapiUrl, store, tenant, data) {
       method: 'POST',
       mode: 'cors',
     })
-    .then(resp => processOkapiSession(store, tenant, resp));
+      .then(resp => processOkapiSession(store, tenant, resp));
   }
 }
 
