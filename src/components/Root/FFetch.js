@@ -95,6 +95,7 @@ export class FFetch {
 
     const isPermissibleResource = (string) => {
       const permissible = [
+        '/authn/token',
         '/bl-users/forgotten/password',
         '/bl-users/forgotten/username',
         '/bl-users/login-with-expiry',
