@@ -875,7 +875,7 @@ export function requestLogin(okapiUrl, store, tenant, data) {
       method: 'POST',
       mode: 'cors',
     })
-    .then(resp => processOkapiSession(store, tenant, resp));
+      .then(resp => processOkapiSession(store, tenant, resp));
   }
 }
 
