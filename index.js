@@ -37,6 +37,7 @@ export {
 
 /* Queries */
 export { useChunkedCQLFetch } from './src/queries';
+export { getUserTenantsPermissions } from './src/queries';
 
 /* Hooks */
 export { useUserTenantPermissions } from './src/hooks';
