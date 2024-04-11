@@ -1,8 +1,8 @@
 export default function okapiReducer(state = {}, action) {
   switch (action.type) {
     case 'SET_OKAPI_TENANT': {
-      const { tenant, clientId } = action.payload;
-      return Object.assign({}, state, { tenant, clientId });
+      const { tenant, clientId, url } = action.payload;
+      return Object.assign({}, state, { tenant, clientId, url });
     }
     case 'SET_OKAPI_TOKEN':
       return Object.assign({}, state, { token: action.token });
