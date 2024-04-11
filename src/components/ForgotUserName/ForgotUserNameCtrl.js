@@ -35,7 +35,7 @@ class ForgotUserNameCtrl extends Component {
     searchUsername: {
       type: 'okapi',
       path: (queryParams, pathComponents, resourceData, config, props) => {
-        if (props.stripes.okapi.authnUrl) {
+        if (props.stripes.config.isEureka) {
           return 'users-keycloak/forgotten/username';
         }
         return 'bl-users/forgotten/username';

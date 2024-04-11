@@ -700,7 +700,7 @@ export function processOkapiSession(store, tenant, resp, ssoToken) {
  */
 export function validateUser(okapiUrl, store, tenant, session) {
   const { token, user, perms, tenant: sessionTenant = tenant } = session;
-  const usersPath = okapi.authnUrl ? 'users-keycloak' : 'bl-users';
+  const usersPath = config.isEureka ? 'users-keycloak' : 'bl-users';
 
   return fetch(`${okapiUrl}/${usersPath}/_self`, {
     headers: getHeaders(sessionTenant, token),
@@ -782,8 +782,8 @@ export function checkOkapiSession(okapiUrl, store, tenant) {
  */
 export function requestLogin(okapiUrl, store, tenant, data) {
   // got Keycloak?
-  if (okapi.authnUrl) {
-    return fetch(okapi.authnUrl, {
+  if (config.isEureka) {
+    return fetch(config.authnUrl, {
       method: 'POST',
       body: new URLSearchParams({
         ...data,
@@ -818,7 +818,7 @@ export function requestLogin(okapiUrl, store, tenant, data) {
  * @returns {Promise} Promise resolving to the response of the request
  */
 function fetchUserWithPerms(okapiUrl, tenant, token, rtrIgnore = false) {
-  const usersPath = okapi.authnUrl ? 'users-keycloak' : 'bl-users';
+  const usersPath = config.isEureka ? 'users-keycloak' : 'bl-users';
   return fetch(
     `${okapiUrl}/${usersPath}/_self?expandPermissions=true&fullPermissions=true`,
     {

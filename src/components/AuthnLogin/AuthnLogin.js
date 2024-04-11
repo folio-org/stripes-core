@@ -18,14 +18,14 @@ const AuthnLogin = ({ stripes }) => {
       setUnauthorizedPathToSession(window.location.pathname);
     }
     // we only want to run this effect once, on load.
-    // okapi.authnUrl are defined in stripes.config.js
+    // config.authnUrl are defined in stripes.config.js
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (config.isEureka) {
     const isSingleTenant = Object.keys(config.tenantOptions).length === 1;
     if (isSingleTenant) {
       const redirectUri = `${window.location.protocol}//${window.location.host}/oidc-landing`;
-      const authnUri = `${okapi.authnUrl}/realms/${okapi.tenant}/protocol/openid-connect/auth?client_id=${okapi.clientId}&response_type=code&redirect_uri=${redirectUri}&scope=openid`;
+      const authnUri = `${config.authnUrl}/realms/${okapi.tenant}/protocol/openid-connect/auth?client_id=${okapi.clientId}&response_type=code&redirect_uri=${redirectUri}&scope=openid`;
       return <Redirect to={authnUri} />;
     }
 
