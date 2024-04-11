@@ -27,11 +27,11 @@ function PreLoginLanding({ onSelectTenant }) {
     const tenantName = e.target.value;
     submitButtonRef.current.disabled = !tenantName;
     if (tenantName === '') {
-      onSelectTenant('', '');
+      onSelectTenant('', '', '');
       return;
     }
     const clientId = tenantOptions[tenantName].clientId;
-    onSelectTenant(tenantName, clientId);
+    onSelectTenant(tenantName, clientId, tenantOptions[tenantName].url);
   };
 
   return (
