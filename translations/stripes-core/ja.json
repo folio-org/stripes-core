@@ -146,5 +146,5 @@
     "placeholder.forgotPassword": "Enter email or phone",
     "placeholder.forgotUsername": "Enter email or phone",
     "title.cookieEnabled": "Cookies are required to login. Please enable cookies and try again.",
-    "errors.sso.session.failed": "SSO Login failed. Please try again"
+    "errors.sso.session.failed": "SSO ログインに失敗しました。もう一度お試しください"
 }
