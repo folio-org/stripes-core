@@ -7,8 +7,6 @@ import {
 import permissions from 'fixtures/permissions';
 import useUserTenantPermissions from './useUserTenantPermissions';
 import useOkapiKy from '../useOkapiKy';
-import { useNamespace } from '../components';
-import { useStripes } from '../StripesContext';
 
 jest.mock('../useOkapiKy');
 jest.mock('../components', () => ({
