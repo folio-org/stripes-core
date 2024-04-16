@@ -15,7 +15,7 @@ h2.title {
   text-align: center;
 }
 
-@media screen and (max-width: 900px) {
+@media screen and (width <= 900px) {
   h2.title {
     font-size: var(--font-size-small);
   }

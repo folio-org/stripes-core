@@ -37,6 +37,10 @@ export {
 
 /* Queries */
 export { useChunkedCQLFetch } from './src/queries';
+export { getUserTenantsPermissions } from './src/queries';
+
+/* Hooks */
+export { useUserTenantPermissions } from './src/hooks';
 
 /* misc */
 export { supportedLocales } from './src/loginServices';
@@ -45,6 +49,9 @@ export { userLocaleConfig } from './src/loginServices';
 export * from './src/consortiaServices';
 export { default as queryLimit } from './src/queryLimit';
 export { default as init } from './src/init';
+
+/* localforage wrappers hide the session key */
+export { getOkapiSession, getTokenExpiry, setTokenExpiry } from './src/loginServices';
 
 export { registerServiceWorker, unregisterServiceWorker } from './src/serviceWorkerRegistration';
 

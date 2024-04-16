@@ -41,6 +41,20 @@ class Login extends Component {
       onSubmit,
     } = this.props;
 
+    const cookieMessage = navigator.cookieEnabled ?
+      '' :
+      (
+        <Row center="xs">
+          <Col xs={6}>
+            <Headline
+              size="large"
+              tag="h3"
+            >
+              <FormattedMessage id="stripes-core.title.cookieEnabled" />
+            </Headline>
+          </Col>
+        </Row>);
+
     return (
       <Form
         onSubmit={onSubmit}
@@ -48,7 +62,7 @@ class Login extends Component {
         render={({ form, submitting, handleSubmit, submitSucceeded, values }) => {
           const { username } = values;
           const submissionStatus = submitting || submitSucceeded;
-          const buttonDisabled = submissionStatus || !(username);
+          const buttonDisabled = submissionStatus || !(username) || !(navigator.cookieEnabled);
           const buttonLabel = submissionStatus ? 'loggingIn' : 'login';
           return (
             <main>
@@ -82,6 +96,7 @@ class Login extends Component {
                           </Headline>
                         </Col>
                       </Row>
+                      { cookieMessage }
                       <div data-test-new-username-field>
                         <Row center="xs">
                           <Col xs={6}>
@@ -104,7 +119,7 @@ class Login extends Component {
                               name="username"
                               type="text"
                               component={TextField}
-                              inputClass={styles.input}
+                              inputClass={styles.loginInput}
                               autoComplete="username"
                               autoCapitalize="none"
                               validationEnabled={false}
@@ -141,7 +156,7 @@ class Login extends Component {
                               value=""
                               marginBottom0
                               fullWidth
-                              inputClass={styles.input}
+                              inputClass={styles.loginInput}
                               validationEnabled={false}
                               hasClearIcon={false}
                               autoComplete="current-password"
@@ -156,7 +171,7 @@ class Login extends Component {
                               buttonStyle="primary"
                               id="clickable-login"
                               type="submit"
-                              buttonClass={styles.submitButton}
+                              buttonClass={styles.loginSubmitButton}
                               disabled={buttonDisabled}
                               fullWidth
                               marginBottom0

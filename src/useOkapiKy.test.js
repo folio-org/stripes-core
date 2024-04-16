@@ -14,7 +14,6 @@ describe('useOkapiKy', () => {
       locale: 'klingon',
       tenant: 'tenant',
       timeout: 271828,
-      token: 'token',
       url: 'https://whatever.com'
     };
 
@@ -35,7 +34,6 @@ describe('useOkapiKy', () => {
 
     expect(r.headers.set).toHaveBeenCalledWith('Accept-Language', okapi.locale);
     expect(r.headers.set).toHaveBeenCalledWith('X-Okapi-Tenant', okapi.tenant);
-    expect(r.headers.set).toHaveBeenCalledWith('X-Okapi-Token', okapi.token);
   });
 
   it('provides default values if stripes lacks them', async () => {
@@ -62,7 +60,6 @@ describe('useOkapiKy', () => {
     const okapi = {
       tenant: 'tenant',
       timeout: 271828,
-      token: 'token',
       url: 'https://whatever.com'
     };
 
@@ -79,6 +76,30 @@ describe('useOkapiKy', () => {
     result.current.hooks.beforeRequest[0](r);
 
     expect(r.headers.set).toHaveBeenCalledWith('X-Okapi-Tenant', 'monkey');
+  });
+
+  describe('when tenant param is not null, but an empty value', () => {
+    it('should use okapi tenant id', () => {
+      const okapi = {
+        tenant: 'tenant',
+        timeout: 271828,
+        url: 'https://whatever.com'
+      };
+
+      const mockUseStripes = useStripes;
+      mockUseStripes.mockReturnValue({ okapi });
+
+      const r = {
+        headers: {
+          set: jest.fn(),
+        }
+      };
+
+      const { result } = renderHook(() => useOkapiKy({ tenant: '' }));
+      result.current.hooks.beforeRequest[0](r);
+
+      expect(r.headers.set).toHaveBeenCalledWith('X-Okapi-Tenant', 'tenant');
+    });
   });
 });
 

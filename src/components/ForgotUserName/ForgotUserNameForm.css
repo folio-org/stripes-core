@@ -20,51 +20,53 @@
 .form {
   outline: 0;
   text-align: center;
-}
 
-.form .formGroup:last-child {
-  margin-bottom: 0;
+  & .forgotUserInput {
+    height: 60px;
+    font-size: var(--font-size-medium);
+    padding: 15px;
+  }
+
+  & .forgotUserSubmitButton {
+    height: 60px;
+    max-height: 100%;
+    font-size: var(--font-size-large);
+  }
 }
 
 .formGroup {
   margin-bottom: 10px;
 }
 
+.form .formGroup:last-child {
+  margin-bottom: 0;
+}
+
 .authErrorsWrapper {
   margin-top: 10px;
 }
 
-input.input {
-  height: 60px;
-  font-size: var(--font-size-medium);
-  padding: 15px;
-}
-
-button.submitButton {
-  height: 60px;
-  max-height: 100%;
-  font-size: var(--font-size-large);
-}
-
-@media (max-height: 440px) {
+@media (height <= 440px) {
   .centered {
     min-height: 330px;
   }
 }
 
-@media (max-width: 640px) {
+@media (width <= 640px) {
   .centered {
     min-height: 330px;
   }
 
-  button.submitButton {
-    height: 44px;
-    font-size: var(--font-size-medium);
-  }
+  .form {
+    & .forgotUserSubmitButton {
+      height: 44px;
+      font-size: var(--font-size-medium);
+    }
 
-  input.input {
-    height: 44px;
-    font-size: var(--font-size-medium);
-    padding: 8px;
+    & .forgotUserInput {
+      height: 44px;
+      font-size: var(--font-size-medium);
+      padding: 8px;
+    }
   }
 }

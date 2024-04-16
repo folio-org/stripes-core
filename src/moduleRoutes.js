@@ -55,7 +55,11 @@ function ModuleRoutes({ stripes }) {
             );
         }
 
-        const currentModule = modules.app.find(module => location.pathname.startsWith(`${module.route}`));
+        const currentModule = modules.app.find(module => {
+          const SEPARATOR = '/';
+
+          return `${SEPARATOR}${location.pathname.split(SEPARATOR)[1]}` === module.route;
+        });
         const moduleName = currentModule?.module?.replace(packageName.PACKAGE_SCOPE_REGEX, '');
 
         if (!stripes.hasPerm(`module.${moduleName}.enabled`)) {

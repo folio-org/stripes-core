@@ -120,7 +120,7 @@
     "errors.password.keyboardSequence.invalid": "The password must not contain a keyboard sequence.",
     "errors.password.repeatingSymbols.invalid": "The password must not contain the same character in a row.",
     "errors.password.whiteSpace.invalid": "The password must not contain whitespaces.",
-    "mainnav.myProfileAriaLabel": "My profile",
+    "mainnav.myProfileAriaLabel": "{tenantName} {servicePointName} profile",
     "mainnav.skipMainNavigation": "Skip Main Navigation",
     "errors.user.timeout": "Your session has expired. Please log in again to resume your session.",
     "errors.password.consecutiveWhitespaces.invalid": "The password must not contain consecutive white space characters.",
@@ -144,5 +144,7 @@
     "stale.warning": "The application has changed on the server and needs to be refreshed.",
     "stale.reload": "Click here to reload.",
     "placeholder.forgotPassword": "Enter email or phone",
-    "placeholder.forgotUsername": "Enter email or phone"
+    "placeholder.forgotUsername": "Enter email or phone",
+    "title.cookieEnabled": "Cookies are required to login. Please enable cookies and try again.",
+    "errors.sso.session.failed": "SSO Login failed. Please try again"
 }
