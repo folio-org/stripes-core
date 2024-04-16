@@ -1572,14 +1572,15 @@
     webpack-bundle-analyzer "^4.4.2"
     yargs "^17.3.1"
 
-"@folio/stripes-components@^12.0.0":
-  version "12.2.1000004195"
-  resolved "https://repository.folio.org/repository/npm-folioci/@folio/stripes-components/-/stripes-components-12.2.1000004195.tgz#c9ae610fc9a56783eb9ba35658b524ba75c899fa"
-  integrity sha512-hcKIbRDg3xUTvQN4wU3qb3P0edTlk3NJhK18RbcvLN6RZt4RlZKgs0FAMOa1VJ8lLrch91DSlB5NNQuOd0n+ig==
+"@folio/stripes-components@^12.2.0":
+  version "12.2.1000004253"
+  resolved "https://repository.folio.org/repository/npm-folioci/@folio/stripes-components/-/stripes-components-12.2.1000004253.tgz#2d43500332322c93fb0c8b2a658f17343372bc76"
+  integrity sha512-zjS+HsdCVT/uV1RInaXbb4fuW9AQPy4ZW9o6u55u+Bp4cF3hwIPXu79fROivhZynKhTSKO/y13doeqmnlbis7Q==
   dependencies:
     "@folio/stripes-react-hotkeys" "^3.0.5"
     classnames "^2.2.5"
     currency-codes "^2.1.0"
+    dayjs "^1.11.10"
     downshift "^2.0.16"
     flexboxgrid2 "^7.2.0"
     hoist-non-react-statics "^3.1.0"
@@ -4747,6 +4748,11 @@ date-format@^4.0.14:
   version "4.0.14"
   resolved "https://registry.yarnpkg.com/date-format/-/date-format-4.0.14.tgz#7a8e584434fb169a521c8b7aa481f355810d9400"
   integrity sha512-39BOQLs9ZjKh0/patS9nrT8wc3ioX3/eA/zgbKNopnF2wCqJEoxywwwElATYvRsXdnOxA/OQeQoFZ3rFjVajhg==
+
+dayjs@^1.11.10:
+  version "1.11.10"
+  resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-1.11.10.tgz#68acea85317a6e164457d6d6947564029a6a16a0"
+  integrity sha512-vjAczensTgRcqDERK0SR2XMwsF/tSvnvlv6VcF2GIhg6Sx4yOIt/irsr1RDJsKiIyBzJDpCoXiWWq28MqH2cnQ==
 
 debounce@^1.2.1:
   version "1.2.1"
@@ -9567,7 +9573,7 @@ postcss-calc@^9.0.1:
     postcss-selector-parser "^6.0.11"
     postcss-value-parser "^4.2.0"
 
-"postcss-color-function@github:folio-org/postcss-color-function":
+postcss-color-function@folio-org/postcss-color-function:
   version "4.1.0"
   resolved "https://codeload.github.com/folio-org/postcss-color-function/tar.gz/c128aad740ae740fb571c4b6493f467dd51efe85"
   dependencies:
