@@ -187,6 +187,9 @@ export function loadTranslations(store, locale, defaultTranslations = {}) {
     });
   }
 
+  // load DayJS Locale. DayJS is expected to replace Moment as Stripes' date/time library.
+  // As with moment. loading the DayJS locale here passes it down to UI-modules so that they don't have to
+  // load the static locale data themselves.
   loadDayJSLocale(locale);
 
   // Here we put additional condition because languages
