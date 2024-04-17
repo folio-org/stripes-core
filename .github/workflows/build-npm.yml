@@ -56,6 +56,7 @@ jobs:
           git clone https://github.com/folio-org/folio-tools.git
           npm --no-git-tag-version version `folio-tools/github-actions-scripts/folioci_npmver.sh`
           rm -rf folio-tools
+          rm package-lock.json
         env:
           JOB_ID: ${{ github.run_number }}
 
@@ -172,6 +173,7 @@ jobs:
           echo "artifacts" >> .npmignore
           echo ".github" >> .npmignore
           echo ".scannerwork" >> .npmignore
+          echo ".yarn" >> .npmignore
           cat .npmignore
 
       - name: Publish NPM
