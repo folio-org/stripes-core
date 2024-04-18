@@ -50,6 +50,7 @@ class RootWithIntl extends React.Component {
     isAuthenticated: PropTypes.bool,
     disableAuth: PropTypes.bool.isRequired,
     history: PropTypes.shape({}),
+    queryClient: PropTypes.object.isRequired,
   };
 
   static defaultProps = {
@@ -72,6 +73,7 @@ class RootWithIntl extends React.Component {
       isAuthenticated,
       disableAuth,
       history,
+      queryClient,
     } = this.props;
 
     const connect = connectFor('@folio/core', this.props.stripes.epics, this.props.stripes.logger);
@@ -92,7 +94,7 @@ class RootWithIntl extends React.Component {
                       <>
                         <MainContainer>
                           <AppCtxMenuProvider>
-                            <MainNav stripes={stripes} />
+                            <MainNav stripes={stripes} queryClient={queryClient} />
                             {typeof stripes?.config?.staleBundleWarning === 'object' && <StaleBundleWarning />}
                             <HandlerManager
                               event={events.LOGIN}

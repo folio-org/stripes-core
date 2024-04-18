@@ -4,7 +4,6 @@ import { isEqual, find } from 'lodash';
 import { compose } from 'redux';
 import { injectIntl } from 'react-intl';
 import { withRouter } from 'react-router';
-
 import { branding, config } from 'stripes-config';
 
 import { Icon } from '@folio/stripes-components';
@@ -56,7 +55,8 @@ class MainNav extends Component {
     }).isRequired,
     modules: PropTypes.shape({
       app: PropTypes.arrayOf(PropTypes.object),
-    })
+    }),
+    queryClient: PropTypes.object.isRequired
   };
 
   constructor(props) {
@@ -95,6 +95,9 @@ class MainNav extends Component {
         }
       }
     });
+
+    // invalidate QueryProvider cache to be 100% sure we're starting from a clean slate.
+    this.props.queryClient.invalidateQueries();
   }
 
   componentDidUpdate(prevProps) {
@@ -121,7 +124,7 @@ class MainNav extends Component {
     const { okapi } = this.store.getState();
 
     return getLocale(okapi.url, this.store, okapi.tenant)
-      .then(sessionLogout(okapi.url, this.store));
+      .then(sessionLogout(okapi.url, this.store, this.props.queryClient));
   }
 
   // return the user to the login screen, but after logging in they will be brought to the default screen.
@@ -237,6 +240,7 @@ class MainNav extends Component {
 }
 
 export default compose(
+
   injectIntl,
   withRouter,
   withModules,

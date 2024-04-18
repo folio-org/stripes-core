@@ -427,11 +427,15 @@ export function spreadUserWithPerms(userWithPerms) {
  *
  * @returns {Promise}
  */
-export async function logout(okapiUrl, store) {
+export async function logout(okapiUrl, store, queryClient) {
   store.dispatch(setIsAuthenticated(false));
   store.dispatch(clearCurrentUser());
   store.dispatch(clearOkapiToken());
   store.dispatch(resetStore());
+
+  // reset QueryClient cache to remove any cached requests.
+  queryClient.invalidateQueries();
+
   return fetch(`${okapiUrl}/authn/logout`, {
     method: 'POST',
     mode: 'cors',
@@ -511,11 +515,15 @@ export function createOkapiSession(okapiUrl, store, tenant, token, data) {
  * @param {*} store
  * @returns void
  */
-export const handleRtrError = (event, store) => {
+export const handleRtrError = (event, store, queryClient) => {
   logger.log('rtr', 'rtr error; logging out', event.detail);
   store.dispatch(setIsAuthenticated(false));
   store.dispatch(clearCurrentUser());
   store.dispatch(resetStore());
+
+  // reset QueryClient cache to remove any cached requests.
+  queryClient.invalidateQueries();
+
   localforage.removeItem(SESSION_NAME)
     .then(localforage.removeItem('loginResponse'));
 };
@@ -528,9 +536,9 @@ export const handleRtrError = (event, store) => {
  * @param {*} okapiConfig
  * @param {*} store
  */
-export function addRtrEventListeners(okapiConfig, store) {
+export function addRtrEventListeners(okapiConfig, store, queryClient) {
   document.addEventListener(RTR_ERROR_EVENT, (e) => {
-    handleRtrError(e, store);
+    handleRtrError(e, store, queryClient);
   });
 
   // document.addEventListener(RTR_ROTATION_EVENT, (e) => {
