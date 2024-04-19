@@ -120,7 +120,7 @@
     "errors.password.keyboardSequence.invalid": "A senha não deve conter uma sequência de teclado.",
     "errors.password.repeatingSymbols.invalid": "A senha não deve conter o mesmo caractere em uma linha.",
     "errors.password.whiteSpace.invalid": "A senha não deve conter espaços em branco.",
-    "mainnav.myProfileAriaLabel": "Meu perfil",
+    "mainnav.myProfileAriaLabel": "{tenantName} {servicePointName} perfil",
     "mainnav.skipMainNavigation": "Pular navegação principal",
     "errors.user.timeout": "Sua sessão expirou. Faça login novamente para retomar sua sessão.",
     "errors.password.consecutiveWhitespaces.invalid": "A senha não deve conter caracteres de espaço em branco consecutivos.",
@@ -145,5 +145,6 @@
     "stale.reload": "Clique aqui para recarregar.",
     "placeholder.forgotPassword": "Digite e-mail ou telefone",
     "placeholder.forgotUsername": "Digite e-mail ou telefone",
-    "title.cookieEnabled": "Cookies are required to login. Please enable cookies and try again."
+    "title.cookieEnabled": "Os cookies são necessários para fazer login. Por favor ative os cookies e tente novamente.",
+    "errors.sso.session.failed": "Falha no login SSO. Por favor, tente novamente"
 }

@@ -75,10 +75,9 @@ class ForgotUserNameForm extends Component {
                     type="text"
                     marginBottom0
                     fullWidth
-                    inputClass={formStyles.input}
+                    inputClass={formStyles.forgotUserInput}
                     validationEnabled={false}
                     hasClearIcon={false}
-                    autoComplete="on"
                     autoCapitalize="none"
                     autoFocus
                     placeholder={formatMessage({ id: 'stripes-core.placeholder.forgotUsername' })}
@@ -89,7 +88,7 @@ class ForgotUserNameForm extends Component {
                   id="clickable-login"
                   name="continue-button"
                   type="submit"
-                  buttonClass={formStyles.submitButton}
+                  buttonClass={formStyles.forgotUserSubmitButton}
                   disabled={pristine}
                   fullWidth
                   marginBottom0

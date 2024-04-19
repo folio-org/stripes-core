@@ -199,7 +199,7 @@ class CreateResetPassword extends Component {
                           name="newPassword"
                           autoComplete="new-password"
                           component={PasswordStrength}
-                          inputClass={styles.input}
+                          inputClass={styles.passResetInput}
                           type={passwordType}
                           hasClearIcon={false}
                           autoFocus
@@ -251,7 +251,7 @@ class CreateResetPassword extends Component {
                             type={passwordType}
                             marginBottom0
                             fullWidth
-                            inputClass={styles.input}
+                            inputClass={styles.passResetInput}
                             validationEnabled={false}
                             hasClearIcon={false}
                             autoComplete="new-password"
@@ -291,7 +291,7 @@ class CreateResetPassword extends Component {
                           buttonStyle="primary"
                           id="clickable-login"
                           type="submit"
-                          buttonClass={styles.submitButton}
+                          buttonClass={styles.passResetSubmitButton}
                           disabled={isButtonDisabled(getState)}
                           fullWidth
                           marginBottom0

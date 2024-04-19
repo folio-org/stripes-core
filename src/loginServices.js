@@ -398,8 +398,23 @@ export function spreadUserWithPerms(userWithPerms) {
   };
 
   // remap data's array of permission-names to set with
-  // permission-names for keys and `true` for values
-  const perms = Object.assign({}, ...userWithPerms?.permissions?.permissions.map(p => ({ [p.permissionName]: true })));
+  // permission-names for keys and `true` for values.
+  //
+  // userWithPerms is shaped differently depending on whether
+  // it comes from a login call or a `.../_self` call, which
+  // is just totally totally awesome. :|
+  // we'll parse it differently depending on what it looks like.
+  let perms = {};
+  const list = userWithPerms?.permissions?.permissions;
+  if (list && Array.isArray(list) && list.length > 0) {
+    // _self sends data like ["foo", "bar", "bat"]
+    // login sends data like [{ "permissionName": "foo" }]
+    if (typeof list[0] === 'string') {
+      perms = Object.assign({}, ...list.map(p => ({ [p]: true })));
+    } else {
+      perms = Object.assign({}, ...list.map(p => ({ [p.permissionName]: true })));
+    }
+  }
 
   return { user, perms };
 }
@@ -742,13 +757,18 @@ export function requestLogin(okapiUrl, store, tenant, data) {
  * retrieve currently-authenticated user
  * @param {string} okapiUrl
  * @param {string} tenant
+ * @param {string} token
+ * @param {boolean} rtrIgnore
  *
  * @returns {Promise} Promise resolving to the response of the request
  */
-function fetchUserWithPerms(okapiUrl, tenant, token) {
+function fetchUserWithPerms(okapiUrl, tenant, token, rtrIgnore = false) {
   return fetch(
     `${okapiUrl}/bl-users/_self?expandPermissions=true&fullPermissions=true`,
-    { headers: getHeaders(tenant, token) },
+    {
+      headers: getHeaders(tenant, token),
+      rtrIgnore,
+    },
   );
 }
 
@@ -762,7 +782,7 @@ function fetchUserWithPerms(okapiUrl, tenant, token) {
  * @returns {Promise} Promise resolving to the response-body (JSON) of the request
  */
 export function requestUserWithPerms(okapiUrl, store, tenant, token) {
-  return fetchUserWithPerms(okapiUrl, tenant, token)
+  return fetchUserWithPerms(okapiUrl, tenant, token, !token)
     .then(resp => processOkapiSession(okapiUrl, store, tenant, resp, token));
 }
 

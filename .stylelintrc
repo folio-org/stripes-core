@@ -1,15 +1,25 @@
 {
   "extends": "stylelint-config-standard",
-
   "rules": {
-    "alpha-value-notation": null,
-    "color-function-notation": null,
-    "declaration-block-no-redundant-longhand-properties": null,
-    "function-no-unknown": null,
-    "import-notation": null,
-    "media-feature-range-notation": null,
-    "no-descending-specificity": null,
+    "import-notation": "string",
+    "value-keyword-case": ["lower", {
+      "ignoreProperties": ["composes"]
+    }],
+    "keyframes-name-pattern": null,
     "selector-class-pattern": null,
-    "value-keyword-case": null
+    "selector-pseudo-class-no-unknown": [true, {
+      "ignorePseudoClasses": [
+        "export",
+        "import",
+        "global",
+        "local"
+      ]
+    }],
+    "property-no-unknown": [ true, {
+      "ignoreProperties": [
+        "composes",
+        "compose-with"
+      ]
+    }]
   }
 }

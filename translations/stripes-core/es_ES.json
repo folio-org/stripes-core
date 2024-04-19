@@ -145,5 +145,6 @@
     "stale.reload": "Click here to reload.",
     "placeholder.forgotPassword": "Introducir correo electrónico o teléfono",
     "placeholder.forgotUsername": "Introducir correo electrónico o teléfono",
-    "title.cookieEnabled": "Cookies are required to login. Please enable cookies and try again."
+    "title.cookieEnabled": "Cookies are required to login. Please enable cookies and try again.",
+    "errors.sso.session.failed": "SSO Login failed. Please try again"
 }
