@@ -71,7 +71,7 @@ class Root extends Component {
     // * configure document-level event listeners to listen for RTR events
     if (this.props.config.useSecureTokens) {
       this.ffetch = new FFetch({ logger: this.props.logger });
-      addRtrEventListeners(okapi, store);
+      addRtrEventListeners(okapi, store, this.reactQueryClient);
     }
   }
 
@@ -180,6 +180,7 @@ class Root extends Component {
                   isAuthenticated={isAuthenticated}
                   disableAuth={disableAuth}
                   history={history}
+                  queryClient={this.reactQueryClient}
                 />
               </IntlProvider>
             </QueryClientProvider>
