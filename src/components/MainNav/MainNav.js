@@ -97,7 +97,7 @@ class MainNav extends Component {
     });
 
     // invalidate QueryProvider cache to be 100% sure we're starting from a clean slate.
-    this.props.queryClient.invalidateQueries();
+    this.props.queryClient.removeQueries();
   }
 
   componentDidUpdate(prevProps) {

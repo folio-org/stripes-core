@@ -434,7 +434,7 @@ export async function logout(okapiUrl, store, queryClient) {
   store.dispatch(resetStore());
 
   // reset QueryClient cache to remove any cached requests.
-  queryClient.invalidateQueries();
+  queryClient.removeQueries();
 
   return fetch(`${okapiUrl}/authn/logout`, {
     method: 'POST',
@@ -522,7 +522,7 @@ export const handleRtrError = (event, store, queryClient) => {
   store.dispatch(resetStore());
 
   // reset QueryClient cache to remove any cached requests.
-  queryClient.invalidateQueries();
+  queryClient.removeQueries();
 
   localforage.removeItem(SESSION_NAME)
     .then(localforage.removeItem('loginResponse'));
