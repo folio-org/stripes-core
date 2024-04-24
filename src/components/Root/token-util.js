@@ -2,7 +2,7 @@ import { okapi } from 'stripes-config';
 
 import { setTokenExpiry } from '../../loginServices';
 import { RTRError, UnexpectedResourceError } from './Errors';
-import { RTR_SUCCESS_EVENT } from './Events';
+import { RTR_ERROR_EVENT, RTR_SUCCESS_EVENT } from './Events';
 
 /**
  * RTR_TTL_WINDOW (float)
@@ -75,6 +75,29 @@ export const resourceMapper = (resource, fx) => {
   }
 
   throw new UnexpectedResourceError(resource);
+};
+
+
+export const isAuthenticationRequest = (resource, oUrl) => {
+  const isPermissibleResource = (string) => {
+    const permissible = [
+      '/bl-users/login-with-expiry',
+      '/bl-users/_self',
+    ];
+
+    return !!permissible.find(i => string.startsWith(`${oUrl}${i}`));
+  };
+
+  try {
+    return resourceMapper(resource, isPermissibleResource);
+  } catch (rme) {
+    if (rme instanceof UnexpectedResourceError) {
+      console.warn(rme.message, resource); // eslint-disable-line no-console
+      return false;
+    }
+
+    throw rme;
+  }
 };
 
 /**
@@ -214,10 +237,9 @@ export const shouldRotate = (logger) => {
  *
  * Since all windows share the same cookie, this means the must also share
  * rotation, and when rotation starts in one window requests in all others
- * must await the same promise. Thus, the isRotating flag is stored in
- * localstorage (rather than a local variable) where it is globally accessible,
- * rather than in a local variable (which would only be available in the scope
- * of a single window).
+ * must await the same promise. Thus, the RTR_IS_ROTATING flag is stored via
+ * localStorage where it is globally accessible, rather than in a local
+ * variable (which would only be available in the scope of a single window).
  *
  * The basic plot is for this function to return a promise that resolves when
  * rotation is finished. If rotation hasn't started, that's the rotation
@@ -232,83 +254,123 @@ export const shouldRotate = (logger) => {
  *   on the calling context.
  * 3 dispatch RTR_SUCCESS_EVENT
  *
+ * // ff fetch function
+ * // logger
+ * // callback
+ *
  * @returns Promise
  * @throws if RTR fails
  */
-export const rtr = async (context) => {
+export const rtr = (context, callback) => {
   context.logger.log('rtr', '** RTR ...');
 
-  let rtrPromise = null;
-  if (shouldRotate(context.logger)) {
-    localStorage.setItem(RTR_IS_ROTATING, `${Date.now()}`);
-    rtrPromise = context.nativeFetch.apply(global, [`${okapi.url}/authn/refresh`, {
-      headers: {
-        'content-type': 'application/json',
-        'x-okapi-tenant': okapi.tenant,
-      },
-      method: 'POST',
-      credentials: 'include',
-      mode: 'cors',
-    }])
-      .then(res => {
-        if (res.ok) {
-          return res.json();
-        }
-        // rtr failure. return an error message if we got one.
-        return res.json()
-          .then(json => {
-            localStorage.removeItem(RTR_IS_ROTATING);
-            if (Array.isArray(json.errors) && json.errors[0]) {
-              throw new RTRError(`${json.errors[0].message} (${json.errors[0].code})`);
-            } else {
-              throw new RTRError('RTR response failure');
-            }
-          });
-      })
-      .then(json => {
-        context.logger.log('rtr', '**     success!');
-        const te = adjustTokenExpiration({
-          tokenExpiration: {
-            atExpires: new Date(json.accessTokenExpiration).getTime(),
-            rtExpires: new Date(json.refreshTokenExpiration).getTime(),
-          }
-        }, RTR_TTL_WINDOW);
-        context.tokenExpiration = te;
-        return setTokenExpiry(te);
-      })
-      .finally(() => {
-        localStorage.removeItem(RTR_IS_ROTATING);
-        window.dispatchEvent(new Event(RTR_SUCCESS_EVENT));
-      });
-  } else {
-    // isRotating is true, so rotation has already started.
-    // create a new promise that resolves when it receives
-    // either an RTR_SUCCESS_EVENT or storage event and
-    // the isRotating value in storage is false, indicating rotation
-    // has completed.
-    //
-    // the promise itself sets up the listener, and cancels it when
-    // it resolves.
-    context.logger.log('rtr', 'rotation is already pending!');
-    rtrPromise = new Promise((res) => {
-      const rotationHandler = () => {
-        if (localStorage.getItem(RTR_IS_ROTATING) === null) {
-          window.removeEventListener(RTR_SUCCESS_EVENT, rotationHandler);
-          window.removeEventListener('storage', rotationHandler);
-          context.logger.log('rtr', 'token rotation has resolved, continue as usual!');
-          res();
-        }
-      };
-      // same window: listen for custom event
-      window.addEventListener(RTR_SUCCESS_EVENT, rotationHandler);
-
-      // other windows: listen for storage event
-      // @see https://developer.mozilla.org/en-US/docs/Web/API/Window/storage_event
-      // "This [is] a way for other pages on the domain using the storage
-      // to sync any changes that are made."
-      window.addEventListener('storage', rotationHandler);
-    });
+  // somebody else already started rotation; nothing to do here
+  if (!shouldRotate(context.logger)) {
+    context.logger.log('rtr', '** already in progress; exiting')
+    return;
   }
 
-  return rtrPromise;
+  context.logger.log('rtr', '**     rotation beginning...');
+
+  localStorage.setItem(RTR_IS_ROTATING, `${Date.now()}`);
+  context.nativeFetch.apply(global, [`${okapi.url}/authn/refresh`, {
+    headers: {
+      'content-type': 'application/json',
+      'x-okapi-tenant': okapi.tenant,
+    },
+    method: 'POST',
+    credentials: 'include',
+    mode: 'cors',
+  }])
+    .then(res => {
+      if (res.ok) {
+        return res.json();
+      }
+      // rtr failure. return an error message if we got one.
+      return res.json()
+        .then(json => {
+          localStorage.removeItem(RTR_IS_ROTATING);
+          if (Array.isArray(json.errors) && json.errors[0]) {
+            // window.dispatchEvent(new Event(RTR_ERROR_EVENT));
+            console.error(`RTR_ERROR_EVENT: ${json.errors[0].message} (${json.errors[0].code})`);
+            throw new RTRError(`${json.errors[0].message} (${json.errors[0].code})`);
+          } else {
+            // window.dispatchEvent(new Event(RTR_ERROR_EVENT));
+            console.error('RTR_ERROR_EVENT: RTR response failure')
+            throw new RTRError('RTR response failure');
+          }
+        });
+    })
+    .then(json => {
+      context.logger.log('rtr', '**     success!');
+      callback(json);
+      const te = {
+        atExpires: new Date(json.accessTokenExpiration).getTime(),
+        rtExpires: new Date(json.refreshTokenExpiration).getTime(),
+      };
+      context.tokenExpiration = te;
+      setTokenExpiry(te);
+      window.dispatchEvent(new Event(RTR_SUCCESS_EVENT));
+    })
+    .catch((_err) => {
+      console.log('dispatching new RTR_ERROR_EVENT')
+      window.dispatchEvent(new Event(RTR_ERROR_EVENT));
+    })
+    .finally(() => {
+      localStorage.removeItem(RTR_IS_ROTATING);
+    });
+};
+
+/**
+ * isRotating
+ * Return true if a rotation-request is pending; false otherwise.
+ * @param {*} logger
+ * @returns boolean
+ */
+const isRotating = (logger) => {
+  const rotationTimestamp = localStorage.getItem(RTR_IS_ROTATING);
+  if (rotationTimestamp) {
+    if (Date.now() - rotationTimestamp < RTR_MAX_AGE) {
+      return true;
+    }
+    logger.log('rtr', 'rotation request is stale');
+  }
+
+  return false;
+};
+
+/**
+ * rotationPromise
+ * Return a promise that will resolve when the active rotation request
+ * completes and (a) issues a storage event that removes the RTR_IS_ROTATING
+ * value and (b) issues an RTR_SUCCESS_EVENT. The promise itself sets up the
+ * listeners for these events, and then removes them when it resolves.
+ *
+ * @param {*} logger
+ * @returns Promise
+ */
+const rotationPromise = async (logger) => {
+  logger.log('rtr', 'rotation pending!');
+  return new Promise((res) => {
+    const rotationHandler = () => {
+      if (localStorage.getItem(RTR_IS_ROTATING) === null) {
+        window.removeEventListener(RTR_SUCCESS_EVENT, rotationHandler);
+        window.removeEventListener('storage', rotationHandler);
+        logger.log('rtr', 'rotation resolved');
+        res();
+      }
+    };
+    // same window: listen for custom event
+    window.addEventListener(RTR_SUCCESS_EVENT, rotationHandler);
+
+    // other windows: listen for storage event
+    // @see https://developer.mozilla.org/en-US/docs/Web/API/Window/storage_event
+    // "This [is] a way for other pages on the domain using the storage
+    // to sync any changes that are made."
+    window.addEventListener('storage', rotationHandler);
+  });
+};
+
+export const getPromise = async (logger) => {
+  return isRotating(logger) ? rotationPromise(logger) : Promise.resolve();
 };

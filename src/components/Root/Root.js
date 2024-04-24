@@ -7,6 +7,7 @@ import { IntlProvider } from 'react-intl';
 import queryString from 'query-string';
 import { QueryClientProvider } from 'react-query';
 import { ApolloProvider } from '@apollo/client';
+import createInactivityTimer from 'inactivity-timer';
 
 import { ErrorBoundary } from '@folio/stripes-components';
 import { metadata, icons } from 'stripes-config';
@@ -26,6 +27,7 @@ import { getQueryResourceKey, getCurrentModule } from '../../locationService';
 import Stripes from '../../Stripes';
 import RootWithIntl from '../../RootWithIntl';
 import SystemSkeleton from '../SystemSkeleton';
+import { RTR_TIMEOUT_EVENT } from './Events';
 
 import './Root.css';
 
@@ -70,8 +72,31 @@ class Root extends Component {
     // * configure fetch and xhr interceptors to conduct RTR
     // * configure document-level event listeners to listen for RTR events
     if (this.props.config.useSecureTokens) {
-      this.ffetch = new FFetch({ logger: this.props.logger });
-      addRtrEventListeners(okapi, store);
+      this.ffetch = new FFetch({
+        logger: this.props.logger,
+        store,
+      });
+      this.ffetch.replaceFetch();
+      this.ffetch.replaceXMLHttpRequest();
+
+      this.idleTimer = React.createRef();
+      // this.idleTimer = createInactivityTimer('3s', () => {
+      //   alert('inactivity IDLE')
+      //   return fetch(`${okapi.url}/authn/logout`, {
+      //     method: 'POST',
+      //     mode: 'cors',
+      //     credentials: 'include'
+      //   })
+      //     .then(() => {
+      //       console.log('  posted, dispatching....')
+
+      //       window.dispatchEvent(new Event(RTR_TIMEOUT_EVENT));
+      //       console.log('  dispatched')
+      //     });
+      // });
+      // this.idleTimer.signal();
+
+      addRtrEventListeners(okapi, store, history, this.idleTimer);
     }
   }
 
@@ -180,6 +205,7 @@ class Root extends Component {
                   isAuthenticated={isAuthenticated}
                   disableAuth={disableAuth}
                   history={history}
+                  idleTimer={this.idleTimer}
                 />
               </IntlProvider>
             </QueryClientProvider>

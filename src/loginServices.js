@@ -9,6 +9,7 @@ import { resetStore } from './mainActions';
 import {
   clearCurrentUser,
   clearOkapiToken,
+  clearRtrTimeout,
   setCurrentPerms,
   setLocale,
   setTimezone,
@@ -28,7 +29,12 @@ import {
 import processBadResponse from './processBadResponse';
 import configureLogger from './configureLogger';
 
-import { RTR_ERROR_EVENT } from './components/Root/Events';
+import {
+  RTR_ACTIVITY_CHANNEL,
+  RTR_ACTIVITY_EVENTS,
+  RTR_ERROR_EVENT,
+  RTR_TIMEOUT_EVENT
+} from './components/Root/Events';
 
 // export supported locales, i.e. the languages we provide translations for
 export const supportedLocales = [
@@ -421,24 +427,68 @@ export function spreadUserWithPerms(userWithPerms) {
 
 /**
  * logout
- * dispatch events to clear the store, then clear the session too.
+ * logout is a multi-part process, but this function is idempotent.
+ * 1.  there are server-side things to do, i.e. fetch /authn/logout.
+ *     these must only be done once, no matter how many tabs are open
+ *     because once the fetch completes the cookies are gone, which
+ *     means a repeat request will fail.
+ * 2.  there is shared storage to clean out, i.e. storage that is shared
+ *     across tabs such as localStorage and localforage. clearing storage
+ *     that another tab has already cleared is fine, if pointless.
+ * 3.  there is private storage to clean out, i.e. storage that is unique
+ *     to the current tab/window. this storage _must_ be cleared in each
+ *     instance of stripes (i.e. in each separate tab/window) because the
+ *     instances running in other tabs do not have access to it.
+ * What does all this mean? It means some things we need to check on and
+ * maybe do (the server-side things), some we can do (the shared storage)
+ * and some we must do (the private storage).
  *
+ * @param {string} okapiUrl
  * @param {object} redux store
+ * @param {object} history
+ * @param {object} idleTimer ref
  *
  * @returns {Promise}
  */
-export async function logout(okapiUrl, store) {
-  store.dispatch(setIsAuthenticated(false));
-  store.dispatch(clearCurrentUser());
-  store.dispatch(clearOkapiToken());
-  store.dispatch(resetStore());
-  return fetch(`${okapiUrl}/authn/logout`, {
-    method: 'POST',
-    mode: 'cors',
-    credentials: 'include'
-  })
+export async function logout(okapiUrl, store, history, idleTimer) {
+  // if localStorage is already empty, then logout has already started
+  // in another window and all we have to worry about here is private storage.
+  const logoutPromise = localStorage.getItem(SESSION_NAME) ?
+    fetch(`${okapiUrl}/authn/logout`, {
+      method: 'POST',
+      mode: 'cors',
+      credentials: 'include'
+    })
+    :
+    Promise.resolve();
+
+  return logoutPromise
+    .then(() => {
+      // localStorage events emit across tabs so we can use it like a
+      // BroadcastChannel to communicate with all tabs/windows
+      localStorage.removeItem(SESSION_NAME);
+
+      // default: clear the console, preserving it ONLY if asked
+      if (!config.preserveConsole) {
+        console.clear(); // eslint-disable-line no-console
+      }
+
+      // cancel the idle-session-timer
+      if (idleTimer?.current) {
+        idleTimer.current.clear();
+        idleTimer.current = null;
+      }
+
+      store.dispatch(setIsAuthenticated(false));
+      store.dispatch(clearCurrentUser());
+      store.dispatch(clearOkapiToken());
+      store.dispatch(resetStore());
+    })
     .then(localforage.removeItem(SESSION_NAME))
-    .then(localforage.removeItem('loginResponse'));
+    .then(localforage.removeItem('loginResponse'))
+    .then(() => {
+      history.push('/');
+    });
 }
 
 /**
@@ -493,7 +543,12 @@ export function createOkapiSession(okapiUrl, store, tenant, token, data) {
     tokenExpiration,
   };
 
-  // provide token-expiration info to the service worker
+  // localStorage events emit across tabs so we can use it like a
+  // BroadcastChannel to communicate with all tabs/windows.
+  // here, we set a dummy 'true' value just so we have something to
+  // remove (and therefore emit and respond to) on logout
+  localStorage.setItem(SESSION_NAME, 'true');
+
   return localforage.setItem('loginResponse', data)
     .then(() => localforage.setItem(SESSION_NAME, okapiSess))
     .then(() => {
@@ -504,23 +559,6 @@ export function createOkapiSession(okapiUrl, store, tenant, token, data) {
 }
 
 /**
- * handleRtrError
- * Clear out the redux store and logout.
- *
- * @param {*} event
- * @param {*} store
- * @returns void
- */
-export const handleRtrError = (event, store) => {
-  logger.log('rtr', 'rtr error; logging out', event.detail);
-  store.dispatch(setIsAuthenticated(false));
-  store.dispatch(clearCurrentUser());
-  store.dispatch(resetStore());
-  localforage.removeItem(SESSION_NAME)
-    .then(localforage.removeItem('loginResponse'));
-};
-
-/**
  * addRtrEventListeners
  * RTR_ERROR_EVENT: RTR error, logout
  * RTR_ROTATION_EVENT: configure a timer for auto-logout
@@ -528,14 +566,50 @@ export const handleRtrError = (event, store) => {
  * @param {*} okapiConfig
  * @param {*} store
  */
-export function addRtrEventListeners(okapiConfig, store) {
-  document.addEventListener(RTR_ERROR_EVENT, (e) => {
-    handleRtrError(e, store);
+export function addRtrEventListeners(okapiConfig, store, history, idleTimer) {
+  // RTR error in this window
+  window.addEventListener(RTR_ERROR_EVENT, (e) => {
+    if (store.getState().okapi?.isAuthenticated) {
+      console.log('caught rtr error; logging out');
+      logout(okapiConfig.url, store, history, idleTimer);
+    }
   });
 
-  // document.addEventListener(RTR_ROTATION_EVENT, (e) => {
-  //   handleRtrRotation(e, store);
-  // });
+  // idle session timeout in this window
+  window.addEventListener(RTR_TIMEOUT_EVENT, (e) => {
+    if (store.getState().okapi?.isAuthenticated) {
+      console.log('caught idle session timeout; logging out');
+      logout(okapiConfig.url, store, history, idleTimer);
+    }
+  });
+
+  // localstorage change in another window
+  window.addEventListener('storage', (e) => {
+    console.log('external: local storage change')
+    if (!localStorage.getItem(SESSION_NAME)) {
+      logout(okapiConfig.url, store, history, idleTimer);
+    }
+  });
+
+  // signal the activity listener to indicate ongoing activity,
+  // preventing the idle-session-timeout timer from firing
+  const bc = new BroadcastChannel(RTR_ACTIVITY_CHANNEL);
+  bc.addEventListener('message', () => {
+    if (store.getState().okapi?.isAuthenticated) {
+      console.log('external: activity signal')
+      idleTimer.current?.signal();
+    }
+  });
+
+  RTR_ACTIVITY_EVENTS.forEach(e => {
+    window.addEventListener(e, () => {
+      if (store.getState().okapi?.isAuthenticated) {
+        console.log('activity')
+        idleTimer.current?.signal();
+        bc.postMessage('signal');
+      }
+    });
+  });
 }
 
 /**

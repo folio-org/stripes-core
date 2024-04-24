@@ -37,6 +37,13 @@
 import { okapi } from 'stripes-config';
 import { getTokenExpiry } from '../../loginServices';
 import {
+  clearRtrTimeout,
+  setRtrTimeout
+} from '../../okapiActions';
+
+import {
+  getPromise,
+  isAuthenticationRequest,
   isFolioApiRequest,
   isLogoutRequest,
   isValidAT,
@@ -60,16 +67,29 @@ const OKAPI_FETCH_OPTIONS = {
 };
 
 export class FFetch {
-  constructor({ logger }) {
+  constructor({ logger, store }) {
     this.logger = logger;
+    this.store = store;
 
-    // save a reference to fetch, and then reassign the global :scream:
+    console.log('FFetch CONSTRUCTION')
+  }
+
+  /**
+   * save a reference to fetch, and then reassign the global :scream:
+   */
+  replaceFetch = () => {
     this.nativeFetch = global.fetch;
     global.fetch = this.ffetch;
+  };
 
+  /**
+   * save a reference to XMLHttpRequest, and then reassign the global :scream:
+   */
+  replaceXMLHttpRequest = () => {
     this.NativeXHR = global.XMLHttpRequest;
     global.XMLHttpRequest = FXHR(this);
-  }
+  };
+
 
   /** { atExpires, rtExpires } both are JS millisecond timestamps */
   tokenExpiration = null;
@@ -209,6 +229,18 @@ export class FFetch {
   };
 
   /**
+   * rotateCallback
+   *
+   */
+  rotateCallback = () => {
+    this.logger.log('rtr', 'rotateCallback setup')
+    this.store.dispatch(setRtrTimeout(setTimeout(() => {
+      this.logger.log('rtr', 'firing rtr from rotateCallback')
+      rtr(this, this.rotateCallback);
+    }, 10 * 1000)));
+  }
+
+  /**
    * passThrough
    * Inspect resource to determine whether it's a FOLIO API request.
    * Handle it with RTR if it is; let it trickle through if not.
@@ -238,34 +270,76 @@ export class FFetch {
     if (isFolioApiRequest(resource, okapi.url)) {
       this.logger.log('rtr', 'will fetch', resource);
 
-      // logout requests must not fail
+
+      // on authentication, grab the response to kick of the rotation cycle,
+      // then return return the response
+      if (isAuthenticationRequest(resource, okapi.url)) {
+        this.logger.log('rtr', 'authn pending...');
+        return this.nativeFetch.apply(global, [resource, options && { ...options, ...OKAPI_FETCH_OPTIONS }])
+          .then(res => {
+            this.logger.log('rtr', 'authn success!');
+            this.rotateCallback();
+            return res;
+          });
+      }
+
       if (isLogoutRequest(resource, okapi.url)) {
-        return this.passThroughLogout(resource, options);
+        this.logger.log('rtr', '   (logout request)');
+        return this.nativeFetch.apply(global, [resource, options && { ...options, ...OKAPI_FETCH_OPTIONS }])
+          .catch(err => {
+            // kill me softly: return an empty response to allow graceful failure
+            console.error('-- (rtr-sw) logout failure', err); // eslint-disable-line no-console
+            return Promise.resolve(new Response(JSON.stringify({})));
+          })
+          //@@ handled by loginSerices::logout so can be eliminated here
+          .finally(() => {
+            this.store.dispatch(clearRtrTimeout());
+          });
       }
 
-      // if our cached tokens appear to have expired, pull them from storage.
-      // maybe another window updated them for us without us knowing.
-      if (!isValidAT(this.tokenExpiration, this.logger)) {
-        this.logger.log('rtr', 'local tokens expired; fetching from storage');
-        this.tokenExpiration = await getTokenExpiry();
-      }
+      return getPromise(this.logger)
+        .then(() => {
+          this.logger.log('rtr', 'post-rtr-fetch', resource);
+          return this.nativeFetch.apply(global, [resource, options && { ...options, ...OKAPI_FETCH_OPTIONS }]);
+        })
+        .catch(err => {
+          if (err instanceof RTRError) {
+            console.error('RTR failure', err); // eslint-disable-line no-console
+            document.dispatchEvent(new Event(RTR_ERROR_EVENT, { detail: err }));
+            return Promise.resolve(new Response(JSON.stringify({})));
+          }
 
-      // AT is valid or unnecessary; execute the fetch
-      if (rtrIgnore || this.isPermissibleRequest(resource, this.tokenExpiration, okapi.url)) {
-        return this.passThroughWithAT(resource, options);
-      }
+          throw err;
+        });
 
-      // AT was expired, but RT is valid; perform RTR then execute the fetch
-      if (isValidRT(this.tokenExpiration, this.logger)) {
-        return this.passThroughWithRT(resource, options);
-      }
+      // logout requests must not fail
+      // if (isLogoutRequest(resource, okapi.url)) {
+      //   return this.passThroughLogout(resource, options);
+      // }
 
-      // AT is expired. RT is expired. It's the end of the world as we know it.
-      // So, maybe Michael Stipe is god. Oh, wait, crap, he lost his religion.
-      // Look, RTR is complicated, what do you want?
-      console.error('All tokens expired'); // eslint-disable-line no-console
-      document.dispatchEvent(new Event(RTR_ERROR_EVENT, { detail: 'All tokens expired' }));
-      return Promise.resolve(new Response(JSON.stringify({})));
+      // // if our cached tokens appear to have expired, pull them from storage.
+      // // maybe another window updated them for us without us knowing.
+      // if (!isValidAT(this.tokenExpiration, this.logger)) {
+      //   this.logger.log('rtr', 'local tokens expired; fetching from storage');
+      //   this.tokenExpiration = await getTokenExpiry();
+      // }
+
+      // // AT is valid or unnecessary; execute the fetch
+      // if (rtrIgnore || this.isPermissibleRequest(resource, this.tokenExpiration, okapi.url)) {
+      //   return this.passThroughWithAT(resource, options);
+      // }
+
+      // // AT was expired, but RT is valid; perform RTR then execute the fetch
+      // if (isValidRT(this.tokenExpiration, this.logger)) {
+      //   return this.passThroughWithRT(resource, options);
+      // }
+
+      // // AT is expired. RT is expired. It's the end of the world as we know it.
+      // // So, maybe Michael Stipe is god. Oh, wait, crap, he lost his religion.
+      // // Look, RTR is complicated, what do you want?
+      // console.error('All tokens expired'); // eslint-disable-line no-console
+      // document.dispatchEvent(new Event(RTR_ERROR_EVENT, { detail: 'All tokens expired' }));
+      // return Promise.resolve(new Response(JSON.stringify({})));
     }
 
     // default: pass requests through to the network
