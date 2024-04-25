@@ -2,6 +2,7 @@ import React from 'react';
 
 jest.mock('@folio/stripes-components', () => ({
   ...jest.requireActual('@folio/stripes-components'),
+  loadDayJSLocale: jest.fn(),
   Accordion: jest.fn(({ children, ...rest }) => (
     <span {...rest}>{children}</span>
   )),

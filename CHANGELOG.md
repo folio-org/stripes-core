@@ -5,6 +5,7 @@
 * Utilize the `tenant` procured through the SSO login process. Refs STCOR-769.
 * Remove tag-based selectors from Login, ResetPassword, Forgot UserName/Password form CSS. Refs STCOR-712.
 * Provide `useUserTenantPermissions` hook. Refs STCOR-830.
+* Load DayJS locale data as part of `loginServices`. STCOR-771.
 
 ## 10.1.0 IN PROGRESS
 

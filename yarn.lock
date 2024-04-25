@@ -1585,6 +1585,7 @@
   version "12.2.1000004277"
   resolved "https://repository.folio.org/repository/npm-folioci/@folio/stripes-components/-/stripes-components-12.2.1000004277.tgz#c49e1bc61b9e629705ce5d562c33800879d9f156"
   integrity sha512-3Y724MLT+dsmHg8EBdaSXzRH+SOzE/z2g46GK4k0QTHOZsp3QkehmsV5KwmnRbTpENe/e4X9HLaZiout5fzPVg==
+
   dependencies:
     "@csstools/postcss-global-data" "^2.1.1"
     "@folio/stripes-react-hotkeys" "^3.0.5"
