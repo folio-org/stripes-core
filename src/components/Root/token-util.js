@@ -2,32 +2,7 @@ import { okapi } from 'stripes-config';
 
 import { setTokenExpiry } from '../../loginServices';
 import { RTRError, UnexpectedResourceError } from './Errors';
-import { RTR_ERROR_EVENT, RTR_SUCCESS_EVENT } from './Events';
-
-/**
- * RTR_TTL_WINDOW (float)
- * How much of a token's TTL can elapse before it is considered expired?
- * This helps us avoid a race-like condition where a token expires in the
- * gap between when we check whether we think it's expired and when we use
- * it to authorize a new request. Say the last RTR response took a long time
- * to arrive, so it was generated at 12:34:56 but we didn't process it until
- * 12:34:59. That could cause problems if (just totally hypothetically) we
- * had an application (again, TOTALLY hypothetically) that was polling every
- * five seconds and one of its requests landed in that three-second gap. Oh,
- * hey STCOR-754, what are you doing here?
- *
- * So this is a buffer. Instead of letting a token be used up until the very
- * last second of its life, we'll consider it expired a little early. This will
- * cause RTR to happen a little early (i.e. a little more frequently) but that
- * should be OK since it increases our confidence that when an AT accompanies
- * the RTR request it is still valid.
- *
- * 0 < value < 1. Closer to 0 means more frequent rotation. Closer to 1 means
- * closer to the exact value of its TTL. 0.8 is just a SWAG at a "likely to be
- * useful" value. Given a 600 second TTL (the current default for ATs) it
- * corresponds to 480 seconds.
- */
-export const RTR_TTL_WINDOW = 0.8;
+import { RTR_ERROR_EVENT, RTR_SUCCESS_EVENT } from './constants';
 
 /** localstorage flag indicating whether an RTR request is already under way. */
 export const RTR_IS_ROTATING = '@folio/stripes/core::rtrIsRotating';
@@ -266,7 +241,7 @@ export const rtr = (context, callback) => {
 
   // somebody else already started rotation; nothing to do here
   if (!shouldRotate(context.logger)) {
-    context.logger.log('rtr', '** already in progress; exiting')
+    context.logger.log('rtr', '** already in progress; exiting');
     return;
   }
 
@@ -283,20 +258,16 @@ export const rtr = (context, callback) => {
     mode: 'cors',
   }])
     .then(res => {
-      if (res.ok) {
-        return res.json();
-      }
+      // if (res.ok) {
+      //   return res.json();
+      // }
       // rtr failure. return an error message if we got one.
       return res.json()
         .then(json => {
           localStorage.removeItem(RTR_IS_ROTATING);
           if (Array.isArray(json.errors) && json.errors[0]) {
-            // window.dispatchEvent(new Event(RTR_ERROR_EVENT));
-            console.error(`RTR_ERROR_EVENT: ${json.errors[0].message} (${json.errors[0].code})`);
             throw new RTRError(`${json.errors[0].message} (${json.errors[0].code})`);
           } else {
-            // window.dispatchEvent(new Event(RTR_ERROR_EVENT));
-            console.error('RTR_ERROR_EVENT: RTR response failure')
             throw new RTRError('RTR response failure');
           }
         });
@@ -312,8 +283,8 @@ export const rtr = (context, callback) => {
       setTokenExpiry(te);
       window.dispatchEvent(new Event(RTR_SUCCESS_EVENT));
     })
-    .catch((_err) => {
-      console.log('dispatching new RTR_ERROR_EVENT')
+    .catch((err) => {
+      console.error('RTR_ERROR_EVENT', err); // eslint-disable-line no-console
       window.dispatchEvent(new Event(RTR_ERROR_EVENT));
     })
     .finally(() => {
@@ -324,6 +295,8 @@ export const rtr = (context, callback) => {
 /**
  * isRotating
  * Return true if a rotation-request is pending; false otherwise.
+ * A pending rotation-request that is older than RTR_MAX_AGE is
+ * considered stale and ignored.
  * @param {*} logger
  * @returns boolean
  */

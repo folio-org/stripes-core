@@ -148,9 +148,17 @@ function setRtrTimeout(rtrTimeout) {
     rtrTimeout,
   };
 }
+
 function clearRtrTimeout() {
   return {
     type: 'CLEAR_RTR_TIMEOUT',
+  };
+}
+
+function toggleRtrModal(isVisible) {
+  return {
+    type: 'TOGGLE_RTR_MODAL',
+    isVisible,
   };
 }
 
@@ -177,5 +185,6 @@ export {
   setTimezone,
   setTokenExpiration,
   setTranslations,
+  toggleRtrModal,
   updateCurrentUser,
 };

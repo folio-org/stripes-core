@@ -9,7 +9,6 @@ import { resetStore } from './mainActions';
 import {
   clearCurrentUser,
   clearOkapiToken,
-  clearRtrTimeout,
   setCurrentPerms,
   setLocale,
   setTimezone,
@@ -34,7 +33,7 @@ import {
   RTR_ACTIVITY_EVENTS,
   RTR_ERROR_EVENT,
   RTR_TIMEOUT_EVENT
-} from './components/Root/Events';
+} from './components/Root/constants';
 
 // export supported locales, i.e. the languages we provide translations for
 export const supportedLocales = [
@@ -446,11 +445,11 @@ export function spreadUserWithPerms(userWithPerms) {
  * @param {string} okapiUrl
  * @param {object} redux store
  * @param {object} history
- * @param {object} idleTimer ref
+ * @param {object} idleTimers ref
  *
  * @returns {Promise}
  */
-export async function logout(okapiUrl, store, history, idleTimer) {
+export async function logout(okapiUrl, store, history, idleTimers) {
   // if localStorage is already empty, then logout has already started
   // in another window and all we have to worry about here is private storage.
   const logoutPromise = localStorage.getItem(SESSION_NAME) ?
@@ -473,10 +472,12 @@ export async function logout(okapiUrl, store, history, idleTimer) {
         console.clear(); // eslint-disable-line no-console
       }
 
-      // cancel the idle-session-timer
-      if (idleTimer?.current) {
-        idleTimer.current.clear();
-        idleTimer.current = null;
+      // cancel the idle-session-timers
+      if (idleTimers?.current) {
+        Object.values(idleTimers.current).forEach((it) => {
+          it.clear();
+        });
+        idleTimers.current = null;
       }
 
       store.dispatch(setIsAuthenticated(false));
@@ -560,53 +561,77 @@ export function createOkapiSession(okapiUrl, store, tenant, token, data) {
 
 /**
  * addRtrEventListeners
- * RTR_ERROR_EVENT: RTR error, logout
- * RTR_ROTATION_EVENT: configure a timer for auto-logout
  *
- * @param {*} okapiConfig
- * @param {*} store
+ * @param {object} okapiConfig
+ * @param {object} store redux store
+ * @param {object} history
+ * @param {object} idleTimers ref
  */
-export function addRtrEventListeners(okapiConfig, store, history, idleTimer) {
-  // RTR error in this window
-  window.addEventListener(RTR_ERROR_EVENT, (e) => {
+export function addRtrEventListeners(okapiConfig, store, history, idleTimers) {
+  // RTR error in this window: logout
+  window.addEventListener(RTR_ERROR_EVENT, (_e) => {
     if (store.getState().okapi?.isAuthenticated) {
-      console.log('caught rtr error; logging out');
-      logout(okapiConfig.url, store, history, idleTimer);
+      console.warn('rtr error; logging out'); // eslint-disable-line no-console
+      logout(okapiConfig.url, store, history, idleTimers);
     }
   });
 
-  // idle session timeout in this window
-  window.addEventListener(RTR_TIMEOUT_EVENT, (e) => {
+  // idle session timeout in this window: logout
+  window.addEventListener(RTR_TIMEOUT_EVENT, (_e) => {
     if (store.getState().okapi?.isAuthenticated) {
-      console.log('caught idle session timeout; logging out');
-      logout(okapiConfig.url, store, history, idleTimer);
+      logger.log('rtr', 'idle session timeout; logging out');
+      logout(okapiConfig.url, store, history, idleTimers);
     }
   });
 
-  // localstorage change in another window
-  window.addEventListener('storage', (e) => {
-    console.log('external: local storage change')
+  // localstorage change in another window: logout?
+  //
+  // if SESSION_NAME has been removed from localStorage, that indicates
+  // logout is in process in another window, so we logout here as well.
+  window.addEventListener('storage', (_e) => {
     if (!localStorage.getItem(SESSION_NAME)) {
-      logout(okapiConfig.url, store, history, idleTimer);
+      logger.log('rtr', 'external localstorage change; logging out');
+      logout(okapiConfig.url, store, history, idleTimers);
     }
   });
 
-  // signal the activity listener to indicate ongoing activity,
-  // preventing the idle-session-timeout timer from firing
+  // track activity in other windows
+  // the only events emitted to this channel are pings, empty keep-alive
+  // messages that indicate an event was processed, i.e. some activity
+  // occurred, in another window, so this one should be kept alive too.
   const bc = new BroadcastChannel(RTR_ACTIVITY_CHANNEL);
+
+  // activity in another window: send keep-alive to idle-timers.
+  //
+  // when multiple tabs/windows are open, there is probably only activity
+  // in one but they will each have an idle-session timer running. thus,
+  // activity in each window is published on a BroadcastChannel to announce
+  // it to all windows in order to send a keep-alive ping to their timers.
   bc.addEventListener('message', () => {
     if (store.getState().okapi?.isAuthenticated) {
-      console.log('external: activity signal')
-      idleTimer.current?.signal();
+      logger.log('rtr', 'external activity signal');
+      if (idleTimers.current) {
+        Object.values(idleTimers.current).forEach((it) => {
+          it.signal();
+        });
+      }
     }
   });
 
-  RTR_ACTIVITY_EVENTS.forEach(e => {
+  // activity in this window: send keep-alive to idle-timers
+  // and ping the BroadcastChannel to keep other windows alive as well
+  const activityEvents = config.rtr?.activityEvents ?? RTR_ACTIVITY_EVENTS;
+  activityEvents.forEach(e => {
     window.addEventListener(e, () => {
-      if (store.getState().okapi?.isAuthenticated) {
-        console.log('activity')
-        idleTimer.current?.signal();
-        bc.postMessage('signal');
+      const state = store.getState();
+      if (state.okapi?.isAuthenticated && !state.okapi.rtrModalIsVisible) {
+        logger.log('rtr', 'local activity signal');
+        if (idleTimers.current) {
+          bc.postMessage('signal');
+          Object.values(idleTimers.current).forEach((it) => {
+            it.signal();
+          });
+        }
       }
     });
   });

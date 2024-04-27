@@ -6,14 +6,12 @@ import {
 } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { CookiesProvider } from 'react-cookie';
-import createInactivityTimer from 'inactivity-timer';
 
 import { connectFor } from '@folio/stripes-connect';
 import { Callout, HotKeys } from '@folio/stripes-components';
 
 import ModuleRoutes from './moduleRoutes';
 import events from './events';
-import { RTR_TIMEOUT_EVENT } from './components/Root/Events';
 
 import {
   MainContainer,
@@ -34,12 +32,13 @@ import {
   ForgotPasswordCtrl,
   ForgotUserNameCtrl,
   AppCtxMenuProvider,
+  SessionEventContainer,
 } from './components';
 import StaleBundleWarning from './components/StaleBundleWarning';
 import { StripesContext } from './StripesContext';
 import { CalloutContext } from './CalloutContext';
 
-const RootWithIntl = ({ stripes, token = '', isAuthenticated = false, disableAuth, history = {}, idleTimer = null }) => {
+const RootWithIntl = ({ stripes, token = '', isAuthenticated = false, disableAuth, history = {}, idleTimers = null }) => {
   const connect = connectFor('@folio/core', stripes.epics, stripes.logger);
   const connectedStripes = stripes.clone({ connect });
 
@@ -47,16 +46,6 @@ const RootWithIntl = ({ stripes, token = '', isAuthenticated = false, disableAut
   const setCalloutDomRef = (ref) => {
     setCallout(ref);
   };
-
-  if (isAuthenticated && idleTimer.current === null) {
-    console.log('instantiating inactivity timer')
-    idleTimer.current = createInactivityTimer('15s', () => {
-      console.warn('inactivity IDLE')
-      window.dispatchEvent(new Event(RTR_TIMEOUT_EVENT));
-      console.log('  dispatched')
-    });
-    idleTimer.current.signal();
-  }
 
   return (
     <StripesContext.Provider value={connectedStripes}>
@@ -73,7 +62,7 @@ const RootWithIntl = ({ stripes, token = '', isAuthenticated = false, disableAut
                     <>
                       <MainContainer>
                         <AppCtxMenuProvider>
-                          <MainNav stripes={connectedStripes} idleTimer={idleTimer} />
+                          <MainNav stripes={connectedStripes} idleTimers={idleTimers} />
                           {typeof connectedStripes?.config?.staleBundleWarning === 'object' && <StaleBundleWarning />}
                           <HandlerManager
                             event={events.LOGIN}
@@ -82,6 +71,7 @@ const RootWithIntl = ({ stripes, token = '', isAuthenticated = false, disableAut
                           { (connectedStripes.okapi !== 'object' || connectedStripes.discovery.isFinished) && (
                             <ModuleContainer id="content">
                               <OverlayContainer />
+                              <SessionEventContainer idleTimers={idleTimers} />
                               <Switch>
                                 <TitledRoute
                                   name="home"
@@ -169,7 +159,7 @@ RootWithIntl.propTypes = {
     store: PropTypes.object.isRequired
   }).isRequired,
   token: PropTypes.string,
-  idleTimer: PropTypes.object,
+  idleTimers: PropTypes.object,
   isAuthenticated: PropTypes.bool,
   disableAuth: PropTypes.bool.isRequired,
   history: PropTypes.shape({}),

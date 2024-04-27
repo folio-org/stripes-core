@@ -1,7 +1,8 @@
 /* eslint-disable import/prefer-default-export */
 
 /**
- * TLDR: override global `fetch` and `XMLHttpRequest` to perform RTR for FOLIO API requests.
+ * TLDR: override global `fetch` and `XMLHttpRequest` to perform RTR for
+ * FOLIO API requests.
  *
  * RTR Primers:
  * @see https://authjs.dev/guides/basics/refresh-token-rotation
@@ -11,13 +12,15 @@
  * to them. The AT cookie accompanies every request, and the RT cookie is sent
  * only in refresh requests.
  *
- * The basic workflow here is intercept requests for FOLIO APIs and trap
- * response failures that are caused by expired ATs, conduct RTR, then replay
- * the original requests. FOLIO API requests that arrive while RTR is in-process
- * are held until RTR finishes and then allowed to flow through. AT failure is
- * recognized in a response with status code 403 and an error message beginning with
- * "Token missing". (Eventually, it may be 401 instead, but not today.) Requests
- * to non-FOLIO APIs flow through without intervention.
+ * The basic plot here is that RTR requests happen independently of other
+ * activity. The login-response is used to trigger the RTR cycle, which then
+ * continues in perpetuity until logout. Likewise, the response from each RTR
+ * request is used to start the timer that will trigger the next round in the
+ * cycle.
+ *
+ * Requests that arrive while RTR is in flight are held until the RTR promise
+ * resolves and then processed. This avoids the problem of a request's AT
+ * expiring (or changing, if RTR succeeds) while it is in-flight.
  *
  * RTR failures should cause logout since they indicate an expired or
  * otherwise invalid RT, which is unrecoverable. Other request failures
@@ -35,9 +38,7 @@
  */
 
 import { okapi } from 'stripes-config';
-import { getTokenExpiry } from '../../loginServices';
 import {
-  clearRtrTimeout,
   setRtrTimeout
 } from '../../okapiActions';
 
@@ -46,18 +47,15 @@ import {
   isAuthenticationRequest,
   isFolioApiRequest,
   isLogoutRequest,
-  isValidAT,
-  isValidRT,
-  resourceMapper,
   rtr,
 } from './token-util';
 import {
   RTRError,
-  UnexpectedResourceError,
 } from './Errors';
 import {
+  RTR_AT_TTL_FRACTION,
   RTR_ERROR_EVENT,
-} from './Events';
+} from './constants';
 
 import FXHR from './FXHR';
 
@@ -70,8 +68,6 @@ export class FFetch {
   constructor({ logger, store }) {
     this.logger = logger;
     this.store = store;
-
-    console.log('FFetch CONSTRUCTION')
   }
 
   /**
@@ -90,154 +86,20 @@ export class FFetch {
     global.XMLHttpRequest = FXHR(this);
   };
 
-
-  /** { atExpires, rtExpires } both are JS millisecond timestamps */
-  tokenExpiration = null;
-
-  /** lock to indicate whether a rotation request is already in progress */
-  // @@ needs to be stored in localforage???
-  isRotating = false;
-
-  /**
-   * isPermissibleRequest
-   * Some requests are always permissible, e.g. auth-n and forgot-password.
-   * Others are only permissible if the Access Token is still valid.
-   *
-   * @param {Request} req clone of the original event.request object
-   * @param {object} te token expiration shaped like { atExpires, rtExpires }
-   * @param {string} oUrl Okapi URL
-   * @returns boolean true if the AT is valid or the request is always permissible
-   */
-  isPermissibleRequest = (resource, te, oUrl) => {
-    if (isValidAT(te, this.logger)) {
-      return true;
-    }
-
-    const isPermissibleResource = (string) => {
-      const permissible = [
-        '/bl-users/forgotten/password',
-        '/bl-users/forgotten/username',
-        '/bl-users/login-with-expiry',
-        '/bl-users/password-reset',
-        '/saml/check',
-        `/_/invoke/tenant/${okapi.tenant}/saml/login`
-      ];
-
-      this.logger.log('rtr', `AT invalid for ${resource}`);
-      return !!permissible.find(i => string.startsWith(`${oUrl}${i}`));
-    };
-
-
-    try {
-      return resourceMapper(resource, isPermissibleResource);
-    } catch (rme) {
-      if (rme instanceof UnexpectedResourceError) {
-        console.warn(rme.message, resource); // eslint-disable-line no-console
-        return false;
-      }
-
-      throw rme;
-    }
-  };
-
-  /**
-   * passThroughWithRT
-   * Perform RTR then execute the original request.
-   * If RTR fails, dispatch RTR_ERROR_EVENT and die softly.
-   *
-   * @param {*} resource one of string, URL, Request
-   * @params {object} options
-   * @returns Promise
-   */
-  passThroughWithRT = (resource, options) => {
-    this.logger.log('rtr', 'pre-rtr-fetch', resource);
-    return rtr(this)
-      .then(() => {
-        this.logger.log('rtr', 'post-rtr-fetch', resource);
-        return this.nativeFetch.apply(global, [resource, options && { ...options, ...OKAPI_FETCH_OPTIONS }]);
-      })
-      .catch(err => {
-        if (err instanceof RTRError) {
-          console.error('RTR failure', err); // eslint-disable-line no-console
-          document.dispatchEvent(new Event(RTR_ERROR_EVENT, { detail: err }));
-          return Promise.resolve(new Response(JSON.stringify({})));
-        }
-
-        throw err;
-      });
-  };
-
-  /**
-   * passThroughWithAT
-   * Given we believe the AT to be valid, pass the fetch through.
-   * If it fails, maybe our beliefs were wrong, maybe everything is wrong,
-   * maybe there is no God, or there are many gods, or god is a she, or
-   * she is a he, or Lou Reed is god. Or maybe we were just wrong about the
-   * AT and we need to conduct token rotation, so try that. If RTR succeeds,
-   * it'll pass through the fetch as we originally intended because now we
-   * know the AT will be valid. If RTR fails, then it doesn't matter about
-   * Lou Reed. He may be god, but this is out of our hands now.
-   *
-   * @param {*} resource any resource acceptable to fetch()
-   * @param {*} options
-   * @returns Promise
-   */
-  passThroughWithAT = (resource, options) => {
-    return this.nativeFetch.apply(global, [resource, options && { ...options, ...OKAPI_FETCH_OPTIONS }])
-      .then(response => {
-        // if the request failed due to a missing token, attempt RTR (which
-        // will then replay the original fetch if it succeeds), or die softly
-        // if it fails. return any other response as-is.
-        if (response.status === 400 && response.headers.get('content-type') === 'text/plain') {
-          const res = response.clone();
-          return res.text()
-            .then(text => {
-              if (text.startsWith('Token missing')) {
-                this.logger.log('rtr', '   (whoops, invalid AT; retrying)');
-                return this.passThroughWithRT(resource, options);
-              }
-
-              // yes, we got a 4xx, but not an RTR 4xx. leave that to the
-              // original application to handle. it's not our problem.
-              return response;
-            });
-        }
-
-        return response;
-      });
-  }
-
-  /**
-   * passThroughLogout
-   * The logout request should never fail, even if it fails.
-   * That is, if it fails, we just pretend like it never happened
-   * instead of blowing up and causing somebody to get stuck in the
-   * logout process.
-   *
-   * @param {*} resource any resource acceptable to fetch()
-   * @param {object} options
-   * @returns Promise
-   */
-  passThroughLogout = (resource, options) => {
-    this.logger.log('rtr', '   (logout request)');
-    return this.nativeFetch.apply(global, [resource, options && { ...options, ...OKAPI_FETCH_OPTIONS }])
-      .catch(err => {
-        // kill me softly: return an empty response to allow graceful failure
-        console.error('-- (rtr-sw) logout failure', err); // eslint-disable-line no-console
-        return Promise.resolve(new Response(JSON.stringify({})));
-      });
-  };
-
   /**
    * rotateCallback
-   *
+   * Set a timeout
+   * @param {object} res object shaped like { accessTokenExpiration, refreshTokenExpiration }
+   *   where the values are ISO-8601 datestamps like YYYY-MM-DDTHH:mm:ssZ
    */
-  rotateCallback = () => {
-    this.logger.log('rtr', 'rotateCallback setup')
+  rotateCallback = (res) => {
+    this.logger.log('rtr', 'rotateCallback setup');
+    const callbackInterval = (new Date(res.accessTokenExpiration).getTime() - Date.now()) * RTR_AT_TTL_FRACTION;
+    // const callbackInterval = 10 * 1000; // rotate every 10 seconds
     this.store.dispatch(setRtrTimeout(setTimeout(() => {
-      this.logger.log('rtr', 'firing rtr from rotateCallback')
+      this.logger.log('rtr', 'firing rotation from rotateCallback');
       rtr(this, this.rotateCallback);
-    }, 10 * 1000)));
+    }, callbackInterval)));
   }
 
   /**
@@ -270,19 +132,23 @@ export class FFetch {
     if (isFolioApiRequest(resource, okapi.url)) {
       this.logger.log('rtr', 'will fetch', resource);
 
-
       // on authentication, grab the response to kick of the rotation cycle,
-      // then return return the response
+      // then return the response
       if (isAuthenticationRequest(resource, okapi.url)) {
         this.logger.log('rtr', 'authn pending...');
         return this.nativeFetch.apply(global, [resource, options && { ...options, ...OKAPI_FETCH_OPTIONS }])
           .then(res => {
             this.logger.log('rtr', 'authn success!');
-            this.rotateCallback();
+            this.rotateCallback(res);
             return res;
           });
       }
 
+      // on logout, never fail
+      // if somebody does something silly like delete their cookies and then
+      // tries to logout, the logout request will fail. And that's fine, just
+      // fine. We will let them fail, capturing the response and swallowing it
+      // to avoid getting stuck in an error loop.
       if (isLogoutRequest(resource, okapi.url)) {
         this.logger.log('rtr', '   (logout request)');
         return this.nativeFetch.apply(global, [resource, options && { ...options, ...OKAPI_FETCH_OPTIONS }])
@@ -290,10 +156,6 @@ export class FFetch {
             // kill me softly: return an empty response to allow graceful failure
             console.error('-- (rtr-sw) logout failure', err); // eslint-disable-line no-console
             return Promise.resolve(new Response(JSON.stringify({})));
-          })
-          //@@ handled by loginSerices::logout so can be eliminated here
-          .finally(() => {
-            this.store.dispatch(clearRtrTimeout());
           });
       }
 
@@ -311,35 +173,6 @@ export class FFetch {
 
           throw err;
         });
-
-      // logout requests must not fail
-      // if (isLogoutRequest(resource, okapi.url)) {
-      //   return this.passThroughLogout(resource, options);
-      // }
-
-      // // if our cached tokens appear to have expired, pull them from storage.
-      // // maybe another window updated them for us without us knowing.
-      // if (!isValidAT(this.tokenExpiration, this.logger)) {
-      //   this.logger.log('rtr', 'local tokens expired; fetching from storage');
-      //   this.tokenExpiration = await getTokenExpiry();
-      // }
-
-      // // AT is valid or unnecessary; execute the fetch
-      // if (rtrIgnore || this.isPermissibleRequest(resource, this.tokenExpiration, okapi.url)) {
-      //   return this.passThroughWithAT(resource, options);
-      // }
-
-      // // AT was expired, but RT is valid; perform RTR then execute the fetch
-      // if (isValidRT(this.tokenExpiration, this.logger)) {
-      //   return this.passThroughWithRT(resource, options);
-      // }
-
-      // // AT is expired. RT is expired. It's the end of the world as we know it.
-      // // So, maybe Michael Stipe is god. Oh, wait, crap, he lost his religion.
-      // // Look, RTR is complicated, what do you want?
-      // console.error('All tokens expired'); // eslint-disable-line no-console
-      // document.dispatchEvent(new Event(RTR_ERROR_EVENT, { detail: 'All tokens expired' }));
-      // return Promise.resolve(new Response(JSON.stringify({})));
     }
 
     // default: pass requests through to the network

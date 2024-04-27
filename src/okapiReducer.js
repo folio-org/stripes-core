@@ -9,6 +9,7 @@ export default function okapiReducer(state = {}, action) {
     case 'SET_IS_AUTHENTICATED': {
       if (!action.isAuthenticated) {
         clearTimeout(state.rtrTimeout);
+        delete state.rtrTimeout;
       }
       return Object.assign({}, state, { isAuthenticated: action.isAuthenticated });
     }
@@ -60,6 +61,9 @@ export default function okapiReducer(state = {}, action) {
       clearTimeout(state.rtrTimeout);
       delete state.rtrTimeout;
       return state;
+    }
+    case 'TOGGLE_RTR_MODAL': {
+      return { ...state, rtrModalIsVisible: action.isVisible };
     }
 
     default:

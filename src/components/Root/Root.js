@@ -7,7 +7,6 @@ import { IntlProvider } from 'react-intl';
 import queryString from 'query-string';
 import { QueryClientProvider } from 'react-query';
 import { ApolloProvider } from '@apollo/client';
-import createInactivityTimer from 'inactivity-timer';
 
 import { ErrorBoundary } from '@folio/stripes-components';
 import { metadata, icons } from 'stripes-config';
@@ -27,7 +26,6 @@ import { getQueryResourceKey, getCurrentModule } from '../../locationService';
 import Stripes from '../../Stripes';
 import RootWithIntl from '../../RootWithIntl';
 import SystemSkeleton from '../SystemSkeleton';
-import { RTR_TIMEOUT_EVENT } from './Events';
 
 import './Root.css';
 
@@ -79,24 +77,8 @@ class Root extends Component {
       this.ffetch.replaceFetch();
       this.ffetch.replaceXMLHttpRequest();
 
-      this.idleTimer = React.createRef();
-      // this.idleTimer = createInactivityTimer('3s', () => {
-      //   alert('inactivity IDLE')
-      //   return fetch(`${okapi.url}/authn/logout`, {
-      //     method: 'POST',
-      //     mode: 'cors',
-      //     credentials: 'include'
-      //   })
-      //     .then(() => {
-      //       console.log('  posted, dispatching....')
-
-      //       window.dispatchEvent(new Event(RTR_TIMEOUT_EVENT));
-      //       console.log('  dispatched')
-      //     });
-      // });
-      // this.idleTimer.signal();
-
-      addRtrEventListeners(okapi, store, history, this.idleTimer);
+      this.idleTimers = React.createRef();
+      addRtrEventListeners(okapi, store, history, this.idleTimers);
     }
   }
 
@@ -152,6 +134,21 @@ class Root extends Component {
       return (<SystemSkeleton />);
     }
 
+    if (!config.rtr) {
+      config.rtr = {};
+    }
+
+    // how long does an idle session last before being killed?
+    if (!config.rtr?.idleSessionTTL) {
+      config.rtr.idleSessionTTL = '60m';
+    }
+
+    // how long is the "warning, session is idle!" modal shown
+    // before the session is killed?
+    if (!config.rtr?.idleModalTTL) {
+      config.rtr.idleModalTTL = '1m';
+    }
+
     const stripes = new Stripes({
       logger,
       store,
@@ -205,7 +202,7 @@ class Root extends Component {
                   isAuthenticated={isAuthenticated}
                   disableAuth={disableAuth}
                   history={history}
-                  idleTimer={this.idleTimer}
+                  idleTimers={this.idleTimers}
                 />
               </IntlProvider>
             </QueryClientProvider>
