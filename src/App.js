@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, StrictMode } from 'react';
 import PropTypes from 'prop-types';
 import { okapi as okapiConfig, config } from 'stripes-config';
 import merge from 'lodash/merge';
@@ -14,10 +14,13 @@ import Root from './components/Root';
 
 const StrictWrapper = ({ children }) => {
   if (config.ignoreUseStrict) {
-    return <>{children}</>
+    return <>{children}</>;
   }
 
   return <StrictMode>{children}</StrictMode>;
+};
+StrictWrapper.propTypes = {
+  children: PropTypes.node.isRequired,
 };
 
 export default class StripesCore extends Component {
