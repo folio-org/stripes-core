@@ -14,7 +14,7 @@ import Root from './components/Root';
 
 const StrictWrapper = ({ children }) => {
   if (config.disableStrictMode) {
-    return <>{children}</>;
+    return children;
   }
 
   return <StrictMode>{children}</StrictMode>;
