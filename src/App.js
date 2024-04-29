@@ -13,12 +13,13 @@ import { destroyStore } from './mainActions';
 import Root from './components/Root';
 
 const StrictWrapper = ({ children }) => {
-  if (config.ignoreUseStrict) {
+  if (config.disableStrictMode) {
     return <>{children}</>;
   }
 
   return <StrictMode>{children}</StrictMode>;
 };
+
 StrictWrapper.propTypes = {
   children: PropTypes.node.isRequired,
 };
