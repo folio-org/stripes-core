@@ -12,6 +12,14 @@ import { destroyStore } from './mainActions';
 
 import Root from './components/Root';
 
+const StrictWrapper = ({ children }) => {
+  if (config.ignoreUseStrict) {
+    return <>{children}</>
+  }
+
+  return <StrictMode>{children}</StrictMode>;
+};
+
 export default class StripesCore extends Component {
   static propTypes = {
     history: PropTypes.object,
@@ -42,15 +50,17 @@ export default class StripesCore extends Component {
     const { initialState, ...props } = this.props;
 
     return (
-      <Root
-        store={this.store}
-        epics={this.epics}
-        logger={this.logger}
-        config={config}
-        actionNames={this.actionNames}
-        disableAuth={(config && config.disableAuth) || false}
-        {...props}
-      />
+      <StrictWrapper>
+        <Root
+          store={this.store}
+          epics={this.epics}
+          logger={this.logger}
+          config={config}
+          actionNames={this.actionNames}
+          disableAuth={(config && config.disableAuth) || false}
+          {...props}
+        />
+      </StrictWrapper>
     );
   }
 }

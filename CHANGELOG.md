@@ -6,6 +6,7 @@
 * Remove tag-based selectors from Login, ResetPassword, Forgot UserName/Password form CSS. Refs STCOR-712.
 * Provide `useUserTenantPermissions` hook. Refs STCOR-830.
 * Load DayJS locale data as part of `loginServices`. STCOR-771.
+* Turn on `<StrictMode>`; ignore it with `stripes.config.js` `ignoreStrictMode: true`. Refs STCOR-841.
 
 ## 10.1.0 IN PROGRESS
 
