@@ -8,15 +8,15 @@ import { useStripes } from '../../StripesContext';
 
 function PreLoginLanding({ onSelectTenant }) {
   const intl = useIntl();
-  const { okapi, config: { tenantOptions = {} } } = useStripes();
+  const { okapi, config: { tenantOptions = {}, authnUrl, isEureka } } = useStripes();
 
   const redirectUri = `${window.location.protocol}//${window.location.host}/oidc-landing`;
   const options = Object.keys(tenantOptions).map(tenantName => ({ value: tenantName, label: tenantName }));
 
   const getLoginUrl = () => {
     if (!okapi.tenant) return '';
-    if (okapi.authnUrl) {
-      return `${okapi.authnUrl}/realms/${okapi.tenant}/protocol/openid-connect/auth?client_id=${okapi.clientId}&response_type=code&redirect_uri=${redirectUri}&scope=openid&isConsortium=true`;
+    if (isEureka) {
+      return `${authnUrl}/realms/${okapi.tenant}/protocol/openid-connect/auth?client_id=${okapi.clientId}&response_type=code&redirect_uri=${redirectUri}&scope=openid&isConsortium=true`;
     }
     return '';
   };
@@ -27,11 +27,11 @@ function PreLoginLanding({ onSelectTenant }) {
     const tenantName = e.target.value;
     submitButtonRef.current.disabled = !tenantName;
     if (tenantName === '') {
-      onSelectTenant('', '');
+      onSelectTenant('', '', '');
       return;
     }
     const clientId = tenantOptions[tenantName].clientId;
-    onSelectTenant(tenantName, clientId);
+    onSelectTenant(tenantName, clientId, tenantOptions[tenantName].url);
   };
 
   return (

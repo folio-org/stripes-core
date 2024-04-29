@@ -22,10 +22,14 @@ export default class StripesCore extends Component {
     super(props);
 
     const storedTenant = localStorage.getItem('tenant');
-    const parsedTenant = storedTenant ? JSON.parse(storedTenant) : undefined;
+    const singleTenant = Object.values(okapiConfig.tenantOptions)[0];
+    const parsedTenant = storedTenant ? JSON.parse(storedTenant) : singleTenant;
 
     const okapi = (typeof okapiConfig === 'object' && Object.keys(okapiConfig).length > 0)
-      ? { ...okapiConfig, tenant: parsedTenant?.tenantName || okapiConfig.tenant, clientId: parsedTenant?.clientId || okapiConfig.clientId } : { withoutOkapi: true };
+      ? { ...okapiConfig,
+        tenant: parsedTenant?.tenantName,
+        clientId: parsedTenant?.clientId,
+        url: okapiConfig.tenantOptions[parsedTenant].url } : { withoutOkapi: true };
 
     const initialState = merge({}, { okapi }, props.initialState);
 

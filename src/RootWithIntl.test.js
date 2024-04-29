@@ -35,7 +35,7 @@ describe('RootWithIntl', () => {
       it('handles single-tenant', () => {
         const stripes = {
           okapi: { authnUrl: 'https://barbie.com' },
-          config: { isSingleTenant: true }
+          config: { tenantOptions: { diku: { url: 'https://gateway.com' } } }
         };
         render(<AuthnLogin stripes={stripes} />);
 
@@ -45,7 +45,8 @@ describe('RootWithIntl', () => {
       it('handles multi-tenant', () => {
         const stripes = {
           okapi: { authnUrl: 'https://oppie.com' },
-          config: { },
+          config: { tenantOptions: { diku: { url: 'https://gateway.com' },
+            diku2: { url: 'https://gateway2.com' } } }
         };
         render(<AuthnLogin stripes={stripes} />);
 

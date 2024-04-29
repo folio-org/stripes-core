@@ -28,7 +28,7 @@ const OIDCRedirect = () => {
   };
 
   const getUrl = () => {
-    if (stripes.okapi.authnUrl) {
+    if (stripes.config.isEureka) {
       const unauthorizedPath = getUnauthorizedPathFromSession();
       if (unauthorizedPath) return unauthorizedPath;
     }
