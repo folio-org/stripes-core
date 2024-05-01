@@ -131,34 +131,6 @@ export const isFolioApiRequest = (resource, oUrl) => {
 };
 
 /**
- * isValidAT
- * Return true if tokenExpiration.atExpires is in the future; false otherwise.
- *
- * @param {object} te tokenExpiration shaped like { atExpires, rtExpires }
- * @param {@folio/stripes/logger} logger
- * @returns boolean
- */
-export const isValidAT = (te, logger) => {
-  const isValid = !!(te?.atExpires > Date.now());
-  logger.log('rtr', `AT isValid? ${isValid}; expires ${new Date(te?.atExpires || null).toISOString()}`);
-  return isValid;
-};
-
-/**
- * isValidRT
- * Return true if tokenExpiration.rtExpires is in the future; false otherwise.
- *
- * @param {object} te tokenExpiration shaped like { atExpires, rtExpires }
- * @param {@folio/stripes/logger} logger
- * @returns boolean
- */
-export const isValidRT = (te, logger) => {
-  const isValid = !!(te?.rtExpires > Date.now());
-  logger.log('rtr', `RT isValid? ${isValid}; expires ${new Date(te?.rtExpires || null).toISOString()}`);
-  return isValid;
-};
-
-/**
  * adjustTokenExpiration
  * Set the AT and RT token expirations to the fraction of their TTL given by
  * RTR_TTL_WINDOW. e.g. if a token should be valid for 100 more seconds and
@@ -199,7 +171,6 @@ export const shouldRotate = (logger) => {
     }
     logger.log('rtr', 'rotation request is stale');
   }
-
   return true;
 };
 
@@ -242,13 +213,13 @@ export const rtr = (context, callback) => {
   // somebody else already started rotation; nothing to do here
   if (!shouldRotate(context.logger)) {
     context.logger.log('rtr', '** already in progress; exiting');
-    return;
+    return Promise.resolve();
   }
 
   context.logger.log('rtr', '**     rotation beginning...');
 
   localStorage.setItem(RTR_IS_ROTATING, `${Date.now()}`);
-  context.nativeFetch.apply(global, [`${okapi.url}/authn/refresh`, {
+  return context.nativeFetch.apply(global, [`${okapi.url}/authn/refresh`, {
     headers: {
       'content-type': 'application/json',
       'x-okapi-tenant': okapi.tenant,
@@ -258,9 +229,9 @@ export const rtr = (context, callback) => {
     mode: 'cors',
   }])
     .then(res => {
-      // if (res.ok) {
-      //   return res.json();
-      // }
+      if (res.ok) {
+        return res.json();
+      }
       // rtr failure. return an error message if we got one.
       return res.json()
         .then(json => {
@@ -347,3 +318,28 @@ const rotationPromise = async (logger) => {
 export const getPromise = async (logger) => {
   return isRotating(logger) ? rotationPromise(logger) : Promise.resolve();
 };
+
+/**
+ * configureRtr
+ * Provide default values necessary for RTR. They may be overriden by setting
+ * config.rtr in stripes.config.js.
+ *
+ * @param {object} config
+ */
+export const configureRtr = (config) => {
+  const conf = { ...config } || {};
+
+  // how long does an idle session last before being killed?
+  if (!conf.idleSessionTTL) {
+    conf.idleSessionTTL = '60m';
+  }
+
+  // how long is the "warning, session is idle!" modal shown
+  // before the session is killed?
+  if (!conf.idleModalTTL) {
+    conf.idleModalTTL = '1m';
+  }
+
+  return conf;
+};
+

@@ -58,12 +58,11 @@ const SessionEventContainer = ({ idleTimers }) => {
 
   /**
    * configure the idle-activity timers and attach them to a ref
-x   */
+   */
   useEffect(() => {
     if (stripes.okapi.isAuthenticated && idleTimers.current === null) {
       const { idleModalTTL, idleSessionTTL } = stripes.config.rtr;
-
-      // show the modal
+      // inactive: show the modal
       const showModalIT = createInactivityTimer(ms(idleSessionTTL) - ms(idleModalTTL), () => {
         stripes.logger.log('rtr', 'session idle; showing modal');
         stripes.store.dispatch(toggleRtrModal(true));
@@ -71,7 +70,7 @@ x   */
       });
       showModalIT.signal();
 
-      // logout
+      // inactive: logout
       const logoutIT = createInactivityTimer(idleSessionTTL, () => {
         stripes.logger.log('rtr', 'session idle; dispatching RTR_TIMEOUT_EVENT');
         window.dispatchEvent(new Event(RTR_TIMEOUT_EVENT));
@@ -85,7 +84,7 @@ x   */
   // show the idle-session warning modal if necessary;
   // otherwise return null
   if (isVisible) {
-    return <KeepWorkingModal isVisible={isVisible} callback={keepWorkingCallback} />;
+    return <KeepWorkingModal callback={keepWorkingCallback} />;
   }
 
   return null;

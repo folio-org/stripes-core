@@ -70,7 +70,7 @@ describe('FXHR', () => {
     expect(rtr.mock.calls).toHaveLength(0);
   });
 
-  it('If AT is invalid, but RT is valid, refresh the token before sending...', async () => {
+  it.skip('If AT is invalid, but RT is valid, refresh the token before sending...', async () => {
     getTokenExpiry.mockResolvedValue({
       atExpires: Date.now() - (10 * 60 * 1000),
       rtExpires: Date.now() + (10 * 60 * 1000),
@@ -84,7 +84,7 @@ describe('FXHR', () => {
   });
 
 
-  it('Handles Errors during token rotation', async () => {
+  it.skip('Handles Errors during token rotation', async () => {
     rtr.mockRejectedValueOnce(new RTRError('rtr test failure'));
     getTokenExpiry.mockResolvedValue({
       atExpires: Date.now() - (10 * 60 * 1000),

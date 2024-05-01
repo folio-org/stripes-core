@@ -1,6 +1,5 @@
 import { okapi } from 'stripes-config';
-import { getPromise, isFolioApiRequest, rtr, isValidAT, isValidRT } from './token-util';
-import { getTokenExpiry } from '../../loginServices';
+import { getPromise, isFolioApiRequest } from './token-util';
 import {
   RTR_ERROR_EVENT,
 } from './constants';

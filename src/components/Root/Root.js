@@ -26,6 +26,7 @@ import { getQueryResourceKey, getCurrentModule } from '../../locationService';
 import Stripes from '../../Stripes';
 import RootWithIntl from '../../RootWithIntl';
 import SystemSkeleton from '../SystemSkeleton';
+import { configureRtr } from './token-util';
 
 import './Root.css';
 
@@ -134,20 +135,8 @@ class Root extends Component {
       return (<SystemSkeleton />);
     }
 
-    if (!config.rtr) {
-      config.rtr = {};
-    }
-
-    // how long does an idle session last before being killed?
-    if (!config.rtr?.idleSessionTTL) {
-      config.rtr.idleSessionTTL = '60m';
-    }
-
-    // how long is the "warning, session is idle!" modal shown
-    // before the session is killed?
-    if (!config.rtr?.idleModalTTL) {
-      config.rtr.idleModalTTL = '1m';
-    }
+    // make sure RTR is configured
+    config.rtr = configureRtr(this.props.config.rtr);
 
     const stripes = new Stripes({
       logger,

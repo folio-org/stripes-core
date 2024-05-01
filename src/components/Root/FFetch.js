@@ -30,8 +30,8 @@
  * The gross gory details:
  * In an ideal world, we would simply export a function and a class and
  * tell folks to use those, but we don't live in that world, at least not
- * yet. So. For now, we override the global implementations in the constructor
- * :scream: so any calls directly invoking `fetch()` or instantiating
+ * yet. So. For now, we override the global implementations in `replace...`
+ * methods so any calls directly invoking `fetch()` or instantiating
  * `XMLHttpRequest` get these updated versions that handle token rotation
  * automatically.
  *
@@ -151,6 +151,7 @@ export class FFetch {
       // to avoid getting stuck in an error loop.
       if (isLogoutRequest(resource, okapi.url)) {
         this.logger.log('rtr', '   (logout request)');
+
         return this.nativeFetch.apply(global, [resource, options && { ...options, ...OKAPI_FETCH_OPTIONS }])
           .catch(err => {
             // kill me softly: return an empty response to allow graceful failure

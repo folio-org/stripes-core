@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import ms from 'ms';
@@ -7,25 +8,31 @@ import {
   Modal
 } from '@folio/stripes-components';
 
-import { RTR_TIMEOUT_EVENT } from '../Root/constants';
 import { useStripes } from '../../StripesContext';
-import useCountdown from './useCountdown';
 
 /**
  * KeepWorkingModal
  * Show a modal with a countdown timer representing the number of seconds
- * remaining until the session will expire due to inactivity. When the timer
- * hits 0, dispatch window.RTR_TIMEOUT_EVENT.
+ * remaining until the session will expire due to inactivity.
  *
- * @param {boolean} isVisible true if the modal should be open
  * @param {function} callback function to call when clicking "Keep working" button
  */
-const KeepWorkingModal = ({ isVisible, callback }) => {
+const KeepWorkingModal = ({ callback }) => {
   const stripes = useStripes();
+  const [remainingMillis, setRemainingMillis] = useState(ms(stripes.config.rtr.idleModalTTL));
 
-  // useCountdown sets an interval timer, changing its return value each
-  // second, causing a re-render
-  const remainingMillis = useCountdown(ms(stripes.config.rtr.idleModalTTL));
+  // configure an interval timer that sets state each second,
+  // counting down to 0.
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setRemainingMillis(i => i - 1000);
+    }, 1000);
+
+    // cleanup: clear the timer
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
 
   /**
    * timestampFormatter
@@ -45,22 +52,21 @@ const KeepWorkingModal = ({ isVisible, callback }) => {
 
   return (
     <Modal
-      label="stripes-core.idle-session.modalHeader"
-      open={isVisible}
+      label={<FormattedMessage id="stripes-core.rtr.idleSession.modalHeader" />}
+      open
       onClose={callback}
       footer={
-        <Button onClick={callback} buttonStyle="primary" marginBottom0><FormattedMessage id="stripes-core.idle-session.keepWorking" /></Button>
+        <Button onClick={callback} buttonStyle="primary" marginBottom0><FormattedMessage id="stripes-core.rtr.idleSession.keepWorking" /></Button>
       }
     >
       <div>
-        <FormattedMessage id="stripes-core.idle-session.timeRemaining" />: {timestampFormatter()}
+        <FormattedMessage id="stripes-core.rtr.idleSession.timeRemaining" />: {timestampFormatter()}
       </div>
     </Modal>
   );
 };
 
 KeepWorkingModal.propTypes = {
-  isVisible: PropTypes.bool.isRequired,
   callback: PropTypes.func,
 };
 
