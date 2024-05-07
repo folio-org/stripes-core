@@ -69,9 +69,7 @@ PasswordSuccessfullyChanged.propTypes = {
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }).isRequired,
-  stripes: PropTypes.shape({
-    isEureka: PropTypes.bool,
-  }),
+  stripes: PropTypes.object,
 };
 
 export default withRouter(PasswordSuccessfullyChanged);
