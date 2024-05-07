@@ -43,11 +43,11 @@ const KeepWorkingModal = ({ callback }) => {
    * like `1970-01-01T00:01:39.000Z`; extract the `01:39`.
    */
   const timestampFormatter = () => {
-    if (remainingMillis > 1000) {
+    if (remainingMillis >= 1000) {
       return new Date(remainingMillis).toISOString().substring(14, 19);
     }
 
-    return '0:00';
+    return '00:00';
   };
 
   return (

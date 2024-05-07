@@ -34,7 +34,6 @@ import settingsIcon from './settings.svg';
 
 class MainNav extends Component {
   static propTypes = {
-    idleTimers: PropTypes.object,
     intl: PropTypes.object,
     stripes: PropTypes.shape({
       config: PropTypes.shape({
@@ -122,7 +121,7 @@ class MainNav extends Component {
     const { okapi } = this.store.getState();
 
     return getLocale(okapi.url, this.store, okapi.tenant)
-      .then(sessionLogout(okapi.url, this.store, this.props.history, this.props.idleTimers));
+      .then(sessionLogout(okapi.url, this.store, this.props.history));
   }
 
   getAppList(lastVisited) {

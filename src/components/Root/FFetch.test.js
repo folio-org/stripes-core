@@ -65,8 +65,20 @@ describe('FFetch class', () => {
   });
 
   describe('logging in', () => {
-    it('calls native fetch to authenticate', async () => {
-      mockFetch.mockResolvedValueOnce('logged in');
+    it('calls native fetch once', async () => {
+      const tokenExpiration = {
+        accessTokenExpiration: new Date().toISOString()
+      };
+      const json = () => Promise.resolve({ tokenExpiration });
+      // this mock is a mess because the login-handler clones the response
+      // in order to (1) grab token expiration and kick off RTR and (2) pass
+      // the un-read-response back to the login handler
+      mockFetch.mockResolvedValueOnce({
+        clone: () => ({
+          json
+        }),
+        json,
+      });
       const testFfetch = new FFetch({
         logger: { log },
         store: {
@@ -77,8 +89,13 @@ describe('FFetch class', () => {
       testFfetch.replaceXMLHttpRequest();
 
       const response = await global.fetch('okapiUrl/bl-users/login-with-expiry', { testOption: 'test' });
+
+      // calls native fetch
       expect(mockFetch.mock.calls).toHaveLength(1);
-      expect(response).toEqual('logged in');
+
+      // login returns the original response
+      const res = await response.json();
+      expect(res).toMatchObject({ tokenExpiration });
     });
   });
 
@@ -109,7 +126,6 @@ describe('FFetch class', () => {
         response = await global.fetch('okapiUrl/authn/logout', { testOption: 'test' });
       } catch (e) {
         ex = e;
-        console.log({ exceptionValue: e })
       }
       expect(mockFetch.mock.calls).toHaveLength(1);
       expect(response).toEqual(new Response(JSON.stringify({})));

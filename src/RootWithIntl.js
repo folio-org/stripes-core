@@ -26,6 +26,8 @@ import {
   HandlerManager,
   TitleManager,
   Login,
+  Logout,
+  LogoutTimeout,
   OverlayContainer,
   CreateResetPassword,
   CheckEmailStatusPage,
@@ -38,7 +40,7 @@ import StaleBundleWarning from './components/StaleBundleWarning';
 import { StripesContext } from './StripesContext';
 import { CalloutContext } from './CalloutContext';
 
-const RootWithIntl = ({ stripes, token = '', isAuthenticated = false, disableAuth, history = {}, idleTimers = null }) => {
+const RootWithIntl = ({ stripes, token = '', isAuthenticated = false, disableAuth, history = {} }) => {
   const connect = connectFor('@folio/core', stripes.epics, stripes.logger);
   const connectedStripes = stripes.clone({ connect });
 
@@ -62,7 +64,7 @@ const RootWithIntl = ({ stripes, token = '', isAuthenticated = false, disableAut
                     <>
                       <MainContainer>
                         <AppCtxMenuProvider>
-                          <MainNav stripes={connectedStripes} idleTimers={idleTimers} />
+                          <MainNav stripes={connectedStripes} />
                           {typeof connectedStripes?.config?.staleBundleWarning === 'object' && <StaleBundleWarning />}
                           <HandlerManager
                             event={events.LOGIN}
@@ -71,7 +73,7 @@ const RootWithIntl = ({ stripes, token = '', isAuthenticated = false, disableAut
                           { (connectedStripes.okapi !== 'object' || connectedStripes.discovery.isFinished) && (
                             <ModuleContainer id="content">
                               <OverlayContainer />
-                              <SessionEventContainer idleTimers={idleTimers} />
+                              {connectedStripes.config.useSecureTokens && <SessionEventContainer history={history} />}
                               <Switch>
                                 <TitledRoute
                                   name="home"
@@ -87,9 +89,19 @@ const RootWithIntl = ({ stripes, token = '', isAuthenticated = false, disableAut
                                   component={<SSORedirect stripes={connectedStripes} />}
                                 />
                                 <TitledRoute
+                                  name="logoutTimeout"
+                                  path="/logout-timeout"
+                                  component={<LogoutTimeout />}
+                                />
+                                <TitledRoute
                                   name="settings"
                                   path="/settings"
                                   component={<Settings stripes={connectedStripes} />}
+                                />
+                                <TitledRoute
+                                  name="logout"
+                                  path="/logout"
+                                  component={<Logout history={history} />}
                                 />
                                 <ModuleRoutes stripes={connectedStripes} />
                               </Switch>
@@ -130,11 +142,16 @@ const RootWithIntl = ({ stripes, token = '', isAuthenticated = false, disableAut
                         component={<CheckEmailStatusPage />}
                       />
                       <TitledRoute
+                        name="logoutTimeout"
+                        path="/logout-timeout"
+                        component={<LogoutTimeout />}
+                      />
+                      <TitledRoute
                         name="login"
                         component={
                           <Login
-                            autoLogin={stripes.config.autoLogin}
-                            stripes={stripes}
+                            autoLogin={connectedStripes.config.autoLogin}
+                            stripes={connectedStripes}
                           />}
                       />
                     </Switch>
@@ -159,7 +176,6 @@ RootWithIntl.propTypes = {
     store: PropTypes.object.isRequired
   }).isRequired,
   token: PropTypes.string,
-  idleTimers: PropTypes.object,
   isAuthenticated: PropTypes.bool,
   disableAuth: PropTypes.bool.isRequired,
   history: PropTypes.shape({}),

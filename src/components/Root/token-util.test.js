@@ -4,9 +4,9 @@ import {
   isAuthenticationRequest,
   isFolioApiRequest,
   isLogoutRequest,
+  isRotating,
   resourceMapper,
   rtr,
-  shouldRotate,
   RTR_IS_ROTATING,
   RTR_MAX_AGE,
 } from './token-util';
@@ -107,30 +107,30 @@ describe('rtr', () => {
   });
 
   it('rotates', async () => {
-    const context = {
-      logger: {
-        log: console.log,
-      },
-      nativeFetch: {
-        apply: () => Promise.resolve({
-          ok: true,
-          json: () => Promise.resolve({
-            accessTokenExpiration: '2023-11-17T10:39:15.000Z',
-            refreshTokenExpiration: '2023-11-27T10:39:15.000Z'
-          }),
-        })
-      }
+    const logger = {
+      log: console.log,
+    };
+    const fetchfx = {
+      apply: () => Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve({
+          accessTokenExpiration: '2023-11-17T10:39:15.000Z',
+          refreshTokenExpiration: '2023-11-27T10:39:15.000Z'
+        }),
+      })
     };
 
-    let ex = null;
     const callback = jest.fn();
+
+    let ex = null;
+    // const callback = () => { console.log('HOLA!!!')}; // jest.fn();
     try {
-      await rtr(context, callback);
+      await rtr(fetchfx, logger, callback);
+      expect(callback).toHaveBeenCalled();
     } catch (e) {
       ex = e;
     }
 
-    expect(callback).toHaveBeenCalledTimes(1);
     expect(ex).toBe(null);
   });
 
@@ -143,19 +143,17 @@ describe('rtr', () => {
     });
 
     it('same window (RTR_SUCCESS_EVENT)', async () => {
-      const context = {
-        logger: {
-          log: jest.fn(),
-        },
-        nativeFetch: {
-          apply: () => Promise.resolve({
-            ok: true,
-            json: () => Promise.resolve({
-              accessTokenExpiration: '2023-11-17T10:39:15.000Z',
-              refreshTokenExpiration: '2023-11-27T10:39:15.000Z'
-            }),
-          })
-        }
+      const logger = {
+        log: jest.fn(),
+      };
+      const nativeFetch = {
+        apply: () => Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({
+            accessTokenExpiration: '2023-11-17T10:39:15.000Z',
+            refreshTokenExpiration: '2023-11-27T10:39:15.000Z'
+          }),
+        })
       };
 
       setTimeout(() => {
@@ -169,7 +167,7 @@ describe('rtr', () => {
 
       let ex = null;
       try {
-        await rtr(context);
+        await rtr(nativeFetch, logger, jest.fn());
       } catch (e) {
         ex = e;
       }
@@ -179,19 +177,17 @@ describe('rtr', () => {
     });
 
     it('multiple window (storage event)', async () => {
-      const context = {
-        logger: {
-          log: jest.fn(),
-        },
-        nativeFetch: {
-          apply: () => Promise.resolve({
-            ok: true,
-            json: () => Promise.resolve({
-              accessTokenExpiration: '2023-11-17T10:39:15.000Z',
-              refreshTokenExpiration: '2023-11-27T10:39:15.000Z'
-            }),
-          })
-        }
+      const logger = {
+        log: jest.fn(),
+      };
+      const nativeFetch = {
+        apply: () => Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({
+            accessTokenExpiration: '2023-11-17T10:39:15.000Z',
+            refreshTokenExpiration: '2023-11-27T10:39:15.000Z'
+          }),
+        })
       };
 
       setTimeout(() => {
@@ -205,7 +201,7 @@ describe('rtr', () => {
 
       let ex = null;
       try {
-        await rtr(context);
+        await rtr(nativeFetch, logger, jest.fn());
       } catch (e) {
         ex = e;
       }
@@ -220,23 +216,22 @@ describe('rtr', () => {
     jest.spyOn(console, 'error');
 
     const errors = [{ message: 'Actually I love my Birkenstocks', code: 'Chacos are nice, too. Also Tevas' }];
-    const context = {
-      logger: {
-        log: jest.fn(),
-      },
-      nativeFetch: {
-        apply: () => Promise.resolve({
-          ok: false,
-          json: () => Promise.resolve({
-            errors,
-          }),
-        })
-      }
+    const logger = {
+      log: jest.fn(),
+    };
+
+    const nativeFetch = {
+      apply: () => Promise.resolve({
+        ok: false,
+        json: () => Promise.resolve({
+          errors,
+        }),
+      })
     };
 
     let ex = null;
     try {
-      await rtr(context);
+      await rtr(nativeFetch, logger, jest.fn());
     } catch (e) {
       ex = e;
     }
@@ -252,23 +247,21 @@ describe('rtr', () => {
     jest.spyOn(console, 'error');
 
     const error = 'I love my Birkenstocks. Chacos are nice, too. Also Tevas';
-    const context = {
-      logger: {
-        log: jest.fn(),
-      },
-      nativeFetch: {
-        apply: () => Promise.resolve({
-          ok: false,
-          json: () => Promise.resolve({
-            error,
-          }),
-        })
-      }
+    const logger = {
+      log: jest.fn(),
+    };
+    const nativeFetch = {
+      apply: () => Promise.resolve({
+        ok: false,
+        json: () => Promise.resolve({
+          error,
+        }),
+      })
     };
 
     let ex = null;
     try {
-      await rtr(context);
+      await rtr(nativeFetch, logger, jest.fn());
     } catch (e) {
       ex = e;
     }
@@ -279,7 +272,7 @@ describe('rtr', () => {
   });
 });
 
-describe('shouldRotate', () => {
+describe('isRotating', () => {
   afterEach(() => {
     localStorage.removeItem(RTR_IS_ROTATING);
   });
@@ -288,19 +281,18 @@ describe('shouldRotate', () => {
     log: jest.fn(),
   };
 
-  it('returns true if key is absent', () => {
-    localStorage.removeItem(RTR_IS_ROTATING);
-    expect(shouldRotate(logger)).toBe(true);
+  it('returns true if key is present and not stale', () => {
+    localStorage.setItem(RTR_IS_ROTATING, Date.now());
+    expect(isRotating(logger)).toBe(true);
   });
 
-  it('returns true if key is expired', () => {
+  it('returns false if key is present but expired', () => {
     localStorage.setItem(RTR_IS_ROTATING, Date.now() - (RTR_MAX_AGE + 1000));
-    expect(shouldRotate(logger)).toBe(true);
+    expect(isRotating(logger)).toBe(false);
   });
 
-  it('returns false if key is active', () => {
-    localStorage.setItem(RTR_IS_ROTATING, Date.now() - 1);
-    expect(shouldRotate(logger)).toBe(false);
+  it('returns false if key is absent', () => {
+    expect(isRotating(logger)).toBe(false);
   });
 });
 

@@ -21,7 +21,7 @@ import enhanceReducer from '../../enhanceReducer';
 import createApolloClient from '../../createApolloClient';
 import createReactQueryClient from '../../createReactQueryClient';
 import { setSinglePlugin, setBindings, setIsAuthenticated, setOkapiToken, setTimezone, setCurrency, updateCurrentUser } from '../../okapiActions';
-import { loadTranslations, checkOkapiSession, addRtrEventListeners } from '../../loginServices';
+import { loadTranslations, checkOkapiSession } from '../../loginServices';
 import { getQueryResourceKey, getCurrentModule } from '../../locationService';
 import Stripes from '../../Stripes';
 import RootWithIntl from '../../RootWithIntl';
@@ -69,7 +69,7 @@ class Root extends Component {
 
     // enhanced security mode:
     // * configure fetch and xhr interceptors to conduct RTR
-    // * configure document-level event listeners to listen for RTR events
+    // * see SessionEventContainer for RTR handling
     if (this.props.config.useSecureTokens) {
       this.ffetch = new FFetch({
         logger: this.props.logger,
@@ -77,9 +77,6 @@ class Root extends Component {
       });
       this.ffetch.replaceFetch();
       this.ffetch.replaceXMLHttpRequest();
-
-      this.idleTimers = React.createRef();
-      addRtrEventListeners(okapi, store, history, this.idleTimers);
     }
   }
 
@@ -191,7 +188,6 @@ class Root extends Component {
                   isAuthenticated={isAuthenticated}
                   disableAuth={disableAuth}
                   history={history}
-                  idleTimers={this.idleTimers}
                 />
               </IntlProvider>
             </QueryClientProvider>

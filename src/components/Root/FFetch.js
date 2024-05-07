@@ -22,10 +22,10 @@
  * resolves and then processed. This avoids the problem of a request's AT
  * expiring (or changing, if RTR succeeds) while it is in-flight.
  *
- * RTR failures should cause logout since they indicate an expired or
+ * RTR failures will cause logout since they indicate an expired or
  * otherwise invalid RT, which is unrecoverable. Other request failures
  * should be handled locally within the applications that initiated the
- * requests.
+ * requests; thus, such errors are untrapped and bubble up.
  *
  * The gross gory details:
  * In an ideal world, we would simply export a function and a class and
@@ -35,8 +35,13 @@
  * `XMLHttpRequest` get these updated versions that handle token rotation
  * automatically.
  *
+ * Logging categories:
+ *   rtr: rotation
+ *   rtrv: verbose
+ *
  */
 
+import ms from 'ms';
 import { okapi } from 'stripes-config';
 import {
   setRtrTimeout
@@ -88,23 +93,42 @@ export class FFetch {
 
   /**
    * rotateCallback
-   * Set a timeout
+   * Set a timeout to rotate the AT before it expires. Stash the timer-id
+   * in redux so the setRtrTimeout action can be used to cancel the existing
+   * timer when a new one is set.
+   *
+   * The rotation interval is set to a fraction of the AT's expiration
+   * time, e.g. if the AT expires in 1000 seconds and the fraction is .8,
+   * the timeout will be 800 seconds.
+   *
    * @param {object} res object shaped like { accessTokenExpiration, refreshTokenExpiration }
    *   where the values are ISO-8601 datestamps like YYYY-MM-DDTHH:mm:ssZ
    */
   rotateCallback = (res) => {
-    this.logger.log('rtr', 'rotateCallback setup');
-    const callbackInterval = (new Date(res.accessTokenExpiration).getTime() - Date.now()) * RTR_AT_TTL_FRACTION;
-    // const callbackInterval = 10 * 1000; // rotate every 10 seconds
+    this.logger.log('rtr', 'rotation callback setup');
+
+    // set a short rotation interval by default, then inspect the response for
+    // token-expiration data to use instead if available. not all responses
+    // (e.g. those from _self) contain token-expiration values, so it is
+    // necessary to provide a default.
+    let rotationInterval = 10 * 1000;
+    if (res?.accessTokenExpiration) {
+      rotationInterval = (new Date(res.accessTokenExpiration).getTime() - Date.now()) * RTR_AT_TTL_FRACTION;
+    }
+
+    this.logger.log('rtr', `rotation fired from rotateCallback; next callback in ${ms(rotationInterval)}`);
     this.store.dispatch(setRtrTimeout(setTimeout(() => {
-      this.logger.log('rtr', 'firing rotation from rotateCallback');
-      rtr(this, this.rotateCallback);
-    }, callbackInterval)));
+      rtr(this.nativeFetch, this.logger, this.rotateCallback);
+    }, rotationInterval)));
   }
 
   /**
    * passThrough
    * Inspect resource to determine whether it's a FOLIO API request.
+   * * If it is an authentication-related request, complete the request
+   *   and then execute the RTR callback to initiate that cycle.
+   * * If it is a logout request, complete the request b
+   *
    * Handle it with RTR if it is; let it trickle through if not.
    *
    * Given we believe the AT to be valid, pass the fetch through.
@@ -125,9 +149,7 @@ export class FFetch {
    * @returns Promise
    * @throws if any fetch fails
    */
-  ffetch = async (resource, ffOptions = {}) => {
-    const { rtrIgnore = false, ...options } = ffOptions;
-
+  ffetch = async (resource, options = {}) => {
     // FOLIO API requests are subject to RTR
     if (isFolioApiRequest(resource, okapi.url)) {
       this.logger.log('rtr', 'will fetch', resource);
@@ -135,11 +157,17 @@ export class FFetch {
       // on authentication, grab the response to kick of the rotation cycle,
       // then return the response
       if (isAuthenticationRequest(resource, okapi.url)) {
-        this.logger.log('rtr', 'authn pending...');
+        this.logger.log('rtr', 'authn request');
         return this.nativeFetch.apply(global, [resource, options && { ...options, ...OKAPI_FETCH_OPTIONS }])
           .then(res => {
             this.logger.log('rtr', 'authn success!');
-            this.rotateCallback(res);
+            // a response can only be read once, so we clone it to grab the
+            // tokenExpiration in order to kick of the rtr cycle, then return
+            // the original
+            res.clone().json().then(json => {
+              this.rotateCallback(json.tokenExpiration);
+            });
+
             return res;
           });
       }
@@ -150,7 +178,7 @@ export class FFetch {
       // fine. We will let them fail, capturing the response and swallowing it
       // to avoid getting stuck in an error loop.
       if (isLogoutRequest(resource, okapi.url)) {
-        this.logger.log('rtr', '   (logout request)');
+        this.logger.log('rtr', 'logout request');
 
         return this.nativeFetch.apply(global, [resource, options && { ...options, ...OKAPI_FETCH_OPTIONS }])
           .catch(err => {
@@ -162,13 +190,13 @@ export class FFetch {
 
       return getPromise(this.logger)
         .then(() => {
-          this.logger.log('rtr', 'post-rtr-fetch', resource);
+          this.logger.log('rtrv', 'post-rtr-fetch', resource);
           return this.nativeFetch.apply(global, [resource, options && { ...options, ...OKAPI_FETCH_OPTIONS }]);
         })
         .catch(err => {
           if (err instanceof RTRError) {
             console.error('RTR failure', err); // eslint-disable-line no-console
-            document.dispatchEvent(new Event(RTR_ERROR_EVENT, { detail: err }));
+            window.dispatchEvent(new Event(RTR_ERROR_EVENT, { detail: err }));
             return Promise.resolve(new Response(JSON.stringify({})));
           }
 

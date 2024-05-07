@@ -7,11 +7,18 @@ export default function okapiReducer(state = {}, action) {
     case 'SET_CURRENT_USER':
       return Object.assign({}, state, { currentUser: action.currentUser });
     case 'SET_IS_AUTHENTICATED': {
+      const newState = {
+        isAuthenticated: action.isAuthenticated,
+      };
+      // if we're logging out, clear the RTR timeout
+      // and other rtr-related values
       if (!action.isAuthenticated) {
         clearTimeout(state.rtrTimeout);
-        delete state.rtrTimeout;
+        newState.rtrModalIsVisible = false;
+        newState.rtrTimeout = undefined;
       }
-      return Object.assign({}, state, { isAuthenticated: action.isAuthenticated });
+
+      return { ...state, ...newState };
     }
     case 'SET_LOCALE':
       return Object.assign({}, state, { locale: action.locale });
@@ -59,8 +66,7 @@ export default function okapiReducer(state = {}, action) {
     }
     case 'CLEAR_RTR_TIMEOUT': {
       clearTimeout(state.rtrTimeout);
-      delete state.rtrTimeout;
-      return state;
+      return { ...state, rtrTimeout: undefined };
     }
     case 'TOGGLE_RTR_MODAL': {
       return { ...state, rtrModalIsVisible: action.isVisible };

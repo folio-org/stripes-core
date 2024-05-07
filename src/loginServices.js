@@ -26,12 +26,8 @@ import {
   updateCurrentUser,
 } from './okapiActions';
 import processBadResponse from './processBadResponse';
-import configureLogger from './configureLogger';
 
 import {
-  RTR_ACTIVITY_CHANNEL,
-  RTR_ACTIVITY_EVENTS,
-  RTR_ERROR_EVENT,
   RTR_TIMEOUT_EVENT
 } from './components/Root/constants';
 
@@ -74,7 +70,7 @@ export const supportedNumberingSystems = [
 ];
 
 /** name for the session key in local storage */
-const SESSION_NAME = 'okapiSess';
+export const SESSION_NAME = 'okapiSess';
 
 /**
  * getTokenSess
@@ -110,7 +106,8 @@ export const getTokenExpiry = async () => {
  */
 export const setTokenExpiry = async (te) => {
   const sess = await getOkapiSession();
-  return localforage.setItem(SESSION_NAME, { ...sess, tokenExpiration: te });
+  const val = { ...sess, tokenExpiration: te };
+  return localforage.setItem(SESSION_NAME, val);
 };
 
 
@@ -119,8 +116,6 @@ export const userLocaleConfig = {
   'configName': 'localeSettings',
   'module': '@folio/stripes-core',
 };
-
-const logger = configureLogger(config);
 
 function getHeaders(tenant, token) {
   return {
@@ -142,7 +137,7 @@ function getHeaders(tenant, token) {
  */
 function canReadConfig(store) {
   const perms = store.getState().okapi.currentPerms;
-  return perms['configuration.entries.collection.get'];
+  return perms?.['configuration.entries.collection.get'];
 }
 
 /**
@@ -445,11 +440,12 @@ export function spreadUserWithPerms(userWithPerms) {
  * @param {string} okapiUrl
  * @param {object} redux store
  * @param {object} history
- * @param {object} idleTimers ref
+ * @param {boolean} wasIdle true if logout was due to idle-activity
  *
  * @returns {Promise}
  */
-export async function logout(okapiUrl, store, history, idleTimers) {
+export async function logout(okapiUrl, store, history, wasIdle) {
+  const IS_LOGGING_OUT = '@folio/stripes/core::Logout';
   // if localStorage is already empty, then logout has already started
   // in another window and all we have to worry about here is private storage.
   const logoutPromise = localStorage.getItem(SESSION_NAME) ?
@@ -461,23 +457,27 @@ export async function logout(okapiUrl, store, history, idleTimers) {
     :
     Promise.resolve();
 
+  // logout may be triggered by many things in many windows, possibly multiple
+  // times. if the process has already started in this window, do not start
+  // it again.
+  if (sessionStorage.getItem(IS_LOGGING_OUT)) {
+    return Promise.resolve();
+  }
+
   return logoutPromise
+    // clear local stores
     .then(() => {
+      sessionStorage.setItem(IS_LOGGING_OUT, 'true');
       // localStorage events emit across tabs so we can use it like a
       // BroadcastChannel to communicate with all tabs/windows
       localStorage.removeItem(SESSION_NAME);
+      if (wasIdle) {
+        localStorage.removeItem(RTR_TIMEOUT_EVENT);
+      }
 
       // default: clear the console, preserving it ONLY if asked
       if (!config.preserveConsole) {
         console.clear(); // eslint-disable-line no-console
-      }
-
-      // cancel the idle-session-timers
-      if (idleTimers?.current) {
-        Object.values(idleTimers.current).forEach((it) => {
-          it.clear();
-        });
-        idleTimers.current = null;
       }
 
       store.dispatch(setIsAuthenticated(false));
@@ -485,10 +485,20 @@ export async function logout(okapiUrl, store, history, idleTimers) {
       store.dispatch(clearOkapiToken());
       store.dispatch(resetStore());
     })
+    // clear shared stores
     .then(localforage.removeItem(SESSION_NAME))
     .then(localforage.removeItem('loginResponse'))
+    // redirect
+    // if due to timeout, to the timout page
+    // if due to direct logout, to root
     .then(() => {
-      history.push('/');
+      history.push(wasIdle ? '/logout-timeout' : '/');
+    })
+    .catch(e => {
+      console.error('error during logout', e); // eslint-disable-line no-console
+    })
+    .finally(() => {
+      sessionStorage.removeItem(IS_LOGGING_OUT);
     });
 }
 
@@ -557,84 +567,6 @@ export function createOkapiSession(okapiUrl, store, tenant, token, data) {
       store.dispatch(setSessionData(okapiSess));
       return loadResources(okapiUrl, store, sessionTenant, user.id);
     });
-}
-
-/**
- * addRtrEventListeners
- *
- * @param {object} okapiConfig
- * @param {object} store redux store
- * @param {object} history
- * @param {object} idleTimers ref
- */
-export function addRtrEventListeners(okapiConfig, store, history, idleTimers) {
-  // RTR error in this window: logout
-  window.addEventListener(RTR_ERROR_EVENT, (_e) => {
-    if (store.getState().okapi?.isAuthenticated) {
-      console.warn('rtr error; logging out'); // eslint-disable-line no-console
-      logout(okapiConfig.url, store, history, idleTimers);
-    }
-  });
-
-  // idle session timeout in this window: logout
-  window.addEventListener(RTR_TIMEOUT_EVENT, (_e) => {
-    if (store.getState().okapi?.isAuthenticated) {
-      logger.log('rtr', 'idle session timeout; logging out');
-      logout(okapiConfig.url, store, history, idleTimers);
-    }
-  });
-
-  // localstorage change in another window: logout?
-  //
-  // if SESSION_NAME has been removed from localStorage, that indicates
-  // logout is in process in another window, so we logout here as well.
-  window.addEventListener('storage', (_e) => {
-    if (!localStorage.getItem(SESSION_NAME)) {
-      logger.log('rtr', 'external localstorage change; logging out');
-      logout(okapiConfig.url, store, history, idleTimers);
-    }
-  });
-
-  // track activity in other windows
-  // the only events emitted to this channel are pings, empty keep-alive
-  // messages that indicate an event was processed, i.e. some activity
-  // occurred, in another window, so this one should be kept alive too.
-  const bc = new BroadcastChannel(RTR_ACTIVITY_CHANNEL);
-
-  // activity in another window: send keep-alive to idle-timers.
-  //
-  // when multiple tabs/windows are open, there is probably only activity
-  // in one but they will each have an idle-session timer running. thus,
-  // activity in each window is published on a BroadcastChannel to announce
-  // it to all windows in order to send a keep-alive ping to their timers.
-  bc.addEventListener('message', () => {
-    if (store.getState().okapi?.isAuthenticated) {
-      logger.log('rtr', 'external activity signal');
-      if (idleTimers.current) {
-        Object.values(idleTimers.current).forEach((it) => {
-          it.signal();
-        });
-      }
-    }
-  });
-
-  // activity in this window: send keep-alive to idle-timers
-  // and ping the BroadcastChannel to keep other windows alive as well
-  const activityEvents = config.rtr?.activityEvents ?? RTR_ACTIVITY_EVENTS;
-  activityEvents.forEach(e => {
-    window.addEventListener(e, () => {
-      const state = store.getState();
-      if (state.okapi?.isAuthenticated && !state.okapi.rtrModalIsVisible) {
-        logger.log('rtr', 'local activity signal');
-        if (idleTimers.current) {
-          bc.postMessage('signal');
-          Object.values(idleTimers.current).forEach((it) => {
-            it.signal();
-          });
-        }
-      }
-    });
-  });
 }
 
 /**
@@ -751,7 +683,7 @@ export function processOkapiSession(okapiUrl, store, tenant, resp, ssoToken) {
 
 /**
  * validateUser
- * return a promise that fetches from bl-users/self.
+ * return a promise that fetches from bl-users/_self.
  * if successful, dispatch the result to create a session
  * if not, clear the session and token.
  *
@@ -787,12 +719,13 @@ export function validateUser(okapiUrl, store, tenant, session) {
 
         store.dispatch(setSessionData({
           isAuthenticated: true,
-          user,
+          user: data.user,
           perms,
           tenant: sessionTenant,
           token,
           tokenExpiration,
         }));
+
         return loadResources(okapiUrl, store, sessionTenant, user.id);
       });
     } else {
@@ -941,6 +874,5 @@ export async function updateTenant(okapi, tenant) {
   const okapiSess = await getOkapiSession();
   const userWithPermsResponse = await fetchUserWithPerms(okapi.url, tenant, okapi.token);
   const userWithPerms = await userWithPermsResponse.json();
-
   await localforage.setItem(SESSION_NAME, { ...okapiSess, tenant, ...spreadUserWithPerms(userWithPerms) });
 }

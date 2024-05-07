@@ -1,6 +1,6 @@
 import { okapi } from 'stripes-config';
 
-import { setTokenExpiry } from '../../loginServices';
+import { getTokenExpiry, setTokenExpiry } from '../../loginServices';
 import { RTRError, UnexpectedResourceError } from './Errors';
 import { RTR_ERROR_EVENT, RTR_SUCCESS_EVENT } from './constants';
 
@@ -37,7 +37,7 @@ export const RTR_MAX_AGE = 2000;
  *
  * @param {string|URL|Request} resource
  * @param {*} fx function to call
- * @returns boolean
+ * @returns result of fx()
  * @throws UnexpectedResourceError if resource is not a string, URL, or Request
  */
 export const resourceMapper = (resource, fx) => {
@@ -53,6 +53,15 @@ export const resourceMapper = (resource, fx) => {
 };
 
 
+/**
+ * isAuthenticationRequest
+ * Return true if the given resource is an authentication request,
+ * i.e. a request that should kick off the RTR cycle.
+ *
+ * @param {*} resource one of string, URL, Request
+ * @param {string} oUrl FOLIO API origin
+ * @returns boolean
+ */
 export const isAuthenticationRequest = (resource, oUrl) => {
   const isPermissibleResource = (string) => {
     const permissible = [
@@ -131,95 +140,77 @@ export const isFolioApiRequest = (resource, oUrl) => {
 };
 
 /**
- * adjustTokenExpiration
- * Set the AT and RT token expirations to the fraction of their TTL given by
- * RTR_TTL_WINDOW. e.g. if a token should be valid for 100 more seconds and
- * RTR_TTL_WINDOW is 0.8, set to the expiration time to 80 seconds from now.
- *
- * @param {object} value { tokenExpiration: { atExpires, rtExpires }} both are millisecond timestamps
- * @param {number} fraction float in the range (0..1]
- * @returns { tokenExpiration: { atExpires, rtExpires }} both are millisecond timestamps
- */
-export const adjustTokenExpiration = (value, fraction) => ({
-  atExpires: Date.now() + ((value.tokenExpiration.atExpires - Date.now()) * fraction),
-  rtExpires: Date.now() + ((value.tokenExpiration.rtExpires - Date.now()) * fraction),
-});
-
-/**
- * shouldRotate
- * Return true if we should start a new rotation request, false if a request is
- * already pending.
- *
- * When RTR begins, the current time in milliseconds (i.e. Date.now()) is
- * cached in localStorage and the existence of that value is used as a flag
- * in subsequent requests to indicate that they should wait for that request
- * rather then firing a new one. If that flag isn't properly cleared when the
- * RTR request completes, it will block future RTR requests since it will
- * appear that a request is already in-progress. Thus, instead of merely
- * checking for the presence of the flag, this function ALSO checks the age
- * of that flag. If the flag is older than RTR_MAX_AGE it is considered
- * stale, indicating a new request should begin.
- *
- * @param {@folio/stripes/logger} logger
+ * isRotating
+ * Return true if a rotation-request is pending; false otherwise.
+ * A pending rotation-request that is older than RTR_MAX_AGE is
+ * considered stale and ignored.
+ * @param {*} logger
  * @returns boolean
  */
-export const shouldRotate = (logger) => {
+export const isRotating = () => {
   const rotationTimestamp = localStorage.getItem(RTR_IS_ROTATING);
   if (rotationTimestamp) {
     if (Date.now() - rotationTimestamp < RTR_MAX_AGE) {
-      return false;
+      return true;
     }
-    logger.log('rtr', 'rotation request is stale');
+    console.warn('rotation request is stale'); // eslint-disable-line no-console
+    localStorage.removeItem(RTR_IS_ROTATING);
   }
-  return true;
+
+  return false;
 };
 
 /**
  * rtr
- * exchange an RT for a new one.
- * Make a POST request to /authn/refresh, including the current credentials,
- * and send a TOKEN_EXPIRATION event to clients that includes the new AT/RT
- * expiration timestamps.
+ * exchange an RT for new tokens; dispatch RTR_ERROR_EVENT on error.
  *
  * Since all windows share the same cookie, this means the must also share
  * rotation, and when rotation starts in one window requests in all others
- * must await the same promise. Thus, the RTR_IS_ROTATING flag is stored via
+ * must await that promise. Thus, the RTR_IS_ROTATING flag is stored via
  * localStorage where it is globally accessible, rather than in a local
  * variable (which would only be available in the scope of a single window).
  *
  * The basic plot is for this function to return a promise that resolves when
  * rotation is finished. If rotation hasn't started, that's the rotation
  * promise itself (with some other business chained on). If rotation has
- * started, it's a promise that resolves when it receives a "rotation complete"
- * event (part of that other business).
+ * started, it's a promise that auto-resolves after RTR_MAX_AGEms have elapsed.
+ * That
  *
  * The other business consists of:
  * 1 unsetting the isRotating flag in localstorage
- * 2 capturing the new expiration data, shrinking its TTL window, calling
- *   setTokenExpiry to push the new values to localstorage, and caching it
- *   on the calling context.
+ * 2 capturing the new expiration data and storing it
  * 3 dispatch RTR_SUCCESS_EVENT
  *
- * // ff fetch function
- * // logger
- * // callback
- *
- * @returns Promise
- * @throws if RTR fails
+ * @param {function} fetchfx native fetch function
+ * @param {@folio/stripes/logger} logger
+ * @param {function} callback
+ * @returns void
  */
-export const rtr = (context, callback) => {
-  context.logger.log('rtr', '** RTR ...');
+export const rtr = (fetchfx, logger, callback) => {
+  logger.log('rtr', '** RTR ...');
 
-  // somebody else already started rotation; nothing to do here
-  if (!shouldRotate(context.logger)) {
-    context.logger.log('rtr', '** already in progress; exiting');
-    return Promise.resolve();
+  // rotation is already in progress, maybe in this window,
+  // maybe in another: wait until RTR_MAX_AGE has elapsed,
+  // which means the RTR request will either be finished or
+  // stale, then continue
+  if (isRotating()) {
+    logger.log('rtr', '** already in progress; exiting');
+    return new Promise(res => setTimeout(res, RTR_MAX_AGE))
+      .then(() => {
+        if (!isRotating()) {
+          logger.log('rtr', '**     success after waiting!');
+          getTokenExpiry().then((te) => {
+            callback(te);
+            window.dispatchEvent(new Event(RTR_SUCCESS_EVENT));
+          });
+        }
+      });
   }
 
-  context.logger.log('rtr', '**     rotation beginning...');
+  logger.log('rtr', '**     rotation beginning...');
 
   localStorage.setItem(RTR_IS_ROTATING, `${Date.now()}`);
-  return context.nativeFetch.apply(global, [`${okapi.url}/authn/refresh`, {
+  return fetchfx.apply(global, [`${okapi.url}/authn/refresh`, {
     headers: {
       'content-type': 'application/json',
       'x-okapi-tenant': okapi.tenant,
@@ -244,13 +235,12 @@ export const rtr = (context, callback) => {
         });
     })
     .then(json => {
-      context.logger.log('rtr', '**     success!');
+      logger.log('rtr', '**     success!');
       callback(json);
       const te = {
         atExpires: new Date(json.accessTokenExpiration).getTime(),
         rtExpires: new Date(json.refreshTokenExpiration).getTime(),
       };
-      context.tokenExpiration = te;
       setTokenExpiry(te);
       window.dispatchEvent(new Event(RTR_SUCCESS_EVENT));
     })
@@ -263,25 +253,7 @@ export const rtr = (context, callback) => {
     });
 };
 
-/**
- * isRotating
- * Return true if a rotation-request is pending; false otherwise.
- * A pending rotation-request that is older than RTR_MAX_AGE is
- * considered stale and ignored.
- * @param {*} logger
- * @returns boolean
- */
-const isRotating = (logger) => {
-  const rotationTimestamp = localStorage.getItem(RTR_IS_ROTATING);
-  if (rotationTimestamp) {
-    if (Date.now() - rotationTimestamp < RTR_MAX_AGE) {
-      return true;
-    }
-    logger.log('rtr', 'rotation request is stale');
-  }
 
-  return false;
-};
 
 /**
  * rotationPromise
@@ -316,7 +288,7 @@ const rotationPromise = async (logger) => {
 };
 
 export const getPromise = async (logger) => {
-  return isRotating(logger) ? rotationPromise(logger) : Promise.resolve();
+  return isRotating() ? rotationPromise(logger) : Promise.resolve();
 };
 
 /**
