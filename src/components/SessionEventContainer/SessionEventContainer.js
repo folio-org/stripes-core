@@ -52,7 +52,7 @@ export const otherWindowStorage = (e, stripes, history) => {
 // activity in each window is published on a BroadcastChannel to announce
 // it to all windows in order to send a keep-alive ping to their timers.
 export const otherWindowActivity = (_m, stripes, timers, setIsVisible) => {
-  stripes.logger.log('rtr', 'external activity signal');
+  stripes.logger.log('rtrv', 'external activity signal');
   if (timers.current) {
     Object.values(timers.current).forEach((it) => {
       it.signal();
@@ -78,7 +78,7 @@ export const thisWindowActivity = (_e, stripes, timers, broadcastChannel) => {
   // due to early binding, the value of isVisible is locked-in when
   // this function is created.
   if (!state.okapi.rtrModalIsVisible) {
-    stripes.logger.log('rtr', 'local activity signal');
+    stripes.logger.log('rtrv', 'local activity signal');
     if (timers.current) {
       broadcastChannel.postMessage('signal');
       Object.values(timers.current).forEach((it) => {
