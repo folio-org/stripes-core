@@ -298,8 +298,8 @@ export const getPromise = async (logger) => {
  *
  * @param {object} config
  */
-export const configureRtr = (config) => {
-  const conf = { ...config } || {};
+export const configureRtr = (config = {}) => {
+  const conf = { ...config };
 
   // how long does an idle session last before being killed?
   if (!conf.idleSessionTTL) {
