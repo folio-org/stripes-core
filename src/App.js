@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, StrictMode } from 'react';
 import PropTypes from 'prop-types';
 import { okapi as okapiConfig, config } from 'stripes-config';
 import merge from 'lodash/merge';
@@ -11,6 +11,18 @@ import gatherActions from './gatherActions';
 import { destroyStore } from './mainActions';
 
 import Root from './components/Root';
+
+const StrictWrapper = ({ children }) => {
+  if (config.disableStrictMode) {
+    return children;
+  }
+
+  return <StrictMode>{children}</StrictMode>;
+};
+
+StrictWrapper.propTypes = {
+  children: PropTypes.node.isRequired,
+};
 
 export default class StripesCore extends Component {
   static propTypes = {
@@ -42,15 +54,17 @@ export default class StripesCore extends Component {
     const { initialState, ...props } = this.props;
 
     return (
-      <Root
-        store={this.store}
-        epics={this.epics}
-        logger={this.logger}
-        config={config}
-        actionNames={this.actionNames}
-        disableAuth={(config && config.disableAuth) || false}
-        {...props}
-      />
+      <StrictWrapper>
+        <Root
+          store={this.store}
+          epics={this.epics}
+          logger={this.logger}
+          config={config}
+          actionNames={this.actionNames}
+          disableAuth={(config && config.disableAuth) || false}
+          {...props}
+        />
+      </StrictWrapper>
     );
   }
 }
