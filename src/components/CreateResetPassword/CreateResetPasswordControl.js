@@ -162,7 +162,7 @@ class CreateResetPasswordControl extends Component {
     } = this.state;
 
     if (isSuccessfulPasswordChange) {
-      return <PasswordSuccessfullyChanged />;
+      return <PasswordSuccessfullyChanged stripes={this.props.stripes} />;
     }
 
     if (isLoading) {
