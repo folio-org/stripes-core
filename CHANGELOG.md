@@ -6,6 +6,7 @@
 * Utilize the `tenant` procured through the SSO login process. Refs STCOR-769.
 * Use keycloak URLs in place of users-bl for tenant-switch. Refs US1153537.
 * Provide `useUserTenantPermissions` hook. Refs STCOR-830.
+* Fix 404 error page when logging in after changing password in Eureka. Refs STCOR-845.
 
 ## [10.1.1](https://github.com/folio-org/stripes-core/tree/v10.1.1) (2024-03-25)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.1.0...v10.1.1)
