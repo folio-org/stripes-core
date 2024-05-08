@@ -5,7 +5,9 @@ import queryString from 'query-string';
 import { useStripes } from '../../../../../StripesContext';
 
 const usePasswordRules = (rulesLimit) => {
+  console.log('Inside usePasswordRules() rulesLimit - ', rulesLimit);
   const { locale = 'en', tenant, url } = useStripes().okapi;
+  console.log('locale, tenant, url - ', locale, tenant, url);
 
   const kyInstance = ky.create({
     prefixUrl: url,
@@ -20,6 +22,8 @@ const usePasswordRules = (rulesLimit) => {
     retry: 0,
     timeout: 30000,
   });
+  console.log('kyInstance - ', kyInstance);
+  console.log('kyInstance.get - ', kyInstance.get('tenant/rules?limit=100'));
 
   const searchParams = {
     limit: rulesLimit,
@@ -31,6 +35,8 @@ const usePasswordRules = (rulesLimit) => {
       return kyInstance.get(`tenant/rules?${queryString.stringify(searchParams)}`).json();
     },
   );
+
+  console.log('usePasswordRules() data output - ', data);
 
   return ({
     rules: data?.rules,

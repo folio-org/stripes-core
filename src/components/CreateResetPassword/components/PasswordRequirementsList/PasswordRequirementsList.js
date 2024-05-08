@@ -21,13 +21,14 @@ const passwordRequirementsNames = [
 const rulesLimit = 100;
 
 const PasswordRequirementsList = ({ passwordValue }) => {
+  console.log('Inside PasswordRequirementsList passValue- ', passwordValue);
   const intl = useIntl();
 
   const [requiredRules, setRequiredRules] = useState([]);
   const [unfulfilledRules, setUnfulfilledRules] = useState([]);
 
   const { rules } = usePasswordRules(rulesLimit);
-
+  console.log('All rules[] from usePasswordRules - ', rules);
   useEffect(() => {
     if (requiredRules.length <= 0 && rules?.length > 0) {
       const requiredRulesSet = rules
@@ -69,6 +70,7 @@ const PasswordRequirementsList = ({ passwordValue }) => {
     unfulfilledRules.length,
   ]);
 
+  console.log('Final unfulfilledRules - ', unfulfilledRules);
   const rulesList = unfulfilledRules?.length
     ? (
       <ul
