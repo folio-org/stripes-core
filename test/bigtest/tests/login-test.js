@@ -11,7 +11,7 @@ import LoginInteractor from '../interactors/login';
 
 import translations from '../../../translations/stripes-core/en';
 
-describe('Login', () => {
+describe.only('Login', () => {
   const login = new LoginInteractor('form[class^="form--"]');
 
   setupApplication({ disableAuth: false });
@@ -146,6 +146,37 @@ describe('Login', () => {
 
       it('error message should have proper text upon failed submit', () => {
         expect(login.message.text).to.equal(translations['errors.password.incorrect']);
+      });
+    });
+
+    describe('error for the empty password field', () => {
+      setupApplication({
+        disableAuth: false,
+        scenarios: ['emptyPasswordField'],
+      });
+
+      beforeEach(async function () {
+        const { username, password, submit } = login;
+
+        await username.fill('username');
+        await password.fill('');
+        await submit.click();
+      });
+
+      it.always('username should not be reset upon failed submit', () => {
+        expect(login.username.value).to.equal('username');
+      });
+
+      it('password should be same upon failed submit', () => {
+        expect(login.password.value).to.equal('');
+      });
+
+      it('error message should be present upon failed submit', () => {
+        expect(login.message.isPresent).to.be.true;
+      });
+
+      it('error message should have proper text upon failed submit', () => {
+        expect(login.message.text).to.equal(translations['errors.password.empty']);
       });
     });
 

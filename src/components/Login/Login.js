@@ -59,6 +59,12 @@ class Login extends Component {
       <Form
         onSubmit={onSubmit}
         subscription={{ values: true }}
+        mutators={{
+          setError: (args, state, tools) => {
+            const errors = args.length ? args : authErrors;
+            tools.changeValue(state, 'authErrors', () => errors);
+          },
+        }}
         render={({ form, submitting, handleSubmit, submitSucceeded, values }) => {
           const { username } = values;
           const submissionStatus = submitting || submitSucceeded;
@@ -76,7 +82,15 @@ class Login extends Component {
                   <Row>
                     <form
                       className={styles.form}
-                      onSubmit={data => handleSubmit(data).then(() => form.change('password', undefined))}
+                      onSubmit={data => handleSubmit(data)
+                        .then(() => {
+                          form.mutators.setError();
+                          form.change('password', undefined);
+                        })
+                        .catch(() => {
+                          const emptyPasswordError = { code: 'password.empty' };
+                          form.mutators.setError(emptyPasswordError);
+                        })}
                     >
                       <Row center="xs">
                         <Col xs={6}>
@@ -223,7 +237,7 @@ class Login extends Component {
                       <Row center="xs">
                         <Col xs={6}>
                           <div className={styles.authErrorsWrapper}>
-                            <AuthErrorsContainer errors={authErrors} />
+                            <AuthErrorsContainer errors={form.getState().values.authErrors} />
                           </div>
                         </Col>
                       </Row>
