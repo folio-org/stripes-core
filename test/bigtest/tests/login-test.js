@@ -11,7 +11,7 @@ import LoginInteractor from '../interactors/login';
 
 import translations from '../../../translations/stripes-core/en';
 
-describe.only('Login', () => {
+describe('Login', () => {
   const login = new LoginInteractor('form[class^="form--"]');
 
   setupApplication({ disableAuth: false });
