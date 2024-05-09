@@ -86,6 +86,7 @@
   "currentServicePoint": "Service point: {name}",
   "currentServicePointNotSelected": "Service point: None",
   "logout": "Log out",
+  "logoutPending": "Log out in process...",
   "logoutKeepSso": "Log out from FOLIO, keep SSO session",
   "login": "Log in",
   "username": "Username",
