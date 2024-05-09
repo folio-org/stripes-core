@@ -66,12 +66,17 @@ describe('SessionEventContainer', () => {
 
 
 describe('SessionEventContainer event listeners', () => {
-  it('thisWindowRtrError', () => {
-    thisWindowRtrError(null, { okapi: { url: 'http' } }, { store: '' }, null, null);
+  it('thisWindowRtrError', async () => {
+    const history = { push: jest.fn() };
+    const logoutMock = logout;
+    logoutMock.mockReturnValue(Promise.resolve());
+
+    await thisWindowRtrError(null, { okapi: { url: 'http' } }, history);
     expect(logout).toHaveBeenCalled();
+    expect(history.push).toHaveBeenCalledWith('/logout-timeout');
   });
 
-  it('thisWindowRtrTimeout', () => {
+  it('thisWindowRtrTimeout', async () => {
     const s = {
       okapi: {
         url: 'http'
@@ -82,8 +87,13 @@ describe('SessionEventContainer event listeners', () => {
       }
     };
 
-    thisWindowRtrTimeout(null, s, null, null);
+    const history = { push: jest.fn() };
+    const logoutMock = logout;
+    await logoutMock.mockReturnValue(Promise.resolve());
+
+    await thisWindowRtrTimeout(null, s, history);
     expect(logout).toHaveBeenCalled();
+    expect(history.push).toHaveBeenCalledWith('/logout-timeout');
   });
 
   describe('otherWindowStorage', () => {
@@ -91,7 +101,7 @@ describe('SessionEventContainer event listeners', () => {
       localStorage.removeItem(SESSION_NAME);
     });
 
-    it('timeout', () => {
+    it('timeout', async () => {
       const e = { key: RTR_TIMEOUT_EVENT };
       const s = {
         okapi: {
@@ -102,14 +112,14 @@ describe('SessionEventContainer event listeners', () => {
           log: jest.fn(),
         }
       };
-      const history = 'history';
-      const isTimeout = true;
+      const history = { push: jest.fn() }
 
-      otherWindowStorage(e, s, history);
-      expect(logout).toHaveBeenCalledWith(s.okapi.url, s.store, history, isTimeout);
+      await otherWindowStorage(e, s, history);
+      expect(logout).toHaveBeenCalledWith(s.okapi.url, s.store);
+      expect(history.push).toHaveBeenCalledWith('/logout-timeout');
     });
 
-    it('logout', () => {
+    it('logout', async () => {
       const e = { key: '' };
       const s = {
         okapi: {
@@ -120,10 +130,12 @@ describe('SessionEventContainer event listeners', () => {
           log: jest.fn(),
         }
       };
-      const history = 'history';
+      const history = { push: jest.fn() };
 
-      otherWindowStorage(e, s, history);
-      expect(logout).toHaveBeenCalledWith(s.okapi.url, s.store, history);
+      await otherWindowStorage(e, s, history);
+      expect(logout).toHaveBeenCalledWith(s.okapi.url, s.store);
+      expect(history.push).toHaveBeenCalledWith('/');
+
     });
   });
 

@@ -445,15 +445,23 @@ export function spreadUserWithPerms(userWithPerms) {
  *
  * @param {string} okapiUrl
  * @param {object} redux store
- * @param {object} history
- * @param {boolean} wasIdle true if logout was due to idle-activity
  *
  * @returns {Promise}
  */
-export async function logout(okapiUrl, store, history, wasIdle) {
+export async function logout(okapiUrl, store) {
   const IS_LOGGING_OUT = '@folio/stripes/core::Logout';
-  // if localStorage is already empty, then logout has already started
-  // in another window and all we have to worry about here is private storage.
+
+  // check the private-storage sentinel: if logout has already started
+  // in this window, we don't want to start it again.
+  if (sessionStorage.getItem(IS_LOGGING_OUT)) {
+    return Promise.resolve();
+  }
+
+  // check the shared-storage sentinel: if logout has already started
+  // in another window, we don't want to invoke shared functions again
+  // (like calling /authn/logout, which can only be called once)
+  // BUT we DO want to clear private storage such as session storage
+  // and redux, which are not shared across tabs/windows.
   const logoutPromise = localStorage.getItem(SESSION_NAME) ?
     fetch(`${okapiUrl}/authn/logout`, {
       method: 'POST',
@@ -462,48 +470,34 @@ export async function logout(okapiUrl, store, history, wasIdle) {
     })
     :
     Promise.resolve();
-
-  // logout may be triggered by many things in many windows, possibly multiple
-  // times. if the process has already started in this window, do not start
-  // it again.
-  if (sessionStorage.getItem(IS_LOGGING_OUT)) {
-    return Promise.resolve();
-  }
-
   return logoutPromise
-    // clear local stores
+    // clear private-storage
     .then(() => {
+      // set the private-storage sentinel to indicate logout is in-progress
       sessionStorage.setItem(IS_LOGGING_OUT, 'true');
+
       // localStorage events emit across tabs so we can use it like a
       // BroadcastChannel to communicate with all tabs/windows
       localStorage.removeItem(SESSION_NAME);
-      if (wasIdle) {
-        localStorage.removeItem(RTR_TIMEOUT_EVENT);
-      }
-
-      // default: clear the console, preserving it ONLY if asked
-      if (!config.preserveConsole) {
-        console.clear(); // eslint-disable-line no-console
-      }
+      localStorage.removeItem(RTR_TIMEOUT_EVENT);
 
       store.dispatch(setIsAuthenticated(false));
       store.dispatch(clearCurrentUser());
       store.dispatch(clearOkapiToken());
       store.dispatch(resetStore());
     })
-    // clear shared stores
+    // clear shared storage
     .then(localforage.removeItem(SESSION_NAME))
     .then(localforage.removeItem('loginResponse'))
-    // redirect
-    // if due to timeout, to the timout page
-    // if due to direct logout, to root
-    .then(() => {
-      history.push(wasIdle ? '/logout-timeout' : '/');
-    })
     .catch(e => {
       console.error('error during logout', e); // eslint-disable-line no-console
     })
     .finally(() => {
+      // clear the console unless config asks to preserve it
+      if (!config.preserveConsole) {
+        console.clear(); // eslint-disable-line no-console
+      }
+      // clear the storage sentinel
       sessionStorage.removeItem(IS_LOGGING_OUT);
     });
 }
@@ -735,7 +729,10 @@ export function validateUser(okapiUrl, store, tenant, session) {
         return loadResources(okapiUrl, store, sessionTenant, user.id);
       });
     } else {
-      return logout(okapiUrl, store);
+      store.dispatch(clearCurrentUser());
+      return resp.text((text) => {
+        throw text;
+      });
     }
   }).catch((error) => {
     console.error(error); // eslint-disable-line no-console
