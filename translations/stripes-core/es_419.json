@@ -146,5 +146,5 @@
     "placeholder.forgotPassword": "Enter email or phone",
     "placeholder.forgotUsername": "Introduce email o teléfono",
     "title.cookieEnabled": "Cookies are required to login. Please enable cookies and try again.",
-    "errors.sso.session.failed": "SSO Login failed. Please try again"
+    "errors.sso.session.failed": "Error al iniciar sesión en SSO. Inténtalo de nuevo"
 }
