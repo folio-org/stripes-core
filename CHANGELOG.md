@@ -7,6 +7,7 @@
 * Provide `useUserTenantPermissions` hook. Refs STCOR-830.
 * Load DayJS locale data as part of `loginServices`. STCOR-771.
 * Turn on `<StrictMode>`; ignore it with `stripes.config.js` `disableStrictMode: true`. Refs STCOR-841.
+* Implement password validation for Login Page. Refs STCOR-741.
 
 ## 10.1.0 IN PROGRESS
 

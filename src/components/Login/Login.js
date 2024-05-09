@@ -87,9 +87,10 @@ class Login extends Component {
                           form.mutators.setError();
                           form.change('password', undefined);
                         })
-                        .catch(() => {
+                        .catch((e) => {
                           const emptyPasswordError = { code: 'password.empty' };
                           form.mutators.setError(emptyPasswordError);
+                          console.error(e); // eslint-disable-line no-console
                         })}
                     >
                       <Row center="xs">

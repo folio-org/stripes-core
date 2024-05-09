@@ -55,7 +55,7 @@ class LoginCtrl extends Component {
 
   handleSubmit = (data) => {
     if (!data.password) {
-      return Promise.reject();
+      return Promise.reject(new Error('Password is required'));
     }
 
     return requestLogin(this.okapiUrl, this.context.store, this.tenant, data)
