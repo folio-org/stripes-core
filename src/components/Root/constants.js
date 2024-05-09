@@ -24,7 +24,11 @@ export const RTR_ACTIVITY_EVENTS = ['keydown', 'mousedown'];
 /**
  * how long does an idle session last?
  * When this interval elapses without activity, the session will end and
- * the user will be signed out.
+ * the user will be signed out. This value must be shorter than the RT's TTL,
+ * otherwise the RT will expire while the session is still active, leading to
+ * a problem where the session appears to be active because the UI is available
+ * but the first action that makes and API request (which will fail with an
+ * RTR error) causes the session to end.
  *
  * overridden in stripes.configs.js::config.rtr.idleSessionTTL
  * value must be a string parsable by ms()

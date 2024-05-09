@@ -152,7 +152,7 @@ export class FFetch {
   ffetch = async (resource, options = {}) => {
     // FOLIO API requests are subject to RTR
     if (isFolioApiRequest(resource, okapi.url)) {
-      this.logger.log('rtr', 'will fetch', resource);
+      this.logger.log('rtrv', 'will fetch', resource);
 
       // on authentication, grab the response to kick of the rotation cycle,
       // then return the response
