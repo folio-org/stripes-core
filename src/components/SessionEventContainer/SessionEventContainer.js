@@ -55,6 +55,7 @@ export const otherWindowStorage = (e, stripes, history) => {
         history.push('/');
       });
   }
+  return Promise.resolve();
 };
 
 // activity in another window: send keep-alive to idle-timers.

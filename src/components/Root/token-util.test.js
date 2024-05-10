@@ -1,6 +1,8 @@
+import { waitFor } from '@folio/jest-config-stripes/testing-library/react';
 import { RTRError, UnexpectedResourceError } from './Errors';
 import {
   configureRtr,
+  getPromise,
   isAuthenticationRequest,
   isFolioApiRequest,
   isLogoutRequest,
@@ -293,6 +295,45 @@ describe('isRotating', () => {
 
   it('returns false if key is absent', () => {
     expect(isRotating(logger)).toBe(false);
+  });
+});
+
+describe('getPromise', () => {
+  describe('when isRotating is true', () => {
+    beforeEach(() => {
+      localStorage.setItem(RTR_IS_ROTATING, Date.now());
+    });
+    afterEach(() => {
+      localStorage.removeItem(RTR_IS_ROTATING);
+    });
+
+    it('waits until localStorage\'s RTR_IS_ROTATING flag is cleared', async () => {
+      let res = null;
+      const logger = { log: jest.fn() };
+      const p = getPromise(logger);
+      localStorage.removeItem(RTR_IS_ROTATING);
+      window.dispatchEvent(new Event(RTR_SUCCESS_EVENT));
+
+      await p.then(() => {
+        res = true;
+      });
+      expect(res).toBeTruthy();
+    });
+  });
+
+  describe('when isRotating is false', () => {
+    beforeEach(() => {
+      localStorage.removeItem(RTR_IS_ROTATING);
+    });
+
+    it('receives a resolved promise', async () => {
+      let res = null;
+      await getPromise()
+        .then(() => {
+          res = true;
+        });
+      expect(res).toBeTruthy();
+    });
   });
 });
 

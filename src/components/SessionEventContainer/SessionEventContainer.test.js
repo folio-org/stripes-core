@@ -112,7 +112,7 @@ describe('SessionEventContainer event listeners', () => {
           log: jest.fn(),
         }
       };
-      const history = { push: jest.fn() }
+      const history = { push: jest.fn() };
 
       await otherWindowStorage(e, s, history);
       expect(logout).toHaveBeenCalledWith(s.okapi.url, s.store);
@@ -135,7 +135,6 @@ describe('SessionEventContainer event listeners', () => {
       await otherWindowStorage(e, s, history);
       expect(logout).toHaveBeenCalledWith(s.okapi.url, s.store);
       expect(history.push).toHaveBeenCalledWith('/');
-
     });
   });
 
