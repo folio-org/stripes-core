@@ -448,9 +448,8 @@ export function spreadUserWithPerms(userWithPerms) {
  *
  * @returns {Promise}
  */
+export const IS_LOGGING_OUT = '@folio/stripes/core::Logout';
 export async function logout(okapiUrl, store) {
-  const IS_LOGGING_OUT = '@folio/stripes/core::Logout';
-
   // check the private-storage sentinel: if logout has already started
   // in this window, we don't want to start it again.
   if (sessionStorage.getItem(IS_LOGGING_OUT)) {
