@@ -1,15 +1,19 @@
-import ky from 'ky';
 import { useQuery } from 'react-query';
+import { useOkapiKy } from '@folio/stripes-core';
 import queryString from 'query-string';
 
 import { useStripes } from '../../../../../StripesContext';
 
 const usePasswordRules = (rulesLimit) => {
   console.log('Inside usePasswordRules() rulesLimit - ', rulesLimit);
+
   const { locale = 'en', tenant, url } = useStripes().okapi;
+  const ky = useOkapiKy();
+
   console.log('locale, tenant, url - ', locale, tenant, url);
 
-  const kyInstance = ky.create({
+
+  const api = ky.extend({
     prefixUrl: url,
     hooks: {
       beforeRequest: [
@@ -22,17 +26,19 @@ const usePasswordRules = (rulesLimit) => {
     retry: 0,
     timeout: 30000,
   });
-  console.log('kyInstance - ', kyInstance);
-  console.log('kyInstance.get - ', kyInstance.get('tenant/rules?limit=100'));
 
   const searchParams = {
     limit: rulesLimit,
   };
 
+  console.log('ky - ', api);
+  console.log('ky.get() - ', api.get(`tenant/rules?${queryString.stringify(searchParams)}`));
+  console.log('ky.get().json response - ', api.get(`tenant/rules?${queryString.stringify(searchParams)}`).json());
+
   const { data } = useQuery(
     ['requirements-list'],
     async () => {
-      return kyInstance.get(`tenant/rules?${queryString.stringify(searchParams)}`).json();
+      return api.get(`tenant/rules?${queryString.stringify(searchParams)}`).json();
     },
   );
 
