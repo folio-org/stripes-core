@@ -123,26 +123,24 @@ export class FFetch {
   }
 
   /**
-   * passThrough
+   * ffetch
    * Inspect resource to determine whether it's a FOLIO API request.
    * * If it is an authentication-related request, complete the request
    *   and then execute the RTR callback to initiate that cycle.
-   * * If it is a logout request, complete the request b
-   *
-   * Handle it with RTR if it is; let it trickle through if not.
-   *
-   * Given we believe the AT to be valid, pass the fetch through.
-   * If it fails, maybe our beliefs were wrong, maybe everything is wrong,
-   * maybe there is no God, or there are many gods, or god is a she, or
-   * she is a he, or Lou Reed is god. Or maybe we were just wrong about the
-   * AT and we need to conduct token rotation, so try that. If RTR succeeds,
-   * yay, pass through the fetch as we originally intended because now we
-   * know the AT will be valid. If RTR fails, then it doesn't matter about
-   * Lou Reed. He may be god. We'll dispatch an RTR_ERROR_EVENT and then
-   * return a dummy promise, which gives the root-level (stripes-core level)
-   * event handler the opportunity to respond (presumably by logging out)
-   * without tripping up the application-level error handler which isn't
-   * responsible for handling such things.
+   * * If it is a logout request, complete the request and swallow any
+   *   errors because ... what would be the point of a failed logout
+   *   request? It's telling you "you couldn't call /logout because
+   *   you didn't have a cookie" i.e. you're already logged out".
+   * * If it is a regular request, make sure RTR isn't in-flight (which
+   *   would cause this request to fail if the RTR request finished
+   *   processing first, because it would invalidate the old AT) and
+   *   then proceed.
+   *   If we catch an RTR error, emit a RTR_ERR_EVENT on the window and
+   *   then swallow the error, allowing the application-level event handlers
+   *   to handle that event.
+   *   If we catch any other kind of error, re-throw it because it represents
+   *   an application-specific problem that needs to be handled by an
+   *   application-specific handler.
    *
    * @param {*} resource any resource acceptable to fetch()
    * @param {object} options
