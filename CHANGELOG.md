@@ -7,6 +7,7 @@
 * Provide `useUserTenantPermissions` hook. Refs STCOR-830.
 * Load DayJS locale data as part of `loginServices`. STCOR-771.
 * Turn on `<StrictMode>`; ignore it with `stripes.config.js` `disableStrictMode: true`. Refs STCOR-841.
+* Avoid deprecated `defaultProps` for functional components. Refs STCOR-844..
 
 ## 10.1.0 IN PROGRESS
 

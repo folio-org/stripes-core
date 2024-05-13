@@ -11,7 +11,7 @@ import { getEventHandlers } from '../../handlerService';
 import { ModulesContext } from '../../ModulesContext';
 import { StripesContext } from '../../StripesContext';
 
-const RouteErrorBoundary = ({ children, escapeRoute, moduleName, isSettings }) => {
+const RouteErrorBoundary = ({ children, escapeRoute = '/', moduleName, isSettings }) => {
   const intl = useIntl();
   let buttonLabelId;
 
@@ -62,10 +62,6 @@ RouteErrorBoundary.propTypes = {
   escapeRoute: PropTypes.string,
   moduleName: PropTypes.node,
   isSettings: PropTypes.bool,
-};
-
-RouteErrorBoundary.defaultProps = {
-  escapeRoute: '/'
 };
 
 export default RouteErrorBoundary;
