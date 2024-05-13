@@ -1,6 +1,4 @@
 import { render, screen, waitFor } from '@folio/jest-config-stripes/testing-library/react';
-// import { createRef } from 'react';
-// import { Redirect } from 'react-router';
 
 import Harness from '../../../test/jest/helpers/harness';
 import Logout from './Logout';
@@ -16,9 +14,6 @@ jest.mock('react-router', () => ({
   ...(jest.requireActual('react-router')),
   Redirect: () => <div>Redirect</div>
 }));
-
-// import { getLocale, logout } from '../../loginServices';
-
 
 const stripes = {
   config: {
