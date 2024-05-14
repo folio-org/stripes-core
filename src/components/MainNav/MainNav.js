@@ -199,7 +199,7 @@ class MainNav extends Component {
           const helpUrl = stripes.config.helpUrl ?? 'https://docs.folio.org';
 
           return (
-            <header className={css.navRoot} style={branding.style?.mainNav ?? {}}>
+            <header className={css.navRoot} style={branding?.style?.mainNav ?? {}}>
               <div className={css.startSection}>
                 <SkipLink />
                 <CurrentAppGroup selectedApp={selectedApp} config={stripes.config} />
