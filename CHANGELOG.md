@@ -1,6 +1,6 @@
 # Change history for stripes-core
 
-## 10.1.1 IN PROGRESS
+## 10.2.0 IN PROGRESS
 
 * Utilize the `tenant` procured through the SSO login process. Refs STCOR-769.
 * Remove tag-based selectors from Login, ResetPassword, Forgot UserName/Password form CSS. Refs STCOR-712.
@@ -8,8 +8,10 @@
 * Load DayJS locale data as part of `loginServices`. STCOR-771.
 * Turn on `<StrictMode>`; ignore it with `stripes.config.js` `disableStrictMode: true`. Refs STCOR-841.
 * Make branding optional. Refs STCOR-847.
+* Idle-session timeout and "Keep working?" modal. Refs STCOR-776.
 
-## 10.1.0 IN PROGRESS
+## [10.1.0](https://github.com/folio-org/stripes-core/tree/v10.1.0) (2024-03-12)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.0.0...v10.1.0)
 
 * Provide optional tenant argument to `useOkapiKy` hook. Refs STCOR-747.
 * Avoid private path when import `validateUser` function. Refs STCOR-749.

@@ -6,6 +6,7 @@ import {
   getTokenExpiry,
   handleLoginError,
   loadTranslations,
+  logout,
   processOkapiSession,
   setTokenExpiry,
   spreadUserWithPerms,
@@ -14,12 +15,15 @@ import {
   updateTenant,
   updateUser,
   validateUser,
+  IS_LOGGING_OUT,
+  SESSION_NAME
 } from './loginServices';
 
 
 
 import {
   clearCurrentUser,
+  clearOkapiToken,
   setCurrentPerms,
   setLocale,
   // setTimezone,
@@ -337,6 +341,7 @@ describe('validateUser', () => {
 
     await validateUser('url', store, 'tenant', {});
     expect(store.dispatch).toHaveBeenCalledWith(clearCurrentUser());
+    expect(store.dispatch).toHaveBeenCalledWith(setServerDown());
     mockFetchCleanUp();
   });
 });
@@ -427,5 +432,87 @@ describe('localforage session wrapper', () => {
 
     const s = await setTokenExpiry(te);
     expect(s).toMatchObject({ ...o, tokenExpiration: te });
+  });
+});
+
+describe('logout', () => {
+  describe('when logout has started in this window', () => {
+    it('returns immediately', async () => {
+      const store = {
+        dispatch: jest.fn(),
+      };
+      window.sessionStorage.clear();
+      window.sessionStorage.setItem(IS_LOGGING_OUT, 'true');
+
+      let res;
+      await logout('', store)
+        .then(() => {
+          res = true;
+        });
+      expect(res).toBe(true);
+      expect(store.dispatch).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('when logout has not started in this window', () => {
+    afterEach(() => {
+      mockFetchCleanUp();
+    });
+
+    it('clears the redux store', async () => {
+      global.fetch = jest.fn().mockImplementation(() => Promise.resolve());
+      const store = {
+        dispatch: jest.fn(),
+      };
+      window.sessionStorage.clear();
+
+      let res;
+      await logout('', store)
+        .then(() => {
+          res = true;
+        });
+      expect(res).toBe(true);
+
+      // expect(setItemSpy).toHaveBeenCalled();
+      expect(store.dispatch).toHaveBeenCalledWith(setIsAuthenticated(false));
+      expect(store.dispatch).toHaveBeenCalledWith(clearCurrentUser());
+      expect(store.dispatch).toHaveBeenCalledWith(clearOkapiToken());
+    });
+
+    it('calls fetch() when other window is not logging out', async () => {
+      global.fetch = jest.fn().mockImplementation(() => Promise.resolve());
+      localStorage.setItem(SESSION_NAME, 'true');
+      const store = {
+        dispatch: jest.fn(),
+      };
+      window.sessionStorage.clear();
+
+      let res;
+      await logout('', store)
+        .then(() => {
+          res = true;
+        });
+
+      expect(res).toBe(true);
+      expect(global.fetch).toHaveBeenCalled();
+    });
+
+    it('does not call fetch() when other window is logging out', async () => {
+      global.fetch = jest.fn().mockImplementation(() => Promise.resolve());
+      localStorage.clear();
+      const store = {
+        dispatch: jest.fn(),
+      };
+      window.sessionStorage.clear();
+
+      let res;
+      await logout('', store)
+        .then(() => {
+          res = true;
+        });
+
+      expect(res).toBe(true);
+      expect(global.fetch).not.toHaveBeenCalled();
+    });
   });
 });

@@ -28,7 +28,6 @@ class ProfileDropdown extends Component {
     modules: PropTypes.shape({
       app: PropTypes.arrayOf(PropTypes.object),
     }),
-    onLogout: PropTypes.func.isRequired,
     stripes: PropTypes.shape({
       config: PropTypes.shape({
         showPerms: PropTypes.bool,
@@ -172,7 +171,7 @@ class ProfileDropdown extends Component {
   };
 
   getDropdownContent() {
-    const { stripes, onLogout } = this.props;
+    const { stripes } = this.props;
     const user = this.getUserData();
     const currentPerms = stripes.user ? stripes.user.perms : undefined;
     const messageId = stripes.okapi.ssoEnabled ? 'stripes-core.logoutKeepSso' : 'stripes-core.logout';
@@ -230,7 +229,7 @@ class ProfileDropdown extends Component {
                 </NavListItem>
             }
             {this.userLinks}
-            <NavListItem id="clickable-logout" type="button" onClick={onLogout}>
+            <NavListItem id="clickable-logout" type="button" to="/logout">
               <FormattedMessage id={messageId} />
             </NavListItem>
           </NavListSection>
