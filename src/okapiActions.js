@@ -149,10 +149,31 @@ function setTokenExpiration(tokenExpiration) {
   };
 }
 
+function setRtrTimeout(rtrTimeout) {
+  return {
+    type: 'SET_RTR_TIMEOUT',
+    rtrTimeout,
+  };
+}
+
+function clearRtrTimeout() {
+  return {
+    type: 'CLEAR_RTR_TIMEOUT',
+  };
+}
+
+function toggleRtrModal(isVisible) {
+  return {
+    type: 'TOGGLE_RTR_MODAL',
+    isVisible,
+  };
+}
+
 export {
   checkSSO,
   clearCurrentUser,
   clearOkapiToken,
+  clearRtrTimeout,
   setAuthError,
   setBindings,
   setCurrency,
@@ -164,12 +185,14 @@ export {
   setOkapiReady,
   setOkapiToken,
   setPlugins,
+  setRtrTimeout,
   setServerDown,
   setSessionData,
   setSinglePlugin,
   setTimezone,
   setTokenExpiration,
   setTranslations,
+  toggleRtrModal,
   updateCurrentUser,
   setOkapiTenant
 };
