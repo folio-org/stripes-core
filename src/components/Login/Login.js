@@ -59,12 +59,6 @@ class Login extends Component {
       <Form
         onSubmit={onSubmit}
         subscription={{ values: true }}
-        mutators={{
-          setError: (args, state, tools) => {
-            const errors = args.length ? args : authErrors;
-            tools.changeValue(state, 'authErrors', () => errors);
-          },
-        }}
         render={({ form, submitting, handleSubmit, submitSucceeded, values }) => {
           const { username } = values;
           const submissionStatus = submitting || submitSucceeded;
@@ -82,16 +76,7 @@ class Login extends Component {
                   <Row>
                     <form
                       className={styles.form}
-                      onSubmit={data => handleSubmit(data)
-                        .then(() => {
-                          form.mutators.setError();
-                          form.change('password', undefined);
-                        })
-                        .catch((e) => {
-                          const emptyPasswordError = { code: e.cause };
-                          form.mutators.setError(emptyPasswordError);
-                          console.error(e); // eslint-disable-line no-console
-                        })}
+                      onSubmit={data => handleSubmit(data).then(() => form.change('password', undefined))}
                     >
                       <Row center="xs">
                         <Col xs={6}>
@@ -175,6 +160,7 @@ class Login extends Component {
                               validationEnabled={false}
                               hasClearIcon={false}
                               autoComplete="current-password"
+                              required
                             />
                           </Col>
                         </Row>
@@ -238,7 +224,7 @@ class Login extends Component {
                       <Row center="xs">
                         <Col xs={6}>
                           <div className={styles.authErrorsWrapper}>
-                            <AuthErrorsContainer errors={form.getState().values.authErrors} />
+                            <AuthErrorsContainer errors={authErrors} />
                           </div>
                         </Col>
                       </Row>

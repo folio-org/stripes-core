@@ -167,16 +167,12 @@ describe('Login', () => {
         expect(login.username.value).to.equal('username');
       });
 
-      it('password should be same upon failed submit', () => {
-        expect(login.password.value).to.equal('');
+      it('should have submit button', () => {
+        expect(login.submit.isPresent).to.be.true;
       });
 
-      it('error message should be present upon failed submit', () => {
-        expect(login.message.isPresent).to.be.true;
-      });
-
-      it('error message should have proper text upon failed submit', () => {
-        expect(login.message.text).to.equal(translations['errors.password.empty']);
+      it.always('error message should not be present', () => {
+        expect(login.message.isPresent).to.be.false;
       });
     });
 

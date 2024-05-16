@@ -54,10 +54,6 @@ class LoginCtrl extends Component {
   }
 
   handleSubmit = (data) => {
-    if (!data.password) {
-      return Promise.reject(new Error('Password is required', { cause: 'password.empty' }));
-    }
-
     return requestLogin(this.okapiUrl, this.context.store, this.tenant, data)
       .then(this.handleSuccessfulLogin)
       .catch(e => {
@@ -71,6 +67,7 @@ class LoginCtrl extends Component {
 
   render() {
     const { authFailure, ssoEnabled } = this.props;
+
     return (
       <Login
         onSubmit={this.handleSubmit}
