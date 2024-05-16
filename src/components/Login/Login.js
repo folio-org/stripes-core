@@ -66,7 +66,7 @@ class Login extends Component {
           const buttonLabel = submissionStatus ? 'loggingIn' : 'login';
           return (
             <main>
-              <div className={styles.wrapper} style={branding.style?.login ?? {}}>
+              <div className={styles.wrapper} style={branding?.style?.login ?? {}}>
                 <div className={styles.container}>
                   <Row center="xs">
                     <Col xs={6}>
