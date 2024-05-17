@@ -44,12 +44,12 @@ const LogoutTimeout = () => {
           </Row>
           <Row center="xs">
             <Col xs={12}>
-              <Headline size="large"><FormattedMessage id="rtr.idleSession.sessionExpiredSoSad" /></Headline>
+              <Headline size="large"><FormattedMessage id="stripes-core.rtr.idleSession.sessionExpiredSoSad" /></Headline>
             </Col>
           </Row>
           <Row center="xs">
             <Col xs={12}>
-              <Button to="/"><FormattedMessage id="rtr.idleSession.logInAgain" /></Button>
+              <Button to="/"><FormattedMessage id="stripes-core.rtr.idleSession.logInAgain" /></Button>
             </Col>
           </Row>
         </div>
