@@ -17,7 +17,7 @@ import enhanceReducer from '../../enhanceReducer';
 import createApolloClient from '../../createApolloClient';
 import createReactQueryClient from '../../createReactQueryClient';
 import { setSinglePlugin, setBindings, setIsAuthenticated, setOkapiToken, setTimezone, setCurrency, updateCurrentUser } from '../../okapiActions';
-import { loadTranslations, checkOkapiSession, addRtrEventListeners } from '../../loginServices';
+import { loadTranslations, checkOkapiSession } from '../../loginServices';
 import { getQueryResourceKey, getCurrentModule } from '../../locationService';
 import Stripes from '../../Stripes';
 import RootWithIntl from '../../RootWithIntl';
