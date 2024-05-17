@@ -1,6 +1,5 @@
 import { rtr } from './token-util';
 import { getTokenExpiry } from '../../loginServices';
-import { RTRError } from './Errors';
 import FXHR from './FXHR';
 
 jest.mock('./token-util', () => ({

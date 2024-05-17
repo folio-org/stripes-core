@@ -2,26 +2,20 @@
 
 ## 10.2.0 IN PROGRESS
 
-* Remove tag-based selectors from Login, ResetPassword, Forgot UserName/Password form CSS. Refs STCOR-712.
-* Utilize the `tenant` procured through the SSO login process. Refs STCOR-769.
-* Use keycloak URLs in place of users-bl for tenant-switch. Refs US1153537.
-* Provide `useUserTenantPermissions` hook. Refs STCOR-830.
-* Fix 404 error page when logging in after changing password in Eureka. Refs STCOR-845.
-
-## [10.1.1](https://github.com/folio-org/stripes-core/tree/v10.1.1) (2024-03-25)
-[Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.1.0...v10.1.1)
-
-## [10.1.1](https://github.com/folio-org/stripes-core/tree/v10.1.1) (2024-03-25)
-[Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.1.0...v10.1.1)
-
 * Utilize the `tenant` procured through the SSO login process. Refs STCOR-769.
 * Remove tag-based selectors from Login, ResetPassword, Forgot UserName/Password form CSS. Refs STCOR-712.
 * Provide `useUserTenantPermissions` hook. Refs STCOR-830.
 * Load DayJS locale data as part of `loginServices`. STCOR-771.
 * Turn on `<StrictMode>`; ignore it with `stripes.config.js` `disableStrictMode: true`. Refs STCOR-841.
-* Use keycloak URLs in place of users-bl for tenant-switch. Refs US1153537.
 * Make branding optional. Refs STCOR-847.
 * Idle-session timeout and "Keep working?" modal. Refs STCOR-776.
+* Use keycloak URLs in place of users-bl for tenant-switch. Refs US1153537.
+* Fix 404 error page when logging in after changing password in Eureka. Refs STCOR-845.
+
+## [10.1.1](https://github.com/folio-org/stripes-core/tree/v10.1.1) (2024-03-25)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.1.0...v10.1.1)
+
+* Utilize the `tenant` procured through the SSO login process. Refs STCOR-769.
 
 ## [10.1.0](https://github.com/folio-org/stripes-core/tree/v10.1.0) (2024-03-12)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.0.0...v10.1.0)

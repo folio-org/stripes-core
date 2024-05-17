@@ -111,6 +111,18 @@ export const setTokenExpiry = async (te) => {
   return localforage.setItem(SESSION_NAME, val);
 };
 
+/**
+ * removeUnauthorizedPathFromSession, setUnauthorizedPathToSession, getUnauthorizedPathFromSession
+ * remove/set/get unauthorized_path to/from session storage.
+ * Used to restore path on returning from login if user accessed a bookmarked
+ * URL while unauthenticated and was redirected to login.
+ *
+ * @see components/OIDCRedirect
+ */
+const UNAUTHORIZED_PATH = 'unauthorized_path';
+export const removeUnauthorizedPathFromSession = () => sessionStorage.removeItem(UNAUTHORIZED_PATH);
+export const setUnauthorizedPathToSession = (pathname) => sessionStorage.setItem(UNAUTHORIZED_PATH, pathname);
+export const getUnauthorizedPathFromSession = () => sessionStorage.getItem(UNAUTHORIZED_PATH);
 
 // export config values for storing user locale
 export const userLocaleConfig = {
@@ -470,6 +482,7 @@ export async function logout(okapiUrl, store) {
     })
     :
     Promise.resolve();
+
   return logoutPromise
     // clear private-storage
     .then(() => {
@@ -523,8 +536,6 @@ export async function logout(okapiUrl, store) {
  * @returns {Promise}
  */
 export function createOkapiSession(store, tenant, token, data) {
-  // @@ new StripesSession(store, data);
-
   // clear any auth-n errors
   store.dispatch(setAuthError(null));
 
@@ -552,6 +563,7 @@ export function createOkapiSession(store, tenant, token, data) {
     user,
     perms,
     tenant: sessionTenant,
+    tokenExpiration,
   };
 
   // localStorage events emit across tabs so we can use it like a
@@ -594,41 +606,6 @@ export function createOkapiSession(store, tenant, token, data) {
       store.dispatch(setSessionData(okapiSess));
       return loadResources(store, sessionTenant, user.id);
     });
-}
-
-/**
- * handleRtrError
- * Clear out the redux store and logout.
- *
- * @param {*} event
- * @param {*} store
- * @returns void
- */
-export const handleRtrError = (event, store) => {
-  logger.log('rtr', 'rtr error; logging out', event.detail);
-  store.dispatch(setIsAuthenticated(false));
-  store.dispatch(clearCurrentUser());
-  store.dispatch(resetStore());
-  localforage.removeItem(SESSION_NAME)
-    .then(localforage.removeItem('loginResponse'));
-};
-
-/**
- * addRtrEventListeners
- * RTR_ERROR_EVENT: RTR error, logout
- * RTR_ROTATION_EVENT: configure a timer for auto-logout
- *
- * @param {*} okapiConfig
- * @param {*} store
- */
-export function addRtrEventListeners(okapiConfig, store) {
-  document.addEventListener(RTR_ERROR_EVENT, (e) => {
-    handleRtrError(e, store);
-  });
-
-  // document.addEventListener(RTR_ROTATION_EVENT, (e) => {
-  //   handleRtrRotation(e, store);
-  // });
 }
 
 /**
@@ -974,9 +951,9 @@ export function updateUser(store, data) {
  *
  * @returns {Promise}
  */
-export async function updateTenant(okapi, tenant) {
+export async function updateTenant(okapiConfig, tenant) {
   const okapiSess = await getOkapiSession();
-  const userWithPermsResponse = await fetchUserWithPerms(okapi.url, tenant, okapi.token);
+  const userWithPermsResponse = await fetchUserWithPerms(okapiConfig.url, tenant, okapiConfig.token);
   const userWithPerms = await userWithPermsResponse.json();
   await localforage.setItem(SESSION_NAME, { ...okapiSess, tenant, ...spreadUserWithPerms(userWithPerms) });
 }
