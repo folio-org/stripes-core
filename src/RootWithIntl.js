@@ -28,7 +28,6 @@ import {
   Settings,
   HandlerManager,
   TitleManager,
-  Login,
   Logout,
   LogoutTimeout,
   OverlayContainer,
@@ -43,10 +42,6 @@ import StaleBundleWarning from './components/StaleBundleWarning';
 import { StripesContext } from './StripesContext';
 import { CalloutContext } from './CalloutContext';
 import AuthnLogin from './components/AuthnLogin';
-
-export const renderLogoutComponent = () => {
-  return <InternalRedirect to="/" />;
-};
 
 const RootWithIntl = ({ stripes, token = '', isAuthenticated = false, disableAuth, history = {} }) => {
   const connect = connectFor('@folio/core', stripes.epics, stripes.logger);
@@ -156,11 +151,7 @@ const RootWithIntl = ({ stripes, token = '', isAuthenticated = false, disableAut
                       />
                       <TitledRoute
                         name="login"
-                        component={
-                          <Login
-                            autoLogin={connectedStripes.config.autoLogin}
-                            stripes={connectedStripes}
-                          />}
+                        component={<AuthnLogin stripes={connectedStripes} />}
                       />
                     </Switch>
                   }

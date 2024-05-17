@@ -112,15 +112,16 @@ export const setTokenExpiry = async (te) => {
 
 /**
  * removeUnauthorizedPathFromSession, setUnauthorizedPathToSession, getUnauthorizedPathFromSession
- * Add/remove/get unauthorized_path to/from session storage;
- * Used to restore path if user is unauthorized.
- * @see OIDCRedirect
+ * remove/set/get unauthorized_path to/from session storage.
+ * Used to restore path on returning from login if user accessed a bookmarked
+ * URL while unauthenticated and was redirected to login.
+ *
+ * @see components/OIDCRedirect
  */
-
-export const removeUnauthorizedPathFromSession = () => sessionStorage.removeItem('unauthorized_path');
-export const setUnauthorizedPathToSession = (pathname) => sessionStorage.setItem('unauthorized_path', pathname);
-export const getUnauthorizedPathFromSession = () => sessionStorage.getItem('unauthorized_path');
-
+const UNAUTHORIZED_PATH = 'unauthorized_path';
+export const removeUnauthorizedPathFromSession = () => sessionStorage.removeItem(UNAUTHORIZED_PATH);
+export const setUnauthorizedPathToSession = (pathname) => sessionStorage.setItem(UNAUTHORIZED_PATH, pathname);
+export const getUnauthorizedPathFromSession = () => sessionStorage.getItem(UNAUTHORIZED_PATH);
 
 // export config values for storing user locale
 export const userLocaleConfig = {
@@ -475,6 +476,7 @@ export async function logout(okapiUrl, store) {
     })
     :
     Promise.resolve();
+
   return logoutPromise
     // clear private-storage
     .then(() => {
@@ -528,8 +530,6 @@ export async function logout(okapiUrl, store) {
  * @returns {Promise}
  */
 export function createOkapiSession(store, tenant, token, data) {
-  // @@ new StripesSession(store, data);
-
   // clear any auth-n errors
   store.dispatch(setAuthError(null));
 
@@ -921,9 +921,9 @@ export function updateUser(store, data) {
  *
  * @returns {Promise}
  */
-export async function updateTenant(okapi, tenant) {
+export async function updateTenant(okapiConfig, tenant) {
   const okapiSess = await getOkapiSession();
-  const userWithPermsResponse = await fetchUserWithPerms(okapi.url, tenant, okapi.token);
+  const userWithPermsResponse = await fetchUserWithPerms(okapiConfig.url, tenant, okapiConfig.token);
   const userWithPerms = await userWithPermsResponse.json();
   await localforage.setItem(SESSION_NAME, { ...okapiSess, tenant, ...spreadUserWithPerms(userWithPerms) });
 }
