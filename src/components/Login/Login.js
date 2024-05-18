@@ -160,6 +160,7 @@ class Login extends Component {
                               validationEnabled={false}
                               hasClearIcon={false}
                               autoComplete="current-password"
+                              required
                             />
                           </Col>
                         </Row>
