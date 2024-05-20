@@ -339,7 +339,7 @@ describe('validateUser', () => {
         username: 'superego',
       },
       permissions: {
-        permissions: [ { permissionName: 'ask' }, { permissionName: 'tell' } ],
+        permissions: [{ permissionName: 'ask' }, { permissionName: 'tell' }],
       }
     };
 
