@@ -188,6 +188,7 @@ export class FFetch {
 
       return getPromise(this.logger)
         .then(() => {
+          console.log('in folio-api-request else case');
           this.logger.log('rtrv', 'post-rtr-fetch', resource);
           return this.nativeFetch.apply(global, [resource, options && { ...options, ...OKAPI_FETCH_OPTIONS }]);
         })
