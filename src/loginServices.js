@@ -224,7 +224,7 @@ function dispatchLocale(url, store, tenant) {
     mode: 'cors',
   })
     .then((response) => {
-      if (response.status === 200) {
+      if (response.ok) {
         response.json().then((json) => {
           if (json.configs?.length) {
             const localeValues = JSON.parse(json.configs[0].value);
@@ -237,6 +237,7 @@ function dispatchLocale(url, store, tenant) {
           }
         });
       }
+
       return response;
     });
 }
@@ -303,7 +304,7 @@ export function getPlugins(okapiUrl, store, tenant) {
     mode: 'cors',
   })
     .then((response) => {
-      if (response.status < 400) {
+      if (response.ok) {
         response.json().then((json) => {
           const configs = json.configs?.reduce((acc, val) => ({
             ...acc,
@@ -333,9 +334,7 @@ export function getBindings(okapiUrl, store, tenant) {
   })
     .then((response) => {
       let bindings = {};
-      if (response.status >= 400) {
-        store.dispatch(setBindings(bindings));
-      } else {
+      if (response.ok) {
         response.json().then((json) => {
           const configs = json.configs;
           if (Array.isArray(configs) && configs.length > 0) {
@@ -350,6 +349,8 @@ export function getBindings(okapiUrl, store, tenant) {
           }
           store.dispatch(setBindings(bindings));
         });
+      } else {
+        store.dispatch(setBindings(bindings));
       }
       return response;
     });
@@ -580,14 +581,14 @@ export function createOkapiSession(okapiUrl, store, tenant, token, data) {
 export function getSSOEnabled(okapiUrl, store, tenant) {
   return fetch(`${okapiUrl}/saml/check`, { headers: { 'X-Okapi-Tenant': tenant, 'Accept': 'application/json' } })
     .then((response) => {
-      if (response.status >= 400) {
-        store.dispatch(checkSSO(false));
-        return null;
-      } else {
+      if (response.ok) {
         return response.json()
           .then((json) => {
             store.dispatch(checkSSO(json.active));
           });
+      } else {
+        store.dispatch(checkSSO(false));
+        return null;
       }
     })
     .catch(() => {
@@ -603,7 +604,7 @@ export function getSSOEnabled(okapiUrl, store, tenant) {
  * @param {object} resp fetch Response
  */
 function processSSOLoginResponse(resp) {
-  if (resp.status < 400) {
+  if (resp.ok) {
     resp.json().then((json) => {
       const form = document.getElementById('ssoForm');
       if (json.bindingMethod === 'POST') {
