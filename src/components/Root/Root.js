@@ -21,11 +21,12 @@ import enhanceReducer from '../../enhanceReducer';
 import createApolloClient from '../../createApolloClient';
 import createReactQueryClient from '../../createReactQueryClient';
 import { setSinglePlugin, setBindings, setIsAuthenticated, setOkapiToken, setTimezone, setCurrency, updateCurrentUser } from '../../okapiActions';
-import { loadTranslations, checkOkapiSession, addRtrEventListeners } from '../../loginServices';
+import { loadTranslations, checkOkapiSession } from '../../loginServices';
 import { getQueryResourceKey, getCurrentModule } from '../../locationService';
 import Stripes from '../../Stripes';
 import RootWithIntl from '../../RootWithIntl';
 import SystemSkeleton from '../SystemSkeleton';
+import { configureRtr } from './token-util';
 
 import './Root.css';
 
@@ -68,10 +69,14 @@ class Root extends Component {
 
     // enhanced security mode:
     // * configure fetch and xhr interceptors to conduct RTR
-    // * configure document-level event listeners to listen for RTR events
+    // * see SessionEventContainer for RTR handling
     if (this.props.config.useSecureTokens) {
-      this.ffetch = new FFetch({ logger: this.props.logger });
-      addRtrEventListeners(okapi, store);
+      this.ffetch = new FFetch({
+        logger: this.props.logger,
+        store,
+      });
+      this.ffetch.replaceFetch();
+      this.ffetch.replaceXMLHttpRequest();
     }
   }
 
@@ -126,6 +131,9 @@ class Root extends Component {
       // We don't know the locale, so we use English as backup
       return (<SystemSkeleton />);
     }
+
+    // make sure RTR is configured
+    config.rtr = configureRtr(this.props.config.rtr);
 
     const stripes = new Stripes({
       logger,
