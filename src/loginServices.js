@@ -472,7 +472,8 @@ export async function logout(okapiUrl, store) {
     fetch(`${okapiUrl}/authn/logout`, {
       method: 'POST',
       mode: 'cors',
-      credentials: 'include'
+      credentials: 'include',
+      headers: getHeaders(store.getState()?.okapi?.tenant),
     })
     :
     Promise.resolve();
