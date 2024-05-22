@@ -12,18 +12,18 @@ import { withStripes } from '../../StripesContext';
 import css from './AppIcon.css';
 
 const AppIcon = ({
-  iconAlignment,
-  iconAriaHidden,
-  size,
+  iconAlignment = 'center',
+  iconAriaHidden = true,
+  size = 'medium',
   icon,
   alt,
   src,
   style,
   children,
   className,
-  tag,
+  tag = 'span',
   app,
-  iconKey,
+  iconKey = 'app',
   iconClassName,
   stripes,
 }) => {
@@ -135,14 +135,6 @@ AppIcon.propTypes = {
   }),
   style: PropTypes.object,
   tag: PropTypes.string,
-};
-
-AppIcon.defaultProps = {
-  iconAlignment: 'center',
-  iconAriaHidden: true,
-  iconKey: 'app',
-  size: 'medium',
-  tag: 'span',
 };
 
 export default withStripes(AppIcon);
