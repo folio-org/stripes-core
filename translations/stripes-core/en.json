@@ -86,6 +86,7 @@
   "currentServicePoint": "Service point: {name}",
   "currentServicePointNotSelected": "Service point: None",
   "logout": "Log out",
+  "logoutPending": "Log out in process...",
   "logoutKeepSso": "Log out from FOLIO, keep SSO session",
   "login": "Log in",
   "username": "Username",
@@ -156,5 +157,11 @@
   "routeErrorBoundary.goToModuleSettingsHomeLabel": "Return to {name} settings",
 
   "stale.warning": "The application has changed on the server and needs to be refreshed.",
-  "stale.reload": "Click here to reload."
+  "stale.reload": "Click here to reload.",
+
+  "rtr.idleSession.modalHeader": "Your session will expire soon!",
+  "rtr.idleSession.timeRemaining": "Time remaining",
+  "rtr.idleSession.keepWorking": "Keep working",
+  "rtr.idleSession.sessionExpiredSoSad": "Your session expired due to inactivity.",
+  "rtr.idleSession.logInAgain": "Log in again"
 }
