@@ -1,8 +1,8 @@
 name: Centralized workflow
 on: 
-  -push
-  -pull_request
-  -workflow_dispatch
+  - push
+  - pull_request
+  - workflow_dispatch
 
 jobs:
   ui:
