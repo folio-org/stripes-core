@@ -1,4 +1,5 @@
 import localforage from 'localforage';
+import { config } from 'stripes-config';
 
 import {
   createOkapiSession,

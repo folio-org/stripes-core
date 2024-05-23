@@ -8,9 +8,9 @@ import Redirect from './components/Redirect';
 import { Login } from './components';
 import PreLoginLanding from './components/PreLoginLanding';
 
-// import {
-//   renderLogoutComponent
-// } from './RootWithIntl';
+import {
+  renderLogoutComponent
+} from './RootWithIntl';
 
 import AuthnLogin from './components/AuthnLogin';
 
@@ -54,12 +54,12 @@ describe('RootWithIntl', () => {
     });
   });
 
-  // describe('renderLogoutComponent', () => {
-  //   it('handles legacy logout', () => {
-  //     const stripes = { okapi: {}, config: {} };
-  //     render(renderLogoutComponent(stripes));
+  describe('renderLogoutComponent', () => {
+    it('handles legacy logout', () => {
+      const stripes = { okapi: {}, config: {} };
+      render(renderLogoutComponent(stripes));
 
-  //     expect(screen.getByText(/<internalredirect>/)).toBeInTheDocument();
-  //   });
-  // });
+      expect(screen.getByText(/<internalredirect>/)).toBeInTheDocument();
+    });
+  });
 });

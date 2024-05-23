@@ -13,7 +13,7 @@ describe('okapiReducer', () => {
         rtrModalIsVisible: true,
         rtrTimeout: 123,
       };
-      const ct = jest.spyOn(window, 'clearTimeout');
+      const ct = jest.spyOn(window, 'clearTimeout')
       const o = okapiReducer(state, { type: 'SET_IS_AUTHENTICATED', isAuthenticated: false });
       expect(o.isAuthenticated).toBe(false);
       expect(o.rtrModalIsVisible).toBe(false);

@@ -65,7 +65,6 @@ export const resourceMapper = (resource, fx) => {
 export const isAuthenticationRequest = (resource, oUrl) => {
   const isPermissibleResource = (string) => {
     const permissible = [
-      '/authn/token',
       '/bl-users/login-with-expiry',
       '/bl-users/_self',
     ];

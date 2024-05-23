@@ -16,7 +16,7 @@ describe('LogoutTimeout', () => {
     mockUseStripes.mockReturnValue({ okapi: { isAuthenticated: false } });
 
     render(<LogoutTimeout />);
-    screen.getByText('stripes-core.rtr.idleSession.sessionExpiredSoSad');
+    screen.getByText('rtr.idleSession.sessionExpiredSoSad');
   });
 
   it('if authenticated, renders a redirect', async () => {
