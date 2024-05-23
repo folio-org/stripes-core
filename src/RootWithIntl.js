@@ -10,7 +10,7 @@ import { CookiesProvider } from 'react-cookie';
 import { connectFor } from '@folio/stripes-connect';
 import { Callout, HotKeys } from '@folio/stripes-components';
 
-import ModuleRoutes from './moduleRoutes';
+import ModuleRoutes from './ModuleRoutes';
 import events from './events';
 
 import {

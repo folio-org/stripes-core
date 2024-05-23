@@ -11,10 +11,6 @@ import { ApolloProvider } from '@apollo/client';
 import { ErrorBoundary } from '@folio/stripes-components';
 import { metadata, icons } from 'stripes-config';
 
-/* ConnectContext - formerly known as RootContext, now comes from stripes-connect, so stripes-connect
-* is providing the infrastructure for store connectivity to the system. This eliminates a circular
-* dependency between stripes-connect and stripes-core. STCON-76
-*/
 import { ConnectContext } from '@folio/stripes-connect';
 import initialReducers from '../../initialReducers';
 import enhanceReducer from '../../enhanceReducer';
@@ -78,10 +74,6 @@ class Root extends Component {
       this.ffetch.replaceFetch();
       this.ffetch.replaceXMLHttpRequest();
     }
-  }
-
-  getChildContext() {
-    return { addReducer: this.addReducer, addEpic: this.addEpic };
   }
 
   componentDidMount() {
@@ -197,11 +189,6 @@ class Root extends Component {
     );
   }
 }
-
-Root.childContextTypes = {
-  addReducer: PropTypes.func,
-  addEpic: PropTypes.func,
-};
 
 Root.propTypes = {
   store: PropTypes.shape({
