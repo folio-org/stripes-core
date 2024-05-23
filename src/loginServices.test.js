@@ -458,6 +458,7 @@ describe('logout', () => {
       global.fetch = jest.fn().mockImplementation(() => Promise.resolve());
       const store = {
         dispatch: jest.fn(),
+        getState: jest.fn(),
       };
       window.sessionStorage.clear();
 
@@ -479,6 +480,7 @@ describe('logout', () => {
       localStorage.setItem(SESSION_NAME, 'true');
       const store = {
         dispatch: jest.fn(),
+        getState: jest.fn(),
       };
       window.sessionStorage.clear();
 
