@@ -1,5 +1,3 @@
-import { expect } from 'chai';
-
 import {
   describe,
   it,
@@ -9,15 +7,11 @@ import {
 import {
   TextField,
   HTML,
-  Bigtest,
   Button,
 } from '@folio/stripes-testing';
 
 import setupApplication from '../helpers/setup-core-application';
 import always from '../helpers/always';
-// import CreateResetPasswordInteractor from '../interactors/CreateResetPassword';
-import ChangePasswordErrorPageInteractor from '../interactors/ChangePasswordErrorPage';
-// import ChangePasswordConfirmationInteractor from '../interactors/ChangePasswordConfirmation';
 import { Login as LoginInteractor } from '../interactors/common';
 
 import translations from '../../../translations/stripes-core/en';

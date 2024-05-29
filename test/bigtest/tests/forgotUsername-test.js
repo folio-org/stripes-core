@@ -3,7 +3,6 @@ import {
   it,
   beforeEach,
 } from 'mocha';
-import { expect } from 'chai';
 
 import {
   TextField,
@@ -15,7 +14,6 @@ import {
 import translations from '../../../translations/stripes-core/en';
 import setupApplication from '../helpers/setup-core-application';
 import always from '../helpers/always';
-// import ForgotUsernameInteractor from '../interactors/ForgotUsername';
 import { StatusPage as StatusPageInteractor } from '../interactors/common';
 
 const ForgotUsernameInteractor = HTML.extend('forgot username')

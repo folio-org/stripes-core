@@ -9,7 +9,7 @@ export default (trial) => {
     while (true) { // eslint-disable-line no-constant-condition
       // run the trial - if it throws over the duration, it will fail.
       trial();
-      let diff = performance.now() - startTime;
+      const diff = performance.now() - startTime;
       if (diff > duration) {
         // the duration has run and no failures... pass!
         break;
