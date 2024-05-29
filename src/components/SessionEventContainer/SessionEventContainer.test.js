@@ -23,6 +23,7 @@ const stripes = {
     rtr: {
       idleModalTTL: '3s',
       idleSessionTTL: '3s',
+      activityEvents: ['right thing', 'hustle', 'hand jive']
     }
   },
   okapi: {
@@ -34,12 +35,12 @@ const stripes = {
 
 describe('SessionEventContainer', () => {
   it('Renders nothing if useSecureTokens is false', async () => {
-    const inSecureStripes = {
+    const insecureStripes = {
       config: {
         useSecureTokens: false,
       },
     };
-    render(<Harness stripes={inSecureStripes}><SessionEventContainer /></Harness>);
+    render(<Harness stripes={insecureStripes}><SessionEventContainer /></Harness>);
 
     expect(screen.queryByText('KeepWorkingModal')).toBe(null);
   });

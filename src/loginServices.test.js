@@ -19,8 +19,6 @@ import {
   SESSION_NAME
 } from './loginServices';
 
-
-
 import {
   clearCurrentUser,
   clearOkapiToken,
@@ -43,23 +41,6 @@ import {
 } from './okapiActions';
 
 import { defaultErrors } from './constants';
-
-// reassign console.log to keep things quiet
-const consoleInterruptor = {};
-beforeAll(() => {
-  consoleInterruptor.log = global.console.log;
-  consoleInterruptor.error = global.console.error;
-  consoleInterruptor.warn = global.console.warn;
-  console.log = () => { };
-  console.error = () => { };
-  console.warn = () => { };
-});
-
-afterAll(() => {
-  global.console.log = consoleInterruptor.log;
-  global.console.error = consoleInterruptor.error;
-  global.console.warn = consoleInterruptor.warn;
-});
 
 jest.mock('localforage', () => ({
   getItem: jest.fn(() => Promise.resolve({ user: {} })),
