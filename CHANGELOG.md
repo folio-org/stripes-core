@@ -7,11 +7,15 @@
 * Provide `useUserTenantPermissions` hook. Refs STCOR-830.
 * Load DayJS locale data as part of `loginServices`. STCOR-771.
 * Turn on `<StrictMode>`; ignore it with `stripes.config.js` `disableStrictMode: true`. Refs STCOR-841.
+* Make branding optional. Refs STCOR-847.
+* Idle-session timeout and "Keep working?" modal. Refs STCOR-776.
+* Implement password validation for Login Page. Refs STCOR-741.
+* Avoid deprecated `defaultProps` for functional components. Refs STCOR-844..
 * Update session data with values from `_self` request on reload. Refs STCOR-846.
 
-## [10.1.0](https://github.com/folio-org/stripes-core/tree/v10.1.0) (2024-03-13)
-[Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.0.3...v10.1.0)
- 
+## [10.1.0](https://github.com/folio-org/stripes-core/tree/v10.1.0) (2024-03-12)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.0.0...v10.1.0)
+
 * Provide optional tenant argument to `useOkapiKy` hook. Refs STCOR-747.
 * Avoid private path when import `validateUser` function. Refs STCOR-749.
 * Ensure `<AppIcon>` is not cut off when app name is long. Refs STCOR-752.
