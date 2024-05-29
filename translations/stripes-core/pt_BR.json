@@ -146,5 +146,11 @@
     "placeholder.forgotPassword": "Digite e-mail ou telefone",
     "placeholder.forgotUsername": "Digite e-mail ou telefone",
     "title.cookieEnabled": "Os cookies são necessários para fazer login. Por favor ative os cookies e tente novamente.",
-    "errors.sso.session.failed": "Falha no login SSO. Por favor, tente novamente"
+    "errors.sso.session.failed": "Falha no login SSO. Por favor, tente novamente",
+    "logoutPending": "Logout em processo...",
+    "rtr.idleSession.modalHeader": "Sua sessão expirará em breve!",
+    "rtr.idleSession.timeRemaining": "Tempo restante",
+    "rtr.idleSession.keepWorking": "Continue trabalhando",
+    "rtr.idleSession.sessionExpiredSoSad": "Sua sessão expirou devido à inatividade.",
+    "rtr.idleSession.logInAgain": "Faça login novamente"
 }
