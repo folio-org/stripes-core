@@ -58,7 +58,7 @@ const OIDCLanding = () => {
     const otp = getOtp();
 
     if (otp) {
-      const defaultTenant = Object.entries(tenantOptions)[0];
+      const defaultTenant = Object.values(tenantOptions)[0];
 
       setPotp(otp);
       fetch(`${okapi.url}/authn/token?code=${otp}&redirect-uri=${window.location.protocol}//${window.location.host}/oidc-landing`, {

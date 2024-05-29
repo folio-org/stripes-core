@@ -24,7 +24,7 @@ const AuthnLogin = ({ stripes }) => {
 
   if (okapi.authnUrl) {
     if (config.isSingleTenant) {
-      const defaultTenant = Object.entries(tenantOptions)[0];
+      const defaultTenant = Object.values(tenantOptions)[0];
       const redirectUri = `${window.location.protocol}//${window.location.host}/oidc-landing`;
       const authnUri = `${okapi.authnUrl}/realms/${defaultTenant.name}/protocol/openid-connect/auth?client_id=${defaultTenant.clientId}&response_type=code&redirect_uri=${redirectUri}&scope=openid`;
       return <Redirect to={authnUri} />;
