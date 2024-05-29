@@ -1,6 +1,5 @@
 import { render, screen, waitFor } from '@folio/jest-config-stripes/testing-library/react';
 
-import { requestUserWithPerms, setTokenExpiry } from '../loginServices';
 import OIDCLanding from './OIDCLanding';
 
 jest.mock('react-router-dom', () => ({
@@ -17,6 +16,7 @@ jest.mock('react-redux', () => ({
 jest.mock('../StripesContext', () => ({
   useStripes: () => ({
     okapi: { url: 'https://whaterver' },
+    config: { tenantOptions: { diku: { name: 'diku', clientId: 'diku-application' } } },
   }),
 }));
 

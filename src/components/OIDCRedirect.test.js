@@ -25,14 +25,14 @@ describe('OIDCRedirect', () => {
   afterAll(() => sessionStorage.removeItem('unauthorized_path'));
 
   it('redirects to value from session storage under unauthorized_path key', () => {
-    useStripes.mockReturnValue({ okapi:{ authnUrl: 'http://example.com/authn' } });
+    useStripes.mockReturnValue({ okapi: { authnUrl: 'http://example.com/authn' }, config: {} });
     render(<OIDCRedirect />);
 
     expect(screen.getByText(/internalredirect/)).toBeInTheDocument();
   });
 
   it('redirects fwd if no authn provided to stripes okapi config', () => {
-    useStripes.mockReturnValue({ okapi: { } });
+    useStripes.mockReturnValue({ okapi: { }, config: {} });
     render(<OIDCRedirect />);
 
     expect(screen.getByText(/internalredirect/)).toBeInTheDocument();

@@ -25,7 +25,7 @@ jest.mock('./components/PreLoginLanding', () => () => '<preloginlanding>');
 describe('RootWithIntl', () => {
   describe('AuthnLogin', () => {
     it('handles legacy login', () => {
-      const stripes = { okapi: {}, config: {} };
+      const stripes = { okapi: {}, config: { tenantOptions: {} } };
       render(<AuthnLogin stripes={stripes} />);
 
       expect(screen.getByText(/<login>/)).toBeInTheDocument();
@@ -35,7 +35,12 @@ describe('RootWithIntl', () => {
       it('handles single-tenant', () => {
         const stripes = {
           okapi: { authnUrl: 'https://barbie.com' },
-          config: { isSingleTenant: true }
+          config: {
+            isSingleTenant: true,
+            tenantOptions: {
+              diku: { name: 'diku', clientId: 'diku-application' }
+            }
+          },
         };
         render(<AuthnLogin stripes={stripes} />);
 
@@ -45,7 +50,13 @@ describe('RootWithIntl', () => {
       it('handles multi-tenant', () => {
         const stripes = {
           okapi: { authnUrl: 'https://oppie.com' },
-          config: { },
+          config: {
+            isSingleTenant: false,
+            tenantOptions: {
+              diku: { name: 'diku', clientId: 'diku-application' },
+              diku2: { name: 'diku2', clientId: 'diku2-application' }
+            }
+          },
         };
         render(<AuthnLogin stripes={stripes} />);
 
