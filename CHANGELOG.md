@@ -11,6 +11,7 @@
 * Idle-session timeout and "Keep working?" modal. Refs STCOR-776.
 * Implement password validation for Login Page. Refs STCOR-741.
 * Avoid deprecated `defaultProps` for functional components. Refs STCOR-844..
+* Update session data with values from `_self` request on reload. Refs STCOR-846.
 
 ## [10.1.0](https://github.com/folio-org/stripes-core/tree/v10.1.0) (2024-03-12)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.0.0...v10.1.0)
