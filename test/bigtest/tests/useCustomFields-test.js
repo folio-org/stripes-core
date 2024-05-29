@@ -1,5 +1,5 @@
 import React from 'react';
-import { afterEach, beforeEach, describe, it } from '@bigtest/mocha';
+import { afterEach, beforeEach, describe, it } from 'mocha';
 import { expect } from 'chai';
 
 import setupApplication from '../helpers/setup-core-application';
