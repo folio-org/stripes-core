@@ -4,7 +4,6 @@ import { isEqual, find } from 'lodash';
 import { compose } from 'redux';
 import { injectIntl } from 'react-intl';
 import { withRouter } from 'react-router';
-import localforage from 'localforage';
 
 import { branding } from 'stripes-config';
 
@@ -12,9 +11,7 @@ import { Icon } from '@folio/stripes-components';
 
 import { withModules } from '../Modules';
 import { LastVisitedContext } from '../LastVisited';
-import { clearOkapiToken, clearCurrentUser } from '../../okapiActions';
-import { resetStore } from '../../mainActions';
-import { getLocale } from '../../loginServices';
+import { getLocale, logout as sessionLogout } from '../../loginServices';
 import {
   updateQueryResource,
   getLocationQuery,
@@ -119,24 +116,12 @@ class MainNav extends Component {
     });
   }
 
-  // Return the user to the login screen, but after logging in they will return to their previous activity.
-  returnToLogin() {
-    const { okapi } = this.store.getState();
-
-    return getLocale(okapi.url, this.store, okapi.tenant).then(() => {
-      this.store.dispatch(clearOkapiToken());
-      this.store.dispatch(clearCurrentUser());
-      this.store.dispatch(resetStore());
-      localforage.removeItem('okapiSess');
-    });
-  }
-
   // return the user to the login screen, but after logging in they will be brought to the default screen.
   logout() {
-    console.clear(); // eslint-disable-line no-console
-    this.returnToLogin().then(() => {
-      this.props.history.push('/');
-    });
+    const { okapi } = this.store.getState();
+
+    return getLocale(okapi.url, this.store, okapi.tenant)
+      .then(sessionLogout(okapi.url, this.store, this.props.history));
   }
 
   getAppList(lastVisited) {
@@ -204,7 +189,7 @@ class MainNav extends Component {
           const helpUrl = stripes.config.helpUrl ?? 'https://docs.folio.org';
 
           return (
-            <header className={css.navRoot} style={branding.style?.mainNav ?? {}}>
+            <header className={css.navRoot} style={branding?.style?.mainNav ?? {}}>
               <div className={css.startSection}>
                 <SkipLink />
                 <CurrentAppGroup selectedApp={selectedApp} config={stripes.config} />

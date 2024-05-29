@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, StrictMode } from 'react';
 import PropTypes from 'prop-types';
 import { okapi as okapiConfig, config } from 'stripes-config';
 import merge from 'lodash/merge';
@@ -9,9 +9,20 @@ import configureLogger from './configureLogger';
 import configureStore from './configureStore';
 import gatherActions from './gatherActions';
 import { destroyStore } from './mainActions';
-import asciiBee from './asciiBee';
 
 import Root from './components/Root';
+
+const StrictWrapper = ({ children }) => {
+  if (config.disableStrictMode) {
+    return children;
+  }
+
+  return <StrictMode>{children}</StrictMode>;
+};
+
+StrictWrapper.propTypes = {
+  children: PropTypes.node.isRequired,
+};
 
 export default class StripesCore extends Component {
   static propTypes = {
@@ -28,9 +39,6 @@ export default class StripesCore extends Component {
     const initialState = merge({}, { okapi }, props.initialState);
 
     this.logger = configureLogger(config);
-    this.logger.log('core', `${asciiBee()}`);
-    this.logger.log('core', 'Starting Stripes ...');
-
     this.epics = configureEpics(connectErrorEpic);
     this.store = configureStore(initialState, this.logger, this.epics);
     this.actionNames = gatherActions();
@@ -46,15 +54,17 @@ export default class StripesCore extends Component {
     const { initialState, ...props } = this.props;
 
     return (
-      <Root
-        store={this.store}
-        epics={this.epics}
-        logger={this.logger}
-        config={config}
-        actionNames={this.actionNames}
-        disableAuth={(config && config.disableAuth) || false}
-        {...props}
-      />
+      <StrictWrapper>
+        <Root
+          store={this.store}
+          epics={this.epics}
+          logger={this.logger}
+          config={config}
+          actionNames={this.actionNames}
+          disableAuth={(config && config.disableAuth) || false}
+          {...props}
+        />
+      </StrictWrapper>
     );
   }
 }

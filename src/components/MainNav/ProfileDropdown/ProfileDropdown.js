@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { isFunction, kebabCase } from 'lodash';
-import get from 'lodash/get';
 import { compose } from 'redux';
 import { withRouter } from 'react-router';
 import PropTypes from 'prop-types';
@@ -29,7 +28,6 @@ class ProfileDropdown extends Component {
     modules: PropTypes.shape({
       app: PropTypes.arrayOf(PropTypes.object),
     }),
-    onLogout: PropTypes.func.isRequired,
     stripes: PropTypes.shape({
       config: PropTypes.shape({
         showPerms: PropTypes.bool,
@@ -60,11 +58,7 @@ class ProfileDropdown extends Component {
     this.createHandlerComponent = this.createHandlerComponent.bind(this);
     this.navigateByUrl = this.navigateByUrl.bind(this);
 
-    const modulesWithLinks = this.getModulesWithLinks();
-    this.userLinks = modulesWithLinks.reduce((acc, m) => {
-      const links = m.links.userDropdown.map((link, index) => this.createLink(link, index, m));
-      return acc.concat(links);
-    }, []);
+    this.userLinks = this.getDropdownMenuLinks();
   }
 
   setInitialState(callback) {
@@ -73,9 +67,24 @@ class ProfileDropdown extends Component {
     }, callback);
   }
 
-  getModulesWithLinks() {
+  getDropdownMenuLinks = () => {
+    const modulesWithLinks = this.getModulesWithLinks();
+
+    return modulesWithLinks.reduce((acc, m) => {
+      const links = m.links.userDropdown.map((link, index) => this.createLink(link, index, m));
+      return acc.concat(links);
+    }, []);
+  }
+
+  getModulesWithLinks = () => {
     const { modules } = this.props;
-    return ([].concat(...Object.values(modules)))
+    return Object.values(modules)
+      .flat()
+      .filter((module, index, self) => {
+        return index === self.findIndex((m) => (
+          m.module === module.module
+        ));
+      })
       .filter(({ links }) => links && Array.isArray(links.userDropdown));
   }
 
@@ -122,6 +131,9 @@ class ProfileDropdown extends Component {
   }
 
   toggleDropdown() {
+    // Get items after rechecking for item visibility
+    this.userLinks = this.getDropdownMenuLinks();
+
     this.setState(({ dropdownOpen }) => ({
       dropdownOpen: !dropdownOpen
     }));
@@ -145,7 +157,8 @@ class ProfileDropdown extends Component {
         alt={user.name}
         ariaLabel={user.name}
         className={css.avatar}
-      />);
+      />
+    );
   }
 
   navigateByUrl(link) {
@@ -158,7 +171,7 @@ class ProfileDropdown extends Component {
   };
 
   getDropdownContent() {
-    const { stripes, onLogout } = this.props;
+    const { stripes } = this.props;
     const user = this.getUserData();
     const currentPerms = stripes.user ? stripes.user.perms : undefined;
     const messageId = stripes.okapi.ssoEnabled ? 'stripes-core.logoutKeepSso' : 'stripes-core.logout';
@@ -168,7 +181,7 @@ class ProfileDropdown extends Component {
      * if setting is active in stripes config
      */
     let perms = null;
-    if (stripes.config && stripes.config.showPerms) {
+    if (stripes.config?.showPerms) {
       perms = (
         <IntlConsumer>
           {
@@ -209,14 +222,14 @@ class ProfileDropdown extends Component {
         <NavList>
           <NavListSection>
             {
-              (!stripes.config || !stripes.config.showHomeLink) ?
+              (!stripes.config?.showHomeLink) ?
                 null :
                 <NavListItem id="clickable-home" type="button" onClick={this.onHome}>
                   <FormattedMessage id="stripes-core.front.home" />
                 </NavListItem>
             }
             {this.userLinks}
-            <NavListItem id="clickable-logout" type="button" onClick={onLogout}>
+            <NavListItem id="clickable-logout" type="button" to="/logout">
               <FormattedMessage id={messageId} />
             </NavListItem>
           </NavListSection>
@@ -227,25 +240,47 @@ class ProfileDropdown extends Component {
   }
 
   renderProfileTrigger = ({ getTriggerProps, open }) => {
-    const { intl } = this.props;
-    const servicePointName = get(this.getUserData(), 'curServicePoint.name', null);
+    const { intl, stripes: { okapi } } = this.props;
+    const userData = this.getUserData();
+    const servicePointName = userData?.curServicePoint?.name;
+    const tenantName = userData?.tenants?.find(({ id }) => id === okapi.tenant)?.name;
 
     return (
       <NavButton
-        ariaLabel={intl.formatMessage({ id: 'stripes-core.mainnav.myProfileAriaLabel' })}
+        ariaLabel={intl.formatMessage(
+          { id: 'stripes-core.mainnav.myProfileAriaLabel' },
+          {
+            tenantName,
+            servicePointName,
+          }
+        )}
         selected={open}
         className={css.button}
         icon={this.getProfileImage()}
-        label={servicePointName ? (
-          <>
-            <span className={css.button__label}>
-              {servicePointName}
-            </span>
-            <Icon icon={open ? 'caret-up' : 'caret-down'} />
-          </>
-        ) : null}
+        label={this.renderProfileTriggerLabel({ open })}
         {...getTriggerProps()}
       />
+    );
+  }
+
+  renderProfileTriggerLabel = ({ open }) => {
+    const { okapi } = this.props.stripes;
+    const userData = this.getUserData();
+    const servicePointName = userData?.curServicePoint?.name;
+    const tenantName = userData?.tenants?.find(({ id }) => id === okapi.tenant)?.name;
+
+    const hasLabel = Boolean(servicePointName || tenantName);
+
+    return (
+      hasLabel ? (
+        <>
+          <span className={css.button__label}>
+            {tenantName && <span>{tenantName}</span>}
+            {servicePointName && <span>{servicePointName}</span>}
+          </span>
+          <Icon icon={open ? 'caret-up' : 'caret-down'} />
+        </>
+      ) : null
     );
   }
 

@@ -1,18 +1,27 @@
-// import localforage from 'localforage';
+import localforage from 'localforage';
 
 import {
   createOkapiSession,
+  getOkapiSession,
+  getTokenExpiry,
   handleLoginError,
   loadTranslations,
+  logout,
   processOkapiSession,
+  setTokenExpiry,
+  spreadUserWithPerms,
   supportedLocales,
   supportedNumberingSystems,
+  updateTenant,
   updateUser,
   validateUser,
+  IS_LOGGING_OUT,
+  SESSION_NAME
 } from './loginServices';
 
 import {
   clearCurrentUser,
+  clearOkapiToken,
   setCurrentPerms,
   setLocale,
   // setTimezone,
@@ -20,19 +29,18 @@ import {
   // setPlugins,
   // setBindings,
   // setTranslations,
-  clearOkapiToken,
   setAuthError,
   // checkSSO,
+  setIsAuthenticated,
   setOkapiReady,
   setServerDown,
-  setSessionData,
+  // setSessionData,
+  // setTokenExpiration,
   setLoginData,
   updateCurrentUser,
 } from './okapiActions';
 
 import { defaultErrors } from './constants';
-
-
 
 jest.mock('localforage', () => ({
   getItem: jest.fn(() => Promise.resolve({ user: {} })),
@@ -46,6 +54,7 @@ const mockFetchSuccess = (data) => {
     Promise.resolve({
       ok: true,
       json: () => Promise.resolve(data),
+      headers: new Map(),
     })
   ));
 };
@@ -61,7 +70,6 @@ const mockFetchCleanUp = () => {
   delete global.fetch;
 };
 
-
 describe('createOkapiSession', () => {
   it('clears authentication errors', async () => {
     const store = {
@@ -73,19 +81,25 @@ describe('createOkapiSession', () => {
       }),
     };
 
+    const te = {
+      accessTokenExpiration: '2023-11-06T18:05:33Z',
+      refreshTokenExpiration: '2023-10-30T18:15:33Z',
+    };
+
     const data = {
       user: {
         id: 'user-id',
       },
       permissions: {
         permissions: [{ permissionName: 'a' }, { permissionName: 'b' }]
-      }
+      },
+      tokenExpiration: te,
     };
     const permissionsMap = { a: true, b: true };
-
     mockFetchSuccess([]);
 
     await createOkapiSession('url', store, 'tenant', 'token', data);
+    expect(store.dispatch).toHaveBeenCalledWith(setIsAuthenticated(true));
     expect(store.dispatch).toHaveBeenCalledWith(setAuthError(null));
     expect(store.dispatch).toHaveBeenCalledWith(setLoginData(data));
     expect(store.dispatch).toHaveBeenCalledWith(setCurrentPerms(permissionsMap));
@@ -193,7 +207,7 @@ describe('processOkapiSession', () => {
 
     mockFetchSuccess();
 
-    await processOkapiSession('url', store, 'tenant', resp, 'token');
+    await processOkapiSession('url', store, 'tenant', resp);
     expect(store.dispatch).toHaveBeenCalledWith(setAuthError(null));
     expect(store.dispatch).toHaveBeenCalledWith(setOkapiReady());
 
@@ -210,7 +224,7 @@ describe('processOkapiSession', () => {
       }
     };
 
-    await processOkapiSession('url', store, 'tenant', resp, 'token');
+    await processOkapiSession('url', store, 'tenant', resp);
 
     expect(store.dispatch).toHaveBeenCalledWith(setOkapiReady());
     expect(store.dispatch).toHaveBeenCalledWith(setAuthError([defaultErrors.DEFAULT_LOGIN_CLIENT_ERROR]));
@@ -244,26 +258,55 @@ describe('validateUser', () => {
     mockFetchCleanUp();
   });
 
-  it('handles valid user', async () => {
+  it('handles valid user with empty tenant in session', async () => {
     const store = {
       dispatch: jest.fn(),
     };
 
+    const tenant = 'tenant';
     const data = { monkey: 'bagel' };
-    const token = 'token';
     const user = { id: 'id' };
     const perms = [];
     const session = {
-      token,
       user,
       perms,
     };
 
     mockFetchSuccess(data);
 
-    await validateUser('url', store, 'tenant', session);
-    expect(store.dispatch).toHaveBeenCalledWith(setLoginData(data));
-    expect(store.dispatch).toHaveBeenCalledWith(setSessionData({ token, user, perms }));
+    // set a fixed system time so date math is stable
+    const now = new Date('2023-10-30T19:34:56.000Z');
+    jest.useFakeTimers().setSystemTime(now);
+
+    await validateUser('url', store, tenant, session);
+
+    expect(store.dispatch).toHaveBeenNthCalledWith(1, setAuthError(null));
+    expect(store.dispatch).toHaveBeenNthCalledWith(2, setLoginData(data));
+
+    mockFetchCleanUp();
+  });
+
+  it('handles valid user with tenant in session', async () => {
+    const store = {
+      dispatch: jest.fn(),
+    };
+
+    const tenant = 'tenant';
+    const sessionTenant = 'sessionTenant';
+    const data = { monkey: 'bagel' };
+    const user = { id: 'id' };
+    const perms = [];
+    const session = {
+      user,
+      perms,
+      tenant: sessionTenant,
+    };
+
+    mockFetchSuccess(data);
+
+    await validateUser('url', store, tenant, session);
+    expect(store.dispatch).toHaveBeenNthCalledWith(1, setAuthError(null));
+    expect(store.dispatch).toHaveBeenNthCalledWith(2, setLoginData(data));
 
     mockFetchCleanUp();
   });
@@ -279,7 +322,7 @@ describe('validateUser', () => {
 
     await validateUser('url', store, 'tenant', {});
     expect(store.dispatch).toHaveBeenCalledWith(clearCurrentUser());
-    expect(store.dispatch).toHaveBeenCalledWith(clearOkapiToken());
+    expect(store.dispatch).toHaveBeenCalledWith(setServerDown());
     mockFetchCleanUp();
   });
 });
@@ -292,5 +335,165 @@ describe('updateUser', () => {
     const data = { thunder: 'chicken' };
     await updateUser(store, data);
     expect(store.dispatch).toHaveBeenCalledWith(updateCurrentUser(data));
+  });
+});
+
+describe('updateTenant', () => {
+  const okapi = {
+    currentPerms: {},
+  };
+  const tenant = 'test';
+  const data = {
+    user: {
+      id: 'userId',
+      username: 'testuser',
+    },
+    permissions: {
+      permissions: [{ permissionName: 'test.permissions' }],
+    },
+  };
+
+  beforeEach(() => {
+    localforage.setItem.mockClear();
+  });
+
+  it('should set tenant and updated user in session', async () => {
+    mockFetchSuccess(data);
+    await updateTenant(okapi, tenant);
+    mockFetchCleanUp();
+
+    expect(localforage.setItem).toHaveBeenCalledWith('okapiSess', {
+      ...spreadUserWithPerms(data),
+      tenant,
+    });
+  });
+});
+
+describe('localforage session wrapper', () => {
+  it('getOkapiSession retrieves a session object', async () => {
+    const o = { user: {} };
+    localforage.getItem = jest.fn(() => Promise.resolve(o));
+
+    const s = await getOkapiSession();
+    expect(s).toMatchObject(o);
+  });
+
+  describe('getTokenExpiry', () => {
+    it('finds tokenExpiration', async () => {
+      const o = { tokenExpiration: { trinity: 'cowboy junkies' } };
+      localforage.getItem = jest.fn(() => Promise.resolve(o));
+
+      const s = await getTokenExpiry();
+      expect(s).toMatchObject(o.tokenExpiration);
+    });
+
+    it('handles missing tokenExpiration', async () => {
+      const o = { nobody: 'here but us chickens' };
+      localforage.getItem = jest.fn(() => Promise.resolve(o));
+
+      const s = await getTokenExpiry();
+      expect(s).toBeFalsy();
+    });
+  });
+
+  it('setTokenExpiry set', async () => {
+    const o = {
+      margo: 'timmins',
+      margot: 'margot with a t looks better',
+      also: 'i thought we were talking about margot robbie?',
+      tokenExpiration: 'time out of mind',
+    };
+    localforage.getItem = () => Promise.resolve(o);
+    localforage.setItem = (k, v) => Promise.resolve(v);
+
+    const te = {
+      trinity: 'cowboy junkies',
+      sweet: 'james',
+    };
+
+    const s = await setTokenExpiry(te);
+    expect(s).toMatchObject({ ...o, tokenExpiration: te });
+  });
+});
+
+describe('logout', () => {
+  describe('when logout has started in this window', () => {
+    it('returns immediately', async () => {
+      const store = {
+        dispatch: jest.fn(),
+      };
+      window.sessionStorage.clear();
+      window.sessionStorage.setItem(IS_LOGGING_OUT, 'true');
+
+      let res;
+      await logout('', store)
+        .then(() => {
+          res = true;
+        });
+      expect(res).toBe(true);
+      expect(store.dispatch).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('when logout has not started in this window', () => {
+    afterEach(() => {
+      mockFetchCleanUp();
+    });
+
+    it('clears the redux store', async () => {
+      global.fetch = jest.fn().mockImplementation(() => Promise.resolve());
+      const store = {
+        dispatch: jest.fn(),
+      };
+      window.sessionStorage.clear();
+
+      let res;
+      await logout('', store)
+        .then(() => {
+          res = true;
+        });
+      expect(res).toBe(true);
+
+      // expect(setItemSpy).toHaveBeenCalled();
+      expect(store.dispatch).toHaveBeenCalledWith(setIsAuthenticated(false));
+      expect(store.dispatch).toHaveBeenCalledWith(clearCurrentUser());
+      expect(store.dispatch).toHaveBeenCalledWith(clearOkapiToken());
+    });
+
+    it('calls fetch() when other window is not logging out', async () => {
+      global.fetch = jest.fn().mockImplementation(() => Promise.resolve());
+      localStorage.setItem(SESSION_NAME, 'true');
+      const store = {
+        dispatch: jest.fn(),
+      };
+      window.sessionStorage.clear();
+
+      let res;
+      await logout('', store)
+        .then(() => {
+          res = true;
+        });
+
+      expect(res).toBe(true);
+      expect(global.fetch).toHaveBeenCalled();
+    });
+
+    it('does not call fetch() when other window is logging out', async () => {
+      global.fetch = jest.fn().mockImplementation(() => Promise.resolve());
+      localStorage.clear();
+      const store = {
+        dispatch: jest.fn(),
+      };
+      window.sessionStorage.clear();
+
+      let res;
+      await logout('', store)
+        .then(() => {
+          res = true;
+        });
+
+      expect(res).toBe(true);
+      expect(global.fetch).not.toHaveBeenCalled();
+    });
   });
 });

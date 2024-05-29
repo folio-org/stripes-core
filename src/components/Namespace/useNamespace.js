@@ -27,11 +27,11 @@ import { delimiters } from '../../constants';
 
 const useNamespace = (options = {}) => {
   const moduleHierarchy = useModuleHierarchy();
-  const getNamespace = (opts) => {
+  const getNamespace = (opts = {}) => {
     const { ignoreParents, key } = opts;
     const { NAMESPACE_DELIMITER } = delimiters;
 
-    let namespace = ignoreParents ? moduleHierarchy.pop() : moduleHierarchy.join(NAMESPACE_DELIMITER);
+    let namespace = ignoreParents ? moduleHierarchy[moduleHierarchy.length - 1] : moduleHierarchy.join(NAMESPACE_DELIMITER);
 
     if (key) {
       namespace += `${NAMESPACE_DELIMITER}${key}`;

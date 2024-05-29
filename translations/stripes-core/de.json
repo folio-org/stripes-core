@@ -141,6 +141,16 @@
     "title.noPermission": "Keine Berechtigung",
     "front.error.noPermission": "Sie haben keine Berechtigung, diese App/diesen Datensatz aufzurufen",
     "button.duplicate": "Duplizieren",
-    "stale.warning": "The application has changed on the server and needs to be refreshed.",
-    "stale.reload": "Click here to reload."
+    "stale.warning": "Die Anwendung hat sich auf dem Server geändert und muss neu geladen werden.",
+    "stale.reload": "Zum Neuladen hier klicken.",
+    "placeholder.forgotPassword": "E-Mail oder Telefonnummer eingeben",
+    "placeholder.forgotUsername": "E-Mail oder Telefonnummer eingeben",
+    "title.cookieEnabled": "Für die Anmeldung werden Cookies benötigt. Bitte Cookies aktivieren und erneut versuchen.",
+    "errors.sso.session.failed": "SSO Login failed. Please try again",
+    "logoutPending": "Log out in process...",
+    "rtr.idleSession.modalHeader": "Your session will expire soon!",
+    "rtr.idleSession.timeRemaining": "Time remaining",
+    "rtr.idleSession.keepWorking": "Keep working",
+    "rtr.idleSession.sessionExpiredSoSad": "Your session expired due to inactivity.",
+    "rtr.idleSession.logInAgain": "Log in again"
 }

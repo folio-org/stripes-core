@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Field, Form } from 'react-final-form';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 
 import {
   TextField,
@@ -20,6 +20,9 @@ class ForgotPasswordForm extends Component {
   static propTypes = {
     onSubmit: PropTypes.func.isRequired,
     errors: PropTypes.arrayOf(PropTypes.object),
+    intl: PropTypes.shape({
+      formatMessage: PropTypes.func.isRequired,
+    }),
   };
 
   static defaultProps = {
@@ -29,7 +32,8 @@ class ForgotPasswordForm extends Component {
   render() {
     const {
       errors,
-      onSubmit
+      onSubmit,
+      intl: { formatMessage }
     } = this.props;
 
     return (
@@ -68,12 +72,12 @@ class ForgotPasswordForm extends Component {
                     type="text"
                     marginBottom0
                     fullWidth
-                    inputClass={formStyles.input}
+                    inputClass={formStyles.passForgotInput}
                     validationEnabled={false}
                     hasClearIcon={false}
-                    autoComplete="on"
                     autoCapitalize="none"
                     autoFocus
+                    placeholder={formatMessage({ id: 'stripes-core.placeholder.forgotPassword' })}
                   />
                 </div>
                 <Button
@@ -81,7 +85,7 @@ class ForgotPasswordForm extends Component {
                   id="clickable-login"
                   name="continue-button"
                   type="submit"
-                  buttonClass={formStyles.submitButton}
+                  buttonClass={formStyles.passForgotSubmitButton}
                   disabled={pristine}
                   fullWidth
                   marginBottom0
@@ -111,4 +115,4 @@ class ForgotPasswordForm extends Component {
   }
 }
 
-export default ForgotPasswordForm;
+export default injectIntl(ForgotPasswordForm);

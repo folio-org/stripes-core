@@ -142,5 +142,15 @@
     "front.error.noPermission": "이 앱/레코드를 볼 수 있는 권한이 없습니다.",
     "button.duplicate": "복제",
     "stale.warning": "The application has changed on the server and needs to be refreshed.",
-    "stale.reload": "Click here to reload."
+    "stale.reload": "Click here to reload.",
+    "placeholder.forgotPassword": "Enter email or phone",
+    "placeholder.forgotUsername": "Enter email or phone",
+    "title.cookieEnabled": "Cookies are required to login. Please enable cookies and try again.",
+    "errors.sso.session.failed": "SSO Login failed. Please try again",
+    "logoutPending": "Log out in process...",
+    "rtr.idleSession.modalHeader": "Your session will expire soon!",
+    "rtr.idleSession.timeRemaining": "Time remaining",
+    "rtr.idleSession.keepWorking": "Keep working",
+    "rtr.idleSession.sessionExpiredSoSad": "Your session expired due to inactivity.",
+    "rtr.idleSession.logInAgain": "Log in again"
 }

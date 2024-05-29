@@ -20,6 +20,7 @@ class HandlerManager extends React.Component {
   constructor(props) {
     super(props);
     const { event, stripes, modules, data } = props;
+
     this.components = getEventHandlers(event, stripes, modules.handler, data);
   }
 

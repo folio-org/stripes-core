@@ -1,14 +1,15 @@
 import ReactDOM from 'react-dom';
 import { beforeEach } from 'mocha';
-import { setupAppForTesting, visit, location } from '@bigtest/react';
 import localforage from 'localforage';
+
 import { reset } from '@folio/stripes-connect';
+import { visit, location } from '@folio/stripes-testing/bigtest';
 
 // load these styles for our tests
 import '@folio/stripes-components/lib/global.css';
 
+import { setupAppForTesting } from './setupAppForTesting';
 import startMirage from '../network/start';
-
 import App from '../../../src/App';
 
 import {
@@ -41,7 +42,6 @@ export default function setupApplication({
     // when auth is disabled, add a fake user to the store
     if (disableAuth) {
       initialState.okapi = {
-        token: 'test',
         currentUser: assign({
           id: 'test',
           username: 'testuser',
@@ -51,7 +51,8 @@ export default function setupApplication({
           addresses: [],
           servicePoints: []
         }, currentUser),
-        currentPerms: permissions
+        currentPerms: permissions,
+        isAuthenticated: true,
       };
     } else {
       initialState.okapi = {
@@ -74,9 +75,14 @@ export default function setupApplication({
 
         if (userLoggedIn) {
           localforage.setItem('okapiSess', {
-            token: initialState.okapi.token,
+            isAuthenticated: true,
             user: initialState.okapi.currentUser,
             perms: initialState.okapi.currentPerms,
+            tenant: 'tenant',
+            tokenExpiration: {
+              atExpires: Date.now() + (10 * 60 * 1000),
+              rtExpires: Date.now() + (10 * 60 * 1000),
+            },
           });
         }
 
@@ -90,20 +96,20 @@ export default function setupApplication({
         clearModules();
         clearCookies(cookies);
         reset();
-        localforage.clear();
         this.server?.shutdown();
         this.server = null;
         this.app = null;
       }
     });
 
-    // set the root to 100% height
-    document.getElementById(mountId).style.height = '100%';
-
     // setup react validators
     Object.defineProperties(this, {
       visit: { value: visit },
       location: { get: location },
     });
+  });
+
+  afterEach(async () => {
+    await localforage.clear();
   });
 }

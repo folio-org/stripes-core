@@ -93,6 +93,33 @@ describe('Login', () => {
       it('error message should have proper text upon failed submit', () => ErrorMessage(translations['errors.password.incorrect']).exists());
     });
 
+    describe('error for the empty password field', () => {
+      setupApplication({
+        disableAuth: false,
+        scenarios: ['emptyPasswordField'],
+      });
+
+      beforeEach(async function () {
+        const { username, password, submit } = login;
+
+        await username.fill('username');
+        await password.fill('');
+        await submit.click();
+      });
+
+      it.always('username should not be reset upon failed submit', () => {
+        expect(login.username.value).to.equal('username');
+      });
+
+      it('should have submit button', () => {
+        expect(login.submit.isPresent).to.be.true;
+      });
+
+      it.always('error message should not be present', () => {
+        expect(login.message.isPresent).to.be.false;
+      });
+    });
+
     describe('error for the server error', () => {
       setupApplication({
         disableAuth: false,

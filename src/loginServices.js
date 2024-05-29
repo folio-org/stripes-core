@@ -1,12 +1,15 @@
 import localforage from 'localforage';
-import { translations } from 'stripes-config';
+import { config, translations } from 'stripes-config';
 import rtlDetect from 'rtl-detect';
 import moment from 'moment';
+import { loadDayJSLocale } from '@folio/stripes-components';
 
 import { discoverServices } from './discoverServices';
+import { resetStore } from './mainActions';
 
 import {
   clearCurrentUser,
+  clearOkapiToken,
   setCurrentPerms,
   setLocale,
   setTimezone,
@@ -14,7 +17,7 @@ import {
   setPlugins,
   setBindings,
   setTranslations,
-  clearOkapiToken,
+  setIsAuthenticated,
   setAuthError,
   checkSSO,
   setOkapiReady,
@@ -24,6 +27,10 @@ import {
   updateCurrentUser,
 } from './okapiActions';
 import processBadResponse from './processBadResponse';
+
+import {
+  RTR_TIMEOUT_EVENT
+} from './components/Root/constants';
 
 // export supported locales, i.e. the languages we provide translations for
 export const supportedLocales = [
@@ -63,6 +70,48 @@ export const supportedNumberingSystems = [
   'arab',  // Arabic-Hindi (٠ ١ ٢ ٣ ٤ ٥ ٦ ٧ ٨ ٩)
 ];
 
+/** name for the session key in local storage */
+export const SESSION_NAME = 'okapiSess';
+
+/**
+ * getTokenSess
+ * simple wrapper around access to values stored in localforage
+ * to insulate RTR functions from that API.
+ *
+ * @returns {object}
+ */
+export const getOkapiSession = async () => {
+  return localforage.getItem(SESSION_NAME);
+};
+
+/**
+ * getTokenSess
+ * simple wrapper around access to values stored in localforage
+ * to insulate RTR functions from that API.
+ *
+ * @returns {object} shaped like { atExpires, rtExpires }; each is a millisecond timestamp
+ */
+export const getTokenExpiry = async () => {
+  const sess = await getOkapiSession();
+  return new Promise((resolve) => resolve(sess?.tokenExpiration));
+};
+
+/**
+ * getTokenSess
+ * simple wrapper around access to values stored in localforage
+ * to insulate RTR functions from that API. Supplement the existing
+ * session with updated token expiration data.
+ *
+ * @param {object} shaped like { atExpires, rtExpires }; each is a millisecond timestamp
+ * @returns {object} updated session object
+ */
+export const setTokenExpiry = async (te) => {
+  const sess = await getOkapiSession();
+  const val = { ...sess, tokenExpiration: te };
+  return localforage.setItem(SESSION_NAME, val);
+};
+
+
 // export config values for storing user locale
 export const userLocaleConfig = {
   'configName': 'localeSettings',
@@ -72,8 +121,8 @@ export const userLocaleConfig = {
 function getHeaders(tenant, token) {
   return {
     'X-Okapi-Tenant': tenant,
-    'X-Okapi-Token': token,
     'Content-Type': 'application/json',
+    ...(token && { 'X-Okapi-Token': token }),
   };
 }
 
@@ -89,7 +138,7 @@ function getHeaders(tenant, token) {
  */
 function canReadConfig(store) {
   const perms = store.getState().okapi.currentPerms;
-  return perms['configuration.entries.collection.get'];
+  return perms?.['configuration.entries.collection.get'];
 }
 
 /**
@@ -138,6 +187,11 @@ export function loadTranslations(store, locale, defaultTranslations = {}) {
     });
   }
 
+  // load DayJS Locale. DayJS is expected to replace Moment as Stripes' date/time library.
+  // As with moment. loading the DayJS locale here passes it down to UI-modules so that they don't have to
+  // load the static locale data themselves.
+  loadDayJSLocale(locale);
+
   // Here we put additional condition because languages
   // like Japan we need to use like ja, but with numeric system
   // Japan language builds like ja_u, that incorrect. We need to be safe from that bug.
@@ -164,12 +218,15 @@ export function loadTranslations(store, locale, defaultTranslations = {}) {
  * @returns {Promise}
  */
 function dispatchLocale(url, store, tenant) {
-  return fetch(url,
-    { headers: getHeaders(tenant, store.getState().okapi.token) })
+  return fetch(url, {
+    headers: getHeaders(tenant, store.getState().okapi.token),
+    credentials: 'include',
+    mode: 'cors',
+  })
     .then((response) => {
       if (response.status === 200) {
         response.json().then((json) => {
-          if (json.configs.length) {
+          if (json.configs?.length) {
             const localeValues = JSON.parse(json.configs[0].value);
             const { locale, timezone, currency } = localeValues;
             if (locale) {
@@ -240,12 +297,15 @@ export function getUserLocale(okapiUrl, store, tenant, userId) {
  * @returns {Promise}
  */
 export function getPlugins(okapiUrl, store, tenant) {
-  return fetch(`${okapiUrl}/configurations/entries?query=(module==PLUGINS)`,
-    { headers: getHeaders(tenant, store.getState().okapi.token) })
+  return fetch(`${okapiUrl}/configurations/entries?query=(module==PLUGINS)`, {
+    headers: getHeaders(tenant, store.getState().okapi.token),
+    credentials: 'include',
+    mode: 'cors',
+  })
     .then((response) => {
       if (response.status < 400) {
         response.json().then((json) => {
-          const configs = json.configs.reduce((acc, val) => ({
+          const configs = json.configs?.reduce((acc, val) => ({
             ...acc,
             [val.configName]: val.value,
           }), {});
@@ -266,8 +326,11 @@ export function getPlugins(okapiUrl, store, tenant) {
  * @returns {Promise}
  */
 export function getBindings(okapiUrl, store, tenant) {
-  return fetch(`${okapiUrl}/configurations/entries?query=(module==ORG and configName==bindings)`,
-    { headers: getHeaders(tenant, store.getState().okapi.token) })
+  return fetch(`${okapiUrl}/configurations/entries?query=(module==ORG and configName==bindings)`, {
+    headers: getHeaders(tenant, store.getState().okapi.token),
+    credentials: 'include',
+    mode: 'cors',
+  })
     .then((response) => {
       let bindings = {};
       if (response.status >= 400) {
@@ -275,7 +338,7 @@ export function getBindings(okapiUrl, store, tenant) {
       } else {
         response.json().then((json) => {
           const configs = json.configs;
-          if (configs.length > 0) {
+          if (Array.isArray(configs) && configs.length > 0) {
             const string = configs[0].value;
             try {
               const tmp = JSON.parse(string);
@@ -326,31 +389,140 @@ function loadResources(okapiUrl, store, tenant, userId) {
 }
 
 /**
+ * spreadUserWithPerms
+ * return an object { user, perms } based on response from bl-users/self.
+ *
+ * @param {object} userWithPerms
+ *
+ * @returns {object}
+ */
+export function spreadUserWithPerms(userWithPerms) {
+  const user = {
+    id: userWithPerms?.user?.id,
+    username: userWithPerms?.user?.username,
+    ...userWithPerms?.user?.personal,
+  };
+
+  // remap data's array of permission-names to set with
+  // permission-names for keys and `true` for values.
+  //
+  // userWithPerms is shaped differently depending on whether
+  // it comes from a login call or a `.../_self` call, which
+  // is just totally totally awesome. :|
+  // we'll parse it differently depending on what it looks like.
+  let perms = {};
+  const list = userWithPerms?.permissions?.permissions;
+  if (list && Array.isArray(list) && list.length > 0) {
+    // _self sends data like ["foo", "bar", "bat"]
+    // login sends data like [{ "permissionName": "foo" }]
+    if (typeof list[0] === 'string') {
+      perms = Object.assign({}, ...list.map(p => ({ [p]: true })));
+    } else {
+      perms = Object.assign({}, ...list.map(p => ({ [p.permissionName]: true })));
+    }
+  }
+
+  return { user, perms };
+}
+
+/**
+ * logout
+ * logout is a multi-part process, but this function is idempotent.
+ * 1.  there are server-side things to do, i.e. fetch /authn/logout.
+ *     these must only be done once, no matter how many tabs are open
+ *     because once the fetch completes the cookies are gone, which
+ *     means a repeat request will fail.
+ * 2.  there is shared storage to clean out, i.e. storage that is shared
+ *     across tabs such as localStorage and localforage. clearing storage
+ *     that another tab has already cleared is fine, if pointless.
+ * 3.  there is private storage to clean out, i.e. storage that is unique
+ *     to the current tab/window. this storage _must_ be cleared in each
+ *     instance of stripes (i.e. in each separate tab/window) because the
+ *     instances running in other tabs do not have access to it.
+ * What does all this mean? It means some things we need to check on and
+ * maybe do (the server-side things), some we can do (the shared storage)
+ * and some we must do (the private storage).
+ *
+ * @param {string} okapiUrl
+ * @param {object} redux store
+ *
+ * @returns {Promise}
+ */
+export const IS_LOGGING_OUT = '@folio/stripes/core::Logout';
+export async function logout(okapiUrl, store) {
+  // check the private-storage sentinel: if logout has already started
+  // in this window, we don't want to start it again.
+  if (sessionStorage.getItem(IS_LOGGING_OUT)) {
+    return Promise.resolve();
+  }
+
+  // check the shared-storage sentinel: if logout has already started
+  // in another window, we don't want to invoke shared functions again
+  // (like calling /authn/logout, which can only be called once)
+  // BUT we DO want to clear private storage such as session storage
+  // and redux, which are not shared across tabs/windows.
+  const logoutPromise = localStorage.getItem(SESSION_NAME) ?
+    fetch(`${okapiUrl}/authn/logout`, {
+      method: 'POST',
+      mode: 'cors',
+      credentials: 'include'
+    })
+    :
+    Promise.resolve();
+  return logoutPromise
+    // clear private-storage
+    .then(() => {
+      // set the private-storage sentinel to indicate logout is in-progress
+      sessionStorage.setItem(IS_LOGGING_OUT, 'true');
+
+      // localStorage events emit across tabs so we can use it like a
+      // BroadcastChannel to communicate with all tabs/windows
+      localStorage.removeItem(SESSION_NAME);
+      localStorage.removeItem(RTR_TIMEOUT_EVENT);
+
+      store.dispatch(setIsAuthenticated(false));
+      store.dispatch(clearCurrentUser());
+      store.dispatch(clearOkapiToken());
+      store.dispatch(resetStore());
+    })
+    // clear shared storage
+    .then(localforage.removeItem(SESSION_NAME))
+    .then(localforage.removeItem('loginResponse'))
+    .catch(e => {
+      console.error('error during logout', e); // eslint-disable-line no-console
+    })
+    .finally(() => {
+      // clear the console unless config asks to preserve it
+      if (!config.preserveConsole) {
+        console.clear(); // eslint-disable-line no-console
+      }
+      // clear the storage sentinel
+      sessionStorage.removeItem(IS_LOGGING_OUT);
+    });
+}
+
+/**
  * createOkapiSession
  * Remap the given data into a session object shaped like:
  * {
  *   user: { id, username, personal }
+ *   tenant: string,
  *   perms: { permNameA: true, permNameB: true, ... }
- *   token: token
+ *   isAuthenticated: boolean,
+ *   tokenExpiration: { atExpires, rtExpires }
  * }
  * Dispatch the session object, then return a Promise that fetches
  * and dispatches tenant resources.
  *
- * @param {*} okapiUrl
- * @param {*} store
- * @param {*} tenant
- * @param {*} token
+ * @param {string} okapiUrl
+ * @param {object} store
+ * @param {string} tenant
+ * @param {string} token
  * @param {*} data
  *
  * @returns {Promise}
  */
 export function createOkapiSession(okapiUrl, store, tenant, token, data) {
-  const user = {
-    id: data.user.id,
-    username: data.user.username,
-    ...data.user.personal,
-  };
-
   // clear any auth-n errors
   store.dispatch(setAuthError(null));
 
@@ -358,55 +530,42 @@ export function createOkapiSession(okapiUrl, store, tenant, token, data) {
   // e.g. if optional values are returned, e.g. see UISP-32
   store.dispatch(setLoginData(data));
 
-  // remap data's array of permission-names to set with
-  // permission-names for keys and `true` for values
-  const perms = Object.assign({}, ...data.permissions.permissions.map(p => ({ [p.permissionName]: true })));
+  const { user, perms } = spreadUserWithPerms(data);
+
   store.dispatch(setCurrentPerms(perms));
-  const okapiSess = {
-    token,
-    user,
-    perms,
+
+  // if we can't parse tokenExpiration data, e.g. because data comes from `/bl-users/_self`
+  // which doesn't provide it, then set an invalid AT value and a near-future (+10 minutes) RT value.
+  // the invalid AT will prompt an RTR cycle which will either give us new AT/RT values
+  // (if the RT was valid) or throw an RTR_ERROR (if the RT was not valid).
+  const tokenExpiration = {
+    atExpires: data.tokenExpiration?.accessTokenExpiration ? new Date(data.tokenExpiration.accessTokenExpiration).getTime() : -1,
+    rtExpires: data.tokenExpiration?.refreshTokenExpiration ? new Date(data.tokenExpiration.refreshTokenExpiration).getTime() : Date.now() + (10 * 60 * 1000),
   };
 
-  return localforage.setItem('loginResponse', data)
-    .then(() => localforage.setItem('okapiSess', okapiSess))
-    .then(() => {
-      store.dispatch(setSessionData(okapiSess));
-      return loadResources(okapiUrl, store, tenant, user.id);
-    });
-}
+  const sessionTenant = data.tenant || tenant;
+  const okapiSess = {
+    token,
+    isAuthenticated: true,
+    user,
+    perms,
+    tenant: sessionTenant,
+    tokenExpiration,
+  };
 
-/**
- * validateUser
- * return a promise that fetches from bl-users/self.
- * if successful, dispatch the result to create a session
- * if not, clear the session and token.
- *
- * @param {string} okapiUrl
- * @param {redux store} store
- * @param {string} tenant
- * @param {object} session
- *
- * @returns {Promise}
- */
-export function validateUser(okapiUrl, store, tenant, session) {
-  return fetch(`${okapiUrl}/bl-users/_self`, { headers: getHeaders(tenant, session.token) }).then((resp) => {
-    if (resp.ok) {
-      const { token, user, perms } = session;
-      return resp.json().then((data) => {
-        store.dispatch(setLoginData(data));
-        store.dispatch(setSessionData({ token, user, perms }));
-        return loadResources(okapiUrl, store, tenant, user.id);
-      });
-    } else {
-      store.dispatch(clearCurrentUser());
-      store.dispatch(clearOkapiToken());
-      return localforage.removeItem('okapiSess');
-    }
-  }).catch((error) => {
-    store.dispatch(setServerDown());
-    return error;
-  });
+  // localStorage events emit across tabs so we can use it like a
+  // BroadcastChannel to communicate with all tabs/windows.
+  // here, we set a dummy 'true' value just so we have something to
+  // remove (and therefore emit and respond to) on logout
+  localStorage.setItem(SESSION_NAME, 'true');
+
+  return localforage.setItem('loginResponse', data)
+    .then(() => localforage.setItem(SESSION_NAME, okapiSess))
+    .then(() => {
+      store.dispatch(setIsAuthenticated(true));
+      store.dispatch(setSessionData(okapiSess));
+      return loadResources(okapiUrl, store, sessionTenant, user.id);
+    });
 }
 
 /**
@@ -483,7 +642,7 @@ function processSSOLoginResponse(resp) {
  * @returns {Promise} resolving to the response's JSON
  */
 export function handleLoginError(dispatch, resp) {
-  return localforage.removeItem('okapiSess')
+  return localforage.removeItem(SESSION_NAME)
     .then(() => processBadResponse(dispatch, resp))
     .then(responseBody => {
       dispatch(setOkapiReady());
@@ -499,7 +658,6 @@ export function handleLoginError(dispatch, resp) {
  * @param {redux store} store
  * @param {string} tenant
  * @param {Response} resp HTTP response
- * @param {string} ssoToken
  *
  * @returns {Promise} resolving with login response body, rejecting with, ummmmm
  */
@@ -523,6 +681,66 @@ export function processOkapiSession(okapiUrl, store, tenant, resp, ssoToken) {
 }
 
 /**
+ * validateUser
+ * return a promise that fetches from bl-users/_self.
+ * if successful, dispatch the result to create a session
+ * if not, clear the session and token.
+ *
+ * @param {string} okapiUrl
+ * @param {redux store} store
+ * @param {string} tenant
+ * @param {object} session
+ *
+ * @returns {Promise}
+ */
+export function validateUser(okapiUrl, store, tenant, session) {
+  const { token, user, perms, tenant: sessionTenant = tenant } = session;
+  return fetch(`${okapiUrl}/bl-users/_self`, {
+    headers: getHeaders(sessionTenant, token),
+    credentials: 'include',
+    mode: 'cors',
+  }).then((resp) => {
+    if (resp.ok) {
+      return resp.json().then((data) => {
+        // clear any auth-n errors
+        store.dispatch(setAuthError(null));
+        store.dispatch(setLoginData(data));
+
+        // If the request succeeded, we know the AT must be valid, but the
+        // response body from this endpoint doesn't include token-expiration
+        // data. So ... we set a near-future RT and an already-expired AT.
+        // On the next request, the expired AT will prompt an RTR cycle and
+        // we'll get real expiration values then.
+        const tokenExpiration = {
+          atExpires: -1,
+          rtExpires: Date.now() + (10 * 60 * 1000),
+        };
+
+        store.dispatch(setSessionData({
+          isAuthenticated: true,
+          user: data.user,
+          perms,
+          tenant: sessionTenant,
+          token,
+          tokenExpiration,
+        }));
+
+        return loadResources(okapiUrl, store, sessionTenant, user.id);
+      });
+    } else {
+      store.dispatch(clearCurrentUser());
+      return resp.text((text) => {
+        throw text;
+      });
+    }
+  }).catch((error) => {
+    console.error(error); // eslint-disable-line no-console
+    store.dispatch(setServerDown());
+    return error;
+  });
+}
+
+/**
  * checkOkapiSession
  * 1. Pull the session from local storage; if non-empty validate it, dispatching load-resources actions.
  * 2. Check if SSO (SAML) is enabled, dispatching check-sso actions
@@ -533,7 +751,7 @@ export function processOkapiSession(okapiUrl, store, tenant, resp, ssoToken) {
  * @param {string} tenant
  */
 export function checkOkapiSession(okapiUrl, store, tenant) {
-  localforage.getItem('okapiSess')
+  getOkapiSession()
     .then((sess) => {
       return sess !== null ? validateUser(okapiUrl, store, tenant, sess) : null;
     })
@@ -557,12 +775,35 @@ export function checkOkapiSession(okapiUrl, store, tenant) {
  * @returns {Promise}
  */
 export function requestLogin(okapiUrl, store, tenant, data) {
-  return fetch(`${okapiUrl}/bl-users/login?expandPermissions=true&fullPermissions=true`, {
-    method: 'POST',
-    headers: { 'X-Okapi-Tenant': tenant, 'Content-Type': 'application/json' },
+  const loginPath = config.useSecureTokens ? 'login-with-expiry' : 'login';
+  return fetch(`${okapiUrl}/bl-users/${loginPath}?expandPermissions=true&fullPermissions=true`, {
     body: JSON.stringify(data),
+    credentials: 'include',
+    headers: { 'X-Okapi-Tenant': tenant, 'Content-Type': 'application/json' },
+    method: 'POST',
+    mode: 'cors',
   })
     .then(resp => processOkapiSession(okapiUrl, store, tenant, resp));
+}
+
+/**
+ * fetchUserWithPerms
+ * retrieve currently-authenticated user
+ * @param {string} okapiUrl
+ * @param {string} tenant
+ * @param {string} token
+ * @param {boolean} rtrIgnore
+ *
+ * @returns {Promise} Promise resolving to the response of the request
+ */
+function fetchUserWithPerms(okapiUrl, tenant, token, rtrIgnore = false) {
+  return fetch(
+    `${okapiUrl}/bl-users/_self?expandPermissions=true&fullPermissions=true`,
+    {
+      headers: getHeaders(tenant, token),
+      rtrIgnore,
+    },
+  );
 }
 
 /**
@@ -571,13 +812,11 @@ export function requestLogin(okapiUrl, store, tenant, data) {
  * @param {string} okapiUrl
  * @param {redux store} store
  * @param {string} tenant
- * @param {string} token
  *
  * @returns {Promise} Promise resolving to the response-body (JSON) of the request
  */
 export function requestUserWithPerms(okapiUrl, store, tenant, token) {
-  return fetch(`${okapiUrl}/bl-users/_self?expandPermissions=true&fullPermissions=true`,
-    { headers: getHeaders(tenant, token) })
+  return fetchUserWithPerms(okapiUrl, tenant, token, !token)
     .then(resp => processOkapiSession(okapiUrl, store, tenant, resp, token));
 }
 
@@ -614,12 +853,28 @@ export function requestSSOLogin(okapiUrl, tenant) {
  * @returns {Promise}
  */
 export function updateUser(store, data) {
-  return localforage.getItem('okapiSess')
+  return getOkapiSession()
     .then((sess) => {
       sess.user = { ...sess.user, ...data };
-      return localforage.setItem('okapiSess', sess);
+      return localforage.setItem(SESSION_NAME, sess);
     })
     .then(() => {
       store.dispatch(updateCurrentUser(data));
     });
+}
+
+/**
+ * updateTenant
+ * 1. prepare user info for requested tenant
+ * 2. update okapi session
+ * @param {object} okapi
+ * @param {string} tenant
+ *
+ * @returns {Promise}
+ */
+export async function updateTenant(okapi, tenant) {
+  const okapiSess = await getOkapiSession();
+  const userWithPermsResponse = await fetchUserWithPerms(okapi.url, tenant, okapi.token);
+  const userWithPerms = await userWithPermsResponse.json();
+  await localforage.setItem(SESSION_NAME, { ...okapiSess, tenant, ...spreadUserWithPerms(userWithPerms) });
 }

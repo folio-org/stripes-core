@@ -11,6 +11,7 @@
   "title.checkEmail": "Check your email",
   "title.changePassword": "Change password",
   "title.noPermission": "No permission",
+  "title.cookieEnabled": "Cookies are required to login. Please enable cookies and try again.",
 
   "front.welcome": "Welcome, the Future Of Libraries Is OPEN!",
   "front.home": "Home",
@@ -85,6 +86,7 @@
   "currentServicePoint": "Service point: {name}",
   "currentServicePointNotSelected": "Service point: None",
   "logout": "Log out",
+  "logoutPending": "Log out in process...",
   "logoutKeepSso": "Log out from FOLIO, keep SSO session",
   "login": "Log in",
   "username": "Username",
@@ -104,7 +106,7 @@
   "mainnav.topLevelLabel": "Primary",
   "mainnav.applicationListLabel": "Application List",
   "mainnav.appContextMenu": "Application context dropdown",
-  "mainnav.myProfileAriaLabel": "My profile",
+  "mainnav.myProfileAriaLabel": "{tenantName} {servicePointName} profile",
   "mainnav.skipMainNavigation": "Skip Main Navigation",
 
   "mainnav.profileDropdown.locale": "Locale",
@@ -128,7 +130,7 @@
   "errors.forgotten.password.found.multiple.users": "The information provided is tied to multiple Folio accounts. Please contact your Folio system administrator to reset your password.",
   "errors.forgotten.username.found.multiple.users": "This email or phone number is tied to multiple Folio accounts. Please contact your Folio system administrator.",
   "errors.forgotten.password.found.inactive": "Your account is currently locked. Please contact your FOLIO system administrator to reset your password",
-  "errors.default.server.error": "System error. Unable to locate Folio account. Please try again.",
+  "errors.default.server.error": "System error. Please wait a few minutes and try again.",
   "errors.password.length.invalid": "The password length must be minimum 8 symbols.",
   "errors.password.alphabetical.invalid": "The password must contain both lowercase and uppercase letters.",
   "errors.password.number.invalid": "The password must contain at least one numeric character.",
@@ -139,11 +141,15 @@
   "errors.password.whiteSpace.invalid": "The password must not contain whitespaces.",
   "errors.password.consecutiveWhitespaces.invalid": "The password must not contain consecutive white space characters.",
   "errors.password.compromised.invalid": "The password must not be commonly-used, expected or compromised",
+  "errors.sso.session.failed": "SSO Login failed. Please try again",
 
   "createResetPassword.header": "Choose a password",
   "createResetPassword.newPassword": "New Password",
   "createResetPassword.confirmPassword": "Confirm Password",
   "createResetPassword.ruleTemplate": "Must {description}",
+
+  "placeholder.forgotPassword": "Enter email or phone",
+  "placeholder.forgotUsername": "Enter email or phone",
 
   "routeErrorBoundary.sub": "An error occurred on this page and it could not be loaded.",
   "routeErrorBoundary.goToAppHomeLabel": "Return to home",
@@ -151,5 +157,11 @@
   "routeErrorBoundary.goToModuleSettingsHomeLabel": "Return to {name} settings",
 
   "stale.warning": "The application has changed on the server and needs to be refreshed.",
-  "stale.reload": "Click here to reload."
+  "stale.reload": "Click here to reload.",
+
+  "rtr.idleSession.modalHeader": "Your session will expire soon!",
+  "rtr.idleSession.timeRemaining": "Time remaining",
+  "rtr.idleSession.keepWorking": "Keep working",
+  "rtr.idleSession.sessionExpiredSoSad": "Your session expired due to inactivity.",
+  "rtr.idleSession.logInAgain": "Log in again"
 }

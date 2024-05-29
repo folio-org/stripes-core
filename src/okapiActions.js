@@ -74,6 +74,13 @@ function clearOkapiToken() {
   };
 }
 
+function setIsAuthenticated(b) {
+  return {
+    type: 'SET_IS_AUTHENTICATED',
+    isAuthenticated: Boolean(b),
+  };
+}
+
 function setAuthError(message) {
   return {
     type: 'SET_AUTH_FAILURE',
@@ -128,24 +135,56 @@ function updateCurrentUser(data) {
   };
 }
 
+function setTokenExpiration(tokenExpiration) {
+  return {
+    type: 'SET_TOKEN_EXPIRATION',
+    tokenExpiration,
+  };
+}
+
+function setRtrTimeout(rtrTimeout) {
+  return {
+    type: 'SET_RTR_TIMEOUT',
+    rtrTimeout,
+  };
+}
+
+function clearRtrTimeout() {
+  return {
+    type: 'CLEAR_RTR_TIMEOUT',
+  };
+}
+
+function toggleRtrModal(isVisible) {
+  return {
+    type: 'TOGGLE_RTR_MODAL',
+    isVisible,
+  };
+}
+
 export {
   checkSSO,
   clearCurrentUser,
   clearOkapiToken,
+  clearRtrTimeout,
   setAuthError,
   setBindings,
   setCurrency,
   setCurrentPerms,
   setCurrentUser,
+  setIsAuthenticated,
   setLocale,
   setLoginData,
   setOkapiReady,
   setOkapiToken,
   setPlugins,
+  setRtrTimeout,
   setServerDown,
   setSessionData,
   setSinglePlugin,
   setTimezone,
+  setTokenExpiration,
   setTranslations,
+  toggleRtrModal,
   updateCurrentUser,
 };

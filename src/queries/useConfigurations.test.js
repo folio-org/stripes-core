@@ -2,7 +2,7 @@ import {
   QueryClient,
   QueryClientProvider,
 } from 'react-query';
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook, waitFor } from '@folio/jest-config-stripes/testing-library/react';
 
 import useConfigurations, { configurationsApi } from './useConfigurations';
 import { useStripes } from '../StripesContext';
@@ -10,6 +10,20 @@ import useOkapiKy from '../useOkapiKy';
 
 jest.mock('../useOkapiKy');
 jest.mock('../StripesContext');
+
+// reassign console.log to keep things quiet
+const consoleInterruptor = {};
+beforeAll(() => {
+  consoleInterruptor.log = global.console.log;
+  consoleInterruptor.error = global.console.error;
+  console.log = () => { };
+  console.error = () => { };
+});
+
+afterAll(() => {
+  global.console.log = consoleInterruptor.log;
+  global.console.error = consoleInterruptor.error;
+});
 
 // set query retries to false. otherwise, react-query will thoughtfully
 // (but unhelpfully, in the context of testing) retry a failed query
@@ -73,10 +87,14 @@ describe('Given useConfigurations', () => {
         </QueryClientProvider>
       );
 
-      const { result, waitFor } = renderHook(() => useConfigurations({}), { wrapper });
+      const { result } = renderHook(() => useConfigurations({}), { wrapper });
 
+      // waitFor retries until it stops catching an error
+      // so we convert isLoading from being truthy to being errory
       await waitFor(() => {
-        return !result.current.isLoading;
+        if (result.current.isLoading) {
+          throw Error('kaboom');
+        }
       });
 
       expect(result.current.data).toEqual(response);
@@ -105,10 +123,14 @@ describe('Given useConfigurations', () => {
         </QueryClientProvider>
       );
 
-      const { result, waitFor } = renderHook(() => useConfigurations({}), { wrapper });
+      const { result } = renderHook(() => useConfigurations({}), { wrapper });
 
+      // waitFor retries until it stops catching an error
+      // so we convert isLoading from being truthy to being errory
       await waitFor(() => {
-        return !!result.current.error;
+        if (result.current.isLoading) {
+          throw new Error('Kaboom');
+        }
       });
 
       expect(result.current.error.message).toMatch(/configuration.entries.collection.get/);
