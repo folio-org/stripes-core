@@ -11,7 +11,6 @@
 * Idle-session timeout and "Keep working?" modal. Refs STCOR-776.
 * Use keycloak URLs in place of users-bl for tenant-switch. Refs US1153537.
 * Fix 404 error page when logging in after changing password in Eureka. Refs STCOR-845.
-* Omit credentials in requests to `/authn/token` to prevent redirect tailspin. Refs STCOR-853.
 
 ## [10.1.1](https://github.com/folio-org/stripes-core/tree/v10.1.1) (2024-03-25)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.1.0...v10.1.1)
