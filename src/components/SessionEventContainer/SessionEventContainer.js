@@ -8,7 +8,6 @@ import KeepWorkingModal from './KeepWorkingModal';
 import { useStripes } from '../../StripesContext';
 import {
   RTR_ACTIVITY_CHANNEL,
-  RTR_ACTIVITY_EVENTS,
   RTR_ERROR_EVENT,
   RTR_TIMEOUT_EVENT
 } from '../Root/constants';
@@ -21,7 +20,7 @@ import { toggleRtrModal } from '../../okapiActions';
 
 // RTR error in this window: logout
 export const thisWindowRtrError = (_e, stripes, history) => {
-  console.warn('rtr error; logging out', history); // eslint-disable-line no-console
+  console.warn('rtr error; logging out'); // eslint-disable-line no-console
   return logout(stripes.okapi.url, stripes.store)
     .then(() => {
       history.push('/logout-timeout');
@@ -177,7 +176,7 @@ const SessionEventContainer = ({ history }) => {
     const channelListeners = { window, bc };
 
     if (stripes.config.useSecureTokens) {
-      const { idleModalTTL, idleSessionTTL } = stripes.config.rtr;
+      const { idleModalTTL, idleSessionTTL, activityEvents } = stripes.config.rtr;
 
       // inactive timer: show the "keep working?" modal
       const showModalIT = createInactivityTimer(ms(idleSessionTTL) - ms(idleModalTTL), () => {
@@ -213,7 +212,6 @@ const SessionEventContainer = ({ history }) => {
       channels.bc.message = (message) => otherWindowActivity(message, stripes, timers, setIsVisible);
 
       // activity in this window: ping idle-timers and BroadcastChannel
-      const activityEvents = stripes.config.rtr?.activityEvents ?? RTR_ACTIVITY_EVENTS;
       activityEvents.forEach(eventName => {
         channels.window[eventName] = (e) => thisWindowActivity(e, stripes, timers, bc);
       });

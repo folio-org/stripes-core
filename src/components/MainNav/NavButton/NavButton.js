@@ -34,10 +34,6 @@ const propTypes = {
   to: PropTypes.string,
 };
 
-const defaultProps = {
-  noSelectedBar: false,
-};
-
 const NavButton = React.forwardRef(({
   ariaLabel,
   badge,
@@ -50,7 +46,7 @@ const NavButton = React.forwardRef(({
   innerClassName,
   label,
   labelClassName,
-  noSelectedBar,
+  noSelectedBar = false,
   onClick,
   open,
   selected,
@@ -137,6 +133,5 @@ const NavButton = React.forwardRef(({
 });
 
 NavButton.propTypes = propTypes;
-NavButton.defaultProps = defaultProps;
 
 export default NavButton;

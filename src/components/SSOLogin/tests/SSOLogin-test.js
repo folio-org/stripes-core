@@ -1,6 +1,6 @@
 import React from 'react';
 import { expect } from 'chai';
-import { beforeEach, it, describe } from '@bigtest/mocha';
+import { beforeEach, it, describe } from 'mocha';
 import ButtonInteractor from '@folio/stripes-components/lib/Button/tests/interactor';
 
 import Harness from '../../../../test/bigtest/helpers/Harness';

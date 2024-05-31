@@ -391,11 +391,16 @@ function loadResources(okapiUrl, store, tenant, userId) {
 
 /**
  * spreadUserWithPerms
- * return an object { user, perms } based on response from bl-users/self.
+ * Restructure the response from `bl-users/self?expandPermissions=true`
+ * to return an object shaped like
+ * {
+ *   user: { id, username, ...personal }
+ *   perms: { foo: true, bar: true, ... }
+ * }
  *
  * @param {object} userWithPerms
  *
- * @returns {object}
+ * @returns {object} { user, perms }
  */
 export function spreadUserWithPerms(userWithPerms) {
   const user = {
@@ -404,23 +409,16 @@ export function spreadUserWithPerms(userWithPerms) {
     ...userWithPerms?.user?.personal,
   };
 
-  // remap data's array of permission-names to set with
-  // permission-names for keys and `true` for values.
-  //
-  // userWithPerms is shaped differently depending on whether
-  // it comes from a login call or a `.../_self` call, which
-  // is just totally totally awesome. :|
-  // we'll parse it differently depending on what it looks like.
-  let perms = {};
+  // remap userWithPerms.permissions.permissions from an array shaped like
+  //   [{ "permissionName": "foo", ... }]
+  // to an object shaped like
+  //   { foo: true, ...}
+  const perms = {};
   const list = userWithPerms?.permissions?.permissions;
   if (list && Array.isArray(list) && list.length > 0) {
-    // _self sends data like ["foo", "bar", "bat"]
-    // login sends data like [{ "permissionName": "foo" }]
-    if (typeof list[0] === 'string') {
-      perms = Object.assign({}, ...list.map(p => ({ [p]: true })));
-    } else {
-      perms = Object.assign({}, ...list.map(p => ({ [p.permissionName]: true })));
-    }
+    list.forEach(p => {
+      perms[p.permissionName] = true;
+    });
   }
 
   return { user, perms };
@@ -695,8 +693,8 @@ export function processOkapiSession(okapiUrl, store, tenant, resp, ssoToken) {
  * @returns {Promise}
  */
 export function validateUser(okapiUrl, store, tenant, session) {
-  const { token, user, perms, tenant: sessionTenant = tenant } = session;
-  return fetch(`${okapiUrl}/bl-users/_self`, {
+  const { token, tenant: sessionTenant = tenant } = session;
+  return fetch(`${okapiUrl}/bl-users/_self?expandPermissions=true`, {
     headers: getHeaders(sessionTenant, token),
     credentials: 'include',
     mode: 'cors',
@@ -707,23 +705,25 @@ export function validateUser(okapiUrl, store, tenant, session) {
         store.dispatch(setAuthError(null));
         store.dispatch(setLoginData(data));
 
-        // If the request succeeded, we know the AT must be valid, but the
-        // response body from this endpoint doesn't include token-expiration
-        // data. So ... we set a near-future RT and an already-expired AT.
-        // On the next request, the expired AT will prompt an RTR cycle and
-        // we'll get real expiration values then.
-        const tokenExpiration = {
-          atExpires: -1,
-          rtExpires: Date.now() + (10 * 60 * 1000),
-        };
+        const { user, perms } = spreadUserWithPerms(data);
+        store.dispatch(setCurrentPerms(perms));
 
+        // update the session data with values from the response from _self
+        // in case they have changed since the previous login. this allows
+        // permissions changes to take effect immediately, without needing to
+        // re-authenticate.
+        //
+        // tenant and tokenExpiration data are still pulled from the session,
+        // tenant because the user may have switched the session-tenant to
+        // something other than their default and tokenExpiration because that
+        // data isn't provided by _self.
         store.dispatch(setSessionData({
           isAuthenticated: true,
           user: data.user,
           perms,
           tenant: sessionTenant,
           token,
-          tokenExpiration,
+          tokenExpiration: session.tokenExpiration
         }));
 
         return loadResources(okapiUrl, store, sessionTenant, user.id);
