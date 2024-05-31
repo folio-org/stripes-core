@@ -10,6 +10,7 @@ import { setUnauthorizedPathToSession } from '../../loginServices';
 const AuthnLogin = ({ stripes }) => {
   const { config, okapi } = stripes;
   const { tenantOptions = {} } = config;
+  const tenants = Object.values(tenantOptions);
 
   useEffect(() => {
     if (okapi.authnUrl) {
@@ -23,10 +24,11 @@ const AuthnLogin = ({ stripes }) => {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (okapi.authnUrl) {
-    if (config.isSingleTenant) {
-      const defaultTenant = Object.values(tenantOptions)[0];
+    // If only 1 tenant is defined in config, skip the tenant selection screen.
+    if (tenants.length === 1) {
+      const loginTenant = tenants[0];
       const redirectUri = `${window.location.protocol}//${window.location.host}/oidc-landing`;
-      const authnUri = `${okapi.authnUrl}/realms/${defaultTenant.name}/protocol/openid-connect/auth?client_id=${defaultTenant.clientId}&response_type=code&redirect_uri=${redirectUri}&scope=openid`;
+      const authnUri = `${okapi.authnUrl}/realms/${loginTenant.name}/protocol/openid-connect/auth?client_id=${loginTenant.clientId}&response_type=code&redirect_uri=${redirectUri}&scope=openid`;
       return <Redirect to={authnUri} />;
     }
 

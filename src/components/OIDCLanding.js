@@ -58,12 +58,12 @@ const OIDCLanding = () => {
     const otp = getOtp();
 
     if (otp) {
-      const defaultTenant = Object.values(tenantOptions)[0];
+      const loginTenant = Object.values(tenantOptions)[0];
 
       setPotp(otp);
       fetch(`${okapi.url}/authn/token?code=${otp}&redirect-uri=${window.location.protocol}//${window.location.host}/oidc-landing`, {
         credentials: 'omit',
-        headers: { 'X-Okapi-tenant': defaultTenant.name, 'Content-Type': 'application/json' },
+        headers: { 'X-Okapi-tenant': loginTenant.name, 'Content-Type': 'application/json' },
         mode: 'cors',
       })
         .then((resp) => {
@@ -76,7 +76,7 @@ const OIDCLanding = () => {
                 });
               })
               .then(() => {
-                return requestUserWithPerms(okapi.url, store, defaultTenant.name);
+                return requestUserWithPerms(okapi.url, store, loginTenant.name);
               });
           } else {
             return resp.json().then((error) => {
