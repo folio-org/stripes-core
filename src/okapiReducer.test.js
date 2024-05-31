@@ -234,8 +234,5 @@ describe('okapiReducer', () => {
     const o = okapiReducer(state, setServerDown());
     expect(o).toMatchObject({ serverDown });
   });
-
-
-
-
 });
+
