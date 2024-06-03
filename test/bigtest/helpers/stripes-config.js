@@ -74,13 +74,29 @@ export function clearConfig() {
   assign(stripes.config, originalConfig);
 }
 
+export function clearAllCookies() {
+  const cookies = document.cookie.split(';');
+
+  cookies.forEach((c) => {
+    const eqPos = c.indexOf('=');
+    if (eqPos !== -1) {
+      const name = c.substring(0, eqPos);
+      document.cookie = `${name}=;max-age=0`;
+    }
+  });
+}
+
 /**
  * setCookies
  * Set the given object as cookies
  * @arg cookies object: keys and values are both strings
  */
 export function setCookies(cookies) {
-  document.cookie = Object.entries(cookies).map(([key, val]) => (`${key}=${val}`)).join(';');
+  if (Object.entries(cookies).length > 0) {
+    document.cookie = Object.entries(cookies).map(([key, val]) => (`${key}=${val}`)).join(';');
+  } else {
+    clearAllCookies();
+  }
 }
 
 /**

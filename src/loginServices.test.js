@@ -19,8 +19,6 @@ import {
   SESSION_NAME
 } from './loginServices';
 
-
-
 import {
   clearCurrentUser,
   clearOkapiToken,
@@ -36,30 +34,13 @@ import {
   setIsAuthenticated,
   setOkapiReady,
   setServerDown,
-  // setSessionData,
+  setSessionData,
   // setTokenExpiration,
   setLoginData,
   updateCurrentUser,
 } from './okapiActions';
 
 import { defaultErrors } from './constants';
-
-// reassign console.log to keep things quiet
-const consoleInterruptor = {};
-beforeAll(() => {
-  consoleInterruptor.log = global.console.log;
-  consoleInterruptor.error = global.console.error;
-  consoleInterruptor.warn = global.console.warn;
-  console.log = () => { };
-  console.error = () => { };
-  console.warn = () => { };
-});
-
-afterAll(() => {
-  global.console.log = consoleInterruptor.log;
-  global.console.error = consoleInterruptor.error;
-  global.console.warn = consoleInterruptor.warn;
-});
 
 jest.mock('localforage', () => ({
   getItem: jest.fn(() => Promise.resolve({ user: {} })),
@@ -326,6 +307,50 @@ describe('validateUser', () => {
     await validateUser('url', store, tenant, session);
     expect(store.dispatch).toHaveBeenNthCalledWith(1, setAuthError(null));
     expect(store.dispatch).toHaveBeenNthCalledWith(2, setLoginData(data));
+
+    mockFetchCleanUp();
+  });
+
+  it('overwrites session data with new values from _self', async () => {
+    const store = {
+      dispatch: jest.fn(),
+    };
+
+    const tenant = 'tenant';
+    const sessionTenant = 'sessionTenant';
+    const data = {
+      user: {
+        id: 'ego',
+        username: 'superego',
+      },
+      permissions: {
+        permissions: [{ permissionName: 'ask' }, { permissionName: 'tell' }],
+      }
+    };
+
+    const session = {
+      user: { id: 'id', username: 'username' },
+      perms: { foo: true },
+      tenant: sessionTenant,
+      token: 'token',
+    };
+
+    mockFetchSuccess(data);
+
+    await validateUser('url', store, tenant, session);
+
+    const updatedSession = {
+      user: data.user,
+      isAuthenticated: true,
+      perms: { ask: true, tell: true },
+      tenant: session.tenant,
+      token: session.token,
+    };
+
+    expect(store.dispatch).toHaveBeenNthCalledWith(1, setAuthError(null));
+    expect(store.dispatch).toHaveBeenNthCalledWith(2, setLoginData(data));
+    expect(store.dispatch).toHaveBeenNthCalledWith(3, setCurrentPerms({ ask: true, tell: true }));
+    expect(store.dispatch).toHaveBeenNthCalledWith(4, setSessionData(updatedSession));
 
     mockFetchCleanUp();
   });
