@@ -10,7 +10,8 @@
 * Make branding optional. Refs STCOR-847.
 * Idle-session timeout and "Keep working?" modal. Refs STCOR-776.
 * Implement password validation for Login Page. Refs STCOR-741.
-* Avoid deprecated `defaultProps` for functional components. Refs STCOR-844.
+* Avoid deprecated `defaultProps` for functional components. Refs STCOR-844..
+* Update session data with values from `_self` request on reload. Refs STCOR-846.
 * Avoid deprecated `getChildContext`. Refs STCOR-842.
 
 ## [10.1.0](https://github.com/folio-org/stripes-core/tree/v10.1.0) (2024-03-12)

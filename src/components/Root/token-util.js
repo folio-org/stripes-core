@@ -1,8 +1,15 @@
+import { isEmpty } from 'lodash';
 import { okapi } from 'stripes-config';
 
 import { getTokenExpiry, setTokenExpiry } from '../../loginServices';
 import { RTRError, UnexpectedResourceError } from './Errors';
-import { RTR_ERROR_EVENT, RTR_SUCCESS_EVENT } from './constants';
+import {
+  RTR_ACTIVITY_EVENTS,
+  RTR_ERROR_EVENT,
+  RTR_IDLE_MODAL_TTL,
+  RTR_IDLE_SESSION_TTL,
+  RTR_SUCCESS_EVENT,
+} from './constants';
 
 /** localstorage flag indicating whether an RTR request is already under way. */
 export const RTR_IS_ROTATING = '@folio/stripes/core::rtrIsRotating';
@@ -294,7 +301,7 @@ export const getPromise = async (logger) => {
 /**
  * configureRtr
  * Provide default values necessary for RTR. They may be overriden by setting
- * config.rtr in stripes.config.js.
+ * config.rtr... in stripes.config.js.
  *
  * @param {object} config
  */
@@ -303,15 +310,19 @@ export const configureRtr = (config = {}) => {
 
   // how long does an idle session last before being killed?
   if (!conf.idleSessionTTL) {
-    conf.idleSessionTTL = '60m';
+    conf.idleSessionTTL = RTR_IDLE_SESSION_TTL;
   }
 
   // how long is the "warning, session is idle!" modal shown
   // before the session is killed?
   if (!conf.idleModalTTL) {
-    conf.idleModalTTL = '1m';
+    conf.idleModalTTL = RTR_IDLE_MODAL_TTL;
+  }
+
+  // what events constitute activity?
+  if (isEmpty(conf.activityEvents)) {
+    conf.activityEvents = RTR_ACTIVITY_EVENTS;
   }
 
   return conf;
 };
-
