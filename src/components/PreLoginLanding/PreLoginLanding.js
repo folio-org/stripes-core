@@ -15,7 +15,6 @@ function PreLoginLanding({ onSelectTenant }) {
 
   const getLoginUrl = () => {
     if (!okapi.tenant) return '';
-
     if (okapi.authnUrl) {
       return `${okapi.authnUrl}/realms/${okapi.tenant}/protocol/openid-connect/auth?client_id=${okapi.clientId}&response_type=code&redirect_uri=${redirectUri}&scope=openid&isConsortium=true`;
     }
