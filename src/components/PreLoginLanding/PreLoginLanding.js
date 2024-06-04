@@ -14,12 +14,10 @@ function PreLoginLanding({ onSelectTenant }) {
   const options = Object.keys(tenantOptions).map(tenantName => ({ value: tenantName, label: tenantName }));
 
   const getLoginUrl = () => {
-    if (options.length < 1) return '';
-
-    const defaultTenant = Object.values(tenantOptions)[0];
+    if (!okapi.tenant) return '';
 
     if (okapi.authnUrl) {
-      return `${okapi.authnUrl}/realms/${defaultTenant.name}/protocol/openid-connect/auth?client_id=${defaultTenant.clientId}&response_type=code&redirect_uri=${redirectUri}&scope=openid&isConsortium=true`;
+      return `${okapi.authnUrl}/realms/${okapi.tenant}/protocol/openid-connect/auth?client_id=${okapi.clientId}&response_type=code&redirect_uri=${redirectUri}&scope=openid&isConsortium=true`;
     }
     return '';
   };
