@@ -693,7 +693,6 @@ export function processOkapiSession(okapiUrl, store, tenant, resp, ssoToken) {
  */
 export function validateUser(okapiUrl, store, tenant, session) {
   const { token, tenant: sessionTenant = tenant } = session;
-  console.log({ session })
   return fetch(`${okapiUrl}/bl-users/_self?expandPermissions=true`, {
     headers: getHeaders(sessionTenant, token),
     credentials: 'include',
