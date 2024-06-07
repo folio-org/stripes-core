@@ -158,13 +158,16 @@ export class FFetch {
         this.logger.log('rtr', 'authn request');
         return this.nativeFetch.apply(global, [resource, options && { ...options, ...OKAPI_FETCH_OPTIONS }])
           .then(res => {
-            this.logger.log('rtr', 'authn success!');
             // a response can only be read once, so we clone it to grab the
             // tokenExpiration in order to kick of the rtr cycle, then return
             // the original
-            res.clone().json().then(json => {
-              this.rotateCallback(json.tokenExpiration);
-            });
+            const clone = res.clone();
+            if (clone.ok) {
+              this.logger.log('rtr', 'authn success!');
+              clone.json().then(json => {
+                this.rotateCallback(json.tokenExpiration);
+              });
+            }
 
             return res;
           });

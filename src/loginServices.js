@@ -693,6 +693,7 @@ export function processOkapiSession(okapiUrl, store, tenant, resp, ssoToken) {
  */
 export function validateUser(okapiUrl, store, tenant, session) {
   const { token, tenant: sessionTenant = tenant } = session;
+  console.log({ session })
   return fetch(`${okapiUrl}/bl-users/_self?expandPermissions=true`, {
     headers: getHeaders(sessionTenant, token),
     credentials: 'include',
@@ -742,7 +743,9 @@ export function validateUser(okapiUrl, store, tenant, session) {
 
 /**
  * checkOkapiSession
- * 1. Pull the session from local storage; if non-empty validate it, dispatching load-resources actions.
+ * 1. Pull the session from local storage; if it contains a user id,
+ *    validate it by fetching /_self to verify that it is still active,
+ *    dispatching load-resources actions.
  * 2. Check if SSO (SAML) is enabled, dispatching check-sso actions
  * 3. dispatch set-okapi-ready.
  *
@@ -753,7 +756,7 @@ export function validateUser(okapiUrl, store, tenant, session) {
 export function checkOkapiSession(okapiUrl, store, tenant) {
   getOkapiSession()
     .then((sess) => {
-      return sess !== null ? validateUser(okapiUrl, store, tenant, sess) : null;
+      return sess?.user?.id ? validateUser(okapiUrl, store, tenant, sess) : null;
     })
     .then(() => {
       return getSSOEnabled(okapiUrl, store, tenant);
