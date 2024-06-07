@@ -37,7 +37,6 @@ const AuthnLogin = ({ stripes }) => {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (okapi.authnUrl) {
-
     // If only 1 tenant is defined in config, skip the tenant selection screen.
     if (tenants.length === 1) {
       const redirectUri = `${window.location.protocol}//${window.location.host}/oidc-landing`;
