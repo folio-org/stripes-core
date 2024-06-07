@@ -22,10 +22,21 @@ jest.mock('./components/Redirect', () => () => '<redirect>');
 jest.mock('./components/Login', () => () => '<login>');
 jest.mock('./components/PreLoginLanding', () => () => '<preloginlanding>');
 
+const store = {
+  getState: () => ({
+    okapi: {
+      token: '123',
+    },
+  }),
+  dispatch: () => {},
+  subscribe: () => {},
+  replaceReducer: () => {},
+};
+
 describe('RootWithIntl', () => {
   describe('AuthnLogin', () => {
     it('handles legacy login', () => {
-      const stripes = { okapi: {}, config: { tenantOptions: {} } };
+      const stripes = { okapi: {}, config: {}, store };
       render(<AuthnLogin stripes={stripes} />);
 
       expect(screen.getByText(/<login>/)).toBeInTheDocument();
@@ -41,6 +52,7 @@ describe('RootWithIntl', () => {
               diku: { name: 'diku', clientId: 'diku-application' }
             }
           },
+          store
         };
         render(<AuthnLogin stripes={stripes} />);
 
@@ -57,6 +69,7 @@ describe('RootWithIntl', () => {
               diku2: { name: 'diku2', clientId: 'diku2-application' }
             }
           },
+          store
         };
         render(<AuthnLogin stripes={stripes} />);
 
