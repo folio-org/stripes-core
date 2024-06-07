@@ -25,9 +25,7 @@ const OIDCLanding = () => {
   const location = useLocation();
   const store = useStore();
   // const samlError = useRef();
-  const { okapi, config } = useStripes();
-  const { tenantOptions = {} } = config;
-
+  const { okapi } = useStripes();
   const [potp, setPotp] = useState();
   const [samlError, setSamlError] = useState();
 
@@ -58,12 +56,10 @@ const OIDCLanding = () => {
     const otp = getOtp();
 
     if (otp) {
-      const loginTenant = Object.values(tenantOptions)[0];
-
       setPotp(otp);
       fetch(`${okapi.url}/authn/token?code=${otp}&redirect-uri=${window.location.protocol}//${window.location.host}/oidc-landing`, {
         credentials: 'include',
-        headers: { 'X-Okapi-tenant': loginTenant.name, 'Content-Type': 'application/json' },
+        headers: { 'X-Okapi-tenant': okapi.tenant, 'Content-Type': 'application/json' },
         mode: 'cors',
       })
         .then((resp) => {
@@ -76,7 +72,7 @@ const OIDCLanding = () => {
                 });
               })
               .then(() => {
-                return requestUserWithPerms(okapi.url, store, loginTenant.name);
+                return requestUserWithPerms(okapi.url, store, okapi.tenant);
               });
           } else {
             return resp.json().then((error) => {
@@ -93,7 +89,7 @@ const OIDCLanding = () => {
     // we only want to run this effect once, on load.
     // keycloak authentication will redirect here and the other deps will be constant:
     // location.search: the query string; this will never change
-    // config.tenantOptions, okapi.url: these are defined in stripes.config.js
+    // okapi.tenant, okapi.url: these are defined in stripes.config.js
     // store: the redux store
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
