@@ -26,7 +26,6 @@ const OIDCLanding = () => {
   const store = useStore();
   // const samlError = useRef();
   const { okapi } = useStripes();
-
   const [potp, setPotp] = useState();
   const [samlError, setSamlError] = useState();
 
