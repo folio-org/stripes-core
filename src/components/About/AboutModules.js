@@ -8,8 +8,10 @@ import css from './About.css';
 
 
 const AboutInterfaces = ({ list }) => {
+  list.sort((a, b) => a.name.localeCompare(b.name));
   return (
     <List
+      listStyle="bullets"
       listClass={css.paddingLeftOfListItems}
       items={list}
       itemFormatter={(item) => <li key={item.name}>{item.name}</li>}
@@ -22,6 +24,8 @@ AboutInterfaces.propTypes = {
 };
 
 const AboutModules = ({ list }) => {
+  list.sort((a, b) => a.name.localeCompare(b.name));
+
   return (
     <List
       listStyle="bullets"
