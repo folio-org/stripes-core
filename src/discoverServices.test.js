@@ -101,7 +101,7 @@ describe('discoveryReducer', () => {
   it('handles DISCOVERY_APPLICATIONS', () => {
     let state = {};
     const moduleDescriptors = [
-      { id: 'mod-a' },
+      { id: 'mod-a', provides: [{ id: 'if-a', version: '1.0' }] },
       { id: 'mod-b' },
     ];
     const uiModules = [
@@ -122,7 +122,13 @@ describe('discoveryReducer', () => {
         [action.data.id]: {
           name: action.data.id,
           modules: [
-            ...moduleDescriptors.map((d) => ({ name: d.id, interfaces: [] })),
+            ...moduleDescriptors.map((d) => (
+              {
+                name: d.id,
+                interfaces: d.provides?.map((i) => {
+                  return { name: i.id + ' ' + i.version };
+                }) || []
+              })),
             ...uiModules.map((d) => ({ name: d.id, interfaces: [] })),
           ],
         },
