@@ -21,6 +21,7 @@ const AboutApplicationVersions = ({ message, applications }) => {
       </Headline>
       <Headline>{message}</Headline>
       {Object.values(applications)
+        .sort((a, b) => a.name.localeCompare(b.name))
         .map((app) => {
           return (
             <ul key={app.name}>
