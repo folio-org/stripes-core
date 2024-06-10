@@ -59,10 +59,10 @@ import {
   RTRError,
 } from './Errors';
 import {
+  RTR_AT_EXPIRY_IF_UNKNOWN,
   RTR_AT_TTL_FRACTION,
   RTR_ERROR_EVENT,
 } from './constants';
-
 import FXHR from './FXHR';
 
 const OKAPI_FETCH_OPTIONS = {
@@ -139,7 +139,7 @@ export class FFetch {
 
         // default: 10 seconds
         this.logger.log('rtr', 'rotation scheduled with default value');
-        return 10 * 1000;
+        return ms(RTR_AT_EXPIRY_IF_UNKNOWN);
       });
 
       scheduleRotation(rotationPromise);

@@ -2,9 +2,15 @@
 // FFetch for the reassign globals side-effect in its constructor.
 /* eslint-disable no-unused-vars */
 
+import ms from 'ms';
+
 import { getTokenExpiry } from '../../loginServices';
 import { FFetch } from './FFetch';
 import { RTRError, UnexpectedResourceError } from './Errors';
+import {
+  RTR_AT_EXPIRY_IF_UNKNOWN,
+  RTR_AT_TTL_FRACTION,
+} from './constants';
 
 jest.mock('../../loginServices', () => ({
   ...(jest.requireActual('../../loginServices')),
@@ -144,6 +150,163 @@ describe('FFetch class', () => {
       expect(response).toEqual('okapi success');
     });
   });
+
+  describe('calling authentication resources', () => {
+    it('handles RTR data in the response', async () => {
+      // a static timestamp representing "now"
+      const whatTimeIsItMrFox = 1718042609734;
+
+      // a static timestamp of when the AT will expire, in the future
+      // this value will be pushed into the response returned from the fetch
+      const accessTokenExpiration = whatTimeIsItMrFox + 5000;
+
+      const st = jest.spyOn(window, 'setTimeout');
+
+      // dummy date data: assume session
+      Date.now = () => whatTimeIsItMrFox;
+
+      const cloneJson = jest.fn();
+      const clone = () => ({
+        ok: true,
+        json: () => Promise.resolve({ tokenExpiration: { accessTokenExpiration } })
+      });
+
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        clone,
+      });
+
+      mockFetch.mockResolvedValueOnce('okapi success');
+      const testFfetch = new FFetch({
+        logger: { log },
+        store: {
+          dispatch: jest.fn(),
+        }
+      });
+      testFfetch.replaceFetch();
+      testFfetch.replaceXMLHttpRequest();
+
+      const response = await global.fetch('okapiUrl/bl-users/_self', { testOption: 'test' });
+      // why this extra await/setTimeout? Because RTR happens in an un-awaited
+      // promise in a separate thread fired off by setTimout, and we need to
+      // give it the chance to complete. on the one hand, this feels super
+      // gross, but on the other, since we're deliberately pushing rotation
+      // into a separate thread, I'm note sure of a better way to handle this.
+      await setTimeout(Promise.resolve(), 2000);
+      expect(st).toHaveBeenCalledWith(expect.any(Function), (accessTokenExpiration - whatTimeIsItMrFox) * RTR_AT_TTL_FRACTION);
+    });
+
+    it('handles RTR data in the session', async () => {
+      // a static timestamp representing "now"
+      const whatTimeIsItMrFox = 1718042609734;
+
+      // a static timestamp of when the AT will expire, in the future
+      // this value will be retrieved from local storage via getTokenExpiry
+      const atExpires = whatTimeIsItMrFox + 5000;
+
+      const st = jest.spyOn(window, 'setTimeout');
+
+      getTokenExpiry.mockResolvedValue({ atExpires });
+      Date.now = () => whatTimeIsItMrFox;
+
+      const cloneJson = jest.fn();
+      const clone = () => ({
+        ok: true,
+        json: () => Promise.resolve({}),
+      });
+
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        clone,
+      });
+
+      mockFetch.mockResolvedValueOnce('okapi success');
+      const testFfetch = new FFetch({
+        logger: { log },
+        store: {
+          dispatch: jest.fn(),
+        }
+      });
+      testFfetch.replaceFetch();
+      testFfetch.replaceXMLHttpRequest();
+
+      const response = await global.fetch('okapiUrl/bl-users/_self', { testOption: 'test' });
+      // why this extra await/setTimeout? Because RTR happens in an un-awaited
+      // promise in a separate thread fired off by setTimout, and we need to
+      // give it the chance to complete. on the one hand, this feels super
+      // gross, but on the other, since we're deliberately pushing rotation
+      // into a separate thread, I'm note sure of a better way to handle this.
+      await setTimeout(Promise.resolve(), 2000);
+      expect(st).toHaveBeenCalledWith(expect.any(Function), (atExpires - whatTimeIsItMrFox) * RTR_AT_TTL_FRACTION);
+    });
+
+    it('handles missing RTR data', async () => {
+      const st = jest.spyOn(window, 'setTimeout');
+      getTokenExpiry.mockResolvedValue({});
+
+      const cloneJson = jest.fn();
+      const clone = () => ({
+        ok: true,
+        json: () => Promise.resolve({}),
+      });
+
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        clone,
+      });
+
+      mockFetch.mockResolvedValueOnce('okapi success');
+      const testFfetch = new FFetch({
+        logger: { log },
+        store: {
+          dispatch: jest.fn(),
+        }
+      });
+      testFfetch.replaceFetch();
+      testFfetch.replaceXMLHttpRequest();
+
+      const response = await global.fetch('okapiUrl/bl-users/_self', { testOption: 'test' });
+      // why this extra await/setTimeout? Because RTR happens in an un-awaited
+      // promise in a separate thread fired off by setTimout, and we need to
+      // give it the chance to complete. on the one hand, this feels super
+      // gross, but on the other, since we're deliberately pushing rotation
+      // into a separate thread, I'm note sure of a better way to handle this.
+      await setTimeout(Promise.resolve(), 2000);
+
+      expect(st).toHaveBeenCalledWith(expect.any(Function), ms(RTR_AT_EXPIRY_IF_UNKNOWN));
+    });
+
+    it('handles unsuccessful responses', async () => {
+      jest.spyOn(window, 'dispatchEvent');
+      jest.spyOn(console, 'error');
+
+      const cloneJson = jest.fn();
+      const clone = () => ({
+        ok: false,
+        json: cloneJson,
+      });
+
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        clone,
+      });
+
+      mockFetch.mockResolvedValueOnce('okapi success');
+      const testFfetch = new FFetch({
+        logger: { log },
+        store: {
+          dispatch: jest.fn(),
+        }
+      });
+      testFfetch.replaceFetch();
+      testFfetch.replaceXMLHttpRequest();
+
+      const response = await global.fetch('okapiUrl/bl-users/_self', { testOption: 'test' });
+      expect(mockFetch.mock.calls).toHaveLength(1);
+      expect(cloneJson).not.toHaveBeenCalled();
+    });
+  });
+
 
   describe('Calling an okapi fetch with missing token...', () => {
     it('returns the error', async () => {
