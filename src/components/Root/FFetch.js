@@ -47,6 +47,7 @@ import {
   setRtrTimeout
 } from '../../okapiActions';
 
+import { getTokenExpiry } from '../../loginServices';
 import {
   getPromise,
   isAuthenticationRequest,
@@ -58,10 +59,10 @@ import {
   RTRError,
 } from './Errors';
 import {
+  RTR_AT_EXPIRY_IF_UNKNOWN,
   RTR_AT_TTL_FRACTION,
   RTR_ERROR_EVENT,
 } from './constants';
-
 import FXHR from './FXHR';
 
 const OKAPI_FETCH_OPTIONS = {
@@ -107,19 +108,42 @@ export class FFetch {
   rotateCallback = (res) => {
     this.logger.log('rtr', 'rotation callback setup');
 
-    // set a short rotation interval by default, then inspect the response for
-    // token-expiration data to use instead if available. not all responses
-    // (e.g. those from _self) contain token-expiration values, so it is
-    // necessary to provide a default.
-    let rotationInterval = 10 * 1000;
-    if (res?.accessTokenExpiration) {
-      rotationInterval = (new Date(res.accessTokenExpiration).getTime() - Date.now()) * RTR_AT_TTL_FRACTION;
-    }
+    const scheduleRotation = (rotationP) => {
+      rotationP.then((rotationInterval) => {
+        this.logger.log('rtr', `rotation fired from rotateCallback; next callback in ${ms(rotationInterval)}`);
+        this.store.dispatch(setRtrTimeout(setTimeout(() => {
+          rtr(this.nativeFetch, this.logger, this.rotateCallback);
+        }, rotationInterval)));
+      });
+    };
 
-    this.logger.log('rtr', `rotation fired from rotateCallback; next callback in ${ms(rotationInterval)}`);
-    this.store.dispatch(setRtrTimeout(setTimeout(() => {
-      rtr(this.nativeFetch, this.logger, this.rotateCallback);
-    }, rotationInterval)));
+    // When starting a new session, the response from /bl-users/login-with-expiry
+    // will contain AT expiration info, but when restarting an existing session,
+    // the response from /bl-users/_self will NOT, although that information will
+    // have been cached in local-storage.
+    //
+    // This means there are many places we have to check to figure out when the
+    // AT is likely to expire, and thus when we want to rotate. First inspect
+    // the response, otherwise the session. Default to 10 seconds.
+    if (res?.accessTokenExpiration) {
+      this.logger.log('rtr', 'rotation scheduled with login response data');
+      const rotationPromise = Promise.resolve((new Date(res.accessTokenExpiration).getTime() - Date.now()) * RTR_AT_TTL_FRACTION);
+
+      scheduleRotation(rotationPromise);
+    } else {
+      const rotationPromise = getTokenExpiry().then((expiry) => {
+        if (expiry.atExpires) {
+          this.logger.log('rtr', 'rotation scheduled with cached session data');
+          return (new Date(expiry.atExpires).getTime() - Date.now()) * RTR_AT_TTL_FRACTION;
+        }
+
+        // default: 10 seconds
+        this.logger.log('rtr', 'rotation scheduled with default value');
+        return ms(RTR_AT_EXPIRY_IF_UNKNOWN);
+      });
+
+      scheduleRotation(rotationPromise);
+    }
   }
 
   /**
@@ -158,13 +182,16 @@ export class FFetch {
         this.logger.log('rtr', 'authn request');
         return this.nativeFetch.apply(global, [resource, options && { ...options, ...OKAPI_FETCH_OPTIONS }])
           .then(res => {
-            this.logger.log('rtr', 'authn success!');
             // a response can only be read once, so we clone it to grab the
             // tokenExpiration in order to kick of the rtr cycle, then return
             // the original
-            res.clone().json().then(json => {
-              this.rotateCallback(json.tokenExpiration);
-            });
+            const clone = res.clone();
+            if (clone.ok) {
+              this.logger.log('rtr', 'authn success!');
+              clone.json().then(json => {
+                this.rotateCallback(json.tokenExpiration);
+              });
+            }
 
             return res;
           });

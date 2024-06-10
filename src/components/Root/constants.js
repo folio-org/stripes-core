@@ -47,3 +47,17 @@ export const RTR_IDLE_SESSION_TTL = '60m';
  * value must be a string parsable by ms()
  */
 export const RTR_IDLE_MODAL_TTL = '1m';
+
+/**
+ * When resuming an existing session but there is no token-expiration
+ * data in the session, we can't properly schedule RTR.
+ * 1. the real expiration data is in the cookie, but it's HTTPOnly
+ * 2. the resume-session API endpoint, _self, doesn't include
+ *    token-expiration data in its response
+ * 3. the session _should_ contain a value, but maybe the session
+ *    was corrupt.
+ * Given the resume-session API call succeeded, we know the AT must have been
+ * valid at the time, so we punt and schedule rotation in the future by this
+ * (relatively short) interval.
+ */
+export const RTR_AT_EXPIRY_IF_UNKNOWN = '10s';
