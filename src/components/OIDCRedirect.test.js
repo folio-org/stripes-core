@@ -25,7 +25,7 @@ describe('OIDCRedirect', () => {
   afterAll(() => sessionStorage.removeItem('unauthorized_path'));
 
   it('redirects to value from session storage under unauthorized_path key', () => {
-    useStripes.mockReturnValue({ okapi:{ authnUrl: 'http://example.com/authn' } });
+    useStripes.mockReturnValue({ okapi: { authnUrl: 'http://example.com/authn' } });
     render(<OIDCRedirect />);
 
     expect(screen.getByText(/internalredirect/)).toBeInTheDocument();

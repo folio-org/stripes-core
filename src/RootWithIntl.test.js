@@ -22,10 +22,21 @@ jest.mock('./components/Redirect', () => () => '<redirect>');
 jest.mock('./components/Login', () => () => '<login>');
 jest.mock('./components/PreLoginLanding', () => () => '<preloginlanding>');
 
+const store = {
+  getState: () => ({
+    okapi: {
+      token: '123',
+    },
+  }),
+  dispatch: () => {},
+  subscribe: () => {},
+  replaceReducer: () => {},
+};
+
 describe('RootWithIntl', () => {
   describe('AuthnLogin', () => {
     it('handles legacy login', () => {
-      const stripes = { okapi: {}, config: {} };
+      const stripes = { okapi: {}, config: {}, store };
       render(<AuthnLogin stripes={stripes} />);
 
       expect(screen.getByText(/<login>/)).toBeInTheDocument();
@@ -35,7 +46,13 @@ describe('RootWithIntl', () => {
       it('handles single-tenant', () => {
         const stripes = {
           okapi: { authnUrl: 'https://barbie.com' },
-          config: { isSingleTenant: true }
+          config: {
+            isSingleTenant: true,
+            tenantOptions: {
+              diku: { name: 'diku', clientId: 'diku-application' }
+            }
+          },
+          store
         };
         render(<AuthnLogin stripes={stripes} />);
 
@@ -45,7 +62,14 @@ describe('RootWithIntl', () => {
       it('handles multi-tenant', () => {
         const stripes = {
           okapi: { authnUrl: 'https://oppie.com' },
-          config: { },
+          config: {
+            isSingleTenant: false,
+            tenantOptions: {
+              diku: { name: 'diku', clientId: 'diku-application' },
+              diku2: { name: 'diku2', clientId: 'diku2-application' }
+            }
+          },
+          store
         };
         render(<AuthnLogin stripes={stripes} />);
 

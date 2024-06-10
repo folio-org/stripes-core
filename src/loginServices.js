@@ -778,7 +778,7 @@ export function validateUser(okapiUrl, store, tenant, session) {
           token,
           tokenExpiration,
         }));
-        return loadResources(store, sessionTenant, user.id);
+        return loadResources(store, sessionTenant, user?.id ?? data.user?.id);
       });
     } else {
       store.dispatch(clearCurrentUser());

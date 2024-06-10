@@ -11,6 +11,7 @@
 * Idle-session timeout and "Keep working?" modal. Refs STCOR-776.
 * Use keycloak URLs in place of users-bl for tenant-switch. Refs US1153537.
 * Fix 404 error page when logging in after changing password in Eureka. Refs STCOR-845.
+* Always retrieve `clientId` and `tenant` values from `config.tenantOptions` in stripes.config.js. Retires `okapi.tenant`, `okapi.clientId`, and `config.isSingleTenant`. Refs STCOR-787.
 * List UI apps in "Applications/modules/interfaces" column. STCOR-773
 
 ## [10.1.1](https://github.com/folio-org/stripes-core/tree/v10.1.1) (2024-03-25)
