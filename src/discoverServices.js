@@ -46,8 +46,8 @@ function parseApplicationDescriptor(store, descriptor) {
     list.push(...descriptor.moduleDescriptors?.map((i) => dispatchDescriptor(i)));
   }
 
-  if (descriptor['ui-modules']) {
-    list.push(...descriptor['ui-modules']?.map((i) => dispatchDescriptor(i)));
+  if (descriptor.uiModules) {
+    list.push(...descriptor.uiModules?.map((i) => dispatchDescriptor(i)));
   }
 
   list.push(dispatchApplication(descriptor));
@@ -76,7 +76,7 @@ function parseApplicationDescriptor(store, descriptor) {
           { "id": "mod-users-18.2.0", "name": "mod-users", "version": "18.2.0" },
           ...
         ],
-        "ui-modules": [
+        "uiModules": [
           { "name": "folio_stripes-core", "version": "8.1.2" },
           ...
         ],
@@ -246,14 +246,23 @@ export function discoveryReducer(state = {}, action) {
           ...state.applications,
           [action.data.id]: {
             name: action.data.id,
-            modules: action.data.moduleDescriptors.map((d) => {
-              return {
-                name: d.id,
-                interfaces: d.provides?.map((i) => {
-                  return { name: i.id + ' ' + i.version };
-                }) || [],
-              };
-            }),
+            modules: [
+              ...action.data.moduleDescriptors.map((d) => {
+                return {
+                  name: d.id,
+                  interfaces: d.provides?.map((i) => {
+                    return { name: i.id + ' ' + i.version };
+                  }) || [],
+                };
+              }),
+              ...action.data.uiModules.map((d) => {
+                return {
+                  name: d.id,
+                  interfaces: [],
+                };
+              })
+
+            ],
           },
         },
       };
