@@ -1,12 +1,12 @@
 # Change history for stripes-core
 
-<<<<<<< HEAD
 ## [10.1.1](https://github.com/folio-org/stripes-core/tree/v10.1.1) (2024-03-25)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.1.0...v10.1.1)
 
 * Utilize the `tenant` procured through the SSO login process. Refs STCOR-769.
 * Use keycloak URLs in place of users-bl for tenant-switch. Refs US1153537.
 * Idle-session timeout and "Keep working?" modal. Refs STCOR-776.
+* Always retrieve `clientId` and `tenant` values from `config.tenantOptions` in stripes.config.js. Retires `okapi.tenant`, `okapi.clientId`, and `config.isSingleTenant`. Refs STCOR-787.
 
 ## [10.1.0](https://github.com/folio-org/stripes-core/tree/v10.1.0) (2024-03-12)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.0.0...v10.1.0)
