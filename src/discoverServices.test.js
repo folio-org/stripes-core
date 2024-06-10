@@ -98,6 +98,42 @@ describe('discoverServices', () => {
 });
 
 describe('discoveryReducer', () => {
+  it('handles DISCOVERY_APPLICATIONS', () => {
+    let state = {};
+    const moduleDescriptors = [
+      { id: 'mod-a' },
+      { id: 'mod-b' },
+    ];
+    const uiModules = [
+      { id: 'folio_c' },
+      { id: 'folio_d' },
+    ];
+    const action = {
+      type: 'DISCOVERY_APPLICATIONS',
+      data: {
+        id: 'a',
+        moduleDescriptors,
+        uiModules,
+      },
+    };
+
+    const mapped = {
+      applications: {
+        [action.data.id]: {
+          name: action.data.id,
+          modules: [
+            ...moduleDescriptors.map((d) => ({ name: d.id, interfaces: [] })),
+            ...uiModules.map((d) => ({ name: d.id, interfaces: [] })),
+          ],
+        },
+      },
+    };
+
+    state = discoveryReducer(state, action);
+
+    expect(state).toMatchObject(mapped);
+  });
+
   it('handles DISCOVERY_OKAPI', () => {
     let state = {
       okapi: '0.0.0'

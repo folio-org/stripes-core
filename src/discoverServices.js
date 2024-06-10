@@ -258,9 +258,7 @@ export function discoveryReducer(state = {}, action) {
               ...action.data.uiModules.map((d) => {
                 return {
                   name: d.id,
-                  interfaces: d.provides?.map((i) => {
-                    return { name: i.id + ' ' + i.version };
-                  }) || [],
+                  interfaces: [],
                 };
               })
 
