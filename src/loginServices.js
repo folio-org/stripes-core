@@ -421,16 +421,31 @@ export function spreadUserWithPerms(userWithPerms) {
     ...userWithPerms?.user?.personal,
   };
 
-  // remap userWithPerms.permissions.permissions from an array shaped like
-  //   [{ "permissionName": "foo", ... }]
-  // to an object shaped like
-  //   { foo: true, ...}
-  const perms = {};
+  // remap data's array of permission-names to set with
+  // permission-names for keys and `true` for values.
+  //
+  // userWithPerms is shaped differently depending on the API call
+  // that generated it.
+  // in community-folio, /login sends data like [{ "permissionName": "foo" }]
+  //   and includes both directly and indirectly assigned permissions
+  // in community-folio, /_self sends data like ["foo", "bar", "bat"]
+  //   but only includes directly assigned permissions
+  // in community-folio, /_self?expandPermissions=true sends data like [{ "permissionName": "foo" }]
+  //   and includes both directly and indirectly assigned permissions
+  // in eureka-folio, /_self sends data like ["foo", "bar", "bat"]
+  //   and includes both directly and indirectly assigned permissions
+  //
+  // we'll parse it differently depending on what it looks like.
+  let perms = {};
   const list = userWithPerms?.permissions?.permissions;
   if (list && Array.isArray(list) && list.length > 0) {
-    list.forEach(p => {
-      perms[p.permissionName] = true;
-    });
+    // shaped like this ["foo", "bar", "bat"] or
+    // shaped like that [{ "permissionName": "foo" }]?
+    if (typeof list[0] === 'string') {
+      perms = Object.assign({}, ...list.map(p => ({ [p]: true })));
+    } else {
+      perms = Object.assign({}, ...list.map(p => ({ [p.permissionName]: true })));
+    }
   }
 
   return { user, perms };
