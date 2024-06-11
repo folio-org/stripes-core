@@ -119,12 +119,12 @@ export class FFetch {
 
     // When starting a new session, the response from /bl-users/login-with-expiry
     // will contain AT expiration info, but when restarting an existing session,
-    // the response from /bl-users/_self will NOT, although that information will
+    // the response from /bl-users/_self will NOT, although that information should
     // have been cached in local-storage.
     //
     // This means there are many places we have to check to figure out when the
     // AT is likely to expire, and thus when we want to rotate. First inspect
-    // the response, otherwise the session. Default to 10 seconds.
+    // the response, then the session, then default to 10 seconds.
     if (res?.accessTokenExpiration) {
       this.logger.log('rtr', 'rotation scheduled with login response data');
       const rotationPromise = Promise.resolve((new Date(res.accessTokenExpiration).getTime() - Date.now()) * RTR_AT_TTL_FRACTION);
@@ -132,7 +132,7 @@ export class FFetch {
       scheduleRotation(rotationPromise);
     } else {
       const rotationPromise = getTokenExpiry().then((expiry) => {
-        if (expiry.atExpires) {
+        if (expiry?.atExpires) {
           this.logger.log('rtr', 'rotation scheduled with cached session data');
           return (new Date(expiry.atExpires).getTime() - Date.now()) * RTR_AT_TTL_FRACTION;
         }
@@ -189,7 +189,12 @@ export class FFetch {
             if (clone.ok) {
               this.logger.log('rtr', 'authn success!');
               clone.json().then(json => {
-                this.rotateCallback(json.tokenExpiration);
+                // we want accessTokenExpiration. do we need to destructure?
+                // in community-folio, a /login-with-expiry response is shaped like
+                //   { ..., tokenExpiration: { accessTokenExpiration, refreshTokenExpiration } }
+                // in eureka-folio, a /authn/token response is shaped like
+                //   { accessTokenExpiration, refreshTokenExpiration }
+                this.rotateCallback(json.tokenExpiration ?? json);
               });
             }
 
