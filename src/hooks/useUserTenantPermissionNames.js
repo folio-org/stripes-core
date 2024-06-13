@@ -42,7 +42,7 @@ const useUserTenantPermissionNames = (
       ).json();
     },
     {
-      enabled: Boolean(user?.id && tenantId),
+      enabled: Boolean(user?.id && tenantId) && !stripes.hasInterface('roles'),
       keepPreviousData: true,
       ...options,
     },
