@@ -5,7 +5,7 @@ import {
 } from 'react-query';
 
 import permissions from 'fixtures/permissions';
-import useUserTenantPermissionNames from './useUserTenantPermissionNames';
+import useUserSelfTenantPermissions from './useUserSelfTenantPermissions';
 import useOkapiKy from '../useOkapiKy';
 
 jest.mock('../useOkapiKy');
@@ -19,7 +19,7 @@ jest.mock('../StripesContext', () => ({
         id: 'userId'
       }
     },
-    hasInterface: () => false
+    hasInterface: () => true
   }),
 }));
 
@@ -33,11 +33,10 @@ const wrapper = ({ children }) => (
 );
 
 const response = {
-  permissionNames: permissions,
-  totalRecords: permissions.length,
+  permissions: { permissions },
 };
 
-describe('useUserTenantPermissionNames', () => {
+describe('useUserSelfTenantPermissions', () => {
   const getMock = jest.fn(() => ({
     json: () => Promise.resolve(response),
   }));
@@ -62,11 +61,11 @@ describe('useUserTenantPermissionNames', () => {
       userId: 'userId',
       tenantId: 'tenantId',
     };
-    const { result } = renderHook(() => useUserTenantPermissionNames(options), { wrapper });
+    const { result } = renderHook(() => useUserSelfTenantPermissions(options), { wrapper });
 
     await waitFor(() => !result.current.isLoading);
 
     expect(setHeaderMock).toHaveBeenCalledWith('X-Okapi-Tenant', options.tenantId);
-    expect(getMock).toHaveBeenCalledWith(`perms/users/${options.userId}/permissions`, expect.objectContaining({}));
+    expect(getMock).toHaveBeenCalledWith('users-keycloak/_self', expect.objectContaining({}));
   });
 });
