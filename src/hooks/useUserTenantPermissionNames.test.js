@@ -5,7 +5,7 @@ import {
 } from 'react-query';
 
 import permissions from 'fixtures/permissions';
-import useUserTenantPermissions from './useUserTenantPermissions';
+import useUserTenantPermissionNames from './useUserTenantPermissionNames';
 import useOkapiKy from '../useOkapiKy';
 
 jest.mock('../useOkapiKy');
@@ -61,7 +61,7 @@ describe('useUserTenantPermissions', () => {
       userId: 'userId',
       tenantId: 'tenantId',
     };
-    const { result } = renderHook(() => useUserTenantPermissions(options), { wrapper });
+    const { result } = renderHook(() => useUserTenantPermissionNames(options), { wrapper });
 
     await waitFor(() => !result.current.isLoading);
 
