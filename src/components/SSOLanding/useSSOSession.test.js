@@ -56,7 +56,7 @@ describe('SSOLanding', () => {
         okapi: {
           url: 'okapiUrl',
           tenant: 'okapiTenant'
-        } 
+        }
       })
     });
 
