@@ -13,6 +13,11 @@ import {
 } from './token-util';
 import { RTR_SUCCESS_EVENT } from './constants';
 
+const okapi = {
+  tenant: 'diku',
+  url: 'http://test'
+};
+
 describe('isFolioApiRequest', () => {
   it('accepts requests whose origin matches okapi\'s', () => {
     const oUrl = 'https://millicent-sounds-kinda-like-malificent.edu';
@@ -126,7 +131,7 @@ describe('rtr', () => {
     let ex = null;
     // const callback = () => { console.log('HOLA!!!')}; // jest.fn();
     try {
-      await rtr(fetchfx, logger, callback);
+      await rtr(fetchfx, logger, callback, okapi);
       expect(callback).toHaveBeenCalled();
     } catch (e) {
       ex = e;
@@ -168,7 +173,7 @@ describe('rtr', () => {
 
       let ex = null;
       try {
-        await rtr(nativeFetch, logger, jest.fn());
+        await rtr(nativeFetch, logger, jest.fn(), okapi);
       } catch (e) {
         ex = e;
       }
@@ -202,7 +207,7 @@ describe('rtr', () => {
 
       let ex = null;
       try {
-        await rtr(nativeFetch, logger, jest.fn());
+        await rtr(nativeFetch, logger, jest.fn(), okapi);
       } catch (e) {
         ex = e;
       }
@@ -232,7 +237,7 @@ describe('rtr', () => {
 
     let ex = null;
     try {
-      await rtr(nativeFetch, logger, jest.fn());
+      await rtr(nativeFetch, logger, jest.fn(), okapi);
     } catch (e) {
       ex = e;
     }
@@ -262,7 +267,7 @@ describe('rtr', () => {
 
     let ex = null;
     try {
-      await rtr(nativeFetch, logger, jest.fn());
+      await rtr(nativeFetch, logger, jest.fn(), okapi);
     } catch (e) {
       ex = e;
     }

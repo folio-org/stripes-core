@@ -4,7 +4,7 @@ import { useLocation } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import queryString from 'query-string';
 
-import { config } from 'stripes-config';
+import { config, okapi } from 'stripes-config';
 
 import { defaultErrors } from '../../constants';
 import { setAuthError } from '../../okapiActions';
@@ -23,8 +23,7 @@ const getToken = (cookies, params) => {
   return cookies?.ssoToken || params?.ssoToken;
 };
 
-const getTenant = (params, token) => {
-  const store = useStore();
+const getTenant = (params, token, store) => {
   const tenant = config.useSecureTokens
     ? params?.tenantId
     : parseJWT(token)?.tenant;
@@ -43,7 +42,7 @@ const useSSOSession = () => {
   const params = getParams(location);
 
   const token = getToken(cookies, params);
-  const tenant = getTenant(params, token);
+  const tenant = getTenant(params, token, store);
 
   useEffect(() => {
     requestUserWithPerms(okapi.url, store, tenant, token)

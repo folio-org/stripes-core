@@ -112,8 +112,8 @@ export class FFetch {
       rotationP.then((rotationInterval) => {
         this.logger.log('rtr', `rotation fired from rotateCallback; next callback in ${ms(rotationInterval)}`);
         this.store.dispatch(setRtrTimeout(setTimeout(() => {
-          const { okapi } = this.store.getState();
-          rtr(this.nativeFetch, this.logger, this.rotateCallback, okapi);
+          const okapiStore = this.store.getState().okapi;
+          rtr(this.nativeFetch, this.logger, this.rotateCallback, okapiStore);
         }, rotationInterval)));
       });
     };
