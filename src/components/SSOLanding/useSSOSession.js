@@ -4,7 +4,7 @@ import { useLocation } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import queryString from 'query-string';
 
-import { config, okapi } from 'stripes-config';
+import { config } from 'stripes-config';
 
 import { defaultErrors } from '../../constants';
 import { setAuthError } from '../../okapiActions';
@@ -24,11 +24,12 @@ const getToken = (cookies, params) => {
 };
 
 const getTenant = (params, token) => {
+  const store = useStore();
   const tenant = config.useSecureTokens
     ? params?.tenantId
     : parseJWT(token)?.tenant;
 
-  return tenant || okapi.tenant;
+  return tenant || store.getState()?.okapi?.tenant;
 };
 
 const useSSOSession = () => {
