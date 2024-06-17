@@ -12,6 +12,8 @@
 * Implement password validation for Login Page. Refs STCOR-741.
 * Avoid deprecated `defaultProps` for functional components. Refs STCOR-844..
 * Update session data with values from `_self` request on reload. Refs STCOR-846.
+* Avoid deprecated `getChildContext`. Refs STCOR-842.
+* Read locale from stripes-config before defaulting to `en-US`. Refs STCOR-851.
 
 ## [10.1.0](https://github.com/folio-org/stripes-core/tree/v10.1.0) (2024-03-12)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.0.0...v10.1.0)

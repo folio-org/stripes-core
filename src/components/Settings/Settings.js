@@ -26,7 +26,6 @@ import {
 
 import About from '../About';
 import { StripesContext } from '../../StripesContext';
-import AddContext from '../../AddContext';
 import { useModules } from '../../ModulesContext';
 import { stripesShape } from '../../Stripes';
 import AppIcon from '../AppIcon';
@@ -102,11 +101,9 @@ const Settings = ({ stripes }) => {
         render={(props2) => (
           <RouteErrorBoundary escapeRoute={path} moduleName={module.displayName} isSettings>
             <StripesContext.Provider value={moduleStripes}>
-              <AddContext context={{ stripes: moduleStripes }}>
-                <ModuleHierarchyProvider module={module.module}>
-                  <Component {...props2} stripes={moduleStripes} showSettings actAs="settings" />
-                </ModuleHierarchyProvider>
-              </AddContext>
+              <ModuleHierarchyProvider module={module.module}>
+                <Component {...props2} stripes={moduleStripes} showSettings actAs="settings" />
+              </ModuleHierarchyProvider>
               {props2.match.isExact ? <div className={css.panePlaceholder} /> : null}
             </StripesContext.Provider>
           </RouteErrorBoundary>

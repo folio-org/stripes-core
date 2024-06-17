@@ -11,10 +11,6 @@ import { ApolloProvider } from '@apollo/client';
 import { ErrorBoundary } from '@folio/stripes-components';
 import { metadata, icons } from 'stripes-config';
 
-/* ConnectContext - formerly known as RootContext, now comes from stripes-connect, so stripes-connect
-* is providing the infrastructure for store connectivity to the system. This eliminates a circular
-* dependency between stripes-connect and stripes-core. STCON-76
-*/
 import { ConnectContext } from '@folio/stripes-connect';
 import initialReducers from '../../initialReducers';
 import enhanceReducer from '../../enhanceReducer';
@@ -80,13 +76,10 @@ class Root extends Component {
     }
   }
 
-  getChildContext() {
-    return { addReducer: this.addReducer, addEpic: this.addEpic };
-  }
-
   componentDidMount() {
-    const { okapi, store, locale, defaultTranslations } = this.props;
+    const { okapi, store, defaultTranslations } = this.props;
     if (this.withOkapi) checkOkapiSession(okapi.url, store, okapi.tenant);
+    const locale = this.props.config.locale ?? 'en-US';
     // TODO: remove this after we load locale and translations at start from a public endpoint
     loadTranslations(store, locale, defaultTranslations);
   }
@@ -122,7 +115,6 @@ class Root extends Component {
 
   render() {
     const { logger, store, epics, config, okapi, actionNames, token, isAuthenticated, disableAuth, currentUser, currentPerms, locale, defaultTranslations, timezone, currency, plugins, bindings, discovery, translations, history, serverDown } = this.props;
-
     if (serverDown) {
       return <div>Error: server is down.</div>;
     }
@@ -198,11 +190,6 @@ class Root extends Component {
   }
 }
 
-Root.childContextTypes = {
-  addReducer: PropTypes.func,
-  addEpic: PropTypes.func,
-};
-
 Root.propTypes = {
   store: PropTypes.shape({
     subscribe: PropTypes.func.isRequired,
@@ -254,8 +241,6 @@ Root.propTypes = {
 
 Root.defaultProps = {
   history: createBrowserHistory(),
-  // TODO: remove after locale is accessible from a global config / public url
-  locale: 'en-US',
   timezone: 'UTC',
   currency: 'USD',
   okapiReady: false,
