@@ -2,8 +2,12 @@ import localforage from 'localforage';
 
 import {
   createOkapiSession,
+  getBindings,
+  getLocale,
+  getPlugins,
   getOkapiSession,
   getTokenExpiry,
+  getUserLocale,
   handleLoginError,
   loadTranslations,
   logout,
@@ -24,10 +28,10 @@ import {
   clearOkapiToken,
   setCurrentPerms,
   setLocale,
-  // setTimezone,
-  // setCurrency,
-  // setPlugins,
-  // setBindings,
+  setTimezone,
+  setCurrency,
+  setPlugins,
+  setBindings,
   // setTranslations,
   setAuthError,
   // checkSSO,
@@ -53,6 +57,7 @@ const mockFetchSuccess = (data) => {
   global.fetch = jest.fn().mockImplementation(() => (
     Promise.resolve({
       ok: true,
+      status: 200,
       json: () => Promise.resolve(data),
       headers: new Map(),
     })
@@ -539,5 +544,71 @@ describe('logout', () => {
       expect(res).toBe(true);
       expect(global.fetch).not.toHaveBeenCalled();
     });
+  });
+});
+
+describe('getLocale', () => {
+  it('dispatches setTimezone, setCurrency', async () => {
+    const value = { timezone: 'America/New_York', currency: 'USD' };
+    mockFetchSuccess({ configs: [{ value: JSON.stringify(value) }] });
+    const store = {
+      dispatch: jest.fn(),
+      getState: () => ({ okapi: { } }),
+    };
+    await getLocale('url', store, 'tenant');
+    expect(store.dispatch).toHaveBeenCalledWith(setTimezone(value.timezone));
+    expect(store.dispatch).toHaveBeenCalledWith(setCurrency(value.currency));
+    mockFetchCleanUp();
+  });
+});
+
+describe('getUserLocale', () => {
+  it('dispatches setTimezone, setCurrency', async () => {
+    const value = { locale: 'en-US', timezone: 'America/New_York', currency: 'USD' };
+    mockFetchSuccess({ configs: [{ value: JSON.stringify(value) }] });
+    const store = {
+      dispatch: jest.fn(),
+      getState: () => ({ okapi: { } }),
+    };
+    await getUserLocale('url', store, 'tenant');
+    expect(store.dispatch).toHaveBeenCalledWith(setTimezone(value.timezone));
+    expect(store.dispatch).toHaveBeenCalledWith(setCurrency(value.currency));
+    mockFetchCleanUp();
+  });
+});
+
+describe('getPlugins', () => {
+  it('dispatches setPlugins', async () => {
+    const configs = [
+      { configName: 'find-user', value: '@folio/plugin-hello-waldo' },
+      { configName: 'find-water', value: '@folio/plugin-dowsing-rod' },
+    ];
+    mockFetchSuccess({ configs });
+    const store = {
+      dispatch: jest.fn(),
+      getState: () => ({ okapi: { } }),
+    };
+    await getPlugins('url', store, 'tenant');
+
+    const mappedConfigs = configs.reduce((acc, val) => ({
+      ...acc,
+      [val.configName]: val.value,
+    }), {});
+    expect(store.dispatch).toHaveBeenCalledWith(setPlugins(mappedConfigs));
+    mockFetchCleanUp();
+  });
+});
+
+describe('getBindings', () => {
+  it('dispatches setBindings', async () => {
+    const value = { key: 'value' };
+    mockFetchSuccess({ configs: [{ value: JSON.stringify(value) }] });
+    const store = {
+      dispatch: jest.fn(),
+      getState: () => ({ okapi: { } }),
+    };
+    await getBindings('url', store, 'tenant');
+    expect(store.dispatch).toHaveBeenCalledWith(setBindings(value));
+    mockFetchCleanUp();
   });
 });
