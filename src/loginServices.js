@@ -719,7 +719,7 @@ export function validateUser(okapiUrl, store, tenant, session) {
         // data isn't provided by _self.
         store.dispatch(setSessionData({
           isAuthenticated: true,
-          user: data.user,
+          user,
           perms,
           tenant: sessionTenant,
           token,
