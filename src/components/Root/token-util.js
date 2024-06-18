@@ -191,7 +191,7 @@ export const isRotating = () => {
  * @param {function} fetchfx native fetch function
  * @param {@folio/stripes/logger} logger
  * @param {function} callback
- * @param {object} store
+ * @param {object} okapi
  * @returns void
  */
 export const rtr = (fetchfx, logger, callback, okapi) => {
