@@ -1,5 +1,4 @@
 import { isEmpty } from 'lodash';
-import { okapi } from 'stripes-config';
 
 import { getTokenExpiry, setTokenExpiry } from '../../loginServices';
 import { RTRError, UnexpectedResourceError } from './Errors';
@@ -192,9 +191,10 @@ export const isRotating = () => {
  * @param {function} fetchfx native fetch function
  * @param {@folio/stripes/logger} logger
  * @param {function} callback
+ * @param {object} okapi
  * @returns void
  */
-export const rtr = (fetchfx, logger, callback) => {
+export const rtr = (fetchfx, logger, callback, okapi) => {
   logger.log('rtr', '** RTR ...');
 
   // rotation is already in progress, maybe in this window,
