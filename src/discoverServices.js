@@ -96,7 +96,7 @@ function parseApplicationDescriptor(store, descriptor) {
 const APP_MAX_COUNT = 500;
 
 function fetchApplicationDetails(store) {
-  const okapi = store.getState().okapi;
+  const { okapi } = store.getState();
 
   return fetch(`${okapi.url}/entitlements/${okapi.tenant}/applications?limit=${APP_MAX_COUNT}`, {
     credentials: 'include',
@@ -146,7 +146,7 @@ function fetchApplicationDetails(store) {
  */
 
 function fetchGatewayVersion(store) {
-  const okapi = store.getState().okapi;
+  const { okapi } = store.getState();
 
   return fetch(`${okapi.url}/version`, {
     credentials: 'include',
@@ -167,7 +167,7 @@ function fetchGatewayVersion(store) {
 }
 
 function fetchOkapiVersion(store) {
-  const okapi = store.getState().okapi;
+  const { okapi } = store.getState();
 
   return fetch(`${okapi.url}/_/version`, {
     credentials: 'include',
@@ -188,7 +188,7 @@ function fetchOkapiVersion(store) {
 }
 
 function fetchModules(store) {
-  const okapi = store.getState().okapi;
+  const { okapi } = store.getState();
 
   return fetch(`${okapi.url}/_/proxy/tenants/${okapi.tenant}/modules?full=true`, {
     credentials: 'include',

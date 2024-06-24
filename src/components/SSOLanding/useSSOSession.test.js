@@ -51,7 +51,14 @@ describe('SSOLanding', () => {
     useLocation.mockReturnValue({ search: '' });
     useCookies.mockReturnValue([]);
 
-    useStore.mockReturnValue({ getState: jest.fn() });
+    useStore.mockReturnValue({
+      getState: jest.fn().mockReturnValue({
+        okapi: {
+          url: 'okapiUrl',
+          tenant: 'okapiTenant'
+        }
+      })
+    });
 
     requestUserWithPerms.mockReturnValue(Promise.resolve());
   });
