@@ -72,7 +72,7 @@ const RootWithIntl = ({ stripes, token = '', isAuthenticated = false, disableAut
                             event={events.LOGIN}
                             stripes={connectedStripes}
                           />
-                          { (connectedStripes.okapi !== 'object' || connectedStripes.discovery.isFinished) && (
+                          { (typeof connectedStripes.okapi !== 'object' || connectedStripes.discovery.isFinished) && (
                             <ModuleContainer id="content">
                               <OverlayContainer />
                               {connectedStripes.config.useSecureTokens && <SessionEventContainer history={history} />}
