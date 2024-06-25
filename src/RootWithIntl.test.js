@@ -2,25 +2,34 @@
 /* eslint-disable no-unused-vars */
 
 import { render, screen } from '@folio/jest-config-stripes/testing-library/react';
-
-import { Redirect as InternalRedirect } from 'react-router-dom';
-import Redirect from './components/Redirect';
-import { Login } from './components';
-import PreLoginLanding from './components/PreLoginLanding';
-
-// import {
-//   renderLogoutComponent
-// } from './RootWithIntl';
+import { Router as DefaultRouter } from 'react-router-dom';
+import { createMemoryHistory } from 'history';
 
 import AuthnLogin from './components/AuthnLogin';
+import MainNav from './components/MainNav';
+import MainContainer from './components/MainContainer';
+import ModuleContainer from './components/ModuleContainer';
+import RootWithIntl from './RootWithIntl';
+import Stripes from './Stripes';
 
-jest.mock('react-router-dom', () => ({
-  Redirect: () => '<internalredirect>',
-  withRouter: (Component) => Component,
-}));
-jest.mock('./components/Redirect', () => () => '<redirect>');
-jest.mock('./components/Login', () => () => '<login>');
-jest.mock('./components/PreLoginLanding', () => () => '<preloginlanding>');
+jest.mock('./components/AuthnLogin', () => () => '<AuthnLogin>');
+jest.mock('./components/MainNav', () => () => '<MainNav>');
+jest.mock('./components/ModuleContainer', () => () => '<ModuleContainer>');
+jest.mock('./components/MainContainer', () => ({ children }) => children);
+
+const defaultHistory = createMemoryHistory();
+
+const Harness = ({
+  Router = DefaultRouter,
+  children,
+  history = defaultHistory,
+}) => {
+  return (
+    <Router history={history}>
+      {children}
+    </Router>
+  );
+};
 
 const store = {
   getState: () => ({
@@ -34,56 +43,53 @@ const store = {
 };
 
 describe('RootWithIntl', () => {
-  describe('AuthnLogin', () => {
-    it('handles legacy login', () => {
-      const stripes = { okapi: {}, config: {}, store };
-      render(<AuthnLogin stripes={stripes} />);
+  it('renders login without one of (isAuthenticated, token, disableAuth)', async () => {
+    const stripes = new Stripes({ epics: {}, logger: {}, bindings: {}, config: {}, store, discovery: { isFinished: false } });
+    await render(<Harness><RootWithIntl stripes={stripes} history={defaultHistory} isAuthenticated={false} /></Harness>);
 
-      expect(screen.getByText(/<login>/)).toBeInTheDocument();
+    expect(screen.getByText(/<AuthnLogin>/)).toBeInTheDocument();
+    expect(screen.queryByText(/<MainNav>/)).toBeNull();
+  });
+
+  describe('renders MainNav', () => {
+    it('given isAuthenticated', async () => {
+      const stripes = new Stripes({ epics: {}, logger: {}, bindings: {}, config: {}, store, discovery: { isFinished: false } });
+      await render(<Harness><RootWithIntl stripes={stripes} history={defaultHistory} isAuthenticated /></Harness>);
+
+      expect(screen.queryByText(/<AuthnLogin>/)).toBeNull();
+      expect(screen.queryByText(/<MainNav>/)).toBeInTheDocument();
     });
 
-    describe('handles third-party login', () => {
-      it('handles single-tenant', () => {
-        const stripes = {
-          okapi: { authnUrl: 'https://barbie.com' },
-          config: {
-            isSingleTenant: true,
-            tenantOptions: {
-              diku: { name: 'diku', clientId: 'diku-application' }
-            }
-          },
-          store
-        };
-        render(<AuthnLogin stripes={stripes} />);
+    it('given token', async () => {
+      const stripes = new Stripes({ epics: {}, logger: {}, bindings: {}, config: {}, store, discovery: { isFinished: false } });
+      await render(<Harness><RootWithIntl stripes={stripes} history={defaultHistory} token /></Harness>);
 
-        expect(screen.getByText(/<redirect>/)).toBeInTheDocument();
-      });
+      expect(screen.queryByText(/<AuthnLogin>/)).toBeNull();
+      expect(screen.queryByText(/<MainNav>/)).toBeInTheDocument();
+    });
 
-      it('handles multi-tenant', () => {
-        const stripes = {
-          okapi: { authnUrl: 'https://oppie.com' },
-          config: {
-            isSingleTenant: false,
-            tenantOptions: {
-              diku: { name: 'diku', clientId: 'diku-application' },
-              diku2: { name: 'diku2', clientId: 'diku2-application' }
-            }
-          },
-          store
-        };
-        render(<AuthnLogin stripes={stripes} />);
+    it('given disableAuth', async () => {
+      const stripes = new Stripes({ epics: {}, logger: {}, bindings: {}, config: {}, store, discovery: { isFinished: false } });
+      await render(<Harness><RootWithIntl stripes={stripes} history={defaultHistory} disableAuth /></Harness>);
 
-        expect(screen.getByText(/<preloginlanding>/)).toBeInTheDocument();
-      });
+      expect(screen.queryByText(/<AuthnLogin>/)).toBeNull();
+      expect(screen.queryByText(/<MainNav>/)).toBeInTheDocument();
     });
   });
 
-  // describe('renderLogoutComponent', () => {
-  //   it('handles legacy logout', () => {
-  //     const stripes = { okapi: {}, config: {} };
-  //     render(renderLogoutComponent(stripes));
+  describe('renders ModuleContainer', () => {
+    it('if config.okapi is not an object', async () => {
+      const stripes = new Stripes({ epics: {}, logger: {}, bindings: {}, config: {}, store, discovery: { isFinished: true } });
+      await render(<Harness><RootWithIntl stripes={stripes} history={defaultHistory} isAuthenticated /></Harness>);
 
-  //     expect(screen.getByText(/<internalredirect>/)).toBeInTheDocument();
-  //   });
-  // });
+      expect(screen.getByText(/<ModuleContainer>/)).toBeInTheDocument();
+    });
+
+    it('if discovery is finished', async () => {
+      const stripes = new Stripes({ epics: {}, logger: {}, bindings: {}, config: {}, store, okapi: {}, discovery: { isFinished: true } });
+      await render(<Harness><RootWithIntl stripes={stripes} history={defaultHistory} isAuthenticated /></Harness>);
+
+      expect(screen.getByText(/<ModuleContainer>/)).toBeInTheDocument();
+    });
+  });
 });
