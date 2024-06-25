@@ -54,6 +54,9 @@ export default function setupApplication({
         currentPerms: permissions,
         isAuthenticated: true,
       };
+      initialState.discovery = {
+        isFinished: true,
+      };
     } else {
       initialState.okapi = {
         ssoEnabled: true,
