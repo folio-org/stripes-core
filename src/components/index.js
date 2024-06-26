@@ -31,6 +31,7 @@ export { default as BadRequestScreen } from './BadRequestScreen';
 export { default as NoPermissionScreen } from './NoPermissionScreen';
 export { default as ResetPasswordNotAvailableScreen } from './ResetPasswordNotAvailableScreen';
 export { default as SessionEventContainer } from './SessionEventContainer';
+export { default as StaleBundleWarning } from './StaleBundleWarning';
 
 export * from './ModuleHierarchy';
 export * from './Namespace';

@@ -5,17 +5,26 @@ import { render, screen } from '@folio/jest-config-stripes/testing-library/react
 import { Router as DefaultRouter } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
 
-import Login from './components/Login';
-import MainNav from './components/MainNav';
-import MainContainer from './components/MainContainer';
-import ModuleContainer from './components/ModuleContainer';
+import {
+  Login,
+  MainNav,
+  MainContainer,
+  ModuleContainer,
+  OverlayContainer,
+  StaleBundleWarning,
+  SessionEventContainer,
+} from './components';
+
 import RootWithIntl from './RootWithIntl';
 import Stripes from './Stripes';
 
 jest.mock('./components/Login', () => () => '<Login>');
 jest.mock('./components/MainNav', () => () => '<MainNav>');
-jest.mock('./components/ModuleContainer', () => () => '<ModuleContainer>');
+jest.mock('./components/OverlayContainer', () => () => '<OverlayContainer>');
+jest.mock('./components/ModuleContainer', () => ({ children }) => children);
 jest.mock('./components/MainContainer', () => ({ children }) => children);
+jest.mock('./components/StaleBundleWarning', () => () => '<StaleBundleWarning>');
+jest.mock('./components/SessionEventContainer', () => () => '<SessionEventContainer>');
 
 const defaultHistory = createMemoryHistory();
 
@@ -82,14 +91,33 @@ describe('RootWithIntl', () => {
       const stripes = new Stripes({ epics: {}, logger: {}, bindings: {}, config: {}, store, discovery: { isFinished: true } });
       await render(<Harness><RootWithIntl stripes={stripes} history={defaultHistory} isAuthenticated /></Harness>);
 
-      expect(screen.getByText(/<ModuleContainer>/)).toBeInTheDocument();
+      expect(screen.queryByText(/<Login>/)).toBeNull();
+      expect(screen.queryByText(/<MainNav>/)).toBeInTheDocument();
+      expect(screen.getByText(/<OverlayContainer>/)).toBeInTheDocument();
     });
 
     it('if discovery is finished', async () => {
       const stripes = new Stripes({ epics: {}, logger: {}, bindings: {}, config: {}, store, okapi: {}, discovery: { isFinished: true } });
       await render(<Harness><RootWithIntl stripes={stripes} history={defaultHistory} isAuthenticated /></Harness>);
 
-      expect(screen.getByText(/<ModuleContainer>/)).toBeInTheDocument();
+      expect(screen.queryByText(/<Login>/)).toBeNull();
+      expect(screen.queryByText(/<MainNav>/)).toBeInTheDocument();
+      expect(screen.getByText(/<OverlayContainer>/)).toBeInTheDocument();
     });
   });
+
+  it('renders StaleBundleWarning', async () => {
+    const stripes = new Stripes({ epics: {}, logger: {}, bindings: {}, config: { staleBundleWarning: {} }, store, okapi: {}, discovery: { isFinished: true } });
+    await render(<Harness><RootWithIntl stripes={stripes} history={defaultHistory} isAuthenticated /></Harness>);
+
+    expect(screen.getByText(/<StaleBundleWarning>/)).toBeInTheDocument();
+  });
+
+  it('renders SessionEventContainer', async () => {
+    const stripes = new Stripes({ epics: {}, logger: {}, bindings: {}, config: { useSecureTokens: true }, store, okapi: {}, discovery: { isFinished: true } });
+    await render(<Harness><RootWithIntl stripes={stripes} history={defaultHistory} isAuthenticated /></Harness>);
+
+    expect(screen.getByText(/<SessionEventContainer>/)).toBeInTheDocument();
+  });
+
 });
