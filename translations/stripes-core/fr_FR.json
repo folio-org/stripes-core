@@ -100,7 +100,7 @@
     "errors.link.expired": "Le lien pour le choix de votre mot de passe a expiré ou a déjà été utilisé. Veuillez contacter votre administrateur Folio pour un nouveau lien.",
     "errors.link.used": "Votre lien de réinitialisation du mot de passe a expiré ou a déjà été utilisé. Veuillez contacter votre administrateur Folio pour obtenir un nouveau lien.",
     "errors.forgotten.password.found.multiple.users": "Les informations fournies sont liées à plusieurs comptes Folio. Veuillez contacter votre administrateur système Folio pour réinitialiser votre mot de passe.",
-    "errors.forgotten.username.found.multiple.users": "Ce courrier électronique ou ce numéro de téléphone est lié à plusieurs comptes Folio. Veuillez contacter votre administrateur système Folio.",
+    "errors.forgotten.username.found.multiple.users": "Cette adresse mail ou ce numéro de téléphone est lié(e) à plusieurs comptes Folio. Veuillez contacter votre administrateur système Folio.",
     "errors.forgotten.password.found.inactive": "Votre compte est actuellement verrouillé. Veuillez contacter votre administrateur système FOLIO pour réinitialiser votre mot de passe.",
     "errors.default.server.error": "Erreur système. Impossible de localiser le compte Folio. Veuillez réessayer.",
     "createResetPassword.header": "Choisir un mot de passe",

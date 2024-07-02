@@ -121,7 +121,7 @@
     "errors.password.repeatingSymbols.invalid": "The password must not contain the same character in a row.",
     "errors.password.whiteSpace.invalid": "The password must not contain whitespaces.",
     "mainnav.myProfileAriaLabel": "{tenantName} {servicePointName} profile",
-    "mainnav.skipMainNavigation": "Skip Main Navigation",
+    "mainnav.skipMainNavigation": "Skip to main content",
     "errors.user.timeout": "Your session has expired. Please log in again to resume your session.",
     "errors.password.consecutiveWhitespaces.invalid": "The password must not contain consecutive white space characters.",
     "about.missingModuleCount": "{count, number} missing {count, plural, one {interface} other {interfaces}}",
