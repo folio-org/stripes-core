@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import createInactivityTimer from 'inactivity-timer';
 import ms from 'ms';
 
-import { logout, SESSION_NAME } from '../../loginServices';
+import { SESSION_NAME } from '../../loginServices';
 import KeepWorkingModal from './KeepWorkingModal';
 import { useStripes } from '../../StripesContext';
 import {
@@ -21,19 +21,13 @@ import { toggleRtrModal } from '../../okapiActions';
 // RTR error in this window: logout
 export const thisWindowRtrError = (_e, stripes, history) => {
   console.warn('rtr error; logging out'); // eslint-disable-line no-console
-  return logout(stripes.okapi.url, stripes.store)
-    .then(() => {
-      history.push('/logout-timeout');
-    });
+  history.push('/logout-timeout');
 };
 
 // idle session timeout in this window: logout
 export const thisWindowRtrTimeout = (_e, stripes, history) => {
   stripes.logger.log('rtr', 'idle session timeout; logging out');
-  return logout(stripes.okapi.url, stripes.store)
-    .then(() => {
-      history.push('/logout-timeout');
-    });
+  history.push('/logout-timeout');
 };
 
 // localstorage change in another window: logout?
@@ -43,16 +37,10 @@ export const thisWindowRtrTimeout = (_e, stripes, history) => {
 export const otherWindowStorage = (e, stripes, history) => {
   if (e.key === RTR_TIMEOUT_EVENT) {
     stripes.logger.log('rtr', 'idle session timeout; logging out');
-    return logout(stripes.okapi.url, stripes.store)
-      .then(() => {
-        history.push('/logout-timeout');
-      });
+    history.push('/logout-timeout');
   } else if (!localStorage.getItem(SESSION_NAME)) {
     stripes.logger.log('rtr', 'external localstorage change; logging out');
-    return logout(stripes.okapi.url, stripes.store)
-      .then(() => {
-        history.push('/');
-      });
+    history.push('/logout');
   }
   return Promise.resolve();
 };

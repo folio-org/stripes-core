@@ -9,7 +9,7 @@ import SessionEventContainer, {
   thisWindowRtrError,
   thisWindowRtrTimeout,
 } from './SessionEventContainer';
-import { logout, SESSION_NAME } from '../../loginServices';
+import { SESSION_NAME } from '../../loginServices';
 import { RTR_TIMEOUT_EVENT } from '../Root/constants';
 
 import { toggleRtrModal } from '../../okapiActions';
@@ -69,11 +69,8 @@ describe('SessionEventContainer', () => {
 describe('SessionEventContainer event listeners', () => {
   it('thisWindowRtrError', async () => {
     const history = { push: jest.fn() };
-    const logoutMock = logout;
-    logoutMock.mockReturnValue(Promise.resolve());
 
-    await thisWindowRtrError(null, { okapi: { url: 'http' } }, history);
-    expect(logout).toHaveBeenCalled();
+    thisWindowRtrError(null, { okapi: { url: 'http' } }, history);
     expect(history.push).toHaveBeenCalledWith('/logout-timeout');
   });
 
@@ -89,11 +86,8 @@ describe('SessionEventContainer event listeners', () => {
     };
 
     const history = { push: jest.fn() };
-    const logoutMock = logout;
-    await logoutMock.mockReturnValue(Promise.resolve());
 
-    await thisWindowRtrTimeout(null, s, history);
-    expect(logout).toHaveBeenCalled();
+    thisWindowRtrTimeout(null, s, history);
     expect(history.push).toHaveBeenCalledWith('/logout-timeout');
   });
 
@@ -115,8 +109,7 @@ describe('SessionEventContainer event listeners', () => {
       };
       const history = { push: jest.fn() };
 
-      await otherWindowStorage(e, s, history);
-      expect(logout).toHaveBeenCalledWith(s.okapi.url, s.store);
+      otherWindowStorage(e, s, history);
       expect(history.push).toHaveBeenCalledWith('/logout-timeout');
     });
 
@@ -133,9 +126,8 @@ describe('SessionEventContainer event listeners', () => {
       };
       const history = { push: jest.fn() };
 
-      await otherWindowStorage(e, s, history);
-      expect(logout).toHaveBeenCalledWith(s.okapi.url, s.store);
-      expect(history.push).toHaveBeenCalledWith('/');
+      otherWindowStorage(e, s, history);
+      expect(history.push).toHaveBeenCalledWith('/logout');
     });
   });
 
