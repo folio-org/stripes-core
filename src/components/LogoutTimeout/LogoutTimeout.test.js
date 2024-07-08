@@ -2,12 +2,18 @@ import { render, screen } from '@folio/jest-config-stripes/testing-library/react
 
 import LogoutTimeout from './LogoutTimeout';
 import { useStripes } from '../../StripesContext';
+import { logout } from '../../loginServices';
+
 
 
 jest.mock('../OrganizationLogo');
 jest.mock('../../StripesContext');
 jest.mock('react-router', () => ({
   Redirect: () => <div>Redirect</div>,
+}));
+
+jest.mock('../../loginServices', () => ({
+  logout: jest.fn(() => Promise.resolve()),
 }));
 
 describe('LogoutTimeout', () => {
@@ -19,11 +25,12 @@ describe('LogoutTimeout', () => {
     screen.getByText('stripes-core.rtr.idleSession.sessionExpiredSoSad');
   });
 
-  it('if authenticated, renders a redirect', async () => {
+  it('if authenticated, calls logout then renders a timeout message', async () => {
     const mockUseStripes = useStripes;
     mockUseStripes.mockReturnValue({ okapi: { isAuthenticated: true } });
 
     render(<LogoutTimeout />);
-    screen.getByText('Redirect');
+    expect(logout).toHaveBeenCalled();
+    screen.getByText('stripes-core.rtr.idleSession.sessionExpiredSoSad');
   });
 });
