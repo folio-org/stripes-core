@@ -75,6 +75,7 @@ jest.mock('@folio/stripes-components', () => ({
     </ul>
   )),
   Loading: () => <div>Loading</div>,
+  LoadingView: () => <div>LoadingView</div>,
   MessageBanner: jest.fn(({ show, children }) => { return show ? <>{children}</> : <></>; }),
 
   // oy, dismissible. we need to pull it out of props so it doesn't
