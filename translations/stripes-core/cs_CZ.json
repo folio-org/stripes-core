@@ -121,7 +121,7 @@
     "errors.password.repeatingSymbols.invalid": "Heslo nesmí obsahovat stejný znak za sebou.",
     "errors.password.whiteSpace.invalid": "Heslo nesmí obsahovat mezery.",
     "mainnav.myProfileAriaLabel": "{tenantName} {servicePointName} profil",
-    "mainnav.skipMainNavigation": "Přeskočit hlavní navigaci",
+    "mainnav.skipMainNavigation": "Přejít na hlavní obsah",
     "errors.user.timeout": "Vaše relace vypršela. Pro obnovení relace se prosím znovu přihlaste.",
     "errors.password.consecutiveWhitespaces.invalid": "Heslo nesmí obsahovat po sobě jdoucí prázdné znaky.",
     "about.missingModuleCount": "{count, number} chybí {count, plural, one {rozhraní} other {rozhraní}}",
