@@ -5,7 +5,6 @@ import { RTRError, UnexpectedResourceError } from './Errors';
 import {
   RTR_ACTIVITY_EVENTS,
   RTR_ERROR_EVENT,
-  RTR_FLS_WARNING_TTL,
   RTR_IDLE_MODAL_TTL,
   RTR_IDLE_SESSION_TTL,
   RTR_SUCCESS_EVENT,
@@ -325,12 +324,6 @@ export const configureRtr = (config = {}) => {
   // what events constitute activity?
   if (isEmpty(conf.activityEvents)) {
     conf.activityEvents = RTR_ACTIVITY_EVENTS;
-  }
-
-  // how long is the "your session is gonna die!" warning shown
-  // before the session is, in fact, killed?
-  if (!conf.fixedSessionWarningTTL) {
-    conf.fixedSessionWarningTTL = RTR_FLS_WARNING_TTL;
   }
 
   return conf;
