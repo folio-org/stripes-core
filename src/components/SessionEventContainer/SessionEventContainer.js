@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import createInactivityTimer from 'inactivity-timer';
 import ms from 'ms';
 
-import { SESSION_NAME } from '../../loginServices';
+import { SESSION_NAME, setUnauthorizedPathToSession } from '../../loginServices';
 import KeepWorkingModal from './KeepWorkingModal';
 import { useStripes } from '../../StripesContext';
 import {
@@ -24,12 +24,14 @@ import FixedLengthSessionWarning from './FixedLengthSessionWarning';
 // RTR error in this window: logout
 export const thisWindowRtrError = (_e, stripes, history) => {
   console.warn('rtr error; logging out'); // eslint-disable-line no-console
+  setUnauthorizedPathToSession();
   history.push('/logout-timeout');
 };
 
 // idle session timeout in this window: logout
 export const thisWindowRtrIstTimeout = (_e, stripes, history) => {
   stripes.logger.log('rtr', 'idle session timeout; logging out');
+  setUnauthorizedPathToSession();
   history.push('/logout-timeout');
 };
 
@@ -42,6 +44,7 @@ export const thisWindowRtrFlsWarning = (_e, stripes, setIsFlsVisible) => {
 // fixed-length session timeout in this window: logout
 export const thisWindowRtrFlsTimeout = (_e, stripes, history) => {
   stripes.logger.log('rtr', 'fixed-length session timeout; logging out');
+  setUnauthorizedPathToSession();
   history.push('/logout');
 };
 
@@ -52,9 +55,11 @@ export const thisWindowRtrFlsTimeout = (_e, stripes, history) => {
 export const otherWindowStorage = (e, stripes, history) => {
   if (e.key === RTR_TIMEOUT_EVENT) {
     stripes.logger.log('rtr', 'idle session timeout; logging out');
+    setUnauthorizedPathToSession();
     history.push('/logout-timeout');
   } else if (!localStorage.getItem(SESSION_NAME)) {
     stripes.logger.log('rtr', 'external localstorage change; logging out');
+    setUnauthorizedPathToSession();
     history.push('/logout');
   }
   return Promise.resolve();
