@@ -5,6 +5,7 @@ import { RTRError, UnexpectedResourceError } from './Errors';
 import {
   RTR_ACTIVITY_EVENTS,
   RTR_ERROR_EVENT,
+  RTR_FLS_WARNING_TTL,
   RTR_IDLE_MODAL_TTL,
   RTR_IDLE_SESSION_TTL,
   RTR_SUCCESS_EVENT,
@@ -74,6 +75,7 @@ export const isAuthenticationRequest = (resource, oUrl) => {
       '/authn/token',
       '/bl-users/login-with-expiry',
       '/bl-users/_self',
+      '/users-keycloak/_self',
     ];
 
     return !!permissible.find(i => string.startsWith(`${oUrl}${i}`));
@@ -323,6 +325,12 @@ export const configureRtr = (config = {}) => {
   // what events constitute activity?
   if (isEmpty(conf.activityEvents)) {
     conf.activityEvents = RTR_ACTIVITY_EVENTS;
+  }
+
+  // how long is the "your session is gonna die!" warning shown
+  // before the session is, in fact, killed?
+  if (!conf.fixedLengthSessionWarningTTL) {
+    conf.fixedLengthSessionWarningTTL = RTR_FLS_WARNING_TTL;
   }
 
   return conf;
