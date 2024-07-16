@@ -114,9 +114,10 @@ describe('SessionEventContainer event listeners', () => {
         }
       };
       const history = { push: jest.fn() };
+      const qc = {};
 
-      await otherWindowStorage(e, s, history);
-      expect(logout).toHaveBeenCalledWith(s.okapi.url, s.store);
+      await otherWindowStorage(e, s, history, qc);
+      expect(logout).toHaveBeenCalledWith(s.okapi.url, s.store, qc);
       expect(history.push).toHaveBeenCalledWith('/logout-timeout');
     });
 
@@ -132,9 +133,10 @@ describe('SessionEventContainer event listeners', () => {
         }
       };
       const history = { push: jest.fn() };
+      const qc = {};
 
-      await otherWindowStorage(e, s, history);
-      expect(logout).toHaveBeenCalledWith(s.okapi.url, s.store);
+      await otherWindowStorage(e, s, history, qc);
+      expect(logout).toHaveBeenCalledWith(s.okapi.url, s.store, qc);
       expect(history.push).toHaveBeenCalledWith('/');
     });
   });

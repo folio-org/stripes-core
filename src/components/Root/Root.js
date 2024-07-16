@@ -180,6 +180,7 @@ class Root extends Component {
                   isAuthenticated={isAuthenticated}
                   disableAuth={disableAuth}
                   history={history}
+                  queryClient={this.reactQueryClient}
                 />
               </IntlProvider>
             </QueryClientProvider>

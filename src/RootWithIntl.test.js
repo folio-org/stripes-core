@@ -119,5 +119,4 @@ describe('RootWithIntl', () => {
 
     expect(screen.getByText(/<SessionEventContainer>/)).toBeInTheDocument();
   });
-
 });
