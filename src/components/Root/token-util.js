@@ -74,6 +74,7 @@ export const isAuthenticationRequest = (resource, oUrl) => {
       '/authn/token',
       '/bl-users/login-with-expiry',
       '/bl-users/_self',
+      '/users-keycloak/_self',
     ];
 
     return !!permissible.find(i => string.startsWith(`${oUrl}${i}`));
