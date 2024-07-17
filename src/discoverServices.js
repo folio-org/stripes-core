@@ -25,6 +25,7 @@ function parseApplicationDescriptor(store, descriptor) {
   const dispatchDescriptor = (d) => {
     return Promise.all([
       store.dispatch({ type: 'DISCOVERY_INTERFACES', data: d }),
+      store.dispatch({ type: 'DISCOVERY_PERMISSION_DISPLAY_NAMES', data: d }),
       store.dispatch({ type: 'DISCOVERY_PROVIDERS', data: d }),
     ]);
   };
@@ -42,8 +43,13 @@ function parseApplicationDescriptor(store, descriptor) {
       data: descriptor.moduleDescriptors,
     })
   );
+
   if (descriptor.moduleDescriptors) {
     list.push(...descriptor.moduleDescriptors?.map((i) => dispatchDescriptor(i)));
+  }
+
+  if (descriptor.uiModuleDescriptors) {
+    list.push(...descriptor.uiModuleDescriptors?.map((i) => dispatchDescriptor(i)));
   }
 
   if (descriptor.uiModules) {
@@ -284,6 +290,16 @@ export function discoveryReducer(state = {}, action) {
       }
       return Object.assign({}, state, {
         interfaces: Object.assign(state.interfaces || {}, interfaces),
+      });
+    }
+    case 'DISCOVERY_PERMISSION_DISPLAY_NAMES': {
+      const permissions = {};
+      for (const entry of action.data.permissionSets || []) {
+        permissions[entry.permissionName] = entry.displayName;
+      }
+      return Object.assign({}, state, {
+        permissionDisplayNames: state.permissionDisplayNames ?
+          Object.assign({}, state.permissionDisplayNames, permissions) : permissions,
       });
     }
     case 'DISCOVERY_PROVIDERS': {
