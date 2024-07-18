@@ -45,15 +45,15 @@ function parseApplicationDescriptor(store, descriptor) {
   );
 
   if (descriptor.moduleDescriptors) {
-    list.push(...descriptor.moduleDescriptors?.map((i) => dispatchDescriptor(i)));
+    list.push(...descriptor.moduleDescriptors.map((i) => dispatchDescriptor(i)));
   }
 
   if (descriptor.uiModuleDescriptors) {
-    list.push(...descriptor.uiModuleDescriptors?.map((i) => dispatchDescriptor(i)));
+    list.push(...descriptor.uiModuleDescriptors.map((i) => dispatchDescriptor(i)));
   }
 
   if (descriptor.uiModules) {
-    list.push(...descriptor.uiModules?.map((i) => dispatchDescriptor(i)));
+    list.push(...descriptor.uiModules.map((i) => dispatchDescriptor(i)));
   }
 
   list.push(dispatchApplication(descriptor));
@@ -297,10 +297,7 @@ export function discoveryReducer(state = {}, action) {
       for (const entry of action.data.permissionSets || []) {
         permissions[entry.permissionName] = entry.displayName;
       }
-      return Object.assign({}, state, {
-        permissionDisplayNames: state.permissionDisplayNames ?
-          Object.assign({}, state.permissionDisplayNames, permissions) : permissions,
-      });
+      return { permissionDisplayNames: { ...state.permissionDisplayNames, ...permissions } };
     }
     case 'DISCOVERY_PROVIDERS': {
       if (action.data.provides?.length > 0) {
