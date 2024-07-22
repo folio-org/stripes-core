@@ -99,6 +99,11 @@ export class FFetch {
 
   /**
    * scheduleRotation
+   * Given a promise that resolves with timestamps for the AT's and RT's
+   * expiration, configure relevant corresponding timers: 
+   * * before the AT expires, conduct RTR
+   * * when the RT is about to expire, send a "session will end" event
+   * * when the RT expires, send a "session ended" event"
    *
    * @param {Promise} rotationP
    */
@@ -107,7 +112,7 @@ export class FFetch {
       // AT refresh interval: a large fraction of the actual AT TTL
       const atInterval = (rotationInterval.accessTokenExpiration - Date.now()) * RTR_AT_TTL_FRACTION;
 
-      // rotationInterval.refreshTokenExpiration = Date.now() + ms('75s');
+      // RT timeout interval (session will end) and warning interval (warning that session will end)
       const rtTimeoutInterval = (rotationInterval.refreshTokenExpiration - Date.now());
       const rtWarningInterval = (rotationInterval.refreshTokenExpiration - Date.now()) - ms(this.rtrConfig.fixedLengthSessionWarningTTL);
 
@@ -153,10 +158,6 @@ export class FFetch {
    */
   rotateCallback = (res) => {
     this.logger.log('rtr', 'rotation callback setup', res);
-
-    // @@ const rotationPromise = Promise.resolve(ms(RTR_AT_EXPIRY_IF_UNKNOWN));
-    // @@ scheduleRotation(rotationPromise);
-    // @@ return;
 
     // When starting a new session, the response from /bl-users/login-with-expiry
     // will contain token expiration info, but when restarting an existing session,
