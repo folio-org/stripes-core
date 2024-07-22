@@ -1,71 +1,74 @@
-import { renderHook, waitFor } from '@folio/jest-config-stripes/testing-library/react';
-import {
-  QueryClient,
-  QueryClientProvider,
-} from 'react-query';
-
-import permissions from 'fixtures/permissions';
+import { renderHook } from '@folio/jest-config-stripes/testing-library/react';
+import { useStripes } from '../StripesContext';
+import useUserSelfTenantPermissions from './useUserSelfTenantPermissions';
+import useUserTenantPermissionNames from './useUserTenantPermissionNames';
 import useUserTenantPermissions from './useUserTenantPermissions';
-import useOkapiKy from '../useOkapiKy';
 
-jest.mock('../useOkapiKy');
-jest.mock('../components', () => ({
-  useNamespace: () => ([]),
-}));
-jest.mock('../StripesContext', () => ({
-  useStripes: () => ({
-    user: {
-      user: {
-        id: 'userId'
-      }
-    }
-  }),
-}));
-
-const queryClient = new QueryClient();
-
-// eslint-disable-next-line react/prop-types
-const wrapper = ({ children }) => (
-  <QueryClientProvider client={queryClient}>
-    {children}
-  </QueryClientProvider>
-);
-
-const response = {
-  permissionNames: permissions,
-  totalRecords: permissions.length,
-};
+jest.mock('../StripesContext');
+jest.mock('./useUserSelfTenantPermissions');
+jest.mock('./useUserTenantPermissionNames');
 
 describe('useUserTenantPermissions', () => {
-  const getMock = jest.fn(() => ({
-    json: () => Promise.resolve(response),
-  }));
-  const setHeaderMock = jest.fn();
-  const kyMock = {
-    extend: jest.fn(({ hooks: { beforeRequest } }) => {
-      beforeRequest.forEach(handler => handler({ headers: { set: setHeaderMock } }));
-
-      return {
-        get: getMock,
-      };
-    }),
-  };
+  const tenantId = 'tenant-id';
+  const options = {};
 
   beforeEach(() => {
-    getMock.mockClear();
-    useOkapiKy.mockClear().mockReturnValue(kyMock);
+    useStripes.mockReturnValue({
+      hasInterface: jest.fn()
+    });
   });
 
-  it('should fetch user permissions for specified tenant', async () => {
-    const options = {
-      userId: 'userId',
-      tenantId: 'tenantId',
-    };
-    const { result } = renderHook(() => useUserTenantPermissions(options), { wrapper });
+  it('should return _self permissions data when "roles" interface is present', () => {
+    useStripes().hasInterface.mockReturnValue(true);
 
-    await waitFor(() => !result.current.isLoading);
+    useUserSelfTenantPermissions.mockReturnValue({
+      isFetching: true,
+      isLoading: true,
+      userPermissions: ['self'],
+      totalRecords: 1
+    });
 
-    expect(setHeaderMock).toHaveBeenCalledWith('X-Okapi-Tenant', options.tenantId);
-    expect(getMock).toHaveBeenCalledWith(`perms/users/${options.userId}/permissions`, expect.objectContaining({}));
+    useUserTenantPermissionNames.mockReturnValue({
+      isFetching: false,
+      isLoading: false,
+      userPermissions: ['permission name'],
+      totalRecords: 1
+    });
+
+    const { result } = renderHook(() => useUserTenantPermissions({ tenantId }, options));
+
+    expect(result.current).toStrictEqual({
+      isFetching: true,
+      isLoading: true,
+      userPermissions: ['self'],
+      totalRecords: 1
+    });
+  });
+
+  it('should return tenant permissions data when "roles" interface is NOT present', () => {
+    useStripes().hasInterface.mockReturnValue(false);
+
+    useUserSelfTenantPermissions.mockReturnValue({
+      isFetching: true,
+      isLoading: true,
+      userPermissions: ['self'],
+      totalRecords: 1
+    });
+
+    useUserTenantPermissionNames.mockReturnValue({
+      isFetching: false,
+      isLoading: false,
+      userPermissions: ['permission name'],
+      totalRecords: 1
+    });
+
+    const { result } = renderHook(() => useUserTenantPermissions({ tenantId }, options));
+
+    expect(result.current).toStrictEqual({
+      isFetching: false,
+      isLoading: false,
+      userPermissions: ['permission name'],
+      totalRecords: 1
+    });
   });
 });
