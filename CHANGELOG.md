@@ -20,6 +20,7 @@
 * List UI apps in "Applications/modules/interfaces" column. STCOR-773
 * Correctly evaluate `stripes.okapi` before rendering `<RootWithIntl>`. Refs STCOR-864.
 * `/users-keycloak/_self` is an authentication request. Refs STCOR-866.
+* Terminate the session when the fixed-length session expires. Refs STCOR-862.
 
 ## [10.1.1](https://github.com/folio-org/stripes-core/tree/v10.1.1) (2024-03-25)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.1.0...v10.1.1)

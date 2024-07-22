@@ -19,10 +19,23 @@ const AuthnLogin = ({ stripes }) => {
   };
 
   useEffect(() => {
-    if (okapi.authnUrl) {
-    /** Store unauthorized pathname to session storage. Refs STCOR-789
-    * @see OIDCRedirect
-    */
+    /**
+     * Cache the current path so we can return to it after authenticating.
+     * In RootWithIntl, unauthenticated visits to protected paths will be
+     * handled by this component, i.e.
+     *   /some-interesting-path <AuthnLogin>
+     * but if the user was de-authenticated due to a session timeout, they
+     * will have a history something like
+     *   /some-interesting-path <SomeInterestingComponent>
+     *   /logout <Logout>
+     *   / <AuthnLogin>
+     * but we still want to return to /some-interesting-path, which will
+     * have been cached by the logout-timeout handler, and must not be
+     * overwritten here.
+     *
+     * @see OIDCRedirect
+     */
+    if (okapi.authnUrl && window.location.pathname !== '/') {
       setUnauthorizedPathToSession(window.location.pathname);
     }
 

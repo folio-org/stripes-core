@@ -3,15 +3,18 @@ import PropTypes from 'prop-types';
 import createInactivityTimer from 'inactivity-timer';
 import ms from 'ms';
 
-import { SESSION_NAME } from '../../loginServices';
+import { SESSION_NAME, setUnauthorizedPathToSession } from '../../loginServices';
 import KeepWorkingModal from './KeepWorkingModal';
 import { useStripes } from '../../StripesContext';
 import {
   RTR_ACTIVITY_CHANNEL,
   RTR_ERROR_EVENT,
+  RTR_FLS_TIMEOUT_EVENT,
+  RTR_FLS_WARNING_EVENT,
   RTR_TIMEOUT_EVENT
 } from '../Root/constants';
 import { toggleRtrModal } from '../../okapiActions';
+import FixedLengthSessionWarning from './FixedLengthSessionWarning';
 
 //
 // event listeners
@@ -21,13 +24,28 @@ import { toggleRtrModal } from '../../okapiActions';
 // RTR error in this window: logout
 export const thisWindowRtrError = (_e, stripes, history) => {
   console.warn('rtr error; logging out'); // eslint-disable-line no-console
+  setUnauthorizedPathToSession();
   history.push('/logout-timeout');
 };
 
 // idle session timeout in this window: logout
-export const thisWindowRtrTimeout = (_e, stripes, history) => {
+export const thisWindowRtrIstTimeout = (_e, stripes, history) => {
   stripes.logger.log('rtr', 'idle session timeout; logging out');
+  setUnauthorizedPathToSession();
   history.push('/logout-timeout');
+};
+
+// fixed-length session warning in this window: logout
+export const thisWindowRtrFlsWarning = (_e, stripes, setIsFlsVisible) => {
+  stripes.logger.log('rtr', 'fixed-length session warning');
+  setIsFlsVisible(true);
+};
+
+// fixed-length session timeout in this window: logout
+export const thisWindowRtrFlsTimeout = (_e, stripes, history) => {
+  stripes.logger.log('rtr', 'fixed-length session timeout; logging out');
+  setUnauthorizedPathToSession();
+  history.push('/logout');
 };
 
 // localstorage change in another window: logout?
@@ -37,9 +55,11 @@ export const thisWindowRtrTimeout = (_e, stripes, history) => {
 export const otherWindowStorage = (e, stripes, history) => {
   if (e.key === RTR_TIMEOUT_EVENT) {
     stripes.logger.log('rtr', 'idle session timeout; logging out');
+    setUnauthorizedPathToSession();
     history.push('/logout-timeout');
   } else if (!localStorage.getItem(SESSION_NAME)) {
     stripes.logger.log('rtr', 'external localstorage change; logging out');
+    setUnauthorizedPathToSession();
     history.push('/logout');
   }
   return Promise.resolve();
@@ -112,6 +132,9 @@ export const thisWindowActivity = (_e, stripes, timers, broadcastChannel) => {
 const SessionEventContainer = ({ history }) => {
   // is the "keep working?" modal visible?
   const [isVisible, setIsVisible] = useState(false);
+
+  // is the fixed-length-session warning visible?
+  const [isFlsVisible, setIsFlsVisible] = useState(false);
 
   // inactivity timers
   const timers = useRef();
@@ -191,7 +214,7 @@ const SessionEventContainer = ({ history }) => {
       channels.window[RTR_ERROR_EVENT] = (e) => thisWindowRtrError(e, stripes, history);
 
       // idle session timeout in this window: logout
-      channels.window[RTR_TIMEOUT_EVENT] = (e) => thisWindowRtrTimeout(e, stripes, history);
+      channels.window[RTR_TIMEOUT_EVENT] = (e) => thisWindowRtrIstTimeout(e, stripes, history);
 
       // localstorage change in another window: logout?
       channels.window.storage = (e) => otherWindowStorage(e, stripes, history);
@@ -203,6 +226,13 @@ const SessionEventContainer = ({ history }) => {
       activityEvents.forEach(eventName => {
         channels.window[eventName] = (e) => thisWindowActivity(e, stripes, timers, bc);
       });
+
+      // fixed-length session: show session-is-ending warning
+      channels.window[RTR_FLS_WARNING_EVENT] = (e) => thisWindowRtrFlsWarning(e, stripes, setIsFlsVisible);
+
+      // fixed-length session: terminate session
+      channels.window[RTR_FLS_TIMEOUT_EVENT] = (e) => thisWindowRtrFlsTimeout(e, stripes, history);
+
 
       // add listeners
       Object.entries(channels).forEach(([k, channel]) => {
@@ -236,13 +266,19 @@ const SessionEventContainer = ({ history }) => {
     // array.
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // show the idle-session warning modal if necessary;
-  // otherwise return null
+  const renderList = [];
+
+  // show the idle-session warning modal?
   if (isVisible) {
-    return <KeepWorkingModal callback={keepWorkingCallback} />;
+    renderList.push(<KeepWorkingModal callback={keepWorkingCallback} />);
   }
 
-  return null;
+  // show the fixed-length session warning?
+  if (isFlsVisible) {
+    renderList.push(<FixedLengthSessionWarning />);
+  }
+
+  return renderList.length ? renderList : null;
 };
 
 SessionEventContainer.propTypes = {

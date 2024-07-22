@@ -67,9 +67,12 @@ class Root extends Component {
     // * configure fetch and xhr interceptors to conduct RTR
     // * see SessionEventContainer for RTR handling
     if (this.props.config.useSecureTokens) {
+      const rtrConfig = configureRtr(this.props.config.rtr);
+
       this.ffetch = new FFetch({
         logger: this.props.logger,
         store,
+        rtrConfig,
       });
       this.ffetch.replaceFetch();
       this.ffetch.replaceXMLHttpRequest();
@@ -116,6 +119,7 @@ class Root extends Component {
   render() {
     const { logger, store, epics, config, okapi, actionNames, token, isAuthenticated, disableAuth, currentUser, currentPerms, locale, defaultTranslations, timezone, currency, plugins, bindings, discovery, translations, history, serverDown } = this.props;
     if (serverDown) {
+      // note: this isn't i18n'ed because we haven't rendered an IntlProvider yet.
       return <div>Error: server is down.</div>;
     }
 
@@ -125,6 +129,12 @@ class Root extends Component {
     }
 
     // make sure RTR is configured
+    // gross: this overwrites whatever is currently stored at config.rtr
+    // gross: technically, this may be different than what is configured
+    //   in the constructor since the constructor only runs once but
+    //   render runs when props change. realistically, that'll never happen
+    //   since config values are read only once from a static file at build
+    //   time, but still, props are props so technically it's possible.
     config.rtr = configureRtr(this.props.config.rtr);
 
     const stripes = new Stripes({
