@@ -1,6 +1,5 @@
 # Change history for stripes-core
 
->>>>>>> f93f21d6 (STCOR-866 include `/users-keycloak/_self` in auth-n requests (#1502))
 ## [10.1.1](https://github.com/folio-org/stripes-core/tree/v10.1.1) (2024-03-25)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.1.0...v10.1.1)
 
@@ -10,6 +9,7 @@
 * Always retrieve `clientId` and `tenant` values from `config.tenantOptions` in stripes.config.js. Retires `okapi.tenant`, `okapi.clientId`, and `config.isSingleTenant`. Refs STCOR-787.
 * Correctly evaluate `stripes.okapi` before rendering `<RootWithIntl>`. Refs STCOR-864.
 * `/users-keycloak/_self` is an authentication request. Refs STCOR-866.
+* Terminate the session when the fixed-length session expires. Refs STCOR-862.
 
 ## [10.1.0](https://github.com/folio-org/stripes-core/tree/v10.1.0) (2024-03-12)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.0.0...v10.1.0)

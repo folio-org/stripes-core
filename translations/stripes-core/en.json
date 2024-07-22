@@ -13,7 +13,6 @@
   "title.noPermission": "No permission",
   "title.cookieEnabled": "Cookies are required to login. Please enable cookies and try again.",
   "title.logout": "Log out",
-  "title.cookieEnabled": "Cookies are required to login. Please enable cookies and try again.",
   "front.welcome": "Welcome, the Future Of Libraries Is OPEN!",
   "front.home": "Home",
   "front.about": "Software versions",
@@ -168,5 +167,7 @@
   "rtr.idleSession.timeRemaining": "Time remaining",
   "rtr.idleSession.keepWorking": "Keep working",
   "rtr.idleSession.sessionExpiredSoSad": "Your session expired due to inactivity.",
-  "rtr.idleSession.logInAgain": "Log in again"
+  "rtr.idleSession.logInAgain": "Log in again",
+  "rtr.fixedLengthSession.timeRemaining": "Your session will end soon! Time remaining:"
+
 }

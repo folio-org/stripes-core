@@ -7,7 +7,7 @@ import SessionEventContainer, {
   otherWindowStorage,
   thisWindowActivity,
   thisWindowRtrError,
-  thisWindowRtrTimeout,
+  thisWindowRtrIstTimeout,
 } from './SessionEventContainer';
 import { SESSION_NAME } from '../../loginServices';
 import { RTR_TIMEOUT_EVENT } from '../Root/constants';
@@ -74,7 +74,7 @@ describe('SessionEventContainer event listeners', () => {
     expect(history.push).toHaveBeenCalledWith('/logout-timeout');
   });
 
-  it('thisWindowRtrTimeout', async () => {
+  it('thisWindowRtrIstTimeout', async () => {
     const s = {
       okapi: {
         url: 'http'
@@ -87,7 +87,7 @@ describe('SessionEventContainer event listeners', () => {
 
     const history = { push: jest.fn() };
 
-    thisWindowRtrTimeout(null, s, history);
+    thisWindowRtrIstTimeout(null, s, history);
     expect(history.push).toHaveBeenCalledWith('/logout-timeout');
   });
 

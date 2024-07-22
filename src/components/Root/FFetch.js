@@ -44,7 +44,8 @@
 import ms from 'ms';
 import { okapi as okapiConfig } from 'stripes-config';
 import {
-  setRtrTimeout
+  setRtrTimeout,
+  setRtrFlsTimeout,
 } from '../../okapiActions';
 
 import { getTokenExpiry } from '../../loginServices';
@@ -62,6 +63,9 @@ import {
   RTR_AT_EXPIRY_IF_UNKNOWN,
   RTR_AT_TTL_FRACTION,
   RTR_ERROR_EVENT,
+  RTR_FLS_TIMEOUT_EVENT,
+  RTR_FLS_WARNING_EVENT,
+  RTR_RT_EXPIRY_IF_UNKNOWN,
 } from './constants';
 import FXHR from './FXHR';
 
@@ -71,9 +75,10 @@ const OKAPI_FETCH_OPTIONS = {
 };
 
 export class FFetch {
-  constructor({ logger, store }) {
+  constructor({ logger, store, rtrConfig }) {
     this.logger = logger;
     this.store = store;
+    this.rtrConfig = rtrConfig;
   }
 
   /**
@@ -93,6 +98,52 @@ export class FFetch {
   };
 
   /**
+   * scheduleRotation
+   * Given a promise that resolves with timestamps for the AT's and RT's
+   * expiration, configure relevant corresponding timers: 
+   * * before the AT expires, conduct RTR
+   * * when the RT is about to expire, send a "session will end" event
+   * * when the RT expires, send a "session ended" event"
+   *
+   * @param {Promise} rotationP
+   */
+  scheduleRotation = (rotationP) => {
+    rotationP.then((rotationInterval) => {
+      // AT refresh interval: a large fraction of the actual AT TTL
+      const atInterval = (rotationInterval.accessTokenExpiration - Date.now()) * RTR_AT_TTL_FRACTION;
+
+      // RT timeout interval (session will end) and warning interval (warning that session will end)
+      const rtTimeoutInterval = (rotationInterval.refreshTokenExpiration - Date.now());
+      const rtWarningInterval = (rotationInterval.refreshTokenExpiration - Date.now()) - ms(this.rtrConfig.fixedLengthSessionWarningTTL);
+
+      // schedule AT rotation IFF the AT will expire before the RT. this avoids
+      // refresh-thrashing near the end of the FLS with progressively shorter
+      // AT TTL windows.
+      if (rotationInterval.accessTokenExpiration < rotationInterval.refreshTokenExpiration) {
+        this.logger.log('rtr', `rotation scheduled from rotateCallback; next callback in ${ms(atInterval)}`);
+        this.store.dispatch(setRtrTimeout(setTimeout(() => {
+          const { okapi } = this.store.getState();
+          rtr(this.nativeFetch, this.logger, this.rotateCallback, okapi);
+        }, atInterval)));
+      } else {
+        this.logger.log('rtr', 'rotation canceled; AT and RT will expire simultaneously');
+      }
+
+      // schedule FLS end-of-session warning
+      this.logger.log('rtr-fls', `end-of-session warning at ${new Date(rotationInterval.refreshTokenExpiration - ms(this.rtrConfig.fixedLengthSessionWarningTTL))}`);
+      this.store.dispatch(setRtrFlsTimeout(setTimeout(() => {
+        window.dispatchEvent(new Event(RTR_FLS_WARNING_EVENT));
+      }, rtWarningInterval)));
+
+      // schedule FLS end-of-session logout
+      this.logger.log('rtr-fls', `session will end at ${new Date(rotationInterval.refreshTokenExpiration)}`);
+      setTimeout(() => {
+        window.dispatchEvent(new Event(RTR_FLS_TIMEOUT_EVENT));
+      }, rtTimeoutInterval);
+    });
+  };
+
+  /**
    * rotateCallback
    * Set a timeout to rotate the AT before it expires. Stash the timer-id
    * in redux so the setRtrTimeout action can be used to cancel the existing
@@ -106,44 +157,47 @@ export class FFetch {
    *   where the values are ISO-8601 datestamps like YYYY-MM-DDTHH:mm:ssZ
    */
   rotateCallback = (res) => {
-    this.logger.log('rtr', 'rotation callback setup');
-
-    const scheduleRotation = (rotationP) => {
-      rotationP.then((rotationInterval) => {
-        this.logger.log('rtr', `rotation fired from rotateCallback; next callback in ${ms(rotationInterval)}`);
-        this.store.dispatch(setRtrTimeout(setTimeout(() => {
-          const { okapi } = this.store.getState();
-          rtr(this.nativeFetch, this.logger, this.rotateCallback, okapi);
-        }, rotationInterval)));
-      });
-    };
+    this.logger.log('rtr', 'rotation callback setup', res);
 
     // When starting a new session, the response from /bl-users/login-with-expiry
-    // will contain AT expiration info, but when restarting an existing session,
+    // will contain token expiration info, but when restarting an existing session,
     // the response from /bl-users/_self will NOT, although that information should
-    // have been cached in local-storage.
-    //
-    // This means there are many places we have to check to figure out when the
-    // AT is likely to expire, and thus when we want to rotate. First inspect
-    // the response, then the session, then default to 10 seconds.
+    // have been cached in local-storage. Thus, we check the following places for
+    // token expiration data:
+    // 1. response
+    // 2. session storage
+    // 3. hard-coded default
     if (res?.accessTokenExpiration) {
       this.logger.log('rtr', 'rotation scheduled with login response data');
-      const rotationPromise = Promise.resolve((new Date(res.accessTokenExpiration).getTime() - Date.now()) * RTR_AT_TTL_FRACTION);
-
-      scheduleRotation(rotationPromise);
-    } else {
-      const rotationPromise = getTokenExpiry().then((expiry) => {
-        if (expiry?.atExpires) {
-          this.logger.log('rtr', 'rotation scheduled with cached session data');
-          return (new Date(expiry.atExpires).getTime() - Date.now()) * RTR_AT_TTL_FRACTION;
-        }
-
-        // default: 10 seconds
-        this.logger.log('rtr', 'rotation scheduled with default value');
-        return ms(RTR_AT_EXPIRY_IF_UNKNOWN);
+      const rotationPromise = Promise.resolve({
+        accessTokenExpiration: new Date(res.accessTokenExpiration).getTime(),
+        refreshTokenExpiration: new Date(res.refreshTokenExpiration).getTime(),
       });
 
-      scheduleRotation(rotationPromise);
+      this.scheduleRotation(rotationPromise);
+    } else {
+      const rotationPromise = getTokenExpiry().then((expiry) => {
+        if (expiry?.atExpires && expiry?.atExpires >= Date.now()) {
+          this.logger.log('rtr', 'rotation scheduled with cached session data', expiry);
+          return {
+            accessTokenExpiration: new Date(expiry.atExpires).getTime(),
+            refreshTokenExpiration: new Date(expiry.rtExpires).getTime(),
+          };
+        }
+
+        // default: session data was corrupt but the resume-session request
+        // succeeded so we know the cookies were valid at the time. short-term
+        // expiry-values will kick off RTR in the very new future, allowing us
+        // to grab values from the response.
+        this.logger.log('rtr', 'rotation scheduled with default value');
+
+        return {
+          accessTokenExpiration: Date.now() + ms(RTR_AT_EXPIRY_IF_UNKNOWN),
+          refreshTokenExpiration: Date.now() + ms(RTR_RT_EXPIRY_IF_UNKNOWN),
+        };
+      });
+
+      this.scheduleRotation(rotationPromise);
     }
   }
 
@@ -180,7 +234,7 @@ export class FFetch {
       // on authentication, grab the response to kick of the rotation cycle,
       // then return the response
       if (isAuthenticationRequest(resource, okapiConfig.url)) {
-        this.logger.log('rtr', 'authn request');
+        this.logger.log('rtr', 'authn request', resource);
         return this.nativeFetch.apply(global, [resource, options && { ...options, ...OKAPI_FETCH_OPTIONS }])
           .then(res => {
             // a response can only be read once, so we clone it to grab the
