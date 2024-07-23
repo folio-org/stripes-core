@@ -297,7 +297,7 @@ export function discoveryReducer(state = {}, action) {
       for (const entry of action.data.permissionSets || []) {
         permissions[entry.permissionName] = entry.displayName;
       }
-      return { permissionDisplayNames: { ...state.permissionDisplayNames, ...permissions } };
+      return { ...state, permissionDisplayNames: { ...state.permissionDisplayNames, ...permissions } };
     }
     case 'DISCOVERY_PROVIDERS': {
       if (action.data.provides?.length > 0) {
