@@ -177,7 +177,6 @@ function clearRtrFlsWarningTimeout() {
   };
 }
 function setRtrFlsTimeout(rtrFlsTimeout) {
-  OKAPI_REDUCER_ACTIONS.SET_RTR_FLS_TIMEOUT
   return {
     type: OKAPI_REDUCER_ACTIONS.SET_RTR_FLS_TIMEOUT,
     rtrFlsTimeout,
