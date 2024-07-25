@@ -46,6 +46,7 @@ import { okapi as okapiConfig } from 'stripes-config';
 import {
   setRtrTimeout,
   setRtrFlsTimeout,
+  setRtrFlsWarningTimeout,
 } from '../../okapiActions';
 
 import { getTokenExpiry } from '../../loginServices';
@@ -100,7 +101,7 @@ export class FFetch {
   /**
    * scheduleRotation
    * Given a promise that resolves with timestamps for the AT's and RT's
-   * expiration, configure relevant corresponding timers: 
+   * expiration, configure relevant corresponding timers:
    * * before the AT expires, conduct RTR
    * * when the RT is about to expire, send a "session will end" event
    * * when the RT expires, send a "session ended" event"
@@ -131,15 +132,17 @@ export class FFetch {
 
       // schedule FLS end-of-session warning
       this.logger.log('rtr-fls', `end-of-session warning at ${new Date(rotationInterval.refreshTokenExpiration - ms(this.rtrConfig.fixedLengthSessionWarningTTL))}`);
-      this.store.dispatch(setRtrFlsTimeout(setTimeout(() => {
+      this.store.dispatch(setRtrFlsWarningTimeout(setTimeout(() => {
+        this.logger.log('rtr-fls', 'emitting RTR_FLS_WARNING_EVENT');
         window.dispatchEvent(new Event(RTR_FLS_WARNING_EVENT));
       }, rtWarningInterval)));
 
       // schedule FLS end-of-session logout
       this.logger.log('rtr-fls', `session will end at ${new Date(rotationInterval.refreshTokenExpiration)}`);
-      setTimeout(() => {
+      this.store.dispatch(setRtrFlsTimeout(setTimeout(() => {
+        this.logger.log('rtr-fls', 'emitting RTR_FLS_TIMEOUT_EVENT');
         window.dispatchEvent(new Event(RTR_FLS_TIMEOUT_EVENT));
-      }, rtTimeoutInterval);
+      }, rtTimeoutInterval)));
     });
   };
 

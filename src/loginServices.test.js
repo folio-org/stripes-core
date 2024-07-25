@@ -4,11 +4,13 @@ import {
   createOkapiSession,
   getOkapiSession,
   getTokenExpiry,
+  getUnauthorizedPathFromSession,
   handleLoginError,
   loadTranslations,
   logout,
   processOkapiSession,
   setTokenExpiry,
+  setUnauthorizedPathToSession,
   spreadUserWithPerms,
   supportedLocales,
   supportedNumberingSystems,
@@ -554,6 +556,42 @@ describe('logout', () => {
 
       expect(res).toBe(true);
       expect(global.fetch).not.toHaveBeenCalled();
+    });
+  });
+});
+
+describe('setUnauthorizedPathToSession', () => {
+  beforeEach(() => {
+    window.sessionStorage.clear();
+  });
+
+  afterEach(() => {
+    window.sessionStorage.clear();
+  });
+
+  it('with an argument, uses it', () => {
+    const monkey = 'bagel';
+    setUnauthorizedPathToSession(monkey);
+    expect(getUnauthorizedPathFromSession()).toEqual(monkey);
+  });
+
+  it('without an argument, pulls value from window.location', () => {
+    window.location.pathname = '/monkey-bagel';
+    setUnauthorizedPathToSession();
+    expect(getUnauthorizedPathFromSession()).toEqual(window.location.pathname);
+  });
+
+  describe('refuses to set locations beginning with "/logout"', () => {
+    it('with an argument', () => {
+      const monkey = '/logout-timeout';
+      setUnauthorizedPathToSession(monkey);
+      expect(getUnauthorizedPathFromSession()).toBeFalsy();
+    });
+
+    it('without an argument', () => {
+      window.location.pathname = '/logout-timeout';
+      setUnauthorizedPathToSession();
+      expect(getUnauthorizedPathFromSession()).toBeFalsy();
     });
   });
 });
