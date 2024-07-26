@@ -164,6 +164,19 @@ function clearRtrTimeout() {
   };
 }
 
+function setRtrFlsWarningTimeout(rtrFlsWarningTimeout) {
+  return {
+    type: OKAPI_REDUCER_ACTIONS.SET_RTR_FLS_WARNING_TIMEOUT,
+    rtrFlsWarningTimeout,
+  };
+}
+
+function clearRtrFlsWarningTimeout() {
+  return {
+    type: OKAPI_REDUCER_ACTIONS.CLEAR_RTR_FLS_WARNING_TIMEOUT,
+  };
+}
+
 function setRtrFlsTimeout(rtrFlsTimeout) {
   return {
     type: OKAPI_REDUCER_ACTIONS.SET_RTR_FLS_TIMEOUT,
@@ -177,7 +190,6 @@ function clearRtrFlsTimeout() {
   };
 }
 
-
 function toggleRtrModal(isVisible) {
   return {
     type: OKAPI_REDUCER_ACTIONS.TOGGLE_RTR_MODAL,
@@ -190,6 +202,7 @@ export {
   clearCurrentUser,
   clearOkapiToken,
   clearRtrFlsTimeout,
+  clearRtrFlsWarningTimeout,
   clearRtrTimeout,
   setAuthError,
   setBindings,
@@ -203,6 +216,7 @@ export {
   setOkapiToken,
   setPlugins,
   setRtrFlsTimeout,
+  setRtrFlsWarningTimeout,
   setRtrTimeout,
   setServerDown,
   setSessionData,
