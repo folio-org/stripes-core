@@ -26,9 +26,10 @@ import {
   updateCurrentUser,
 } from './okapiActions';
 import processBadResponse from './processBadResponse';
-import configureLogger from './configureLogger';
 
-import { RTR_ERROR_EVENT } from './components/Root/Events';
+import {
+  RTR_TIMEOUT_EVENT
+} from './components/Root/constants';
 
 // export supported locales, i.e. the languages we provide translations for
 export const supportedLocales = [
@@ -69,7 +70,7 @@ export const supportedNumberingSystems = [
 ];
 
 /** name for the session key in local storage */
-const SESSION_NAME = 'okapiSess';
+export const SESSION_NAME = 'okapiSess';
 
 /**
  * getTokenSess
@@ -105,28 +106,31 @@ export const getTokenExpiry = async () => {
  */
 export const setTokenExpiry = async (te) => {
   const sess = await getOkapiSession();
-  return localforage.setItem(SESSION_NAME, { ...sess, tokenExpiration: te });
+  const val = { ...sess, tokenExpiration: te };
+  return localforage.setItem(SESSION_NAME, val);
 };
 
 /**
  * removeUnauthorizedPathFromSession, setUnauthorizedPathToSession, getUnauthorizedPathFromSession
- * Add/remove/get unauthorized_path to/from session storage;
- * Used to restore path if user is unauthorized.
- * @see OIDCRedirect
+ * remove/set/get unauthorized_path to/from session storage.
+ * Used to restore path on returning from login if user accessed a bookmarked
+ * URL while unauthenticated and was redirected to login, and when a session
+ * times out, forcing the user to re-authenticate.
+ *
+ * @see components/OIDCRedirect
  */
-
-export const removeUnauthorizedPathFromSession = () => sessionStorage.removeItem('unauthorized_path');
-export const setUnauthorizedPathToSession = (pathname) => sessionStorage.setItem('unauthorized_path', pathname);
-export const getUnauthorizedPathFromSession = () => sessionStorage.getItem('unauthorized_path');
-
+const UNAUTHORIZED_PATH = 'unauthorized_path';
+export const removeUnauthorizedPathFromSession = () => sessionStorage.removeItem(UNAUTHORIZED_PATH);
+export const setUnauthorizedPathToSession = (pathname) => {
+  sessionStorage.setItem(UNAUTHORIZED_PATH, pathname ?? `${window.location.pathname}${window.location.search}`);
+};
+export const getUnauthorizedPathFromSession = () => sessionStorage.getItem(UNAUTHORIZED_PATH);
 
 // export config values for storing user locale
 export const userLocaleConfig = {
   'configName': 'localeSettings',
   'module': '@folio/stripes-core',
 };
-
-const logger = configureLogger(config);
 
 function getHeaders(tenant, token) {
   return {
@@ -148,7 +152,7 @@ function getHeaders(tenant, token) {
  */
 function canReadConfig(store) {
   const perms = store.getState().okapi.currentPerms;
-  return perms['configuration.entries.collection.get'];
+  return perms?.['configuration.entries.collection.get'];
 }
 
 /**
@@ -412,15 +416,23 @@ export function spreadUserWithPerms(userWithPerms) {
   // remap data's array of permission-names to set with
   // permission-names for keys and `true` for values.
   //
-  // userWithPerms is shaped differently depending on whether
-  // it comes from a login call or a `.../_self` call, which
-  // is just totally totally awesome. :|
+  // userWithPerms is shaped differently depending on the API call
+  // that generated it.
+  // in community-folio, /login sends data like [{ "permissionName": "foo" }]
+  //   and includes both directly and indirectly assigned permissions
+  // in community-folio, /_self sends data like ["foo", "bar", "bat"]
+  //   but only includes directly assigned permissions
+  // in community-folio, /_self?expandPermissions=true sends data like [{ "permissionName": "foo" }]
+  //   and includes both directly and indirectly assigned permissions
+  // in eureka-folio, /_self sends data like ["foo", "bar", "bat"]
+  //   and includes both directly and indirectly assigned permissions
+  //
   // we'll parse it differently depending on what it looks like.
   let perms = {};
   const list = userWithPerms?.permissions?.permissions;
   if (list && Array.isArray(list) && list.length > 0) {
-    // _self sends data like ["foo", "bar", "bat"]
-    // login sends data like [{ "permissionName": "foo" }]
+    // shaped like this ["foo", "bar", "bat"] or
+    // shaped like that [{ "permissionName": "foo" }]?
     if (typeof list[0] === 'string') {
       perms = Object.assign({}, ...list.map(p => ({ [p]: true })));
     } else {
@@ -433,34 +445,79 @@ export function spreadUserWithPerms(userWithPerms) {
 
 /**
  * logout
- * dispatch events to clear the store, then clear the session,
- * clear localStorage, and call `/authn/logout` to end the session
- * on the server too.
+ * logout is a multi-part process, but this function is idempotent.
+ * 1.  there are server-side things to do, i.e. fetch /authn/logout.
+ *     these must only be done once, no matter how many tabs are open
+ *     because once the fetch completes the cookies are gone, which
+ *     means a repeat request will fail.
+ * 2.  there is shared storage to clean out, i.e. storage that is shared
+ *     across tabs such as localStorage and localforage. clearing storage
+ *     that another tab has already cleared is fine, if pointless.
+ * 3.  there is private storage to clean out, i.e. storage that is unique
+ *     to the current tab/window. this storage _must_ be cleared in each
+ *     instance of stripes (i.e. in each separate tab/window) because the
+ *     instances running in other tabs do not have access to it.
+ * What does all this mean? It means some things we need to check on and
+ * maybe do (the server-side things), some we can do (the shared storage)
+ * and some we must do (the private storage).
  *
+ * @param {string} okapiUrl
  * @param {object} redux store
  *
  * @returns {Promise}
  */
+export const IS_LOGGING_OUT = '@folio/stripes/core::Logout';
 export async function logout(okapiUrl, store) {
-  // tenant is necessary to populate the X-Okapi-Tenant header
-  // which is required in ECS environments
-  const { okapi: { tenant } } = store.getState();
-  store.dispatch(setIsAuthenticated(false));
-  store.dispatch(clearCurrentUser());
-  store.dispatch(clearOkapiToken());
-  store.dispatch(resetStore());
-  return fetch(`${okapiUrl}/authn/logout`, {
-    method: 'POST',
-    mode: 'cors',
-    credentials: 'include',
-    headers: { 'X-Okapi-Tenant': tenant, 'Accept': 'application/json' },
-  })
-    .then(localStorage.removeItem('tenant'))
+  // check the private-storage sentinel: if logout has already started
+  // in this window, we don't want to start it again.
+  if (sessionStorage.getItem(IS_LOGGING_OUT)) {
+    return Promise.resolve();
+  }
+
+  // check the shared-storage sentinel: if logout has already started
+  // in another window, we don't want to invoke shared functions again
+  // (like calling /authn/logout, which can only be called once)
+  // BUT we DO want to clear private storage such as session storage
+  // and redux, which are not shared across tabs/windows.
+  const logoutPromise = localStorage.getItem(SESSION_NAME) ?
+    fetch(`${okapiUrl}/authn/logout`, {
+      method: 'POST',
+      mode: 'cors',
+      credentials: 'include',
+      headers: getHeaders(store.getState()?.okapi?.tenant),
+    })
+    :
+    Promise.resolve();
+
+  return logoutPromise
+    // clear private-storage
+    .then(() => {
+      // set the private-storage sentinel to indicate logout is in-progress
+      sessionStorage.setItem(IS_LOGGING_OUT, 'true');
+
+      // localStorage events emit across tabs so we can use it like a
+      // BroadcastChannel to communicate with all tabs/windows
+      localStorage.removeItem(SESSION_NAME);
+      localStorage.removeItem(RTR_TIMEOUT_EVENT);
+
+      store.dispatch(setIsAuthenticated(false));
+      store.dispatch(clearCurrentUser());
+      store.dispatch(clearOkapiToken());
+      store.dispatch(resetStore());
+    })
+    // clear shared storage
     .then(localforage.removeItem(SESSION_NAME))
     .then(localforage.removeItem('loginResponse'))
-    .catch((error) => {
-      // eslint-disable-next-line no-console
-      console.log(`Error logging out: ${JSON.stringify(error)}`);
+    .catch(e => {
+      console.error('error during logout', e); // eslint-disable-line no-console
+    })
+    .finally(() => {
+      // clear the console unless config asks to preserve it
+      if (!config.preserveConsole) {
+        console.clear(); // eslint-disable-line no-console
+      }
+      // clear the storage sentinel
+      sessionStorage.removeItem(IS_LOGGING_OUT);
     });
 }
 
@@ -485,8 +542,6 @@ export async function logout(okapiUrl, store) {
  * @returns {Promise}
  */
 export function createOkapiSession(store, tenant, token, data) {
-  // @@ new StripesSession(store, data);
-
   // clear any auth-n errors
   store.dispatch(setAuthError(null));
 
@@ -517,7 +572,12 @@ export function createOkapiSession(store, tenant, token, data) {
     tokenExpiration,
   };
 
-  // provide token-expiration info to the service worker
+  // localStorage events emit across tabs so we can use it like a
+  // BroadcastChannel to communicate with all tabs/windows.
+  // here, we set a dummy 'true' value just so we have something to
+  // remove (and therefore emit and respond to) on logout
+  localStorage.setItem(SESSION_NAME, 'true');
+
   return localforage.setItem('loginResponse', data)
     .then(() => localforage.setItem(SESSION_NAME, okapiSess))
     .then(() => {
@@ -525,41 +585,6 @@ export function createOkapiSession(store, tenant, token, data) {
       store.dispatch(setSessionData(okapiSess));
       return loadResources(store, sessionTenant, user.id);
     });
-}
-
-/**
- * handleRtrError
- * Clear out the redux store and logout.
- *
- * @param {*} event
- * @param {*} store
- * @returns void
- */
-export const handleRtrError = (event, store) => {
-  logger.log('rtr', 'rtr error; logging out', event.detail);
-  store.dispatch(setIsAuthenticated(false));
-  store.dispatch(clearCurrentUser());
-  store.dispatch(resetStore());
-  localforage.removeItem(SESSION_NAME)
-    .then(localforage.removeItem('loginResponse'));
-};
-
-/**
- * addRtrEventListeners
- * RTR_ERROR_EVENT: RTR error, logout
- * RTR_ROTATION_EVENT: configure a timer for auto-logout
- *
- * @param {*} okapiConfig
- * @param {*} store
- */
-export function addRtrEventListeners(okapiConfig, store) {
-  document.addEventListener(RTR_ERROR_EVENT, (e) => {
-    handleRtrError(e, store);
-  });
-
-  // document.addEventListener(RTR_ROTATION_EVENT, (e) => {
-  //   handleRtrRotation(e, store);
-  // });
 }
 
 /**
@@ -687,7 +712,7 @@ export function processOkapiSession(store, tenant, resp, ssoToken) {
 
 /**
  * validateUser
- * return a promise that fetches from .../_self.
+ * return a promise that fetches from bl-users/_self.
  * if successful, dispatch the result to create a session
  * if not, clear the session and token.
  *
@@ -725,16 +750,20 @@ export function validateUser(okapiUrl, store, tenant, session) {
 
         store.dispatch(setSessionData({
           isAuthenticated: true,
-          user,
+          user: data.user,
           perms,
           tenant: sessionTenant,
           token,
           tokenExpiration,
         }));
+
         return loadResources(store, sessionTenant, user.id);
       });
     } else {
-      return logout(okapiUrl, store);
+      store.dispatch(clearCurrentUser());
+      return resp.text((text) => {
+        throw text;
+      });
     }
   }).catch((error) => {
     console.error(error); // eslint-disable-line no-console
@@ -745,7 +774,9 @@ export function validateUser(okapiUrl, store, tenant, session) {
 
 /**
  * checkOkapiSession
- * 1. Pull the session from local storage; if non-empty validate it, dispatching load-resources actions.
+ * 1. Pull the session from local storage; if it contains a user id,
+ *    validate it by fetching /_self to verify that it is still active,
+ *    dispatching load-resources actions.
  * 2. Check if SSO (SAML) is enabled, dispatching check-sso actions
  * 3. dispatch set-okapi-ready.
  *
@@ -756,7 +787,7 @@ export function validateUser(okapiUrl, store, tenant, session) {
 export function checkOkapiSession(okapiUrl, store, tenant) {
   getOkapiSession()
     .then((sess) => {
-      return sess !== null ? validateUser(okapiUrl, store, tenant, sess) : null;
+      return sess?.user?.id ? validateUser(okapiUrl, store, tenant, sess) : null;
     })
     .then(() => {
       if (store.getState().discovery?.interfaces?.['login-saml']) {
@@ -902,10 +933,9 @@ export function updateUser(store, data) {
  *
  * @returns {Promise}
  */
-export async function updateTenant(okapi, tenant) {
+export async function updateTenant(okapiConfig, tenant) {
   const okapiSess = await getOkapiSession();
-  const userWithPermsResponse = await fetchUserWithPerms(okapi.url, tenant, okapi.token);
+  const userWithPermsResponse = await fetchUserWithPerms(okapiConfig.url, tenant, okapiConfig.token);
   const userWithPerms = await userWithPermsResponse.json();
-
   await localforage.setItem(SESSION_NAME, { ...okapiSess, tenant, ...spreadUserWithPerms(userWithPerms) });
 }

@@ -2,9 +2,16 @@
 // FFetch for the reassign globals side-effect in its constructor.
 /* eslint-disable no-unused-vars */
 
+import ms from 'ms';
+
 import { getTokenExpiry } from '../../loginServices';
 import { FFetch } from './FFetch';
 import { RTRError, UnexpectedResourceError } from './Errors';
+import {
+  RTR_AT_EXPIRY_IF_UNKNOWN,
+  RTR_AT_TTL_FRACTION,
+  RTR_FLS_WARNING_TTL,
+} from './constants';
 
 jest.mock('../../loginServices', () => ({
   ...(jest.requireActual('../../loginServices')),
@@ -39,13 +46,63 @@ describe('FFetch class', () => {
     jest.resetAllMocks();
   });
 
-  describe('Calling a non-okapi fetch', () => {
+  describe('Calling a non-FOLIO API', () => {
     it('calls native fetch once', async () => {
       mockFetch.mockResolvedValueOnce('non-okapi-success');
       const testFfetch = new FFetch({ logger: { log } });
+      testFfetch.replaceFetch();
+      testFfetch.replaceXMLHttpRequest();
+
       const response = await global.fetch('nonOkapiURL', { testOption: 'test' });
       await expect(mockFetch.mock.calls).toHaveLength(1);
       expect(response).toEqual('non-okapi-success');
+    });
+  });
+
+  describe('Calling a FOLIO API fetch', () => {
+    it('calls native fetch once', async () => {
+      mockFetch.mockResolvedValueOnce('okapi-success');
+      const testFfetch = new FFetch({ logger: { log } });
+      testFfetch.replaceFetch();
+      testFfetch.replaceXMLHttpRequest();
+      const response = await global.fetch('okapiUrl/whatever', { testOption: 'test' });
+      await expect(mockFetch.mock.calls).toHaveLength(1);
+      expect(response).toEqual('okapi-success');
+    });
+  });
+
+  describe('logging in', () => {
+    it('calls native fetch once', async () => {
+      const tokenExpiration = {
+        accessTokenExpiration: new Date().toISOString()
+      };
+      const json = () => Promise.resolve({ tokenExpiration });
+      // this mock is a mess because the login-handler clones the response
+      // in order to (1) grab token expiration and kick off RTR and (2) pass
+      // the un-read-response back to the login handler
+      mockFetch.mockResolvedValueOnce({
+        clone: () => ({
+          json
+        }),
+        json,
+      });
+      const testFfetch = new FFetch({
+        logger: { log },
+        store: {
+          dispatch: jest.fn(),
+        }
+      });
+      testFfetch.replaceFetch();
+      testFfetch.replaceXMLHttpRequest();
+
+      const response = await global.fetch('okapiUrl/bl-users/login-with-expiry', { testOption: 'test' });
+
+      // calls native fetch
+      expect(mockFetch.mock.calls).toHaveLength(1);
+
+      // login returns the original response
+      const res = await response.json();
+      expect(res).toMatchObject({ tokenExpiration });
     });
   });
 
@@ -53,6 +110,9 @@ describe('FFetch class', () => {
     it('calls native fetch once to log out', async () => {
       mockFetch.mockResolvedValueOnce('logged out');
       const testFfetch = new FFetch({ logger: { log } });
+      testFfetch.replaceFetch();
+      testFfetch.replaceXMLHttpRequest();
+
       const response = await global.fetch('okapiUrl/authn/logout', { testOption: 'test' });
       expect(mockFetch.mock.calls).toHaveLength(1);
       expect(response).toEqual('logged out');
@@ -60,11 +120,20 @@ describe('FFetch class', () => {
   });
 
   describe('logging out fails', () => {
-    it('calls native fetch once to log out', async () => {
-      mockFetch.mockImplementationOnce(() => new Promise((res, rej) => rej()));
+    it('fetch failure is silently trapped', async () => {
+      mockFetch.mockRejectedValueOnce('logged out FAIL');
 
       const testFfetch = new FFetch({ logger: { log } });
-      const response = await global.fetch('okapiUrl/authn/logout', { testOption: 'test' });
+      testFfetch.replaceFetch();
+      testFfetch.replaceXMLHttpRequest();
+
+      let ex = null;
+      let response = null;
+      try {
+        response = await global.fetch('okapiUrl/authn/logout', { testOption: 'test' });
+      } catch (e) {
+        ex = e;
+      }
       expect(mockFetch.mock.calls).toHaveLength(1);
       expect(response).toEqual(new Response(JSON.stringify({})));
     });
@@ -74,126 +143,258 @@ describe('FFetch class', () => {
     it('Calling an okapi fetch with valid token...', async () => {
       mockFetch.mockResolvedValueOnce('okapi success');
       const testFfetch = new FFetch({ logger: { log } });
+      testFfetch.replaceFetch();
+      testFfetch.replaceXMLHttpRequest();
+
       const response = await global.fetch('okapiUrl/valid', { testOption: 'test' });
       expect(mockFetch.mock.calls).toHaveLength(1);
       expect(response).toEqual('okapi success');
     });
   });
 
-  describe('Calling an okapi fetch with missing token...', () => {
-    it('triggers rtr...calls fetch 3 times, failed call, token call, successful call', async () => {
-      mockFetch.mockResolvedValue('success')
-        .mockResolvedValueOnce(new Response(
-          'Token missing',
-          {
-            status: 400,
-            headers: {
-              'content-type': 'text/plain',
-            },
-          }
-        ))
-        .mockResolvedValueOnce(new Response(JSON.stringify({
-          accessTokenExpiration: new Date().getTime() + 1000,
-          refreshTokenExpiration: new Date().getTime() + 2000,
-        }), { ok: true }));
-      const testFfetch = new FFetch({ logger: { log } });
-      const response = await global.fetch('okapiUrl', { testOption: 'test' });
-      expect(mockFetch.mock.calls).toHaveLength(3);
-      expect(mockFetch.mock.calls[1][0]).toEqual('okapiUrl/authn/refresh');
-      expect(response).toEqual('success');
+  describe('calling authentication resources', () => {
+    it('handles RTR data in the response', async () => {
+      // a static timestamp representing "now"
+      const whatTimeIsItMrFox = 1718042609734;
+
+      // a static timestamp of when the AT will expire, in the future
+      // this value will be pushed into the response returned from the fetch
+      const accessTokenExpiration = whatTimeIsItMrFox + 5000;
+      const refreshTokenExpiration = whatTimeIsItMrFox + ms('20m');
+
+      const st = jest.spyOn(window, 'setTimeout');
+
+      // dummy date data: assume session
+      Date.now = () => whatTimeIsItMrFox;
+
+      const cloneJson = jest.fn();
+      const clone = () => ({
+        ok: true,
+        json: () => Promise.resolve({ tokenExpiration: { accessTokenExpiration, refreshTokenExpiration } })
+      });
+
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        clone,
+      });
+
+      mockFetch.mockResolvedValueOnce('okapi success');
+      const testFfetch = new FFetch({
+        logger: { log },
+        store: {
+          dispatch: jest.fn(),
+        },
+        rtrConfig: {
+          fixedLengthSessionWarningTTL: '1m',
+        },
+      });
+      testFfetch.replaceFetch();
+      testFfetch.replaceXMLHttpRequest();
+
+      const response = await global.fetch('okapiUrl/bl-users/_self', { testOption: 'test' });
+      // why this extra await/setTimeout? Because RTR happens in an un-awaited
+      // promise in a separate thread fired off by setTimout, and we need to
+      // give it the chance to complete. on the one hand, this feels super
+      // gross, but on the other, since we're deliberately pushing rotation
+      // into a separate thread, I'm note sure of a better way to handle this.
+      await setTimeout(Promise.resolve(), 2000);
+
+      // AT rotation
+      expect(st).toHaveBeenCalledWith(expect.any(Function), (accessTokenExpiration - whatTimeIsItMrFox) * RTR_AT_TTL_FRACTION);
+
+      // FLS warning
+      expect(st).toHaveBeenCalledWith(expect.any(Function), (refreshTokenExpiration - whatTimeIsItMrFox) - ms(RTR_FLS_WARNING_TTL));
+
+      // FLS timeout
+      expect(st).toHaveBeenCalledWith(expect.any(Function), (refreshTokenExpiration - whatTimeIsItMrFox));
     });
 
-    it('400 NOT token missing: bubbles failure up to the application', async () => {
-      mockFetch.mockResolvedValue(
-        new Response(
-          'Tolkien missing, send Frodo?',
-          {
-            status: 400,
-            headers: {
-              'content-type': 'text/plain',
-            },
-          }
-        ));
-      const testFfetch = new FFetch({ logger: { log } });
-      const response = await global.fetch('okapiUrl', { testOption: 'test' });
+    it('handles RTR data in the session', async () => {
+      // a static timestamp representing "now"
+      const whatTimeIsItMrFox = 1718042609734;
+
+      // a static timestamp of when the AT will expire, in the future
+      // this value will be retrieved from local storage via getTokenExpiry
+      const atExpires = whatTimeIsItMrFox + 5000;
+      const rtExpires = whatTimeIsItMrFox + 15000;
+
+      const st = jest.spyOn(window, 'setTimeout');
+
+      getTokenExpiry.mockResolvedValue({ atExpires, rtExpires });
+      Date.now = () => whatTimeIsItMrFox;
+
+      const cloneJson = jest.fn();
+      const clone = () => ({
+        ok: true,
+        json: () => Promise.resolve({}),
+      });
+
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        clone,
+      });
+
+      mockFetch.mockResolvedValueOnce('okapi success');
+      const testFfetch = new FFetch({
+        logger: { log },
+        store: {
+          dispatch: jest.fn(),
+        },
+        rtrConfig: {
+          fixedLengthSessionWarningTTL: '1m',
+        },
+      });
+      testFfetch.replaceFetch();
+      testFfetch.replaceXMLHttpRequest();
+
+      const response = await global.fetch('okapiUrl/bl-users/_self', { testOption: 'test' });
+      // why this extra await/setTimeout? Because RTR happens in an un-awaited
+      // promise in a separate thread fired off by setTimout, and we need to
+      // give it the chance to complete. on the one hand, this feels super
+      // gross, but on the other, since we're deliberately pushing rotation
+      // into a separate thread, I'm note sure of a better way to handle this.
+      await setTimeout(Promise.resolve(), 2000);
+      expect(st).toHaveBeenCalledWith(expect.any(Function), (atExpires - whatTimeIsItMrFox) * RTR_AT_TTL_FRACTION);
+    });
+
+    it('handles missing RTR data', async () => {
+      const st = jest.spyOn(window, 'setTimeout');
+      getTokenExpiry.mockResolvedValue({});
+
+      const cloneJson = jest.fn();
+      const clone = () => ({
+        ok: true,
+        json: () => Promise.resolve({}),
+      });
+
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        clone,
+      });
+
+      mockFetch.mockResolvedValueOnce('okapi success');
+      const testFfetch = new FFetch({
+        logger: { log },
+        store: {
+          dispatch: jest.fn(),
+        },
+        rtrConfig: {
+          fixedLengthSessionWarningTTL: '1m',
+        },
+      });
+      testFfetch.replaceFetch();
+      testFfetch.replaceXMLHttpRequest();
+
+      const response = await global.fetch('okapiUrl/bl-users/_self', { testOption: 'test' });
+      // why this extra await/setTimeout? Because RTR happens in an un-awaited
+      // promise in a separate thread fired off by setTimout, and we need to
+      // give it the chance to complete. on the one hand, this feels super
+      // gross, but on the other, since we're deliberately pushing rotation
+      // into a separate thread, I'm not sure of a better way to handle this.
+      await setTimeout(Promise.resolve(), 2000);
+
+      expect(st).toHaveBeenCalledWith(expect.any(Function), ms(RTR_AT_EXPIRY_IF_UNKNOWN) * RTR_AT_TTL_FRACTION);
+    });
+
+    it('handles unsuccessful responses', async () => {
+      jest.spyOn(window, 'dispatchEvent');
+      jest.spyOn(console, 'error');
+
+      const cloneJson = jest.fn();
+      const clone = () => ({
+        ok: false,
+        json: cloneJson,
+      });
+
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        clone,
+      });
+
+      mockFetch.mockResolvedValueOnce('okapi success');
+      const testFfetch = new FFetch({
+        logger: { log },
+        store: {
+          dispatch: jest.fn(),
+        }
+      });
+      testFfetch.replaceFetch();
+      testFfetch.replaceXMLHttpRequest();
+
+      const response = await global.fetch('okapiUrl/bl-users/_self', { testOption: 'test' });
       expect(mockFetch.mock.calls).toHaveLength(1);
-      expect(response.status).toEqual(400);
+      expect(cloneJson).not.toHaveBeenCalled();
     });
 
-    it('401 UnauthorizedException: triggers rtr...calls fetch 3 times, failed call, token call, successful call', async () => {
-      mockFetch.mockResolvedValue('success')
-        .mockResolvedValueOnce(new Response(
-          JSON.stringify({
-            'errors': [
-              {
-                'type': 'UnauthorizedException',
-                'code': 'authorization_error',
-                'message': 'Unauthorized'
-              }
-            ],
-            'total_records': 1
-          }),
-          {
-            status: 401,
-            headers: {
-              'content-type': 'application/json',
-            },
-          }
-        ))
-        .mockResolvedValueOnce(new Response(JSON.stringify({
-          accessTokenExpiration: new Date().getTime() + 1000,
-          refreshTokenExpiration: new Date().getTime() + 2000,
-        }), { ok: true }));
-      const testFfetch = new FFetch({ logger: { log } });
-      const response = await global.fetch('okapiUrl', { testOption: 'test' });
-      expect(mockFetch.mock.calls).toHaveLength(3);
-      expect(mockFetch.mock.calls[1][0]).toEqual('okapiUrl/authn/refresh');
-      expect(response).toEqual('success');
-    });
+    it('avoids rotation when AT and RT expire together', async () => {
+      // a static timestamp representing "now"
+      const whatTimeIsItMrFox = 1718042609734;
 
-    it('401 NOT UnauthorizedException: bubbles failure up to the application', async () => {
-      mockFetch.mockResolvedValue(
-        new Response(
-          JSON.stringify({
-            'errors': [
-              {
-                'type': 'AuthorizedException',
-                'code': 'chuck_brown',
-                'message': 'Gong!'
-              }
-            ],
-            'total_records': 1
-          }),
-          {
-            status: 401,
-            headers: {
-              'content-type': 'application/json',
-            },
-          }
-        ));
-      const testFfetch = new FFetch({ logger: { log } });
-      const response = (await global.fetch('okapiUrl', { testOption: 'test' }));
-      expect(mockFetch.mock.calls).toHaveLength(1);
-      expect(response.status).toEqual(401);
+      // a static timestamp of when the AT will expire, in the future
+      // this value will be pushed into the response returned from the fetch
+      const accessTokenExpiration = whatTimeIsItMrFox + 5000;
+      const refreshTokenExpiration = accessTokenExpiration;
+
+      const st = jest.spyOn(window, 'setTimeout');
+
+      // dummy date data: assume session
+      Date.now = () => whatTimeIsItMrFox;
+
+      const cloneJson = jest.fn();
+      const clone = () => ({
+        ok: true,
+        json: () => Promise.resolve({ tokenExpiration: { accessTokenExpiration, refreshTokenExpiration } })
+      });
+
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        clone,
+      });
+
+      mockFetch.mockResolvedValueOnce('okapi success');
+      const testFfetch = new FFetch({
+        logger: { log },
+        store: {
+          dispatch: jest.fn(),
+        },
+        rtrConfig: {
+          fixedLengthSessionWarningTTL: '1m',
+        },
+      });
+      testFfetch.replaceFetch();
+      testFfetch.replaceXMLHttpRequest();
+
+      const response = await global.fetch('okapiUrl/bl-users/_self', { testOption: 'test' });
+      // why this extra await/setTimeout? Because RTR happens in an un-awaited
+      // promise in a separate thread fired off by setTimout, and we need to
+      // give it the chance to complete. on the one hand, this feels super
+      // gross, but on the other, since we're deliberately pushing rotation
+      // into a separate thread, I'm note sure of a better way to handle this.
+      await setTimeout(Promise.resolve(), 2000);
+
+      // AT rotation
+      expect(st).not.toHaveBeenCalledWith(expect.any(Function), (accessTokenExpiration - whatTimeIsItMrFox) * RTR_AT_TTL_FRACTION);
+
+      // FLS warning
+      expect(st).toHaveBeenCalledWith(expect.any(Function), (refreshTokenExpiration - whatTimeIsItMrFox) - ms(RTR_FLS_WARNING_TTL));
+
+      // FLS timeout
+      expect(st).toHaveBeenCalledWith(expect.any(Function), (refreshTokenExpiration - whatTimeIsItMrFox));
     });
   });
 
-  describe('Calling an okapi fetch with expired AT...', () => {
-    it('triggers rtr...calls fetch 2 times - token call, successful call', async () => {
-      getTokenExpiry.mockResolvedValueOnce({
-        atExpires: Date.now() - (10 * 60 * 1000),
-        rtExpires: Date.now() + (10 * 60 * 1000),
-      });
-      mockFetch.mockResolvedValue('token rotation success')
-        .mockResolvedValueOnce(new Response(JSON.stringify({
-          accessTokenExpiration: new Date().getTime() + 1000,
-          refreshTokenExpiration: new Date().getTime() + 2000,
-        }), { ok: true }));
+
+  describe('Calling an okapi fetch with missing token...', () => {
+    it('returns the error', async () => {
+      mockFetch.mockResolvedValue('success')
+        .mockResolvedValueOnce('failure');
       const testFfetch = new FFetch({ logger: { log } });
+      testFfetch.replaceFetch();
+      testFfetch.replaceXMLHttpRequest();
+
       const response = await global.fetch('okapiUrl', { testOption: 'test' });
-      expect(mockFetch.mock.calls).toHaveLength(2);
-      expect(mockFetch.mock.calls[0][0]).toEqual('okapiUrl/authn/refresh');
-      expect(response).toEqual('token rotation success');
+      expect(mockFetch.mock.calls).toHaveLength(1);
+      expect(response).toEqual('failure');
     });
   });
 
@@ -210,6 +411,9 @@ describe('FFetch class', () => {
           }
         ));
       const testFfetch = new FFetch({ logger: { log } });
+      testFfetch.replaceFetch();
+      testFfetch.replaceXMLHttpRequest();
+
       const response = await global.fetch('okapiUrl', { testOption: 'test' });
       const message = await response.text();
       expect(mockFetch.mock.calls).toHaveLength(1);
@@ -231,6 +435,9 @@ describe('FFetch class', () => {
         ))
         .mockRejectedValueOnce(new Error('token error message'));
       const testFfetch = new FFetch({ logger: { log } });
+      testFfetch.replaceFetch();
+      testFfetch.replaceXMLHttpRequest();
+
       try {
         await global.fetch('okapiUrl', { testOption: 'test' });
       } catch (e) {
@@ -256,13 +463,16 @@ describe('FFetch class', () => {
         .mockResolvedValueOnce(new Response(
           JSON.stringify({ errors: ['missing token-getting ability'] }),
           {
-            status: 303,
+            status: 403,
             headers: {
               'content-type': 'application/json',
             }
           }
         ));
       const testFfetch = new FFetch({ logger: { log } });
+      testFfetch.replaceFetch();
+      testFfetch.replaceXMLHttpRequest();
+
       try {
         await global.fetch('okapiUrl', { testOption: 'test' });
       } catch (e) {
@@ -283,13 +493,16 @@ describe('FFetch class', () => {
         .mockResolvedValueOnce(new Response(
           JSON.stringify({ errors: ['missing token-getting ability'] }),
           {
-            status: 303,
+            status: 403,
             headers: {
               'content-type': 'application/json',
             }
           }
         ));
       const testFfetch = new FFetch({ logger: { log } });
+      testFfetch.replaceFetch();
+      testFfetch.replaceXMLHttpRequest();
+
       try {
         await global.fetch('okapiUrl', { testOption: 'test' });
       } catch (e) {
@@ -310,13 +523,16 @@ describe('FFetch class', () => {
         .mockResolvedValueOnce(new Response(
           JSON.stringify({ errors: ['missing token-getting ability'] }),
           {
-            status: 303,
+            status: 403,
             headers: {
               'content-type': 'application/json',
             }
           }
         ));
       const testFfetch = new FFetch({ logger: { log } });
+      testFfetch.replaceFetch();
+      testFfetch.replaceXMLHttpRequest();
+
       try {
         await global.fetch({ foo: 'okapiUrl' }, { testOption: 'test' });
       } catch (e) {

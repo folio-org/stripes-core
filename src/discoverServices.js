@@ -96,7 +96,7 @@ function parseApplicationDescriptor(store, descriptor) {
 const APP_MAX_COUNT = 500;
 
 function fetchApplicationDetails(store) {
-  const okapi = store.getState().okapi;
+  const { okapi } = store.getState();
 
   return fetch(`${okapi.url}/entitlements/${okapi.tenant}/applications?limit=${APP_MAX_COUNT}`, {
     credentials: 'include',
@@ -114,17 +114,20 @@ function fetchApplicationDetails(store) {
             return Promise.all(list);
           }
 
+          // eslint-disable-next-line no-console
           console.error(`>>> NO APPLICATIONS AVAILABLE FOR ${okapi.tenant}`, json);
           store.dispatch({ type: 'DISCOVERY_FAILURE', code: response.status });
           throw response;
         });
       } else {
+        // eslint-disable-next-line no-console
         console.error(`>>> COULD NOT RETRIEVE APPLICATIONS FOR ${okapi.tenant}`, response);
         store.dispatch({ type: 'DISCOVERY_FAILURE', code: response.status });
         throw response;
       }
     })
     .catch(reason => {
+      // eslint-disable-next-line no-console
       console.error(`@@ COULD NOT RETRIEVE APPLICATIONS FOR ${okapi.tenant}`, reason);
       store.dispatch({ type: 'DISCOVERY_FAILURE', message: reason });
     });
@@ -143,7 +146,7 @@ function fetchApplicationDetails(store) {
  */
 
 function fetchGatewayVersion(store) {
-  const okapi = store.getState().okapi;
+  const { okapi } = store.getState();
 
   return fetch(`${okapi.url}/version`, {
     credentials: 'include',
@@ -164,7 +167,7 @@ function fetchGatewayVersion(store) {
 }
 
 function fetchOkapiVersion(store) {
-  const okapi = store.getState().okapi;
+  const { okapi } = store.getState();
 
   return fetch(`${okapi.url}/_/version`, {
     credentials: 'include',
@@ -185,7 +188,7 @@ function fetchOkapiVersion(store) {
 }
 
 function fetchModules(store) {
-  const okapi = store.getState().okapi;
+  const { okapi } = store.getState();
 
   return fetch(`${okapi.url}/_/proxy/tenants/${okapi.tenant}/modules?full=true`, {
     credentials: 'include',
@@ -211,13 +214,6 @@ function fetchModules(store) {
   });
 }
 
-/*
- * This function probes Okapi to discover what versions of what
- * interfaces are supported by the services that it is proxying
- * for. This information can be used to configure the UI at run-time
- * (e.g. not attempting to fetch loan information for a
- * non-circulating library that doesn't provide the circ interface)
- */
 export function discoverServices(store) {
   const promises = [];
   if (config.tenantOptions) {
@@ -232,7 +228,6 @@ export function discoverServices(store) {
     store.dispatch({ type: 'DISCOVERY_FINISHED' });
   });
 }
-
 
 export function discoveryReducer(state = {}, action) {
   switch (action.type) {
