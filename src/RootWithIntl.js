@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import {
   Router,
   Switch,
-  Redirect as InternalRedirect
 } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { CookiesProvider } from 'react-cookie';

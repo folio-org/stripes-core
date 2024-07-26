@@ -1,4 +1,3 @@
-import { waitFor } from '@folio/jest-config-stripes/testing-library/react';
 import { RTRError, UnexpectedResourceError } from './Errors';
 import {
   configureRtr,

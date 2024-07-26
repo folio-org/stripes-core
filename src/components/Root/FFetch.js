@@ -100,7 +100,7 @@ export class FFetch {
   /**
    * scheduleRotation
    * Given a promise that resolves with timestamps for the AT's and RT's
-   * expiration, configure relevant corresponding timers: 
+   * expiration, configure relevant corresponding timers:
    * * before the AT expires, conduct RTR
    * * when the RT is about to expire, send a "session will end" event
    * * when the RT expires, send a "session ended" event"
