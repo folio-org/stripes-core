@@ -3,6 +3,7 @@ export const OKAPI_REDUCER_ACTIONS = {
   CLEAR_CURRENT_USER: 'CLEAR_CURRENT_USER',
   CLEAR_OKAPI_TOKEN: 'CLEAR_OKAPI_TOKEN',
   CLEAR_RTR_FLS_TIMEOUT: 'CLEAR_RTR_FLS_TIMEOUT',
+  CLEAR_RTR_FLS_WARNING_TIMEOUT: 'CLEAR_RTR_FLS_WARNING_TIMEOUT',
   CLEAR_RTR_TIMEOUT: 'CLEAR_RTR_TIMEOUT',
   OKAPI_READY: 'OKAPI_READY',
   SERVER_DOWN: 'SERVER_DOWN',
@@ -18,6 +19,7 @@ export const OKAPI_REDUCER_ACTIONS = {
   SET_OKAPI_TOKEN: 'SET_OKAPI_TOKEN',
   SET_PLUGINS: 'SET_PLUGINS',
   SET_RTR_FLS_TIMEOUT: 'SET_RTR_FLS_TIMEOUT',
+  SET_RTR_FLS_WARNING_TIMEOUT: 'SET_RTR_FLS_WARNING_TIMEOUT',
   SET_RTR_TIMEOUT: 'SET_RTR_TIMEOUT',
   SET_SESSION_DATA: 'SET_SESSION_DATA',
   SET_SINGLE_PLUGIN: 'SET_SINGLE_PLUGIN',
@@ -47,9 +49,11 @@ export default function okapiReducer(state = {}, action) {
       // if we're logging out, clear the RTR timeouts and related values
       if (!action.isAuthenticated) {
         clearTimeout(state.rtrTimeout);
+        clearTimeout(state.rtrFlsWarningTimeout);
         clearTimeout(state.rtrFlsTimeout);
         newState.rtrModalIsVisible = false;
         newState.rtrTimeout = undefined;
+        newState.rtrFlsWarningTimeout = undefined;
         newState.rtrFlsTimeout = undefined;
       }
 
@@ -99,10 +103,23 @@ export default function okapiReducer(state = {}, action) {
       clearTimeout(state.rtrTimeout);
       return { ...state, rtrTimeout: action.rtrTimeout };
     }
+
     case OKAPI_REDUCER_ACTIONS.CLEAR_RTR_TIMEOUT: {
       clearTimeout(state.rtrTimeout);
       return { ...state, rtrTimeout: undefined };
     }
+
+    // clear existing FLS warning timeout and set a new one
+    case OKAPI_REDUCER_ACTIONS.SET_RTR_FLS_WARNING_TIMEOUT: {
+      clearTimeout(state.rtrFlsWarningTimeout);
+      return { ...state, rtrFlsWarningTimeout: action.rtrFlsWarningTimeout };
+    }
+
+    case OKAPI_REDUCER_ACTIONS.CLEAR_RTR_FLS_WARNING_TIMEOUT: {
+      clearTimeout(state.rtrFlsWarningTimeout);
+      return { ...state, rtrFlsWarningTimeout: undefined };
+    }
+
     // clear existing FLS timeout and set a new one
     case OKAPI_REDUCER_ACTIONS.SET_RTR_FLS_TIMEOUT: {
       clearTimeout(state.rtrFlsTimeout);
