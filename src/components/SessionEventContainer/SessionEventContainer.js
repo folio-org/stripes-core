@@ -19,18 +19,18 @@ import { toggleRtrModal } from '../../okapiActions';
 //
 
 // RTR error in this window: logout
-export const thisWindowRtrError = (_e, stripes, history) => {
+export const thisWindowRtrError = (_e, stripes, history, queryClient) => {
   console.warn('rtr error; logging out'); // eslint-disable-line no-console
-  return logout(stripes.okapi.url, stripes.store)
+  return logout(stripes.okapi.url, stripes.store, queryClient)
     .then(() => {
       history.push('/logout-timeout');
     });
 };
 
 // idle session timeout in this window: logout
-export const thisWindowRtrTimeout = (_e, stripes, history) => {
+export const thisWindowRtrTimeout = (_e, stripes, history, queryClient) => {
   stripes.logger.log('rtr', 'idle session timeout; logging out');
-  return logout(stripes.okapi.url, stripes.store)
+  return logout(stripes.okapi.url, stripes.store, queryClient)
     .then(() => {
       history.push('/logout-timeout');
     });
@@ -40,16 +40,16 @@ export const thisWindowRtrTimeout = (_e, stripes, history) => {
 // logout if it was a timeout event or if SESSION_NAME is being
 // removed from localStorage, an indicator that logout is in-progress
 // in another window and so must occur here as well
-export const otherWindowStorage = (e, stripes, history) => {
+export const otherWindowStorage = (e, stripes, history, queryClient) => {
   if (e.key === RTR_TIMEOUT_EVENT) {
     stripes.logger.log('rtr', 'idle session timeout; logging out');
-    return logout(stripes.okapi.url, stripes.store)
+    return logout(stripes.okapi.url, stripes.store, queryClient)
       .then(() => {
         history.push('/logout-timeout');
       });
   } else if (!localStorage.getItem(SESSION_NAME)) {
     stripes.logger.log('rtr', 'external localstorage change; logging out');
-    return logout(stripes.okapi.url, stripes.store)
+    return logout(stripes.okapi.url, stripes.store, queryClient)
       .then(() => {
         history.push('/');
       });
@@ -121,7 +121,7 @@ export const thisWindowActivity = (_e, stripes, timers, broadcastChannel) => {
  * @param {object} history
  * @returns KeepWorkingModal or null
  */
-const SessionEventContainer = ({ history }) => {
+const SessionEventContainer = ({ history, queryClient }) => {
   // is the "keep working?" modal visible?
   const [isVisible, setIsVisible] = useState(false);
 
@@ -200,13 +200,13 @@ const SessionEventContainer = ({ history }) => {
       timers.current = { showModalIT, logoutIT };
 
       // RTR error in this window: logout
-      channels.window[RTR_ERROR_EVENT] = (e) => thisWindowRtrError(e, stripes, history);
+      channels.window[RTR_ERROR_EVENT] = (e) => thisWindowRtrError(e, stripes, history, queryClient);
 
       // idle session timeout in this window: logout
-      channels.window[RTR_TIMEOUT_EVENT] = (e) => thisWindowRtrTimeout(e, stripes, history);
+      channels.window[RTR_TIMEOUT_EVENT] = (e) => thisWindowRtrTimeout(e, stripes, history, queryClient);
 
       // localstorage change in another window: logout?
-      channels.window.storage = (e) => otherWindowStorage(e, stripes, history);
+      channels.window.storage = (e) => otherWindowStorage(e, stripes, history, queryClient);
 
       // activity in another window: send keep-alive to idle-timers.
       channels.bc.message = (message) => otherWindowActivity(message, stripes, timers, setIsVisible);
@@ -259,6 +259,7 @@ const SessionEventContainer = ({ history }) => {
 
 SessionEventContainer.propTypes = {
   history: PropTypes.object,
+  queryClient: PropTypes.object,
 };
 
 export default SessionEventContainer;

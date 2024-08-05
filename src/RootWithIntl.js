@@ -40,7 +40,7 @@ import StaleBundleWarning from './components/StaleBundleWarning';
 import { StripesContext } from './StripesContext';
 import { CalloutContext } from './CalloutContext';
 
-const RootWithIntl = ({ stripes, token = '', isAuthenticated = false, disableAuth, history = {} }) => {
+const RootWithIntl = ({ stripes, token = '', isAuthenticated = false, disableAuth, history = {}, queryClient }) => {
   const connect = connectFor('@folio/core', stripes.epics, stripes.logger);
   const connectedStripes = stripes.clone({ connect });
 
@@ -64,7 +64,7 @@ const RootWithIntl = ({ stripes, token = '', isAuthenticated = false, disableAut
                     <>
                       <MainContainer>
                         <AppCtxMenuProvider>
-                          <MainNav stripes={connectedStripes} />
+                          <MainNav stripes={connectedStripes} queryClient={queryClient} />
                           {typeof connectedStripes?.config?.staleBundleWarning === 'object' && <StaleBundleWarning />}
                           <HandlerManager
                             event={events.LOGIN}
@@ -73,7 +73,7 @@ const RootWithIntl = ({ stripes, token = '', isAuthenticated = false, disableAut
                           { (typeof connectedStripes.okapi !== 'object' || connectedStripes.discovery.isFinished) && (
                             <ModuleContainer id="content">
                               <OverlayContainer />
-                              {connectedStripes.config.useSecureTokens && <SessionEventContainer history={history} />}
+                              {connectedStripes.config.useSecureTokens && <SessionEventContainer history={history} queryClient={queryClient} />}
                               <Switch>
                                 <TitledRoute
                                   name="home"
@@ -179,6 +179,7 @@ RootWithIntl.propTypes = {
   isAuthenticated: PropTypes.bool,
   disableAuth: PropTypes.bool.isRequired,
   history: PropTypes.shape({}),
+  queryClient: PropTypes.object.isRequired,
 };
 
 export default RootWithIntl;

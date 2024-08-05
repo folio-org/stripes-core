@@ -56,7 +56,8 @@ class MainNav extends Component {
     }).isRequired,
     modules: PropTypes.shape({
       app: PropTypes.arrayOf(PropTypes.object),
-    })
+    }),
+    queryClient: PropTypes.object.isRequired,
   };
 
   constructor(props) {
@@ -95,6 +96,9 @@ class MainNav extends Component {
         }
       }
     });
+
+    // remove QueryProvider cache to be 100% sure we're starting from a clean slate.
+    this.props.queryClient.removeQueries();
   }
 
   componentDidUpdate(prevProps) {
@@ -121,7 +125,7 @@ class MainNav extends Component {
     const { okapi } = this.store.getState();
 
     return getLocale(okapi.url, this.store, okapi.tenant)
-      .then(sessionLogout(okapi.url, this.store, this.props.history));
+      .then(sessionLogout(okapi.url, this.store, this.props.history, this.props.queryClient));
   }
 
   getAppList(lastVisited) {
