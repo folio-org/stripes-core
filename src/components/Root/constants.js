@@ -87,3 +87,9 @@ export const RTR_IDLE_MODAL_TTL = '1m';
  */
 export const RTR_AT_EXPIRY_IF_UNKNOWN = '10s';
 export const RTR_RT_EXPIRY_IF_UNKNOWN = '10m';
+
+/**
+ * To account for minor delays between events (such as cookie expiration and API calls),
+ * this is a small amount of time to wait so the proper order can be ensured if they happen simultaneously.
+ */
+export const RTR_TIME_MARGIN_IN_MS = 200;
