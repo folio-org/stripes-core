@@ -448,7 +448,7 @@ export function spreadUserWithPerms(userWithPerms) {
  * @returns {Promise}
  */
 export const IS_LOGGING_OUT = '@folio/stripes/core::Logout';
-export async function logout(okapiUrl, store) {
+export async function logout(okapiUrl, store, queryClient) {
   // check the private-storage sentinel: if logout has already started
   // in this window, we don't want to start it again.
   if (sessionStorage.getItem(IS_LOGGING_OUT)) {
@@ -483,6 +483,9 @@ export async function logout(okapiUrl, store) {
       store.dispatch(clearCurrentUser());
       store.dispatch(clearOkapiToken());
       store.dispatch(resetStore());
+
+      // clear react-query cache
+      queryClient.removeQueries();
     })
     // clear shared storage
     .then(localforage.removeItem(SESSION_NAME))

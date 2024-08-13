@@ -17,6 +17,7 @@
 * Correctly populate `stripes.user.user` on reload. Refs STCOR-860.
 * Correctly evaluate `stripes.okapi` before rendering `<RootWithIntl>`. Refs STCOR-864.
 * Change main navigation's skip link label to "Skip to main content". Refs STCOR-863.
+* Invalidate `QueryClient` cache on login/logout. Refs STCOR-832.
 
 ## [10.1.0](https://github.com/folio-org/stripes-core/tree/v10.1.0) (2024-03-12)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.0.0...v10.1.0)
