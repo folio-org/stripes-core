@@ -65,7 +65,7 @@ import {
   RTR_AT_TTL_FRACTION,
   RTR_ERROR_EVENT,
   RTR_FLS_TIMEOUT_EVENT,
-  RTR_TIME_MARGIN_IN_MS,
+  RTR_TIME_MARGIN,
   RTR_FLS_WARNING_EVENT,
   RTR_RT_EXPIRY_IF_UNKNOWN,
 } from './constants';
@@ -143,7 +143,7 @@ export class FFetch {
       this.store.dispatch(setRtrFlsTimeout(setTimeout(() => {
         this.logger.log('rtr-fls', 'emitting RTR_FLS_TIMEOUT_EVENT');
         window.dispatchEvent(new Event(RTR_FLS_TIMEOUT_EVENT));
-      }, rtTimeoutInterval - RTR_TIME_MARGIN_IN_MS))); // Calling /logout a small margin before cookie is deleted to ensure it is included in the request
+      }, rtTimeoutInterval - ms(RTR_TIME_MARGIN)))); // Calling /logout a small margin before cookie is deleted to ensure it is included in the request
     });
   };
 
