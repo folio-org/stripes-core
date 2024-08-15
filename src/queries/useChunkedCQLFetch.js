@@ -39,7 +39,7 @@ const useChunkedCQLFetch = ({
   queryOptions: passedQueryOptions = {}, // Options to pass to each query
   reduceFunction, // Function to reduce fetched objects at the end into single array
   STEP_SIZE = STEP_SIZE_DEFAULT, // Number of IDs fetch per request
-  tenantId, // Number of IDs fetch per request
+  tenantId, // Tenant ID to which requests should be directed
 }) => {
   const ky = useOkapiKy({ tenant: tenantId });
 

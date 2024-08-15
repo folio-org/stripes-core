@@ -203,7 +203,7 @@ describe('Given useChunkedCQLFetch', () => {
   describe('allows work in provided tenant', () => {
     const providedTenantId = 'providedTenantId';
 
-    it('sets up 1 fetch using alternate ID name', async () => {
+    it('sets up 1 fetch using alternate tenant ID', async () => {
       const { result } = renderHook(() => useChunkedCQLFetch({
         ...baseOptions,
         tenantId: providedTenantId,
