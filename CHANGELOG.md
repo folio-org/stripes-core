@@ -21,6 +21,7 @@
 * Correctly evaluate `stripes.okapi` before rendering `<RootWithIntl>`. Refs STCOR-864.
 * `/users-keycloak/_self` is an authentication request. Refs STCOR-866.
 * Terminate the session when the fixed-length session expires. Refs STCOR-862.
+* Ensure support for the passed `tenantId` value by `useChunkedCQLFetch` for manipulations in the context of a specific tenant. Refs STCOR-873.
 
 ## [10.1.1](https://github.com/folio-org/stripes-core/tree/v10.1.1) (2024-03-25)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.1.0...v10.1.1)
