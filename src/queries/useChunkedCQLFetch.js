@@ -38,9 +38,10 @@ const useChunkedCQLFetch = ({
   limit = 1000, // Item limit to fetch on each request
   queryOptions: passedQueryOptions = {}, // Options to pass to each query
   reduceFunction, // Function to reduce fetched objects at the end into single array
-  STEP_SIZE = STEP_SIZE_DEFAULT // Number of IDs fetch per request
+  STEP_SIZE = STEP_SIZE_DEFAULT, // Number of IDs fetch per request
+  tenantId, // Number of IDs fetch per request
 }) => {
-  const ky = useOkapiKy();
+  const ky = useOkapiKy({ tenant: tenantId });
 
   // Destructure passed query options to grab enabled
   const { enabled: queryEnabled = true, ...queryOptions } = passedQueryOptions;
@@ -69,9 +70,10 @@ const useChunkedCQLFetch = ({
           endpoint,
           ids,
           queryOptions,
-          STEP_SIZE
+          STEP_SIZE,
+          tenantId,
         }) :
-        ['stripes-core', endpoint, chunkedItem];
+        ['stripes-core', endpoint, chunkedItem, tenantId];
       queryArray.push({
         queryKey,
         queryFn: () => ky.get(`${endpoint}?limit=${limit}&query=${query}`).json(),
@@ -93,7 +95,8 @@ const useChunkedCQLFetch = ({
     ky,
     queryEnabled,
     queryOptions,
-    STEP_SIZE
+    STEP_SIZE,
+    tenantId,
   ]);
 
   const itemQueries = useQueries(getQueryArray());
