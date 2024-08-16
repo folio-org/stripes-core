@@ -9,6 +9,7 @@
 * Correctly evaluate `stripes.okapi` before rendering `<RootWithIntl>`. Refs STCOR-864.
 * `/users-keycloak/_self` is an authentication request. Refs STCOR-866.
 * Terminate the session when the fixed-length session expires. Refs STCOR-862.
+* Provide `key` to elements in `<SessionEventContainer>`. Refs STCOR-874.
 
 ## [10.1.0](https://github.com/folio-org/stripes-core/tree/v10.1.0) (2024-03-12)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.0.0...v10.1.0)
