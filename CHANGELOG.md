@@ -19,6 +19,7 @@
 * Change main navigation's skip link label to "Skip to main content". Refs STCOR-863.
 * Invalidate `QueryClient` cache on login/logout. Refs STCOR-832.
 * Ensure support for the passed `tenantId` value by `useChunkedCQLFetch` for manipulations in the context of a specific tenant. Refs STCOR-873.
+* When re-authenticating after logout timeout, return to previous location. Refs STCOR-849.
 
 ## [10.1.0](https://github.com/folio-org/stripes-core/tree/v10.1.0) (2024-03-12)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.0.0...v10.1.0)

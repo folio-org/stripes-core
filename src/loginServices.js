@@ -111,6 +111,24 @@ export const setTokenExpiry = async (te) => {
   return localforage.setItem(SESSION_NAME, val);
 };
 
+/**
+ * removeUnauthorizedPathFromSession, setUnauthorizedPathToSession, getUnauthorizedPathFromSession
+ * remove/set/get unauthorized_path to/from session storage.
+ * Used to restore path on returning from login if user accessed a bookmarked
+ * URL while unauthenticated and was redirected to login, and when a session
+ * times out, forcing the user to re-authenticate.
+ *
+ * @see components/OIDCRedirect
+ */
+const UNAUTHORIZED_PATH = 'unauthorized_path';
+export const removeUnauthorizedPathFromSession = () => sessionStorage.removeItem(UNAUTHORIZED_PATH);
+export const setUnauthorizedPathToSession = (pathname) => {
+  const path = pathname ?? `${window.location.pathname}${window.location.search}`;
+  if (!path.startsWith('/logout')) {
+    sessionStorage.setItem(UNAUTHORIZED_PATH, pathname ?? `${window.location.pathname}${window.location.search}`);
+  }
+};
+export const getUnauthorizedPathFromSession = () => sessionStorage.getItem(UNAUTHORIZED_PATH);
 
 // export config values for storing user locale
 export const userLocaleConfig = {
