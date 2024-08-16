@@ -121,7 +121,7 @@
     "errors.password.repeatingSymbols.invalid": "密码不得包含连续的相同字符。",
     "errors.password.whiteSpace.invalid": "密码不得包含空格。",
     "mainnav.myProfileAriaLabel": "{tenantName} {servicePointName}配置文件",
-    "mainnav.skipMainNavigation": "跳过主导航",
+    "mainnav.skipMainNavigation": "跳至主要内容",
     "errors.user.timeout": "会话已过期。请重新登录以恢复会话。",
     "errors.password.consecutiveWhitespaces.invalid": "密码不能包含连续的空格字符。",
     "about.missingModuleCount": "{count, number}缺少{count, plural, one {接口} other {接口}}",
