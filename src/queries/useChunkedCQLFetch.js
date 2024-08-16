@@ -96,7 +96,9 @@ const useChunkedCQLFetch = ({
     STEP_SIZE
   ]);
 
-  const itemQueries = useQueries(getQueryArray());
+  const queryArray = getQueryArray();
+
+  const itemQueries = useQueries(queryArray);
 
   // Once chunk has finished fetching, fetch next chunk
   useEffect(() => {
@@ -133,7 +135,8 @@ const useChunkedCQLFetch = ({
     itemQueries,
     isLoading,
     // Offer all fetched orderLines in flattened array once ready
-    items: isLoading ? [] : reduceFunction(itemQueries)
+    items: isLoading ? [] : reduceFunction(itemQueries),
+    queryKeys: queryArray.map(q => q.queryKey)
   };
 };
 
