@@ -270,12 +270,12 @@ const SessionEventContainer = ({ history }) => {
 
   // show the idle-session warning modal?
   if (isVisible) {
-    renderList.push(<KeepWorkingModal callback={keepWorkingCallback} />);
+    renderList.push(<KeepWorkingModal callback={keepWorkingCallback} key="KeepWorkingModal" />);
   }
 
   // show the fixed-length session warning?
   if (isFlsVisible) {
-    renderList.push(<FixedLengthSessionWarning />);
+    renderList.push(<FixedLengthSessionWarning key="FixedLengthSessionWarning" />);
   }
 
   return renderList.length ? renderList : null;
