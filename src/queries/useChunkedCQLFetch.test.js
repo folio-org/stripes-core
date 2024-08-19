@@ -42,6 +42,15 @@ const baseOptions = {
 // Set these up in beforeEach so it's fresh for each describe -- otherwise get improper test component changes(?)
 let queryClient;
 let wrapper;
+
+const response = [{ dummy: 'result' }];
+const mockUseOkapiKyValue = {
+  get: jest.fn(() => ({
+    json: () => Promise.resolve(response),
+  })),
+};
+const mockUseOkapiKy = useOkapiKy;
+
 describe('Given useChunkedCQLFetch', () => {
   beforeEach(() => {
     queryClient = new QueryClient({
@@ -57,14 +66,10 @@ describe('Given useChunkedCQLFetch', () => {
         {children}
       </QueryClientProvider>
     );
-    const response = [{ dummy: 'result' }];
 
-    const mockUseOkapiKy = useOkapiKy;
-    mockUseOkapiKy.mockReturnValue({
-      get: () => ({
-        json: () => Promise.resolve(response),
-      }),
-    });
+    mockUseOkapiKy.mockClear();
+    mockUseOkapiKyValue.get.mockClear();
+    mockUseOkapiKy.mockReturnValue(mockUseOkapiKyValue);
   });
 
   describe('sets up correct number of fetches', () => {
@@ -197,7 +202,8 @@ describe('Given useChunkedCQLFetch', () => {
     it('expose queryKeys based on given ids and endpoint', async () => {
       const { result } = renderHook(() => useChunkedCQLFetch({
         ...baseOptions,
-        STEP_SIZE: 2
+        STEP_SIZE: 2,
+        tenantId: 'central',
       }), { wrapper });
 
       await waitFor(() => {
@@ -208,10 +214,43 @@ describe('Given useChunkedCQLFetch', () => {
 
       expect(result.current.queryKeys).toHaveLength(3);
       expect(result.current.queryKeys).toStrictEqual([
-        ['stripes-core', 'users', ['1234-5678-a', '1234-5678-b']],
-        ['stripes-core', 'users', ['1234-5678-c', '1234-5678-d']],
-        ['stripes-core', 'users', ['1234-5678-e']]
+        ['stripes-core', 'users', ['1234-5678-a', '1234-5678-b'], 'central'],
+        ['stripes-core', 'users', ['1234-5678-c', '1234-5678-d'], 'central'],
+        ['stripes-core', 'users', ['1234-5678-e'], 'central']
       ]);
+    });
+  });
+
+  describe('allows work in provided tenant', () => {
+    const providedTenantId = 'providedTenantId';
+
+    it('sets up 1 fetch using alternate tenant ID', async () => {
+      const { result } = renderHook(() => useChunkedCQLFetch({
+        ...baseOptions,
+        tenantId: providedTenantId,
+      }), { wrapper });
+
+      await waitFor(() => {
+        return result.current.itemQueries?.filter(iq => iq.isLoading)?.length === 0;
+      });
+
+      expect(mockUseOkapiKy).toHaveBeenCalledWith({ tenant: providedTenantId });
+    });
+
+    it('includes tenantId in the generateQueryKey function', async () => {
+      const generateQueryKey = jest.fn();
+
+      const { result } = renderHook(() => useChunkedCQLFetch({
+        ...baseOptions,
+        generateQueryKey,
+        tenantId: providedTenantId,
+      }), { wrapper });
+
+      await waitFor(() => {
+        return result.current.itemQueries?.filter(iq => iq.isLoading)?.length === 0;
+      });
+
+      expect(generateQueryKey).toHaveBeenCalledWith(expect.objectContaining({ tenantId: providedTenantId }));
     });
   });
 });
