@@ -202,7 +202,8 @@ describe('Given useChunkedCQLFetch', () => {
     it('expose queryKeys based on given ids and endpoint', async () => {
       const { result } = renderHook(() => useChunkedCQLFetch({
         ...baseOptions,
-        STEP_SIZE: 2
+        STEP_SIZE: 2,
+        tenantId: 'central',
       }), { wrapper });
 
       await waitFor(() => {
@@ -213,9 +214,9 @@ describe('Given useChunkedCQLFetch', () => {
 
       expect(result.current.queryKeys).toHaveLength(3);
       expect(result.current.queryKeys).toStrictEqual([
-        ['stripes-core', 'users', ['1234-5678-a', '1234-5678-b']],
-        ['stripes-core', 'users', ['1234-5678-c', '1234-5678-d']],
-        ['stripes-core', 'users', ['1234-5678-e']]
+        ['stripes-core', 'users', ['1234-5678-a', '1234-5678-b'], 'central'],
+        ['stripes-core', 'users', ['1234-5678-c', '1234-5678-d'], 'central'],
+        ['stripes-core', 'users', ['1234-5678-e'], 'central']
       ]);
     });
   });
