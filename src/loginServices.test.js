@@ -7,12 +7,15 @@ import {
   getPlugins,
   getOkapiSession,
   getTokenExpiry,
+  getUnauthorizedPathFromSession,
   getUserLocale,
   handleLoginError,
   loadTranslations,
   logout,
   processOkapiSession,
+  removeUnauthorizedPathFromSession,
   setTokenExpiry,
+  setUnauthorizedPathToSession,
   spreadUserWithPerms,
   supportedLocales,
   supportedNumberingSystems,
@@ -612,3 +615,37 @@ describe('getBindings', () => {
     mockFetchCleanUp();
   });
 });
+
+describe('unauthorizedPath functions', () => {
+  describe('removeUnauthorizedPathFromSession', () => {
+    it('clears the value', () => {
+      setUnauthorizedPathToSession('monkey');
+      removeUnauthorizedPathFromSession();
+      expect(getUnauthorizedPathFromSession()).toBe(null);
+    });
+  });
+
+  describe('setUnauthorizedPathToSession', () => {
+    it('stores the given value', () => {
+      const value = 'monkey';
+      setUnauthorizedPathToSession(value);
+      expect(getUnauthorizedPathFromSession()).toBe(value);
+    });
+
+    it('stores the current location given no value', () => {
+      window.location.pathname = '/some-path';
+      window.location.search = '?monkey=bagel';
+      setUnauthorizedPathToSession();
+      expect(getUnauthorizedPathFromSession()).toBe(`${window.location.pathname}${window.location.search}`);
+    });
+  });
+
+  describe('getUnauthorizedPathFromSession', () => {
+    it('retrieves the value', () => {
+      const value = 'monkey';
+      setUnauthorizedPathToSession(value);
+      expect(getUnauthorizedPathFromSession()).toBe(value);
+    });
+  });
+});
+

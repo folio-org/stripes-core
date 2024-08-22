@@ -9,7 +9,11 @@ import SessionEventContainer, {
   thisWindowRtrError,
   thisWindowRtrTimeout,
 } from './SessionEventContainer';
-import { logout, SESSION_NAME } from '../../loginServices';
+import {
+  logout,
+  setUnauthorizedPathToSession,
+  SESSION_NAME,
+} from '../../loginServices';
 import { RTR_TIMEOUT_EVENT } from '../Root/constants';
 
 import { toggleRtrModal } from '../../okapiActions';
@@ -72,8 +76,12 @@ describe('SessionEventContainer event listeners', () => {
     const logoutMock = logout;
     logoutMock.mockReturnValue(Promise.resolve());
 
+    const setUnauthorizedPathToSessionMock = setUnauthorizedPathToSession;
+    setUnauthorizedPathToSessionMock.mockReturnValue(null);
+
     await thisWindowRtrError(null, { okapi: { url: 'http' } }, history);
     expect(logout).toHaveBeenCalled();
+    expect(setUnauthorizedPathToSession).toHaveBeenCalled();
     expect(history.push).toHaveBeenCalledWith('/logout-timeout');
   });
 
@@ -92,8 +100,12 @@ describe('SessionEventContainer event listeners', () => {
     const logoutMock = logout;
     await logoutMock.mockReturnValue(Promise.resolve());
 
+    const setUnauthorizedPathToSessionMock = setUnauthorizedPathToSession;
+    setUnauthorizedPathToSessionMock.mockReturnValue(null);
+
     await thisWindowRtrTimeout(null, s, history);
     expect(logout).toHaveBeenCalled();
+    expect(setUnauthorizedPathToSession).toHaveBeenCalled();
     expect(history.push).toHaveBeenCalledWith('/logout-timeout');
   });
 
@@ -115,9 +127,12 @@ describe('SessionEventContainer event listeners', () => {
       };
       const history = { push: jest.fn() };
       const qc = {};
+      const setUnauthorizedPathToSessionMock = setUnauthorizedPathToSession;
+      setUnauthorizedPathToSessionMock.mockReturnValue(null);
 
       await otherWindowStorage(e, s, history, qc);
       expect(logout).toHaveBeenCalledWith(s.okapi.url, s.store, qc);
+      expect(setUnauthorizedPathToSession).toHaveBeenCalled();
       expect(history.push).toHaveBeenCalledWith('/logout-timeout');
     });
 
