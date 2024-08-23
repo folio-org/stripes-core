@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useLayoutEffect } from 'react';
 import PropTypes from 'prop-types';
 import Redirect from '../Redirect';
 import PreLoginLanding from '../PreLoginLanding';
@@ -18,7 +18,7 @@ const AuthnLogin = ({ stripes }) => {
     stripes.store.dispatch(setOkapiTenant({ tenant, clientId }));
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     /**
      * Cache the current path so we can return to it after authenticating.
      * In RootWithIntl, unauthenticated visits to protected paths will be
@@ -36,7 +36,7 @@ const AuthnLogin = ({ stripes }) => {
      * @see OIDCRedirect
      */
     if (okapi.authnUrl && window.location.pathname !== '/') {
-      setUnauthorizedPathToSession(window.location.pathname);
+      setUnauthorizedPathToSession(window.location.pathname + window.location.search);
     }
 
     // If only 1 tenant is defined in config (in either okapi or config.tenantOptions) set to okapi to be accessed there
