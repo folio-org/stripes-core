@@ -163,6 +163,7 @@ const RootWithIntl = ({ stripes, token = '', isAuthenticated = false, disableAut
                       />
                       <TitledRoute
                         name="login"
+                        path="*"
                         component={<AuthnLogin stripes={connectedStripes} />}
                       />
                     </Switch>
