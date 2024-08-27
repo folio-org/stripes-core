@@ -123,9 +123,9 @@ export const setTokenExpiry = async (te) => {
 const UNAUTHORIZED_PATH = 'unauthorized_path';
 export const removeUnauthorizedPathFromSession = () => sessionStorage.removeItem(UNAUTHORIZED_PATH);
 export const setUnauthorizedPathToSession = (pathname) => {
-  const path = pathname ?? `${window.location.pathname}${window.location.search}`;
+  const path = pathname || `${window.location.pathname}${window.location.search}`;
   if (!path.startsWith('/logout')) {
-    sessionStorage.setItem(UNAUTHORIZED_PATH, pathname ?? `${window.location.pathname}${window.location.search}`);
+    sessionStorage.setItem(UNAUTHORIZED_PATH, path);
   }
 };
 export const getUnauthorizedPathFromSession = () => sessionStorage.getItem(UNAUTHORIZED_PATH);
