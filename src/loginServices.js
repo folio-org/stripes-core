@@ -51,7 +51,8 @@ export const supportedLocales = [
   'it-IT',  // italian, italy
   'ja',     // japanese
   'ko',     // korean
-  'nb',     // norwegian bokmål"
+  'nb',     // norwegian bokmål
+  'nl',     // dutch, flemish
   'nn',     // norwegian nynorsk
   'pl',     // polish
   'pt-BR',  // portuguese, brazil
