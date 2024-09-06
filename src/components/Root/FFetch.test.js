@@ -11,6 +11,7 @@ import {
   RTR_AT_EXPIRY_IF_UNKNOWN,
   RTR_AT_TTL_FRACTION,
   RTR_FLS_WARNING_TTL,
+  RTR_TIME_MARGIN_IN_MS,
 } from './constants';
 
 jest.mock('../../loginServices', () => ({
@@ -206,7 +207,7 @@ describe('FFetch class', () => {
       expect(st).toHaveBeenCalledWith(expect.any(Function), (refreshTokenExpiration - whatTimeIsItMrFox) - ms(RTR_FLS_WARNING_TTL));
 
       // FLS timeout
-      expect(st).toHaveBeenCalledWith(expect.any(Function), (refreshTokenExpiration - whatTimeIsItMrFox));
+      expect(st).toHaveBeenCalledWith(expect.any(Function), (refreshTokenExpiration - whatTimeIsItMrFox - RTR_TIME_MARGIN_IN_MS));
     });
 
     it('handles RTR data in the session', async () => {
@@ -379,7 +380,7 @@ describe('FFetch class', () => {
       expect(st).toHaveBeenCalledWith(expect.any(Function), (refreshTokenExpiration - whatTimeIsItMrFox) - ms(RTR_FLS_WARNING_TTL));
 
       // FLS timeout
-      expect(st).toHaveBeenCalledWith(expect.any(Function), (refreshTokenExpiration - whatTimeIsItMrFox));
+      expect(st).toHaveBeenCalledWith(expect.any(Function), (refreshTokenExpiration - whatTimeIsItMrFox - RTR_TIME_MARGIN_IN_MS));
     });
   });
 

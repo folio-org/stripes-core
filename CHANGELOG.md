@@ -1,7 +1,6 @@
 # Change history for stripes-core
 
-## [10.1.1](https://github.com/folio-org/stripes-core/tree/v10.1.1) (2024-03-25)
-[Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.1.0...v10.1.1)
+## IN PROGRESS
 
 * Use keycloak URLs in place of users-bl for tenant-switch. Refs US1153537.
 * Idle-session timeout and "Keep working?" modal. Refs STCOR-776.
@@ -10,6 +9,13 @@
 * `/users-keycloak/_self` is an authentication request. Refs STCOR-866.
 * Terminate the session when the fixed-length session expires. Refs STCOR-862.
 * Provide `key` to elements in `<SessionEventContainer>`. Refs STCOR-874.
+* Do not store /logout as a "return-to" URL. Refs STCOR-869.
+* Add small margin to ensure /authn/logout is called before cookie expires. Refs STCOR-869.
+
+## [10.1.1](https://github.com/folio-org/stripes-core/tree/v10.1.1) (2024-03-25)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.1.0...v10.1.1)
+
+* Utilize the `tenant` procured through the SSO login process. Refs STCOR-769.
 
 ## [10.1.0](https://github.com/folio-org/stripes-core/tree/v10.1.0) (2024-03-12)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.0.0...v10.1.0)
