@@ -125,7 +125,7 @@ export const removeUnauthorizedPathFromSession = () => sessionStorage.removeItem
 export const setUnauthorizedPathToSession = (pathname) => {
   const path = pathname ?? `${window.location.pathname}${window.location.search}`;
   if (!path.startsWith('/logout')) {
-    sessionStorage.setItem(UNAUTHORIZED_PATH, pathname ?? `${window.location.pathname}${window.location.search}`);
+    sessionStorage.setItem(UNAUTHORIZED_PATH, path);
   }
 };
 export const getUnauthorizedPathFromSession = () => sessionStorage.getItem(UNAUTHORIZED_PATH);
@@ -513,6 +513,9 @@ export async function logout(okapiUrl, store) {
       // BroadcastChannel to communicate with all tabs/windows
       localStorage.removeItem(SESSION_NAME);
       localStorage.removeItem(RTR_TIMEOUT_EVENT);
+
+      // Clear saved entry path so that subsequent logins will use default base URL.
+      removeUnauthorizedPathFromSession();
 
       store.dispatch(setIsAuthenticated(false));
       store.dispatch(clearCurrentUser());
