@@ -36,7 +36,7 @@ const AuthnLogin = ({ stripes }) => {
      * @see OIDCRedirect
      */
     if (okapi.authnUrl && window.location.pathname !== '/') {
-      setUnauthorizedPathToSession(window.location.pathname);
+      setUnauthorizedPathToSession();
     }
 
     // If only 1 tenant is defined in config (in either okapi or config.tenantOptions) set to okapi to be accessed there
