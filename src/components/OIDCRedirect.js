@@ -3,6 +3,8 @@ import queryString from 'query-string';
 import { useStripes } from '../StripesContext';
 import { getUnauthorizedPathFromSession, removeUnauthorizedPathFromSession } from '../loginServices';
 
+// Setting at top of component since value should be retained during re-renders
+// but will be correctly re-fetched when redirected from Keycloak login page.
 const unauthorizedPath = getUnauthorizedPathFromSession();
 
 /**
