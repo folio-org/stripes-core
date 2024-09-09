@@ -514,9 +514,6 @@ export async function logout(okapiUrl, store) {
       localStorage.removeItem(SESSION_NAME);
       localStorage.removeItem(RTR_TIMEOUT_EVENT);
 
-      // Clear saved entry path so that subsequent logins will use default base URL.
-      removeUnauthorizedPathFromSession();
-
       store.dispatch(setIsAuthenticated(false));
       store.dispatch(clearCurrentUser());
       store.dispatch(clearOkapiToken());

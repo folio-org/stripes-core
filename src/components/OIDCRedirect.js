@@ -1,7 +1,9 @@
 import { withRouter, Redirect, useLocation } from 'react-router';
 import queryString from 'query-string';
 import { useStripes } from '../StripesContext';
-import { getUnauthorizedPathFromSession } from '../loginServices';
+import { getUnauthorizedPathFromSession, removeUnauthorizedPathFromSession } from '../loginServices';
+
+const unauthorizedPath = getUnauthorizedPathFromSession();
 
 /**
  * OIDCRedirect authenticated route handler for /oidc-landing.
@@ -29,8 +31,10 @@ const OIDCRedirect = () => {
 
   const getUrl = () => {
     if (stripes.okapi.authnUrl) {
-      const unauthorizedPath = getUnauthorizedPathFromSession();
-      if (unauthorizedPath) return unauthorizedPath;
+      if (unauthorizedPath) {
+        removeUnauthorizedPathFromSession();
+        return unauthorizedPath;
+      }
     }
 
     const params = getParams();
