@@ -15,6 +15,10 @@ import { useStripes } from '../../StripesContext';
 import { logout } from '../../loginServices';
 
 import styles from './LogoutTimeout.css';
+import {
+  getUnauthorizedPathFromSession,
+  removeUnauthorizedPathFromSession,
+} from '../../loginServices';
 
 /**
  * LogoutTimeout
@@ -52,6 +56,13 @@ const LogoutTimeout = () => {
     return <LoadingView />;
   }
 
+  const handleClick = (_e) => {
+    removeUnauthorizedPathFromSession();
+  };
+
+  const previousPath = getUnauthorizedPathFromSession();
+  const redirectTo = previousPath ?? '/';
+
   return (
     <main>
       <div className={styles.wrapper} style={branding.style?.login ?? {}}>
@@ -68,7 +79,7 @@ const LogoutTimeout = () => {
           </Row>
           <Row center="xs">
             <Col xs={12}>
-              <Button to="/"><FormattedMessage id="stripes-core.rtr.idleSession.logInAgain" /></Button>
+              <Button to={redirectTo} onClick={handleClick}><FormattedMessage id="stripes-core.rtr.idleSession.logInAgain" /></Button>
             </Col>
           </Row>
         </div>
