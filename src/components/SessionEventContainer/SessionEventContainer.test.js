@@ -12,7 +12,7 @@ import SessionEventContainer, {
 import {
   logout,
   setUnauthorizedPathToSession,
-  SESSION_NAME
+  SESSION_NAME,
 } from '../../loginServices';
 import { RTR_TIMEOUT_EVENT } from '../Root/constants';
 
@@ -80,7 +80,6 @@ describe('SessionEventContainer event listeners', () => {
     setUnauthorizedPathToSessionMock.mockReturnValue(null);
 
     await thisWindowRtrError(null, { okapi: { url: 'http' } }, history);
-
     expect(logout).toHaveBeenCalled();
     expect(setUnauthorizedPathToSession).toHaveBeenCalled();
     expect(history.push).toHaveBeenCalledWith('/logout-timeout');

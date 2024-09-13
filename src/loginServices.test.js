@@ -2,13 +2,18 @@ import localforage from 'localforage';
 
 import {
   createOkapiSession,
+  getBindings,
+  getLocale,
+  getPlugins,
   getOkapiSession,
   getTokenExpiry,
   getUnauthorizedPathFromSession,
+  getUserLocale,
   handleLoginError,
   loadTranslations,
   logout,
   processOkapiSession,
+  removeUnauthorizedPathFromSession,
   setTokenExpiry,
   setUnauthorizedPathToSession,
   spreadUserWithPerms,
@@ -26,10 +31,10 @@ import {
   clearOkapiToken,
   setCurrentPerms,
   setLocale,
-  // setTimezone,
-  // setCurrency,
-  // setPlugins,
-  // setBindings,
+  setTimezone,
+  setCurrency,
+  setPlugins,
+  setBindings,
   // setTranslations,
   setAuthError,
   // checkSSO,
@@ -68,6 +73,7 @@ const mockFetchSuccess = (data) => {
   global.fetch = jest.fn().mockImplementation(() => (
     Promise.resolve({
       ok: true,
+      status: 200,
       json: () => Promise.resolve(data),
       headers: new Map(),
     })
@@ -560,7 +566,73 @@ describe('logout', () => {
   });
 });
 
-describe('setUnauthorizedPathToSession', () => {
+describe('getLocale', () => {
+  it('dispatches setTimezone, setCurrency', async () => {
+    const value = { timezone: 'America/New_York', currency: 'USD' };
+    mockFetchSuccess({ configs: [{ value: JSON.stringify(value) }] });
+    const store = {
+      dispatch: jest.fn(),
+      getState: () => ({ okapi: { } }),
+    };
+    await getLocale('url', store, 'tenant');
+    expect(store.dispatch).toHaveBeenCalledWith(setTimezone(value.timezone));
+    expect(store.dispatch).toHaveBeenCalledWith(setCurrency(value.currency));
+    mockFetchCleanUp();
+  });
+});
+
+describe('getUserLocale', () => {
+  it('dispatches setTimezone, setCurrency', async () => {
+    const value = { locale: 'en-US', timezone: 'America/New_York', currency: 'USD' };
+    mockFetchSuccess({ configs: [{ value: JSON.stringify(value) }] });
+    const store = {
+      dispatch: jest.fn(),
+      getState: () => ({ okapi: { } }),
+    };
+    await getUserLocale('url', store, 'tenant');
+    expect(store.dispatch).toHaveBeenCalledWith(setTimezone(value.timezone));
+    expect(store.dispatch).toHaveBeenCalledWith(setCurrency(value.currency));
+    mockFetchCleanUp();
+  });
+});
+
+describe('getPlugins', () => {
+  it('dispatches setPlugins', async () => {
+    const configs = [
+      { configName: 'find-user', value: '@folio/plugin-hello-waldo' },
+      { configName: 'find-water', value: '@folio/plugin-dowsing-rod' },
+    ];
+    mockFetchSuccess({ configs });
+    const store = {
+      dispatch: jest.fn(),
+      getState: () => ({ okapi: { } }),
+    };
+    await getPlugins('url', store, 'tenant');
+
+    const mappedConfigs = configs.reduce((acc, val) => ({
+      ...acc,
+      [val.configName]: val.value,
+    }), {});
+    expect(store.dispatch).toHaveBeenCalledWith(setPlugins(mappedConfigs));
+    mockFetchCleanUp();
+  });
+});
+
+describe('getBindings', () => {
+  it('dispatches setBindings', async () => {
+    const value = { key: 'value' };
+    mockFetchSuccess({ configs: [{ value: JSON.stringify(value) }] });
+    const store = {
+      dispatch: jest.fn(),
+      getState: () => ({ okapi: { } }),
+    };
+    await getBindings('url', store, 'tenant');
+    expect(store.dispatch).toHaveBeenCalledWith(setBindings(value));
+    mockFetchCleanUp();
+  });
+});
+
+describe('unauthorizedPath functions', () => {
   beforeEach(() => {
     window.sessionStorage.clear();
   });
@@ -569,29 +641,48 @@ describe('setUnauthorizedPathToSession', () => {
     window.sessionStorage.clear();
   });
 
-  it('with an argument, uses it', () => {
-    const monkey = 'bagel';
-    setUnauthorizedPathToSession(monkey);
-    expect(getUnauthorizedPathFromSession()).toEqual(monkey);
+  describe('removeUnauthorizedPathFromSession', () => {
+    it('clears the value', () => {
+      setUnauthorizedPathToSession('monkey');
+      removeUnauthorizedPathFromSession();
+      expect(getUnauthorizedPathFromSession()).toBe(null);
+    });
   });
 
-  it('without an argument, pulls value from window.location', () => {
-    window.location.pathname = '/monkey-bagel';
-    setUnauthorizedPathToSession();
-    expect(getUnauthorizedPathFromSession()).toEqual(window.location.pathname);
-  });
-
-  describe('refuses to set locations beginning with "/logout"', () => {
-    it('with an argument', () => {
-      const monkey = '/logout-timeout';
-      setUnauthorizedPathToSession(monkey);
-      expect(getUnauthorizedPathFromSession()).toBeFalsy();
+  describe('setUnauthorizedPathToSession', () => {
+    it('stores the given value', () => {
+      const value = 'monkey';
+      setUnauthorizedPathToSession(value);
+      expect(getUnauthorizedPathFromSession()).toBe(value);
     });
 
-    it('without an argument', () => {
-      window.location.pathname = '/logout-timeout';
+    it('stores the current location given no value', () => {
+      window.location.pathname = '/some-path';
+      window.location.search = '?monkey=bagel';
       setUnauthorizedPathToSession();
-      expect(getUnauthorizedPathFromSession()).toBeFalsy();
+      expect(getUnauthorizedPathFromSession()).toBe(`${window.location.pathname}${window.location.search}`);
+    });
+
+    describe('refuses to set locations beginning with "/logout"', () => {
+      it('with an argument', () => {
+        const monkey = '/logout-timeout';
+        setUnauthorizedPathToSession(monkey);
+        expect(getUnauthorizedPathFromSession()).toBeFalsy();
+      });
+
+      it('without an argument', () => {
+        window.location.pathname = '/logout-timeout';
+        setUnauthorizedPathToSession();
+        expect(getUnauthorizedPathFromSession()).toBeFalsy();
+      });
+    });
+  });
+
+  describe('getUnauthorizedPathFromSession', () => {
+    it('retrieves the value', () => {
+      const value = 'monkey';
+      setUnauthorizedPathToSession(value);
+      expect(getUnauthorizedPathFromSession()).toBe(value);
     });
   });
 });
