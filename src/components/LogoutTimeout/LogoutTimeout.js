@@ -12,13 +12,13 @@ import {
 
 import OrganizationLogo from '../OrganizationLogo';
 import { useStripes } from '../../StripesContext';
-import { logout } from '../../loginServices';
-
-import styles from './LogoutTimeout.css';
 import {
   getUnauthorizedPathFromSession,
+  logout,
   removeUnauthorizedPathFromSession,
 } from '../../loginServices';
+
+import styles from './LogoutTimeout.css';
 
 /**
  * LogoutTimeout
@@ -52,16 +52,15 @@ const LogoutTimeout = () => {
     []
   );
 
-  if (!didLogout) {
-    return <LoadingView />;
-  }
-
   const handleClick = (_e) => {
     removeUnauthorizedPathFromSession();
   };
 
-  const previousPath = getUnauthorizedPathFromSession();
-  const redirectTo = previousPath ?? '/';
+  const redirectTo = getUnauthorizedPathFromSession() || '/';
+
+  if (!didLogout) {
+    return <LoadingView />;
+  }
 
   return (
     <main>
