@@ -3,12 +3,19 @@ import { userEvent } from '@folio/jest-config-stripes/testing-library/user-event
 
 import LogoutTimeout from './LogoutTimeout';
 import { useStripes } from '../../StripesContext';
-import { getUnauthorizedPathFromSession, setUnauthorizedPathToSession } from '../../loginServices';
+import { getUnauthorizedPathFromSession, logout, setUnauthorizedPathToSession } from '../../loginServices';
 
 jest.mock('../OrganizationLogo');
 jest.mock('../../StripesContext');
 jest.mock('react-router', () => ({
   Redirect: () => <div>Redirect</div>,
+}));
+
+jest.mock('../../loginServices', () => ({
+  logout: jest.fn(() => Promise.resolve()),
+  getUnauthorizedPathFromSession: jest.fn(),
+  removeUnauthorizedPathFromSession: jest.fn(),
+  setUnauthorizedPathToSession: jest.fn(),
 }));
 
 describe('LogoutTimeout', () => {
@@ -21,7 +28,7 @@ describe('LogoutTimeout', () => {
       screen.getByText('stripes-core.rtr.idleSession.sessionExpiredSoSad');
     });
 
-    it('clears previous path from storage after clicking', async () => {
+    it('clears previous path from storage after clicking "log in again"', async () => {
       const previousPath = '/monkey?bagel';
       setUnauthorizedPathToSession(previousPath);
       const user = userEvent.setup();
@@ -31,16 +38,34 @@ describe('LogoutTimeout', () => {
       render(<LogoutTimeout />);
 
       await user.click(screen.getByRole('button'));
-
-      expect(getUnauthorizedPathFromSession()).toBe(null);
+      expect(getUnauthorizedPathFromSession()).toBeFalsy();
     });
   });
 
-  it('if authenticated, renders a redirect', async () => {
-    const mockUseStripes = useStripes;
-    mockUseStripes.mockReturnValue({ okapi: { isAuthenticated: true } });
+  describe('if not authenticated', () => {
+    it('calls logout then renders a timeout message', async () => {
+      const mockUseStripes = useStripes;
+      mockUseStripes.mockReturnValue({ okapi: { isAuthenticated: true } });
 
-    render(<LogoutTimeout />);
-    screen.getByText('Redirect');
+      render(<LogoutTimeout />);
+      expect(logout).toHaveBeenCalled();
+      screen.getByText('stripes-core.rtr.idleSession.sessionExpiredSoSad');
+    });
+
+    it('clears previous path from storage after clicking "log in again"', async () => {
+      const previousPath = '/monkey?bagel';
+      setUnauthorizedPathToSession(previousPath);
+      const user = userEvent.setup();
+      const mockUseStripes = useStripes;
+      mockUseStripes.mockReturnValue({ okapi: { isAuthenticated: true } });
+
+      render(<LogoutTimeout />);
+
+      expect(logout).toHaveBeenCalled();
+      screen.getByText('stripes-core.rtr.idleSession.sessionExpiredSoSad');
+
+      await user.click(screen.getByRole('button'));
+      expect(getUnauthorizedPathFromSession()).toBeFalsy();
+    });
   });
 });

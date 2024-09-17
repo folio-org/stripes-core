@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import createInactivityTimer from 'inactivity-timer';
 import ms from 'ms';
 
-import { logout, SESSION_NAME, setUnauthorizedPathToSession } from '../../loginServices';
+import { SESSION_NAME, setUnauthorizedPathToSession } from '../../loginServices';
 import KeepWorkingModal from './KeepWorkingModal';
 import { useStripes } from '../../StripesContext';
 import {
@@ -22,26 +22,20 @@ import FixedLengthSessionWarning from './FixedLengthSessionWarning';
 //
 
 // RTR error in this window: logout
-export const thisWindowRtrError = (_e, stripes, history, queryClient) => {
+export const thisWindowRtrError = (_e, stripes, history) => {
   console.warn('rtr error; logging out'); // eslint-disable-line no-console
   setUnauthorizedPathToSession();
-  return logout(stripes.okapi.url, stripes.store, queryClient)
-    .then(() => {
-      history.push('/logout-timeout');
-    });
+  history.push('/logout-timeout');
 };
 
 // idle session timeout in this window: logout
-export const thisWindowRtrIstTimeout = (_e, stripes, history, queryClient) => {
+export const thisWindowRtrIstTimeout = (_e, stripes, history) => {
   stripes.logger.log('rtr', 'idle session timeout; logging out');
   setUnauthorizedPathToSession();
-  return logout(stripes.okapi.url, stripes.store, queryClient)
-    .then(() => {
-      history.push('/logout-timeout');
-    });
+  history.push('/logout-timeout');
 };
 
-// fixed-length session warning in this window
+// fixed-length session warning in this window: logout
 export const thisWindowRtrFlsWarning = (_e, stripes, setIsFlsVisible) => {
   stripes.logger.log('rtr', 'fixed-length session warning');
   setIsFlsVisible(true);
@@ -58,14 +52,11 @@ export const thisWindowRtrFlsTimeout = (_e, stripes, history) => {
 // logout if it was a timeout event or if SESSION_NAME is being
 // removed from localStorage, an indicator that logout is in-progress
 // in another window and so must occur here as well
-export const otherWindowStorage = (e, stripes, history, queryClient) => {
+export const otherWindowStorage = (e, stripes, history) => {
   if (e.key === RTR_TIMEOUT_EVENT) {
     stripes.logger.log('rtr', 'idle session timeout; logging out');
     setUnauthorizedPathToSession();
-    return logout(stripes.okapi.url, stripes.store, queryClient)
-      .then(() => {
-        history.push('/logout-timeout');
-      });
+    history.push('/logout-timeout');
   } else if (!localStorage.getItem(SESSION_NAME)) {
     stripes.logger.log('rtr', 'external localstorage change; logging out');
     setUnauthorizedPathToSession();
@@ -138,7 +129,7 @@ export const thisWindowActivity = (_e, stripes, timers, broadcastChannel) => {
  * @param {object} history
  * @returns KeepWorkingModal or null
  */
-const SessionEventContainer = ({ history, queryClient }) => {
+const SessionEventContainer = ({ history }) => {
   // is the "keep working?" modal visible?
   const [isVisible, setIsVisible] = useState(false);
 
@@ -220,13 +211,13 @@ const SessionEventContainer = ({ history, queryClient }) => {
       timers.current = { showModalIT, logoutIT };
 
       // RTR error in this window: logout
-      channels.window[RTR_ERROR_EVENT] = (e) => thisWindowRtrError(e, stripes, history, queryClient);
+      channels.window[RTR_ERROR_EVENT] = (e) => thisWindowRtrError(e, stripes, history);
 
       // idle session timeout in this window: logout
-      channels.window[RTR_TIMEOUT_EVENT] = (e) => thisWindowRtrIstTimeout(e, stripes, history, queryClient);
+      channels.window[RTR_TIMEOUT_EVENT] = (e) => thisWindowRtrIstTimeout(e, stripes, history);
 
       // localstorage change in another window: logout?
-      channels.window.storage = (e) => otherWindowStorage(e, stripes, history, queryClient);
+      channels.window.storage = (e) => otherWindowStorage(e, stripes, history);
 
       // activity in another window: send keep-alive to idle-timers.
       channels.bc.message = (message) => otherWindowActivity(message, stripes, timers, setIsVisible);
@@ -292,7 +283,6 @@ const SessionEventContainer = ({ history, queryClient }) => {
 
 SessionEventContainer.propTypes = {
   history: PropTypes.object,
-  queryClient: PropTypes.object,
 };
 
 export default SessionEventContainer;

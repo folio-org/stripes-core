@@ -1,48 +1,66 @@
+import { useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { branding } from 'stripes-config';
-import { Redirect } from 'react-router';
 
 import {
   Button,
   Col,
   Headline,
+  LoadingView,
   Row,
 } from '@folio/stripes-components';
 
 import OrganizationLogo from '../OrganizationLogo';
 import { useStripes } from '../../StripesContext';
-
-import styles from './LogoutTimeout.css';
 import {
   getUnauthorizedPathFromSession,
+  logout,
   removeUnauthorizedPathFromSession,
 } from '../../loginServices';
 
+import styles from './LogoutTimeout.css';
+
 /**
  * LogoutTimeout
- * For unauthenticated users, show a "sorry, your session timed out" message
- * with a link to login page. For authenticated users, redirect to / since
- * showing such a message would be a misleading lie.
+ * Show a "sorry, your session timed out message"; if the session is still
+ * active, call logout() to end it.
  *
  * Having a static route to this page allows the logout handler to choose
  * between redirecting straight to the login page (if the user chose to
- * logout) or to this page (if the session timeout out).
+ * logout) or to this page (if the session timed out).
  *
  * This corresponds to the '/logout-timeout' route.
  */
 const LogoutTimeout = () => {
   const stripes = useStripes();
+  const [didLogout, setDidLogout] = useState(false);
 
-  if (stripes.okapi.isAuthenticated) {
-    return <Redirect to="/" />;
-  }
+  useEffect(
+    () => {
+      if (stripes.okapi.isAuthenticated) {
+        // returns a promise, which we ignore
+        logout(stripes.okapi.url, stripes.store)
+          .then(setDidLogout(true));
+      } else {
+        setDidLogout(true);
+      }
+    },
+    // no dependencies because we only want to start the logout process once.
+    // we don't care about changes to stripes; certainly it'll be updated as
+    // part of the logout process
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
 
   const handleClick = (_e) => {
     removeUnauthorizedPathFromSession();
   };
 
-  const previousPath = getUnauthorizedPathFromSession();
-  const redirectTo = previousPath ?? '/';
+  const redirectTo = getUnauthorizedPathFromSession() || '/';
+
+  if (!didLogout) {
+    return <LoadingView />;
+  }
 
   return (
     <main>
