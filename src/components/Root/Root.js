@@ -67,6 +67,10 @@ class Root extends Component {
     // * configure fetch and xhr interceptors to conduct RTR
     // * see SessionEventContainer for RTR handling
     if (this.props.config.useSecureTokens) {
+      // FFetch relies on some of these properties, so we must ensure
+      // they are filled before initialization
+      this.props.config.rtr = configureRtr(this.props.config.rtr);
+
       this.ffetch = new FFetch({
         logger: this.props.logger,
         store,
@@ -125,8 +129,6 @@ class Root extends Component {
     }
 
     // make sure RTR is configured
-    config.rtr = configureRtr(this.props.config.rtr);
-
     const stripes = new Stripes({
       logger,
       store,

@@ -42,7 +42,7 @@
  */
 
 import ms from 'ms';
-import { okapi } from 'stripes-config';
+import { okapi, config } from 'stripes-config';
 import {
   setRtrTimeout
 } from '../../okapiActions';
@@ -60,8 +60,8 @@ import {
 } from './Errors';
 import {
   RTR_AT_EXPIRY_IF_UNKNOWN,
-  RTR_AT_TTL_FRACTION,
   RTR_ERROR_EVENT,
+  RTR_FORCE_REFRESH_EVENT,
 } from './constants';
 import FXHR from './FXHR';
 
@@ -74,6 +74,11 @@ export class FFetch {
   constructor({ logger, store }) {
     this.logger = logger;
     this.store = store;
+
+    window.addEventListener(RTR_FORCE_REFRESH_EVENT, () => {
+      this.logger.log('rtr', 'forcing rotation due to RTR_FORCE_REFRESH_EVENT');
+      rtr(this.nativeFetch, console, this.rotateCallback);
+    });
   }
 
   /**
@@ -110,7 +115,6 @@ export class FFetch {
 
     const scheduleRotation = (rotationP) => {
       rotationP.then((rotationInterval) => {
-        this.logger.log('rtr', `rotation fired from rotateCallback; next callback in ${ms(rotationInterval)}`);
         this.store.dispatch(setRtrTimeout(setTimeout(() => {
           rtr(this.nativeFetch, this.logger, this.rotateCallback);
         }, rotationInterval)));
@@ -127,14 +131,14 @@ export class FFetch {
     // the response, otherwise the session. Default to 10 seconds.
     if (res?.accessTokenExpiration) {
       this.logger.log('rtr', 'rotation scheduled with login response data');
-      const rotationPromise = Promise.resolve((new Date(res.accessTokenExpiration).getTime() - Date.now()) * RTR_AT_TTL_FRACTION);
+      const rotationPromise = Promise.resolve((new Date(res.accessTokenExpiration).getTime() - Date.now()) * config.rtr.rotationIntervalFraction);
 
       scheduleRotation(rotationPromise);
     } else {
       const rotationPromise = getTokenExpiry().then((expiry) => {
         if (expiry.atExpires) {
           this.logger.log('rtr', 'rotation scheduled with cached session data');
-          return (new Date(expiry.atExpires).getTime() - Date.now()) * RTR_AT_TTL_FRACTION;
+          return (new Date(expiry.atExpires).getTime() - Date.now()) * config.rtr.rotationIntervalFraction;
         }
 
         // default: 10 seconds

@@ -4,6 +4,9 @@ export const RTR_SUCCESS_EVENT = '@folio/stripes/core::RTRSuccess';
 /** dispatched during RTR if RTR itself fails */
 export const RTR_ERROR_EVENT = '@folio/stripes/core::RTRError';
 
+/** dispatched by ui-developer to force a token rotation */
+export const RTR_FORCE_REFRESH_EVENT = '@folio/stripes/core::RTRForceRefresh';
+
 /**
  * dispatched if the session is idle (without activity) for too long
  */
@@ -12,7 +15,10 @@ export const RTR_TIMEOUT_EVENT = '@folio/stripes/core::RTRIdleSessionTimeout';
 /** BroadcastChannel for cross-window activity pings */
 export const RTR_ACTIVITY_CHANNEL = '@folio/stripes/core::RTRActivityChannel';
 
-/** how much of an AT's lifespan can elapse before it is considered expired */
+/**
+ * how much of an AT's lifespan can elapse before it is considered expired.
+ * overridden in stripes.config.js::config.rtr.rotationIntervalFraction.
+ */
 export const RTR_AT_TTL_FRACTION = 0.8;
 
 /**

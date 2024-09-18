@@ -250,6 +250,7 @@ const SessionEventContainer = ({ history, queryClient }) => {
     // We only want to configure the event listeners once, not every time
     // there is a change to stripes or history. Hence, an empty dependency
     // array.
+    // should `stripes.rtr` go here?
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // show the idle-session warning modal if necessary;
