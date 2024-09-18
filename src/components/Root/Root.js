@@ -75,6 +75,7 @@ class Root extends Component {
         logger: this.props.logger,
         store,
       });
+      this.ffetch.registerEventListener();
       this.ffetch.replaceFetch();
       this.ffetch.replaceXMLHttpRequest();
     }

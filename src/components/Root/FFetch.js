@@ -74,11 +74,24 @@ export class FFetch {
   constructor({ logger, store }) {
     this.logger = logger;
     this.store = store;
+  }
 
-    window.addEventListener(RTR_FORCE_REFRESH_EVENT, () => {
+  /**
+   * registers a listener for the RTR_FORCE_REFRESH_EVENT
+   */
+  registerEventListener = () => {
+    this.globalEventCallback = () => {
       this.logger.log('rtr', 'forcing rotation due to RTR_FORCE_REFRESH_EVENT');
-      rtr(this.nativeFetch, console, this.rotateCallback);
-    });
+      rtr(this.nativeFetch, this.logger, this.rotateCallback);
+    };
+    window.addEventListener(RTR_FORCE_REFRESH_EVENT, this.globalEventCallback);
+  }
+
+  /**
+   * unregister the listener for the RTR_FORCE_REFRESH_EVENT
+   */
+  unregisterEventListener = () => {
+    window.removeEventListener(RTR_FORCE_REFRESH_EVENT, this.globalEventCallback);
   }
 
   /**
