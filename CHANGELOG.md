@@ -14,6 +14,15 @@
 * Update session data with values from `_self` request on reload. Refs STCOR-846.
 * Avoid deprecated `getChildContext`. Refs STCOR-842.
 * Read locale from stripes-config before defaulting to `en-US`. Refs STCOR-851.
+* Use keycloak URLs in place of users-bl for tenant-switch. Refs US1153537.
+* Fix 404 error page when logging in after changing password in Eureka. Refs STCOR-845.
+* Always retrieve `clientId` and `tenant` values from `config.tenantOptions` in stripes.config.js. Retires `okapi.tenant`, `okapi.clientId`, and `config.isSingleTenant`. Refs STCOR-787.
+* List UI apps in "Applications/modules/interfaces" column. STCOR-773
+* Correctly evaluate `stripes.okapi` before rendering `<RootWithIntl>`. Refs STCOR-864.
+* `/users-keycloak/_self` is an authentication request. Refs STCOR-866.
+* Terminate the session when the fixed-length session expires. Refs STCOR-862.
+* Ensure support for the passed `tenantId` value by `useChunkedCQLFetch` for manipulations in the context of a specific tenant. Refs STCOR-873.
+* Provide `key` to elements in `<SessionEventContainer>`. Refs STCOR-874.
 * Correctly populate `stripes.user.user` on reload. Refs STCOR-860.
 * Correctly evaluate `stripes.okapi` before rendering `<RootWithIntl>`. Refs STCOR-864.
 * Change main navigation's skip link label to "Skip to main content". Refs STCOR-863.
@@ -21,6 +30,12 @@
 * Ensure support for the passed `tenantId` value by `useChunkedCQLFetch` for manipulations in the context of a specific tenant. Refs STCOR-873.
 * When re-authenticating after logout timeout, return to previous location. Refs STCOR-849.
 * Add `nl` (Dutch, Flemish) to the supported locales. Refs STCOR-878.
+* Include optional okapi interfaces, `consortia`, `roles`, `users-keycloak`. Refs STCOR-889.
+
+## [10.1.1](https://github.com/folio-org/stripes-core/tree/v10.1.1) (2024-03-25)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.1.0...v10.1.1)
+
+* Utilize the `tenant` procured through the SSO login process. Refs STCOR-769.
 
 ## [10.1.0](https://github.com/folio-org/stripes-core/tree/v10.1.0) (2024-03-12)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.0.0...v10.1.0)
@@ -63,6 +78,17 @@
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.0.0...v10.0.1)
 
 * Export `validateUser`. Refs STCOR-749.
+* Opt-in: handle access-control via cookies. Refs STCOR-671.
+* Opt-in: disable login when cookies are disabled. Refs STCOR-762.
+* Convert `<SSOLanding />` tests to jest. STCOR-798.
+* Parse response from `/authn/token` to immediately store AT/RT expiration values. Refs STCOR-811.
+* Include `X-Okapi-Tenant` header in `/authn/logout` calls. Refs STCOR-812.
+* Correctly parse `.../_self` permissions object. Refs STCOR-813.
+* Export `getEventHandler` to be able to create events in other modules. Refs STCOR-770.
+* Simplify logout workflow to bypass keycloak confirmation page. Refs STCOR-803.
+* After login, only check SSO endpoints when `login-saml` interface is present. Refs STCOR-816.
+* Add `idName` and `limit` as passable props to `useChunkedCQLFetch`. Refs STCOR-821.
+* For the `/reset-password` route, allow token to be specified in the path or query arguments. Refs STCOR-820.
 
 ## [10.0.0](https://github.com/folio-org/stripes-core/tree/v10.0.0) (2023-10-11)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v9.0.0...v10.0.0)

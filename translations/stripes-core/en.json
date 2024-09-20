@@ -12,7 +12,7 @@
   "title.changePassword": "Change password",
   "title.noPermission": "No permission",
   "title.cookieEnabled": "Cookies are required to login. Please enable cookies and try again.",
-
+  "title.logout": "Log out",
   "front.welcome": "Welcome, the Future Of Libraries Is OPEN!",
   "front.home": "Home",
   "front.about": "Software versions",
@@ -59,7 +59,7 @@
   "about.paneTitle": "Software versions",
   "about.userInterface": "User interface",
   "about.foundation": "Foundation",
-  "about.okapiServices": "Okapi services",
+  "about.okapiServices": "API gateway services",
   "about.unknown": "Unknown",
   "about.version": "Version {version}",
   "about.forTenant": "For tenant {tenant}",
@@ -81,6 +81,8 @@
   "about.appModuleCount": "{count, number} app {count, plural, one {module} other {modules}}",
   "about.settingsModuleCount": "{count, number} settings {count, plural, one {module} other {modules}}",
   "about.pluginModuleCount": "{count, number} plugin {count, plural, one {module} other {modules}}",
+  "about.applicationCount": "{count} applications",
+  "about.applicationsVersionsTitle": "Applications/modules/interfaces",
 
   "loggedInAs": "Logged in as {firstName} {lastName}",
   "currentServicePoint": "Service point: {name}",
@@ -99,6 +101,8 @@
   "settingPassword": "Setting password...",
   "settingSystemInfo": "System information",
   "settingChoose": "Choose settings",
+  "tenantChoose": "Select your tenant/library",
+  "tenantLibrary": "Tenant/Library",
 
   "mainnav.showAllApplicationsButtonLabel": "Apps",
   "mainnav.showAllApplicationsButtonAriaLabel": "All applications",
@@ -141,7 +145,7 @@
   "errors.password.whiteSpace.invalid": "The password must not contain whitespaces.",
   "errors.password.consecutiveWhitespaces.invalid": "The password must not contain consecutive white space characters.",
   "errors.password.compromised.invalid": "The password must not be commonly-used, expected or compromised",
-  "errors.sso.session.failed": "SSO Login failed. Please try again",
+  "errors.saml.missingToken": "No <code>code</code> query parameter.",
 
   "createResetPassword.header": "Choose a password",
   "createResetPassword.newPassword": "New Password",
@@ -163,5 +167,7 @@
   "rtr.idleSession.timeRemaining": "Time remaining",
   "rtr.idleSession.keepWorking": "Keep working",
   "rtr.idleSession.sessionExpiredSoSad": "Your session expired due to inactivity.",
-  "rtr.idleSession.logInAgain": "Log in again"
+  "rtr.idleSession.logInAgain": "Log in again",
+  "rtr.fixedLengthSession.timeRemaining": "Your session will end soon! Time remaining:"
+
 }

@@ -12,12 +12,17 @@ import OrganizationLogo from '../../../OrganizationLogo';
 
 import styles from './PasswordSuccessfullyChanged.css';
 
-const PasswordSuccessfullyChanged = ({ history }) => {
+const PasswordSuccessfullyChanged = ({ history, stripes }) => {
   const labelNamespace = 'stripes-core.label';
   const buttonNamespace = 'stripes-core.button';
 
   const handleRedirectClick = () => {
-    history.push('/login');
+    // If using Eureka, go to base URL. Otherwise, if using Okapi then go to /login
+    if (stripes.config.isEureka) {
+      history.push('/');
+    } else {
+      history.push('/login');
+    }
   };
 
   return (
@@ -64,6 +69,7 @@ PasswordSuccessfullyChanged.propTypes = {
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }).isRequired,
+  stripes: PropTypes.object,
 };
 
 export default withRouter(PasswordSuccessfullyChanged);

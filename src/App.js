@@ -33,8 +33,11 @@ export default class StripesCore extends Component {
   constructor(props) {
     super(props);
 
+    const storedTenant = localStorage.getItem('tenant');
+    const parsedTenant = storedTenant ? JSON.parse(storedTenant) : undefined;
+
     const okapi = (typeof okapiConfig === 'object' && Object.keys(okapiConfig).length > 0)
-      ? okapiConfig : { withoutOkapi: true };
+      ? { ...okapiConfig, tenant: parsedTenant?.tenantName || okapiConfig.tenant, clientId: parsedTenant?.clientId || okapiConfig.clientId } : { withoutOkapi: true };
 
     const initialState = merge({}, { okapi }, props.initialState);
 
@@ -61,7 +64,7 @@ export default class StripesCore extends Component {
           logger={this.logger}
           config={config}
           actionNames={this.actionNames}
-          disableAuth={(config && config.disableAuth) || false}
+          disableAuth={(config?.disableAuth) || false}
           {...props}
         />
       </StrictWrapper>

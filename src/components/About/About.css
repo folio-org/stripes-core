@@ -23,3 +23,7 @@
 .incompatible {
   color: orange;
 }
+
+.paddingLeftOfListItems {
+  padding-left: 14px;
+}

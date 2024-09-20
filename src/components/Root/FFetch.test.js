@@ -10,6 +10,8 @@ import { RTRError, UnexpectedResourceError } from './Errors';
 import {
   RTR_AT_EXPIRY_IF_UNKNOWN,
   RTR_AT_TTL_FRACTION,
+  RTR_FLS_WARNING_TTL,
+  RTR_TIME_MARGIN_IN_MS,
 } from './constants';
 
 jest.mock('../../loginServices', () => ({
@@ -159,6 +161,7 @@ describe('FFetch class', () => {
       // a static timestamp of when the AT will expire, in the future
       // this value will be pushed into the response returned from the fetch
       const accessTokenExpiration = whatTimeIsItMrFox + 5000;
+      const refreshTokenExpiration = whatTimeIsItMrFox + ms('20m');
 
       const st = jest.spyOn(window, 'setTimeout');
 
@@ -168,7 +171,7 @@ describe('FFetch class', () => {
       const cloneJson = jest.fn();
       const clone = () => ({
         ok: true,
-        json: () => Promise.resolve({ tokenExpiration: { accessTokenExpiration } })
+        json: () => Promise.resolve({ tokenExpiration: { accessTokenExpiration, refreshTokenExpiration } })
       });
 
       mockFetch.mockResolvedValueOnce({
@@ -181,7 +184,10 @@ describe('FFetch class', () => {
         logger: { log },
         store: {
           dispatch: jest.fn(),
-        }
+        },
+        rtrConfig: {
+          fixedLengthSessionWarningTTL: '1m',
+        },
       });
       testFfetch.replaceFetch();
       testFfetch.replaceXMLHttpRequest();
@@ -193,7 +199,15 @@ describe('FFetch class', () => {
       // gross, but on the other, since we're deliberately pushing rotation
       // into a separate thread, I'm note sure of a better way to handle this.
       await setTimeout(Promise.resolve(), 2000);
+
+      // AT rotation
       expect(st).toHaveBeenCalledWith(expect.any(Function), (accessTokenExpiration - whatTimeIsItMrFox) * RTR_AT_TTL_FRACTION);
+
+      // FLS warning
+      expect(st).toHaveBeenCalledWith(expect.any(Function), (refreshTokenExpiration - whatTimeIsItMrFox) - ms(RTR_FLS_WARNING_TTL));
+
+      // FLS timeout
+      expect(st).toHaveBeenCalledWith(expect.any(Function), (refreshTokenExpiration - whatTimeIsItMrFox - RTR_TIME_MARGIN_IN_MS));
     });
 
     it('handles RTR data in the session', async () => {
@@ -203,10 +217,11 @@ describe('FFetch class', () => {
       // a static timestamp of when the AT will expire, in the future
       // this value will be retrieved from local storage via getTokenExpiry
       const atExpires = whatTimeIsItMrFox + 5000;
+      const rtExpires = whatTimeIsItMrFox + 15000;
 
       const st = jest.spyOn(window, 'setTimeout');
 
-      getTokenExpiry.mockResolvedValue({ atExpires });
+      getTokenExpiry.mockResolvedValue({ atExpires, rtExpires });
       Date.now = () => whatTimeIsItMrFox;
 
       const cloneJson = jest.fn();
@@ -225,7 +240,10 @@ describe('FFetch class', () => {
         logger: { log },
         store: {
           dispatch: jest.fn(),
-        }
+        },
+        rtrConfig: {
+          fixedLengthSessionWarningTTL: '1m',
+        },
       });
       testFfetch.replaceFetch();
       testFfetch.replaceXMLHttpRequest();
@@ -260,7 +278,10 @@ describe('FFetch class', () => {
         logger: { log },
         store: {
           dispatch: jest.fn(),
-        }
+        },
+        rtrConfig: {
+          fixedLengthSessionWarningTTL: '1m',
+        },
       });
       testFfetch.replaceFetch();
       testFfetch.replaceXMLHttpRequest();
@@ -270,10 +291,10 @@ describe('FFetch class', () => {
       // promise in a separate thread fired off by setTimout, and we need to
       // give it the chance to complete. on the one hand, this feels super
       // gross, but on the other, since we're deliberately pushing rotation
-      // into a separate thread, I'm note sure of a better way to handle this.
+      // into a separate thread, I'm not sure of a better way to handle this.
       await setTimeout(Promise.resolve(), 2000);
 
-      expect(st).toHaveBeenCalledWith(expect.any(Function), ms(RTR_AT_EXPIRY_IF_UNKNOWN));
+      expect(st).toHaveBeenCalledWith(expect.any(Function), ms(RTR_AT_EXPIRY_IF_UNKNOWN) * RTR_AT_TTL_FRACTION);
     });
 
     it('handles unsuccessful responses', async () => {
@@ -304,6 +325,62 @@ describe('FFetch class', () => {
       const response = await global.fetch('okapiUrl/bl-users/_self', { testOption: 'test' });
       expect(mockFetch.mock.calls).toHaveLength(1);
       expect(cloneJson).not.toHaveBeenCalled();
+    });
+
+    it('avoids rotation when AT and RT expire together', async () => {
+      // a static timestamp representing "now"
+      const whatTimeIsItMrFox = 1718042609734;
+
+      // a static timestamp of when the AT will expire, in the future
+      // this value will be pushed into the response returned from the fetch
+      const accessTokenExpiration = whatTimeIsItMrFox + 5000;
+      const refreshTokenExpiration = accessTokenExpiration;
+
+      const st = jest.spyOn(window, 'setTimeout');
+
+      // dummy date data: assume session
+      Date.now = () => whatTimeIsItMrFox;
+
+      const cloneJson = jest.fn();
+      const clone = () => ({
+        ok: true,
+        json: () => Promise.resolve({ tokenExpiration: { accessTokenExpiration, refreshTokenExpiration } })
+      });
+
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        clone,
+      });
+
+      mockFetch.mockResolvedValueOnce('okapi success');
+      const testFfetch = new FFetch({
+        logger: { log },
+        store: {
+          dispatch: jest.fn(),
+        },
+        rtrConfig: {
+          fixedLengthSessionWarningTTL: '1m',
+        },
+      });
+      testFfetch.replaceFetch();
+      testFfetch.replaceXMLHttpRequest();
+
+      const response = await global.fetch('okapiUrl/bl-users/_self', { testOption: 'test' });
+      // why this extra await/setTimeout? Because RTR happens in an un-awaited
+      // promise in a separate thread fired off by setTimout, and we need to
+      // give it the chance to complete. on the one hand, this feels super
+      // gross, but on the other, since we're deliberately pushing rotation
+      // into a separate thread, I'm note sure of a better way to handle this.
+      await setTimeout(Promise.resolve(), 2000);
+
+      // AT rotation
+      expect(st).not.toHaveBeenCalledWith(expect.any(Function), (accessTokenExpiration - whatTimeIsItMrFox) * RTR_AT_TTL_FRACTION);
+
+      // FLS warning
+      expect(st).toHaveBeenCalledWith(expect.any(Function), (refreshTokenExpiration - whatTimeIsItMrFox) - ms(RTR_FLS_WARNING_TTL));
+
+      // FLS timeout
+      expect(st).toHaveBeenCalledWith(expect.any(Function), (refreshTokenExpiration - whatTimeIsItMrFox - RTR_TIME_MARGIN_IN_MS));
     });
   });
 
@@ -387,7 +464,7 @@ describe('FFetch class', () => {
         .mockResolvedValueOnce(new Response(
           JSON.stringify({ errors: ['missing token-getting ability'] }),
           {
-            status: 303,
+            status: 403,
             headers: {
               'content-type': 'application/json',
             }
@@ -417,7 +494,7 @@ describe('FFetch class', () => {
         .mockResolvedValueOnce(new Response(
           JSON.stringify({ errors: ['missing token-getting ability'] }),
           {
-            status: 303,
+            status: 403,
             headers: {
               'content-type': 'application/json',
             }
@@ -447,7 +524,7 @@ describe('FFetch class', () => {
         .mockResolvedValueOnce(new Response(
           JSON.stringify({ errors: ['missing token-getting ability'] }),
           {
-            status: 303,
+            status: 403,
             headers: {
               'content-type': 'application/json',
             }

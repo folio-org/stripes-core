@@ -34,7 +34,12 @@ class ForgotUserNameCtrl extends Component {
   static manifest = Object.freeze({
     searchUsername: {
       type: 'okapi',
-      path: 'bl-users/forgotten/username',
+      path: (queryParams, pathComponents, resourceData, config, props) => {
+        if (props.stripes.okapi.authnUrl) {
+          return 'users-keycloak/forgotten/username';
+        }
+        return 'bl-users/forgotten/username';
+      },
       headers: {
         'accept': '*/*',
       },

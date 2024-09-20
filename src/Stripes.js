@@ -23,6 +23,7 @@ export const stripesShape = PropTypes.shape({
     logTimestamp: PropTypes.bool,
     showHomeLink: PropTypes.bool,
     showPerms: PropTypes.bool,
+    tenantOptions: PropTypes.object,
   }).isRequired,
   connect: PropTypes.func.isRequired,
   currency: PropTypes.string,

@@ -2,6 +2,8 @@ import {
   checkSSO,
   clearCurrentUser,
   clearOkapiToken,
+  clearRtrFlsTimeout,
+  clearRtrFlsWarningTimeout,
   clearRtrTimeout,
   setAuthError,
   setBindings,
@@ -12,8 +14,11 @@ import {
   setLocale,
   setLoginData,
   setOkapiReady,
+  setOkapiTenant,
   setOkapiToken,
   setPlugins,
+  setRtrFlsTimeout,
+  setRtrFlsWarningTimeout,
   setRtrTimeout,
   setServerDown,
   setSessionData,
@@ -27,6 +32,7 @@ import {
 
 import okapiReducer from './okapiReducer';
 
+
 describe('okapiReducer', () => {
   describe('SET_IS_AUTHENTICATED', () => {
     it('sets isAuthenticated to true', () => {
@@ -39,12 +45,16 @@ describe('okapiReducer', () => {
       const state = {
         rtrModalIsVisible: true,
         rtrTimeout: 123,
+        rtrFlsTimeout: 123,
+        rtrFlsWarningTimeout: 123,
       };
       const ct = jest.spyOn(window, 'clearTimeout');
       const o = okapiReducer(state, setIsAuthenticated(false));
       expect(o.isAuthenticated).toBe(false);
       expect(o.rtrModalIsVisible).toBe(false);
       expect(o.rtrTimeout).toBe(undefined);
+      expect(o.rtrFlsTimeout).toBe(undefined);
+      expect(o.rtrFlsWarningTimeout).toBe(undefined);
       expect(ct).toHaveBeenCalled();
     });
   });
@@ -62,29 +72,56 @@ describe('okapiReducer', () => {
     expect(o).toMatchObject({ ...initialState, currentUser: { ...data } });
   });
 
-  it('SET_SESSION_DATA', () => {
-    const initialState = {
-      perms: [],
-      user: {},
-      tenant: 'central',
-    };
-    const session = {
-      perms: ['users.collection.get'],
-      user: {
+  describe('SET_SESSION_DATA', () => {
+    it('replaces existing tenant given a new one', () => {
+      const initialState = {
+        perms: [],
+        user: {},
+        tenant: 'central',
+      };
+      const session = {
+        perms: ['users.collection.get'],
         user: {
-          id: 'userId',
-          username: 'admin',
-        }
-      },
-      tenant: 'institutional',
-    };
-    const o = okapiReducer(initialState, setSessionData(session));
-    const { user, perms, ...rest } = session;
-    expect(o).toMatchObject({
-      ...initialState,
-      ...rest,
-      currentUser: user,
-      currentPerms: perms,
+          user: {
+            id: 'userId',
+            username: 'admin',
+          }
+        },
+        tenant: 'institutional',
+      };
+      const o = okapiReducer(initialState, setSessionData(session));
+      const { user, perms, ...rest } = session;
+      expect(o).toMatchObject({
+        ...initialState,
+        ...rest,
+        currentUser: user,
+        currentPerms: perms,
+      });
+    });
+
+    it('retains existing tenant', () => {
+      const initialState = {
+        perms: [],
+        user: {},
+        tenant: 'central',
+      };
+      const session = {
+        perms: ['users.collection.get'],
+        user: {
+          user: {
+            id: 'userId',
+            username: 'admin',
+          }
+        },
+      };
+      const o = okapiReducer(initialState, setSessionData(session));
+      const { user, perms, ...rest } = session;
+      expect(o).toMatchObject({
+        ...initialState,
+        ...rest,
+        currentUser: user,
+        currentPerms: perms,
+      });
     });
   });
 
@@ -111,7 +148,7 @@ describe('okapiReducer', () => {
     };
 
     const o = okapiReducer(state, clearRtrTimeout());
-    expect(o).toMatchObject({});
+    expect(o.rtrTimeout).toBe(undefined);
     expect(ct).toHaveBeenCalledWith(state.rtrTimeout);
   });
 
@@ -119,6 +156,66 @@ describe('okapiReducer', () => {
     const rtrModalIsVisible = true;
     const o = okapiReducer({}, toggleRtrModal(true));
     expect(o).toMatchObject({ rtrModalIsVisible });
+  });
+
+  it('SET_RTR_FLS_TIMEOUT', () => {
+    const ct = jest.spyOn(window, 'clearTimeout');
+
+    const state = {
+      rtrFlsTimeout: 991,
+    };
+
+    const newState = { rtrFlsTimeout: 997 };
+
+    const o = okapiReducer(state, setRtrFlsTimeout(newState.rtrFlsTimeout));
+    expect(o).toMatchObject(newState);
+
+    expect(ct).toHaveBeenCalledWith(state.rtrFlsTimeout);
+  });
+
+  it('CLEAR_RTR_FLS_TIMEOUT', () => {
+    const ct = jest.spyOn(window, 'clearTimeout');
+
+    const state = {
+      rtrFlsTimeout: 991,
+    };
+
+    const o = okapiReducer(state, clearRtrFlsTimeout());
+    expect(o.rtrFlsTimeout).toBe(undefined);
+    expect(ct).toHaveBeenCalledWith(state.rtrFlsTimeout);
+  });
+
+  it('SET_RTR_FLS_WARNING_TIMEOUT', () => {
+    const ct = jest.spyOn(window, 'clearTimeout');
+
+    const state = {
+      rtrFlsWarningTimeout: 991,
+    };
+
+    const newState = { rtrFlsWarningTimeout: 997 };
+
+    const o = okapiReducer(state, setRtrFlsWarningTimeout(newState.rtrFlsWarningTimeout));
+    expect(o).toMatchObject(newState);
+
+    expect(ct).toHaveBeenCalledWith(state.rtrFlsWarningTimeout);
+  });
+
+  it('CLEAR_RTR_FLS_WARNING_TIMEOUT', () => {
+    const ct = jest.spyOn(window, 'clearTimeout');
+
+    const state = {
+      rtrFlsWarningTimeout: 991,
+    };
+
+    const o = okapiReducer(state, clearRtrFlsWarningTimeout());
+    expect(o.rtrFlsWarningTimeout).toBe(undefined);
+    expect(ct).toHaveBeenCalledWith(state.rtrFlsWarningTimeout);
+  });
+
+  it('SET_OKAPI_TENANT', () => {
+    const payload = { tenant: 't', clientId: 'c' };
+    const o = okapiReducer({}, setOkapiTenant(payload));
+    expect(o).toMatchObject(payload);
   });
 
   it('SET_OKAPI_TOKEN', () => {
@@ -234,5 +331,15 @@ describe('okapiReducer', () => {
     const o = okapiReducer(state, setServerDown());
     expect(o).toMatchObject({ serverDown });
   });
-});
 
+  it('returns existing state given an unknown action', () => {
+    const state = { monkey: 'bagel' };
+    const o = okapiReducer(state, { type: '__BOGUS_ACTION__' });
+    expect(o).toBe(state);
+  });
+
+  it('initializes state to an empty object', () => {
+    const o = okapiReducer(undefined, { type: '__BOGUS_ACTION__' });
+    expect(o).toMatchObject({});
+  });
+});

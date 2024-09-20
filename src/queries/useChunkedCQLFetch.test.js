@@ -198,6 +198,60 @@ describe('Given useChunkedCQLFetch', () => {
 
       expect(result.current.itemQueries?.length).toEqual(2);
     });
+
+    it('expose queryKeys based on given ids and endpoint', async () => {
+      const { result } = renderHook(() => useChunkedCQLFetch({
+        ...baseOptions,
+        STEP_SIZE: 2,
+        tenantId: 'central',
+      }), { wrapper });
+
+      await waitFor(() => {
+        const loadingQueries = result.current.itemQueries?.filter(iq => iq.isLoading);
+
+        return loadingQueries.length === 0;
+      });
+
+      expect(result.current.queryKeys).toHaveLength(3);
+      expect(result.current.queryKeys).toStrictEqual([
+        ['stripes-core', 'users', ['1234-5678-a', '1234-5678-b'], 'central'],
+        ['stripes-core', 'users', ['1234-5678-c', '1234-5678-d'], 'central'],
+        ['stripes-core', 'users', ['1234-5678-e'], 'central']
+      ]);
+    });
+  });
+
+  describe('allows work in provided tenant', () => {
+    const providedTenantId = 'providedTenantId';
+
+    it('sets up 1 fetch using alternate tenant ID', async () => {
+      const { result } = renderHook(() => useChunkedCQLFetch({
+        ...baseOptions,
+        tenantId: providedTenantId,
+      }), { wrapper });
+
+      await waitFor(() => {
+        return result.current.itemQueries?.filter(iq => iq.isLoading)?.length === 0;
+      });
+
+      expect(mockUseOkapiKy).toHaveBeenCalledWith({ tenant: providedTenantId });
+    });
+
+    it('includes tenantId in the generateQueryKey function', async () => {
+      const generateQueryKey = jest.fn();
+
+      const { result } = renderHook(() => useChunkedCQLFetch({
+        ...baseOptions,
+        generateQueryKey,
+        tenantId: providedTenantId,
+      }), { wrapper });
+
+      await waitFor(() => {
+        return result.current.itemQueries?.filter(iq => iq.isLoading)?.length === 0;
+      });
+
+      expect(generateQueryKey).toHaveBeenCalledWith(expect.objectContaining({ tenantId: providedTenantId }));
+    });
   });
 
   describe('allows work in provided tenant', () => {
