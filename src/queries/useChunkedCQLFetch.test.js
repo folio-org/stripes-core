@@ -253,4 +253,37 @@ describe('Given useChunkedCQLFetch', () => {
       expect(generateQueryKey).toHaveBeenCalledWith(expect.objectContaining({ tenantId: providedTenantId }));
     });
   });
+
+  describe('allows work in provided tenant', () => {
+    const providedTenantId = 'providedTenantId';
+
+    it('sets up 1 fetch using alternate tenant ID', async () => {
+      const { result } = renderHook(() => useChunkedCQLFetch({
+        ...baseOptions,
+        tenantId: providedTenantId,
+      }), { wrapper });
+
+      await waitFor(() => {
+        return result.current.itemQueries?.filter(iq => iq.isLoading)?.length === 0;
+      });
+
+      expect(mockUseOkapiKy).toHaveBeenCalledWith({ tenant: providedTenantId });
+    });
+
+    it('includes tenantId in the generateQueryKey function', async () => {
+      const generateQueryKey = jest.fn();
+
+      const { result } = renderHook(() => useChunkedCQLFetch({
+        ...baseOptions,
+        generateQueryKey,
+        tenantId: providedTenantId,
+      }), { wrapper });
+
+      await waitFor(() => {
+        return result.current.itemQueries?.filter(iq => iq.isLoading)?.length === 0;
+      });
+
+      expect(generateQueryKey).toHaveBeenCalledWith(expect.objectContaining({ tenantId: providedTenantId }));
+    });
+  });
 });

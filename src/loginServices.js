@@ -52,6 +52,7 @@ export const supportedLocales = [
   'ja',     // japanese
   'ko',     // korean
   'nb',     // norwegian bokmål
+  'nl',     // dutch, flemish
   'nn',     // norwegian nynorsk
   'pl',     // polish
   'pt-BR',  // portuguese, brazil
@@ -242,7 +243,7 @@ function dispatchLocale(url, store, tenant) {
     mode: 'cors',
   })
     .then((response) => {
-      if (response.status === 200) {
+      if (response.ok) {
         response.json().then((json) => {
           if (json.configs?.length) {
             const localeValues = JSON.parse(json.configs[0].value);
@@ -255,6 +256,7 @@ function dispatchLocale(url, store, tenant) {
           }
         });
       }
+
       return response;
     });
 }
@@ -321,7 +323,7 @@ export function getPlugins(okapiUrl, store, tenant) {
     mode: 'cors',
   })
     .then((response) => {
-      if (response.status < 400) {
+      if (response.ok) {
         response.json().then((json) => {
           const configs = json.configs?.reduce((acc, val) => ({
             ...acc,
@@ -351,9 +353,7 @@ export function getBindings(okapiUrl, store, tenant) {
   })
     .then((response) => {
       let bindings = {};
-      if (response.status >= 400) {
-        store.dispatch(setBindings(bindings));
-      } else {
+      if (response.ok) {
         response.json().then((json) => {
           const configs = json.configs;
           if (Array.isArray(configs) && configs.length > 0) {
@@ -368,6 +368,8 @@ export function getBindings(okapiUrl, store, tenant) {
           }
           store.dispatch(setBindings(bindings));
         });
+      } else {
+        store.dispatch(setBindings(bindings));
       }
       return response;
     });
@@ -481,7 +483,7 @@ export function spreadUserWithPerms(userWithPerms) {
  * @returns {Promise}
  */
 export const IS_LOGGING_OUT = '@folio/stripes/core::Logout';
-export async function logout(okapiUrl, store) {
+export async function logout(okapiUrl, store, queryClient) {
   // check the private-storage sentinel: if logout has already started
   // in this window, we don't want to start it again.
   if (sessionStorage.getItem(IS_LOGGING_OUT)) {
@@ -518,6 +520,9 @@ export async function logout(okapiUrl, store) {
       store.dispatch(clearCurrentUser());
       store.dispatch(clearOkapiToken());
       store.dispatch(resetStore());
+
+      // clear react-query cache
+      queryClient.removeQueries();
     })
     // clear shared storage
     .then(localforage.removeItem(SESSION_NAME))
@@ -640,14 +645,14 @@ export function createOkapiSession(store, tenant, token, data) {
 export function getSSOEnabled(okapiUrl, store, tenant) {
   return fetch(`${okapiUrl}/saml/check`, { headers: { 'X-Okapi-Tenant': tenant, 'Accept': 'application/json' } })
     .then((response) => {
-      if (response.status >= 400) {
-        store.dispatch(checkSSO(false));
-        return null;
-      } else {
+      if (response.ok) {
         return response.json()
           .then((json) => {
             store.dispatch(checkSSO(json.active));
           });
+      } else {
+        store.dispatch(checkSSO(false));
+        return null;
       }
     })
     .catch(() => {
@@ -663,7 +668,7 @@ export function getSSOEnabled(okapiUrl, store, tenant) {
  * @param {object} resp fetch Response
  */
 function processSSOLoginResponse(resp) {
-  if (resp.status < 400) {
+  if (resp.ok) {
     resp.json().then((json) => {
       const form = document.getElementById('ssoForm');
       if (json.bindingMethod === 'POST') {
@@ -792,7 +797,7 @@ export function validateUser(okapiUrl, store, tenant, session) {
         // data isn't provided by _self.
         store.dispatch(setSessionData({
           isAuthenticated: true,
-          user: data.user,
+          user,
           perms,
           tenant: sessionTenant,
           token,

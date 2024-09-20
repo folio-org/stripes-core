@@ -23,6 +23,13 @@
 * Terminate the session when the fixed-length session expires. Refs STCOR-862.
 * Ensure support for the passed `tenantId` value by `useChunkedCQLFetch` for manipulations in the context of a specific tenant. Refs STCOR-873.
 * Provide `key` to elements in `<SessionEventContainer>`. Refs STCOR-874.
+* Correctly populate `stripes.user.user` on reload. Refs STCOR-860.
+* Correctly evaluate `stripes.okapi` before rendering `<RootWithIntl>`. Refs STCOR-864.
+* Change main navigation's skip link label to "Skip to main content". Refs STCOR-863.
+* Invalidate `QueryClient` cache on login/logout. Refs STCOR-832.
+* Ensure support for the passed `tenantId` value by `useChunkedCQLFetch` for manipulations in the context of a specific tenant. Refs STCOR-873.
+* When re-authenticating after logout timeout, return to previous location. Refs STCOR-849.
+* Add `nl` (Dutch, Flemish) to the supported locales. Refs STCOR-878.
 * Include optional okapi interfaces, `consortia`, `roles`, `users-keycloak`. Refs STCOR-889.
 
 ## [10.1.1](https://github.com/folio-org/stripes-core/tree/v10.1.1) (2024-03-25)
@@ -55,7 +62,6 @@
 * Add `idName` and `limit` as passable props to `useChunkedCQLFetch`. Refs STCOR-821.
 * Check for valid token before rotating during XHR send. Refs STCOR-817.
 * Remove `autoComplete` from `<ForgotPassword>`, `<ForgotUsername>` fields. Refs STCOR-742.
-* Use keycloak URLs in place of users-bl for tenant-switch. Refs US1153537.
 
 ## [10.0.3](https://github.com/folio-org/stripes-core/tree/v10.0.3) (2023-11-10)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.0.2...v10.0.3)
