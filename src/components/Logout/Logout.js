@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
 import { Redirect } from 'react-router';
 import { FormattedMessage } from 'react-intl';
 
@@ -13,16 +12,15 @@ import { getLocale, logout } from '../../loginServices';
  * This corresponds to the '/logout' route, allowing that route to be directly
  * accessible rather than only accessible through the menu action.
  *
- * @param {object} history
  */
-const Logout = ({ history }) => {
+const Logout = () => {
   const stripes = useStripes();
   const [didLogout, setDidLogout] = useState(false);
 
   useEffect(
     () => {
       getLocale(stripes.okapi.url, stripes.store, stripes.okapi.tenant)
-        .then(logout(stripes.okapi.url, stripes.store, history))
+        .then(logout(stripes.okapi.url, stripes.store))
         .then(setDidLogout(true));
     },
     // no dependencies because we only want to start the logout process once.
@@ -33,10 +31,6 @@ const Logout = ({ history }) => {
   );
 
   return didLogout ? <Redirect to="/" /> : <FormattedMessage id="stripes-core.logoutPending" />;
-};
-
-Logout.propTypes = {
-  history: PropTypes.object,
 };
 
 export default Logout;
