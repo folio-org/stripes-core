@@ -29,7 +29,10 @@
       "configuration": "2.0"
     },
     "optionalOkapiInterfaces": {
-      "login-saml": "2.0"
+      "consortia": "1.0",
+      "login-saml": "2.0",
+      "roles": "1.1",
+      "users-keycloak": "1.0"
     },
     "permissionSets": [
       {
