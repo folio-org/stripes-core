@@ -23,6 +23,7 @@ describe('useUserTenantPermissions', () => {
 
     useUserSelfTenantPermissions.mockReturnValue({
       isFetching: true,
+      isFetched: true,
       isLoading: true,
       userPermissions: ['self'],
       totalRecords: 1
@@ -30,6 +31,7 @@ describe('useUserTenantPermissions', () => {
 
     useUserTenantPermissionNames.mockReturnValue({
       isFetching: false,
+      isFetched: false,
       isLoading: false,
       userPermissions: ['permission name'],
       totalRecords: 1
@@ -39,6 +41,7 @@ describe('useUserTenantPermissions', () => {
 
     expect(result.current).toStrictEqual({
       isFetching: true,
+      isFetched: true,
       isLoading: true,
       userPermissions: ['self'],
       totalRecords: 1
@@ -50,6 +53,7 @@ describe('useUserTenantPermissions', () => {
 
     useUserSelfTenantPermissions.mockReturnValue({
       isFetching: true,
+      isFetched: true,
       isLoading: true,
       userPermissions: ['self'],
       totalRecords: 1
@@ -57,6 +61,7 @@ describe('useUserTenantPermissions', () => {
 
     useUserTenantPermissionNames.mockReturnValue({
       isFetching: false,
+      isFetched: false,
       isLoading: false,
       userPermissions: ['permission name'],
       totalRecords: 1
@@ -66,6 +71,7 @@ describe('useUserTenantPermissions', () => {
 
     expect(result.current).toStrictEqual({
       isFetching: false,
+      isFetched: false,
       isLoading: false,
       userPermissions: ['permission name'],
       totalRecords: 1
