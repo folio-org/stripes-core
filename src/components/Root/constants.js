@@ -92,4 +92,4 @@ export const RTR_RT_EXPIRY_IF_UNKNOWN = '10m';
  * To account for minor delays between events (such as cookie expiration and API calls),
  * this is a small amount of time to wait so the proper order can be ensured if they happen simultaneously.
  */
-export const RTR_TIME_MARGIN_IN_MS = 200;
+export const RTR_TIME_MARGIN = '200m';

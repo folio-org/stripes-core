@@ -6,6 +6,10 @@ import {
   MessageBanner
 } from '@folio/stripes-components';
 
+import {
+  RTR_TIME_MARGIN
+} from '../Root/constants';
+import { timestampFormatter } from './utils';
 import { useStripes } from '../../StripesContext';
 
 /**
@@ -17,7 +21,7 @@ import { useStripes } from '../../StripesContext';
  */
 const FixedLengthSessionWarning = () => {
   const stripes = useStripes();
-  const [remainingMillis, setRemainingMillis] = useState(ms(stripes.config.rtr.fixedLengthSessionWarningTTL));
+  const [remainingMillis, setRemainingMillis] = useState(ms(stripes.config.rtr.fixedLengthSessionWarningTTL) - ms(RTR_TIME_MARGIN));
 
   // configure an interval timer that sets state each second,
   // counting down to 0.
@@ -32,23 +36,7 @@ const FixedLengthSessionWarning = () => {
     };
   }, []);
 
-  /**
-   * timestampFormatter
-   * convert time-remaining to mm:ss. Given the remaining time can easily be
-   * represented as elapsed-time since the JSDate epoch, convert to a
-   * Date object, format it, and extract the minutes and seconds.
-   * That is, given we have 99 seconds left, that converts to a Date
-   * like `1970-01-01T00:01:39.000Z`; extract the `01:39`.
-   */
-  const timestampFormatter = () => {
-    if (remainingMillis >= 1000) {
-      return new Date(remainingMillis).toISOString().substring(14, 19);
-    }
-
-    return '00:00';
-  };
-
-  return <MessageBanner type="warning" show><FormattedMessage id="stripes-core.rtr.fixedLengthSession.timeRemaining" /> {timestampFormatter()}</MessageBanner>;
+  return <MessageBanner type="warning" show><FormattedMessage id="stripes-core.rtr.fixedLengthSession.timeRemaining" /> {timestampFormatter(remainingMillis)}</MessageBanner>;
 };
 
 export default FixedLengthSessionWarning;
