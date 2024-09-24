@@ -33,7 +33,7 @@ export const RTR_FLS_WARNING_TTL = '1m';
 export const RTR_ACTIVITY_CHANNEL = '@folio/stripes/core::RTRActivityChannel';
 
 /**
- * how much of a token's lifespan can elapse before it is considered expired.
+ * how much of a token's lifespan can elapse before it is considered expired?
  * For the AT, we want a very safe margin because we don't ever want to fall
  * off the end of the AT since it would be a very misleading failure given
  * the RT is still good at that point. Since rotation happens in the background

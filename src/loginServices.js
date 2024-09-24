@@ -28,7 +28,9 @@ import {
 } from './okapiActions';
 import processBadResponse from './processBadResponse';
 
-import { RTR_TIMEOUT_EVENT } from './components/Root/constants';
+import {
+  RTR_TIMEOUT_EVENT
+} from './components/Root/constants';
 
 // export supported locales, i.e. the languages we provide translations for
 export const supportedLocales = [

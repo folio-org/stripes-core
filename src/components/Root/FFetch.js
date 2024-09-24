@@ -133,7 +133,7 @@ export class FFetch {
 
       // RT timeout interval (session will end) and warning interval (warning that session will end)
       const rtTimeoutInterval = (rotationInterval.refreshTokenExpiration - Date.now());
-      const rtWarningInterval = (rotationInterval.refreshTokenExpiration - Date.now()) - ms(this.rtrConfig.fixedLengthSessionWarningTTL);
+      const rtWarningInterval = (rotationInterval.refreshTokenExpiration - Date.now()) - ms(config.rtr.fixedLengthSessionWarningTTL);
 
       // schedule AT rotation IFF the AT will expire before the RT. this avoids
       // refresh-thrashing near the end of the FLS with progressively shorter
@@ -149,7 +149,7 @@ export class FFetch {
       }
 
       // schedule FLS end-of-session warning
-      this.logger.log('rtr-fls', `end-of-session warning at ${new Date(rotationInterval.refreshTokenExpiration - ms(this.rtrConfig.fixedLengthSessionWarningTTL))}`);
+      this.logger.log('rtr-fls', `end-of-session warning at ${new Date(rotationInterval.refreshTokenExpiration - ms(config.rtr.fixedLengthSessionWarningTTL))}`);
       this.store.dispatch(setRtrFlsWarningTimeout(setTimeout(() => {
         this.logger.log('rtr-fls', 'emitting RTR_FLS_WARNING_EVENT');
         window.dispatchEvent(new Event(RTR_FLS_WARNING_EVENT));
