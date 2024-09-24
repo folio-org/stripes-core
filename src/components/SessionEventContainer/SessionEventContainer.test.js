@@ -7,10 +7,9 @@ import SessionEventContainer, {
   otherWindowStorage,
   thisWindowActivity,
   thisWindowRtrError,
-  thisWindowRtrTimeout,
+  thisWindowRtrIstTimeout,
 } from './SessionEventContainer';
 import {
-  logout,
   setUnauthorizedPathToSession,
   SESSION_NAME,
 } from '../../loginServices';
@@ -73,19 +72,16 @@ describe('SessionEventContainer', () => {
 describe('SessionEventContainer event listeners', () => {
   it('thisWindowRtrError', async () => {
     const history = { push: jest.fn() };
-    const logoutMock = logout;
-    logoutMock.mockReturnValue(Promise.resolve());
 
     const setUnauthorizedPathToSessionMock = setUnauthorizedPathToSession;
     setUnauthorizedPathToSessionMock.mockReturnValue(null);
 
-    await thisWindowRtrError(null, { okapi: { url: 'http' } }, history);
-    expect(logout).toHaveBeenCalled();
+    thisWindowRtrError(null, { okapi: { url: 'http' } }, history);
     expect(setUnauthorizedPathToSession).toHaveBeenCalled();
     expect(history.push).toHaveBeenCalledWith('/logout-timeout');
   });
 
-  it('thisWindowRtrTimeout', async () => {
+  it('thisWindowRtrIstTimeout', async () => {
     const s = {
       okapi: {
         url: 'http'
@@ -97,15 +93,8 @@ describe('SessionEventContainer event listeners', () => {
     };
 
     const history = { push: jest.fn() };
-    const logoutMock = logout;
-    await logoutMock.mockReturnValue(Promise.resolve());
 
-    const setUnauthorizedPathToSessionMock = setUnauthorizedPathToSession;
-    setUnauthorizedPathToSessionMock.mockReturnValue(null);
-
-    await thisWindowRtrTimeout(null, s, history);
-    expect(logout).toHaveBeenCalled();
-    expect(setUnauthorizedPathToSession).toHaveBeenCalled();
+    thisWindowRtrIstTimeout(null, s, history);
     expect(history.push).toHaveBeenCalledWith('/logout-timeout');
   });
 
@@ -126,13 +115,8 @@ describe('SessionEventContainer event listeners', () => {
         }
       };
       const history = { push: jest.fn() };
-      const qc = {};
-      const setUnauthorizedPathToSessionMock = setUnauthorizedPathToSession;
-      setUnauthorizedPathToSessionMock.mockReturnValue(null);
 
-      await otherWindowStorage(e, s, history, qc);
-      expect(logout).toHaveBeenCalledWith(s.okapi.url, s.store, qc);
-      expect(setUnauthorizedPathToSession).toHaveBeenCalled();
+      otherWindowStorage(e, s, history);
       expect(history.push).toHaveBeenCalledWith('/logout-timeout');
     });
 
@@ -148,11 +132,9 @@ describe('SessionEventContainer event listeners', () => {
         }
       };
       const history = { push: jest.fn() };
-      const qc = {};
 
-      await otherWindowStorage(e, s, history, qc);
-      expect(logout).toHaveBeenCalledWith(s.okapi.url, s.store, qc);
-      expect(history.push).toHaveBeenCalledWith('/');
+      otherWindowStorage(e, s, history);
+      expect(history.push).toHaveBeenCalledWith('/logout');
     });
   });
 

@@ -1,5 +1,4 @@
 import { isEmpty } from 'lodash';
-import { okapi } from 'stripes-config';
 
 import { getTokenExpiry, setTokenExpiry } from '../../loginServices';
 import { RTRError, UnexpectedResourceError } from './Errors';
@@ -7,6 +6,7 @@ import {
   RTR_ACTIVITY_EVENTS,
   RTR_AT_TTL_FRACTION,
   RTR_ERROR_EVENT,
+  RTR_FLS_WARNING_TTL,
   RTR_IDLE_MODAL_TTL,
   RTR_IDLE_SESSION_TTL,
   RTR_SUCCESS_EVENT,
@@ -73,8 +73,10 @@ export const resourceMapper = (resource, fx) => {
 export const isAuthenticationRequest = (resource, oUrl) => {
   const isPermissibleResource = (string) => {
     const permissible = [
+      '/authn/token',
       '/bl-users/login-with-expiry',
       '/bl-users/_self',
+      '/users-keycloak/_self',
     ];
 
     return !!permissible.find(i => string.startsWith(`${oUrl}${i}`));
@@ -192,9 +194,10 @@ export const isRotating = () => {
  * @param {function} fetchfx native fetch function
  * @param {@folio/stripes/logger} logger
  * @param {function} callback
+ * @param {object} okapi
  * @returns void
  */
-export const rtr = (fetchfx, logger, callback) => {
+export const rtr = (fetchfx, logger, callback, okapi) => {
   logger.log('rtr', '** RTR ...');
 
   // rotation is already in progress, maybe in this window,
@@ -328,6 +331,12 @@ export const configureRtr = (config = {}) => {
   // what events constitute activity?
   if (isEmpty(conf.activityEvents)) {
     conf.activityEvents = RTR_ACTIVITY_EVENTS;
+  }
+
+  // how long is the "your session is gonna die!" warning shown
+  // before the session is, in fact, killed?
+  if (!conf.fixedLengthSessionWarningTTL) {
+    conf.fixedLengthSessionWarningTTL = RTR_FLS_WARNING_TTL;
   }
 
   return conf;

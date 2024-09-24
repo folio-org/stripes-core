@@ -23,12 +23,12 @@ const getToken = (cookies, params) => {
   return cookies?.ssoToken || params?.ssoToken;
 };
 
-const getTenant = (params, token) => {
+const getTenant = (params, token, store) => {
   const tenant = config.useSecureTokens
     ? params?.tenantId
     : parseJWT(token)?.tenant;
 
-  return tenant || okapi.tenant;
+  return tenant || store.getState()?.okapi?.tenant;
 };
 
 const useSSOSession = () => {
@@ -42,7 +42,7 @@ const useSSOSession = () => {
   const params = getParams(location);
 
   const token = getToken(cookies, params);
-  const tenant = getTenant(params, token);
+  const tenant = getTenant(params, token, store);
 
   useEffect(() => {
     requestUserWithPerms(okapi.url, store, tenant, token)

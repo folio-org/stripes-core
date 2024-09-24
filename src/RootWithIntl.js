@@ -20,12 +20,13 @@ import {
   ModuleTranslator,
   TitledRoute,
   Front,
+  OIDCRedirect,
+  OIDCLanding,
   SSOLanding,
   SSORedirect,
   Settings,
   HandlerManager,
   TitleManager,
-  Login,
   Logout,
   LogoutTimeout,
   OverlayContainer,
@@ -39,6 +40,7 @@ import {
 import StaleBundleWarning from './components/StaleBundleWarning';
 import { StripesContext } from './StripesContext';
 import { CalloutContext } from './CalloutContext';
+import AuthnLogin from './components/AuthnLogin';
 
 const RootWithIntl = ({ stripes, token = '', isAuthenticated = false, disableAuth, history = {}, queryClient }) => {
   const connect = connectFor('@folio/core', stripes.epics, stripes.logger);
@@ -89,6 +91,12 @@ const RootWithIntl = ({ stripes, token = '', isAuthenticated = false, disableAut
                                   component={<SSORedirect stripes={connectedStripes} />}
                                 />
                                 <TitledRoute
+                                  name="oidcRedirect"
+                                  path="/oidc-landing"
+                                  key="oidc-landing"
+                                  component={<OIDCRedirect stripes={stripes} />}
+                                />
+                                <TitledRoute
                                   name="logoutTimeout"
                                   path="/logout-timeout"
                                   component={<LogoutTimeout />}
@@ -127,6 +135,13 @@ const RootWithIntl = ({ stripes, token = '', isAuthenticated = false, disableAut
                         key="sso-landing"
                       />
                       <TitledRoute
+                        name="oidcLanding"
+                        exact
+                        path="/oidc-landing"
+                        component={<CookiesProvider><OIDCLanding stripes={stripes} /></CookiesProvider>}
+                        key="oidc-landing"
+                      />
+                      <TitledRoute
                         name="forgotPassword"
                         path="/forgot-password"
                         component={<ForgotPasswordCtrl stripes={connectedStripes} />}
@@ -148,11 +163,8 @@ const RootWithIntl = ({ stripes, token = '', isAuthenticated = false, disableAut
                       />
                       <TitledRoute
                         name="login"
-                        component={
-                          <Login
-                            autoLogin={connectedStripes.config.autoLogin}
-                            stripes={connectedStripes}
-                          />}
+                        path="*"
+                        component={<AuthnLogin stripes={connectedStripes} />}
                       />
                     </Switch>
                   }
@@ -183,4 +195,3 @@ RootWithIntl.propTypes = {
 };
 
 export default RootWithIntl;
-

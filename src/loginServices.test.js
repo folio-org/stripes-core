@@ -55,6 +55,19 @@ jest.mock('localforage', () => ({
   removeItem: jest.fn(() => Promise.resolve()),
 }));
 
+jest.mock('stripes-config', () => ({
+  config: {
+    tenantOptions: {
+      romulus: { name: 'romulus', clientId: 'romulus-application' },
+      remus: { name: 'remus', clientId: 'remus-application' },
+    }
+  },
+  okapi: {
+    authnUrl: 'https://authn.url',
+  },
+  translations: {}
+}));
+
 // fetch success: resolve promise with ok == true and $data in json()
 const mockFetchSuccess = (data) => {
   global.fetch = jest.fn().mockImplementation(() => (
@@ -106,7 +119,7 @@ describe('createOkapiSession', () => {
     const permissionsMap = { a: true, b: true };
     mockFetchSuccess([]);
 
-    await createOkapiSession('url', store, 'tenant', 'token', data);
+    await createOkapiSession(store, 'tenant', 'token', data);
     expect(store.dispatch).toHaveBeenCalledWith(setIsAuthenticated(true));
     expect(store.dispatch).toHaveBeenCalledWith(setAuthError(null));
     expect(store.dispatch).toHaveBeenCalledWith(setLoginData(data));
@@ -215,7 +228,7 @@ describe('processOkapiSession', () => {
 
     mockFetchSuccess();
 
-    await processOkapiSession('url', store, 'tenant', resp);
+    await processOkapiSession(store, 'tenant', resp);
     expect(store.dispatch).toHaveBeenCalledWith(setAuthError(null));
     expect(store.dispatch).toHaveBeenCalledWith(setOkapiReady());
 
@@ -232,7 +245,7 @@ describe('processOkapiSession', () => {
       }
     };
 
-    await processOkapiSession('url', store, 'tenant', resp);
+    await processOkapiSession(store, 'tenant', resp);
 
     expect(store.dispatch).toHaveBeenCalledWith(setOkapiReady());
     expect(store.dispatch).toHaveBeenCalledWith(setAuthError([defaultErrors.DEFAULT_LOGIN_CLIENT_ERROR]));
@@ -366,6 +379,7 @@ describe('validateUser', () => {
   it('handles invalid user', async () => {
     const store = {
       dispatch: jest.fn(),
+      getState: () => ({ okapi: { tenant: 'monkey' } }),
     };
 
     global.fetch = jest.fn().mockImplementation(() => {
@@ -496,6 +510,7 @@ describe('logout', () => {
       global.fetch = jest.fn().mockImplementation(() => Promise.resolve());
       const store = {
         dispatch: jest.fn(),
+        getState: jest.fn(),
       };
       window.sessionStorage.clear();
 
@@ -517,6 +532,7 @@ describe('logout', () => {
       localStorage.setItem(SESSION_NAME, 'true');
       const store = {
         dispatch: jest.fn(),
+        getState: jest.fn(),
       };
       window.sessionStorage.clear();
 
@@ -617,6 +633,14 @@ describe('getBindings', () => {
 });
 
 describe('unauthorizedPath functions', () => {
+  beforeEach(() => {
+    window.sessionStorage.clear();
+  });
+
+  afterEach(() => {
+    window.sessionStorage.clear();
+  });
+
   describe('removeUnauthorizedPathFromSession', () => {
     it('clears the value', () => {
       setUnauthorizedPathToSession('monkey');
@@ -638,6 +662,20 @@ describe('unauthorizedPath functions', () => {
       setUnauthorizedPathToSession();
       expect(getUnauthorizedPathFromSession()).toBe(`${window.location.pathname}${window.location.search}`);
     });
+
+    describe('refuses to set locations beginning with "/logout"', () => {
+      it('with an argument', () => {
+        const monkey = '/logout-timeout';
+        setUnauthorizedPathToSession(monkey);
+        expect(getUnauthorizedPathFromSession()).toBeFalsy();
+      });
+
+      it('without an argument', () => {
+        window.location.pathname = '/logout-timeout';
+        setUnauthorizedPathToSession();
+        expect(getUnauthorizedPathFromSession()).toBeFalsy();
+      });
+    });
   });
 
   describe('getUnauthorizedPathFromSession', () => {
@@ -648,4 +686,3 @@ describe('unauthorizedPath functions', () => {
     });
   });
 });
-

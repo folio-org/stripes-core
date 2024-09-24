@@ -11,7 +11,6 @@ import { Icon } from '@folio/stripes-components';
 
 import { withModules } from '../Modules';
 import { LastVisitedContext } from '../LastVisited';
-import { getLocale, logout as sessionLogout } from '../../loginServices';
 import {
   updateQueryResource,
   getLocationQuery,
@@ -66,7 +65,6 @@ class MainNav extends Component {
       userMenuOpen: false,
     };
     this.store = props.stripes.store;
-    this.logout = this.logout.bind(this);
     this.getAppList = this.getAppList.bind(this);
   }
 
@@ -118,14 +116,6 @@ class MainNav extends Component {
     this.setState({
       userMenuOpen: !isOpen,
     });
-  }
-
-  // return the user to the login screen, but after logging in they will be brought to the default screen.
-  logout() {
-    const { okapi } = this.store.getState();
-
-    return getLocale(okapi.url, this.store, okapi.tenant)
-      .then(sessionLogout(okapi.url, this.store, this.props.history, this.props.queryClient));
   }
 
   getAppList(lastVisited) {
@@ -217,10 +207,7 @@ class MainNav extends Component {
                   target="_blank"
                 />
                 <NavDivider md="hide" />
-                <ProfileDropdown
-                  onLogout={this.logout}
-                  stripes={stripes}
-                />
+                <ProfileDropdown stripes={stripes} />
               </nav>
             </header>
           );

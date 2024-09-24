@@ -98,6 +98,68 @@ describe('discoverServices', () => {
 });
 
 describe('discoveryReducer', () => {
+  it('handles DISCOVERY_APPLICATIONS', () => {
+    let state = {};
+    const moduleDescriptors = [
+      { id: 'mod-a', provides: [{ id: 'if-a', version: '1.0' }] },
+      { id: 'mod-b' },
+    ];
+    const uiModules = [
+      { id: 'folio_c' },
+      { id: 'folio_d' },
+    ];
+    const action = {
+      type: 'DISCOVERY_APPLICATIONS',
+      data: {
+        id: 'a',
+        moduleDescriptors,
+        uiModules,
+      },
+    };
+
+    const mapped = {
+      applications: {
+        [action.data.id]: {
+          name: action.data.id,
+          modules: [
+            ...moduleDescriptors.map((d) => (
+              {
+                name: d.id,
+                interfaces: d.provides?.map((i) => {
+                  return { name: i.id + ' ' + i.version };
+                }) || []
+              })),
+            ...uiModules.map((d) => ({ name: d.id, interfaces: [] })),
+          ],
+        },
+      },
+    };
+
+    state = discoveryReducer(state, action);
+
+    expect(state).toMatchObject(mapped);
+  });
+
+  it('handles DISCOVERY_PERMISSION_DISPLAY_NAMES', () => {
+    let state = {
+      permissionDisplayNames: {}
+    };
+    const action = {
+      type: 'DISCOVERY_PERMISSION_DISPLAY_NAMES',
+      data: {
+        permissionSets: [
+          { 'permissionName': 'perm1', 'displayName': 'Admin Permission' },
+          { 'permissionName': 'perm2', 'displayName': 'Read-only Permission' }
+        ]
+      },
+    };
+
+    state = discoveryReducer(state, action);
+
+    expect(state.permissionDisplayNames.perm1).toBe(action.data.permissionSets[0].displayName);
+    expect(state.permissionDisplayNames.perm2).toBe(action.data.permissionSets[1].displayName);
+  });
+
   it('handles DISCOVERY_OKAPI', () => {
     let state = {
       okapi: '0.0.0'

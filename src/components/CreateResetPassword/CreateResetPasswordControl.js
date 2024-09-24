@@ -8,6 +8,7 @@ import { stripesShape } from '../../Stripes';
 import { setAuthError } from '../../okapiActions';
 import { defaultErrors } from '../../constants';
 import OrganizationLogo from '../OrganizationLogo';
+import { getLocationQuery } from '../../locationService';
 
 import CreateResetPassword from './CreateResetPassword';
 import PasswordHasNotChanged from './components/PasswordHasNotChanged';
@@ -18,13 +19,14 @@ class CreateResetPasswordControl extends Component {
   static propTypes = {
     authFailure: PropTypes.arrayOf(PropTypes.object),
     location: PropTypes.shape({
+      query: PropTypes.string,
       search: PropTypes.string.isRequired,
     }),
     match: PropTypes.shape({
       params: PropTypes.shape({
-        token: PropTypes.string.isRequired,
-      }).isRequired,
-    }).isRequired,
+        token: PropTypes.string,
+      }),
+    }),
     stripes: stripesShape.isRequired,
     handleBadResponse: PropTypes.func.isRequired,
     clearAuthErrors: PropTypes.func.isRequired,
@@ -107,13 +109,18 @@ class CreateResetPasswordControl extends Component {
       },
     } = stripes;
 
-    const path = `${url}/bl-users/password-reset/${isValidToken ? 'reset' : 'validate'}`;
+    // Token value from match.params.token comes from React-Router parsing the value from the URL path /:token?
+    // This part of the path is optional (hence the ?) and can instead be placed in the URL param `resetToken`
+    // to allow for keys longer than the URL length restriction of 2048 characters.
+    const resetToken = token ?? getLocationQuery(location)?.resetToken;
+    const interfacePath = stripes.config.isEureka ? 'users-keycloak' : 'bl-users';
+    const path = `${url}/${interfacePath}/password-reset/${isValidToken ? 'reset' : 'validate'}`;
 
     fetch(path, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-okapi-token': token,
+        'x-okapi-token': resetToken,
         'x-okapi-tenant': getTenant(stripes, location),
       },
       ...(body && { body: JSON.stringify(body) }),
@@ -144,11 +151,6 @@ class CreateResetPasswordControl extends Component {
   render() {
     const {
       authFailure,
-      match: {
-        params: {
-          token,
-        },
-      },
       clearAuthErrors,
     } = this.props;
 
@@ -160,7 +162,7 @@ class CreateResetPasswordControl extends Component {
     } = this.state;
 
     if (isSuccessfulPasswordChange) {
-      return <PasswordSuccessfullyChanged />;
+      return <PasswordSuccessfullyChanged stripes={this.props.stripes} />;
     }
 
     if (isLoading) {
@@ -177,7 +179,6 @@ class CreateResetPasswordControl extends Component {
 
     return (
       <CreateResetPassword
-        token={token}
         errors={authFailure}
         stripes={this.props.stripes}
         onSubmit={this.handleSubmit}

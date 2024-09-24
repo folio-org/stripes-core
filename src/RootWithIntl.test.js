@@ -5,6 +5,7 @@ import { render, screen } from '@folio/jest-config-stripes/testing-library/react
 import { Router as DefaultRouter } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
 
+import AuthnLogin from './components/AuthnLogin';
 import {
   Login,
   MainNav,
@@ -18,6 +19,7 @@ import {
 import RootWithIntl from './RootWithIntl';
 import Stripes from './Stripes';
 
+jest.mock('./components/AuthnLogin', () => () => '<AuthnLogin>');
 jest.mock('./components/Login', () => () => '<Login>');
 jest.mock('./components/MainNav', () => () => '<MainNav>');
 jest.mock('./components/OverlayContainer', () => () => '<OverlayContainer>');
@@ -56,7 +58,7 @@ describe('RootWithIntl', () => {
     const stripes = new Stripes({ epics: {}, logger: {}, bindings: {}, config: {}, store, discovery: { isFinished: false } });
     await render(<Harness><RootWithIntl stripes={stripes} history={defaultHistory} isAuthenticated={false} /></Harness>);
 
-    expect(screen.getByText(/<Login>/)).toBeInTheDocument();
+    expect(screen.getByText(/<AuthnLogin>/)).toBeInTheDocument();
     expect(screen.queryByText(/<MainNav>/)).toBeNull();
   });
 
@@ -65,7 +67,7 @@ describe('RootWithIntl', () => {
       const stripes = new Stripes({ epics: {}, logger: {}, bindings: {}, config: {}, store, discovery: { isFinished: false } });
       await render(<Harness><RootWithIntl stripes={stripes} history={defaultHistory} isAuthenticated /></Harness>);
 
-      expect(screen.queryByText(/<Login>/)).toBeNull();
+      expect(screen.queryByText(/<AuthnLogin>/)).toBeNull();
       expect(screen.queryByText(/<MainNav>/)).toBeInTheDocument();
     });
 
@@ -73,7 +75,7 @@ describe('RootWithIntl', () => {
       const stripes = new Stripes({ epics: {}, logger: {}, bindings: {}, config: {}, store, discovery: { isFinished: false } });
       await render(<Harness><RootWithIntl stripes={stripes} history={defaultHistory} token /></Harness>);
 
-      expect(screen.queryByText(/<Login>/)).toBeNull();
+      expect(screen.queryByText(/<AuthnLogin>/)).toBeNull();
       expect(screen.queryByText(/<MainNav>/)).toBeInTheDocument();
     });
 
@@ -81,7 +83,7 @@ describe('RootWithIntl', () => {
       const stripes = new Stripes({ epics: {}, logger: {}, bindings: {}, config: {}, store, discovery: { isFinished: false } });
       await render(<Harness><RootWithIntl stripes={stripes} history={defaultHistory} disableAuth /></Harness>);
 
-      expect(screen.queryByText(/<Login>/)).toBeNull();
+      expect(screen.queryByText(/<AuthnLogin>/)).toBeNull();
       expect(screen.queryByText(/<MainNav>/)).toBeInTheDocument();
     });
   });
