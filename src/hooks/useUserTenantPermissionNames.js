@@ -28,6 +28,7 @@ const useUserTenantPermissionNames = (
 
   const {
     isFetching,
+    isFetched,
     isLoading,
     data = {},
   } = useQuery(
@@ -50,6 +51,7 @@ const useUserTenantPermissionNames = (
 
   return ({
     isFetching,
+    isFetched,
     isLoading,
     userPermissions: data.permissionNames || INITIAL_DATA,
     totalRecords: data.totalRecords,

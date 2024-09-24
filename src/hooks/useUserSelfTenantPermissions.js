@@ -23,6 +23,7 @@ const useUserSelfTenantPermissions = (
 
   const {
     isFetching,
+    isFetched,
     isLoading,
     data,
   } = useQuery(
@@ -42,6 +43,7 @@ const useUserSelfTenantPermissions = (
 
   return ({
     isFetching,
+    isFetched,
     isLoading,
     userPermissions: data?.permissions.permissions || INITIAL_DATA,
     totalRecords: data?.permissions.permissions.length || 0,

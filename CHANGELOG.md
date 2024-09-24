@@ -31,6 +31,7 @@
 * When re-authenticating after logout timeout, return to previous location. Refs STCOR-849.
 * Add `nl` (Dutch, Flemish) to the supported locales. Refs STCOR-878.
 * Include optional okapi interfaces, `consortia`, `roles`, `users-keycloak`. Refs STCOR-889.
+* useUserTenantPermissions hook - provide `isFetched` property. Refs STCOR-890.
 
 ## [10.1.1](https://github.com/folio-org/stripes-core/tree/v10.1.1) (2024-03-25)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.1.0...v10.1.1)
