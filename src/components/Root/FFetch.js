@@ -88,7 +88,7 @@ export class FFetch {
   registerEventListener = () => {
     this.globalEventCallback = () => {
       this.logger.log('rtr', 'forcing rotation due to RTR_FORCE_REFRESH_EVENT');
-      rtr(this.nativeFetch, this.logger, this.rotateCallback);
+      rtr(this.nativeFetch, this.logger, this.rotateCallback, this.store.getState().okapi);
     };
     window.addEventListener(RTR_FORCE_REFRESH_EVENT, this.globalEventCallback);
   }

@@ -4,6 +4,7 @@
 
 import ms from 'ms';
 import { waitFor } from '@testing-library/react';
+import { okapi } from 'stripes-config';
 
 import { getTokenExpiry } from '../../loginServices';
 import { FFetch } from './FFetch';
@@ -165,11 +166,11 @@ describe('FFetch class', () => {
     });
   });
 
-  describe.skip('force refresh event', () => {
+  describe('force refresh event', () => {
     it('Invokes a refresh on RTR_FORCE_REFRESH_EVENT...', async () => {
       mockFetch.mockResolvedValueOnce('okapi success');
 
-      const instance = new FFetch({ logger: { log } });
+      const instance = new FFetch({ logger: { log }, store: { getState: () => ({ okapi }) } });
       instance.replaceFetch();
       instance.replaceXMLHttpRequest();
 
