@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
+import { createPortal } from 'react-dom';
 import {
   Router,
   Switch,
@@ -75,7 +76,11 @@ const RootWithIntl = ({ stripes, token = '', isAuthenticated = false, disableAut
                           { (typeof connectedStripes.okapi !== 'object' || connectedStripes.discovery.isFinished) && (
                             <ModuleContainer id="content">
                               <OverlayContainer />
-                              {connectedStripes.config.useSecureTokens && <SessionEventContainer history={history} queryClient={queryClient} />}
+                              { connectedStripes.config.useSecureTokens &&
+                                createPortal(<SessionEventContainer
+                                  history={history}
+                                />,
+                                document.getElementById('events-container')) }
                               <Switch>
                                 <TitledRoute
                                   name="home"

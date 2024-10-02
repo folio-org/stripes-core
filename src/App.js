@@ -9,6 +9,7 @@ import configureLogger from './configureLogger';
 import configureStore from './configureStore';
 import gatherActions from './gatherActions';
 import { destroyStore } from './mainActions';
+import css from './components/SessionEventContainer/style.css';
 
 import Root from './components/Root';
 
@@ -37,7 +38,11 @@ export default class StripesCore extends Component {
     const parsedTenant = storedTenant ? JSON.parse(storedTenant) : undefined;
 
     const okapi = (typeof okapiConfig === 'object' && Object.keys(okapiConfig).length > 0)
-      ? { ...okapiConfig, tenant: parsedTenant?.tenantName || okapiConfig.tenant, clientId: parsedTenant?.clientId || okapiConfig.clientId } : { withoutOkapi: true };
+      ? {
+        ...okapiConfig,
+        tenant: parsedTenant?.tenantName || okapiConfig.tenant,
+        clientId: parsedTenant?.clientId || okapiConfig.clientId
+      } : { withoutOkapi: true };
 
     const initialState = merge({}, { okapi }, props.initialState);
 
@@ -58,6 +63,10 @@ export default class StripesCore extends Component {
 
     return (
       <StrictWrapper>
+        <div
+          id="events-container"
+          className={css.eventsContainer}
+        />
         <Root
           store={this.store}
           epics={this.epics}
