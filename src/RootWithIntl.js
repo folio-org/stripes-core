@@ -80,7 +80,7 @@ const RootWithIntl = ({ stripes, token = '', isAuthenticated = false, disableAut
                                 createPortal(<SessionEventContainer
                                   history={history}
                                 />,
-                                document.getElementById('events-container'))}
+                                document.getElementById('events-portal'))}
                               <Switch>
                                 <TitledRoute
                                   name="home"

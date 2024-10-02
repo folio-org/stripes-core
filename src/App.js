@@ -64,7 +64,7 @@ export default class StripesCore extends Component {
     return (
       <StrictWrapper>
         <div
-          id="events-container"
+          id="events-portal"
           className={css.eventsContainer}
         />
         <Root
