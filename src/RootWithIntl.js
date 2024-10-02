@@ -63,7 +63,7 @@ const RootWithIntl = ({ stripes, token = '', isAuthenticated = false, disableAut
             >
               <Provider store={connectedStripes.store}>
                 <Router history={history}>
-                  { isAuthenticated || token || disableAuth ?
+                  {isAuthenticated || token || disableAuth ?
                     <>
                       <MainContainer>
                         <AppCtxMenuProvider>
@@ -73,14 +73,14 @@ const RootWithIntl = ({ stripes, token = '', isAuthenticated = false, disableAut
                             event={events.LOGIN}
                             stripes={connectedStripes}
                           />
-                          { (typeof connectedStripes.okapi !== 'object' || connectedStripes.discovery.isFinished) && (
+                          {(typeof connectedStripes.okapi !== 'object' || connectedStripes.discovery.isFinished) && (
                             <ModuleContainer id="content">
                               <OverlayContainer />
-                              { connectedStripes.config.useSecureTokens &&
+                              {connectedStripes.config.useSecureTokens &&
                                 createPortal(<SessionEventContainer
                                   history={history}
                                 />,
-                                document.getElementById('events-container')) }
+                                document.getElementById('events-container'))}
                               <Switch>
                                 <TitledRoute
                                   name="home"
