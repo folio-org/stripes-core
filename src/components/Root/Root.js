@@ -120,7 +120,7 @@ class Root extends Component {
     const { logger, store, epics, config, okapi, actionNames, token, isAuthenticated, disableAuth, currentUser, currentPerms, locale, defaultTranslations, timezone, currency, plugins, bindings, discovery, translations, history, serverDown } = this.props;
     if (serverDown) {
       // note: this isn't i18n'ed because we haven't rendered an IntlProvider yet.
-      return <div>Error: server is forbidden, unreachable or down. Clear the cookies? VPN issue?</div>;
+      return <div>Error: server is forbidden, unreachable or down. Clear the cookies? Use incognito mode? VPN issue?</div>;
     }
 
     if (!translations) {
