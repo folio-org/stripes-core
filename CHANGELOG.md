@@ -33,7 +33,7 @@
 * Include optional okapi interfaces, `consortia`, `roles`, `users-keycloak`. Refs STCOR-889.
 * useUserTenantPermissions hook - provide `isFetched` property. Refs STCOR-890.
 * Reword error message "Error: server is forbidden, unreachable or down. VPN issue?". Refs STCOR-893.
-* Move session timout banner to the bottom of the page. Refs STCOR-883.
+* Move session timeout banner to the bottom of the page. Refs STCOR-883.
 
 
 ## [10.1.1](https://github.com/folio-org/stripes-core/tree/v10.1.1) (2024-03-25)

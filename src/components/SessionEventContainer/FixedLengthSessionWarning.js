@@ -49,9 +49,7 @@ const FixedLengthSessionWarning = () => {
     return '00:00';
   };
 
-  return <MessageBanner show contentClassName={css.fixedSessionBanner}><FormattedMessage
-    id="stripes-core.rtr.fixedLengthSession.timeRemaining"
-  /> {timestampFormatter()}</MessageBanner>;
+  return <MessageBanner show contentClassName={css.fixedSessionBanner}><FormattedMessage id="stripes-core.rtr.fixedLengthSession.timeRemaining" />{timestampFormatter()}</MessageBanner>;
 };
 
 export default FixedLengthSessionWarning;
