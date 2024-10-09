@@ -40,11 +40,6 @@ const store = {
 };
 
 describe('RootWithIntl', () => {
-  beforeAll(() => {
-    const eventsPortal = document.createElement('div');
-    eventsPortal.id = 'events-portal';
-    document.body.appendChild(eventsPortal);
-  });
   it('renders login without one of (isAuthenticated, token, disableAuth)', async () => {
     const stripes = new Stripes({ epics: {}, logger: {}, bindings: {}, config: {}, store, discovery: { isFinished: false } });
     await render(<Harness><RootWithIntl stripes={stripes} history={defaultHistory} isAuthenticated={false} /></Harness>);
