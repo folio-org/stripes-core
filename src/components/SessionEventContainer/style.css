@@ -1,0 +1,14 @@
+@import '@folio/stripes-components/lib/variables.css';
+
+.eventsContainer {
+    position: absolute;
+    bottom: 0;
+    z-index: 100000;
+    left: 50%;
+    transform: translate(-50%);
+    border: none
+}
+
+.fixedSessionBanner {
+    background-color: var(--warn);
+}
