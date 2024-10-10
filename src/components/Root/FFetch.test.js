@@ -212,6 +212,7 @@ describe('FFetch class', () => {
         },
         rtrConfig: {
           fixedLengthSessionWarningTTL: '1m',
+          rotationIntervalFraction: 0.8,
         },
       });
       testFfetch.replaceFetch();
@@ -268,6 +269,7 @@ describe('FFetch class', () => {
         },
         rtrConfig: {
           fixedLengthSessionWarningTTL: '1m',
+          rotationIntervalFraction: 0.8,
         },
       });
       testFfetch.replaceFetch();
@@ -306,6 +308,7 @@ describe('FFetch class', () => {
         },
         rtrConfig: {
           fixedLengthSessionWarningTTL: '1m',
+          rotationIntervalFraction: 0.8,
         },
       });
       testFfetch.replaceFetch();
@@ -342,7 +345,11 @@ describe('FFetch class', () => {
         logger: { log },
         store: {
           dispatch: jest.fn(),
-        }
+        },
+        rtrConfig: {
+          fixedLengthSessionWarningTTL: '1m',
+          rotationIntervalFraction: 0.8,
+        },
       });
       testFfetch.replaceFetch();
       testFfetch.replaceXMLHttpRequest();
@@ -385,6 +392,7 @@ describe('FFetch class', () => {
         },
         rtrConfig: {
           fixedLengthSessionWarningTTL: '1m',
+          rotationIntervalFraction: 0.8,
         },
       });
       testFfetch.replaceFetch();
