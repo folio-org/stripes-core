@@ -267,7 +267,6 @@ const SessionEventContainer = ({ history }) => {
     // there is a change to stripes or history. Hence, those are left out.
     // we do include stripes.config.rtr, though, because these are configurable
     // at runtime via ui-developer.
-
   }, [stripes.config.rtr]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const renderList = [];
