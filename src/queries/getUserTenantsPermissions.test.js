@@ -18,6 +18,7 @@ describe('getUserTenantsPermissions', () => {
         url: 'http://okapiUrl',
         token: 'elevensies',
       },
+      hasInterface: jest.fn(),
     };
     mockFetch.mockResolvedValueOnce('non-okapi-success');
 
@@ -38,6 +39,7 @@ describe('getUserTenantsPermissions', () => {
       okapi: {
         url: 'http://okapiUrl',
       },
+      hasInterface: jest.fn(),
     };
     mockFetch.mockResolvedValueOnce('non-okapi-success');
 
@@ -54,6 +56,7 @@ describe('getUserTenantsPermissions', () => {
       okapi: {
         url: 'http://okapiUrl',
       },
+      hasInterface: jest.fn(),
     };
 
     const t1 = { p: ['t1-p1', 't1-p2'] };

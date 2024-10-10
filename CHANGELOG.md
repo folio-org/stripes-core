@@ -34,6 +34,7 @@
 * useUserTenantPermissions hook - provide `isFetched` property. Refs STCOR-890.
 * Reword error message "Error: server is forbidden, unreachable or down. VPN issue?". Refs STCOR-893.
 * Move session timeout banner to the bottom of the page. Refs STCOR-883.
+* Conditionally use `/users-keycloak/_self` endpoint when `roles` interface is present. Refs STCOR-835.
 
 
 ## [10.1.1](https://github.com/folio-org/stripes-core/tree/v10.1.1) (2024-03-25)

@@ -16,8 +16,12 @@ const getUserTenantsPermissions = async (stripes, tenants = []) => {
   } = stripes;
   const userTenantIds = tenants.map(tenant => tenant.id || tenant);
 
+  const permUrl = stripes.hasInterface('roles') ?
+    `${url}/users-keycloak/_self?expandPermissions=true&fullPermissions=true` :
+    `${url}/perms/users/${id}/permissions?full=true&indexField=userId`;
+
   const promises = userTenantIds.map(async (tenantId) => {
-    const result = await fetch(`${url}/perms/users/${id}/permissions?full=true&indexField=userId`, {
+    const result = await fetch(permUrl, {
       headers: {
         'X-Okapi-Tenant': tenantId,
         'Content-Type': 'application/json',
