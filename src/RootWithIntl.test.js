@@ -1,20 +1,6 @@
-/* shhhh, eslint, it's ok. we need "unused" imports for mocks */
-/* eslint-disable no-unused-vars */
-
 import { render, screen } from '@folio/jest-config-stripes/testing-library/react';
 import { Router as DefaultRouter } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
-
-import AuthnLogin from './components/AuthnLogin';
-import {
-  Login,
-  MainNav,
-  MainContainer,
-  ModuleContainer,
-  OverlayContainer,
-  StaleBundleWarning,
-  SessionEventContainer,
-} from './components';
 
 import RootWithIntl from './RootWithIntl';
 import Stripes from './Stripes';

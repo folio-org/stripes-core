@@ -9,8 +9,10 @@ import configureLogger from './configureLogger';
 import configureStore from './configureStore';
 import gatherActions from './gatherActions';
 import { destroyStore } from './mainActions';
+import css from './components/SessionEventContainer/style.css';
 
 import Root from './components/Root';
+import { eventsPortal } from './constants';
 
 const StrictWrapper = ({ children }) => {
   if (config.disableStrictMode) {
@@ -58,6 +60,10 @@ export default class StripesCore extends Component {
 
     return (
       <StrictWrapper>
+        <div
+          id={eventsPortal}
+          className={css.eventsContainer}
+        />
         <Root
           store={this.store}
           epics={this.epics}

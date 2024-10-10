@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import PropTypes from 'prop-types';
 import createInactivityTimer from 'inactivity-timer';
 import ms from 'ms';
@@ -15,6 +16,7 @@ import {
 } from '../Root/constants';
 import { toggleRtrModal } from '../../okapiActions';
 import FixedLengthSessionWarning from './FixedLengthSessionWarning';
+import { eventsPortal } from '../../constants';
 
 //
 // event listeners
@@ -279,7 +281,7 @@ const SessionEventContainer = ({ history }) => {
     renderList.push(<FixedLengthSessionWarning key="FixedLengthSessionWarning" />);
   }
 
-  return renderList.length ? renderList : null;
+  return renderList.length ? createPortal(renderList, document.getElementById(eventsPortal)) : null;
 };
 
 SessionEventContainer.propTypes = {
