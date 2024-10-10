@@ -146,11 +146,17 @@
     "placeholder.forgotPassword": "Voer e-mail of telefoonnummer in",
     "placeholder.forgotUsername": "Voer e-mail of telefoonnummer in",
     "title.cookieEnabled": "Cookies zijn vereist om in te loggen. Schakel cookies in en probeer het opnieuw.",
-    "errors.sso.session.failed": "SSO-aanmelding mislukt. Probeer het opnieuw",
     "logoutPending": "Afmelden in behandeling...",
     "rtr.idleSession.modalHeader": "Uw sessie verloopt binnenkort!",
     "rtr.idleSession.timeRemaining": "Resterende tijd",
     "rtr.idleSession.keepWorking": "Blijven werken",
     "rtr.idleSession.sessionExpiredSoSad": "Uw sessie is verlopen wegens inactiviteit.",
-    "rtr.idleSession.logInAgain": "Opnieuw inloggen"
+    "rtr.idleSession.logInAgain": "Opnieuw inloggen",
+    "title.logout": "Log out",
+    "about.applicationCount": "{count} applications",
+    "about.applicationsVersionsTitle": "Applications/modules/interfaces",
+    "tenantChoose": "Select your tenant/library",
+    "tenantLibrary": "Tenant/Library",
+    "errors.saml.missingToken": "No <code>code</code> query parameter.",
+    "rtr.fixedLengthSession.timeRemaining": "Your session will end soon! Time remaining:"
 }

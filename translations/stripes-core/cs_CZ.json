@@ -19,7 +19,7 @@
     "about.paneTitle": "Verze softwaru",
     "about.userInterface": "Uživatelské rozhraní",
     "about.foundation": "Základní",
-    "about.okapiServices": "Služby Okapi",
+    "about.okapiServices": "Služby brány API",
     "about.unknown": "Neznámý",
     "about.version": "Verze {version}",
     "about.forTenant": "Pro nájemce {tenant}",
@@ -146,11 +146,17 @@
     "placeholder.forgotPassword": "Zadejte e-mail nebo telefon",
     "placeholder.forgotUsername": "Zadejte e-mail nebo telefon",
     "title.cookieEnabled": "Pro přihlášení jsou vyžadovány soubory cookie. Povolte soubory cookie a zkuste to znovu prosím.",
-    "errors.sso.session.failed": "Problém komunikace se serverem. Prosím zkuste to znovu",
     "logoutPending": "Probíhá odhlašování...",
     "rtr.idleSession.modalHeader": "Vaše relace brzy vyprší!",
     "rtr.idleSession.timeRemaining": "Zbývající čas",
     "rtr.idleSession.keepWorking": "Pokračovat v práci",
     "rtr.idleSession.sessionExpiredSoSad": "Vaše relace vypršela z důvodu nečinnosti.",
-    "rtr.idleSession.logInAgain": "Znovu se přihlásit"
+    "rtr.idleSession.logInAgain": "Znovu se přihlásit",
+    "title.logout": "Odhlásit se",
+    "about.applicationCount": "{count} aplikací",
+    "about.applicationsVersionsTitle": "Aplikace/moduly/rozhraní",
+    "tenantChoose": "Vybrat nájemce/knihovnu",
+    "tenantLibrary": "Nájemce/Knihovna",
+    "errors.saml.missingToken": "No <code>code</code> query parameter.",
+    "rtr.fixedLengthSession.timeRemaining": "Vaše relace brzy skončí! Zbývající čas:"
 }

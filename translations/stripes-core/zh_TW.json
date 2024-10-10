@@ -146,11 +146,17 @@
     "placeholder.forgotPassword": "輸入電子郵件或電話",
     "placeholder.forgotUsername": "輸入電子郵件或電話",
     "title.cookieEnabled": "登入需要 Cookie。請啟用Cookie，然後重試。",
-    "errors.sso.session.failed": "SSO 登入失敗。請再試一次",
     "logoutPending": "Log out in process...",
     "rtr.idleSession.modalHeader": "Your session will expire soon!",
     "rtr.idleSession.timeRemaining": "Time remaining",
     "rtr.idleSession.keepWorking": "Keep working",
     "rtr.idleSession.sessionExpiredSoSad": "Your session expired due to inactivity.",
-    "rtr.idleSession.logInAgain": "Log in again"
+    "rtr.idleSession.logInAgain": "Log in again",
+    "title.logout": "Log out",
+    "about.applicationCount": "{count} applications",
+    "about.applicationsVersionsTitle": "Applications/modules/interfaces",
+    "tenantChoose": "Select your tenant/library",
+    "tenantLibrary": "Tenant/Library",
+    "errors.saml.missingToken": "No <code>code</code> query parameter.",
+    "rtr.fixedLengthSession.timeRemaining": "Your session will end soon! Time remaining:"
 }
