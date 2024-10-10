@@ -146,11 +146,17 @@
     "placeholder.forgotPassword": "Eメールまたは電話番号を入力",
     "placeholder.forgotUsername": "Eメールまたは電話番号の入力",
     "title.cookieEnabled": "ログインするにはCookieが必要です。Cookieを有効にしてもう一度お試しください。",
-    "errors.sso.session.failed": "SSO ログインに失敗しました。もう一度お試しください",
     "logoutPending": "ログアウト処理中...",
     "rtr.idleSession.modalHeader": "セッションはまもなく終了します！",
     "rtr.idleSession.timeRemaining": "Time remaining",
     "rtr.idleSession.keepWorking": "Keep working",
     "rtr.idleSession.sessionExpiredSoSad": "Your session expired due to inactivity.",
-    "rtr.idleSession.logInAgain": "再ログイン"
+    "rtr.idleSession.logInAgain": "再ログイン",
+    "title.logout": "ログアウト",
+    "about.applicationCount": "{count} applications",
+    "about.applicationsVersionsTitle": "Applications/modules/interfaces",
+    "tenantChoose": "Select your tenant/library",
+    "tenantLibrary": "Tenant/Library",
+    "errors.saml.missingToken": "No <code>code</code> query parameter.",
+    "rtr.fixedLengthSession.timeRemaining": "セッションはまもなく終了します。残時間:"
 }
