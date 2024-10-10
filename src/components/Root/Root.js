@@ -63,14 +63,21 @@ class Root extends Component {
     this.apolloClient = createApolloClient(okapi);
     this.reactQueryClient = createReactQueryClient();
 
+    // configure RTR with default props if needed
+    // gross: this overwrites whatever is currently stored at config.rtr
+    // gross: technically, the props could change and not get re-run through
+    //   here. Realistically, that'll never happen since config values are read
+    //   only once from a static file at build time, but still, props are props
+    //   so technically it's possible.
+    //   Also, ui-developer provides facilities to change some of this
+    this.props.config.rtr = configureRtr(this.props.config.rtr);
+
     // enhanced security mode:
     // * configure fetch and xhr interceptors to conduct RTR
     // * see SessionEventContainer for RTR handling
     if (this.props.config.useSecureTokens) {
       // FFetch relies on some of these properties, so we must ensure
       // they are filled before initialization
-      this.props.config.rtr = configureRtr(this.props.config.rtr);
-
       this.ffetch = new FFetch({
         logger: this.props.logger,
         store,
@@ -129,16 +136,6 @@ class Root extends Component {
       // We don't know the locale, so we use English as backup
       return (<SystemSkeleton />);
     }
-
-    // make sure RTR is configured
-    // gross: this overwrites whatever is currently stored at config.rtr
-    // gross: technically, this may be different than what is configured
-    //   in the constructor since the constructor only runs once but
-    //   render runs when props change. realistically, that'll never happen
-    //   since config values are read only once from a static file at build
-    //   time, but still, props are props so technically it's possible.
-    //   Also, ui-developer provides facilities to change some of this
-    config.rtr = configureRtr(this.props.config.rtr);
 
     const stripes = new Stripes({
       logger,
