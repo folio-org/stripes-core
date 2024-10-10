@@ -4,7 +4,7 @@
 
 import ms from 'ms';
 import { waitFor } from '@testing-library/react';
-import { okapi } from 'stripes-config';
+import { okapi, config } from 'stripes-config';
 
 import { getTokenExpiry } from '../../loginServices';
 import { FFetch } from './FFetch';
@@ -229,7 +229,7 @@ describe('FFetch class', () => {
       await setTimeout(Promise.resolve(), 2000);
 
       // AT rotation
-      expect(st).toHaveBeenCalledWith(expect.any(Function), (accessTokenExpiration - whatTimeIsItMrFox) * 0.5);
+      expect(st).toHaveBeenCalledWith(expect.any(Function), (accessTokenExpiration - whatTimeIsItMrFox) * config.rtr.rotationIntervalFraction);
 
       // FLS warning
       expect(st).toHaveBeenCalledWith(expect.any(Function), (refreshTokenExpiration - whatTimeIsItMrFox) - ms(RTR_FLS_WARNING_TTL));
@@ -281,7 +281,7 @@ describe('FFetch class', () => {
       // gross, but on the other, since we're deliberately pushing rotation
       // into a separate thread, I'm note sure of a better way to handle this.
       await setTimeout(Promise.resolve(), 2000);
-      expect(st).toHaveBeenCalledWith(expect.any(Function), (atExpires - whatTimeIsItMrFox) * 0.5);
+      expect(st).toHaveBeenCalledWith(expect.any(Function), (atExpires - whatTimeIsItMrFox) * config.rtr.rotationIntervalFraction);
     });
 
     it('handles missing RTR data', async () => {
@@ -318,7 +318,7 @@ describe('FFetch class', () => {
       // into a separate thread, I'm not sure of a better way to handle this.
       await setTimeout(Promise.resolve(), 2000);
 
-      expect(st).toHaveBeenCalledWith(expect.any(Function), ms(RTR_AT_EXPIRY_IF_UNKNOWN) * 0.5);
+      expect(st).toHaveBeenCalledWith(expect.any(Function), ms(RTR_AT_EXPIRY_IF_UNKNOWN) * config.rtr.rotationIntervalFraction);
     });
 
     it('handles unsuccessful responses', async () => {
@@ -396,7 +396,7 @@ describe('FFetch class', () => {
       await setTimeout(Promise.resolve(), 2000);
 
       // AT rotation
-      expect(st).not.toHaveBeenCalledWith(expect.any(Function), (accessTokenExpiration - whatTimeIsItMrFox) * 0.5);
+      expect(st).not.toHaveBeenCalledWith(expect.any(Function), (accessTokenExpiration - whatTimeIsItMrFox) * config.rtr.rotationIntervalFraction);
 
       // FLS warning
       expect(st).toHaveBeenCalledWith(expect.any(Function), (refreshTokenExpiration - whatTimeIsItMrFox) - ms(RTR_FLS_WARNING_TTL));
