@@ -4,13 +4,14 @@
 
 import ms from 'ms';
 import { waitFor } from '@testing-library/react';
-import { okapi, config } from 'stripes-config';
+import { okapi } from 'stripes-config';
 
 import { getTokenExpiry } from '../../loginServices';
 import { FFetch } from './FFetch';
 import { RTRError, UnexpectedResourceError } from './Errors';
 import {
   RTR_AT_EXPIRY_IF_UNKNOWN,
+  RTR_AT_TTL_FRACTION,
   RTR_FORCE_REFRESH_EVENT,
   RTR_FLS_WARNING_TTL,
   RTR_TIME_MARGIN_IN_MS,
@@ -28,12 +29,6 @@ jest.mock('stripes-config', () => ({
   okapi: {
     url: 'okapiUrl',
     tenant: 'okapiTenant'
-  },
-  config: {
-    rtr: {
-      rotationIntervalFraction: 0.5,
-      fixedLengthSessionWarningTTL: '1m',
-    }
   }
 }),
 { virtual: true });
@@ -215,7 +210,9 @@ describe('FFetch class', () => {
         store: {
           dispatch: jest.fn(),
         },
-
+        rtrConfig: {
+          fixedLengthSessionWarningTTL: '1m',
+        },
       });
       testFfetch.replaceFetch();
       testFfetch.replaceXMLHttpRequest();
@@ -229,7 +226,7 @@ describe('FFetch class', () => {
       await setTimeout(Promise.resolve(), 2000);
 
       // AT rotation
-      expect(st).toHaveBeenCalledWith(expect.any(Function), (accessTokenExpiration - whatTimeIsItMrFox) * config.rtr.rotationIntervalFraction);
+      expect(st).toHaveBeenCalledWith(expect.any(Function), (accessTokenExpiration - whatTimeIsItMrFox) * RTR_AT_TTL_FRACTION);
 
       // FLS warning
       expect(st).toHaveBeenCalledWith(expect.any(Function), (refreshTokenExpiration - whatTimeIsItMrFox) - ms(RTR_FLS_WARNING_TTL));
@@ -269,7 +266,9 @@ describe('FFetch class', () => {
         store: {
           dispatch: jest.fn(),
         },
-
+        rtrConfig: {
+          fixedLengthSessionWarningTTL: '1m',
+        },
       });
       testFfetch.replaceFetch();
       testFfetch.replaceXMLHttpRequest();
@@ -281,7 +280,7 @@ describe('FFetch class', () => {
       // gross, but on the other, since we're deliberately pushing rotation
       // into a separate thread, I'm note sure of a better way to handle this.
       await setTimeout(Promise.resolve(), 2000);
-      expect(st).toHaveBeenCalledWith(expect.any(Function), (atExpires - whatTimeIsItMrFox) * config.rtr.rotationIntervalFraction);
+      expect(st).toHaveBeenCalledWith(expect.any(Function), (atExpires - whatTimeIsItMrFox) * RTR_AT_TTL_FRACTION);
     });
 
     it('handles missing RTR data', async () => {
@@ -305,7 +304,9 @@ describe('FFetch class', () => {
         store: {
           dispatch: jest.fn(),
         },
-
+        rtrConfig: {
+          fixedLengthSessionWarningTTL: '1m',
+        },
       });
       testFfetch.replaceFetch();
       testFfetch.replaceXMLHttpRequest();
@@ -318,7 +319,7 @@ describe('FFetch class', () => {
       // into a separate thread, I'm not sure of a better way to handle this.
       await setTimeout(Promise.resolve(), 2000);
 
-      expect(st).toHaveBeenCalledWith(expect.any(Function), ms(RTR_AT_EXPIRY_IF_UNKNOWN) * config.rtr.rotationIntervalFraction);
+      expect(st).toHaveBeenCalledWith(expect.any(Function), ms(RTR_AT_EXPIRY_IF_UNKNOWN) * RTR_AT_TTL_FRACTION);
     });
 
     it('handles unsuccessful responses', async () => {
@@ -382,7 +383,9 @@ describe('FFetch class', () => {
         store: {
           dispatch: jest.fn(),
         },
-
+        rtrConfig: {
+          fixedLengthSessionWarningTTL: '1m',
+        },
       });
       testFfetch.replaceFetch();
       testFfetch.replaceXMLHttpRequest();
@@ -396,7 +399,7 @@ describe('FFetch class', () => {
       await setTimeout(Promise.resolve(), 2000);
 
       // AT rotation
-      expect(st).not.toHaveBeenCalledWith(expect.any(Function), (accessTokenExpiration - whatTimeIsItMrFox) * config.rtr.rotationIntervalFraction);
+      expect(st).not.toHaveBeenCalledWith(expect.any(Function), (accessTokenExpiration - whatTimeIsItMrFox) * RTR_AT_TTL_FRACTION);
 
       // FLS warning
       expect(st).toHaveBeenCalledWith(expect.any(Function), (refreshTokenExpiration - whatTimeIsItMrFox) - ms(RTR_FLS_WARNING_TTL));
