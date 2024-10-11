@@ -146,11 +146,17 @@
     "placeholder.forgotPassword": "E-Mail oder Telefonnummer eingeben",
     "placeholder.forgotUsername": "E-Mail oder Telefonnummer eingeben",
     "title.cookieEnabled": "Für die Anmeldung werden Cookies benötigt. Bitte Cookies aktivieren und erneut versuchen.",
-    "errors.sso.session.failed": "SSO-Anmeldung fehlgeschlagen. Bitte erneut versuchen",
     "logoutPending": "Abmeldung läuft...",
     "rtr.idleSession.modalHeader": "Sitzung wird bald ablaufen!",
     "rtr.idleSession.timeRemaining": "Verbleibende Zeit",
     "rtr.idleSession.keepWorking": "Weiter arbeiten",
     "rtr.idleSession.sessionExpiredSoSad": "Sitzung ist aufgrund von Inaktivität abgelaufen.",
-    "rtr.idleSession.logInAgain": "Erneut anmelden"
+    "rtr.idleSession.logInAgain": "Erneut anmelden",
+    "title.logout": "Log out",
+    "about.applicationCount": "{count} applications",
+    "about.applicationsVersionsTitle": "Applications/modules/interfaces",
+    "tenantChoose": "Select your tenant/library",
+    "tenantLibrary": "Tenant/Library",
+    "errors.saml.missingToken": "No <code>code</code> query parameter.",
+    "rtr.fixedLengthSession.timeRemaining": "Your session will end soon! Time remaining:"
 }

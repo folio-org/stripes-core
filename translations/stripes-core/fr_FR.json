@@ -9,7 +9,7 @@
     "button.deleteEntry": "Supprimer {entry}",
     "button.saveAndClose": "Sauvegarder et fermer",
     "button.cancel": "Annuler",
-    "label.confirmDeleteEntry": "<strong> {name} </strong> sera <strong> supprimé </strong>",
+    "label.confirmDeleteEntry": "<strong>{name}</strong> sera <strong>supprimé</strong>",
     "label.editEntry": "Modifier {entry}",
     "label.createEntry": "Créer {entry}",
     "label.missingRequiredField": "Merci de remplir pour continuer",
@@ -146,11 +146,17 @@
     "placeholder.forgotPassword": "Merci de saisir un email ou un numéro de téléphone",
     "placeholder.forgotUsername": "Merci de saisir un email ou un numéro de téléphone",
     "title.cookieEnabled": "Cookies are required to login. Please enable cookies and try again.",
-    "errors.sso.session.failed": "SSO Login failed. Please try again",
     "logoutPending": "Log out in process...",
     "rtr.idleSession.modalHeader": "Your session will expire soon!",
     "rtr.idleSession.timeRemaining": "Time remaining",
     "rtr.idleSession.keepWorking": "Keep working",
     "rtr.idleSession.sessionExpiredSoSad": "Your session expired due to inactivity.",
-    "rtr.idleSession.logInAgain": "Log in again"
+    "rtr.idleSession.logInAgain": "Log in again",
+    "title.logout": "Log out",
+    "about.applicationCount": "{count} applications",
+    "about.applicationsVersionsTitle": "Applications/modules/interfaces",
+    "tenantChoose": "Select your tenant/library",
+    "tenantLibrary": "Tenant/Library",
+    "errors.saml.missingToken": "No <code>code</code> query parameter.",
+    "rtr.fixedLengthSession.timeRemaining": "Your session will end soon! Time remaining:"
 }
