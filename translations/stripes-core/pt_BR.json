@@ -19,7 +19,7 @@
     "about.paneTitle": "Versões de software",
     "about.userInterface": "Interface de usuário",
     "about.foundation": "Fundação",
-    "about.okapiServices": "Serviços do Okapi",
+    "about.okapiServices": "Serviços de gateway de API",
     "about.unknown": "Desconhecido",
     "about.version": "Versão {version}",
     "about.forTenant": "Para o locatário {tenant}",
@@ -146,11 +146,17 @@
     "placeholder.forgotPassword": "Digite e-mail ou telefone",
     "placeholder.forgotUsername": "Digite e-mail ou telefone",
     "title.cookieEnabled": "Os cookies são necessários para fazer login. Por favor ative os cookies e tente novamente.",
-    "errors.sso.session.failed": "Falha no login SSO. Por favor, tente novamente",
     "logoutPending": "Logout em processo...",
     "rtr.idleSession.modalHeader": "Sua sessão expirará em breve!",
     "rtr.idleSession.timeRemaining": "Tempo restante",
     "rtr.idleSession.keepWorking": "Continue trabalhando",
     "rtr.idleSession.sessionExpiredSoSad": "Sua sessão expirou devido à inatividade.",
-    "rtr.idleSession.logInAgain": "Faça login novamente"
+    "rtr.idleSession.logInAgain": "Faça login novamente",
+    "title.logout": "Sair",
+    "about.applicationCount": "{count} aplicativos",
+    "about.applicationsVersionsTitle": "Aplicativos/módulos/interfaces",
+    "tenantChoose": "Selecione seu locatário/biblioteca",
+    "tenantLibrary": "Locatário/Biblioteca",
+    "errors.saml.missingToken": "Nenhum parâmetro de consulta <code>code</code> .",
+    "rtr.fixedLengthSession.timeRemaining": "Sua sessão terminará em breve! Tempo restante:"
 }

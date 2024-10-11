@@ -146,11 +146,17 @@
     "placeholder.forgotPassword": "Enter email or phone",
     "placeholder.forgotUsername": "Introduce email o teléfono",
     "title.cookieEnabled": "Cookies are required to login. Please enable cookies and try again.",
-    "errors.sso.session.failed": "Error al iniciar sesión en SSO. Inténtalo de nuevo",
     "logoutPending": "Cierre de sesión en proceso...",
     "rtr.idleSession.modalHeader": "Su sesión expirará pronto.",
     "rtr.idleSession.timeRemaining": "Tiempo restante",
     "rtr.idleSession.keepWorking": "Seguir trabajando",
     "rtr.idleSession.sessionExpiredSoSad": "Tu sesión expiró por inactividad.",
-    "rtr.idleSession.logInAgain": "Ingresar de nuevo"
+    "rtr.idleSession.logInAgain": "Ingresar de nuevo",
+    "title.logout": "Log out",
+    "about.applicationCount": "{count} applications",
+    "about.applicationsVersionsTitle": "Applications/modules/interfaces",
+    "tenantChoose": "Select your tenant/library",
+    "tenantLibrary": "Tenant/Library",
+    "errors.saml.missingToken": "No <code>code</code> query parameter.",
+    "rtr.fixedLengthSession.timeRemaining": "Your session will end soon! Time remaining:"
 }
