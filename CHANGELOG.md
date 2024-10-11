@@ -1,6 +1,7 @@
 # Change history for stripes-core
 
-## 10.2.0 IN PROGRESS
+## [10.2.0](https://github.com/folio-org/stripes-core/tree/v10.2.0) (2024-10-11)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.1.1...v10.2.0)
 
 * Utilize the `tenant` procured through the SSO login process. Refs STCOR-769.
 * Remove tag-based selectors from Login, ResetPassword, Forgot UserName/Password form CSS. Refs STCOR-712.
@@ -34,7 +35,6 @@
 * useUserTenantPermissions hook - provide `isFetched` property. Refs STCOR-890.
 * Reword error message "Error: server is forbidden, unreachable or down. VPN issue?". Refs STCOR-893.
 * Move session timeout banner to the bottom of the page. Refs STCOR-883.
-
 
 ## [10.1.1](https://github.com/folio-org/stripes-core/tree/v10.1.1) (2024-03-25)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.1.0...v10.1.1)
