@@ -8,7 +8,6 @@
  */
 const getUserTenantsPermissions = async (stripes, tenants = []) => {
   const {
-    user: { user: { id } },
     okapi: {
       url,
       token,
