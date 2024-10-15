@@ -31,7 +31,7 @@ const getUserTenantsPermissions = async (stripes, tenants = []) => {
 
     const json = await result.json();
 
-    return { tenantId, ...json };
+    return { tenantId, permissionNames: json?.permissions?.permissions, ...json };
   });
 
   const userTenantsPermissions = await Promise.allSettled(promises);
