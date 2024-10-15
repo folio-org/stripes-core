@@ -16,6 +16,7 @@ import {
 import { RTR_TIMEOUT_EVENT } from '../Root/constants';
 
 import { toggleRtrModal } from '../../okapiActions';
+import { eventsPortal } from '../../constants';
 
 jest.mock('./KeepWorkingModal', () => (() => <div>KeepWorkingModal</div>));
 jest.mock('../../loginServices');
@@ -37,6 +38,11 @@ const stripes = {
 };
 
 describe('SessionEventContainer', () => {
+  beforeAll(() => {
+    const eventsPortalElement = document.createElement('div');
+    eventsPortalElement.id = eventsPortal;
+    document.body.appendChild(eventsPortalElement);
+  });
   it('Renders nothing if useSecureTokens is false', async () => {
     const insecureStripes = {
       config: {
