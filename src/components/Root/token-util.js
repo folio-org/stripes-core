@@ -50,7 +50,7 @@ export const RTR_IS_ROTATING = '@folio/stripes/core::rtrIsRotating';
  *
  * Time in milliseconds
  */
-export const RTR_MAX_AGE = 2000;
+export const RTR_MAX_AGE = 20000;
 
 /**
  * resourceMapper
