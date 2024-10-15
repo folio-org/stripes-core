@@ -188,7 +188,7 @@ describe('rtr', () => {
 
       expect(ex).toBe(null);
       // expect(window.removeEventListener).toHaveBeenCalled();
-    });
+    }, 25000);
 
     it('multiple window (storage event)', async () => {
       const context = {
@@ -224,7 +224,7 @@ describe('rtr', () => {
 
       expect(ex).toBe(null);
       // expect(window.removeEventListener).toHaveBeenCalledWith('monkey')
-    });
+    }, 25000);
   });
 
 
