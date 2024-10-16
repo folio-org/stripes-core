@@ -4,6 +4,9 @@ export const RTR_SUCCESS_EVENT = '@folio/stripes/core::RTRSuccess';
 /** dispatched during RTR if RTR itself fails */
 export const RTR_ERROR_EVENT = '@folio/stripes/core::RTRError';
 
+/** dispatched by ui-developer to force a token rotation */
+export const RTR_FORCE_REFRESH_EVENT = '@folio/stripes/core::RTRForceRefresh';
+
 /**
  * dispatched if the session is idle (without activity) for too long
  */
@@ -36,6 +39,7 @@ export const RTR_ACTIVITY_CHANNEL = '@folio/stripes/core::RTRActivityChannel';
  * the RT is still good at that point. Since rotation happens in the background
  * (i.e. it isn't a user-visible feature), rotating early has no user-visible
  * impact.
+ * overridden in stripes.config.js::config.rtr.rotationIntervalFraction.
  */
 export const RTR_AT_TTL_FRACTION = 0.8;
 
