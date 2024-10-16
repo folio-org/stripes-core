@@ -5,6 +5,7 @@ import { getTokenExpiry, setTokenExpiry } from '../../loginServices';
 import { RTRError, UnexpectedResourceError } from './Errors';
 import {
   RTR_ACTIVITY_EVENTS,
+  RTR_AT_TTL_FRACTION,
   RTR_ERROR_EVENT,
   RTR_FLS_WARNING_TTL,
   RTR_IDLE_MODAL_TTL,
@@ -333,6 +334,11 @@ export const configureRtr = (config = {}) => {
   // before the session is killed?
   if (!conf.idleModalTTL) {
     conf.idleModalTTL = RTR_IDLE_MODAL_TTL;
+  }
+
+  // what fraction of the way through the session should we rotate?
+  if (!conf.rotationIntervalFraction) {
+    conf.rotationIntervalFraction = RTR_AT_TTL_FRACTION;
   }
 
   // what events constitute activity?
