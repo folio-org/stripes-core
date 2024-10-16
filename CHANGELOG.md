@@ -1,7 +1,11 @@
 # Change history for stripes-core
 
-## [10.2.0](https://github.com/folio-org/stripes-core/tree/v10.2.0) (2024-10-11)
-[Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.1.1...v10.2.0)
+## 10.2.2 IN PROGRESS
+
+* Conditionally use `/users-keycloak/_self` endpoint when `users-keycloak` interface is present. Refs STCOR-835.
+
+## [10.2.1](https://github.com/folio-org/stripes-core/tree/v10.2.1) (2024-10-30)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.2.0...v10.2.1)
 
 * Wait longer before declaring a rotation request to be stale. Refs STCOR-895.
 
