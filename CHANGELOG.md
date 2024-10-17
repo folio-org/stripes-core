@@ -32,7 +32,7 @@
 * Add `nl` (Dutch, Flemish) to the supported locales. Refs STCOR-878.
 * Include optional okapi interfaces, `consortia`, `roles`, `users-keycloak`. Refs STCOR-889.
 * useUserTenantPermissions hook - provide `isFetched` property. Refs STCOR-890.
-* Reword error message "Error: server is forbidden, unreachable or down. VPN issue?". Refs STCOR-893.
+* Reword error message "Error: server is forbidden, unreachable or down. Clear the cookies? Use incognito mode? VPN issue?". Refs STCOR-893, STCOR-897.
 * Move session timeout banner to the bottom of the page. Refs STCOR-883.
 * Conditionally use `/users-keycloak/_self` endpoint when `users-keycloak` interface is present. Refs STCOR-835.
 * Wait longer before declaring a rotation request to be stale. Refs STCOR-895.
