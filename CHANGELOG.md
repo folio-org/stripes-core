@@ -1,6 +1,7 @@
 # Change history for stripes-core
 
-## 10.1.2 IN PROGRESS
+## [10.1.2](https://github.com/folio-org/stripes-core/tree/v10.1.2) (2024-10-21)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.1.1...v10.1.2)
 
 * Wait longer before declaring a rotation request to be stale. Refs STCOR-895.
 
