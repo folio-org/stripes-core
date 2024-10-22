@@ -131,6 +131,12 @@ export const setUnauthorizedPathToSession = (pathname) => {
 };
 export const getUnauthorizedPathFromSession = () => sessionStorage.getItem(UNAUTHORIZED_PATH);
 
+const TENANT_LOCAL_STORAGE_KEY = 'tenant';
+export const getStoredTenant = () => {
+  const storedTenant = localStorage.getItem(TENANT_LOCAL_STORAGE_KEY);
+  return storedTenant ? JSON.parse(storedTenant) : undefined;
+};
+
 // export config values for storing user locale
 export const userLocaleConfig = {
   'configName': 'localeSettings',
@@ -500,7 +506,7 @@ export async function logout(okapiUrl, store, queryClient) {
       method: 'POST',
       mode: 'cors',
       credentials: 'include',
-      headers: getHeaders(store.getState()?.okapi?.tenant),
+      headers: getHeaders(getStoredTenant()?.tenantName || store.getState()?.okapi?.tenant),
     })
     :
     Promise.resolve();
