@@ -506,6 +506,10 @@ export async function logout(okapiUrl, store, queryClient) {
       method: 'POST',
       mode: 'cors',
       credentials: 'include',
+      /* Since the tenant in the x-okapi-token and the x-okapi-tenant header on logout should match,
+      switching affiliations updates store.okapi.tenant, leading to mismatched tenant names from the token.
+      Use the tenant name stored during login to ensure they match.
+        */
       headers: getHeaders(getStoredTenant()?.tenantName || store.getState()?.okapi?.tenant),
     })
     :
