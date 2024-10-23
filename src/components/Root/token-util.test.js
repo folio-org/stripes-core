@@ -342,19 +342,21 @@ describe('getPromise', () => {
 });
 
 describe('configureRtr', () => {
-  it('sets idleSessionTTL and idleModalTTL', () => {
-    const res = configureRtr({});
-    expect(res.idleSessionTTL).toBe('60m');
-    expect(res.idleModalTTL).toBe('1m');
-  });
-
-  it('leaves existing settings in place', () => {
-    const res = configureRtr({
-      idleSessionTTL: '5m',
-      idleModalTTL: '5m',
-    });
-
-    expect(res.idleSessionTTL).toBe('5m');
-    expect(res.idleModalTTL).toBe('5m');
+  it.each([
+    [
+      {},
+      { idleSessionTTL: '60m', idleModalTTL: '1m', rotationIntervalFraction: 0.8, activityEvents: ['keydown', 'mousedown'] }
+    ],
+    [
+      { idleSessionTTL: '1s', idleModalTTL: '2m' },
+      { idleSessionTTL: '1s', idleModalTTL: '2m', rotationIntervalFraction: 0.8, activityEvents: ['keydown', 'mousedown'] }
+    ],
+    [
+      { idleSessionTTL: '1s', idleModalTTL: '2m', rotationIntervalFraction: -1, activityEvents: ['cha-cha-slide'] },
+      { idleSessionTTL: '1s', idleModalTTL: '2m', rotationIntervalFraction: -1, activityEvents: ['cha-cha-slide'] }
+    ],
+  ])('sets default values as applicable', (config, expected) => {
+    const res = configureRtr(config);
+    expect(res).toMatchObject(expected);
   });
 });
