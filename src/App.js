@@ -13,6 +13,7 @@ import css from './components/SessionEventContainer/style.css';
 
 import Root from './components/Root';
 import { eventsPortal } from './constants';
+import { getStoredTenant } from './loginServices';
 
 const StrictWrapper = ({ children }) => {
   if (config.disableStrictMode) {
@@ -35,8 +36,7 @@ export default class StripesCore extends Component {
   constructor(props) {
     super(props);
 
-    const storedTenant = localStorage.getItem('tenant');
-    const parsedTenant = storedTenant ? JSON.parse(storedTenant) : undefined;
+    const parsedTenant = getStoredTenant();
 
     const okapi = (typeof okapiConfig === 'object' && Object.keys(okapiConfig).length > 0)
       ? { ...okapiConfig, tenant: parsedTenant?.tenantName || okapiConfig.tenant, clientId: parsedTenant?.clientId || okapiConfig.clientId } : { withoutOkapi: true };
