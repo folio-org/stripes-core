@@ -152,6 +152,7 @@
     "rtr.idleSession.keepWorking": "Keep working",
     "rtr.idleSession.sessionExpiredSoSad": "Your session expired due to inactivity.",
     "rtr.idleSession.logInAgain": "Log in again",
+<<<<<<< Updated upstream
     "title.logout": "Log out",
     "about.applicationCount": "{count} applications",
     "about.applicationsVersionsTitle": "Applications/modules/interfaces",
@@ -160,3 +161,8 @@
     "errors.saml.missingToken": "No <code>code</code> query parameter.",
     "rtr.fixedLengthSession.timeRemaining": "Your session will end soon! Time remaining:"
 }
+=======
+    "rtr.fixedLengthSession.timeRemaining": "Your session will end soon! Time remaining:",
+    "logoutComplete": "You have logged out."
+}
+>>>>>>> Stashed changes
