@@ -6,7 +6,8 @@ on:
 
 jobs:
   ui:
-    uses: folio-org/.github/.github/workflows/ui.yml@v1.1
+    uses: folio-org/.github/.github/workflows/ui.yml@v1.5
+    if: github.ref_name == github.event.repository.default_branch || github.event_name != 'push' || github.ref_type == 'tag'
     secrets: inherit
     with:
       jest-enabled: true
