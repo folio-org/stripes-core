@@ -1,34 +1,39 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation, Redirect } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import queryString from 'query-string';
 import { useStore } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 
-import { Loading } from '@folio/stripes-components';
+import {
+  Button,
+  Col,
+  Headline,
+  Loading,
+  Row,
+} from '@folio/stripes-components';
 
+import OrganizationLogo from './OrganizationLogo';
 import { requestUserWithPerms, setTokenExpiry } from '../loginServices';
 
 import css from './Front.css';
 import { useStripes } from '../StripesContext';
 
 /**
- * OIDCLanding: un-authenticated route handler for /sso-landing.
+ * OIDCLanding: un-authenticated route handler for /oidc-landing.
  *
- * Reads one-time-code from URL params, exchanging it for an access_token
- * and then leveraging that to retrieve a user via requestUserWithPerms,
- * eventually dispatching session and Okapi-ready, resulting in a
- * re-render of RoothWithIntl with prop isAuthenticated: true.
+ * * Read one-time-code from URL params
+ * * make an API call to /authn/token to exchange the OTP for cookies
+ * * call requestUserWithPerms to make an API call to .../_self,
+ *   eventually dispatching session and Okapi-ready, resulting in a
+ *   re-render of RoothWithIntl with prop isAuthenticated: true
  *
  * @see RootWithIntl
  */
 const OIDCLanding = () => {
   const location = useLocation();
   const store = useStore();
-  // const samlError = useRef();
   const { okapi } = useStripes();
-  const [potp, setPotp] = useState();
-  const [samlError, setSamlError] = useState();
-
+  const [oidcError, setOIDCError] = useState();
 
   /**
    * Exchange the otp for AT/RT cookies, then retrieve the user.
@@ -56,7 +61,6 @@ const OIDCLanding = () => {
     const otp = getOtp();
 
     if (otp) {
-      setPotp(otp);
       fetch(`${okapi.url}/authn/token?code=${otp}&redirect-uri=${window.location.protocol}//${window.location.host}/oidc-landing`, {
         credentials: 'include',
         headers: { 'X-Okapi-tenant': okapi.tenant, 'Content-Type': 'application/json' },
@@ -83,7 +87,7 @@ const OIDCLanding = () => {
         .catch(e => {
           // eslint-disable-next-line no-console
           console.error('@@ Oh, snap, OTP exchange failed!', e);
-          setSamlError(e);
+          setOIDCError(e);
         });
     }
     // we only want to run this effect once, on load.
@@ -93,22 +97,45 @@ const OIDCLanding = () => {
     // store: the redux store
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  if (samlError) {
+  /**
+   * formatOIDCError
+   * Return formatted OIDC error message, or null
+   * @returns
+   */
+  const formatOIDCError = () => {
+    if (Array.isArray(oidcError?.errors)) {
+      return (
+        <Row center="xs">
+          <Col xs={12}>
+            <Headline>{oidcError.errors[0]?.message}</Headline>
+          </Col>
+        </Row>
+      );
+    }
+
+    return null;
+  };
+
+  if (oidcError) {
     return (
-      <div data-test-saml-error>
-        <div>
-          <FormattedMessage id="errors.saml.missingToken" />
-        </div>
-        <div>
-          <h3>code</h3>
-          {potp}
-          <h3>error</h3>
-          <code>
-            {JSON.stringify(samlError, null, 2)}
-          </code>
-        </div>
-        <Redirect to="/" />
-      </div>
+      <main data-test-saml-error>
+        <Row center="xs">
+          <Col xs={12}>
+            <OrganizationLogo />
+          </Col>
+        </Row>
+        <Row center="xs">
+          <Col xs={12}>
+            <Headline size="large"><FormattedMessage id="stripes-core.errors.oidc" /></Headline>
+          </Col>
+        </Row>
+        {formatOIDCError()}
+        <Row center="xs">
+          <Col xs={12}>
+            <Button to="/"><FormattedMessage id="stripes-core.rtr.idleSession.logInAgain" /></Button>
+          </Col>
+        </Row>
+      </main>
     );
   }
 
@@ -116,11 +143,6 @@ const OIDCLanding = () => {
     <div data-test-saml-success>
       <div className={css.frontWrap}>
         <Loading size="xlarge" />
-      </div>
-      <div>
-        <pre>
-          {JSON.stringify(samlError, null, 2)}
-        </pre>
       </div>
     </div>
   );

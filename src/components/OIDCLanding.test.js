@@ -20,8 +20,7 @@ jest.mock('../StripesContext', () => ({
   }),
 }));
 
-// jest.mock('../loginServices');
-
+jest.mock('./OrganizationLogo', () => (() => <div>OrganizationLogo</div>));
 
 const mockSetTokenExpiry = jest.fn();
 const mockRequestUserWithPerms = jest.fn();
@@ -79,7 +78,7 @@ describe('OIDCLanding', () => {
     mockFetchError('barf');
 
     await render(<OIDCLanding />);
-    await screen.findByText('errors.saml.missingToken');
+    await screen.findByText('stripes-core.errors.oidc');
     mockFetchCleanUp();
   });
 });
