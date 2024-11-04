@@ -90,6 +90,7 @@
   "logout": "Log out",
   "logoutPending": "Log out in process...",
   "logoutKeepSso": "Log out from FOLIO, keep SSO session",
+  "logoutComplete": "You have logged out.",
   "login": "Log in",
   "username": "Username",
   "password": "Password",

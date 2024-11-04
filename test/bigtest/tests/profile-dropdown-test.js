@@ -1,7 +1,7 @@
 import { describe, beforeEach, it } from 'mocha';
 import { expect } from 'chai';
 import React, { Component } from 'react';
-import { Dropdown as DropdownInteractor, HTML, TextField as LoginInteractor } from '@folio/stripes-testing';
+import { Dropdown as DropdownInteractor, HTML } from '@folio/stripes-testing';
 import setupApplication from '../helpers/setup-application';
 
 class DummyApp extends Component {
@@ -19,7 +19,6 @@ const ProfileMenuInteractor = HTML.extend('profile menu')
 describe('Profile dropdown', () => {
   const profileDropdown = DropdownInteractor({ id: 'profileDropdown' });
   const profileMenu = ProfileMenuInteractor();
-  const loginInteractor = LoginInteractor({ id: 'input-username' });
 
   const modules = [{
     type: 'app',
@@ -104,7 +103,9 @@ describe('Profile dropdown', () => {
         await profileMenu.find(HTML('Log out')).click();
       });
 
-      it('changes the url', () => loginInteractor.exists());
+      it('changes the url', function () {
+        expect(this.location.pathname).to.equal('/logout');
+      });
     });
   });
 });
