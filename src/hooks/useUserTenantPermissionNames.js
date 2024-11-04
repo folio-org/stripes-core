@@ -7,7 +7,7 @@ import useOkapiKy from '../useOkapiKy';
 const INITIAL_DATA = [];
 
 const useUserTenantPermissionNames = (
-  { tenantId },
+  { userId, tenantId },
   options = {},
 ) => {
   const stripes = useStripes();
@@ -18,8 +18,6 @@ const useUserTenantPermissionNames = (
     }
   });
   const [namespace] = useNamespace({ key: 'user-affiliation-permissions' });
-
-  const user = stripes.user.user;
 
   const searchParams = {
     full: 'true',
@@ -32,10 +30,10 @@ const useUserTenantPermissionNames = (
     isLoading,
     data = {},
   } = useQuery(
-    [namespace, user?.id, tenantId],
+    [namespace, userId, tenantId],
     ({ signal }) => {
       return api.get(
-        `perms/users/${user.id}/permissions`,
+        `perms/users/${userId}/permissions`,
         {
           searchParams,
           signal,
@@ -43,7 +41,7 @@ const useUserTenantPermissionNames = (
       ).json();
     },
     {
-      enabled: Boolean(user?.id && tenantId) && !stripes.hasInterface('roles'),
+      enabled: Boolean(userId && tenantId) && !stripes.hasInterface('roles'),
       keepPreviousData: true,
       ...options,
     },

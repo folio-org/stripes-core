@@ -7,7 +7,7 @@ import useOkapiKy from '../useOkapiKy';
 const INITIAL_DATA = [];
 
 const useUserSelfTenantPermissions = (
-  { tenantId },
+  { userId, tenantId },
   options = {},
 ) => {
   const stripes = useStripes();
@@ -19,15 +19,13 @@ const useUserSelfTenantPermissions = (
   });
   const [namespace] = useNamespace({ key: 'user-self-permissions' });
 
-  const user = stripes.user.user;
-
   const {
     isFetching,
     isFetched,
     isLoading,
     data,
   } = useQuery(
-    [namespace, user?.id, tenantId],
+    [namespace, userId, tenantId],
     ({ signal }) => {
       return api.get(
         'users-keycloak/_self',
@@ -35,7 +33,7 @@ const useUserSelfTenantPermissions = (
       ).json();
     },
     {
-      enabled: Boolean(user?.id && tenantId) && stripes.hasInterface('users-keycloak'),
+      enabled: Boolean(userId && tenantId) && stripes.hasInterface('users-keycloak'),
       keepPreviousData: true,
       ...options,
     },

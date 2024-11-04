@@ -3,10 +3,11 @@ import useUserSelfTenantPermissions from './useUserSelfTenantPermissions';
 import useUserTenantPermissionNames from './useUserTenantPermissionNames';
 
 const useUserTenantPermissions = (
-  { tenantId },
+  { tenantId, userId },
   options = {},
 ) => {
   const stripes = useStripes();
+  const stripesUser = stripes.user.user;
 
   const {
     isFetching: isPermissionsFetching,
@@ -14,7 +15,7 @@ const useUserTenantPermissions = (
     isLoading: isPermissionsLoading,
     userPermissions: permissionsData = {},
     totalRecords: permissionsTotalRecords
-  } = useUserTenantPermissionNames({ tenantId }, options);
+  } = useUserTenantPermissionNames({ tenantId, userId: userId || stripesUser.id }, options);
 
   const {
     isFetching: isSelfPermissionsFetching,
@@ -22,7 +23,7 @@ const useUserTenantPermissions = (
     isLoading: isSelfPermissionsLoading,
     userPermissions:selfPermissionsData = {},
     totalRecords: selfPermissionsTotalRecords
-  } = useUserSelfTenantPermissions({ tenantId }, options);
+  } = useUserSelfTenantPermissions({ tenantId, userId: userId || stripesUser.id }, options);
 
   const isFetching = stripes.hasInterface('roles') ? isSelfPermissionsFetching : isPermissionsFetching;
   const isFetched = stripes.hasInterface('roles') ? isSelfPermissionsFetched : isPermissionsFetched;

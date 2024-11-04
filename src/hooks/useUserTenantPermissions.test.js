@@ -14,7 +14,12 @@ describe('useUserTenantPermissions', () => {
 
   beforeEach(() => {
     useStripes.mockReturnValue({
-      hasInterface: jest.fn()
+      hasInterface: jest.fn(),
+      user:{
+        user: {
+          id: 'userId'
+        }
+      }
     });
   });
 
