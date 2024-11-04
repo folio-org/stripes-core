@@ -28,7 +28,6 @@ import {
   HandlerManager,
   TitleManager,
   Logout,
-  LogoutTimeout,
   OverlayContainer,
   CreateResetPassword,
   CheckEmailStatusPage,
@@ -99,7 +98,7 @@ const RootWithIntl = ({ stripes, token = '', isAuthenticated = false, disableAut
                                 <TitledRoute
                                   name="logoutTimeout"
                                   path="/logout-timeout"
-                                  component={<LogoutTimeout />}
+                                  component={<Logout />}
                                 />
                                 <TitledRoute
                                   name="settings"
@@ -109,7 +108,7 @@ const RootWithIntl = ({ stripes, token = '', isAuthenticated = false, disableAut
                                 <TitledRoute
                                   name="logout"
                                   path="/logout"
-                                  component={<Logout history={history} />}
+                                  component={<Logout />}
                                 />
                                 <ModuleRoutes stripes={connectedStripes} />
                               </Switch>
@@ -157,9 +156,14 @@ const RootWithIntl = ({ stripes, token = '', isAuthenticated = false, disableAut
                         component={<CheckEmailStatusPage />}
                       />
                       <TitledRoute
+                        name="logout"
+                        path="/logout"
+                        component={<Logout />}
+                      />
+                      <TitledRoute
                         name="logoutTimeout"
                         path="/logout-timeout"
-                        component={<LogoutTimeout />}
+                        component={<Logout />}
                       />
                       <TitledRoute
                         name="login"
