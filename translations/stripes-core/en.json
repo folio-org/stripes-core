@@ -147,6 +147,7 @@
   "errors.password.consecutiveWhitespaces.invalid": "The password must not contain consecutive white space characters.",
   "errors.password.compromised.invalid": "The password must not be commonly-used, expected or compromised",
   "errors.saml.missingToken": "No <code>code</code> query parameter.",
+  "errors.oidc": "Error: server is forbidden, unreachable, or unavailable.",
 
   "createResetPassword.header": "Choose a password",
   "createResetPassword.newPassword": "New Password",
