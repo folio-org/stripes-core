@@ -1,46 +1,64 @@
-import { render, screen, waitFor } from '@folio/jest-config-stripes/testing-library/react';
+import { render, screen } from '@folio/jest-config-stripes/testing-library/react';
+import { useLocation } from 'react-router';
 
-import Harness from '../../../test/jest/helpers/harness';
 import Logout from './Logout';
+import { useStripes } from '../../StripesContext';
 import { logout } from '../../loginServices';
 
+jest.mock('../OrganizationLogo');
+jest.mock('../../StripesContext');
+jest.mock('react-router');
+
 jest.mock('../../loginServices', () => ({
-  ...(jest.requireActual('../../loginServices')),
-  getLocale: () => Promise.resolve(),
-  logout: jest.fn()
+  logout: jest.fn(() => Promise.resolve()),
 }));
-
-jest.mock('react-router', () => ({
-  ...(jest.requireActual('react-router')),
-  Redirect: () => <div>Redirect</div>
-}));
-
-const stripes = {
-  config: {
-    rtr: {
-      idleModalTTL: '3s',
-      idleSessionTTL: '3s',
-    }
-  },
-  okapi: {
-    url: 'https://blah',
-  },
-  logger: { log: jest.fn() },
-  store: {
-    getState: jest.fn(),
-  },
-};
 
 describe('Logout', () => {
-  it('calls logout and redirects', async () => {
-    logout.mockReturnValue(Promise.resolve());
-
-    render(<Harness stripes={stripes}><Logout /></Harness>);
-
-    await waitFor(() => {
-      screen.getByText('Redirect');
+  describe('Direct logout', () => {
+    beforeEach(() => {
+      const mockUseLocation = useLocation;
+      mockUseLocation.mockReturnValue({ pathName: '/logout' });
     });
 
-    expect(logout).toHaveBeenCalledTimes(1);
+    it('if not authenticated, renders a logout message', async () => {
+      const mockUseStripes = useStripes;
+      mockUseStripes.mockReturnValue({ okapi: { isAuthenticated: false } });
+
+      render(<Logout />);
+      screen.getByText('stripes-core.logoutComplete');
+    });
+
+    it('if authenticated, calls logout then renders a logout message', async () => {
+      const mockUseStripes = useStripes;
+      mockUseStripes.mockReturnValue({ okapi: { isAuthenticated: true } });
+
+      render(<Logout />);
+      expect(logout).toHaveBeenCalled();
+      screen.getByText('stripes-core.logoutComplete');
+    });
+  });
+
+  describe('Timeout logout', () => {
+    beforeEach(() => {
+      const mockUseLocation = useLocation;
+      mockUseLocation.mockReturnValue({ pathName: '/logout-timeout' });
+    });
+
+    it('if not authenticated, renders a timeout message', async () => {
+      const mockUseStripes = useStripes;
+      mockUseStripes.mockReturnValue({ okapi: { isAuthenticated: false } });
+
+      render(<Logout />);
+      screen.getByText('stripes-core.rtr.idleSession.sessionExpiredSoSad');
+    });
+
+    it('if authenticated, calls logout then renders a timeout message', async () => {
+      const mockUseStripes = useStripes;
+      mockUseStripes.mockReturnValue({ okapi: { isAuthenticated: true } });
+
+      render(<Logout />);
+      expect(logout).toHaveBeenCalled();
+      screen.getByText('stripes-core.rtr.idleSession.sessionExpiredSoSad');
+    });
   });
 });
