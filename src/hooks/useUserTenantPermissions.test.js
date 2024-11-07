@@ -1,11 +1,11 @@
 import { renderHook } from '@folio/jest-config-stripes/testing-library/react';
 import { useStripes } from '../StripesContext';
-import useUserSelfTenantPermissions from './useUserSelfTenantPermissions';
 import useUserTenantPermissionNames from './useUserTenantPermissionNames';
 import useUserTenantPermissions from './useUserTenantPermissions';
+import useUserTenantRoles from './useUserTenantRoles';
 
 jest.mock('../StripesContext');
-jest.mock('./useUserSelfTenantPermissions');
+jest.mock('./useUserTenantRoles');
 jest.mock('./useUserTenantPermissionNames');
 
 describe('useUserTenantPermissions', () => {
@@ -26,7 +26,7 @@ describe('useUserTenantPermissions', () => {
   it('should return _self permissions data when "roles" interface is present', () => {
     useStripes().hasInterface.mockReturnValue(true);
 
-    useUserSelfTenantPermissions.mockReturnValue({
+    useUserTenantRoles.mockReturnValue({
       isFetching: true,
       isFetched: true,
       isLoading: true,
@@ -56,7 +56,7 @@ describe('useUserTenantPermissions', () => {
   it('should return tenant permissions data when "roles" interface is NOT present', () => {
     useStripes().hasInterface.mockReturnValue(false);
 
-    useUserSelfTenantPermissions.mockReturnValue({
+    useUserTenantRoles.mockReturnValue({
       isFetching: true,
       isFetched: true,
       isLoading: true,
