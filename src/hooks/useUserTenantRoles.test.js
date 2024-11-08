@@ -4,8 +4,7 @@ import {
   QueryClientProvider,
 } from 'react-query';
 
-import permissions from 'fixtures/permissions';
-import useUserSelfTenantPermissions from './useUserSelfTenantPermissions';
+import useUserTenantRoles from './useUserTenantRoles';
 import useOkapiKy from '../useOkapiKy';
 
 jest.mock('../useOkapiKy');
@@ -14,7 +13,10 @@ jest.mock('../components', () => ({
 }));
 jest.mock('../StripesContext', () => ({
   useStripes: () => ({
-    hasInterface: () => true
+    hasInterface: () => true,
+    config: {
+      maxUnpagedResourceCount: 2000
+    }
   }),
 }));
 
@@ -28,7 +30,10 @@ const wrapper = ({ children }) => (
 );
 
 const response = {
-  permissions: { permissions },
+  data: {
+    roles: ['role1', 'role2'],
+    totalRecords: 2,
+  }
 };
 
 describe('useUserSelfTenantPermissions', () => {
@@ -51,15 +56,21 @@ describe('useUserSelfTenantPermissions', () => {
     useOkapiKy.mockClear().mockReturnValue(kyMock);
   });
 
-  it('should fetch user permissions for specified tenant', async () => {
+  it('should fetch user roles for specified tenant', async () => {
     const options = {
+      userId: 'superUserId',
       tenantId: 'tenantId',
     };
-    const { result } = renderHook(() => useUserSelfTenantPermissions(options), { wrapper });
+    const { result } = renderHook(() => useUserTenantRoles(options), { wrapper });
 
     await waitFor(() => !result.current.isLoading);
 
     expect(setHeaderMock).toHaveBeenCalledWith('X-Okapi-Tenant', options.tenantId);
-    expect(getMock).toHaveBeenCalledWith('users-keycloak/_self', expect.objectContaining({}));
+    expect(getMock).toHaveBeenCalledWith('roles/users', {
+      searchParams: {
+        'limit':2000,
+        query: 'userId==superUserId'
+      }
+    });
   });
 });

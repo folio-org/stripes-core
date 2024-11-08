@@ -31,8 +31,8 @@ function useUserTenantRoles({ userId, tenantId }, options) {
     isFetching,
     isFetched,
     isLoading,
-    userPermissions: data.roles || INITIAL_DATA,
-    totalRecords: data.totalRecords || 0
+    userPermissions: data?.roles || INITIAL_DATA,
+    totalRecords: data?.totalRecords || 0
   };
 }
 
