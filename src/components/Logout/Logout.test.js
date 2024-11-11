@@ -1,15 +1,17 @@
 import { render, screen } from '@folio/jest-config-stripes/testing-library/react';
+import { userEvent } from '@folio/jest-config-stripes/testing-library/user-event';
 import { useLocation } from 'react-router';
 
 import Logout from './Logout';
 import { useStripes } from '../../StripesContext';
-import { logout } from '../../loginServices';
+import { getUnauthorizedPathFromSession, logout, setUnauthorizedPathToSession } from '../../loginServices';
 
 jest.mock('../OrganizationLogo');
 jest.mock('../../StripesContext');
 jest.mock('react-router');
 
 jest.mock('../../loginServices', () => ({
+  ...jest.requireActual('../../loginServices'),
   logout: jest.fn(() => Promise.resolve()),
 }));
 
@@ -36,6 +38,15 @@ describe('Logout', () => {
       expect(logout).toHaveBeenCalled();
       screen.getByText('stripes-core.logoutComplete');
     });
+
+    it('"log in again" href points to "/"', async () => {
+      const mockUseStripes = useStripes;
+      mockUseStripes.mockReturnValue({ okapi: { isAuthenticated: false } });
+
+      render(<Logout />);
+      const button = screen.getByRole('button');
+      expect(button).toHaveAttribute('href', '/');
+    });
   });
 
   describe('Timeout logout', () => {
@@ -44,21 +55,50 @@ describe('Logout', () => {
       mockUseLocation.mockReturnValue({ pathName: '/logout-timeout' });
     });
 
-    it('if not authenticated, renders a timeout message', async () => {
-      const mockUseStripes = useStripes;
-      mockUseStripes.mockReturnValue({ okapi: { isAuthenticated: false } });
+    describe('if authenticated', () => {
+      it('calls logout then renders a timeout message', async () => {
+        const mockUseStripes = useStripes;
+        mockUseStripes.mockReturnValue({ okapi: { isAuthenticated: true } });
 
-      render(<Logout />);
-      screen.getByText('stripes-core.rtr.idleSession.sessionExpiredSoSad');
+        render(<Logout />);
+        expect(logout).toHaveBeenCalled();
+        screen.getByText('stripes-core.rtr.idleSession.sessionExpiredSoSad');
+      });
+
+      it('"login in again" href points to pre-timeout location', () => {
+        const previousPath = '/monkey?bagel';
+        setUnauthorizedPathToSession(previousPath);
+
+        const mockUseStripes = useStripes;
+        mockUseStripes.mockReturnValue({ okapi: { isAuthenticated: false } });
+
+        render(<Logout />);
+
+        expect(screen.getByRole('button')).toHaveAttribute('href', previousPath);
+      });
+
+      it('clicking "log in again" clears pre-timeout location from storage', async () => {
+        setUnauthorizedPathToSession('/monkey?bagel');
+
+        const user = userEvent.setup();
+        const mockUseStripes = useStripes;
+        mockUseStripes.mockReturnValue({ okapi: { isAuthenticated: false } });
+
+        render(<Logout />);
+
+        await user.click(screen.getByRole('button'));
+        expect(getUnauthorizedPathFromSession()).toBeFalsy();
+      });
     });
 
-    it('if authenticated, calls logout then renders a timeout message', async () => {
-      const mockUseStripes = useStripes;
-      mockUseStripes.mockReturnValue({ okapi: { isAuthenticated: true } });
+    describe('if not authenticated', () => {
+      it('renders a timeout message', async () => {
+        const mockUseStripes = useStripes;
+        mockUseStripes.mockReturnValue({ okapi: { isAuthenticated: false } });
 
-      render(<Logout />);
-      expect(logout).toHaveBeenCalled();
-      screen.getByText('stripes-core.rtr.idleSession.sessionExpiredSoSad');
+        render(<Logout />);
+        screen.getByText('stripes-core.rtr.idleSession.sessionExpiredSoSad');
+      });
     });
   });
 });

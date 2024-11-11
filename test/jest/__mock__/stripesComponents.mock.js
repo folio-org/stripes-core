@@ -14,13 +14,24 @@ jest.mock('@folio/stripes-components', () => ({
       <span>{props.children}</span>
     </span>
   )),
-  Button: jest.fn(({ children, onClick = jest.fn() }) => (
-    <button data-test-button type="button" onClick={onClick}>
-      <span>
-        {children}
-      </span>
-    </button>
-  )),
+  Button: jest.fn(({ children, to, onClick = jest.fn() }) => {
+    if (to) {
+      return (
+        <a href={to} role="button" data-test-button onClick={onClick}>
+          <span>
+            {children}
+          </span>
+        </a>
+      );
+    }
+    return (
+      <button data-test-button type="button" onClick={onClick}>
+        <span>
+          {children}
+        </span>
+      </button>
+    );
+  }),
   Callout: jest.fn(({ children, ...rest }) => (
     <span {...rest}>{children}</span>
   )),
