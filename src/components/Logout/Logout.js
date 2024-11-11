@@ -13,7 +13,11 @@ import {
 
 import OrganizationLogo from '../OrganizationLogo';
 import { useStripes } from '../../StripesContext';
-import { logout } from '../../loginServices';
+import {
+  getUnauthorizedPathFromSession,
+  logout,
+  removeUnauthorizedPathFromSession,
+} from '../../loginServices';
 
 import styles from './Logout.css';
 
@@ -51,6 +55,12 @@ const Logout = () => {
     []
   );
 
+  const handleClick = (_e) => {
+    removeUnauthorizedPathFromSession();
+  };
+
+  const redirectTo = getUnauthorizedPathFromSession() || '/';
+
   if (!didLogout) {
     return <LoadingView />;
   }
@@ -71,7 +81,7 @@ const Logout = () => {
           </Row>
           <Row center="xs">
             <Col xs={12}>
-              <Button to="/"><FormattedMessage id="stripes-core.rtr.idleSession.logInAgain" /></Button>
+              <Button to={redirectTo} onClick={handleClick}><FormattedMessage id="stripes-core.rtr.idleSession.logInAgain" /></Button>
             </Col>
           </Row>
         </div>
