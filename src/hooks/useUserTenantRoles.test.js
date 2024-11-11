@@ -31,7 +31,7 @@ const wrapper = ({ children }) => (
 
 const response = {
   data: {
-    roles: ['role1', 'role2'],
+    userRoles: ['role1', 'role2'],
     totalRecords: 2,
   }
 };
