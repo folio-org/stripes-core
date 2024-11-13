@@ -19,6 +19,8 @@ const useUserSelfTenantPermissions = (
   });
   const [namespace] = useNamespace({ key: 'user-self-permissions' });
 
+  const permPath = stripes.hasInterface('users-keycloak') ? 'users-keycloak' : 'bl-users';
+
   const {
     isFetching,
     isFetched,
@@ -28,12 +30,11 @@ const useUserSelfTenantPermissions = (
     [namespace, tenantId],
     ({ signal }) => {
       return api.get(
-        'users-keycloak/_self',
+        `${permPath}/_self?expandPermissions=true`,
         { signal },
       ).json();
     },
     {
-      enabled: Boolean(tenantId) && stripes.hasInterface('users-keycloak'),
       keepPreviousData: true,
       ...options,
     },

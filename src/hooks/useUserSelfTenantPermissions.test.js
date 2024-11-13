@@ -60,6 +60,6 @@ describe('useUserSelfTenantPermissions', () => {
     await waitFor(() => !result.current.isLoading);
 
     expect(setHeaderMock).toHaveBeenCalledWith('X-Okapi-Tenant', options.tenantId);
-    expect(getMock).toHaveBeenCalledWith('users-keycloak/_self', expect.objectContaining({}));
+    expect(getMock).toHaveBeenCalledWith('users-keycloak/_self?ex', expect.objectContaining({}));
   });
 });
