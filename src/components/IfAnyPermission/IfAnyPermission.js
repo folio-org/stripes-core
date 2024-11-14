@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
 import { useStripes } from '../../StripesContext';
 
-const IfPermission = ({ children, perm }) => {
+const IfAnyPermission = ({ children, perm }) => {
   const stripes = useStripes();
-  const hasPermission = stripes.hasPerm(perm);
+  const hasPermission = stripes.hasAnyPerm(perm);
 
   if (typeof children === 'function') {
     return children({ hasPermission });
@@ -12,9 +12,9 @@ const IfPermission = ({ children, perm }) => {
   return hasPermission ? children : null;
 };
 
-IfPermission.propTypes = {
+IfAnyPermission.propTypes = {
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
   perm: PropTypes.string.isRequired
 };
 
-export default IfPermission;
+export default IfAnyPermission;
