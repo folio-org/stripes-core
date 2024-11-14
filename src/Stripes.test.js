@@ -100,4 +100,46 @@ describe('Stripes', () => {
       });
     });
   });
+
+  describe('hasAnyPerm', () => {
+    describe('returns true', () => {
+      it('given hasAllPerms', () => {
+        const logger = { log: jest.fn() };
+        const s = new Stripes({ logger, config: { hasAllPerms: true } });
+        expect(s.hasAnyPerm('monkey')).toBe(true);
+      });
+
+      it('when any requested permission is assigned', () => {
+        const logger = { log: jest.fn() };
+        const s = new Stripes({
+          logger,
+          user: {
+            perms: {
+              'monkey': true, 'funky': true, 'chicken': true
+            }
+          }
+        });
+        expect(s.hasAnyPerm('monkey,bagel')).toBe(true);
+      });
+    });
+
+    describe('returns falsy', () => {
+      it('when no requested permissions are assigned [boolean, false]', () => {
+        const logger = { log: jest.fn() };
+        const s = new Stripes({
+          logger,
+          user: {
+            perms: { 'bagel': true }
+          }
+        });
+        expect(s.hasAnyPerm('monkey,funky')).toBe(false);
+      });
+
+      it('when user perms are uninitialized [undefined]', () => {
+        const logger = { log: jest.fn() };
+        const s = new Stripes({ logger, user: {} });
+        expect(s.hasAnyPerm('monkey')).toBeUndefined();
+      });
+    });
+  });
 });

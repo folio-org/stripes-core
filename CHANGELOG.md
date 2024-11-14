@@ -5,6 +5,7 @@
 
 * Conditionally use `/users-keycloak/_self` endpoint when `users-keycloak` interface is present. Refs STCOR-835.
 * Send the stored central tenant name in the header on logout. Refs STCOR-900.
+* Provide `<IfAnyPermission>` and `stripes.hasAnyPermission()`. Refs STCOR-910.
 
 ## [10.2.1](https://github.com/folio-org/stripes-core/tree/v10.2.1) (2024-10-30)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.2.0...v10.2.1)
