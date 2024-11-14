@@ -342,7 +342,14 @@ describe('validateUser', () => {
 });
 
 describe('updateUser', () => {
-  it('dispatches updateCurrentUser', async () => {
+  it('dispatches updateCurrentUser when a session exists', async () => {
+    const s = {
+      user: { id: 'robert' },
+      tenant: 'manhattan',
+      isAuthenticated: 'i am',
+    };
+    localforage.getItem = () => Promise.resolve(s);
+
     const store = {
       dispatch: jest.fn(),
     };
@@ -350,9 +357,26 @@ describe('updateUser', () => {
     await updateUser(store, data);
     expect(store.dispatch).toHaveBeenCalledWith(updateCurrentUser(data));
   });
+
+  it('does nothing when session is not found', async () => {
+    localforage.getItem = () => Promise.resolve(null);
+
+    const store = {
+      dispatch: jest.fn(),
+    };
+    const data = { thunder: 'chicken' };
+    await updateUser(store, data);
+    expect(store.dispatch).not.toHaveBeenCalled();
+  });
 });
 
 describe('updateTenant', () => {
+  const s = {
+    user: { id: 'robert' },
+    tenant: 'manhattan',
+    isAuthenticated: 'i am',
+  };
+
   const okapi = {
     currentPerms: {},
   };
@@ -371,15 +395,29 @@ describe('updateTenant', () => {
     localforage.setItem.mockClear();
   });
 
-  it('should set tenant and updated user in session', async () => {
+  it('updates tenant and user when session exists', async () => {
+    localforage.getItem = () => Promise.resolve(s);
+    localforage.setItem = jest.fn(() => Promise.resolve(s));
+
     mockFetchSuccess(data);
     await updateTenant(okapi, tenant);
     mockFetchCleanUp();
 
     expect(localforage.setItem).toHaveBeenCalledWith('okapiSess', {
+      ...s,
       ...spreadUserWithPerms(data),
       tenant,
     });
+  });
+
+  it('does nothing when session is not found', async () => {
+    localforage.getItem = () => Promise.resolve(null);
+
+    mockFetchSuccess(data);
+    await updateTenant(okapi, tenant);
+    mockFetchCleanUp();
+
+    expect(localforage.setItem).not.toHaveBeenCalled();
   });
 });
 
@@ -410,22 +448,37 @@ describe('localforage session wrapper', () => {
     });
   });
 
-  it('setTokenExpiry set', async () => {
-    const o = {
-      margo: 'timmins',
-      margot: 'margot with a t looks better',
-      also: 'i thought we were talking about margot robbie?',
-      tokenExpiration: 'time out of mind',
-    };
-    localforage.getItem = () => Promise.resolve(o);
-    localforage.setItem = (k, v) => Promise.resolve(v);
+  describe('setTokenExpiry', () => {
+    it('saves data when a session exists', async () => {
+      const o = {
+        margo: 'timmins',
+        margot: 'margot with a t looks better',
+        also: 'i thought we were talking about margot robbie?',
+        tokenExpiration: 'time out of mind',
+      };
+      localforage.getItem = () => Promise.resolve(o);
+      localforage.setItem = (k, v) => Promise.resolve(v);
 
-    const te = {
-      trinity: 'cowboy junkies',
-      sweet: 'james',
-    };
+      const te = {
+        trinity: 'cowboy junkies',
+        sweet: 'james',
+      };
 
-    const s = await setTokenExpiry(te);
-    expect(s).toMatchObject({ ...o, tokenExpiration: te });
+      const s = await setTokenExpiry(te);
+      expect(s).toMatchObject({ ...o, tokenExpiration: te });
+    });
+
+    it('does nothing when session does not exist', async () => {
+      const o = null;
+      localforage.getItem = () => Promise.resolve(o);
+      localforage.setItem = (k, v) => Promise.resolve(v);
+
+      const te = {
+        now: 'i am become death, destroyer of sessions',
+      };
+
+      const s = await setTokenExpiry(te);
+      expect(s).toBeNull();
+    });
   });
 });

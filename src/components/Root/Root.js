@@ -81,7 +81,11 @@ class Root extends Component {
 
   componentDidMount() {
     const { okapi, store, locale, defaultTranslations } = this.props;
-    if (this.withOkapi) checkOkapiSession(okapi.url, store, okapi.tenant);
+    if (this.withOkapi) {
+      // checkOkapiSession is async and will cause a re-render after a delay
+      // when an API call's .then() handler updates the store.
+      checkOkapiSession(okapi.url, store, okapi.tenant);
+    }
     // TODO: remove this after we load locale and translations at start from a public endpoint
     loadTranslations(store, locale, defaultTranslations);
   }

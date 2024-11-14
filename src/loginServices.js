@@ -76,18 +76,18 @@ const SESSION_NAME = 'okapiSess';
  * simple wrapper around access to values stored in localforage
  * to insulate RTR functions from that API.
  *
- * @returns {object}
+ * @returns Promise.resolve({object})
  */
 export const getOkapiSession = async () => {
   return localforage.getItem(SESSION_NAME);
 };
 
 /**
- * getTokenSess
+ * getTokenExpiry
  * simple wrapper around access to values stored in localforage
  * to insulate RTR functions from that API.
  *
- * @returns {object} shaped like { atExpires, rtExpires }; each is a millisecond timestamp
+ * @returns Promise.resolve({object}) shaped like { atExpires, rtExpires }; each is a millisecond timestamp
  */
 export const getTokenExpiry = async () => {
   const sess = await getOkapiSession();
@@ -101,11 +101,15 @@ export const getTokenExpiry = async () => {
  * session with updated token expiration data.
  *
  * @param {object} shaped like { atExpires, rtExpires }; each is a millisecond timestamp
- * @returns {object} updated session object
+ * @returns Promise.resolve({object}) updated session object
  */
 export const setTokenExpiry = async (te) => {
   const sess = await getOkapiSession();
-  return localforage.setItem(SESSION_NAME, { ...sess, tokenExpiration: te });
+  if (sess) {
+    return localforage.setItem(SESSION_NAME, { ...sess, tokenExpiration: te });
+  }
+
+  return null;
 };
 
 
@@ -708,18 +712,23 @@ export function validateUser(okapiUrl, store, tenant, session) {
 
 /**
  * checkOkapiSession
- * 1. Pull the session from local storage; if non-empty validate it, dispatching load-resources actions.
- * 2. Check if SSO (SAML) is enabled, dispatching check-sso actions
- * 3. dispatch set-okapi-ready.
+ * 1 Pull the session from local storage; if non-empty validate it,
+ *   dispatching load-resources actions to populate the store.
+ * 2 Check if SSO (SAML) is enabled, dispatching check-sso actions
+ * 3 dispatch set-okapi-ready.
  *
  * @param {string} okapiUrl
  * @param {redux store} store
  * @param {string} tenant
  */
 export function checkOkapiSession(okapiUrl, store, tenant) {
-  getOkapiSession()
+  return getOkapiSession()
     .then((sess) => {
-      return sess !== null ? validateUser(okapiUrl, store, tenant, sess) : null;
+      if (sess?.user?.id && sess?.tenant && sess?.isAuthenticated) {
+        return validateUser(okapiUrl, store, tenant, sess);
+      }
+
+      return null;
     })
     .then(() => {
       return getSSOEnabled(okapiUrl, store, tenant);
@@ -821,27 +830,38 @@ export function requestSSOLogin(okapiUrl, tenant) {
 export function updateUser(store, data) {
   return getOkapiSession()
     .then((sess) => {
-      sess.user = { ...sess.user, ...data };
-      return localforage.setItem(SESSION_NAME, sess);
+      if (sess?.user?.id && sess?.tenant && sess?.isAuthenticated) {
+        sess.user = { ...sess.user, ...data };
+        return localforage.setItem(SESSION_NAME, sess);
+      }
+
+      throw Error('The user could not be updated because an existing session could not be found');
     })
     .then(() => {
       store.dispatch(updateCurrentUser(data));
+    })
+    .catch((e) => {
+      console.error(e); // eslint-disable-line no-console
     });
 }
 
 /**
  * updateTenant
  * 1. prepare user info for requested tenant
- * 2. update okapi session
+ * 2. update okapi session with user and tenant data
  * @param {object} okapi
  * @param {string} tenant
  *
  * @returns {Promise}
  */
 export async function updateTenant(okapi, tenant) {
-  const okapiSess = await getOkapiSession();
-  const userWithPermsResponse = await fetchUserWithPerms(okapi.url, tenant, okapi.token);
-  const userWithPerms = await userWithPermsResponse.json();
+  const sess = await getOkapiSession();
+  if (sess?.user?.id && sess?.tenant && sess?.isAuthenticated) {
+    const userWithPermsResponse = await fetchUserWithPerms(okapi.url, tenant, okapi.token);
+    const userWithPerms = await userWithPermsResponse.json();
 
-  await localforage.setItem(SESSION_NAME, { ...okapiSess, tenant, ...spreadUserWithPerms(userWithPerms) });
+    await localforage.setItem(SESSION_NAME, { ...sess, tenant, ...spreadUserWithPerms(userWithPerms) });
+  } else {
+    console.error('The tenant could not be updated because an existing session could not be found'); // eslint-disable-line no-console
+  }
 }
