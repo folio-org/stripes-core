@@ -1,7 +1,7 @@
-# IfPermission
+# IfAnyPermission
 
 A wrapper component that facilitates conditional rendering based on
-whether the currently authentiated user has _all_ the permissions
+whether the currently authentiated user has _any_ of the permissions
 named in the given comma-delimited string.
 
 Supports children in the form of React nodes or as a render-prop function.
@@ -9,21 +9,21 @@ Supports children in the form of React nodes or as a render-prop function.
 ## Usage (children as nodes)
 
 ```
-<IfPermission perm="users.edit">
+<IfAnyPermission perm="users.edit,users.manage">
   <button onClick={this.onClickEditUser}>Edit</button>
-</IfPermission>
+</IfAnyPermission>
 ```
 
 ## Usage (children as function)
 
 ```
-<IfPermission perm="users.edit">
+<IfAnyPermission perm="users.edit,users.manage">
   {({ hasPermission }) => hasPermission ?
     <button onClick={this.onClickEditUser}>Edit</button>
     :
     <span>You do not have permission to edit this user!</span>
   }
-</IfPermission>
+</IfAnyPermission>
 ```
 
 ## Properties
@@ -31,3 +31,4 @@ Supports children in the form of React nodes or as a render-prop function.
 A single property is supported:
 
 * `perm`: a comma-delimited string of permissions to check.
+

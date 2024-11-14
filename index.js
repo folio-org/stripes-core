@@ -20,6 +20,7 @@ export { default as createReactQueryClient } from './src/createReactQueryClient'
 export { default as AppContextMenu } from './src/components/MainNav/CurrentApp/AppContextMenu';
 export { default as IfInterface } from './src/components/IfInterface';
 export { default as IfPermission } from './src/components/IfPermission';
+export { default as IfAnyPermission } from './src/components/IfAnyPermission';
 export { default as TitleManager } from './src/components/TitleManager';
 export { default as HandlerManager } from './src/components/HandlerManager';
 export { default as IntlConsumer } from './src/components/IntlConsumer';
