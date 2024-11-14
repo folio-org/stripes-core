@@ -5,7 +5,7 @@
 * Conditionally use `/users-keycloak/_self` endpoint when `users-keycloak` interface is present. Refs STCOR-835.
 * Wait longer before declaring a rotation request to be stale. Refs STCOR-895.
 * Send the stored central tenant name in the header on logout. Refs STCOR-900.
-* Use the `users-keycloak/_self` endpoint conditionally when the `users-keycloak` interface is present; otherwise, use `bl-users/_self` within `useUserSelfTenantPermissions`. Refs STCOR-905.
+* Use the `users-keycloak/_self` endpoint conditionally when the `users-keycloak` interface is present; otherwise, use `bl-users/_self` within `useUserTenantPermissions`. Refs STCOR-905.
 
 ## [10.2.0](https://github.com/folio-org/stripes-core/tree/v10.2.0) (2024-10-11)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.1.1...v10.2.0)

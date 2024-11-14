@@ -6,7 +6,7 @@ import useOkapiKy from '../useOkapiKy';
 
 const INITIAL_DATA = [];
 
-const useUserSelfTenantPermissions = (
+const useUserTenantPermissions = (
   { tenantId },
   options = {},
 ) => {
@@ -49,4 +49,4 @@ const useUserSelfTenantPermissions = (
   });
 };
 
-export default useUserSelfTenantPermissions;
+export default useUserTenantPermissions;

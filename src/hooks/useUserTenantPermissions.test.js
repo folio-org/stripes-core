@@ -5,7 +5,7 @@ import {
 } from 'react-query';
 
 import permissions from 'fixtures/permissions';
-import useUserSelfTenantPermissions from './useUserSelfTenantPermissions';
+import useUserTenantPermissions from './useUserTenantPermissions';
 import useOkapiKy from '../useOkapiKy';
 
 jest.mock('../useOkapiKy');
@@ -31,7 +31,7 @@ const response = {
   permissions: { permissions },
 };
 
-describe('useUserSelfTenantPermissions', () => {
+describe('useUserTenantPermissions', () => {
   const getMock = jest.fn(() => ({
     json: () => Promise.resolve(response),
   }));
@@ -55,7 +55,7 @@ describe('useUserSelfTenantPermissions', () => {
     const options = {
       tenantId: 'tenantId',
     };
-    const { result } = renderHook(() => useUserSelfTenantPermissions(options), { wrapper });
+    const { result } = renderHook(() => useUserTenantPermissions(options), { wrapper });
 
     await waitFor(() => !result.current.isLoading);
 
