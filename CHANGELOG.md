@@ -1,11 +1,15 @@
 # Change history for stripes-core
 
+## [10.2.3](https://github.com/folio-org/stripes-core/tree/v10.2.3) (2024-11-15)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.2.2...v10.2.3)
+
+* Provide `<IfAnyPermission>` and `stripes.hasAnyPermission()`. Refs STCOR-910.
+
 ## [10.2.2](https://github.com/folio-org/stripes-core/tree/v10.2.2) (2024-10-31)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.2.1...v10.2.2)
 
 * Conditionally use `/users-keycloak/_self` endpoint when `users-keycloak` interface is present. Refs STCOR-835.
 * Send the stored central tenant name in the header on logout. Refs STCOR-900.
-* Provide `<IfAnyPermission>` and `stripes.hasAnyPermission()`. Refs STCOR-910.
 
 ## [10.2.1](https://github.com/folio-org/stripes-core/tree/v10.2.1) (2024-10-30)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.2.0...v10.2.1)
