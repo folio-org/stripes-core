@@ -1,6 +1,7 @@
 import localforage from 'localforage';
 
 import {
+  checkOkapiSession,
   createOkapiSession,
   getOkapiSession,
   getTokenExpiry,
@@ -480,5 +481,86 @@ describe('localforage session wrapper', () => {
       const s = await setTokenExpiry(te);
       expect(s).toBeNull();
     });
+  });
+});
+
+describe('checkOkapiSession', () => {
+  it('dispatches setOkapiReady', async () => {
+    const o = {
+      user: { id: 'id' },
+      tenant: 'tenant',
+      isAuthenticated: true,
+    };
+    localforage.getItem = jest.fn(() => Promise.resolve(o));
+    const store = {
+      dispatch: jest.fn(),
+      getState: () => ({
+        okapi: {
+          currentPerms: [],
+        }
+      }),
+    };
+
+    const data = { data: 'd' };
+
+    mockFetchSuccess(data);
+
+    await checkOkapiSession('url', store, o.tenant);
+    expect(store.dispatch).toHaveBeenCalledWith(setOkapiReady());
+
+    mockFetchCleanUp();
+  });
+
+  it('when getOkapiSession returns full session data, validates it', async () => {
+    const o = {
+      user: { id: 'id' },
+      tenant: 'tenant',
+      isAuthenticated: true,
+    };
+    localforage.getItem = jest.fn(() => Promise.resolve(o));
+    const store = {
+      dispatch: jest.fn(),
+      getState: () => ({
+        okapi: {
+          currentPerms: [],
+        }
+      }),
+    };
+
+    const data = { data: 'd' };
+
+    mockFetchSuccess(data);
+
+    await checkOkapiSession('url', store, 'tenant');
+
+    expect(store.dispatch).toHaveBeenCalledWith(setAuthError(null));
+    expect(store.dispatch).toHaveBeenCalledWith(setOkapiReady());
+
+    mockFetchCleanUp();
+  });
+
+  it('when getOkapiSession returns sparse session data, ignores it', async () => {
+    const o = { monkey: 'bagel' };
+    localforage.getItem = jest.fn(() => Promise.resolve(o));
+    const store = {
+      dispatch: jest.fn(),
+      getState: () => ({
+        okapi: {
+          currentPerms: [],
+        }
+      }),
+    };
+
+    const data = { data: 'd' };
+
+    mockFetchSuccess(data);
+
+    await checkOkapiSession('url', store, o.tenant);
+
+    expect(store.dispatch).not.toHaveBeenCalledWith(setAuthError(null));
+    expect(store.dispatch).not.toHaveBeenCalledWith(setLoginData(data));
+    expect(store.dispatch).toHaveBeenCalledWith(setOkapiReady(null));
+
+    mockFetchCleanUp();
   });
 });
