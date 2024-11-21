@@ -16,12 +16,6 @@ import { eventsPortal } from './constants';
 import { getStoredTenant } from './loginServices';
 
 const StrictWrapper = ({ children }) => {
-  /*
-    WIP. THIS IS JUST HARDCODED FOR INVESTIGATION PURPOSES
-    Need to be able to pass `disableStrictMode` flag to karma tests
-  */
-  return children;
-
   if (config.disableStrictMode) {
     return children;
   }
