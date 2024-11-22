@@ -1,3 +1,5 @@
+import localforage from 'localforage';
+
 import { RTRError, UnexpectedResourceError } from './Errors';
 import {
   isFolioApiRequest,
@@ -11,6 +13,16 @@ import {
   RTR_MAX_AGE,
 } from './token-util';
 import { RTR_SUCCESS_EVENT } from './Events';
+
+jest.mock('localforage', () => ({
+  getItem: jest.fn(() => Promise.resolve({
+    user: { id: 'robert' },
+    tenant: 'manhattan',
+    isAuthenticated: 'i am',
+  })),
+  setItem: jest.fn((k, v) => Promise.resolve(v)),
+  removeItem: jest.fn(() => Promise.resolve()),
+}));
 
 describe('isFolioApiRequest', () => {
   it('accepts requests whose origin matches okapi\'s', () => {
