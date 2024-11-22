@@ -1,8 +1,13 @@
 # Change history for stripes-core
 
-## 10.1.3 IN PROGRESS
+## 10.1.4 IN PROGRESS
 
 * Cautiously evaluate localforage data when restoring a session. Refs STCOR-907.
+
+## [10.1.3](https://github.com/folio-org/stripes-core/tree/v10.1.3) (2024-11-19)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.1.2...v10.1.3)
+
+* Add `nl` (Dutch, Flemish) to the supported locales. Refs STCOR-878.
 
 ## [10.1.2](https://github.com/folio-org/stripes-core/tree/v10.1.2) (2024-10-21)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.1.1...v10.1.2)
