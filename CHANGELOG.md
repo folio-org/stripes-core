@@ -1,6 +1,7 @@
 # Change history for stripes-core
 
-## 10.1.4 IN PROGRESS
+## [10.1.4](https://github.com/folio-org/stripes-core/tree/v10.1.4) (2024-11-22)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.1.3...v10.1.4)
 
 * Cautiously evaluate localforage data when restoring a session. Refs STCOR-907.
 
