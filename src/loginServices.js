@@ -532,7 +532,9 @@ export async function logout(okapiUrl, store, queryClient) {
       store.dispatch(resetStore());
 
       // clear react-query cache
-      queryClient.removeQueries();
+      if (queryClient) {
+        queryClient.removeQueries();
+      }
     })
     // clear shared storage
     .then(localforage.removeItem(SESSION_NAME))
