@@ -1,7 +1,6 @@
 import { render, screen } from '@folio/jest-config-stripes/testing-library/react';
 import { userEvent } from '@folio/jest-config-stripes/testing-library/user-event';
 import { useLocation } from 'react-router';
-import { useQueryClient } from 'react-query';
 
 import Logout from './Logout';
 import { useStripes } from '../../StripesContext';
