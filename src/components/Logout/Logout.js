@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router';
 import { FormattedMessage } from 'react-intl';
+import { useQueryClient } from 'react-query';
 import { branding } from 'stripes-config';
 
 import {
@@ -35,6 +36,7 @@ const Logout = () => {
   const stripes = useStripes();
   const [didLogout, setDidLogout] = useState(false);
   const location = useLocation();
+  const queryClient = useQueryClient();
 
   const messageId = location.pathName === '/logout-timeout' ? 'stripes-core.rtr.idleSession.sessionExpiredSoSad' : 'stripes-core.logoutComplete';
 
@@ -42,7 +44,7 @@ const Logout = () => {
     () => {
       if (stripes.okapi.isAuthenticated) {
         // returns a promise, which we ignore
-        logout(stripes.okapi.url, stripes.store)
+        logout(stripes.okapi.url, stripes.store, queryClient)
           .then(setDidLogout(true));
       } else {
         setDidLogout(true);
