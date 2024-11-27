@@ -807,7 +807,10 @@ export function validateUser(okapiUrl, store, tenant, session) {
         // data isn't provided by _self.
         store.dispatch(setSessionData({
           isAuthenticated: true,
-          user,
+          // spread data from the previous session (which may include session-specific
+          // values such as the current service point), and the restructured user object
+          // (which includes permissions in a lookup-friendly way)
+          user: { ...session.user, ...user },
           perms,
           tenant: sessionTenant,
           token,

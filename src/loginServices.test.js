@@ -350,7 +350,11 @@ describe('validateUser', () => {
     };
 
     const session = {
-      user: { id: 'id', username: 'username' },
+      user: {
+        id: 'id',
+        username: 'username',
+        storageOnlyValue: 'is still persisted',
+      },
       perms: { foo: true },
       tenant: sessionTenant,
       token: 'token',
@@ -361,7 +365,7 @@ describe('validateUser', () => {
     await validateUser('url', store, tenant, session);
 
     const updatedSession = {
-      user: data.user,
+      user: { ...session.user, ...data.user },
       isAuthenticated: true,
       perms: { ask: true, tell: true },
       tenant: session.tenant,
