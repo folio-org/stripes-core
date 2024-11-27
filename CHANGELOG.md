@@ -4,6 +4,7 @@
 
 * Use the `users-keycloak/_self` endpoint conditionally when the `users-keycloak` interface is present; otherwise, use `bl-users/_self` within `useUserTenantPermissions`. Refs STCOR-905.
 * Don't override initial discovery and okapi data in test mocks. Refs STCOR-913.
+* `<Logout>` must consume `QueryClient` in order to supply it to `loginServices::logout()`. Refs STCOR-907.
 
 ## [10.2.3](https://github.com/folio-org/stripes-core/tree/v10.2.3) (2024-11-15)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.2.2...v10.2.3)
