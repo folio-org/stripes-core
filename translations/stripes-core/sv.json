@@ -11,7 +11,7 @@
     "button.cancel": "Ångra",
     "label.confirmDeleteEntry": "<strong>{name}</strong> will be <strong>removed</strong>",
     "label.editEntry": "Redigera {entry}",
-    "label.createEntry": "Create {entry}",
+    "label.createEntry": "Skapa {entry}",
     "label.missingRequiredField": "Please fill this in to continue",
     "label.okay": "Okej",
     "successfullyDeleted": "The {entry} <strong>{name}</strong> was successfully <strong>deleted</strong>.",
@@ -158,5 +158,7 @@
     "tenantChoose": "Select your tenant/library",
     "tenantLibrary": "Tenant/Library",
     "errors.saml.missingToken": "No <code>code</code> query parameter.",
-    "rtr.fixedLengthSession.timeRemaining": "Your session will end soon! Time remaining:"
+    "rtr.fixedLengthSession.timeRemaining": "Your session will end soon! Time remaining:",
+    "logoutComplete": "You have logged out.",
+    "errors.oidc": "Error: server is forbidden, unreachable, or unavailable."
 }
