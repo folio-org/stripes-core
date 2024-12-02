@@ -1,7 +1,10 @@
 # Change history for stripes-core
 
-## 10.2.4 IN PROGRESS
+## [10.2.4](https://github.com/folio-org/stripes-core/tree/v10.2.4) (2024-12-02)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.2.3...v10.2.4)
 
+* Show a "you have logged out" message after logging out instead of redirecting to login. Refs STCOR-882.
+* If discovery requests fail on return from SAML/OIDC, show the error instead of redirecting to login. Refs STCOR-902.
 * Use the `users-keycloak/_self` endpoint conditionally when the `users-keycloak` interface is present; otherwise, use `bl-users/_self` within `useUserTenantPermissions`. Refs STCOR-905.
 * Don't override initial discovery and okapi data in test mocks. Refs STCOR-913.
 * `<Logout>` must consume `QueryClient` in order to supply it to `loginServices::logout()`. Refs STCOR-907.
