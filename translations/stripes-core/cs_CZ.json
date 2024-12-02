@@ -158,5 +158,7 @@
     "tenantChoose": "Vybrat nájemce/knihovnu",
     "tenantLibrary": "Nájemce/Knihovna",
     "errors.saml.missingToken": "No <code>code</code> query parameter.",
-    "rtr.fixedLengthSession.timeRemaining": "Vaše relace brzy skončí! Zbývající čas:"
+    "rtr.fixedLengthSession.timeRemaining": "Vaše relace brzy skončí! Zbývající čas:",
+    "logoutComplete": "Odhlásili jste se.",
+    "errors.oidc": "Error: server is forbidden, unreachable, or unavailable."
 }
