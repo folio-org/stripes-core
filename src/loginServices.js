@@ -252,7 +252,7 @@ function dispatchLocale(url, store, tenant) {
   })
     .then((response) => {
       if (response.ok) {
-        response.json().then((json) => {
+        return response.json().then((json) => {
           if (json.configs?.length) {
             const localeValues = JSON.parse(json.configs[0].value);
             const { locale, timezone, currency } = localeValues;

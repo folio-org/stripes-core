@@ -53,131 +53,129 @@ const RootWithIntl = ({ stripes, token = '', isAuthenticated = false, disableAut
   return (
     <StripesContext.Provider value={connectedStripes}>
       <CalloutContext.Provider value={callout}>
-        <RegistryLoader stripes={stripes}>
-          <ModuleTranslator>
-            <TitleManager>
-              <HotKeys
-                keyMap={connectedStripes.bindings}
-                noWrapper
-              >
-                <Provider store={connectedStripes.store}>
-                  <Router history={history}>
-                    { isAuthenticated || token || disableAuth ?
-                      <>
-                        <MainContainer>
-                          <AppCtxMenuProvider>
-                            <MainNav stripes={connectedStripes} queryClient={queryClient} />
-                            {typeof connectedStripes?.config?.staleBundleWarning === 'object' && <StaleBundleWarning />}
-                            <HandlerManager
-                              event={events.LOGIN}
-                              stripes={connectedStripes}
-                            />
-                            { (typeof connectedStripes.okapi !== 'object' || connectedStripes.discovery.isFinished) && (
-                              <ModuleContainer id="content">
-                                <OverlayContainer />
-                                {connectedStripes.config.useSecureTokens && <SessionEventContainer history={history} queryClient={queryClient} />}
-                                <Switch>
-                                  <TitledRoute
-                                    name="home"
-                                    path="/"
-                                    key="root"
-                                    exact
-                                    component={<Front stripes={connectedStripes} />}
-                                  />
-                                  <TitledRoute
-                                    name="ssoRedirect"
-                                    path="/sso-landing"
-                                    key="sso-landing"
-                                    component={<SSORedirect stripes={connectedStripes} />}
-                                  />
-                                  <TitledRoute
-                                    name="oidcRedirect"
-                                    path="/oidc-landing"
-                                    key="oidc-landing"
-                                    component={<OIDCRedirect stripes={stripes} />}
-                                  />
-                                  <TitledRoute
-                                    name="logoutTimeout"
-                                    path="/logout-timeout"
-                                    component={<Logout />}
-                                  />
-                                  <TitledRoute
-                                    name="settings"
-                                    path="/settings"
-                                    component={<Settings stripes={connectedStripes} />}
-                                  />
-                                  <TitledRoute
-                                    name="logout"
-                                    path="/logout"
-                                    component={<Logout />}
-                                  />
-                                  <ModuleRoutes stripes={connectedStripes} />
-                                </Switch>
-                              </ModuleContainer>
-                            )}
-                          </AppCtxMenuProvider>
-                        </MainContainer>
-                        <Callout ref={setCalloutDomRef} />
-                      </> :
-                      <Switch>
-                        {/* The ? after :token makes that part of the path optional, so that token may optionally
-                        be passed in via URL parameter to avoid length restrictions */}
-                        <TitledRoute
-                          name="CreateResetPassword"
-                          path="/reset-password/:token?"
-                          component={<CreateResetPassword stripes={connectedStripes} />}
-                        />
-                        <TitledRoute
-                          name="ssoLanding"
-                          exact
-                          path="/sso-landing"
-                          component={<CookiesProvider><SSOLanding stripes={connectedStripes} /></CookiesProvider>}
-                          key="sso-landing"
-                        />
-                        <TitledRoute
-                          name="oidcLanding"
-                          exact
-                          path="/oidc-landing"
-                          component={<CookiesProvider><OIDCLanding stripes={stripes} /></CookiesProvider>}
-                          key="oidc-landing"
-                        />
-                        <TitledRoute
-                          name="forgotPassword"
-                          path="/forgot-password"
-                          component={<ForgotPasswordCtrl stripes={connectedStripes} />}
-                        />
-                        <TitledRoute
-                          name="forgotUsername"
-                          path="/forgot-username"
-                          component={<ForgotUserNameCtrl stripes={connectedStripes} />}
-                        />
-                        <TitledRoute
-                          name="checkEmail"
-                          path="/check-email"
-                          component={<CheckEmailStatusPage />}
-                        />
-                        <TitledRoute
-                          name="logout"
-                          path="/logout"
-                          component={<Logout />}
-                        />
-                        <TitledRoute
-                          name="logoutTimeout"
-                          path="/logout-timeout"
-                          component={<Logout />}
-                        />
-                        <TitledRoute
-                          name="login"
-                          path="*"
-                          component={<AuthnLogin stripes={connectedStripes} />}
-                        />
-                      </Switch>
-                    }
-                  </Router>
-                </Provider>
-              </HotKeys>
-            </TitleManager>
-          </ModuleTranslator>
+        <RegistryLoader stripes={connectedStripes}>
+          <TitleManager>
+            <HotKeys
+              keyMap={connectedStripes.bindings}
+              noWrapper
+            >
+              <Provider store={connectedStripes.store}>
+                <Router history={history}>
+                  { isAuthenticated || token || disableAuth ?
+                    <>
+                      <MainContainer>
+                        <AppCtxMenuProvider>
+                          <MainNav stripes={connectedStripes} queryClient={queryClient} />
+                          {typeof connectedStripes?.config?.staleBundleWarning === 'object' && <StaleBundleWarning />}
+                          <HandlerManager
+                            event={events.LOGIN}
+                            stripes={connectedStripes}
+                          />
+                          { (typeof connectedStripes.okapi !== 'object' || connectedStripes.discovery.isFinished) && (
+                            <ModuleContainer id="content">
+                              <OverlayContainer />
+                              {connectedStripes.config.useSecureTokens && <SessionEventContainer history={history} queryClient={queryClient} />}
+                              <Switch>
+                                <TitledRoute
+                                  name="home"
+                                  path="/"
+                                  key="root"
+                                  exact
+                                  component={<Front stripes={connectedStripes} />}
+                                />
+                                <TitledRoute
+                                  name="ssoRedirect"
+                                  path="/sso-landing"
+                                  key="sso-landing"
+                                  component={<SSORedirect stripes={connectedStripes} />}
+                                />
+                                <TitledRoute
+                                  name="oidcRedirect"
+                                  path="/oidc-landing"
+                                  key="oidc-landing"
+                                  component={<OIDCRedirect stripes={stripes} />}
+                                />
+                                <TitledRoute
+                                  name="logoutTimeout"
+                                  path="/logout-timeout"
+                                  component={<Logout />}
+                                />
+                                <TitledRoute
+                                  name="settings"
+                                  path="/settings"
+                                  component={<Settings stripes={connectedStripes} />}
+                                />
+                                <TitledRoute
+                                  name="logout"
+                                  path="/logout"
+                                  component={<Logout />}
+                                />
+                                <ModuleRoutes stripes={connectedStripes} />
+                              </Switch>
+                            </ModuleContainer>
+                          )}
+                        </AppCtxMenuProvider>
+                      </MainContainer>
+                      <Callout ref={setCalloutDomRef} />
+                    </> :
+                    <Switch>
+                      {/* The ? after :token makes that part of the path optional, so that token may optionally
+                      be passed in via URL parameter to avoid length restrictions */}
+                      <TitledRoute
+                        name="CreateResetPassword"
+                        path="/reset-password/:token?"
+                        component={<CreateResetPassword stripes={connectedStripes} />}
+                      />
+                      <TitledRoute
+                        name="ssoLanding"
+                        exact
+                        path="/sso-landing"
+                        component={<CookiesProvider><SSOLanding stripes={connectedStripes} /></CookiesProvider>}
+                        key="sso-landing"
+                      />
+                      <TitledRoute
+                        name="oidcLanding"
+                        exact
+                        path="/oidc-landing"
+                        component={<CookiesProvider><OIDCLanding stripes={stripes} /></CookiesProvider>}
+                        key="oidc-landing"
+                      />
+                      <TitledRoute
+                        name="forgotPassword"
+                        path="/forgot-password"
+                        component={<ForgotPasswordCtrl stripes={connectedStripes} />}
+                      />
+                      <TitledRoute
+                        name="forgotUsername"
+                        path="/forgot-username"
+                        component={<ForgotUserNameCtrl stripes={connectedStripes} />}
+                      />
+                      <TitledRoute
+                        name="checkEmail"
+                        path="/check-email"
+                        component={<CheckEmailStatusPage />}
+                      />
+                      <TitledRoute
+                        name="logout"
+                        path="/logout"
+                        component={<Logout />}
+                      />
+                      <TitledRoute
+                        name="logoutTimeout"
+                        path="/logout-timeout"
+                        component={<Logout />}
+                      />
+                      <TitledRoute
+                        name="login"
+                        path="*"
+                        component={<AuthnLogin stripes={connectedStripes} />}
+                      />
+                    </Switch>
+                  }
+                </Router>
+              </Provider>
+            </HotKeys>
+          </TitleManager>
         </RegistryLoader>
       </CalloutContext.Provider>
     </StripesContext.Provider>

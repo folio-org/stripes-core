@@ -1,6 +1,8 @@
 import React, { useMemo, Suspense } from 'react';
 import PropTypes from 'prop-types';
+
 import { Icon } from '@folio/stripes-components';
+
 import { useModules } from './ModulesContext';
 import { withStripes } from './StripesContext';
 import { ModuleHierarchyProvider } from './components';
