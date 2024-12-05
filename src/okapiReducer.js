@@ -1,4 +1,5 @@
 export const OKAPI_REDUCER_ACTIONS = {
+  ADD_ICON: 'ADD_ICON',
   CHECK_SSO: 'CHECK_SSO',
   CLEAR_CURRENT_USER: 'CLEAR_CURRENT_USER',
   CLEAR_OKAPI_TOKEN: 'CLEAR_OKAPI_TOKEN',
@@ -88,7 +89,7 @@ export default function okapiReducer(state = {}, action) {
     case OKAPI_REDUCER_ACTIONS.SET_AUTH_FAILURE:
       return Object.assign({}, state, { authFailure: action.message });
     case OKAPI_REDUCER_ACTIONS.SET_TRANSLATIONS:
-      return Object.assign({}, state, { translations: action.translations });
+      return { ...state, translations: { ...state.translations, ...action.translations } };
     case OKAPI_REDUCER_ACTIONS.CHECK_SSO:
       return Object.assign({}, state, { ssoEnabled: action.ssoEnabled });
     case OKAPI_REDUCER_ACTIONS.OKAPI_READY:
@@ -132,6 +133,34 @@ export default function okapiReducer(state = {}, action) {
 
     case OKAPI_REDUCER_ACTIONS.TOGGLE_RTR_MODAL: {
       return { ...state, rtrModalIsVisible: action.isVisible };
+    }
+
+    /**
+     * state.icons looks like
+     * {
+     *   "@folio/some-app": {
+     *     app: { alt, src},
+     *     otherIcon: { alt, src }
+     *   },
+     *   "@folio/other-app": { app: ...}
+     * }
+     *
+     * action.key looks like @folio/some-app or @folio/other-app
+     * action.icon looks like { alt: ... } or { otherIcon: ... }
+     */
+    case OKAPI_REDUCER_ACTIONS.ADD_ICON: {
+      let val = action.icon;
+
+      // if there are already icons defined for this key,
+      // add this payload to them
+      if (state.icons?.[action.key]) {
+        val = {
+          ...state.icons[action.key],
+          ...action.icon,
+        };
+      }
+
+      return { ...state, icons: { ...state.icons, [action.key]: val } };
     }
 
     default:
