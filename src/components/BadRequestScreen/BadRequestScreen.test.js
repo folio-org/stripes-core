@@ -9,7 +9,7 @@ describe('BadRequestScreen', () => {
     render(<BadRequestScreen />);
 
     screen.getByText('stripes-core.front.error.header');
-    screen.getByText('stripes-core.front.error.general.message');
+    screen.getByText(/stripes-core.front.error.general.message/);
   });
 });
 
