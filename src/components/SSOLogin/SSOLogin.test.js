@@ -7,7 +7,7 @@ describe('Login via SSO', () => {
   it('renders a button', () => {
     const fx = jest.fn();
     render(<SSOLogin handleSSOLogin={fx} />);
-    screen.getByText('stripes-core.loginViaSSO')
+    screen.getByText('stripes-core.loginViaSSO');
   });
 
   it('calls the callback', async () => {
