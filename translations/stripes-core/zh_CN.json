@@ -159,6 +159,6 @@
     "tenantLibrary": "租户/图书馆",
     "errors.saml.missingToken": "无 <code>代码</code>查询参数。",
     "rtr.fixedLengthSession.timeRemaining": "您的会话即将结束！剩余时间：",
-    "logoutComplete": "You have logged out.",
-    "errors.oidc": "Error: server is forbidden, unreachable, or unavailable."
+    "logoutComplete": "您已登出",
+    "errors.oidc": "错误：服务器被禁止、无法连接或不可用。"
 }
