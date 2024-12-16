@@ -3,6 +3,8 @@
 /* eslint-disable no-unused-vars */
 
 import ms from 'ms';
+import { waitFor } from '@testing-library/react';
+import { okapi } from 'stripes-config';
 
 import { getTokenExpiry } from '../../loginServices';
 import { FFetch } from './FFetch';
@@ -10,6 +12,7 @@ import { RTRError, UnexpectedResourceError } from './Errors';
 import {
   RTR_AT_EXPIRY_IF_UNKNOWN,
   RTR_AT_TTL_FRACTION,
+  RTR_FORCE_REFRESH_EVENT,
   RTR_FLS_WARNING_TTL,
   RTR_TIME_MARGIN_IN_MS,
 } from './constants';
@@ -34,6 +37,9 @@ const log = jest.fn();
 
 const mockFetch = jest.fn();
 
+// to ensure we cleanup after each test
+const instancesWithEventListeners = [];
+
 describe('FFetch class', () => {
   beforeEach(() => {
     global.fetch = mockFetch;
@@ -41,6 +47,8 @@ describe('FFetch class', () => {
       atExpires: Date.now() + (10 * 60 * 1000),
       rtExpires: Date.now() + (10 * 60 * 1000),
     });
+    instancesWithEventListeners.forEach(instance => instance.unregisterEventListener());
+    instancesWithEventListeners.length = 0;
   });
 
   afterEach(() => {
@@ -153,6 +161,23 @@ describe('FFetch class', () => {
     });
   });
 
+  describe('force refresh event', () => {
+    it('Invokes a refresh on RTR_FORCE_REFRESH_EVENT...', async () => {
+      mockFetch.mockResolvedValueOnce('okapi success');
+
+      const instance = new FFetch({ logger: { log }, store: { getState: () => ({ okapi }) } });
+      instance.replaceFetch();
+      instance.replaceXMLHttpRequest();
+
+      instance.registerEventListener();
+      instancesWithEventListeners.push(instance);
+
+      window.dispatchEvent(new Event(RTR_FORCE_REFRESH_EVENT));
+
+      await waitFor(() => expect(mockFetch.mock.calls).toHaveLength(1));
+    });
+  });
+
   describe('calling authentication resources', () => {
     it('handles RTR data in the response', async () => {
       // a static timestamp representing "now"
@@ -187,6 +212,7 @@ describe('FFetch class', () => {
         },
         rtrConfig: {
           fixedLengthSessionWarningTTL: '1m',
+          rotationIntervalFraction: 0.8,
         },
       });
       testFfetch.replaceFetch();
@@ -243,6 +269,7 @@ describe('FFetch class', () => {
         },
         rtrConfig: {
           fixedLengthSessionWarningTTL: '1m',
+          rotationIntervalFraction: 0.8,
         },
       });
       testFfetch.replaceFetch();
@@ -281,6 +308,7 @@ describe('FFetch class', () => {
         },
         rtrConfig: {
           fixedLengthSessionWarningTTL: '1m',
+          rotationIntervalFraction: 0.8,
         },
       });
       testFfetch.replaceFetch();
@@ -317,7 +345,11 @@ describe('FFetch class', () => {
         logger: { log },
         store: {
           dispatch: jest.fn(),
-        }
+        },
+        rtrConfig: {
+          fixedLengthSessionWarningTTL: '1m',
+          rotationIntervalFraction: 0.8,
+        },
       });
       testFfetch.replaceFetch();
       testFfetch.replaceXMLHttpRequest();
@@ -360,6 +392,7 @@ describe('FFetch class', () => {
         },
         rtrConfig: {
           fixedLengthSessionWarningTTL: '1m',
+          rotationIntervalFraction: 0.8,
         },
       });
       testFfetch.replaceFetch();
