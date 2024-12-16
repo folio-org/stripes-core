@@ -264,9 +264,10 @@ const SessionEventContainer = ({ history }) => {
 
     // no deps? It should be history and stripes!!! >:)
     // We only want to configure the event listeners once, not every time
-    // there is a change to stripes or history. Hence, an empty dependency
-    // array.
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    // there is a change to stripes or history. Hence, those are left out.
+    // we do include stripes.config.rtr, though, because these are configurable
+    // at runtime via ui-developer.
+  }, [stripes.config.rtr]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const renderList = [];
 
