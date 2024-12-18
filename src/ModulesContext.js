@@ -1,7 +1,6 @@
-import React, { useContext } from 'react';
-import { modules } from 'stripes-config';
+import { useContext } from 'react';
+import { ModulesContext } from '@folio/stripes-shared-context';
 
-export const ModulesContext = React.createContext(modules);
+export { ModulesContext };
 export default ModulesContext;
 export const useModules = () => useContext(ModulesContext);
-export { modules as originalModules };
