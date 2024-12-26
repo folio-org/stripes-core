@@ -12,6 +12,7 @@
 * Do not store /logout as a "return-to" URL. Refs STCOR-869.
 * Add small margin to ensure /authn/logout is called before cookie expires. Refs STCOR-869.
 * Wait longer before declaring a rotation request to be stale. Refs STCOR-895.
+* Correctly send `rtrFlsWarningTimeout` when dispatching `setRtrFlsWarningTimeout()`. Refs STCOR-930.
 
 ## [10.1.1](https://github.com/folio-org/stripes-core/tree/v10.1.1) (2024-03-25)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.1.0...v10.1.1)
