@@ -1,10 +1,15 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, Suspense } from 'react';
 import PropTypes from 'prop-types';
-import { modules } from 'stripes-config';
+
+import { Icon } from '@folio/stripes-components';
+
+import { useModules } from './ModulesContext';
 import { withStripes } from './StripesContext';
 import { ModuleHierarchyProvider } from './components';
+import loadRemoteComponent from './loadRemoteComponent';
 
 const Pluggable = (props) => {
+  const modules = useModules();
   const plugins = modules.plugin || [];
   const cachedPlugins = useMemo(() => {
     const cached = [];
@@ -22,7 +27,8 @@ const Pluggable = (props) => {
       }
 
       if (best) {
-        const Child = props.stripes.connect(best.getModule());
+        const RemoteComponent = React.lazy(() => loadRemoteComponent(best.url, best.name));
+        const Child = props.stripes.connect(RemoteComponent);
 
         cached.push({
           Child,
@@ -32,12 +38,14 @@ const Pluggable = (props) => {
     }
 
     return cached;
-  }, [plugins]);
+  }, [plugins, props.type]);
 
   if (cachedPlugins.length) {
     return cachedPlugins.map(({ plugin, Child }) => (
       <ModuleHierarchyProvider module={plugin} key={plugin}>
-        <Child {...props} actAs="plugin" />
+        <Suspense fallback={<Icon icon="spinner-ellipsis" />}>
+          <Child {...props} actAs="plugin" />
+        </Suspense>
       </ModuleHierarchyProvider>
     ));
   }

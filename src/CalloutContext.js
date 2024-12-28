@@ -1,6 +1,8 @@
 import React, { useContext } from 'react';
 
-export const CalloutContext = React.createContext();
+import { CalloutContext } from '@folio/stripes-shared-context';
+
+export { CalloutContext };
 
 export const useCallout = () => {
   return useContext(CalloutContext);

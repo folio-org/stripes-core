@@ -9,14 +9,13 @@ import { QueryClientProvider } from 'react-query';
 import { ApolloProvider } from '@apollo/client';
 
 import { ErrorBoundary } from '@folio/stripes-components';
-import { metadata, icons } from 'stripes-config';
 
 import { ConnectContext } from '@folio/stripes-connect';
 import initialReducers from '../../initialReducers';
 import enhanceReducer from '../../enhanceReducer';
 import createApolloClient from '../../createApolloClient';
 import createReactQueryClient from '../../createReactQueryClient';
-import { setSinglePlugin, setBindings, setIsAuthenticated, setOkapiToken, setTimezone, setCurrency, updateCurrentUser } from '../../okapiActions';
+import { addIcon, setSinglePlugin, setBindings, setIsAuthenticated, setOkapiToken, setTimezone, setCurrency, updateCurrentUser } from '../../okapiActions';
 import { loadTranslations, checkOkapiSession } from '../../loginServices';
 import { getQueryResourceKey, getCurrentModule } from '../../locationService';
 import Stripes from '../../Stripes';
@@ -28,11 +27,6 @@ import './Root.css';
 
 import { withModules } from '../Modules';
 import { FFetch } from './FFetch';
-
-if (!metadata) {
-  // eslint-disable-next-line no-console
-  console.error('No metadata harvested from package files, so you will not get app icons. Probably the stripes-core in your Stripes CLI is too old. Try `yarn global upgrade @folio/stripes-cli`');
-}
 
 class Root extends Component {
   constructor(...args) {
@@ -117,7 +111,7 @@ class Root extends Component {
   }
 
   render() {
-    const { logger, store, epics, config, okapi, actionNames, token, isAuthenticated, disableAuth, currentUser, currentPerms, locale, defaultTranslations, timezone, currency, plugins, bindings, discovery, translations, history, serverDown } = this.props;
+    const { logger, store, epics, config, okapi, actionNames, token, isAuthenticated, disableAuth, currentUser, currentPerms, icons, locale, defaultTranslations, timezone, currency, plugins, bindings, discovery, translations, history, serverDown } = this.props;
     if (serverDown) {
       // note: this isn't i18n'ed because we haven't rendered an IntlProvider yet.
       return <div>Error: server is forbidden, unreachable or down. Clear the cookies? Use incognito mode? VPN issue?</div>;
@@ -150,9 +144,9 @@ class Root extends Component {
       locale,
       timezone,
       currency,
-      metadata,
       icons,
-      setLocale: (localeValue) => { loadTranslations(store, localeValue, defaultTranslations); },
+      addIcon: (key, icon) => { store.dispatch(addIcon(key, icon)); },
+      setLocale: (localeValue, tx) => { return loadTranslations(store, localeValue, { ...defaultTranslations, ...tx }); },
       setTimezone: (timezoneValue) => { store.dispatch(setTimezone(timezoneValue)); },
       setCurrency: (currencyValue) => { store.dispatch(setCurrency(currencyValue)); },
       updateUser: (userValue) => { store.dispatch(updateCurrentUser(userValue)); },
@@ -172,7 +166,7 @@ class Root extends Component {
       <ErrorBoundary>
         <ConnectContext.Provider value={{ addReducer: this.addReducer, addEpic: this.addEpic, store }}>
           <ApolloProvider client={this.apolloClient}>
-            <QueryClientProvider client={this.reactQueryClient}>
+            <QueryClientProvider client={this.reactQueryClient} contextSharing>
               <IntlProvider
                 locale={locale}
                 key={locale}
@@ -216,6 +210,7 @@ Root.propTypes = {
   currentUser: PropTypes.object,
   epics: PropTypes.object,
   locale: PropTypes.string,
+  icons: PropTypes.object,
   defaultTranslations: PropTypes.object,
   timezone: PropTypes.string,
   currency: PropTypes.string,
@@ -256,6 +251,7 @@ Root.defaultProps = {
   currency: 'USD',
   okapiReady: false,
   serverDown: false,
+  icons: {},
 };
 
 function mapStateToProps(state) {
@@ -265,6 +261,7 @@ function mapStateToProps(state) {
     currentPerms: state.okapi.currentPerms,
     currentUser: state.okapi.currentUser,
     discovery: state.discovery,
+    icons: state.okapi.icons,
     isAuthenticated: state.okapi.isAuthenticated,
     locale: state.okapi.locale,
     okapi: state.okapi,
