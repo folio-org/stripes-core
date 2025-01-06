@@ -82,6 +82,8 @@ export default class StripesCore extends Component {
       this.epics = configureEpics(connectErrorEpic);
       this.store = configureStore(initialState, this.logger, this.epics);
       this.actionNames = gatherActions();
+
+      this.state = { isStorageEnabled: true };
     } else {
       this.state = { isStorageEnabled: false };
     }
