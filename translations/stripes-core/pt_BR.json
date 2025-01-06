@@ -158,5 +158,7 @@
     "tenantChoose": "Selecione seu locatário/biblioteca",
     "tenantLibrary": "Locatário/Biblioteca",
     "errors.saml.missingToken": "Nenhum parâmetro de consulta <code>code</code> .",
-    "rtr.fixedLengthSession.timeRemaining": "Sua sessão terminará em breve! Tempo restante:"
+    "rtr.fixedLengthSession.timeRemaining": "Sua sessão terminará em breve! Tempo restante:",
+    "logoutComplete": "Você efetuou logout.",
+    "errors.oidc": "Erro: o servidor está proibido, inacessível ou indisponível."
 }
