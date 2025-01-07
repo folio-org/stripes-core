@@ -9,6 +9,7 @@ import { getUnauthorizedPathFromSession, logout, setUnauthorizedPathToSession } 
 jest.mock('../OrganizationLogo');
 jest.mock('../../StripesContext');
 jest.mock('react-router');
+jest.mock('react-query');
 
 jest.mock('../../loginServices', () => ({
   ...jest.requireActual('../../loginServices'),

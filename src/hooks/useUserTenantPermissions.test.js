@@ -1,80 +1,65 @@
-import { renderHook } from '@folio/jest-config-stripes/testing-library/react';
-import { useStripes } from '../StripesContext';
-import useUserSelfTenantPermissions from './useUserSelfTenantPermissions';
-import useUserTenantPermissionNames from './useUserTenantPermissionNames';
-import useUserTenantPermissions from './useUserTenantPermissions';
+import { renderHook, waitFor } from '@folio/jest-config-stripes/testing-library/react';
+import {
+  QueryClient,
+  QueryClientProvider,
+} from 'react-query';
 
-jest.mock('../StripesContext');
-jest.mock('./useUserSelfTenantPermissions');
-jest.mock('./useUserTenantPermissionNames');
+import permissions from 'fixtures/permissions';
+import useUserTenantPermissions from './useUserTenantPermissions';
+import useOkapiKy from '../useOkapiKy';
+
+jest.mock('../useOkapiKy');
+jest.mock('../components', () => ({
+  useNamespace: () => ([]),
+}));
+jest.mock('../StripesContext', () => ({
+  useStripes: () => ({
+    hasInterface: () => true
+  }),
+}));
+
+const queryClient = new QueryClient();
+
+// eslint-disable-next-line react/prop-types
+const wrapper = ({ children }) => (
+  <QueryClientProvider client={queryClient}>
+    {children}
+  </QueryClientProvider>
+);
+
+const response = {
+  permissions: { permissions },
+};
 
 describe('useUserTenantPermissions', () => {
-  const tenantId = 'tenant-id';
-  const options = {};
+  const getMock = jest.fn(() => ({
+    json: () => Promise.resolve(response),
+  }));
+  const setHeaderMock = jest.fn();
+  const kyMock = {
+    extend: jest.fn(({ hooks: { beforeRequest } }) => {
+      beforeRequest.forEach(handler => handler({ headers: { set: setHeaderMock } }));
+
+      return {
+        get: getMock,
+      };
+    }),
+  };
 
   beforeEach(() => {
-    useStripes.mockReturnValue({
-      hasInterface: jest.fn()
-    });
+    getMock.mockClear();
+    useOkapiKy.mockClear().mockReturnValue(kyMock);
   });
 
-  it('should return _self permissions data when "roles" interface is present', () => {
-    useStripes().hasInterface.mockReturnValue(true);
+  it('should fetch user permissions for specified tenant', async () => {
+    const options = {
+      tenantId: 'tenantId',
+    };
+    const { result } = renderHook(() => useUserTenantPermissions(options), { wrapper });
 
-    useUserSelfTenantPermissions.mockReturnValue({
-      isFetching: true,
-      isFetched: true,
-      isLoading: true,
-      userPermissions: ['self'],
-      totalRecords: 1
-    });
+    await waitFor(() => !result.current.isLoading);
 
-    useUserTenantPermissionNames.mockReturnValue({
-      isFetching: false,
-      isFetched: false,
-      isLoading: false,
-      userPermissions: ['permission name'],
-      totalRecords: 1
-    });
-
-    const { result } = renderHook(() => useUserTenantPermissions({ tenantId }, options));
-
-    expect(result.current).toStrictEqual({
-      isFetching: true,
-      isFetched: true,
-      isLoading: true,
-      userPermissions: ['self'],
-      totalRecords: 1
-    });
-  });
-
-  it('should return tenant permissions data when "roles" interface is NOT present', () => {
-    useStripes().hasInterface.mockReturnValue(false);
-
-    useUserSelfTenantPermissions.mockReturnValue({
-      isFetching: true,
-      isFetched: true,
-      isLoading: true,
-      userPermissions: ['self'],
-      totalRecords: 1
-    });
-
-    useUserTenantPermissionNames.mockReturnValue({
-      isFetching: false,
-      isFetched: false,
-      isLoading: false,
-      userPermissions: ['permission name'],
-      totalRecords: 1
-    });
-
-    const { result } = renderHook(() => useUserTenantPermissions({ tenantId }, options));
-
-    expect(result.current).toStrictEqual({
-      isFetching: false,
-      isFetched: false,
-      isLoading: false,
-      userPermissions: ['permission name'],
-      totalRecords: 1
-    });
+    expect(setHeaderMock).toHaveBeenCalledWith('X-Okapi-Tenant', options.tenantId);
+    expect(getMock).toHaveBeenCalledWith('users-keycloak/_self?expandPermissions=true', expect.objectContaining({}));
   });
 });

@@ -350,7 +350,11 @@ describe('validateUser', () => {
     };
 
     const session = {
-      user: { id: 'id', username: 'username' },
+      user: {
+        id: 'id',
+        username: 'username',
+        storageOnlyValue: 'is still persisted',
+      },
       perms: { foo: true },
       tenant: sessionTenant,
       token: 'token',
@@ -361,7 +365,7 @@ describe('validateUser', () => {
     await validateUser('url', store, tenant, session);
 
     const updatedSession = {
-      user: data.user,
+      user: { ...session.user, ...data.user },
       isAuthenticated: true,
       perms: { ask: true, tell: true },
       tenant: session.tenant,
@@ -562,6 +566,31 @@ describe('logout', () => {
 
       expect(res).toBe(true);
       expect(global.fetch).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('react-query client', () => {
+    afterEach(() => {
+      mockFetchCleanUp();
+    });
+
+    it('calls removeQueries given valid client', async () => {
+      global.fetch = jest.fn().mockImplementation(() => Promise.resolve());
+      const store = {
+        dispatch: jest.fn(),
+      };
+      const rqc = {
+        removeQueries: jest.fn(),
+      };
+
+      let res;
+      await logout('', store, rqc)
+        .then(() => {
+          res = true;
+        });
+
+      expect(res).toBe(true);
+      expect(rqc.removeQueries).toHaveBeenCalled();
     });
   });
 });

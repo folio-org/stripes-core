@@ -1,13 +1,13 @@
 {
-    "front.welcome": "Välkommen till FOLIO!",
-    "front.home": "Start",
+    "front.welcome": "Welcome, the Future Of Libraries Is OPEN!",
+    "front.home": "Home",
     "front.about": "Software versions",
-    "button.new": "+ Ny",
-    "button.new_tooltip": "Lägg till {entry}",
-    "button.edit": "Redigera",
-    "button.delete": "Radera",
-    "button.deleteEntry": "Radera {entry}",
-    "button.saveAndClose": "Spara och stäng",
+    "button.new": "+ New",
+    "button.new_tooltip": "Add {entry}",
+    "button.edit": "Edit",
+    "button.delete": "Delete",
+    "button.deleteEntry": "Delete {entry}",
+    "button.saveAndClose": "Save and close",
     "button.cancel": "Cancel",
     "label.confirmDeleteEntry": "<strong>{name}</strong> will be <strong>removed</strong>",
     "label.editEntry": "Edit {entry}",
@@ -158,5 +158,7 @@
     "tenantChoose": "Select your tenant/library",
     "tenantLibrary": "Tenant/Library",
     "errors.saml.missingToken": "No <code>code</code> query parameter.",
-    "rtr.fixedLengthSession.timeRemaining": "Your session will end soon! Time remaining:"
+    "rtr.fixedLengthSession.timeRemaining": "Your session will end soon! Time remaining:",
+    "logoutComplete": "You have logged out.",
+    "errors.oidc": "Error: server is forbidden, unreachable, or unavailable."
 }

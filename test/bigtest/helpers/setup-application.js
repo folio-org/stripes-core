@@ -42,6 +42,7 @@ export default function setupApplication({
     // when auth is disabled, add a fake user to the store
     if (disableAuth) {
       initialState.okapi = {
+        ...initialState.okapi,
         currentUser: assign({
           id: 'test',
           username: 'testuser',
@@ -55,10 +56,12 @@ export default function setupApplication({
         isAuthenticated: true,
       };
       initialState.discovery = {
+        ...initialState.discovery,
         isFinished: true,
       };
     } else {
       initialState.okapi = {
+        ...initialState.okapi,
         ssoEnabled: true,
       };
     }
