@@ -9,6 +9,7 @@
 * Don't override initial discovery and okapi data in test mocks. Refs STCOR-913.
 * `<Logout>` must consume `QueryClient` in order to supply it to `loginServices::logout()`. Refs STCOR-907.
 * On resuming session, spread session and `_self` together to preserve session values. Refs STCOR-912.
+* Fetch `/saml/check` when starting a new session, i.e. before discovery. Refs STCOR-933, STCOR-816.
 
 ## [10.2.3](https://github.com/folio-org/stripes-core/tree/v10.2.3) (2024-11-15)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.2.2...v10.2.3)

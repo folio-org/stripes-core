@@ -851,8 +851,11 @@ export function checkOkapiSession(okapiUrl, store, tenant) {
     .then((sess) => {
       return sess?.user?.id ? validateUser(okapiUrl, store, tenant, sess) : null;
     })
-    .then(() => {
-      if (store.getState().discovery?.interfaces?.['login-saml']) {
+    .then((res) => {
+      // check whether SSO is enabled if either
+      // 1. res is null (when we are starting a new session)
+      // 2. login-saml interface is present (when we are resuming an existing session)
+      if (!res || store.getState().discovery?.interfaces?.['login-saml']) {
         return getSSOEnabled(okapiUrl, store, tenant);
       }
       return Promise.resolve();
