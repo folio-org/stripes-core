@@ -5,7 +5,15 @@ import { getUnauthorizedPathFromSession, removeUnauthorizedPathFromSession } fro
 
 // Setting at top of component since value should be retained during re-renders
 // but will be correctly re-fetched when redirected from Keycloak login page.
-const unauthorizedPath = getUnauthorizedPathFromSession();
+// The empty try/catch is necessary because, by setting this at the top of
+// the component, it is automatically executed even before <App /> renders.
+// IOW, even though we check for session-storage in App, we still have to
+// protect the call here.
+let unauthorizedPath = null;
+try {
+  unauthorizedPath = getUnauthorizedPathFromSession();
+} catch (e) { // eslint-disable-line no-empty
+}
 
 /**
  * OIDCRedirect authenticated route handler for /oidc-landing.
