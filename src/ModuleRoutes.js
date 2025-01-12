@@ -71,11 +71,7 @@ function ModuleRoutes({ stripes }) {
           );
         }
 
-        return (
-          <Suspense fallback={<LoadingView />}>
-            <AppRoutes modules={modules} stripes={stripes} />
-          </Suspense>
-        );
+        return <AppRoutes modules={modules} stripes={stripes} />;
       }}
     </ModulesContext.Consumer>
   );
