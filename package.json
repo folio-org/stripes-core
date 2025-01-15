@@ -1,15 +1,27 @@
 {
   "name": "@folio/stripes-core",
-  "version": "10.3.0",
+  "version": "11.0.0",
   "description": "The starting point for Stripes applications",
   "license": "Apache-2.0",
-  "repository": "folio-org/stripes-core",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/folio-org/stripes-core.git"
+  },
   "sideEffects": [
     "*.css"
   ],
   "publishConfig": {
     "registry": "https://repository.folio.org/repository/npm-folio/"
   },
+  "main": "dist/entry.js",
+  "files": [
+    "dist",
+    "translations",
+    "README.md",
+    "LICENSE",
+    "CONTRIBUTING.md",
+    "CHANGELOG.md"
+  ],
   "scripts": {
     "start": "stripes serve",
     "test": "yarn run test:jest && yarn run test:bigtest ",
@@ -20,7 +32,8 @@
     "eslint": "eslint .",
     "stylelint": "stylelint \"src/**/*.css\"",
     "formatjs-compile": "formatjs compile-folder --ast --format simple ./translations/stripes-core ./translations/stripes-core/compiled",
-    "build-mod-descriptor": "stripes mod descriptor --full --strict | jq '.[]' > module-descriptor.json"
+    "build-mod-descriptor": "stripes mod descriptor --full --strict | jq '.[]' > module-descriptor.json",
+    "prepare": "stripes transpile"
   },
   "stripes": {
     "okapiInterfaces": {
@@ -49,9 +62,9 @@
     "@bigtest/mirage": "^0.0.1",
     "@folio/eslint-config-stripes": "^7.0.0",
     "@folio/jest-config-stripes": "^2.0.0",
-    "@folio/stripes-cli": "^3.0.0",
-    "@folio/stripes-components": "^12.3.0",
-    "@folio/stripes-connect": "^9.3.0",
+    "@folio/stripes-cli": "github:folio-org/stripes-cli#STRIPES-957",
+    "@folio/stripes-components": "github:folio-org/stripes-components#STRIPES-957",
+    "@folio/stripes-connect": "github:folio-org/stripes-connect#STRIPES-957",
     "@folio/stripes-logger": "^1.0.0",
     "@folio/stripes-testing": "^4.5.0",
     "@formatjs/cli": "^6.1.3",
@@ -105,8 +118,8 @@
     "use-deep-compare": "^1.1.0"
   },
   "peerDependencies": {
-    "@folio/stripes-components": "^12.0.0",
-    "@folio/stripes-connect": "^9.0.0",
+    "@folio/stripes-components": "github:folio-org/stripes-components#STRIPES-957",
+    "@folio/stripes-connect": "github:folio-org/stripes-connect#STRIPES-957",
     "@folio/stripes-logger": "^1.0.0",
     "moment": "^2.29.0",
     "react": "^18.2.0",
