@@ -65,14 +65,14 @@ const canonicalPath = (str) => {
 };
 
 /**
- * useModuleFor
+ * useModuleInfo
  * Given a path, retrieve information about the module that implements it
  * by querying the discovery endpoint /_/proxy/tenants/${tenant}/modules.
  *
  * @param {string} path
  * @returns object shaped like { isFetching, isFetched, isLoading, module }
  */
-const useModuleFor = (path) => {
+const useModuleInfo = (path) => {
   const stripes = useStripes();
   const ky = useOkapiKy();
   const [namespace] = useNamespace({ key: `/_/proxy/tenants/${stripes.okapi.tenant}/modules` });
@@ -107,4 +107,4 @@ const useModuleFor = (path) => {
   });
 };
 
-export default useModuleFor;
+export default useModuleInfo;
