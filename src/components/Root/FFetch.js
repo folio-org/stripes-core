@@ -163,6 +163,14 @@ export class FFetch {
   rotateCallback = (res) => {
     this.logger.log('rtr', 'rotation callback setup', res);
 
+    // ATs expire after 10 seconds, causing refresh every ~8 seconds
+    this.scheduleRotation(Promise.resolve({
+      accessTokenExpiration: new Date().getTime() + ms('10s'),
+      refreshTokenExpiration: new Date(res.refreshTokenExpiration).getTime(),
+    }));
+
+    return;
+
     // When starting a new session, the response from /bl-users/login-with-expiry
     // will contain token expiration info, but when restarting an existing session,
     // the response from /bl-users/_self will NOT, although that information should
