@@ -43,6 +43,7 @@ export { getUserTenantsPermissions } from './src/queries';
 
 /* Hooks */
 export { useUserTenantPermissions } from './src/hooks';
+export { useModuleInfo } from './src/hooks';
 
 /* misc */
 export { supportedLocales } from './src/loginServices';
