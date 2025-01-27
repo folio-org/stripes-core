@@ -15,6 +15,7 @@ export { default as useOkapiKy } from './src/useOkapiKy';
 export { default as withOkapiKy } from './src/withOkapiKy';
 export { default as useCustomFields } from './src/useCustomFields';
 export { default as createReactQueryClient } from './src/createReactQueryClient';
+export { useAppOrderContext } from './src/components/MainNav/AppOrderProvider';
 
 /* components */
 export { default as AppContextMenu } from './src/components/MainNav/CurrentApp/AppContextMenu';

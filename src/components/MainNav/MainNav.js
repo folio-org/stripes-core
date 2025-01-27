@@ -1,16 +1,11 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { useEffect, useRef } from 'react';
 import { isEqual, find } from 'lodash';
-import { compose } from 'redux';
-import { injectIntl } from 'react-intl';
-import { withRouter } from 'react-router';
+import { useIntl } from 'react-intl';
+import { useLocation, useHistory } from 'react-router-dom';
+import { useQueryClient } from 'react-query';
 
 import { branding } from 'stripes-config';
-
 import { Icon } from '@folio/stripes-components';
-
-import { withModules } from '../Modules';
-import { LastVisitedContext } from '../LastVisited';
 import {
   updateQueryResource,
   getLocationQuery,
@@ -19,7 +14,7 @@ import {
   isQueryResourceModule,
   getQueryResourceState,
 } from '../../locationService';
-
+import { logout } from '../../loginServices';
 import css from './MainNav.css';
 import NavButton from './NavButton';
 import NavDivider from './NavDivider';
@@ -27,198 +22,99 @@ import { CurrentAppGroup } from './CurrentApp';
 import ProfileDropdown from './ProfileDropdown';
 import AppList from './AppList';
 import { SkipLink } from './components';
-import { packageName } from '../../constants';
 
-import settingsIcon from './settings.svg';
+import { useAppOrderContext } from './AppOrderProvider';
 
-class MainNav extends Component {
-  static propTypes = {
-    intl: PropTypes.object,
-    stripes: PropTypes.shape({
-      config: PropTypes.shape({
-        showPerms: PropTypes.bool,
-        helpUrl: PropTypes.string,
-      }),
-      store: PropTypes.shape({
-        dispatch: PropTypes.func.isRequired,
-      }),
-      hasPerm: PropTypes.func.isRequired,
-      withOkapi: PropTypes.bool,
-    }),
-    history: PropTypes.shape({
-      listen: PropTypes.func.isRequired,
-      replace: PropTypes.func.isRequired,
-      push: PropTypes.func.isRequired,
-    }).isRequired,
-    location: PropTypes.shape({
-      pathname: PropTypes.string,
-    }).isRequired,
-    modules: PropTypes.shape({
-      app: PropTypes.arrayOf(PropTypes.object),
-    }),
-    queryClient: PropTypes.object.isRequired,
-  };
+import { useStripes } from '../../StripesContext';
+import { useModules } from '../../ModulesContext';
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      userMenuOpen: false,
-    };
-    this.store = props.stripes.store;
-    this.getAppList = this.getAppList.bind(this);
-  }
+const MainNav = () => {
+  const {
+    apps,
+  } = useAppOrderContext();
+  const queryClient = useQueryClient();
+  const stripes = useStripes();
+  const location = useLocation();
+  const modules = useModules();
+  const history = useHistory();
+  const intl = useIntl();
 
-  componentDidMount() {
-    let curQuery = getLocationQuery(this.props.location);
+  const curModule = useRef(getCurrentModule(modules, location));
+  const selectedApp = useRef(apps.find(entry => entry.active)).current;
+  const helpUrl = useRef(stripes.config.helpUrl ?? 'https://docs.folio.org').current;
+
+  useEffect(() => {
+    let curQuery = getLocationQuery(location);
     const prevQueryState = {};
 
-    this._unsubscribe = this.store.subscribe(() => {
-      const { history, location } = this.props;
-      const module = this.curModule;
-      const state = this.store.getState();
+    const { store } = stripes;
+    const _unsubscribe = store.subscribe(() => {
+      const module = curModule;
+      const state = store.getState();
 
       // If user has timed out, force them to log in again.
       if (state?.okapi?.token && state.okapi.authFailure
         && find(state.okapi.authFailure, { type: 'error', code: 'user.timeout' })) {
-        this.returnToLogin();
+        // this.returnToLogin();
+        logout(state.okapi.url, store, queryClient);
       }
 
       if (module && isQueryResourceModule(module, location)) {
         const { moduleName } = module;
-        const queryState = getQueryResourceState(module, this.store);
+        const queryState = getQueryResourceState(module, stripes.store);
 
         // only update location if query state has changed
         if (!isEqual(queryState, prevQueryState[moduleName])) {
-          curQuery = updateLocation(module, curQuery, this.store, history, location);
+          curQuery = updateLocation(module, curQuery, stripes.store, history, location);
           prevQueryState[moduleName] = queryState;
         }
       }
     });
 
     // remove QueryProvider cache to be 100% sure we're starting from a clean slate.
-    this.props.queryClient.removeQueries();
-  }
+    queryClient.removeQueries();
 
-  componentDidUpdate(prevProps) {
-    const { modules, location } = this.props;
-    this.curModule = getCurrentModule(modules, location);
-    if (this.curModule && !isEqual(location, prevProps.location)) {
-      updateQueryResource(location, this.curModule, this.store);
+    return () => {
+      _unsubscribe();
+    };
+  }, []);
+
+  useEffect(() => {
+    curModule.current = getCurrentModule(modules, location);
+    if (curModule.current) {
+      updateQueryResource(location, curModule.current, stripes.store);
     }
-  }
+  }, [modules, location, stripes.store]);
 
-  componentWillUnmount() {
-    this._unsubscribe();
-  }
+  return (
+    <header className={css.navRoot} style={branding?.style?.mainNav ?? {}}>
+      <div className={css.startSection}>
+        <SkipLink />
+        <CurrentAppGroup selectedApp={selectedApp} config={stripes.config} />
+      </div>
+      <nav aria-label={intl.formatMessage({ id: 'stripes-core.mainnav.topLevelLabel' })} className={css.endSection}>
+        <AppList
+          apps={apps}
+          selectedApp={selectedApp}
+          dropdownToggleId="app-list-dropdown-toggle"
+        />
+        <NavDivider md="hide" />
+        <NavButton
+          aria-label="Help button"
+          data-test-item-help-button
+          href={helpUrl}
+          icon={<Icon
+            icon="question-mark"
+            size="large"
+          />}
+          id="helpButton"
+          target="_blank"
+        />
+        <NavDivider md="hide" />
+        <ProfileDropdown stripes={stripes} />
+      </nav>
+    </header>
+  );
+};
 
-  toggleUserMenu() {
-    const isOpen = this.state.userMenuOpen;
-    this.setState({
-      userMenuOpen: !isOpen,
-    });
-  }
-
-  getAppList(lastVisited) {
-    const { stripes, location: { pathname }, modules, intl: { formatMessage } } = this.props;
-
-    const apps = modules.app.map((entry) => {
-      const name = entry.module.replace(packageName.PACKAGE_SCOPE_REGEX, '');
-      const perm = `module.${name}.enabled`;
-
-      if (!stripes.hasPerm(perm)) {
-        return null;
-      }
-
-      const id = `clickable-${name}-module`;
-
-      const pathRoot = pathname.split('/')[1];
-      const entryRoot = entry.route.split('/')[1];
-      const active = pathRoot === entryRoot;
-
-      const last = lastVisited[name];
-      const home = entry.home || entry.route;
-      const href = (active || !last) ? home : lastVisited[name];
-
-      return {
-        id,
-        href,
-        active,
-        name,
-        ...entry,
-      };
-    }).filter(app => app);
-
-    /**
-     * Add Settings to apps array manually
-     * until Settings becomes a standalone app
-     */
-
-    if (stripes.hasPerm('settings.enabled')) {
-      apps.push({
-        displayName: formatMessage({ id: 'stripes-core.settings' }),
-        id: 'clickable-settings',
-        href: lastVisited.x_settings || '/settings',
-        active: pathname.startsWith('/settings'),
-        description: 'FOLIO settings',
-        iconData: {
-          src: settingsIcon,
-          alt: 'Tenant Settings',
-          title: 'Settings',
-        },
-        route: '/settings'
-      });
-    }
-
-    return apps;
-  }
-
-  render() {
-    const { stripes, intl } = this.props;
-
-    return (
-      <LastVisitedContext.Consumer>
-        {({ lastVisited }) => {
-          const apps = this.getAppList(lastVisited);
-          const selectedApp = apps.find(entry => entry.active);
-          const helpUrl = stripes.config.helpUrl ?? 'https://docs.folio.org';
-
-          return (
-            <header className={css.navRoot} style={branding?.style?.mainNav ?? {}}>
-              <div className={css.startSection}>
-                <SkipLink />
-                <CurrentAppGroup selectedApp={selectedApp} config={stripes.config} />
-              </div>
-              <nav aria-label={intl.formatMessage({ id: 'stripes-core.mainnav.topLevelLabel' })} className={css.endSection}>
-                <AppList
-                  apps={apps}
-                  selectedApp={selectedApp}
-                  dropdownToggleId="app-list-dropdown-toggle"
-                />
-                <NavDivider md="hide" />
-                <NavButton
-                  aria-label="Help button"
-                  data-test-item-help-button
-                  href={helpUrl}
-                  icon={<Icon
-                    icon="question-mark"
-                    size="large"
-                  />}
-                  id="helpButton"
-                  target="_blank"
-                />
-                <NavDivider md="hide" />
-                <ProfileDropdown stripes={stripes} />
-              </nav>
-            </header>
-          );
-        }}
-      </LastVisitedContext.Consumer>
-    );
-  }
-}
-
-export default compose(
-  injectIntl,
-  withRouter,
-  withModules,
-)(MainNav);
+export default MainNav;
