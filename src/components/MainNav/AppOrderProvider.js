@@ -76,7 +76,6 @@ function getProvisionedApps(appModules, stripes, pathname, lastVisited, formatMe
     });
   }
   return apps;
-  // return sortby(apps, app => app.displayName.toLowerCase());
 }
 
 export const AppOrderProvider = ({ children }) => {
@@ -96,7 +95,6 @@ export const AppOrderProvider = ({ children }) => {
     if (!stripes) return [];
     const platformApps = getProvisionedApps(app, stripes, pathname, lastVisited, formatMessage);
 
-    // let orderedApps = userAppList?.value || []; // the persisted, user-preferred app order.
     let orderedApps = userAppList || []; // the persisted, user-preferred app order.
     let navList = []; // contains the ultimate reordered array of app nav items.
 
@@ -132,7 +130,7 @@ export const AppOrderProvider = ({ children }) => {
     }
 
     return { navList, orderedApps };
-  }, [formatMessage, app, lastVisited, userAppList, pathname]); // omitted: stripes, pathname
+  }, [formatMessage, app, lastVisited, userAppList, pathname]); // omitted: stripes
 
   const updateList = async (list) => {
     // clean the 'isNew' field;
