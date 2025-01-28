@@ -87,7 +87,7 @@ export const AppOrderProvider = ({ children }) => {
   const { formatMessage } = useIntl();
   const { getPreference, setPreference, removePreference } = usePreferences();
 
-  const { data: userAppList, isLoading, refetch: refetchAppList } = useQuery(`${stripes.user.user.id}-pref-query`, () => {
+  const { data: userAppList, isLoading, refetch: refetchAppList } = useQuery(`${stripes?.user?.user?.id}-pref-query`, () => {
     return getPreference({ key: APPORDER_PREF_NAME, scope: APPORDER_PREF_SCOPE });
   });
 
