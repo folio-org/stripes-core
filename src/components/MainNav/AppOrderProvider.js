@@ -132,7 +132,7 @@ export const AppOrderProvider = ({ children }) => {
     }
 
     return { navList, orderedApps };
-  }, [formatMessage, app, lastVisited, userAppList]); // omitted: stripes, pathname
+  }, [formatMessage, app, lastVisited, userAppList, pathname]); // omitted: stripes, pathname
 
   const updateList = async (list) => {
     // clean the 'isNew' field;

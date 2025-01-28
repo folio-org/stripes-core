@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { isEqual, find } from 'lodash';
 import { useIntl } from 'react-intl';
 import { useLocation, useHistory } from 'react-router-dom';
@@ -14,7 +14,7 @@ import {
   isQueryResourceModule,
   getQueryResourceState,
 } from '../../locationService';
-import { logout } from '../../loginServices';
+
 import css from './MainNav.css';
 import NavButton from './NavButton';
 import NavDivider from './NavDivider';
@@ -39,8 +39,8 @@ const MainNav = () => {
   const history = useHistory();
   const intl = useIntl();
 
-  const curModule = useRef(getCurrentModule(modules, location));
-  const selectedApp = useRef(apps.find(entry => entry.active)).current;
+  const [curModule, setCurModule] = useState(getCurrentModule(modules, location));
+  const [selectedApp, setSelectedApp] = useState(apps.find(entry => entry.active));
   const helpUrl = useRef(stripes.config.helpUrl ?? 'https://docs.folio.org').current;
 
   useEffect(() => {
@@ -50,14 +50,6 @@ const MainNav = () => {
     const { store } = stripes;
     const _unsubscribe = store.subscribe(() => {
       const module = curModule;
-      const state = store.getState();
-
-      // If user has timed out, force them to log in again.
-      if (state?.okapi?.token && state.okapi.authFailure
-        && find(state.okapi.authFailure, { type: 'error', code: 'user.timeout' })) {
-        // this.returnToLogin();
-        logout(state.okapi.url, store, queryClient);
-      }
 
       if (module && isQueryResourceModule(module, location)) {
         const { moduleName } = module;
@@ -80,11 +72,13 @@ const MainNav = () => {
   }, []);
 
   useEffect(() => {
-    curModule.current = getCurrentModule(modules, location);
-    if (curModule.current) {
-      updateQueryResource(location, curModule.current, stripes.store);
+    setSelectedApp(apps.find(entry => entry.active));
+    const nextCurModule = getCurrentModule(modules, location);
+    if (nextCurModule) {
+      setCurModule(getCurrentModule(modules, location));
+      updateQueryResource(location, nextCurModule, stripes.store);
     }
-  }, [modules, location, stripes.store]);
+  }, [modules, location, stripes.store, apps]);
 
   return (
     <header className={css.navRoot} style={branding?.style?.mainNav ?? {}}>
