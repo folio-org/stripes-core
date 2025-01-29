@@ -5,7 +5,7 @@ import useOkapiKy from '../useOkapiKy';
 import { useStripes } from '../StripesContext';
 
 export default () => {
-  const { user } = useStripes();
+  const { user, logger } = useStripes();
   const ky = useOkapiKy();
   const [id, setId] = useState(null);
   const userId = user.user.id;
@@ -21,12 +21,17 @@ export default () => {
       if (resp.ok) {
         respJSON = await resp.json();
         if (respJSON.items.length === 1) {
+          logger.log('pref', `found preference at scope: ${scope}, and key: ${key} for user: ${userId}`);
           setId(respJSON.items[0].id);
+          return respJSON.items[0].value;
+        } else {
+          setId(null);
+          logger.log('pref', `no preference found at scope: ${scope}, and key: ${key} for user: ${userId}`);
+          return undefined;
         }
-        return respJSON.items[0].value;
       }
     } catch (err) {
-      console.log(`error getting preference at scope: ${scope}, and key: ${key} for user: ${userId} - ${err.message}`);
+      logger.log('pref', `error getting preference at scope: ${scope}, and key: ${key} for user: ${userId} - ${err.message}`);
     }
   }, [id, ky, userId]);
 
@@ -45,15 +50,17 @@ export default () => {
     if (!id) {
       try {
         setId(prefId);
-        return ky.post('settings/entries', { json: payload });
+        await ky.post('settings/entries', { json: payload });
+        logger.log('pref', `created preference at scope: ${scope}, and key: ${key} for user: ${userId} with id: ${id} and value: ${value}`);
       } catch (err) {
-        console.log(`error creating preference at scope: ${scope}, and key: ${key} for user: ${userId} - ${err.message}`);
+        logger.log('pref', `error creating preference at scope: ${scope}, and key: ${key} for user: ${userId} - ${err.message}`);
       }
     } else {
       try {
-        return ky.put(`settings/entries/${prefId}`, { json: payload });
+        await ky.put(`settings/entries/${prefId}`, { json: payload });
+        logger.log('pref', `updated preference at scope: ${scope}, and key: ${key} for user: ${userId} with ${value}`);
       } catch (err) {
-        console.log(`error updating preference at scope: ${scope}, and key: ${key} for user: ${userId} - ${err.message}`);
+        logger.log('pref', `error updating preference at scope: ${scope}, and key: ${key} for user: ${userId} - ${err.message}`);
       }
     }
   }, [id, ky, userId]);
@@ -63,10 +70,11 @@ export default () => {
       if (id) {
         await ky.delete(`settings/entries/${id}`);
         setId(null);
+        logger.log('pref', `deleted preference at scope: ${scope}, and key: ${key} for user: ${userId} at id: ${id}`);
         return;
       }
     } catch (err) {
-      console.log(`error deleting preference at scope: ${scope}, and key: ${key} for user: ${userId} at id: ${id} - ${err.message}`);
+      logger.log('pref', `error deleting preference at scope: ${scope}, and key: ${key} for user: ${userId} at id: ${id} - ${err.message}`);
     }
   }, [id, ky, userId]);
 
