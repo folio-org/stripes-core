@@ -60,6 +60,9 @@ jest.mock('../StripesContext', () => ({
     },
     okapi: {
       tenant: 't',
+    },
+    logger: {
+      log: () => {},
     }
   }),
 }));
