@@ -78,7 +78,7 @@ function getProvisionedApps(appModules, stripes, pathname, lastVisited, formatMe
   return apps;
 }
 
-export const AppOrderProvider = ({ children }) => {
+export const AppOrderProvider = ({ children }) => { // eslint-disable-line
   const { lastVisited } = useContext(LastVisitedContext);
   const { app } = useModules();
   const stripes = useStripes();
@@ -86,9 +86,10 @@ export const AppOrderProvider = ({ children }) => {
   const { formatMessage } = useIntl();
   const { getPreference, setPreference, removePreference } = usePreferences();
 
-  const { data: userAppList, isLoading, refetch: refetchAppList } = useQuery(`${stripes?.user?.user?.id}-pref-query`, () => {
-    return getPreference({ key: APPORDER_PREF_NAME, scope: APPORDER_PREF_SCOPE });
-  });
+  const { data: userAppList, isLoading, refetch: refetchAppList } = useQuery(
+    `${stripes?.user?.user?.id}-pref-query`,
+    () => getPreference({ key: APPORDER_PREF_NAME, scope: APPORDER_PREF_SCOPE })
+  );
 
   // returns list of apps in user-defined order. By alpha if no order defined.
   const apps = useMemo(() => {
@@ -130,7 +131,7 @@ export const AppOrderProvider = ({ children }) => {
     }
 
     return { navList, orderedApps };
-  }, [formatMessage, app, lastVisited, userAppList, pathname]); // omitted: stripes
+  }, [formatMessage, app, lastVisited, userAppList, pathname]); // eslint-disable-line
 
   const updateList = async (list) => {
     // clean the 'isNew' field;
