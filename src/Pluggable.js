@@ -32,6 +32,8 @@ const Pluggable = (props) => {
     }
 
     return cached;
+    // props.stripes is not stable on each re-render, which causes an infinite trigger
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [plugins]);
 
   if (cachedPlugins.length) {
