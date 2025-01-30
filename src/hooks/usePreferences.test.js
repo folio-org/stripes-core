@@ -6,7 +6,6 @@ import {
 } from 'react-query';
 
 import usePreferences from './usePreferences';
-import useOkapiKy from '../useOkapiKy';
 
 const testValue = { pref: '22' };
 const response = {

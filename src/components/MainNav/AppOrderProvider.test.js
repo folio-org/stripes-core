@@ -1,6 +1,6 @@
-import { renderHook, waitFor } from '@folio/jest-config-stripes/testing-library/react';
+import { renderHook } from '@folio/jest-config-stripes/testing-library/react';
 import { act } from 'react';
-// import { useLocation } from 'react-router-dom';
+
 import {
   QueryClient,
   QueryClientProvider,
@@ -12,8 +12,6 @@ import {
   AppOrderProvider,
   useAppOrderContext
 } from './AppOrderProvider';
-
-// import usePreferences from '../../hooks/usePreferences';
 
 const mockUseLocation = jest.fn(() => ({ pathname: 'home/' }));
 jest.mock('react-router-dom', () => ({
