@@ -42,12 +42,12 @@
       },
       {
         "permissionName": "mod-settings.owner.read.stripes-core.prefs.manage",
-        "displayName": "UI: read the user's own preference for the order of links in the main navigation.",
+        "displayName": "UI: read the user's own central preferences, such as order of links in the main navigation.",
         "visible": false
       },
       {
         "permissionName": "mod-settings.owner.write.stripes-core.prefs.manage",
-        "displayName": "UI: update the user's own preference for the order of links in the main navigation.",
+        "displayName": "UI: update the user's own central preferences, such as order of links in the main navigation.",
         "visible": false
       }
     ]
