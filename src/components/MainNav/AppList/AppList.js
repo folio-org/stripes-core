@@ -91,7 +91,7 @@ class AppList extends Component {
         {
           apps.map(app => {
             const isHidden = hiddenItemIds.includes(app.id);
-            // const isHidden = false;
+
             return (
               <li
                 className={classnames(css.navItem, { [css.hidden]: isHidden })}
