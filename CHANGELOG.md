@@ -12,6 +12,7 @@
 * On resuming session, spread session and `_self` together to preserve session values. Refs STCOR-912.
 * Fetch `/saml/check` when starting a new session, i.e. before discovery. Refs STCOR-933, STCOR-816.
 * Provide `useModuleInfo(path)` hook that maps paths to their implementing modules. Refs STCOR-932.
+* Remove remaining references to stripes.isEureka. Refs STCOR-938.
 
 ## [10.2.0](https://github.com/folio-org/stripes-core/tree/v10.2.0) (2024-10-11)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.1.1...v10.2.0)
