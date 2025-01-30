@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { isEqual, find } from 'lodash';
+import { isEqual } from 'lodash';
 import { useIntl } from 'react-intl';
 import { useLocation, useHistory } from 'react-router-dom';
 import { useQueryClient } from 'react-query';
@@ -69,7 +69,7 @@ const MainNav = () => {
     return () => {
       _unsubscribe();
     };
-  }, []);
+  }, []); // eslint-disable-line
 
   useEffect(() => {
     setSelectedApp(apps.find(entry => entry.active));

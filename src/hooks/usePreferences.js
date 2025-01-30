@@ -10,7 +10,7 @@ export default () => {
   const [id, setId] = useState(null);
   const userId = user.user.id;
 
-  const getPreference = useCallback(async ({ scope, key, callback }) => {
+  const getPreference = useCallback(async ({ scope, key }) => { // eslint-disable-line
     // get preferences by querying preferences with the userId, scope, and key...
     // this will return an array that's likely a single item long. We store the item's id in state so that we can update it later.
     let respJSON = null;
@@ -32,9 +32,9 @@ export default () => {
     } catch (err) {
       logger.log('pref', `error getting preference at scope: ${scope}, and key: ${key} for user: ${userId} - ${err.message}`);
     }
-  }, [id, ky, userId]);
+  }, [id, ky, userId]); // eslint-disable-line
 
-  const setPreference = useCallback(async ({ scope, key, value, callback }) => {
+  const setPreference = useCallback(async ({ scope, key, value }) => {
     const prefId = id || uuidv4();
     const payload = {
       id: prefId,
@@ -62,9 +62,9 @@ export default () => {
         logger.log('pref', `error updating preference at scope: ${scope}, and key: ${key} for user: ${userId} - ${err.message}`);
       }
     }
-  }, [id, ky, userId]);
+  }, [id, ky, userId]); // eslint-disable-line
 
-  const removePreference = useCallback(async ({ scope, key, callback }) => {
+  const removePreference = useCallback(async ({ scope, key }) => {
     try {
       if (id) {
         await ky.delete(`settings/entries/${id}`);
@@ -75,7 +75,7 @@ export default () => {
     } catch (err) {
       logger.log('pref', `error deleting preference at scope: ${scope}, and key: ${key} for user: ${userId} at id: ${id} - ${err.message}`);
     }
-  }, [id, ky, userId]);
+  }, [id, ky, userId]); // eslint-disable-line
 
   return {
     setPreference,

@@ -7,7 +7,6 @@ import classnames from 'classnames';
 import debounce from 'lodash/debounce';
 import PropTypes from 'prop-types';
 import css from './ResizeContainer.css';
-import isEqual from 'lodash/isEqual';
 
 class ResizeContainer extends React.Component {
   static propTypes = {

@@ -4,7 +4,6 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import sortBy from 'lodash/sortBy';
 
 import { NavListItem, NavListSection } from '@folio/stripes-components';
 
