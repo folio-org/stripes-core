@@ -1,5 +1,4 @@
-import { renderHook } from '@folio/jest-config-stripes/testing-library/react';
-import { act } from 'react';
+import { renderHook, act } from '@folio/jest-config-stripes/testing-library/react';
 
 import {
   QueryClient,
