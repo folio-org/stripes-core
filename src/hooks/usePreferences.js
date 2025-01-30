@@ -11,7 +11,6 @@ export default () => {
   const userId = user.user.id;
 
   const getPreference = useCallback(async ({ scope, key, callback }) => {
-    // const res = await localforage.getItem(key, callback);
     // get preferences by querying preferences with the userId, scope, and key...
     // this will return an array that's likely a single item long. We store the item's id in state so that we can update it later.
     let respJSON = null;
@@ -20,7 +19,7 @@ export default () => {
       resp = await ky.get(`settings/entries?query=userId=="${userId}" and scope=="${scope}" and key=="${key}"`);
       if (resp.ok) {
         respJSON = await resp.json();
-        if (respJSON.items.length === 1) {
+        if (respJSON.items.length > 0) {
           logger.log('pref', `found preference at scope: ${scope}, and key: ${key} for user: ${userId}`);
           setId(respJSON.items[0].id);
           return respJSON.items[0].value;
@@ -49,8 +48,8 @@ export default () => {
     // so we use the `POST` endpoint for saving... 'PUT', and including the id in the path is used for updating
     if (!id) {
       try {
-        setId(prefId);
         await ky.post('settings/entries', { json: payload });
+        setId(prefId);
         logger.log('pref', `created preference at scope: ${scope}, and key: ${key} for user: ${userId} with id: ${id} and value: ${value}`);
       } catch (err) {
         logger.log('pref', `error creating preference at scope: ${scope}, and key: ${key} for user: ${userId} - ${err.message}`);
