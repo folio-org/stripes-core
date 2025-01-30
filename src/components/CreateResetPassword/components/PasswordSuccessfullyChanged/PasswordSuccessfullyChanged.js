@@ -18,7 +18,7 @@ const PasswordSuccessfullyChanged = ({ history, stripes }) => {
 
   const handleRedirectClick = () => {
     // If using Eureka, go to base URL. Otherwise, if using Okapi then go to /login
-    if (stripes.config.isEureka) {
+    if (stripes.okapi.authnUrl) {
       history.push('/');
     } else {
       history.push('/login');
