@@ -21,7 +21,7 @@ describe('CreateResetPasswordControl', () => {
     clone: jest.fn(),
     config: {},
     okapi: {
-      url: 'http://test'
+      authnUrl: 'http://test'
     },
     hasInterface: jest.fn().mockReturnValue(true),
     store: {
