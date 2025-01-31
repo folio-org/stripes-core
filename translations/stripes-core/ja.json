@@ -160,5 +160,6 @@
     "errors.saml.missingToken": "No <code>code</code> query parameter.",
     "rtr.fixedLengthSession.timeRemaining": "セッションはまもなく終了します。残時間:",
     "logoutComplete": "You have logged out.",
-    "errors.oidc": "Error: server is forbidden, unreachable, or unavailable."
+    "errors.oidc": "Error: server is forbidden, unreachable, or unavailable.",
+    "title.logoutTimeout": "Inactivity log out"
 }
