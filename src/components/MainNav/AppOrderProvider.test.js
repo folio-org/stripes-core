@@ -355,12 +355,12 @@ describe('AppOrderProvider', () => {
     });
 
     describe('interaction with preferences', () => {
-      it('calling updateList calls the setPreference function', () =>{
+      it('calling updateList calls the setPreference function', () => {
         renderedHook.result.current.updateList([{ name: 'settings' }]);
         expect(mockSetPreference).toHaveBeenCalled();
       });
 
-      it('calling updateList calls the setPreference function', () =>{
+      it('calling updateList calls the setPreference function', () => {
         renderedHook.result.current.reset();
         expect(mockRemovePreference).toHaveBeenCalled();
       });
