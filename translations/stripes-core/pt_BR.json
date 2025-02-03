@@ -160,5 +160,6 @@
     "errors.saml.missingToken": "Nenhum parâmetro de consulta <code>code</code> .",
     "rtr.fixedLengthSession.timeRemaining": "Sua sessão terminará em breve! Tempo restante:",
     "logoutComplete": "Você efetuou logout.",
-    "errors.oidc": "Erro: o servidor está proibido, inacessível ou indisponível."
+    "errors.oidc": "Erro: o servidor está proibido, inacessível ou indisponível.",
+    "title.logoutTimeout": "Sair por inatividade"
 }
