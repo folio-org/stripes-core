@@ -1,6 +1,6 @@
 # Change history for stripes-core
 
-## 10.3.0 IN PROGRESS
+## 11.0.0 IN PROGRESS
 
 * Conditionally use `/users-keycloak/_self` endpoint when `users-keycloak` interface is present. Refs STCOR-835.
 * Wait longer before declaring a rotation request to be stale. Refs STCOR-895.
