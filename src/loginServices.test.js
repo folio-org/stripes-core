@@ -62,9 +62,6 @@ jest.mock('stripes-config', () => ({
       remus: { name: 'remus', clientId: 'remus-application' },
     }
   },
-  okapi: {
-    authnUrl: 'https://authn.url',
-  },
   translations: {}
 }));
 
