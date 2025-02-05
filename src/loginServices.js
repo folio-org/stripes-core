@@ -400,12 +400,12 @@ function loadResources(store, tenant, userId) {
   // in mod-configuration so we can only retrieve them if the user has
   // read-permission for configuration entries.
   if (canReadConfig(store)) {
-    const okapiUrl = store.getState()?.okapi?.url;
+    const okapi = store.getState()?.okapi;
     promises = [
-      getLocale(okapiUrl, store, tenant),
-      getUserLocale(okapiUrl, store, tenant, userId),
-      getPlugins(okapiUrl, store, tenant),
-      getBindings(okapiUrl, store, tenant),
+      getLocale(okapi.url, store, tenant),
+      getUserLocale(okapi.url, store, tenant, userId),
+      getPlugins(okapi.url, store, tenant),
+      getBindings(okapi.url, store, tenant),
     ];
   }
 
