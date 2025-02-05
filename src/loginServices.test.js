@@ -95,6 +95,7 @@ describe('createOkapiSession', () => {
       getState: () => ({
         okapi: {
           currentPerms: [],
+          url:'okapiUrl'
         }
       }),
     };
@@ -267,6 +268,7 @@ describe('validateUser', () => {
   it('handles fetch failure from "_self"', async () => {
     const store = {
       dispatch: jest.fn(),
+      getState: () => ({ okapi: { tenant: 'monkeyURL' } }),
     };
 
     mockFetchError();
@@ -279,6 +281,7 @@ describe('validateUser', () => {
   it('handles valid user with empty tenant in session', async () => {
     const store = {
       dispatch: jest.fn(),
+      getState: () => ({ okapi: { tenant: 'monkeyURL' } }),
     };
 
     const tenant = 'tenant';
@@ -307,6 +310,7 @@ describe('validateUser', () => {
   it('handles valid user with tenant in session', async () => {
     const store = {
       dispatch: jest.fn(),
+      getState: () => ({ okapi: { tenant: 'monkeyURL' } }),
     };
 
     const tenant = 'tenant';
@@ -332,6 +336,7 @@ describe('validateUser', () => {
   it('overwrites session data with new values from _self', async () => {
     const store = {
       dispatch: jest.fn(),
+      getState: () => ({ okapi: { tenant: 'monkeyURL' } }),
     };
 
     const tenant = 'tenant';
