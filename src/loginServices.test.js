@@ -23,7 +23,8 @@ import {
   updateUser,
   validateUser,
   IS_LOGGING_OUT,
-  SESSION_NAME, getStoredTenant
+  SESSION_NAME, getStoredTenant,
+  requestLogin,
 } from './loginServices';
 
 import {
@@ -207,6 +208,7 @@ describe('processOkapiSession', () => {
       getState: () => ({
         okapi: {
           currentPerms: [],
+          authnUrl: 'keycloakURL'
         }
       }),
     };
@@ -727,6 +729,68 @@ describe('unauthorizedPath functions', () => {
       const parsedTenant = getStoredTenant();
 
       expect(parsedTenant).toStrictEqual(value);
+    });
+  });
+
+  describe('requestLogin', () => {
+    afterEach(() => {
+      mockFetchCleanUp();
+    });
+    it('should authenticate via Keycloak when authnUrl is configured', async () => {
+      const mockStore = {
+        getState: () => ({
+          okapi: {
+            authnUrl: 'https://keycloakUrl.com',
+            clientId: 'monkey-id',
+            tenant:'monkey',
+
+            url: 'monkey'
+          }
+        }),
+        dispatch: jest.fn()
+      };
+
+      mockFetchSuccess({});
+
+      await requestLogin(
+        'https://okapiUrl.com',
+        mockStore,
+        'test-tenant',
+        { username: 'testuser', password: 'testpass' }
+      );
+
+      expect(global.fetch).toHaveBeenCalledWith(
+        'https://keycloakUrl.com',
+        { method: 'POST', body: expect.any(URLSearchParams) }
+      );
+    });
+
+    it('should use legacy authentication when Keycloak is not available', async () => {
+      const mockStore = {
+        getState: () => ({
+          okapi: {},
+        }),
+        dispatch: jest.fn()
+      };
+      mockFetchSuccess({});
+
+      await requestLogin(
+        'http://okapi-url',
+        mockStore,
+        'test-tenant',
+        { username: 'testuser', password: 'testpass' }
+      );
+
+      expect(global.fetch).toHaveBeenCalledWith(
+        'http://okapi-url/bl-users/login?expandPermissions=true&fullPermissions=true',
+        expect.objectContaining({
+          method: 'POST',
+          headers: expect.objectContaining({
+            'X-Okapi-Tenant': 'test-tenant',
+            'Content-Type': 'application/json'
+          })
+        })
+      );
     });
   });
 });

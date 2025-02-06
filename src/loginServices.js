@@ -914,7 +914,7 @@ export function requestLogin(okapiUrl, store, tenant, data) {
  *
  * @returns {Promise} Promise resolving to the response of the request
  */
-function fetchUserWithPerms(okapiUrl, tenant, token, rtrIgnore = false, isKeycloak) {
+function fetchUserWithPerms(okapiUrl, tenant, token, rtrIgnore = false, isKeycloak = false) {
   const usersPath = isKeycloak ? 'users-keycloak' : 'bl-users';
   return fetch(
     `${okapiUrl}/${usersPath}/_self?expandPermissions=true&fullPermissions=true`,
@@ -931,11 +931,12 @@ function fetchUserWithPerms(okapiUrl, tenant, token, rtrIgnore = false, isKeyclo
  * @param {string} okapiUrl
  * @param {redux store} store
  * @param {string} tenant
+ * @param {string} token
  *
  * @returns {Promise} Promise resolving to the response-body (JSON) of the request
  */
 export function requestUserWithPerms(okapiUrl, store, tenant, token) {
-  const isKeycloak = store.getState().okapi?.authnUrl;
+  const isKeycloak = Boolean(store.getState().okapi?.authnUrl);
   return fetchUserWithPerms(okapiUrl, tenant, token, !token, isKeycloak)
     .then((resp) => {
       if (resp.ok) {
