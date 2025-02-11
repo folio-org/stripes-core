@@ -42,7 +42,7 @@
  */
 
 import ms from 'ms';
-import { okapi as okapiConfig } from 'stripes-config';
+import { okapi as okapiConfig, config } from 'stripes-config';
 import {
   setRtrTimeout,
   setRtrFlsTimeout,
@@ -62,8 +62,8 @@ import {
 } from './Errors';
 import {
   RTR_AT_EXPIRY_IF_UNKNOWN,
-  RTR_AT_TTL_FRACTION,
   RTR_ERROR_EVENT,
+  RTR_FORCE_REFRESH_EVENT,
   RTR_FLS_TIMEOUT_EVENT,
   RTR_TIME_MARGIN_IN_MS,
   RTR_FLS_WARNING_EVENT,
@@ -77,10 +77,27 @@ const OKAPI_FETCH_OPTIONS = {
 };
 
 export class FFetch {
-  constructor({ logger, store, rtrConfig }) {
+  constructor({ logger, store }) {
     this.logger = logger;
     this.store = store;
-    this.rtrConfig = rtrConfig;
+  }
+
+  /**
+   * registers a listener for the RTR_FORCE_REFRESH_EVENT
+   */
+  registerEventListener = () => {
+    this.globalEventCallback = () => {
+      this.logger.log('rtr', 'forcing rotation due to RTR_FORCE_REFRESH_EVENT');
+      rtr(this.nativeFetch, this.logger, this.rotateCallback, this.store.getState().okapi);
+    };
+    window.addEventListener(RTR_FORCE_REFRESH_EVENT, this.globalEventCallback);
+  }
+
+  /**
+   * unregister the listener for the RTR_FORCE_REFRESH_EVENT
+   */
+  unregisterEventListener = () => {
+    window.removeEventListener(RTR_FORCE_REFRESH_EVENT, this.globalEventCallback);
   }
 
   /**
@@ -112,11 +129,11 @@ export class FFetch {
   scheduleRotation = (rotationP) => {
     rotationP.then((rotationInterval) => {
       // AT refresh interval: a large fraction of the actual AT TTL
-      const atInterval = (rotationInterval.accessTokenExpiration - Date.now()) * RTR_AT_TTL_FRACTION;
+      const atInterval = (rotationInterval.accessTokenExpiration - Date.now()) * config.rtr.rotationIntervalFraction;
 
       // RT timeout interval (session will end) and warning interval (warning that session will end)
       const rtTimeoutInterval = (rotationInterval.refreshTokenExpiration - Date.now());
-      const rtWarningInterval = (rotationInterval.refreshTokenExpiration - Date.now()) - ms(this.rtrConfig.fixedLengthSessionWarningTTL);
+      const rtWarningInterval = (rotationInterval.refreshTokenExpiration - Date.now()) - ms(config.rtr.fixedLengthSessionWarningTTL);
 
       // schedule AT rotation IFF the AT will expire before the RT. this avoids
       // refresh-thrashing near the end of the FLS with progressively shorter
@@ -132,7 +149,7 @@ export class FFetch {
       }
 
       // schedule FLS end-of-session warning
-      this.logger.log('rtr-fls', `end-of-session warning at ${new Date(rotationInterval.refreshTokenExpiration - ms(this.rtrConfig.fixedLengthSessionWarningTTL))}`);
+      this.logger.log('rtr-fls', `end-of-session warning at ${new Date(rotationInterval.refreshTokenExpiration - ms(config.rtr.fixedLengthSessionWarningTTL))}`);
       this.store.dispatch(setRtrFlsWarningTimeout(setTimeout(() => {
         this.logger.log('rtr-fls', 'emitting RTR_FLS_WARNING_EVENT');
         window.dispatchEvent(new Event(RTR_FLS_WARNING_EVENT));
