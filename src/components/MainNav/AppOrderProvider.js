@@ -140,6 +140,14 @@ export const AppOrderProvider = ({ children }) => { // eslint-disable-line react
       orderedApps = platformApps.map(({ name }) => ({ name }));
       navList = platformApps;
     } else {
+      orderedApps = orderedApps.filter(({ name }) => {
+        if (name === 'settings') {
+          return stripes.hasPerm('settings.enabled');
+        }
+        const perm = `module.${name}.enabled`;
+        return stripes.hasPerm(perm);
+      });
+
       // sort the platformApps according to the preference.
       navList = platformApps.sort((a, b) => {
         return orderedApps.findIndex(({ name }) => a.name === name) -
