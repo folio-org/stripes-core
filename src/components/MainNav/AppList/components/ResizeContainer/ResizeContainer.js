@@ -5,6 +5,7 @@
 import React from 'react';
 import classnames from 'classnames';
 import debounce from 'lodash/debounce';
+import isEqual from 'lodash/isEqual';
 import PropTypes from 'prop-types';
 import css from './ResizeContainer.css';
 
@@ -44,7 +45,7 @@ class ResizeContainer extends React.Component {
     // Update hidden items when the current app ID changes
     // to make sure that no items are hidden behind the current app label
     if (currentAppId !== prevProps.currentAppId ||
-      items !== prevProps.items
+      !isEqual(items, prevProps.items)
     ) {
       this.updateHiddenItems();
     }

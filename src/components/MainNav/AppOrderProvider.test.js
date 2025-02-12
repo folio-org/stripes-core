@@ -64,6 +64,20 @@ const wrapper = ({ children }) => (
   </LastVisitedContext.Provider>
 );
 
+const settingsOnly = [{
+  active: false,
+  description: 'stripes-core.folioSettings',
+  displayName: 'stripes-core.settings',
+  href: '/settings',
+  iconData: {
+    alt: 'stripes-core.tenantSettingsLabel',
+    src: {},
+    title: 'stripes-core.settings',
+  },
+  id: 'clickable-settings',
+  name: 'settings',
+  route: '/settings',
+}];
 
 // apps as per stripes-config...
 const testAppModules = [
@@ -155,20 +169,7 @@ const testOrderedNoPref = [
     description: 'Item Check-in',
     version: '9.3.109000000926'
   },
-  {
-    displayName: 'stripes-core.settings',
-    name: 'settings',
-    id: 'clickable-settings',
-    href: '/settings',
-    active: false,
-    description: 'FOLIO settings',
-    iconData: {
-      src: {},
-      alt: 'Tenant Settings',
-      title: 'Settings'
-    },
-    route: '/settings'
-  }
+  ...settingsOnly
 ];
 
 // default order preference (value that's derived when no user preferred order is present) - same order as config.
@@ -242,20 +243,21 @@ const testOrderedWithPref = [
     description: 'Description for bulk edit',
     version: '4.2.2090000003517'
   },
-  {
-    displayName: 'stripes-core.settings',
-    name: 'settings',
-    id: 'clickable-settings',
-    href: '/settings',
-    active: false,
-    description: 'FOLIO settings',
-    iconData: {
-      src: {},
-      alt: 'Tenant Settings',
-      title: 'Settings'
-    },
-    route: '/settings'
-  }
+  ...settingsOnly
+  // {
+  //   displayName: 'stripes-core.settings',
+  //   name: 'settings',
+  //   id: 'clickable-settings',
+  //   href: '/settings',
+  //   active: false,
+  //   description: 'stripes-core.folioSettings',
+  //   iconData: {
+  //     src: {},
+  //     alt: 'stripes-core.tenantSettingsLabel',
+  //     title: 'stripes-core.settings'
+  //   },
+  //   route: '/settings'
+  // }
 ];
 
 // order changed to move 'checkin' to the start of the list...
@@ -279,20 +281,7 @@ const testPreferencedOrderWithPref = [
 
 describe('AppOrderProvider', () => {
   let renderedHook;
-  const settingsOnly = [{
-    active: false,
-    description: 'FOLIO settings',
-    displayName: 'stripes-core.settings',
-    href: '/settings',
-    iconData: {
-      alt: 'Tenant Settings',
-      src: {},
-      title: 'Settings',
-    },
-    id: 'clickable-settings',
-    name: 'settings',
-    route: '/settings',
-  }];
+
 
   describe('with no modules', () => {
     beforeAll(async () => {

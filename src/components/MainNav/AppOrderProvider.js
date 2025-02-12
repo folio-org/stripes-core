@@ -14,19 +14,47 @@ import settingsIcon from './settings.svg';
 const APPORDER_PREF_NAME = 'user-main-nav-order';
 const APPORDER_PREF_SCOPE = 'stripes-core.prefs.manage';
 
+const SETTINGS_ROUTE = '/settings';
+
+/**
+ * AppOrderContext - wraps the main navigation components and the module view, passing its
+ * value object to both.
+ */
 export const AppOrderContext = createContext({
+  /**
+   * whether or not the persisted preference request is in progress.
+  */
   isLoading: true,
+  /**
+   *  Persisted array of app objects for re-ordering - the user-preferred app order.
+   *  The objects in the array have the shape:
+   *  { name: string - the module package name, sans scope and `ui-` prefix }
+   */
   listOrder: [],
+  /**
+   * list of app link information ordered by user preference, falling back to the order from stripes-config.
+  */
   apps: [],
+  /**
+   * Function to update the preference. Accepts an list of objects with shape:
+   * { name: string - the module package name, sans scope and `ui-` prefix }
+   */
   updateList: () => {},
+  /**
+   * Function to delete any the app order preference and reset the list.
+  */
   reset: () => {},
 });
 
+// hook for AppOrderContext consumption.
 export const useAppOrderContext = () => {
   return useContext(AppOrderContext);
 };
 
-function getProvisionedApps(appModules, stripes, pathname, lastVisited, formatMessage) {
+/**
+ *  returns the list of apps/app nav information as filtered by permissions.
+*/
+function getAllowedApps(appModules, stripes, pathname, lastVisited, formatMessage) {
   const apps = appModules.map((entry) => {
     const name = entry.module.replace(packageName.PACKAGE_SCOPE_REGEX, '');
     const perm = `module.${name}.enabled`;
@@ -64,21 +92,27 @@ function getProvisionedApps(appModules, stripes, pathname, lastVisited, formatMe
       displayName: formatMessage({ id: 'stripes-core.settings' }),
       name: 'settings',
       id: 'clickable-settings',
-      href: lastVisited.x_settings || '/settings',
-      active: pathname.startsWith('/settings'),
-      description: 'FOLIO settings',
+      href: lastVisited.x_settings || SETTINGS_ROUTE,
+      active: pathname.startsWith(SETTINGS_ROUTE),
+      description: formatMessage({ id: 'stripes-core.folioSettings' }),
       iconData: {
         src: settingsIcon,
-        alt: 'Tenant Settings',
-        title: 'Settings',
+        alt: formatMessage({ id: 'stripes-core.tenantSettingsLabel' }),
+        title: formatMessage({ id: 'stripes-core.settings' }),
       },
-      route: '/settings'
+      route: SETTINGS_ROUTE
     });
   }
   return apps;
 }
 
-export const AppOrderProvider = ({ children }) => { // eslint-disable-line
+/**
+ * Context provider component for AppOrderContext.
+ * @param {object} props - The component props
+ * @param {React.ReactNode} props.children - The children to render within the provider
+ * @returns {JSX.Element} - The context provider with children
+ */
+export const AppOrderProvider = ({ children }) => { // eslint-disable-line react/prop-types
   const { lastVisited } = useContext(LastVisitedContext);
   const { app } = useModules();
   const stripes = useStripes();
@@ -94,34 +128,28 @@ export const AppOrderProvider = ({ children }) => { // eslint-disable-line
   // returns list of apps in user-defined order. By alpha if no order defined.
   const apps = useMemo(() => {
     if (!stripes) return [];
-    const platformApps = getProvisionedApps(app, stripes, pathname, lastVisited, formatMessage);
+    // get list of available apps filtered based on user permissions, in configuration order.
+    const platformApps = getAllowedApps(app, stripes, pathname, lastVisited, formatMessage);
 
     let orderedApps = userAppList || []; // the persisted, user-preferred app order.
     let navList = []; // contains the ultimate reordered array of app nav items.
 
-    // No length in the persisted apps means apps ordered by alpha (default)
+    // No length in the persisted apps means apps are ordered by as configured (stripes-config) (default)
     if (!orderedApps?.length) {
       // default ordered apps just contain a subset of the fields in the app object...
       orderedApps = platformApps.map(({ name }) => ({ name }));
       navList = platformApps;
     } else {
-      // reorder apps to the persisted preference value...
-      navList = orderedApps.map((listing) => {
-        const { name: appName } = listing;
-        const appIndex = platformApps.findIndex((module) => appName === module.name);
-
-        if (appIndex !== -1) {
-          return platformApps[appIndex];
-        }
-
-        return false;
+      // sort the platformApps according to the preference.
+      navList = platformApps.sort((a, b) => {
+        return orderedApps.findIndex(({ name }) => a.name === name) -
+        orderedApps.findIndex(({ name }) => b.name === name);
       });
 
       // find the apps from the platform that are not saved in user-reordered list and tack them on at the end.
       // these cover permission changes/apps added... can be labeled as 'new' in the preference settings.
       platformApps.forEach((platApp) => {
-        const orderedIndex = orderedApps.findIndex((oa) => oa.name === platApp.name);
-        if (orderedIndex === -1) {
+        if (!orderedApps.find((oa) => oa.name === platApp.name)) {
           orderedApps.push({
             name: platApp.name,
             isNew: true,
