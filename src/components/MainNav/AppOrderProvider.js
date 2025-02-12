@@ -151,8 +151,17 @@ export const AppOrderProvider = ({ children }) => { // eslint-disable-line react
 
       // sort the platformApps according to the preference.
       navList = platformApps.sort((a, b) => {
-        return orderedApps.findIndex(({ name }) => a.name === name) -
-        orderedApps.findIndex(({ name }) => b.name === name);
+        const aIndex = orderedApps.findIndex(({ name }) => a.name === name);
+        const bIndex = orderedApps.findIndex(({ name }) => b.name === name);
+
+        if (bIndex === -1) {
+          return -1;
+        }
+
+        if (aIndex === -1) {
+          return 1;
+        }
+        return aIndex - bIndex;
       });
 
       // find the apps from the platform that are not saved in user-reordered list and tack them on at the end.
