@@ -19,7 +19,7 @@
     "lint": "eslint . && stylelint \"src/**/*.css\"",
     "eslint": "eslint .",
     "stylelint": "stylelint \"src/**/*.css\"",
-    "formatjs-compile": "formatjs compile-folder --ast --format simple ./translations/stripes-core ./translations/stripes-core/compiled",
+    "formatjs-compile": "stripes translate compile",
     "build-mod-descriptor": "stripes mod descriptor --full --strict | jq '.[]' > module-descriptor.json"
   },
   "stripes": {
@@ -54,7 +54,6 @@
     "@folio/stripes-connect": "^10.0.0",
     "@folio/stripes-logger": "^1.0.0",
     "@folio/stripes-testing": "^5.0.0",
-    "@formatjs/cli": "^6.1.3",
     "chai": "^4.1.2",
     "eslint": "^7.32.0",
     "jest-fetch-mock": "^3.0.3",
@@ -63,7 +62,7 @@
     "moment": "^2.29.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-intl": "^6.4.4",
+    "react-intl": "^7.1.5",
     "react-redux": "^8.0.5",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
