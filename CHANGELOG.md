@@ -14,6 +14,7 @@
 * Provide `useModuleInfo(path)` hook that maps paths to their implementing modules. Refs STCOR-932.
 * Remove remaining references to stripes.isEureka. Refs STCOR-938.
 * *BREAKING* Upgrade `@folio/stripes-*` dependencies.
+* *BREAKING* remove token-based authentication code. Refs STCOR-918.
 
 ## [10.2.0](https://github.com/folio-org/stripes-core/tree/v10.2.0) (2024-10-11)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.1.1...v10.2.0)

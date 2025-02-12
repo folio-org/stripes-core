@@ -891,7 +891,7 @@ export function requestLogin(okapiUrl, store, tenant, data) {
       .then(resp => processOkapiSession(store, tenant, resp));
   } else {
     // legacy built-in authentication
-    const loginPath = config.useSecureTokens ? 'login-with-expiry' : 'login';
+    const loginPath = 'login-with-expiry';
     return fetch(`${okapiUrl}/bl-users/${loginPath}?expandPermissions=true&fullPermissions=true`, {
       body: JSON.stringify(data),
       credentials: 'include',
