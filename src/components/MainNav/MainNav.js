@@ -71,6 +71,8 @@ const MainNav = () => {
     };
   }, []); // eslint-disable-line
 
+  // if the location changes, we need to update the current module/query resource.
+  // This logic changes the visible current app at the starting side of the Main Navigation.
   useEffect(() => {
     setSelectedApp(apps.find(entry => entry.active));
     const nextCurModule = getCurrentModule(modules, location);
