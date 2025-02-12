@@ -14,7 +14,7 @@
 * Provide `useModuleInfo(path)` hook that maps paths to their implementing modules. Refs STCOR-932.
 * Remove remaining references to stripes.isEureka. Refs STCOR-938.
 * **Breaking Change ** add dependency to `settings` interface. Part of STCOR-936.
-* Implent user-preferred app re-ordering in the main navigation. Refs STCOR-936.
+* Implement user-preferred app re-ordering in the main navigation. Refs STCOR-936.
   * Add permissions `mod-settings.owner.read.stripes-core.prefs.manage` and `mod-settings.owner.write.stripes-core.prefs.manage`
   * Implement an `AppOrderProvider` - to provide the app listing to the `MainNav` and app-level settings implementation.
   * Implement `usePreferences` hook to be exposed later for interaction with `mod-settings` user preferences.
