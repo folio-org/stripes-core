@@ -98,6 +98,7 @@
   "loggingIn": "Logging in...",
   "settings": "Settings",
   "folioSettings": "FOLIO settings",
+  "tenantSettingsLabel" : "Tenant Settings",
   "loginViaSSO": "Log in via SSO",
   "setPassword": "Set password",
   "settingPassword": "Setting password...",
@@ -105,7 +106,6 @@
   "settingChoose": "Choose settings",
   "tenantChoose": "Select your tenant/library",
   "tenantLibrary": "Tenant/Library",
-
   "mainnav.showAllApplicationsButtonLabel": "Apps",
   "mainnav.showAllApplicationsButtonAriaLabel": "All applications",
   "mainnav.currentAppAriaLabel": "Current open application: {appName} (Click to go home)",
