@@ -1,6 +1,6 @@
 # Change history for stripes-core
 
-## 10.3.0 IN PROGRESS
+## 11.0.0 IN PROGRESS
 
 * Conditionally use `/users-keycloak/_self` endpoint when `users-keycloak` interface is present. Refs STCOR-835.
 * Wait longer before declaring a rotation request to be stale. Refs STCOR-895.
@@ -13,6 +13,7 @@
 * Fetch `/saml/check` when starting a new session, i.e. before discovery. Refs STCOR-933, STCOR-816.
 * Provide `useModuleInfo(path)` hook that maps paths to their implementing modules. Refs STCOR-932.
 * Remove remaining references to stripes.isEureka. Refs STCOR-938.
+* *BREAKING* Upgrade `@folio/stripes-*` dependencies.
 * **Breaking Change ** add dependency to `settings` interface. Part of STCOR-936.
 * Implement user-preferred app re-ordering in the main navigation. Refs STCOR-936.
   * Add permissions `mod-settings.owner.read.stripes-core.prefs.manage` and `mod-settings.owner.write.stripes-core.prefs.manage`
