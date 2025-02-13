@@ -196,7 +196,7 @@ class MainNav extends Component {
                 />
                 <NavDivider md="hide" />
                 <NavButton
-                  aria-label="Help button"
+                  aria-label={intl.formatMessage({ id: 'stripes-core.help' })}
                   data-test-item-help-button
                   href={helpUrl}
                   icon={<Icon
