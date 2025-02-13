@@ -878,29 +878,15 @@ export function checkOkapiSession(okapiUrl, store, tenant) {
  * @returns {Promise}
  */
 export function requestLogin(okapiUrl, store, tenant, data) {
-  // got Keycloak?
-  if (store.getState().okapi.authnUrl) {
-    return fetch(store.getState().okapi.authnUrl, {
-      method: 'POST',
-      body: new URLSearchParams({
-        ...data,
-        'grant_type': 'password',
-        'client_id': store.getState()?.okapi?.clientId,
-      })
-    })
-      .then(resp => processOkapiSession(store, tenant, resp));
-  } else {
-    // legacy built-in authentication
-    const loginPath = config.useSecureTokens ? 'login-with-expiry' : 'login';
-    return fetch(`${okapiUrl}/bl-users/${loginPath}?expandPermissions=true&fullPermissions=true`, {
-      body: JSON.stringify(data),
-      credentials: 'include',
-      headers: { 'X-Okapi-Tenant': tenant, 'Content-Type': 'application/json' },
-      method: 'POST',
-      mode: 'cors',
-    })
-      .then(resp => processOkapiSession(store, tenant, resp));
-  }
+  const loginPath = config.useSecureTokens ? 'login-with-expiry' : 'login';
+  return fetch(`${okapiUrl}/bl-users/${loginPath}?expandPermissions=true&fullPermissions=true`, {
+    body: JSON.stringify(data),
+    credentials: 'include',
+    headers: { 'X-Okapi-Tenant': tenant, 'Content-Type': 'application/json' },
+    method: 'POST',
+    mode: 'cors',
+  })
+    .then(resp => processOkapiSession(store, tenant, resp));
 }
 
 /**

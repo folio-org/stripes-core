@@ -736,36 +736,8 @@ describe('unauthorizedPath functions', () => {
     afterEach(() => {
       mockFetchCleanUp();
     });
-    it('should authenticate via Keycloak when authnUrl is configured', async () => {
-      const mockStore = {
-        getState: () => ({
-          okapi: {
-            authnUrl: 'https://keycloakUrl.com',
-            clientId: 'monkey-id',
-            tenant:'monkey',
 
-            url: 'monkey'
-          }
-        }),
-        dispatch: jest.fn()
-      };
-
-      mockFetchSuccess({});
-
-      await requestLogin(
-        'https://okapiUrl.com',
-        mockStore,
-        'test-tenant',
-        { username: 'testuser', password: 'testpass' }
-      );
-
-      expect(global.fetch).toHaveBeenCalledWith(
-        'https://keycloakUrl.com',
-        { method: 'POST', body: expect.any(URLSearchParams) }
-      );
-    });
-
-    it('should use legacy authentication when Keycloak is not available', async () => {
+    it('should authenticate and create session when valid credentials provided', async () => {
       const mockStore = {
         getState: () => ({
           okapi: {},
