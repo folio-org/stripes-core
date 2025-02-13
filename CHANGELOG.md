@@ -15,6 +15,7 @@
 * Remove remaining references to stripes.isEureka. Refs STCOR-938.
 * *BREAKING* Upgrade `@folio/stripes-*` dependencies.
 * *BREAKING* Upgrade `react-intl` to `^v7`. Refs STCOR-945.
+* Change Help icon aria label to just Help in MainNav component. Refs STCOR-931.
 * *BREAKING* remove token-based authentication code. Refs STCOR-918.
 * *BREAKING* replace useSecureTokens conditionalsRefs STCOR-922.
 
