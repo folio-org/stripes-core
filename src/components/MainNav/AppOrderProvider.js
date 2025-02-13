@@ -134,9 +134,9 @@ export const AppOrderProvider = ({ children }) => { // eslint-disable-line react
     let orderedApps = userAppList || []; // the persisted, user-preferred app order.
     let navList = []; // contains the ultimate reordered array of app nav items.
 
-    // No length in the persisted apps means apps are ordered by as configured (stripes-config) (default)
+    // No length in the persisted preference (orderedApps) means that apps should just be ordered as configured from stripes-config. (default)
     if (!orderedApps?.length) {
-      // default ordered apps just contain a subset of the fields in the app object...
+      // value for the order preference just contain a subset of the fields in the app object...
       orderedApps = platformApps.map(({ name }) => ({ name }));
       navList = platformApps;
     } else {
@@ -149,7 +149,8 @@ export const AppOrderProvider = ({ children }) => { // eslint-disable-line react
         return stripes.hasPerm(perm);
       });
 
-      // sort the platformApps according to the preference.
+      // sort the platformApps according to the preference. Apps not persisted in the preference are
+      // sent to the back of the list. Otherwise they are ordered the same as the preference list.
       navList = platformApps.sort((a, b) => {
         const aIndex = orderedApps.findIndex(({ name }) => a.name === name);
         const bIndex = orderedApps.findIndex(({ name }) => b.name === name);
