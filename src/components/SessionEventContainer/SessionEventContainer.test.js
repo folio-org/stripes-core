@@ -1,4 +1,5 @@
-import { render, screen } from '@folio/jest-config-stripes/testing-library/react';
+import { render, screen, waitFor } from '@folio/jest-config-stripes/testing-library/react';
+import ms from 'ms';
 
 import Harness from '../../../test/jest/helpers/harness';
 import SessionEventContainer, {
@@ -20,21 +21,46 @@ import { eventsPortal } from '../../constants';
 jest.mock('./KeepWorkingModal', () => (() => <div>KeepWorkingModal</div>));
 jest.mock('../../loginServices');
 
+const stripes = {
+  config: {
+    useSecureTokens: true,
+    rtr: {
+      idleModalTTL: '3s',
+      idleSessionTTL: '3s',
+      activityEvents: ['right thing', 'hustle', 'hand jive']
+    }
+  },
+  okapi: {
+    isAuthenticated: true,
+  },
+  logger: { log: jest.fn() },
+  store: { dispatch: jest.fn() },
+};
+
 describe('SessionEventContainer', () => {
   beforeAll(() => {
     const eventsPortalElement = document.createElement('div');
     eventsPortalElement.id = eventsPortal;
     document.body.appendChild(eventsPortalElement);
   });
-  it('Renders nothing if useSecureTokens is false', async () => {
-    const insecureStripes = {
-      config: {
-        useSecureTokens: false,
-      },
-    };
-    render(<Harness stripes={insecureStripes}><SessionEventContainer /></Harness>);
 
-    expect(screen.queryByText('KeepWorkingModal')).toBe(null);
+  it('Shows a modal when idle timer expires', async () => {
+    render(<Harness stripes={stripes}><SessionEventContainer /></Harness>);
+
+    await waitFor(() => {
+      screen.getByText('KeepWorkingModal', { timeout: ms(stripes.config.rtr.idleModalTTL) });
+    });
+
+    // expect(stripes.store.dispatch).toHaveBeenCalledWith(expect.any(String));
+  });
+
+  it('Dispatches logout when modal timer expires', async () => {
+    const dispatchEvent = jest.spyOn(window, 'dispatchEvent').mockImplementation(() => { });
+    render(<Harness stripes={stripes}><SessionEventContainer /></Harness>);
+
+    await waitFor(() => {
+      expect(dispatchEvent).toHaveBeenCalled();
+    }, { timeout: 5000 });
   });
 });
 

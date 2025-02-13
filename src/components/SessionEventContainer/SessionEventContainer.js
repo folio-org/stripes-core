@@ -1,14 +1,21 @@
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
+import PropTypes from 'prop-types';
+import createInactivityTimer from 'inactivity-timer';
+import ms from 'ms';
 
 import { SESSION_NAME, setUnauthorizedPathToSession } from '../../loginServices';
 import KeepWorkingModal from './KeepWorkingModal';
 import { useStripes } from '../../StripesContext';
 import {
   RTR_ACTIVITY_CHANNEL,
+  RTR_ERROR_EVENT,
+  RTR_FLS_TIMEOUT_EVENT,
+  RTR_FLS_WARNING_EVENT,
   RTR_TIMEOUT_EVENT
 } from '../Root/constants';
 import { toggleRtrModal } from '../../okapiActions';
+import FixedLengthSessionWarning from './FixedLengthSessionWarning';
 import { eventsPortal } from '../../constants';
 
 //
@@ -121,11 +128,15 @@ export const thisWindowActivity = (_e, stripes, timers, broadcastChannel) => {
  * stripes.config.js in the `config.rtr` object by the values `idleSessionTTL`
  * and `idleModalTTL`, respectively; the values must be strings parsable by ms.
  *
+ * @param {object} history
  * @returns KeepWorkingModal or null
  */
-const SessionEventContainer = () => {
+const SessionEventContainer = ({ history }) => {
   // is the "keep working?" modal visible?
   const [isVisible, setIsVisible] = useState(false);
+
+  // is the fixed-length-session warning visible?
+  const [isFlsVisible, setIsFlsVisible] = useState(false);
 
   // inactivity timers
   const timers = useRef();
@@ -177,6 +188,61 @@ const SessionEventContainer = () => {
     // i.e. same keys as channels, but the value is the identically named object
     const channelListeners = { window, bc };
 
+    const { idleModalTTL, idleSessionTTL, activityEvents } = stripes.config.rtr;
+
+    // inactive timer: show the "keep working?" modal
+    const showModalIT = createInactivityTimer(ms(idleSessionTTL) - ms(idleModalTTL), () => {
+      stripes.logger.log('rtr', 'session idle; showing modal');
+      stripes.store.dispatch(toggleRtrModal(true));
+      setIsVisible(true);
+    });
+    showModalIT.signal();
+
+    // inactive timer: logout
+    const logoutIT = createInactivityTimer(idleSessionTTL, () => {
+      stripes.logger.log('rtr', 'session idle; dispatching RTR_TIMEOUT_EVENT');
+      // set a localstorage key so other windows know it was a timeout
+      localStorage.setItem(RTR_TIMEOUT_EVENT, 'true');
+
+      // dispatch a timeout event for handling in this window
+      window.dispatchEvent(new Event(RTR_TIMEOUT_EVENT));
+    });
+    logoutIT.signal();
+
+    timers.current = { showModalIT, logoutIT };
+
+    // RTR error in this window: logout
+    channels.window[RTR_ERROR_EVENT] = (e) => thisWindowRtrError(e, stripes, history);
+
+    // idle session timeout in this window: logout
+    channels.window[RTR_TIMEOUT_EVENT] = (e) => thisWindowRtrIstTimeout(e, stripes, history);
+
+    // localstorage change in another window: logout?
+    channels.window.storage = (e) => otherWindowStorage(e, stripes, history);
+
+    // activity in another window: send keep-alive to idle-timers.
+    channels.bc.message = (message) => otherWindowActivity(message, stripes, timers, setIsVisible);
+
+    // activity in this window: ping idle-timers and BroadcastChannel
+    activityEvents.forEach(eventName => {
+      channels.window[eventName] = (e) => thisWindowActivity(e, stripes, timers, bc);
+    });
+
+    // fixed-length session: show session-is-ending warning
+    channels.window[RTR_FLS_WARNING_EVENT] = (e) => thisWindowRtrFlsWarning(e, stripes, setIsFlsVisible);
+
+    // fixed-length session: terminate session
+    channels.window[RTR_FLS_TIMEOUT_EVENT] = (e) => thisWindowRtrFlsTimeout(e, stripes, history);
+
+
+    // add listeners
+    Object.entries(channels).forEach(([k, channel]) => {
+      Object.entries(channel).forEach(([e, h]) => {
+        stripes.logger.log('rtrv', `adding listener ${k}.${e}`);
+        channelListeners[k].addEventListener(e, h);
+      });
+    });
+
     // cleanup: clear timers and event listeners
     return () => {
       if (timers.current) {
@@ -207,7 +273,16 @@ const SessionEventContainer = () => {
     renderList.push(<KeepWorkingModal callback={keepWorkingCallback} key="KeepWorkingModal" />);
   }
 
+  // show the fixed-length session warning?
+  if (isFlsVisible) {
+    renderList.push(<FixedLengthSessionWarning key="FixedLengthSessionWarning" />);
+  }
+
   return renderList.length ? createPortal(renderList, document.getElementById(eventsPortal)) : null;
+};
+
+SessionEventContainer.propTypes = {
+  history: PropTypes.object,
 };
 
 export default SessionEventContainer;
