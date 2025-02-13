@@ -23,7 +23,8 @@ import {
   updateUser,
   validateUser,
   IS_LOGGING_OUT,
-  SESSION_NAME, getStoredTenant
+  SESSION_NAME, getStoredTenant,
+  requestLogin,
 } from './loginServices';
 
 import {
@@ -62,9 +63,6 @@ jest.mock('stripes-config', () => ({
       remus: { name: 'remus', clientId: 'remus-application' },
     }
   },
-  okapi: {
-    authnUrl: 'https://authn.url',
-  },
   translations: {}
 }));
 
@@ -98,6 +96,7 @@ describe('createOkapiSession', () => {
       getState: () => ({
         okapi: {
           currentPerms: [],
+          url:'okapiUrl'
         }
       }),
     };
@@ -209,6 +208,7 @@ describe('processOkapiSession', () => {
       getState: () => ({
         okapi: {
           currentPerms: [],
+          authnUrl: 'keycloakURL'
         }
       }),
     };
@@ -270,6 +270,7 @@ describe('validateUser', () => {
   it('handles fetch failure from "_self"', async () => {
     const store = {
       dispatch: jest.fn(),
+      getState: () => ({ okapi: { tenant: 'monkey', url: 'monkeyUrl' } }),
     };
 
     mockFetchError();
@@ -282,6 +283,7 @@ describe('validateUser', () => {
   it('handles valid user with empty tenant in session', async () => {
     const store = {
       dispatch: jest.fn(),
+      getState: () => ({ okapi: { tenant: 'monkey', url: 'monkeyUrl', currentPerms: { 'configuration.entries.collection.get': true } } }),
     };
 
     const tenant = 'tenant';
@@ -310,6 +312,7 @@ describe('validateUser', () => {
   it('handles valid user with tenant in session', async () => {
     const store = {
       dispatch: jest.fn(),
+      getState: () => ({ okapi: { tenant: 'monkey', url: 'monkeyUrl' } }),
     };
 
     const tenant = 'tenant';
@@ -335,6 +338,7 @@ describe('validateUser', () => {
   it('overwrites session data with new values from _self', async () => {
     const store = {
       dispatch: jest.fn(),
+      getState: () => ({ okapi: { tenant: 'monkey', url: 'monkeyUrl' } }),
     };
 
     const tenant = 'tenant';
@@ -383,7 +387,7 @@ describe('validateUser', () => {
   it('handles invalid user', async () => {
     const store = {
       dispatch: jest.fn(),
-      getState: () => ({ okapi: { tenant: 'monkey' } }),
+      getState: () => ({ okapi: { tenant: 'monkey', url: 'monkeyUrl' } }),
     };
 
     global.fetch = jest.fn().mockImplementation(() => {
@@ -725,6 +729,40 @@ describe('unauthorizedPath functions', () => {
       const parsedTenant = getStoredTenant();
 
       expect(parsedTenant).toStrictEqual(value);
+    });
+  });
+
+  describe('requestLogin', () => {
+    afterEach(() => {
+      mockFetchCleanUp();
+    });
+
+    it('should authenticate and create session when valid credentials provided', async () => {
+      const mockStore = {
+        getState: () => ({
+          okapi: {},
+        }),
+        dispatch: jest.fn()
+      };
+      mockFetchSuccess({});
+
+      await requestLogin(
+        'http://okapi-url',
+        mockStore,
+        'test-tenant',
+        { username: 'testuser', password: 'testpass' }
+      );
+
+      expect(global.fetch).toHaveBeenCalledWith(
+        'http://okapi-url/bl-users/login?expandPermissions=true&fullPermissions=true',
+        expect.objectContaining({
+          method: 'POST',
+          headers: expect.objectContaining({
+            'X-Okapi-Tenant': 'test-tenant',
+            'Content-Type': 'application/json'
+          })
+        })
+      );
     });
   });
 });

@@ -20,6 +20,7 @@
   * Implement an `AppOrderProvider` - to provide the app listing to the `MainNav` and app-level settings implementation.
   * Implement `usePreferences` hook to be exposed later for interaction with `mod-settings` user preferences.
 * *BREAKING* Upgrade `react-intl` to `^v7`. Refs STCOR-945.
+* Change Help icon aria label to just Help in MainNav component. Refs STCOR-931.
 
 ## [10.2.0](https://github.com/folio-org/stripes-core/tree/v10.2.0) (2024-10-11)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.1.1...v10.2.0)

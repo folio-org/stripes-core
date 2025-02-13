@@ -106,6 +106,8 @@
   "settingChoose": "Choose settings",
   "tenantChoose": "Select your tenant/library",
   "tenantLibrary": "Tenant/Library",
+  "help": "Help",
+
   "mainnav.showAllApplicationsButtonLabel": "Apps",
   "mainnav.showAllApplicationsButtonAriaLabel": "All applications",
   "mainnav.currentAppAriaLabel": "Current open application: {appName} (Click to go home)",
