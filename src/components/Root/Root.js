@@ -27,7 +27,6 @@ import { configureRtr } from './token-util';
 import './Root.css';
 
 import { withModules } from '../Modules';
-import { FFetch } from './FFetch';
 
 if (!metadata) {
   // eslint-disable-next-line no-console
@@ -38,7 +37,7 @@ class Root extends Component {
   constructor(...args) {
     super(...args);
 
-    const { modules, history, okapi, store } = this.props;
+    const { modules, history, okapi } = this.props;
 
     this.reducers = { ...initialReducers };
     this.epics = {};
@@ -62,21 +61,6 @@ class Root extends Component {
 
     this.apolloClient = createApolloClient(okapi);
     this.reactQueryClient = createReactQueryClient();
-
-    // enhanced security mode:
-    // * configure fetch and xhr interceptors to conduct RTR
-    // * see SessionEventContainer for RTR handling
-    if (this.props.config.useSecureTokens) {
-      const rtrConfig = configureRtr(this.props.config.rtr);
-
-      this.ffetch = new FFetch({
-        logger: this.props.logger,
-        store,
-        rtrConfig,
-      });
-      this.ffetch.replaceFetch();
-      this.ffetch.replaceXMLHttpRequest();
-    }
   }
 
   componentDidMount() {
