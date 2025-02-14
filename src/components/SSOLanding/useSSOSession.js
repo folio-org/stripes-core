@@ -4,8 +4,6 @@ import { useLocation } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import queryString from 'query-string';
 
-import { config } from 'stripes-config';
-
 import { defaultErrors } from '../../constants';
 import { setAuthError } from '../../okapiActions';
 import { requestUserWithPerms } from '../../loginServices';

@@ -72,6 +72,7 @@ class Root extends Component {
       logger: this.props.logger,
       store,
       rtrConfig,
+      okapi
     });
     this.ffetch.replaceFetch();
     this.ffetch.replaceXMLHttpRequest();
