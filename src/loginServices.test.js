@@ -754,7 +754,7 @@ describe('unauthorizedPath functions', () => {
       );
 
       expect(global.fetch).toHaveBeenCalledWith(
-        'http://okapi-url/bl-users/login?expandPermissions=true&fullPermissions=true',
+        'http://okapi-url/bl-users/login-with-expiry?expandPermissions=true&fullPermissions=true',
         expect.objectContaining({
           method: 'POST',
           headers: expect.objectContaining({

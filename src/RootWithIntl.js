@@ -74,7 +74,7 @@ const RootWithIntl = ({ stripes, token = '', isAuthenticated = false, disableAut
                           { (typeof connectedStripes.okapi !== 'object' || connectedStripes.discovery.isFinished) && (
                             <ModuleContainer id="content">
                               <OverlayContainer />
-                              {connectedStripes.config.useSecureTokens && <SessionEventContainer history={history} queryClient={queryClient} />}
+                              <SessionEventContainer history={history} queryClient={queryClient} />
                               <Switch>
                                 <TitledRoute
                                   name="home"

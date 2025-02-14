@@ -66,18 +66,16 @@ class Root extends Component {
     // enhanced security mode:
     // * configure fetch and xhr interceptors to conduct RTR
     // * see SessionEventContainer for RTR handling
-    if (this.props.config.useSecureTokens) {
-      const rtrConfig = configureRtr(this.props.config.rtr);
+    const rtrConfig = configureRtr(this.props.config.rtr);
 
-      this.ffetch = new FFetch({
-        logger: this.props.logger,
-        store,
-        rtrConfig,
-        okapi
-      });
-      this.ffetch.replaceFetch();
-      this.ffetch.replaceXMLHttpRequest();
-    }
+    this.ffetch = new FFetch({
+      logger: this.props.logger,
+      store,
+      rtrConfig,
+      okapi
+    });
+    this.ffetch.replaceFetch();
+    this.ffetch.replaceXMLHttpRequest();
   }
 
   componentDidMount() {
