@@ -24,7 +24,7 @@ describe('FXHR', () => {
   let testXHR;
   beforeEach(() => {
     jest.clearAllMocks();
-    FakeXHR = FXHR({ tokenExpiration: { atExpires: Date.now(), rtExpires: Date.now() + 5000 }, logger: { log: () => {} } });
+    FakeXHR = FXHR({ tokenExpiration: { atExpires: Date.now(), rtExpires: Date.now() + 5000 }, logger: { log: () => {} }, okapi:{ url:'okapiUrl' } });
     testXHR = new FakeXHR();
   });
 
