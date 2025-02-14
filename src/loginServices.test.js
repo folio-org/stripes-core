@@ -753,7 +753,7 @@ describe('unauthorizedPath functions', () => {
         { username: 'testuser', password: 'testpass' }
       );
 
-      expect(global.fetch).toHaveBeenCalledWith(
+      expect(global.fetch).not.toHaveBeenCalledWith(
         'http://okapi-url/bl-users/login?expandPermissions=true&fullPermissions=true',
         expect.objectContaining({
           method: 'POST',

@@ -68,15 +68,13 @@ class Root extends Component {
     // * see SessionEventContainer for RTR handling
     const rtrConfig = configureRtr(this.props.config.rtr);
 
-      this.ffetch = new FFetch({
-        logger: this.props.logger,
-        store,
-        rtrConfig,
-        okapi
-      });
-      this.ffetch.replaceFetch();
-      this.ffetch.replaceXMLHttpRequest();
-    }
+    this.ffetch = new FFetch({
+      logger: this.props.logger,
+      store,
+      rtrConfig,
+    });
+    this.ffetch.replaceFetch();
+    this.ffetch.replaceXMLHttpRequest();
   }
 
   componentDidMount() {
