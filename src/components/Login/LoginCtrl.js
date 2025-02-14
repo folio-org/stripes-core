@@ -37,9 +37,6 @@ class LoginCtrl extends Component {
 
   constructor(props) {
     super(props);
-    this.sys = require('stripes-config'); // eslint-disable-line global-require
-    this.okapiUrl = this.sys.okapi.url;
-    this.tenant = this.sys.okapi.tenant;
     if (props.autoLogin && props.autoLogin.username) {
       this.handleSubmit(props.autoLogin);
     }
@@ -56,7 +53,7 @@ class LoginCtrl extends Component {
   }
 
   handleSubmit = (data) => {
-    return requestLogin(this.props.okapiUrl, this.context.store, this.tenant, data)
+    return requestLogin(this.props.okapiUrl, this.context.store, this.props.tenant, data)
       .then(this.handleSuccessfulLogin)
       .catch(e => {
         console.error(e); // eslint-disable-line no-console
@@ -64,7 +61,7 @@ class LoginCtrl extends Component {
   }
 
   handleSSOLogin = () => {
-    requestSSOLogin(this.props.okapiUrl, this.tenant);
+    requestSSOLogin(this.props.okapiUrl, this.props.tenant);
   }
 
   render() {
