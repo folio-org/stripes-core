@@ -89,6 +89,7 @@ describe('SSOLanding', () => {
 
   it('should request user session when RTR is disabled and right tenant from ssoToken', () => {
     const tokenTenant = 'tokenTenant';
+    const okapiTenant = 'okapiTenant';
     const store = useStore();
 
     useLocation.mockReturnValue({ search: `ssoToken=${ssoTokenValue}` });
@@ -97,7 +98,7 @@ describe('SSOLanding', () => {
 
     renderHook(() => useSSOSession());
 
-    expect(requestUserWithPerms).toHaveBeenCalledWith(store.getState().okapi.url, store, tokenTenant, ssoTokenValue);
+    expect(requestUserWithPerms).toHaveBeenCalledWith(store.getState().okapi.url, store, okapiTenant, ssoTokenValue);
   });
 
   it('should request user session when RTR is enabled and right tenant from query params', () => {

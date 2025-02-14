@@ -53,7 +53,7 @@ class LoginCtrl extends Component {
   }
 
   handleSubmit = (data) => {
-    return requestLogin(this.props.okapiUrl, this.context.store, this.tenant, data)
+    return requestLogin(this.props.okapiUrl, this.context.store, this.props.tenant, data)
       .then(this.handleSuccessfulLogin)
       .catch(e => {
         console.error(e); // eslint-disable-line no-console
