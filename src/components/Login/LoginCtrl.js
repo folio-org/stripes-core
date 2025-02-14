@@ -18,8 +18,6 @@ class LoginCtrl extends Component {
   static propTypes = {
     authFailure: PropTypes.arrayOf(PropTypes.object),
     ssoEnabled: PropTypes.bool,
-    okapiUrl: PropTypes.string.isRequired,
-    tenant: PropTypes.string.isRequired,
     autoLogin: PropTypes.shape({
       username: PropTypes.string.isRequired,
       password: PropTypes.string.isRequired,
@@ -37,6 +35,9 @@ class LoginCtrl extends Component {
 
   constructor(props) {
     super(props);
+    this.sys = require('stripes-config'); // eslint-disable-line global-require
+    this.okapiUrl = this.sys.okapi.url;
+    this.tenant = this.sys.okapi.tenant;
     if (props.autoLogin && props.autoLogin.username) {
       this.handleSubmit(props.autoLogin);
     }
@@ -53,7 +54,7 @@ class LoginCtrl extends Component {
   }
 
   handleSubmit = (data) => {
-    return requestLogin(this.props.okapiUrl, this.context.store, this.props.tenant, data)
+    return requestLogin(this.okapiUrl, this.context.store, this.tenant, data)
       .then(this.handleSuccessfulLogin)
       .catch(e => {
         console.error(e); // eslint-disable-line no-console
@@ -61,7 +62,7 @@ class LoginCtrl extends Component {
   }
 
   handleSSOLogin = () => {
-    requestSSOLogin(this.props.okapiUrl, this.props.tenant);
+    requestSSOLogin(this.okapiUrl, this.tenant);
   }
 
   render() {
@@ -81,8 +82,6 @@ class LoginCtrl extends Component {
 const mapStateToProps = state => ({
   authFailure: state.okapi.authFailure,
   ssoEnabled: state.okapi.ssoEnabled,
-  okapiUrl: state.okapi.url,
-  tenant: state.okapi.tenant,
 });
 const mapDispatchToProps = dispatch => ({
   clearAuthErrors: () => dispatch(setAuthError([])),
