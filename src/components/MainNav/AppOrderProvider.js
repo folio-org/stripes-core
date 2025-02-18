@@ -97,7 +97,7 @@ function getAllowedApps(appModules, stripes, pathname, lastVisited, formatMessag
       description: formatMessage({ id: 'stripes-core.folioSettings' }),
       iconData: {
         src: settingsIcon,
-        alt: formatMessage({ id: 'stripes-core.tenantSettingsLabel' }),
+        alt: formatMessage({ id: 'stripes-core.folioSettings' }),
         title: formatMessage({ id: 'stripes-core.settings' }),
       },
       route: SETTINGS_ROUTE

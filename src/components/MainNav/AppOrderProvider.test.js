@@ -70,7 +70,7 @@ const settingsOnly = [{
   displayName: 'stripes-core.settings',
   href: '/settings',
   iconData: {
-    alt: 'stripes-core.tenantSettingsLabel',
+    alt: 'stripes-core.folioSettings',
     src: {},
     title: 'stripes-core.settings',
   },
@@ -244,20 +244,6 @@ const testOrderedWithPref = [
     version: '4.2.2090000003517'
   },
   ...settingsOnly
-  // {
-  //   displayName: 'stripes-core.settings',
-  //   name: 'settings',
-  //   id: 'clickable-settings',
-  //   href: '/settings',
-  //   active: false,
-  //   description: 'stripes-core.folioSettings',
-  //   iconData: {
-  //     src: {},
-  //     alt: 'stripes-core.tenantSettingsLabel',
-  //     title: 'stripes-core.settings'
-  //   },
-  //   route: '/settings'
-  // }
 ];
 
 // order changed to move 'checkin' to the start of the list...

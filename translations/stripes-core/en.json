@@ -98,7 +98,6 @@
   "loggingIn": "Logging in...",
   "settings": "Settings",
   "folioSettings": "FOLIO settings",
-  "tenantSettingsLabel" : "Tenant Settings",
   "loginViaSSO": "Log in via SSO",
   "setPassword": "Set password",
   "settingPassword": "Setting password...",
