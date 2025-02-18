@@ -16,6 +16,11 @@ export default function configure() {
   });
   this.get('/_/env', {});
 
+  this.get('/settings/entries', {
+    items: [],
+    totalRecords: 1
+  });
+
   this.get('_/proxy/tenants/:id/modules', [{
     id : 'mod-users-42.0.0-EXAMPLE.12345',
     name : 'users',

@@ -35,6 +35,7 @@ import {
   ForgotUserNameCtrl,
   AppCtxMenuProvider,
   SessionEventContainer,
+  AppOrderProvider,
 } from './components';
 import StaleBundleWarning from './components/StaleBundleWarning';
 import { StripesContext } from './StripesContext';
@@ -65,55 +66,57 @@ const RootWithIntl = ({ stripes, token = '', isAuthenticated = false, disableAut
                     <>
                       <MainContainer>
                         <AppCtxMenuProvider>
-                          <MainNav stripes={connectedStripes} queryClient={queryClient} />
-                          {typeof connectedStripes?.config?.staleBundleWarning === 'object' && <StaleBundleWarning />}
-                          <HandlerManager
-                            event={events.LOGIN}
-                            stripes={connectedStripes}
-                          />
-                          { (typeof connectedStripes.okapi !== 'object' || connectedStripes.discovery.isFinished) && (
-                            <ModuleContainer id="content">
-                              <OverlayContainer />
-                              <SessionEventContainer history={history} queryClient={queryClient} />
-                              <Switch>
-                                <TitledRoute
-                                  name="home"
-                                  path="/"
-                                  key="root"
-                                  exact
-                                  component={<Front stripes={connectedStripes} />}
-                                />
-                                <TitledRoute
-                                  name="ssoRedirect"
-                                  path="/sso-landing"
-                                  key="sso-landing"
-                                  component={<SSORedirect stripes={connectedStripes} />}
-                                />
-                                <TitledRoute
-                                  name="oidcRedirect"
-                                  path="/oidc-landing"
-                                  key="oidc-landing"
-                                  component={<OIDCRedirect stripes={stripes} />}
-                                />
-                                <TitledRoute
-                                  name="logoutTimeout"
-                                  path="/logout-timeout"
-                                  component={<Logout />}
-                                />
-                                <TitledRoute
-                                  name="settings"
-                                  path="/settings"
-                                  component={<Settings stripes={connectedStripes} />}
-                                />
-                                <TitledRoute
-                                  name="logout"
-                                  path="/logout"
-                                  component={<Logout />}
-                                />
-                                <ModuleRoutes stripes={connectedStripes} />
-                              </Switch>
-                            </ModuleContainer>
-                          )}
+                          <AppOrderProvider>
+                            <MainNav stripes={connectedStripes} queryClient={queryClient} />
+                            {typeof connectedStripes?.config?.staleBundleWarning === 'object' && <StaleBundleWarning />}
+                            <HandlerManager
+                              event={events.LOGIN}
+                              stripes={connectedStripes}
+                            />
+                            { (typeof connectedStripes.okapi !== 'object' || connectedStripes.discovery.isFinished) && (
+                              <ModuleContainer id="content">
+                                <OverlayContainer />
+                                <SessionEventContainer history={history} queryClient={queryClient} />
+                                <Switch>
+                                  <TitledRoute
+                                    name="home"
+                                    path="/"
+                                    key="root"
+                                    exact
+                                    component={<Front stripes={connectedStripes} />}
+                                  />
+                                  <TitledRoute
+                                    name="ssoRedirect"
+                                    path="/sso-landing"
+                                    key="sso-landing"
+                                    component={<SSORedirect stripes={connectedStripes} />}
+                                  />
+                                  <TitledRoute
+                                    name="oidcRedirect"
+                                    path="/oidc-landing"
+                                    key="oidc-landing"
+                                    component={<OIDCRedirect stripes={stripes} />}
+                                  />
+                                  <TitledRoute
+                                    name="logoutTimeout"
+                                    path="/logout-timeout"
+                                    component={<Logout />}
+                                  />
+                                  <TitledRoute
+                                    name="settings"
+                                    path="/settings"
+                                    component={<Settings stripes={connectedStripes} />}
+                                  />
+                                  <TitledRoute
+                                    name="logout"
+                                    path="/logout"
+                                    component={<Logout />}
+                                  />
+                                  <ModuleRoutes stripes={connectedStripes} />
+                                </Switch>
+                              </ModuleContainer>
+                            )}
+                          </AppOrderProvider>
                         </AppCtxMenuProvider>
                       </MainContainer>
                       <Callout ref={setCalloutDomRef} />

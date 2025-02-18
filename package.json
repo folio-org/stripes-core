@@ -26,7 +26,8 @@
     "okapiInterfaces": {
       "users-bl": "5.0 6.0",
       "authtoken": "1.0 2.0",
-      "configuration": "2.0"
+      "configuration": "2.0",
+      "settings": "1.0"
     },
     "optionalOkapiInterfaces": {
       "consortia": "1.0",
@@ -38,6 +39,16 @@
       {
         "permissionName": "settings.enabled",
         "displayName": "UI: settings area is enabled"
+      },
+      {
+        "permissionName": "mod-settings.owner.read.stripes-core.prefs.manage",
+        "displayName": "UI: read the user's own central preferences, such as order of links in the main navigation.",
+        "visible": false
+      },
+      {
+        "permissionName": "mod-settings.owner.write.stripes-core.prefs.manage",
+        "displayName": "UI: update the user's own central preferences, such as order of links in the main navigation.",
+        "visible": false
       }
     ]
   },

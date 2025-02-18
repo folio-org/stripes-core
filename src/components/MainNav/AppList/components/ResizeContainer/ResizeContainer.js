@@ -5,6 +5,7 @@
 import React from 'react';
 import classnames from 'classnames';
 import debounce from 'lodash/debounce';
+import isEqual from 'lodash/isEqual';
 import PropTypes from 'prop-types';
 import css from './ResizeContainer.css';
 
@@ -40,9 +41,12 @@ class ResizeContainer extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
+    const { currentAppId, items } = this.props;
     // Update hidden items when the current app ID changes
     // to make sure that no items are hidden behind the current app label
-    if (this.props.currentAppId && this.props.currentAppId !== prevProps.currentAppId) {
+    if (currentAppId !== prevProps.currentAppId ||
+      !isEqual(items, prevProps.items)
+    ) {
       this.updateHiddenItems();
     }
   }
@@ -79,7 +83,7 @@ class ResizeContainer extends React.Component {
    * Determine hidden items on mount and resize
    */
   updateHiddenItems = (callback) => {
-    const { hideAllWidth, offset } = this.props;
+    const { hideAllWidth, offset, items } = this.props;
     const { cachedItemWidths } = this.state;
     const shouldHideAll = window.innerWidth <= hideAllWidth;
     const wrapperEl = this.wrapperRef.current;
@@ -92,7 +96,7 @@ class ResizeContainer extends React.Component {
       shouldHideAll ? Object.keys(cachedItemWidths) :
 
         // Find items that should be hidden
-        Object.keys(cachedItemWidths).reduce((acc, id) => {
+        items.reduce((acc, { id }) => {
           const itemWidth = cachedItemWidths[id];
           const shouldBeHidden = (itemWidth + acc.accWidth + offset) > wrapperWidth;
           const hidden = shouldBeHidden ? acc.hidden.concat(id) : acc.hidden;
@@ -101,7 +105,8 @@ class ResizeContainer extends React.Component {
             hidden,
             accWidth: acc.accWidth + itemWidth,
           };
-        }, {
+        },
+        {
           hidden: [],
           accWidth: 0,
         }).hidden;

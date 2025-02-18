@@ -8,6 +8,7 @@ export { default as Login } from './Login';
 export { default as Logout } from './Logout';
 export { default as MainContainer } from './MainContainer';
 export { default as MainNav } from './MainNav';
+export { AppOrderProvider } from './MainNav/AppOrderProvider';
 export { default as ModuleContainer } from './ModuleContainer';
 export { withModule, withModules } from './Modules';
 export { default as ModuleTranslator } from './ModuleTranslator';

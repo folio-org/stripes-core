@@ -4,7 +4,6 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import sortBy from 'lodash/sortBy';
 
 import { NavListItem, NavListSection } from '@folio/stripes-components';
 
@@ -20,7 +19,7 @@ const AppListDropdown = ({ toggleDropdown, apps, listRef, selectedApp }) => (
     striped
   >
     {
-      sortBy(apps, app => app.displayName.toLowerCase()).map(app => (
+      apps.map(app => (
         <NavListItem
           key={app.id}
           data-test-app-list-dropdown-item
