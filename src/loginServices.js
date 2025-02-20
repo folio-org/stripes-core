@@ -922,7 +922,7 @@ function fetchUserWithPerms(okapiUrl, tenant, token, rtrIgnore = false) {
  * @returns {Promise} Promise resolving to the response-body (JSON) of the request
  */
 
-function fetchOverriddenUserWithPerms(okapiUrl, tenant, token, rtrIgnore = false) {
+export function fetchOverriddenUserWithPerms(okapiUrl, tenant, token, rtrIgnore = false) {
   const usersPath = okapi.authnUrl ? 'users-keycloak' : 'bl-users';
   return fetch(
     `${okapiUrl}/${usersPath}/_self?expandPermissions=true&fullPermissions=true&overrideUser=true`,

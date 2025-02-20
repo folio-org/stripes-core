@@ -24,7 +24,9 @@ import {
   validateUser,
   IS_LOGGING_OUT,
   SESSION_NAME, getStoredTenant,
-  requestLogin, requestUserWithPerms,
+  requestLogin,
+  requestUserWithPerms,
+  fetchOverriddenUserWithPerms,
 } from './loginServices';
 
 import {
@@ -788,6 +790,27 @@ describe('unauthorizedPath functions', () => {
         'test-tenant',
         'token'
       );
+
+      expect(global.fetch).toHaveBeenCalledWith('http://okapi-url/users-keycloak/_self?expandPermissions=true&fullPermissions=true&overrideUser=true',
+        {
+          headers: expect.objectContaining({
+            'X-Okapi-Tenant': 'test-tenant',
+            'X-Okapi-Token': 'token',
+            'Content-Type': 'application/json',
+          }),
+          'rtrIgnore': false
+        });
+    });
+  });
+
+  describe('fetchOverriddenUserWithPerms', () => {
+    afterEach(() => {
+      mockFetchCleanUp();
+    });
+    it('should call the self endpoint with override query string parameter', async () => {
+      mockFetchSuccess({});
+
+      await fetchOverriddenUserWithPerms('http://okapi-url', 'test-tenant', 'token');
 
       expect(global.fetch).toHaveBeenCalledWith('http://okapi-url/users-keycloak/_self?expandPermissions=true&fullPermissions=true&overrideUser=true',
         {
