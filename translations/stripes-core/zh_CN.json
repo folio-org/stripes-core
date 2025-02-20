@@ -161,5 +161,6 @@
     "rtr.fixedLengthSession.timeRemaining": "您的会话即将结束！剩余时间：",
     "logoutComplete": "您已登出",
     "errors.oidc": "错误：服务器被禁止、无法连接或不可用。",
-    "title.logoutTimeout": "Inactivity log out"
+    "title.logoutTimeout": "不活动注销",
+    "help": "Help"
 }
