@@ -1,5 +1,5 @@
 import localforage from 'localforage';
-import { config, translations } from 'stripes-config';
+import { config, okapi, translations } from 'stripes-config';
 import rtlDetect from 'rtl-detect';
 import moment from 'moment';
 import { loadDayJSLocale } from '@folio/stripes-components';
@@ -400,12 +400,12 @@ function loadResources(store, tenant, userId) {
   // in mod-configuration so we can only retrieve them if the user has
   // read-permission for configuration entries.
   if (canReadConfig(store)) {
-    const okapi = store.getState()?.okapi;
+    const okapiObject = store.getState()?.okapi;
     promises = [
-      getLocale(okapi.url, store, tenant),
-      getUserLocale(okapi.url, store, tenant, userId),
-      getPlugins(okapi.url, store, tenant),
-      getBindings(okapi.url, store, tenant),
+      getLocale(okapiObject.url, store, tenant),
+      getUserLocale(okapiObject.url, store, tenant, userId),
+      getPlugins(okapiObject.url, store, tenant),
+      getBindings(okapiObject.url, store, tenant),
     ];
   }
 
@@ -594,7 +594,7 @@ export function createOkapiSession(store, tenant, token, data) {
     rtExpires: data.tokenExpiration?.refreshTokenExpiration ? new Date(data.tokenExpiration.refreshTokenExpiration).getTime() : Date.now() + (10 * 60 * 1000),
   };
 
-  const sessionTenant = data.tenant || tenant;
+  const sessionTenant = data.originalTenantId || data.tenant || tenant;
   const okapiSess = {
     token,
     isAuthenticated: true,
@@ -891,19 +891,41 @@ export function requestLogin(okapiUrl, store, tenant, data) {
 
 /**
  * fetchUserWithPerms
- * retrieve currently-authenticated user
+ * retrieve currently-authenticated user data after switching affiliation
  * @param {string} okapiUrl
  * @param {string} tenant
  * @param {string} token
  * @param {boolean} rtrIgnore
- * @param {boolean} isKeycloak
  *
  * @returns {Promise} Promise resolving to the response of the request
  */
-function fetchUserWithPerms(okapiUrl, tenant, token, rtrIgnore = false, isKeycloak = false) {
-  const usersPath = isKeycloak ? 'users-keycloak' : 'bl-users';
+function fetchUserWithPerms(okapiUrl, tenant, token, rtrIgnore = false) {
+  const usersPath = okapi.authnUrl ? 'users-keycloak' : 'bl-users';
   return fetch(
     `${okapiUrl}/${usersPath}/_self?expandPermissions=true&fullPermissions=true`,
+    {
+      headers: getHeaders(tenant, token),
+      rtrIgnore,
+    },
+  );
+}
+
+/**
+ * fetchOverriddenUserWithPerms
+ * Query string parameter overrideUser is set to true the retrieved shadow user will be used to fetch the real user together with its permissions and service points.
+ * After fetching process begin a session.
+ * @param {string} okapiUrl
+ * @param {redux store} store
+ * @param {string} tenant
+ * @param {string} token
+ *
+ * @returns {Promise} Promise resolving to the response-body (JSON) of the request
+ */
+
+function fetchOverriddenUserWithPerms(okapiUrl, tenant, token, rtrIgnore = false) {
+  const usersPath = okapi.authnUrl ? 'users-keycloak' : 'bl-users';
+  return fetch(
+    `${okapiUrl}/${usersPath}/_self?expandPermissions=true&fullPermissions=true&overrideUser=true`,
     {
       headers: getHeaders(tenant, token),
       rtrIgnore,
@@ -922,8 +944,7 @@ function fetchUserWithPerms(okapiUrl, tenant, token, rtrIgnore = false, isKeyclo
  * @returns {Promise} Promise resolving to the response-body (JSON) of the request
  */
 export function requestUserWithPerms(okapiUrl, store, tenant, token) {
-  const isKeycloak = Boolean(store.getState().okapi?.authnUrl);
-  return fetchUserWithPerms(okapiUrl, tenant, token, !token, isKeycloak)
+  return fetchOverriddenUserWithPerms(okapiUrl, tenant, token, !token)
     .then((resp) => {
       if (resp.ok) {
         return processOkapiSession(store, tenant, resp, token);
@@ -989,7 +1010,7 @@ export function updateUser(store, data) {
  */
 export async function updateTenant(okapiConfig, tenant) {
   const okapiSess = await getOkapiSession();
-  const userWithPermsResponse = await fetchUserWithPerms(okapiConfig.url, tenant, okapiConfig.token, false, Boolean(okapiConfig.authnUrl));
+  const userWithPermsResponse = await fetchUserWithPerms(okapiConfig.url, tenant, okapiConfig.token, false);
   const userWithPerms = await userWithPermsResponse.json();
   await localforage.setItem(SESSION_NAME, { ...okapiSess, tenant, ...spreadUserWithPerms(userWithPerms) });
 }

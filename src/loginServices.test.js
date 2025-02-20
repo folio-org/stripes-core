@@ -24,7 +24,7 @@ import {
   validateUser,
   IS_LOGGING_OUT,
   SESSION_NAME, getStoredTenant,
-  requestLogin,
+  requestLogin, requestUserWithPerms,
 } from './loginServices';
 
 import {
@@ -63,6 +63,9 @@ jest.mock('stripes-config', () => ({
       remus: { name: 'remus', clientId: 'remus-application' },
     }
   },
+  okapi: {
+    authnUrl: 'https://authn.url',
+  },
   translations: {}
 }));
 
@@ -85,7 +88,7 @@ const mockFetchError = (error) => {
 
 // restore default fetch impl
 const mockFetchCleanUp = () => {
-  global.fetch.mockClear();
+  global.fetch?.mockClear();
   delete global.fetch;
 };
 
@@ -763,6 +766,38 @@ describe('unauthorizedPath functions', () => {
           })
         })
       );
+    });
+  });
+
+  describe('requestUserWithPerms', () => {
+    afterEach(() => {
+      mockFetchCleanUp();
+    });
+    it('should authenticate and create session when valid credentials provided', async () => {
+      mockFetchSuccess({ tenant:'tenant', originalTenantId:'originalTenantId' });
+      const mockStore = {
+        getState: () => ({
+          okapi: {},
+        }),
+        dispatch: jest.fn()
+      };
+
+      await requestUserWithPerms(
+        'http://okapi-url',
+        mockStore,
+        'test-tenant',
+        'token'
+      );
+
+      expect(global.fetch).toHaveBeenCalledWith('http://okapi-url/users-keycloak/_self?expandPermissions=true&fullPermissions=true&overrideUser=true',
+        {
+          headers: expect.objectContaining({
+            'X-Okapi-Tenant': 'test-tenant',
+            'X-Okapi-Token': 'token',
+            'Content-Type': 'application/json',
+          }),
+          'rtrIgnore': false
+        });
     });
   });
 });
