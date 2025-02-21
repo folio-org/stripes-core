@@ -23,6 +23,7 @@
 * Change Help icon aria label to just Help in MainNav component. Refs STCOR-931.
 * *BREAKING* remove token-based authentication code. Refs STCOR-918.
 * *BREAKING* replace useSecureTokens conditionalsRefs STCOR-922.
+* Omit leading slash in paths passed to `ky` in `useModuleInfo`. Refs STCOR-949.
 
 ## [10.2.0](https://github.com/folio-org/stripes-core/tree/v10.2.0) (2024-10-11)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.1.1...v10.2.0)
