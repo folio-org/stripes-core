@@ -594,6 +594,14 @@ export function createOkapiSession(store, tenant, token, data) {
     rtExpires: data.tokenExpiration?.refreshTokenExpiration ? new Date(data.tokenExpiration.refreshTokenExpiration).getTime() : Date.now() + (10 * 60 * 1000),
   };
 
+  /* @ See the comments for fetchOverriddenUserWithPerms.
+  * There are consortia(multi-tenant) and non-consortia modes/envs.
+  * We don't want to care if it is consortia or non-consortia modes, just use fetchOverriderUserWithPerms on login to initiate the session.
+  * 1. In consortia mode, fetchOverriderUserWithPerms returns originalTenantId.
+  * 2. In non-consortia mode, fetchOverriderUserWithPerms won't response with originalTenantId,
+  * instead `tenant` field will be provided.
+  * 3. As a fallback use default tenant.
+  */
   const sessionTenant = data.originalTenantId || data.tenant || tenant;
   const okapiSess = {
     token,
@@ -891,7 +899,7 @@ export function requestLogin(okapiUrl, store, tenant, data) {
 
 /**
  * fetchUserWithPerms
- * retrieve currently-authenticated user data after switching affiliation
+ * retrieve currently-authenticated user data, e.g. after switching affiliations, and we want permissions for the current tenant
  * @param {string} okapiUrl
  * @param {string} tenant
  * @param {string} token
@@ -912,8 +920,15 @@ function fetchUserWithPerms(okapiUrl, tenant, token, rtrIgnore = false) {
 
 /**
  * fetchOverriddenUserWithPerms
- * Query string parameter overrideUser is set to true the retrieved shadow user will be used to fetch the real user together with its permissions and service points.
- * After fetching process begin a session.
+ * When starting a session after turning from OIDC authentication, the user's current tenant
+ * (provided to X-Okapi-Tenant) may not match the central tenant. overrideUser=true query allow us to
+ * retrieve a real user's tenant permissions and service points even if X-Okapi-Tenant == central tenant.
+ * Example, we have user `exampleUser` that directly affiliated with `Member tenant` and for central tenant exampleUser is a shadow user.
+ * Previously, we had to log in to central tenant as a shadow user, and then switch the affiliation.
+ * But providing query overrideUser=true, we fetch the real user's tenant with its permissions and service points.
+ * Response looks like this, {originalTenantId: "Member tenant", permissions: {permissions: [...memberTenantPermissions]}, ...rest}.
+ * Now, we can set the originalTenantId to the session with fetched permissions and servicePoints.
+ * Compare with fetchUserWithPerms, which only fetches data from the current tenant, which is called during an established session when switching tenants.
  * @param {string} okapiUrl
  * @param {redux store} store
  * @param {string} tenant
