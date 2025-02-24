@@ -23,6 +23,7 @@
 * Change Help icon aria label to just Help in MainNav component. Refs STCOR-931.
 * *BREAKING* remove token-based authentication code. Refs STCOR-918.
 * *BREAKING* replace useSecureTokens conditionalsRefs STCOR-922.
+* Expose `usePreferences` hook. Refs STCOR-925.
 * Set tenant context based on authentication response with overrideUser parameter on login (Eureka, ECS - Single tenant UX) STCOR-946.
 * Omit leading slash in paths passed to `ky` in `useModuleInfo`. Refs STCOR-949.
 * Added `location` to a hook in `<MainNav>` to fix comparing old `location` value. Fixes STCOR-950.
