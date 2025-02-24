@@ -25,6 +25,8 @@ import {
   IS_LOGGING_OUT,
   SESSION_NAME, getStoredTenant,
   requestLogin,
+  requestUserWithPerms,
+  fetchOverriddenUserWithPerms,
 } from './loginServices';
 
 import {
@@ -50,6 +52,11 @@ import {
 
 import { defaultErrors } from './constants';
 
+jest.mock('./loginServices', () => ({
+  ...jest.requireActual('./loginServices'),
+  fetchOverriddenUserWithPerms: jest.fn()
+}));
+
 jest.mock('localforage', () => ({
   getItem: jest.fn(() => Promise.resolve({ user: {} })),
   setItem: jest.fn(() => Promise.resolve()),
@@ -62,6 +69,9 @@ jest.mock('stripes-config', () => ({
       romulus: { name: 'romulus', clientId: 'romulus-application' },
       remus: { name: 'remus', clientId: 'remus-application' },
     }
+  },
+  okapi: {
+    authnUrl: 'https://authn.url',
   },
   translations: {}
 }));
@@ -85,7 +95,7 @@ const mockFetchError = (error) => {
 
 // restore default fetch impl
 const mockFetchCleanUp = () => {
-  global.fetch.mockClear();
+  global.fetch?.mockClear();
   delete global.fetch;
 };
 
@@ -763,6 +773,64 @@ describe('unauthorizedPath functions', () => {
           })
         })
       );
+    });
+  });
+
+  describe('requestUserWithPerms', () => {
+    afterEach(() => {
+      mockFetchCleanUp();
+      jest.clearAllMocks();
+    });
+    it('should authenticate and create session when valid credentials provided', async () => {
+      mockFetchSuccess({ tenant:'tenant', originalTenantId:'originalTenantId', ok: true });
+      const mockStore = {
+        getState: () => ({
+          okapi: {},
+        }),
+        dispatch: jest.fn()
+      };
+
+      await requestUserWithPerms(
+        'http://okapi-url',
+        mockStore,
+        'test-tenant',
+        'token'
+      );
+
+      expect(global.fetch).toHaveBeenCalledWith('http://okapi-url/users-keycloak/_self?expandPermissions=true&fullPermissions=true&overrideUser=true',
+        {
+          headers: expect.objectContaining({
+            'X-Okapi-Tenant': 'test-tenant',
+            'X-Okapi-Token': 'token',
+            'Content-Type': 'application/json',
+          }),
+          'rtrIgnore': false
+        });
+    });
+
+    it('should reject with an error object when response is not ok', async () => {
+      const mockError = { message: 'Permission denied' };
+      const mockStore = {
+        getState: () => ({
+          okapi: {},
+        }),
+        dispatch: jest.fn()
+      };
+      const mockResponse = {
+        ok: false,
+        json: jest.fn().mockResolvedValue(mockError), // Ensure `json()` is async
+      };
+      global.fetch = jest.fn().mockImplementation(() => (
+        Promise.resolve({
+          ok: false,
+          status: 404,
+          json: () => Promise.resolve('Reject message'),
+          headers: new Map(),
+        })));
+      fetchOverriddenUserWithPerms.mockResolvedValue(mockResponse);
+
+      await expect(requestUserWithPerms('okapiUrl', mockStore, 'tenant', true)).rejects.toEqual('Reject message');
+      mockFetchCleanUp();
     });
   });
 });

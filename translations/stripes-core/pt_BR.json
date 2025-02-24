@@ -161,5 +161,6 @@
     "rtr.fixedLengthSession.timeRemaining": "Sua sessão terminará em breve! Tempo restante:",
     "logoutComplete": "Você efetuou logout.",
     "errors.oidc": "Erro: o servidor está proibido, inacessível ou indisponível.",
-    "title.logoutTimeout": "Sair por inatividade"
+    "title.logoutTimeout": "Sair por inatividade",
+    "help": "Ajuda"
 }

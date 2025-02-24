@@ -87,7 +87,7 @@ const useModuleInfo = (path) => {
     [namespace],
     ({ signal }) => {
       return ky.get(
-        `/_/proxy/tenants/${stripes.okapi.tenant}/modules?full=true`,
+        `_/proxy/tenants/${stripes.okapi.tenant}/modules?full=true`,
         { signal },
       ).json();
     }
