@@ -25,6 +25,7 @@
 * *BREAKING* replace useSecureTokens conditionalsRefs STCOR-922.
 * Set tenant context based on authentication response with overrideUser parameter on login (Eureka, ECS - Single tenant UX) STCOR-946.
 * Omit leading slash in paths passed to `ky` in `useModuleInfo`. Refs STCOR-949.
+* Added `location` to a hook in `<MainNav>` to fix comparing old `location` value. Fixes STCOR-950.
 
 ## [10.2.0](https://github.com/folio-org/stripes-core/tree/v10.2.0) (2024-10-11)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.1.1...v10.2.0)
