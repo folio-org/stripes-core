@@ -1,6 +1,7 @@
 # Change history for stripes-core
 
-## 11.0.0 IN PROGRESS
+## [11.0.0](https://github.com/folio-org/stripes-core/tree/v11.0.0) (2025-02-24)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.2.0...v11.0.0)
 
 * Conditionally use `/users-keycloak/_self` endpoint when `users-keycloak` interface is present. Refs STCOR-835.
 * Wait longer before declaring a rotation request to be stale. Refs STCOR-895.
