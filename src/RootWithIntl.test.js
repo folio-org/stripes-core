@@ -14,6 +14,7 @@ jest.mock('./components/ModuleContainer', () => ({ children }) => children);
 jest.mock('./components/MainContainer', () => ({ children }) => children);
 jest.mock('./components/StaleBundleWarning', () => () => '<StaleBundleWarning>');
 jest.mock('./components/SessionEventContainer', () => () => '<SessionEventContainer>');
+jest.mock('./components/MainNav/QueryStateUpdater', () => () => null);
 
 const defaultHistory = createMemoryHistory();
 
