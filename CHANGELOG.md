@@ -1,6 +1,9 @@
 # Change history for stripes-core
 
-## 11.0.0 IN PROGRESS
+## 11.1.0 IN PROGRESS
+
+## [11.0.0](https://github.com/folio-org/stripes-core/tree/v11.0.0) (2025-02-24)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.2.0...v11.0.0)
 
 * Conditionally use `/users-keycloak/_self` endpoint when `users-keycloak` interface is present. Refs STCOR-835.
 * Wait longer before declaring a rotation request to be stale. Refs STCOR-895.
@@ -27,6 +30,38 @@
 * Set tenant context based on authentication response with overrideUser parameter on login (Eureka, ECS - Single tenant UX) STCOR-946.
 * Omit leading slash in paths passed to `ky` in `useModuleInfo`. Refs STCOR-949.
 * Added `location` to a hook in `<MainNav>` to fix comparing old `location` value. Fixes STCOR-950.
+
+## [10.2.5](https://github.com/folio-org/stripes-core/tree/v10.2.5) (2025-01-16)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.2.4...v10.2.5)
+
+* Fetch `/saml/check` when starting a new session, i.e. before discovery. Refs STCOR-933, STCOR-816.
+
+## [10.2.4](https://github.com/folio-org/stripes-core/tree/v10.2.4) (2024-12-02)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.2.3...v10.2.4)
+
+* Show a "you have logged out" message after logging out instead of redirecting to login. Refs STCOR-882.
+* If discovery requests fail on return from SAML/OIDC, show the error instead of redirecting to login. Refs STCOR-902.
+* Use the `users-keycloak/_self` endpoint conditionally when the `users-keycloak` interface is present; otherwise, use `bl-users/_self` within `useUserTenantPermissions`. Refs STCOR-905.
+* Don't override initial discovery and okapi data in test mocks. Refs STCOR-913.
+* `<Logout>` must consume `QueryClient` in order to supply it to `loginServices::logout()`. Refs STCOR-907.
+* On resuming session, spread session and `_self` together to preserve session values. Refs STCOR-912.
+* Fetch `/saml/check` when starting a new session, i.e. before discovery. Refs STCOR-933, STCOR-816.
+
+## [10.2.3](https://github.com/folio-org/stripes-core/tree/v10.2.3) (2024-11-15)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.2.2...v10.2.3)
+
+* Provide `<IfAnyPermission>` and `stripes.hasAnyPermission()`. Refs STCOR-910.
+
+## [10.2.2](https://github.com/folio-org/stripes-core/tree/v10.2.2) (2024-10-31)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.2.1...v10.2.2)
+
+* Conditionally use `/users-keycloak/_self` endpoint when `users-keycloak` interface is present. Refs STCOR-835.
+* Send the stored central tenant name in the header on logout. Refs STCOR-900.
+
+## [10.2.1](https://github.com/folio-org/stripes-core/tree/v10.2.1) (2024-10-30)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.2.0...v10.2.1)
+
+* Wait longer before declaring a rotation request to be stale. Refs STCOR-895.
 
 ## [10.2.0](https://github.com/folio-org/stripes-core/tree/v10.2.0) (2024-10-11)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.1.1...v10.2.0)
