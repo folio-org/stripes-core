@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { compose } from 'redux';
 import { injectIntl } from 'react-intl';
 import { withRouter } from 'react-router';
-import { isEqual } from 'lodash';
+import { isEqual, find } from 'lodash';
 
 import { withModules } from '../Modules';
 
@@ -18,7 +18,18 @@ import {
 
 // onMount of stripes, sync the query state to the location.
 class QueryStateUpdater extends React.Component {
-  static PropTypes = {
+  static propTypes = {
+    history: PropTypes.shape({
+      listen: PropTypes.func.isRequired,
+      replace: PropTypes.func.isRequired,
+      push: PropTypes.func.isRequired,
+    }).isRequired,
+    location: PropTypes.shape({
+      pathname: PropTypes.string,
+    }).isRequired,
+    modules: PropTypes.shape({
+      app: PropTypes.arrayOf(PropTypes.object),
+    }),
     queryClient: PropTypes.shape({
       removeQueries: PropTypes.func.isRequired,
     }).isRequired,
