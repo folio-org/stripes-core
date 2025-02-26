@@ -52,13 +52,6 @@ class QueryStateUpdater extends React.Component {
     this._unsubscribe = this.store.subscribe(() => {
       const { history, location } = this.props;
       const module = this.curModule;
-      const state = this.store.getState();
-
-      // If user has timed out, force them to log in again.
-      if (state?.okapi?.token && state.okapi.authFailure
-        && find(state.okapi.authFailure, { type: 'error', code: 'user.timeout' })) {
-        this.returnToLogin();
-      }
 
       if (module && isQueryResourceModule(module, location)) {
         const { moduleName } = module;
