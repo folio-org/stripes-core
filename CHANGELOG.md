@@ -30,6 +30,7 @@
 * Set tenant context based on authentication response with overrideUser parameter on login (Eureka, ECS - Single tenant UX) STCOR-946.
 * Omit leading slash in paths passed to `ky` in `useModuleInfo`. Refs STCOR-949.
 * Added `location` to a hook in `<MainNav>` to fix comparing old `location` value. Fixes STCOR-950.
+* Use `okapiUrl` from the store in `<LoginCtrl>` instead of reading it from `stripes-config` file. Refs STCOR-942.
 
 ## [10.2.5](https://github.com/folio-org/stripes-core/tree/v10.2.5) (2025-01-16)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.2.4...v10.2.5)
