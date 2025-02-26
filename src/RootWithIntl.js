@@ -36,6 +36,7 @@ import {
   AppCtxMenuProvider,
   SessionEventContainer,
   AppOrderProvider,
+  QueryStateUpdater
 } from './components';
 import StaleBundleWarning from './components/StaleBundleWarning';
 import { StripesContext } from './StripesContext';
@@ -64,6 +65,7 @@ const RootWithIntl = ({ stripes, token = '', isAuthenticated = false, disableAut
                 <Router history={history}>
                   { isAuthenticated || token || disableAuth ?
                     <>
+                      <QueryStateUpdater stripes={connectedStripes} queryClient={queryClient} />
                       <MainContainer>
                         <AppCtxMenuProvider>
                           <AppOrderProvider>
