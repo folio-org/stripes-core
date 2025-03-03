@@ -16,7 +16,11 @@ import {
   getQueryResourceState,
 } from '../../locationService';
 
-// onMount of stripes, sync the query state to the location.
+/** QueryStateUpdater
+*   onMount of stripes, sync the query state to the location.
+*   Also if the location itself changes, sync the query resource to the current location.
+*/
+
 class QueryStateUpdater extends React.Component {
   static propTypes = {
     history: PropTypes.shape({
