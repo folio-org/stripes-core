@@ -41,9 +41,50 @@ describe('QueryStateUpdater', () => {
     };
   });
   it('renders', () => {
-    expect(render(
+    expect(() => render(
       <QueryStateUpdater queryClient={qc} stripes={stripes} />,
       { wrapper: wrapper() }
+    )).not.toThrow();
+  });
+
+  it('updatesQuery on mount', () => {
+    let testVal = {
+      hash: '',
+      key: 'f727ww',
+      pathname: '/initial',
+      search: '',
+      state: undefined
+    };
+    const { rerender } = render(
+      <QueryStateUpdater
+        stripes={stripes}
+        queryClient={qc}
+      />,
+      { wrapper: wrapper(testVal) }
+    );
+    testVal = {
+      hash: '',
+      key: 'f727w2',
+      pathname: '/updated',
+      search: '',
+      state: undefined
+    };
+    rerender(
+      <QueryStateUpdater
+        stripes={stripes}
+        queryClient={qc}
+        location={testVal}
+      />,
+      { wrapper: wrapper(testVal) }
+    );
+
+    expect(() => rerender(
+      <QueryStateUpdater
+        stripes={stripes}
+        queryClient={qc}
+        location={testVal}
+      />,
+      { wrapper: wrapper(testVal) }
     )).not.toThrow();
   });
 });
