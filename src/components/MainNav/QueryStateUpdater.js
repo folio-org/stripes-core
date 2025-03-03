@@ -38,6 +38,10 @@ class QueryStateUpdater extends React.Component {
         subscribe: PropTypes.func.isRequired,
       }),
     }),
+    children: PropTypes.oneOfType([
+      PropTypes.arrayOf(PropTypes.node),
+      PropTypes.node,
+    ]),
   }
 
   constructor(props) {
