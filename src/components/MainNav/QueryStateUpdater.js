@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { compose } from 'redux';
 import { injectIntl } from 'react-intl';
 import { withRouter } from 'react-router';
-import { isEqual, find } from 'lodash';
+import { isEqual } from 'lodash';
 
 import { withModules } from '../Modules';
 
@@ -82,7 +82,7 @@ class QueryStateUpdater extends React.Component {
   }
 
   render = () => this.props.children;
-};
+}
 
 export default compose(
   injectIntl,
