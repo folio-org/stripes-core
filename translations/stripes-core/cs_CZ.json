@@ -160,7 +160,7 @@
     "errors.saml.missingToken": "Žádný parametr dotazu <code> code </code>.",
     "rtr.fixedLengthSession.timeRemaining": "Vaše relace brzy skončí! Zbývající čas:",
     "logoutComplete": "Odhlásili jste se.",
-    "errors.oidc": "Error: server is forbidden, unreachable, or unavailable.",
-    "title.logoutTimeout": "Inactivity log out",
+    "errors.oidc": "Chyba: server je zakázaný, nedosažitelný nebo nedostupný.",
+    "title.logoutTimeout": "Odhlášení kvůli nečinnosti",
     "help": "Nápověda"
 }
