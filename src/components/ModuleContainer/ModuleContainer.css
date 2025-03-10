@@ -8,5 +8,6 @@
 
   @media print {
     overflow-y: visible;
+    position: static;
   }
 }
