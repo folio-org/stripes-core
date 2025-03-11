@@ -306,7 +306,7 @@ export function discoveryReducer(state = {}, action) {
             ...(state.interfaceProviders ?? []),
             {
               id: action.data.id,
-              provides: action.data.provides.map(i => ({ id: i.id, version: i.version })),
+              provides: action.data.provides.map(i => ({ id: i.id, version: i.version, handlers: i.handlers })),
             },
           ]
         });

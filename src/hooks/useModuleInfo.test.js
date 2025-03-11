@@ -1,13 +1,8 @@
-import { renderHook, waitFor } from '@folio/jest-config-stripes/testing-library/react';
-import {
-  QueryClient,
-  QueryClientProvider,
-} from 'react-query';
+import { renderHook } from '@folio/jest-config-stripes/testing-library/react';
 
 import useModuleInfo from './useModuleInfo';
-import useOkapiKy from '../useOkapiKy';
 
-const response = [
+const interfaceProviders = [
   {
     'id': 'mod-users-19.4.5-SNAPSHOT.330',
     'name': 'users',
@@ -126,14 +121,6 @@ const response = [
   }
 ];
 
-jest.mock('../useOkapiKy', () => ({
-  __esModule: true, // this property makes it work
-  default: () => ({
-    get: () => ({
-      json: () => response,
-    })
-  })
-}));
 jest.mock('../components', () => ({
   useNamespace: () => ([]),
 }));
@@ -141,50 +128,38 @@ jest.mock('../StripesContext', () => ({
   useStripes: () => ({
     okapi: {
       tenant: 't',
+    },
+    discovery : {
+      interfaceProviders,
     }
   }),
 }));
 
-const queryClient = new QueryClient();
-
-// eslint-disable-next-line react/prop-types
-const wrapper = ({ children }) => (
-  <QueryClientProvider client={queryClient}>
-    {children}
-  </QueryClientProvider>
-);
-
 
 describe('useModuleInfo', () => {
-  beforeEach(() => {
-    useOkapiKy.get = () => ({
-      json: () => console.log({ response })
-    });
-  });
-
   describe('returns the module-name that provides the interface containing a given path', () => {
     it('handles paths with leading /', async () => {
-      const { result } = renderHook(() => useModuleInfo('/users'), { wrapper });
-      await waitFor(() => result.current.module.name);
-      expect(result.current.module.name).toEqual('mod-users');
+      const { result } = renderHook(() => useModuleInfo('/users'));
+
+      expect(result.current?.name).toEqual('mod-users');
     });
 
     it('handles paths without leading /', async () => {
-      const { result } = renderHook(() => useModuleInfo('inventory-reports/items-in-transit'), { wrapper });
-      await waitFor(() => result.current.module.name);
-      expect(result.current.module.name).toEqual('mod-circulation');
+      const { result } = renderHook(() => useModuleInfo('inventory-reports/items-in-transit'));
+
+      expect(result.current?.name).toEqual('mod-circulation');
     });
 
     it('ignores query string', async () => {
-      const { result } = renderHook(() => useModuleInfo('/users?query=foo==bar'), { wrapper });
-      await waitFor(() => result.current.module.name);
-      expect(result.current.module.name).toEqual('mod-users');
+      const { result } = renderHook(() => useModuleInfo('/users?query=foo==bar'));
+
+      expect(result.current?.name).toEqual('mod-users');
     });
   });
 
   it('returns undefined given an unmatched path', async () => {
-    const { result } = renderHook(() => useModuleInfo('/monkey-bagel'), { wrapper });
-    await waitFor(() => result.current.module);
-    expect(result.current.module).toBeUndefined();
+    const { result } = renderHook(() => useModuleInfo('/monkey-bagel'));
+
+    expect(result.current).toBeUndefined();
   });
 });
