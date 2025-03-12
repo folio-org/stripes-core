@@ -1,5 +1,11 @@
 # Change history for stripes-core
 
+## [11.0.1](https://github.com/folio-org/stripes-core/tree/v11.0.1) (2025-03-12)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v11.0.0...v11.0.1)
+
+* Use `okapiUrl` from the store in `<LoginCtrl>` instead of reading it from `stripes-config` file. Refs STCOR-942.
+* Restore class-based `QueryStateUpdates` component. Refs STCOR-952.
+
 ## [11.0.0](https://github.com/folio-org/stripes-core/tree/v11.0.0) (2025-02-24)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.2.0...v11.0.0)
 
@@ -28,7 +34,6 @@
 * Set tenant context based on authentication response with overrideUser parameter on login (Eureka, ECS - Single tenant UX) STCOR-946.
 * Omit leading slash in paths passed to `ky` in `useModuleInfo`. Refs STCOR-949.
 * Added `location` to a hook in `<MainNav>` to fix comparing old `location` value. Fixes STCOR-950.
-* Use `okapiUrl` from the store in `<LoginCtrl>` instead of reading it from `stripes-config` file. Refs STCOR-942.
 
 ## [10.2.0](https://github.com/folio-org/stripes-core/tree/v10.2.0) (2024-10-11)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.1.1...v10.2.0)
