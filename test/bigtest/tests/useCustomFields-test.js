@@ -1,12 +1,37 @@
 import React from 'react';
-import { afterEach, beforeEach, describe, it } from 'mocha';
-import { expect } from 'chai';
+import { before, afterEach, beforeEach, describe, it } from 'mocha';
+import {
+  HTML,
+  TextField,
+  Button,
+  including,
+  Bigtest,
+} from '@folio/stripes-testing';
 
 import setupApplication from '../helpers/setup-core-application';
 import useCustomFields from '../../../src/useCustomFields';
 
-import LoginInteractor from '../interactors/login';
-import UseCustomFieldsInteractor from '../interactors/useCustomFields';
+const DropdownButton = Bigtest.Button.extend('dropdown button')
+  .selector('button[aria-expanded]')
+  .filters({
+    ariaLabel: el => el.ariaLabel
+  });
+
+const UseCustomFieldsInteractor = HTML.extend('UseCustomField')
+  .selector('body')
+  .filters({
+    error: el => Boolean(el.querySelector('#error')),
+    loading: el => Boolean(el.querySelector('#loading')),
+    customFields: el => Boolean(el.querySelector('#custom-fields li')),
+    customFieldsText: el => el.querySelector('#custom-fields')?.innerText,
+  })
+  .actions({
+    fillUserName: async ({ find }, value) => { await find(TextField({ id: 'input-username' })).fillIn(value); },
+    fillPassword: async ({ find }, value) => { await find(TextField({ id: 'input-password' })).fillIn(value); },
+    clickLogin: async ({ find }) => { await find(Button({ id: 'clickable-login' })).click(); },
+    clickProfileDropdown: async ({ find }) => { await find(DropdownButton({ ariaLabel: including('profile') })).click(); },
+    clickLogout: async ({ find }) => { await find(Button({ id: 'clickable-logout' })).click(); },
+  });
 
 const setupWithApp = (App, title) => setupApplication({
   disableAuth: false, // Can't skip login flow bc we need to fetch module info
@@ -47,68 +72,55 @@ const createCustomFieldRenderer = (interfaceId, interfaceVersion) => (
   }
 );
 
-const i = new UseCustomFieldsInteractor();
 
-const doLogin = async function () {
-  const login = new LoginInteractor();
-  const { username, password, submit } = login;
 
-  await username.fill('username');
-  await password.fill('password');
-  await submit.click();
-  await submit.blur();
-  await this.visit('/dummy');
-};
+describe('useCustomFields hook', () => {
+  const i = UseCustomFieldsInteractor();
 
-const doLogout = async function () {
-  await i.clickProfileDropdown();
-  await i.clickLogout();
-};
+  const doLogin = async function () {
+    await i.fillUserName('username');
+    await i.fillPassword('password');
+    await i.clickLogin();
+    await this.visit('/dummy');
+  };
 
-describe.skip('useCustomFields hook', () => {
+  const doLogout = async function () {
+    await i.clickProfileDropdown();
+    await i.clickLogout();
+  };
+
+  beforeEach(doLogin);
+  afterEach(doLogout);
+
   describe('requests for existing custom fields', () => {
-    setupWithApp(createCustomFieldRenderer('users'), 'Existing Custom Fields');
-
-    beforeEach(doLogin);
-    afterEach(doLogout);
-
-    it('should have custom fields', () => {
-      expect(i.hasCustomFields).to.be.true;
-      expect(i.customFields).to.contain('Sponsor information');
+    before(async () => {
+      await setupWithApp(createCustomFieldRenderer('users'), 'Existing Custom Fields');
     });
+
+    it('should have custom fields', () => i.has({ customFields: true, customFieldsText: including('Sponsor information') }));
   });
 
   describe('requests for non-existing custom fields', () => {
-    setupWithApp(createCustomFieldRenderer('foobar'), 'Non-existing Custom Fields');
-
-    beforeEach(doLogin);
-    afterEach(doLogout);
-
-    it('should have error', () => {
-      expect(i.hasError).to.be.true;
+    before(async () => {
+      await setupWithApp(createCustomFieldRenderer('foobar'), 'Non-existing Custom Fields');
     });
+
+    it('should have error', () => i.has({ error: true }));
   });
 
   describe('requests for version-incompatible custom fields', () => {
-    setupWithApp(createCustomFieldRenderer('users', '1.0'), 'Version-incompatible Custom Fields');
-
-    beforeEach(doLogin);
-    afterEach(doLogout);
-
-    it('should have error', () => {
-      expect(i.hasError).to.be.true;
+    before(async () => {
+      await setupWithApp(createCustomFieldRenderer('users', '1.0'), 'Version-incompatible Custom Fields');
     });
+
+    it('should have error', () => i.has({ error: true }));
   });
 
   describe('requests for version-compatible custom fields', () => {
-    setupWithApp(createCustomFieldRenderer('users', '42.0'), 'Version-compatible Custom Fields');
-
-    beforeEach(doLogin);
-    afterEach(doLogout);
-
-    it('should have custom fields', () => {
-      expect(i.hasCustomFields).to.be.true;
-      expect(i.customFields).to.contain('Sponsor information');
+    before(async () => {
+      await setupWithApp(createCustomFieldRenderer('users', '42.0'), 'Version-compatible Custom Fields');
     });
+
+    it('should have custom fields', () => () => i.has({ customFields: true, customFieldsText: including('Sponsor information') }));
   });
 });
