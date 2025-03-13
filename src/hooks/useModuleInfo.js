@@ -1,8 +1,4 @@
-import { useQuery } from 'react-query';
-
 import { useStripes } from '../StripesContext';
-import { useNamespace } from '../components';
-import useOkapiKy from '../useOkapiKy';
 
 /**
  * map a module implementation string to a module-name, hopefully.
@@ -45,7 +41,7 @@ const mapPathToImpl = (impl) => {
     impl.provides.filter(i => i.handlers).forEach(i => {
       i.handlers.forEach(handler => {
         if (!paths[handler.pathPattern]) {
-          paths[handler.pathPattern] = { name: moduleName, impl };
+          paths[handler.pathPattern] = { ...impl, name: moduleName };
         }
       });
     });
@@ -66,45 +62,19 @@ const canonicalPath = (str) => {
 
 /**
  * useModuleInfo
- * Given a path, retrieve information about the module that implements it
- * by querying the discovery endpoint /_/proxy/tenants/${tenant}/modules.
+ * Given a path, retrieve information about the module from the interfaceProviders.
  *
  * @param {string} path
- * @returns object shaped like { isFetching, isFetched, isLoading, module }
+ * @returns {object} object shaped like { id, name, provides } or undefined if no match is found.
  */
 const useModuleInfo = (path) => {
   const stripes = useStripes();
-  const ky = useOkapiKy();
-  const [namespace] = useNamespace({ key: `/_/proxy/tenants/${stripes.okapi.tenant}/modules` });
-  let paths = {};
 
-  const {
-    isFetching,
-    isFetched,
-    isLoading,
-    data,
-  } = useQuery(
-    [namespace],
-    ({ signal }) => {
-      return ky.get(
-        `_/proxy/tenants/${stripes.okapi.tenant}/modules?full=true`,
-        { signal },
-      ).json();
-    }
-  );
+  const paths = stripes.discovery.interfaceProviders?.reduce((acc, impl) => {
+    return { ...acc, ...mapPathToImpl(impl) };
+  }, {});
 
-  if (data) {
-    data.forEach(impl => {
-      paths = { ...paths, ...mapPathToImpl(impl) };
-    });
-  }
-
-  return ({
-    isFetching,
-    isFetched,
-    isLoading,
-    module: paths?.[canonicalPath(path)],
-  });
+  return paths?.[canonicalPath(path)];
 };
 
 export default useModuleInfo;
