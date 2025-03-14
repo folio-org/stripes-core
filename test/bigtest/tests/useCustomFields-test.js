@@ -91,7 +91,7 @@ describe('useCustomFields hook', () => {
   };
 
   beforeEach(doLogin);
-  afterEach(doLogout);
+  // afterEach(doLogout);
 
   describe('requests for existing custom fields', () => {
     before(async () => {
