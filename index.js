@@ -15,11 +15,13 @@ export { default as useOkapiKy } from './src/useOkapiKy';
 export { default as withOkapiKy } from './src/withOkapiKy';
 export { default as useCustomFields } from './src/useCustomFields';
 export { default as createReactQueryClient } from './src/createReactQueryClient';
+export { useAppOrderContext } from './src/components/MainNav/AppOrderProvider';
 
 /* components */
 export { default as AppContextMenu } from './src/components/MainNav/CurrentApp/AppContextMenu';
 export { default as IfInterface } from './src/components/IfInterface';
 export { default as IfPermission } from './src/components/IfPermission';
+export { default as IfAnyPermission } from './src/components/IfAnyPermission';
 export { default as TitleManager } from './src/components/TitleManager';
 export { default as HandlerManager } from './src/components/HandlerManager';
 export { default as IntlConsumer } from './src/components/IntlConsumer';
@@ -41,6 +43,8 @@ export { getUserTenantsPermissions } from './src/queries';
 
 /* Hooks */
 export { useUserTenantPermissions } from './src/hooks';
+export { useModuleInfo } from './src/hooks';
+export { usePreferences } from './src/hooks';
 
 /* misc */
 export { supportedLocales } from './src/loginServices';

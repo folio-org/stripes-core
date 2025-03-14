@@ -158,5 +158,9 @@
     "tenantChoose": "选择租户/图书馆",
     "tenantLibrary": "租户/图书馆",
     "errors.saml.missingToken": "无 <code>代码</code>查询参数。",
-    "rtr.fixedLengthSession.timeRemaining": "您的会话即将结束！剩余时间："
+    "rtr.fixedLengthSession.timeRemaining": "您的会话即将结束！剩余时间：",
+    "logoutComplete": "您已登出",
+    "errors.oidc": "错误：服务器被禁止、无法连接或不可用。",
+    "title.logoutTimeout": "不活动注销",
+    "help": "Help"
 }

@@ -1,6 +1,73 @@
 # Change history for stripes-core
 
-## 10.2.0 IN PROGRESS
+## 11.1.0 IN PROGRESS
+* CSS Support for printing of results lists content. Refs STCOR-956.
+* Improve useModuleInfo hook. Refs STCOR-955.
+
+## [11.0.0](https://github.com/folio-org/stripes-core/tree/v11.0.0) (2025-02-24)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.2.0...v11.0.0)
+
+* Conditionally use `/users-keycloak/_self` endpoint when `users-keycloak` interface is present. Refs STCOR-835.
+* Wait longer before declaring a rotation request to be stale. Refs STCOR-895.
+* Send the stored central tenant name in the header on logout. Refs STCOR-900.
+* Provide `<IfAnyPermission>` and `stripes.hasAnyPermission()`. Refs STCOR-910.
+* Use the `users-keycloak/_self` endpoint conditionally when the `users-keycloak` interface is present; otherwise, use `bl-users/_self` within `useUserTenantPermissions`. Refs STCOR-905.
+* Don't override initial discovery and okapi data in test mocks. Refs STCOR-913.
+* `<Logout>` must consume `QueryClient` in order to supply it to `loginServices::logout()`. Refs STCOR-907.
+* On resuming session, spread session and `_self` together to preserve session values. Refs STCOR-912.
+* Fetch `/saml/check` when starting a new session, i.e. before discovery. Refs STCOR-933, STCOR-816.
+* Provide `useModuleInfo(path)` hook that maps paths to their implementing modules. Refs STCOR-932.
+* Remove remaining references to stripes.isEureka. Refs STCOR-938.
+* *BREAKING* Upgrade `@folio/stripes-*` dependencies.
+* *BREAKING* add dependency to `settings` interface. Part of STCOR-936.
+* Implement user-preferred app re-ordering in the main navigation. Refs STCOR-936.
+  * Add permissions `mod-settings.owner.read.stripes-core.prefs.manage` and `mod-settings.owner.write.stripes-core.prefs.manage`
+  * Implement an `AppOrderProvider` - to provide the app listing to the `MainNav` and app-level settings implementation.
+  * Implement `usePreferences` hook to be exposed later for interaction with `mod-settings` user preferences.
+* *BREAKING* Upgrade `react-intl` to `^v7`. Refs STCOR-945.
+* Change Help icon aria label to just Help in MainNav component. Refs STCOR-931.
+* *BREAKING* remove token-based authentication code. Refs STCOR-918.
+* *BREAKING* replace useSecureTokens conditionalsRefs STCOR-922.
+* Expose `usePreferences` hook. Refs STCOR-925.
+* Set tenant context based on authentication response with overrideUser parameter on login (Eureka, ECS - Single tenant UX) STCOR-946.
+* Omit leading slash in paths passed to `ky` in `useModuleInfo`. Refs STCOR-949.
+* Added `location` to a hook in `<MainNav>` to fix comparing old `location` value. Fixes STCOR-950.
+* Use `okapiUrl` from the store in `<LoginCtrl>` instead of reading it from `stripes-config` file. Refs STCOR-942.
+
+## [10.2.5](https://github.com/folio-org/stripes-core/tree/v10.2.5) (2025-01-16)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.2.4...v10.2.5)
+
+* Fetch `/saml/check` when starting a new session, i.e. before discovery. Refs STCOR-933, STCOR-816.
+
+## [10.2.4](https://github.com/folio-org/stripes-core/tree/v10.2.4) (2024-12-02)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.2.3...v10.2.4)
+
+* Show a "you have logged out" message after logging out instead of redirecting to login. Refs STCOR-882.
+* If discovery requests fail on return from SAML/OIDC, show the error instead of redirecting to login. Refs STCOR-902.
+* Use the `users-keycloak/_self` endpoint conditionally when the `users-keycloak` interface is present; otherwise, use `bl-users/_self` within `useUserTenantPermissions`. Refs STCOR-905.
+* Don't override initial discovery and okapi data in test mocks. Refs STCOR-913.
+* `<Logout>` must consume `QueryClient` in order to supply it to `loginServices::logout()`. Refs STCOR-907.
+* On resuming session, spread session and `_self` together to preserve session values. Refs STCOR-912.
+* Fetch `/saml/check` when starting a new session, i.e. before discovery. Refs STCOR-933, STCOR-816.
+
+## [10.2.3](https://github.com/folio-org/stripes-core/tree/v10.2.3) (2024-11-15)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.2.2...v10.2.3)
+
+* Provide `<IfAnyPermission>` and `stripes.hasAnyPermission()`. Refs STCOR-910.
+
+## [10.2.2](https://github.com/folio-org/stripes-core/tree/v10.2.2) (2024-10-31)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.2.1...v10.2.2)
+
+* Conditionally use `/users-keycloak/_self` endpoint when `users-keycloak` interface is present. Refs STCOR-835.
+* Send the stored central tenant name in the header on logout. Refs STCOR-900.
+
+## [10.2.1](https://github.com/folio-org/stripes-core/tree/v10.2.1) (2024-10-30)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.2.0...v10.2.1)
+
+* Wait longer before declaring a rotation request to be stale. Refs STCOR-895.
+
+## [10.2.0](https://github.com/folio-org/stripes-core/tree/v10.2.0) (2024-10-11)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.1.1...v10.2.0)
 
 * Utilize the `tenant` procured through the SSO login process. Refs STCOR-769.
 * Remove tag-based selectors from Login, ResetPassword, Forgot UserName/Password form CSS. Refs STCOR-712.
@@ -32,9 +99,13 @@
 * Add `nl` (Dutch, Flemish) to the supported locales. Refs STCOR-878.
 * Include optional okapi interfaces, `consortia`, `roles`, `users-keycloak`. Refs STCOR-889.
 * useUserTenantPermissions hook - provide `isFetched` property. Refs STCOR-890.
-* Reword error message "Error: server is forbidden, unreachable or down. VPN issue?". Refs STCOR-893.
+* Reword error message "Error: server is forbidden, unreachable or down. Clear the cookies? Use incognito mode? VPN issue?". Refs STCOR-893, STCOR-897.
 * Move session timeout banner to the bottom of the page. Refs STCOR-883.
 
+## [10.1.2](https://github.com/folio-org/stripes-core/tree/v10.1.2) (2024-10-21)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.1.1...v10.1.2)
+
+* Wait longer before declaring a rotation request to be stale. Refs STCOR-895.
 
 ## [10.1.1](https://github.com/folio-org/stripes-core/tree/v10.1.1) (2024-03-25)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.1.0...v10.1.1)

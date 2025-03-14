@@ -88,7 +88,7 @@
     "mainnav.topLevelLabel": "Primär",
     "mainnav.applicationListLabel": "App-Liste",
     "errors.default.error": "Leider stimmen die Angaben nicht mit unserem Datenbestand überein.",
-    "errors.username.incorrect": "Dieses FOLIO-Konto kann nicht gefunden werden. Bitte wenden Sie sich an Ihre Folio-Systemadministration.",
+    "errors.username.incorrect": "Dieses FOLIO-Konto kann nicht gefunden werden. Bitte wenden Sie sich an Ihre FOLIO-Systemadministration.",
     "errors.password.incorrect": "Anmeldeinformationen stimmen nicht",
     "errors.user.blocked": "Aus Sicherheitsgründen wurde Ihr Konto gesperrt. Bitte versuchen Sie es erneut oder wenden Sie sich an Ihre FOLIO-Systemadministration.",
     "errors.password.match.error": "Passwort stimmt nicht überein. Passwort erneut eingeben.",
@@ -158,5 +158,9 @@
     "tenantChoose": "Select your tenant/library",
     "tenantLibrary": "Tenant/Library",
     "errors.saml.missingToken": "No <code>code</code> query parameter.",
-    "rtr.fixedLengthSession.timeRemaining": "Your session will end soon! Time remaining:"
+    "rtr.fixedLengthSession.timeRemaining": "Your session will end soon! Time remaining:",
+    "logoutComplete": "You have logged out.",
+    "errors.oidc": "Error: server is forbidden, unreachable, or unavailable.",
+    "title.logoutTimeout": "Inactivity log out",
+    "help": "Help"
 }

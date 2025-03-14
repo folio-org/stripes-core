@@ -23,7 +23,10 @@ import {
   updateUser,
   validateUser,
   IS_LOGGING_OUT,
-  SESSION_NAME
+  SESSION_NAME, getStoredTenant,
+  requestLogin,
+  requestUserWithPerms,
+  fetchOverriddenUserWithPerms,
 } from './loginServices';
 
 import {
@@ -48,6 +51,11 @@ import {
 } from './okapiActions';
 
 import { defaultErrors } from './constants';
+
+jest.mock('./loginServices', () => ({
+  ...jest.requireActual('./loginServices'),
+  fetchOverriddenUserWithPerms: jest.fn()
+}));
 
 jest.mock('localforage', () => ({
   getItem: jest.fn(() => Promise.resolve({ user: {} })),
@@ -87,7 +95,7 @@ const mockFetchError = (error) => {
 
 // restore default fetch impl
 const mockFetchCleanUp = () => {
-  global.fetch.mockClear();
+  global.fetch?.mockClear();
   delete global.fetch;
 };
 
@@ -98,6 +106,7 @@ describe('createOkapiSession', () => {
       getState: () => ({
         okapi: {
           currentPerms: [],
+          url:'okapiUrl'
         }
       }),
     };
@@ -209,6 +218,7 @@ describe('processOkapiSession', () => {
       getState: () => ({
         okapi: {
           currentPerms: [],
+          authnUrl: 'keycloakURL'
         }
       }),
     };
@@ -270,6 +280,7 @@ describe('validateUser', () => {
   it('handles fetch failure from "_self"', async () => {
     const store = {
       dispatch: jest.fn(),
+      getState: () => ({ okapi: { tenant: 'monkey', url: 'monkeyUrl' } }),
     };
 
     mockFetchError();
@@ -282,6 +293,7 @@ describe('validateUser', () => {
   it('handles valid user with empty tenant in session', async () => {
     const store = {
       dispatch: jest.fn(),
+      getState: () => ({ okapi: { tenant: 'monkey', url: 'monkeyUrl', currentPerms: { 'configuration.entries.collection.get': true } } }),
     };
 
     const tenant = 'tenant';
@@ -310,6 +322,7 @@ describe('validateUser', () => {
   it('handles valid user with tenant in session', async () => {
     const store = {
       dispatch: jest.fn(),
+      getState: () => ({ okapi: { tenant: 'monkey', url: 'monkeyUrl' } }),
     };
 
     const tenant = 'tenant';
@@ -335,6 +348,7 @@ describe('validateUser', () => {
   it('overwrites session data with new values from _self', async () => {
     const store = {
       dispatch: jest.fn(),
+      getState: () => ({ okapi: { tenant: 'monkey', url: 'monkeyUrl' } }),
     };
 
     const tenant = 'tenant';
@@ -350,7 +364,11 @@ describe('validateUser', () => {
     };
 
     const session = {
-      user: { id: 'id', username: 'username' },
+      user: {
+        id: 'id',
+        username: 'username',
+        storageOnlyValue: 'is still persisted',
+      },
       perms: { foo: true },
       tenant: sessionTenant,
       token: 'token',
@@ -361,7 +379,7 @@ describe('validateUser', () => {
     await validateUser('url', store, tenant, session);
 
     const updatedSession = {
-      user: data.user,
+      user: { ...session.user, ...data.user },
       isAuthenticated: true,
       perms: { ask: true, tell: true },
       tenant: session.tenant,
@@ -379,7 +397,7 @@ describe('validateUser', () => {
   it('handles invalid user', async () => {
     const store = {
       dispatch: jest.fn(),
-      getState: () => ({ okapi: { tenant: 'monkey' } }),
+      getState: () => ({ okapi: { tenant: 'monkey', url: 'monkeyUrl' } }),
     };
 
     global.fetch = jest.fn().mockImplementation(() => {
@@ -564,6 +582,31 @@ describe('logout', () => {
       expect(global.fetch).not.toHaveBeenCalled();
     });
   });
+
+  describe('react-query client', () => {
+    afterEach(() => {
+      mockFetchCleanUp();
+    });
+
+    it('calls removeQueries given valid client', async () => {
+      global.fetch = jest.fn().mockImplementation(() => Promise.resolve());
+      const store = {
+        dispatch: jest.fn(),
+      };
+      const rqc = {
+        removeQueries: jest.fn(),
+      };
+
+      let res;
+      await logout('', store, rqc)
+        .then(() => {
+          res = true;
+        });
+
+      expect(res).toBe(true);
+      expect(rqc.removeQueries).toHaveBeenCalled();
+    });
+  });
 });
 
 describe('getLocale', () => {
@@ -683,6 +726,111 @@ describe('unauthorizedPath functions', () => {
       const value = 'monkey';
       setUnauthorizedPathToSession(value);
       expect(getUnauthorizedPathFromSession()).toBe(value);
+    });
+  });
+
+  describe('getStoredTenant', () => {
+    afterEach(() => {
+      localStorage.clear();
+    });
+    it('retrieves the value from localstorage', () => {
+      const value = { tenantName: 'diku', clientId: 'diku-id' };
+      localStorage.setItem('tenant', JSON.stringify(value));
+      const parsedTenant = getStoredTenant();
+
+      expect(parsedTenant).toStrictEqual(value);
+    });
+  });
+
+  describe('requestLogin', () => {
+    afterEach(() => {
+      mockFetchCleanUp();
+    });
+
+    it('should authenticate and create session when valid credentials provided', async () => {
+      const mockStore = {
+        getState: () => ({
+          okapi: {},
+        }),
+        dispatch: jest.fn()
+      };
+      mockFetchSuccess({});
+
+      await requestLogin(
+        'http://okapi-url',
+        mockStore,
+        'test-tenant',
+        { username: 'testuser', password: 'testpass' }
+      );
+
+      expect(global.fetch).toHaveBeenCalledWith(
+        'http://okapi-url/bl-users/login-with-expiry?expandPermissions=true&fullPermissions=true',
+        expect.objectContaining({
+          method: 'POST',
+          headers: expect.objectContaining({
+            'X-Okapi-Tenant': 'test-tenant',
+            'Content-Type': 'application/json'
+          })
+        })
+      );
+    });
+  });
+
+  describe('requestUserWithPerms', () => {
+    afterEach(() => {
+      mockFetchCleanUp();
+      jest.clearAllMocks();
+    });
+    it('should authenticate and create session when valid credentials provided', async () => {
+      mockFetchSuccess({ tenant:'tenant', originalTenantId:'originalTenantId', ok: true });
+      const mockStore = {
+        getState: () => ({
+          okapi: {},
+        }),
+        dispatch: jest.fn()
+      };
+
+      await requestUserWithPerms(
+        'http://okapi-url',
+        mockStore,
+        'test-tenant',
+        'token'
+      );
+
+      expect(global.fetch).toHaveBeenCalledWith('http://okapi-url/users-keycloak/_self?expandPermissions=true&fullPermissions=true&overrideUser=true',
+        {
+          headers: expect.objectContaining({
+            'X-Okapi-Tenant': 'test-tenant',
+            'X-Okapi-Token': 'token',
+            'Content-Type': 'application/json',
+          }),
+          'rtrIgnore': false
+        });
+    });
+
+    it('should reject with an error object when response is not ok', async () => {
+      const mockError = { message: 'Permission denied' };
+      const mockStore = {
+        getState: () => ({
+          okapi: {},
+        }),
+        dispatch: jest.fn()
+      };
+      const mockResponse = {
+        ok: false,
+        json: jest.fn().mockResolvedValue(mockError), // Ensure `json()` is async
+      };
+      global.fetch = jest.fn().mockImplementation(() => (
+        Promise.resolve({
+          ok: false,
+          status: 404,
+          json: () => Promise.resolve('Reject message'),
+          headers: new Map(),
+        })));
+      fetchOverriddenUserWithPerms.mockResolvedValue(mockResponse);
+
+      await expect(requestUserWithPerms('okapiUrl', mockStore, 'tenant', true)).rejects.toEqual('Reject message');
+      mockFetchCleanUp();
     });
   });
 });

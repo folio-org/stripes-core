@@ -6,9 +6,10 @@ export { default as AppCtxMenuProvider } from './MainNav/CurrentApp/AppCtxMenuPr
 export { LastVisitedContext, withLastVisited } from './LastVisited';
 export { default as Login } from './Login';
 export { default as Logout } from './Logout';
-export { default as LogoutTimeout } from './LogoutTimeout';
 export { default as MainContainer } from './MainContainer';
 export { default as MainNav } from './MainNav';
+export { default as QueryStateUpdater } from './MainNav/QueryStateUpdater';
+export { AppOrderProvider } from './MainNav/AppOrderProvider';
 export { default as ModuleContainer } from './ModuleContainer';
 export { withModule, withModules } from './Modules';
 export { default as ModuleTranslator } from './ModuleTranslator';

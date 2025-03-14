@@ -180,7 +180,7 @@ describe('rtr', () => {
 
       expect(ex).toBe(null);
       // expect(window.removeEventListener).toHaveBeenCalled();
-    });
+    }, 25000); // timeout must be longer than token-util's RTR_MAX_AGE
 
     it('multiple window (storage event)', async () => {
       const logger = {
@@ -214,7 +214,7 @@ describe('rtr', () => {
 
       expect(ex).toBe(null);
       // expect(window.removeEventListener).toHaveBeenCalledWith('monkey')
-    });
+    }, 25000); // timeout must be longer than token-util's RTR_MAX_AGE
   });
 
   it('on known error, throws error', async () => {

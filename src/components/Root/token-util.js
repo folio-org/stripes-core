@@ -1,4 +1,5 @@
 import { isEmpty } from 'lodash';
+import ms from 'ms';
 
 import { getTokenExpiry, setTokenExpiry } from '../../loginServices';
 import { RTRError, UnexpectedResourceError } from './Errors';
@@ -19,6 +20,18 @@ export const RTR_IS_ROTATING = '@folio/stripes/core::rtrIsRotating';
  * RTR_MAX_AGE (int)
  * How long do we let a refresh request last before we consider it stale?
  *
+ * WARNING: The implementation described below is naive and short timeouts
+ * (e.g. 2 seconds) have led to problems in production where slow responses
+ * are interpreted as stale, leading to a second request, which then fails
+ * when the first (slooooow) request completes. This looks like a token-
+ * replay attack from the backend's view, so it will then terminate all
+ * active sessions for a given user. A better approach would be to handle
+ * rotation in a worker thread, allowing more careful tracking of the
+ * rotation request since it would only be happening in a single thread.
+ * But ... that's a lot more work. The quick fix is to use a long value,
+ * which might not provide an ideal UX, but at least it won't be a broken
+ * UX.
+ *
  * When RTR begins, the current time in milliseconds (i.e. Date.now()) is
  * cached in localStorage and the existence of that value is used as a flag
  * in subsequent requests to indicate that they just need to wait for the
@@ -33,7 +46,7 @@ export const RTR_IS_ROTATING = '@folio/stripes/core::rtrIsRotating';
  *
  * Time in milliseconds
  */
-export const RTR_MAX_AGE = 2000;
+export const RTR_MAX_AGE = ms('20s');
 
 /**
  * resourceMapper

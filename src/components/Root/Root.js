@@ -66,17 +66,16 @@ class Root extends Component {
     // enhanced security mode:
     // * configure fetch and xhr interceptors to conduct RTR
     // * see SessionEventContainer for RTR handling
-    if (this.props.config.useSecureTokens) {
-      const rtrConfig = configureRtr(this.props.config.rtr);
+    const rtrConfig = configureRtr(this.props.config.rtr);
 
-      this.ffetch = new FFetch({
-        logger: this.props.logger,
-        store,
-        rtrConfig,
-      });
-      this.ffetch.replaceFetch();
-      this.ffetch.replaceXMLHttpRequest();
-    }
+    this.ffetch = new FFetch({
+      logger: this.props.logger,
+      store,
+      rtrConfig,
+      okapi
+    });
+    this.ffetch.replaceFetch();
+    this.ffetch.replaceXMLHttpRequest();
   }
 
   componentDidMount() {
@@ -120,7 +119,7 @@ class Root extends Component {
     const { logger, store, epics, config, okapi, actionNames, token, isAuthenticated, disableAuth, currentUser, currentPerms, locale, defaultTranslations, timezone, currency, plugins, bindings, discovery, translations, history, serverDown } = this.props;
     if (serverDown) {
       // note: this isn't i18n'ed because we haven't rendered an IntlProvider yet.
-      return <div>Error: server is forbidden, unreachable or down. VPN issue?</div>;
+      return <div>Error: server is forbidden, unreachable or down. Clear the cookies? Use incognito mode? VPN issue?</div>;
     }
 
     if (!translations) {

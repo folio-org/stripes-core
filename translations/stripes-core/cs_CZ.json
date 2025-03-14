@@ -157,6 +157,10 @@
     "about.applicationsVersionsTitle": "Aplikace/moduly/rozhraní",
     "tenantChoose": "Vybrat nájemce/knihovnu",
     "tenantLibrary": "Nájemce/Knihovna",
-    "errors.saml.missingToken": "No <code>code</code> query parameter.",
-    "rtr.fixedLengthSession.timeRemaining": "Vaše relace brzy skončí! Zbývající čas:"
+    "errors.saml.missingToken": "Žádný parametr dotazu <code> code </code>.",
+    "rtr.fixedLengthSession.timeRemaining": "Vaše relace brzy skončí! Zbývající čas:",
+    "logoutComplete": "Odhlásili jste se.",
+    "errors.oidc": "Chyba: server je zakázaný, nedosažitelný nebo nedostupný.",
+    "title.logoutTimeout": "Odhlášení kvůli nečinnosti",
+    "help": "Nápověda"
 }

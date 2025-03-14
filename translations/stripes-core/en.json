@@ -13,6 +13,7 @@
   "title.noPermission": "No permission",
   "title.cookieEnabled": "Cookies are required to login. Please enable cookies and try again.",
   "title.logout": "Log out",
+  "title.logoutTimeout": "Inactivity log out",
   "front.welcome": "Welcome, the Future Of Libraries Is OPEN!",
   "front.home": "Home",
   "front.about": "Software versions",
@@ -90,6 +91,7 @@
   "logout": "Log out",
   "logoutPending": "Log out in process...",
   "logoutKeepSso": "Log out from FOLIO, keep SSO session",
+  "logoutComplete": "You have logged out.",
   "login": "Log in",
   "username": "Username",
   "password": "Password",
@@ -103,6 +105,7 @@
   "settingChoose": "Choose settings",
   "tenantChoose": "Select your tenant/library",
   "tenantLibrary": "Tenant/Library",
+  "help": "Help",
 
   "mainnav.showAllApplicationsButtonLabel": "Apps",
   "mainnav.showAllApplicationsButtonAriaLabel": "All applications",
@@ -146,6 +149,7 @@
   "errors.password.consecutiveWhitespaces.invalid": "The password must not contain consecutive white space characters.",
   "errors.password.compromised.invalid": "The password must not be commonly-used, expected or compromised",
   "errors.saml.missingToken": "No <code>code</code> query parameter.",
+  "errors.oidc": "Error: server is forbidden, unreachable, or unavailable.",
 
   "createResetPassword.header": "Choose a password",
   "createResetPassword.newPassword": "New Password",

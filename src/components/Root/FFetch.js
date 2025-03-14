@@ -42,7 +42,6 @@
  */
 
 import ms from 'ms';
-import { okapi as okapiConfig } from 'stripes-config';
 import {
   setRtrTimeout,
   setRtrFlsTimeout,
@@ -77,10 +76,11 @@ const OKAPI_FETCH_OPTIONS = {
 };
 
 export class FFetch {
-  constructor({ logger, store, rtrConfig }) {
+  constructor({ logger, store, rtrConfig, okapi }) {
     this.logger = logger;
     this.store = store;
     this.rtrConfig = rtrConfig;
+    this.okapi = okapi;
   }
 
   /**
@@ -250,12 +250,12 @@ export class FFetch {
    */
   ffetch = async (resource, options = {}) => {
     // FOLIO API requests are subject to RTR
-    if (isFolioApiRequest(resource, okapiConfig.url)) {
+    if (isFolioApiRequest(resource, this.okapi.url)) {
       this.logger.log('rtrv', 'will fetch', resource);
 
       // on authentication, grab the response to kick of the rotation cycle,
       // then return the response
-      if (isAuthenticationRequest(resource, okapiConfig.url)) {
+      if (isAuthenticationRequest(resource, this.okapi.url)) {
         this.logger.log('rtr', 'authn request', resource);
         return this.nativeFetch.apply(global, [resource, options && { ...options, ...OKAPI_FETCH_OPTIONS }])
           .then(res => {
@@ -284,7 +284,7 @@ export class FFetch {
       // tries to logout, the logout request will fail. And that's fine, just
       // fine. We will let them fail, capturing the response and swallowing it
       // to avoid getting stuck in an error loop.
-      if (isLogoutRequest(resource, okapiConfig.url)) {
+      if (isLogoutRequest(resource, this.okapi.url)) {
         this.logger.log('rtr', 'logout request');
 
         return this.nativeFetch.apply(global, [resource, options && { ...options, ...OKAPI_FETCH_OPTIONS }])

@@ -43,16 +43,6 @@ describe('SessionEventContainer', () => {
     eventsPortalElement.id = eventsPortal;
     document.body.appendChild(eventsPortalElement);
   });
-  it('Renders nothing if useSecureTokens is false', async () => {
-    const insecureStripes = {
-      config: {
-        useSecureTokens: false,
-      },
-    };
-    render(<Harness stripes={insecureStripes}><SessionEventContainer /></Harness>);
-
-    expect(screen.queryByText('KeepWorkingModal')).toBe(null);
-  });
 
   it('Shows a modal when idle timer expires', async () => {
     render(<Harness stripes={stripes}><SessionEventContainer /></Harness>);

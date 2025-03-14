@@ -24,7 +24,7 @@ export const RTR_FLS_TIMEOUT_EVENT = '@folio/stripes/core::RTRFLSTimeout';
  * user is forcibly logged out. This interval describes how much warning they
  * get before the session ends.
  *
- * overridden in stripes.configs.js::config.rtr.fixedLengthSessionWarningTTL
+ * overridden in stripes.config.js::config.rtr.fixedLengthSessionWarningTTL
  * value must be a string parsable by ms()
  */
 export const RTR_FLS_WARNING_TTL = '1m';
@@ -58,7 +58,7 @@ export const RTR_ACTIVITY_EVENTS = ['keydown', 'mousedown'];
  * but the first action that makes and API request (which will fail with an
  * RTR error) causes the session to end.
  *
- * overridden in stripes.configs.js::config.rtr.idleSessionTTL
+ * overridden in stripes.config.js::config.rtr.idleSessionTTL
  * value must be a string parsable by ms()
  */
 export const RTR_IDLE_SESSION_TTL = '60m';
@@ -71,7 +71,7 @@ export const RTR_IDLE_SESSION_TTL = '60m';
  * then the modal will be displayed after 59 minutes of inactivity and
  * be displayed for one minute.
  *
- * overridden in stripes.configs.js::config.rtr.idleModalTTL
+ * overridden in stripes.config.js::config.rtr.idleModalTTL
  * value must be a string parsable by ms()
  */
 export const RTR_IDLE_MODAL_TTL = '1m';

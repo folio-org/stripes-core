@@ -158,5 +158,9 @@
     "tenantChoose": "Select your tenant/library",
     "tenantLibrary": "Tenant/Library",
     "errors.saml.missingToken": "No <code>code</code> query parameter.",
-    "rtr.fixedLengthSession.timeRemaining": "Your session will end soon! Time remaining:"
+    "rtr.fixedLengthSession.timeRemaining": "Your session will end soon! Time remaining:",
+    "logoutComplete": "You have logged out.",
+    "errors.oidc": "Error: server is forbidden, unreachable, or unavailable.",
+    "title.logoutTimeout": "Inactivity log out",
+    "help": "Help"
 }

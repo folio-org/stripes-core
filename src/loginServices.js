@@ -131,6 +131,12 @@ export const setUnauthorizedPathToSession = (pathname) => {
 };
 export const getUnauthorizedPathFromSession = () => sessionStorage.getItem(UNAUTHORIZED_PATH);
 
+const TENANT_LOCAL_STORAGE_KEY = 'tenant';
+export const getStoredTenant = () => {
+  const storedTenant = localStorage.getItem(TENANT_LOCAL_STORAGE_KEY);
+  return storedTenant ? JSON.parse(storedTenant) : undefined;
+};
+
 // export config values for storing user locale
 export const userLocaleConfig = {
   'configName': 'localeSettings',
@@ -394,11 +400,12 @@ function loadResources(store, tenant, userId) {
   // in mod-configuration so we can only retrieve them if the user has
   // read-permission for configuration entries.
   if (canReadConfig(store)) {
+    const okapiObject = store.getState()?.okapi;
     promises = [
-      getLocale(okapi.url, store, tenant),
-      getUserLocale(okapi.url, store, tenant, userId),
-      getPlugins(okapi.url, store, tenant),
-      getBindings(okapi.url, store, tenant),
+      getLocale(okapiObject.url, store, tenant),
+      getUserLocale(okapiObject.url, store, tenant, userId),
+      getPlugins(okapiObject.url, store, tenant),
+      getBindings(okapiObject.url, store, tenant),
     ];
   }
 
@@ -500,7 +507,11 @@ export async function logout(okapiUrl, store, queryClient) {
       method: 'POST',
       mode: 'cors',
       credentials: 'include',
-      headers: getHeaders(store.getState()?.okapi?.tenant),
+      /* Since the tenant in the x-okapi-token and the x-okapi-tenant header on logout should match,
+      switching affiliations updates store.okapi.tenant, leading to mismatched tenant names from the token.
+      Use the tenant name stored during login to ensure they match.
+        */
+      headers: getHeaders(getStoredTenant()?.tenantName || store.getState()?.okapi?.tenant),
     })
     :
     Promise.resolve();
@@ -522,7 +533,9 @@ export async function logout(okapiUrl, store, queryClient) {
       store.dispatch(resetStore());
 
       // clear react-query cache
-      queryClient.removeQueries();
+      if (queryClient) {
+        queryClient.removeQueries();
+      }
     })
     // clear shared storage
     .then(localforage.removeItem(SESSION_NAME))
@@ -581,7 +594,15 @@ export function createOkapiSession(store, tenant, token, data) {
     rtExpires: data.tokenExpiration?.refreshTokenExpiration ? new Date(data.tokenExpiration.refreshTokenExpiration).getTime() : Date.now() + (10 * 60 * 1000),
   };
 
-  const sessionTenant = data.tenant || tenant;
+  /* @ See the comments for fetchOverriddenUserWithPerms.
+  * There are consortia(multi-tenant) and non-consortia modes/envs.
+  * We don't want to care if it is consortia or non-consortia modes, just use fetchOverriderUserWithPerms on login to initiate the session.
+  * 1. In consortia mode, fetchOverriderUserWithPerms returns originalTenantId.
+  * 2. In non-consortia mode, fetchOverriderUserWithPerms won't response with originalTenantId,
+  * instead `tenant` field will be provided.
+  * 3. As a fallback use default tenant.
+  */
+  const sessionTenant = data.originalTenantId || data.tenant || tenant;
   const okapiSess = {
     token,
     isAuthenticated: true,
@@ -771,7 +792,7 @@ export function processOkapiSession(store, tenant, resp, ssoToken) {
  */
 export function validateUser(okapiUrl, store, tenant, session) {
   const { token, tenant: sessionTenant = tenant } = session;
-  const usersPath = okapi.authnUrl ? 'users-keycloak' : 'bl-users';
+  const usersPath = store.getState()?.okapi?.authnUrl ? 'users-keycloak' : 'bl-users';
   return fetch(`${okapiUrl}/${usersPath}/_self?expandPermissions=true`, {
     headers: getHeaders(sessionTenant, token),
     credentials: 'include',
@@ -797,7 +818,10 @@ export function validateUser(okapiUrl, store, tenant, session) {
         // data isn't provided by _self.
         store.dispatch(setSessionData({
           isAuthenticated: true,
-          user,
+          // spread data from the previous session (which may include session-specific
+          // values such as the current service point), and the restructured user object
+          // (which includes permissions in a lookup-friendly way)
+          user: { ...session.user, ...user },
           perms,
           tenant: sessionTenant,
           token,
@@ -836,8 +860,11 @@ export function checkOkapiSession(okapiUrl, store, tenant) {
     .then((sess) => {
       return sess?.user?.id ? validateUser(okapiUrl, store, tenant, sess) : null;
     })
-    .then(() => {
-      if (store.getState().discovery?.interfaces?.['login-saml']) {
+    .then((res) => {
+      // check whether SSO is enabled if either
+      // 1. res is null (when we are starting a new session)
+      // 2. login-saml interface is present (when we are resuming an existing session)
+      if (!res || store.getState().discovery?.interfaces?.['login-saml']) {
         return getSSOEnabled(okapiUrl, store, tenant);
       }
       return Promise.resolve();
@@ -851,7 +878,7 @@ export function checkOkapiSession(okapiUrl, store, tenant) {
  * requestLogin
  * authenticate with a username and password. return a promise that posts the values
  * and then processes the result to begin a session.
- * @param {object} okapi object from stripes.config.js
+ * @param {string} okapiUrl
  * @param {redux store} store
  * @param {string} tenant
  * @param {object} data
@@ -859,35 +886,20 @@ export function checkOkapiSession(okapiUrl, store, tenant) {
  * @returns {Promise}
  */
 export function requestLogin(okapiUrl, store, tenant, data) {
-  // got Keycloak?
-  if (okapi.authnUrl) {
-    return fetch(okapi.authnUrl, {
-      method: 'POST',
-      body: new URLSearchParams({
-        ...data,
-        'grant_type': 'password',
-        'client_id': okapi.clientId,
-        'client_secret': okapi.clientSecret,
-      })
-    })
-      .then(resp => processOkapiSession(store, tenant, resp));
-  } else {
-    // legacy built-in authentication
-    const loginPath = config.useSecureTokens ? 'login-with-expiry' : 'login';
-    return fetch(`${okapiUrl}/bl-users/${loginPath}?expandPermissions=true&fullPermissions=true`, {
-      body: JSON.stringify(data),
-      credentials: 'include',
-      headers: { 'X-Okapi-Tenant': tenant, 'Content-Type': 'application/json' },
-      method: 'POST',
-      mode: 'cors',
-    })
-      .then(resp => processOkapiSession(store, tenant, resp));
-  }
+  const loginPath = 'login-with-expiry';
+  return fetch(`${okapiUrl}/bl-users/${loginPath}?expandPermissions=true&fullPermissions=true`, {
+    body: JSON.stringify(data),
+    credentials: 'include',
+    headers: { 'X-Okapi-Tenant': tenant, 'Content-Type': 'application/json' },
+    method: 'POST',
+    mode: 'cors',
+  })
+    .then(resp => processOkapiSession(store, tenant, resp));
 }
 
 /**
  * fetchUserWithPerms
- * retrieve currently-authenticated user
+ * retrieve currently-authenticated user data, e.g. after switching affiliations, and we want permissions for the current tenant
  * @param {string} okapiUrl
  * @param {string} tenant
  * @param {string} token
@@ -907,16 +919,47 @@ function fetchUserWithPerms(okapiUrl, tenant, token, rtrIgnore = false) {
 }
 
 /**
+ * fetchOverriddenUserWithPerms
+ * When starting a session after turning from OIDC authentication, the user's current tenant
+ * (provided to X-Okapi-Tenant) may not match the central tenant. overrideUser=true query allow us to
+ * retrieve a real user's tenant permissions and service points even if X-Okapi-Tenant == central tenant.
+ * Example, we have user `exampleUser` that directly affiliated with `Member tenant` and for central tenant exampleUser is a shadow user.
+ * Previously, we had to log in to central tenant as a shadow user, and then switch the affiliation.
+ * But providing query overrideUser=true, we fetch the real user's tenant with its permissions and service points.
+ * Response looks like this, {originalTenantId: "Member tenant", permissions: {permissions: [...memberTenantPermissions]}, ...rest}.
+ * Now, we can set the originalTenantId to the session with fetched permissions and servicePoints.
+ * Compare with fetchUserWithPerms, which only fetches data from the current tenant, which is called during an established session when switching tenants.
+ * @param {string} okapiUrl
+ * @param {redux store} store
+ * @param {string} tenant
+ * @param {string} token
+ *
+ * @returns {Promise} Promise resolving to the response-body (JSON) of the request
+ */
+
+export function fetchOverriddenUserWithPerms(okapiUrl, tenant, token, rtrIgnore = false) {
+  const usersPath = okapi.authnUrl ? 'users-keycloak' : 'bl-users';
+  return fetch(
+    `${okapiUrl}/${usersPath}/_self?expandPermissions=true&fullPermissions=true&overrideUser=true`,
+    {
+      headers: getHeaders(tenant, token),
+      rtrIgnore,
+    },
+  );
+}
+
+/**
  * requestUserWithPerms
  * retrieve currently-authenticated user, then process the result to begin a session.
  * @param {string} okapiUrl
  * @param {redux store} store
  * @param {string} tenant
+ * @param {string} token
  *
  * @returns {Promise} Promise resolving to the response-body (JSON) of the request
  */
 export function requestUserWithPerms(okapiUrl, store, tenant, token) {
-  return fetchUserWithPerms(okapiUrl, tenant, token, !token)
+  return fetchOverriddenUserWithPerms(okapiUrl, tenant, token, !token)
     .then((resp) => {
       if (resp.ok) {
         return processOkapiSession(store, tenant, resp, token);
@@ -982,7 +1025,7 @@ export function updateUser(store, data) {
  */
 export async function updateTenant(okapiConfig, tenant) {
   const okapiSess = await getOkapiSession();
-  const userWithPermsResponse = await fetchUserWithPerms(okapiConfig.url, tenant, okapiConfig.token);
+  const userWithPermsResponse = await fetchUserWithPerms(okapiConfig.url, tenant, okapiConfig.token, false);
   const userWithPerms = await userWithPermsResponse.json();
   await localforage.setItem(SESSION_NAME, { ...okapiSess, tenant, ...spreadUserWithPerms(userWithPerms) });
 }
