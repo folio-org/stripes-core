@@ -87,6 +87,7 @@ describe('useCustomFields hook', () => {
   const doLogout = async function () {
     await i.clickProfileDropdown();
     await i.clickLogout();
+    await Button('Log in again').click();
   };
 
   beforeEach(doLogin);
@@ -105,7 +106,7 @@ describe('useCustomFields hook', () => {
       await setupWithApp(createCustomFieldRenderer('foobar'), 'Non-existing Custom Fields');
     });
 
-    it('should have error', () => i.has({ error: true }));
+    it('should have error - non-existing', () => i.has({ error: true }));
   });
 
   describe('requests for version-incompatible custom fields', () => {
@@ -113,7 +114,7 @@ describe('useCustomFields hook', () => {
       await setupWithApp(createCustomFieldRenderer('users', '1.0'), 'Version-incompatible Custom Fields');
     });
 
-    it('should have error', () => i.has({ error: true }));
+    it('should have error - version-incompatible', () => i.has({ error: true }));
   });
 
   describe('requests for version-compatible custom fields', () => {
