@@ -84,14 +84,7 @@ describe('useCustomFields hook', () => {
     await this.visit('/dummy');
   };
 
-  const doLogout = async function () {
-    await i.clickProfileDropdown();
-    await i.clickLogout();
-    await Button('Log in again').click();
-  };
-
   beforeEach(doLogin);
-  // afterEach(doLogout);
 
   describe('requests for existing custom fields', () => {
     before(async () => {
