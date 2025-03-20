@@ -49,6 +49,16 @@
         "permissionName": "mod-settings.owner.write.stripes-core.prefs.manage",
         "displayName": "UI: update the user's own central preferences, such as order of links in the main navigation.",
         "visible": false
+      },
+      {
+        "permissionName": "mod-settings.global.read.stripes-core.prefs.manage",
+        "displayName": "UI: read the tenant's preferences",
+        "visible": false
+      },
+      {
+        "permissionName": "mod-settings.global.write.stripes-core.prefs.manage",
+        "displayName": "UI: update the tenant's preferences",
+        "visible": false
       }
     ]
   },
