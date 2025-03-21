@@ -1,4 +1,4 @@
-import { renderHook, waitFor, act } from '@folio/jest-config-stripes/testing-library/react';
+import { renderHook, waitFor } from '@folio/jest-config-stripes/testing-library/react';
 
 import { useQueryLimit, MAX_UNPAGED_RESOURCE_COUNT } from './useQueryLimit';
 import { useStripes } from '../StripesContext';
@@ -22,10 +22,9 @@ describe('useQueryLimit', () => {
 
       const { result } = renderHook(() => useQueryLimit());
 
-      await waitFor(() => expect(result.current.limit).not.toBeNull());
-      const limit = await act(() => result.current);
+      await waitFor(() => expect(result.current).not.toBeNull());
 
-      expect(limit).toEqual(testLimit);
+      expect(result.current).toEqual(testLimit);
     });
   });
 
@@ -42,10 +41,9 @@ describe('useQueryLimit', () => {
 
         const { result } = renderHook(() => useQueryLimit());
 
-        await waitFor(() => expect(result.current.limit).not.toBeNull());
-        const limit = await act(() => result.current);
+        await waitFor(() => expect(result.current).not.toBeNull());
 
-        expect(limit).toEqual(maxUnpagedResourceCount);
+        expect(result.current).toEqual(maxUnpagedResourceCount);
       });
     });
 
@@ -59,10 +57,9 @@ describe('useQueryLimit', () => {
 
         const { result } = renderHook(() => useQueryLimit());
 
-        await waitFor(() => expect(result.current.limit).not.toBeNull());
-        const limit = await act(() => result.current);
+        await waitFor(() => expect(result.current).not.toBeNull());
 
-        expect(limit).toEqual(MAX_UNPAGED_RESOURCE_COUNT);
+        expect(result.current).toEqual(MAX_UNPAGED_RESOURCE_COUNT);
       });
     });
   });

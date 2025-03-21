@@ -22,7 +22,7 @@ export const MAX_UNPAGED_RESOURCE_COUNT = 2000;
  *
  * @returns {Number} number of records to retrieve in an unpaged-query
  */
-export const useQueryLimit = async () => {
+export const useQueryLimit = () => {
   const [limit, setLimit] = useState(null);
   const { stripes } = useStripes();
   const { getTenantPreference } = useTenantPreferences();
