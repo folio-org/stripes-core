@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react';
+
 import { useStripes } from '../StripesContext';
 import useTenantPreferences from './useTenantPreferences';
 import { settings } from '../constants';
@@ -18,20 +20,29 @@ export const MAX_UNPAGED_RESOURCE_COUNT = 2000;
  * retrieved? Look first in tenant-settings, then in stripes.config.js, then
  * return a default, hard-coded value.
  *
- * @returns {Promise} number of records to retrieve in an unpaged-query
+ * @returns {Number} number of records to retrieve in an unpaged-query
  */
 export const useQueryLimit = async () => {
+  const [limit, setLimit] = useState(null);
   const { stripes } = useStripes();
   const { getTenantPreference } = useTenantPreferences();
 
-  let limit = await getTenantPreference({ scope: settings.SCOPE, key: SETTINGS_KEY });
-  if (!limit) {
-    if (stripes.config.maxUnpagedResourceCount) {
-      limit = stripes.config.maxUnpagedResourceCount;
-    } else {
-      limit = MAX_UNPAGED_RESOURCE_COUNT;
-    }
-  }
+  useEffect(() => {
+    const getLimit = async () => {
+      let value = await getTenantPreference({ scope: settings.SCOPE, key: SETTINGS_KEY });
+      if (!value) {
+        if (stripes.config.maxUnpagedResourceCount) {
+          value = stripes.config.maxUnpagedResourceCount;
+        } else {
+          value = MAX_UNPAGED_RESOURCE_COUNT;
+        }
+      }
+
+      setLimit(value);
+    };
+
+    getLimit();
+  }, [getTenantPreference, stripes.config.maxUnpagedResourceCount]);
 
   return limit;
 };

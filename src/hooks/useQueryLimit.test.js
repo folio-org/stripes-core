@@ -20,8 +20,11 @@ describe('useQueryLimit', () => {
       const mockUseStripes = useStripes;
       mockUseStripes.mockReturnValue({ stripes: { config: { } } });
 
-      const renderedHook = renderHook(() => useQueryLimit());
-      const limit = await act(() => renderedHook.result.current);
+      const { result } = renderHook(() => useQueryLimit());
+
+      await waitFor(() => expect(result.current.limit).not.toBeNull());
+      const limit = await act(() => result.current);
+
       expect(limit).toEqual(testLimit);
     });
   });
@@ -37,10 +40,12 @@ describe('useQueryLimit', () => {
         const maxUnpagedResourceCount = 123;
         mockUseStripes.mockReturnValue({ stripes: { config: { maxUnpagedResourceCount } } });
 
-        const renderedHook = renderHook(() => useQueryLimit());
-        const limit = await act(() => renderedHook.result.current);
+        const { result } = renderHook(() => useQueryLimit());
 
-        await waitFor(() => expect(limit).toEqual(maxUnpagedResourceCount));
+        await waitFor(() => expect(result.current.limit).not.toBeNull());
+        const limit = await act(() => result.current);
+
+        expect(limit).toEqual(maxUnpagedResourceCount);
       });
     });
 
@@ -52,10 +57,12 @@ describe('useQueryLimit', () => {
         const mockUseStripes = useStripes;
         mockUseStripes.mockReturnValue({ stripes: { config: { } } });
 
-        const renderedHook = renderHook(() => useQueryLimit());
-        const limit = await act(() => renderedHook.result.current);
+        const { result } = renderHook(() => useQueryLimit());
 
-        await waitFor(() => expect(limit).toEqual(MAX_UNPAGED_RESOURCE_COUNT));
+        await waitFor(() => expect(result.current.limit).not.toBeNull());
+        const limit = await act(() => result.current);
+
+        expect(limit).toEqual(MAX_UNPAGED_RESOURCE_COUNT);
       });
     });
   });
