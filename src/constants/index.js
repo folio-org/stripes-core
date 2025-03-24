@@ -6,3 +6,4 @@ export { default as defaultErrors } from './defaultErrors';
 export { default as packageName } from './packageName';
 export { default as delimiters } from './delimiters';
 export { default as eventsPortal } from './eventsPortal';
+export { default as settings } from './settings';
