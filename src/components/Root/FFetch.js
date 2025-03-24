@@ -61,8 +61,8 @@ import {
 } from './Errors';
 import {
   RTR_AT_EXPIRY_IF_UNKNOWN,
-  RTR_AT_TTL_FRACTION,
   RTR_ERROR_EVENT,
+  RTR_FORCE_REFRESH_EVENT,
   RTR_FLS_TIMEOUT_EVENT,
   RTR_TIME_MARGIN_IN_MS,
   RTR_FLS_WARNING_EVENT,
@@ -81,6 +81,24 @@ export class FFetch {
     this.store = store;
     this.rtrConfig = rtrConfig;
     this.okapi = okapi;
+  }
+
+  /**
+   * registers a listener for the RTR_FORCE_REFRESH_EVENT
+   */
+  registerEventListener = () => {
+    this.globalEventCallback = () => {
+      this.logger.log('rtr', 'forcing rotation due to RTR_FORCE_REFRESH_EVENT');
+      rtr(this.nativeFetch, this.logger, this.rotateCallback, this.store.getState().okapi);
+    };
+    window.addEventListener(RTR_FORCE_REFRESH_EVENT, this.globalEventCallback);
+  }
+
+  /**
+   * unregister the listener for the RTR_FORCE_REFRESH_EVENT
+   */
+  unregisterEventListener = () => {
+    window.removeEventListener(RTR_FORCE_REFRESH_EVENT, this.globalEventCallback);
   }
 
   /**
@@ -112,7 +130,7 @@ export class FFetch {
   scheduleRotation = (rotationP) => {
     rotationP.then((rotationInterval) => {
       // AT refresh interval: a large fraction of the actual AT TTL
-      const atInterval = (rotationInterval.accessTokenExpiration - Date.now()) * RTR_AT_TTL_FRACTION;
+      const atInterval = (rotationInterval.accessTokenExpiration - Date.now()) * this.rtrConfig.rotationIntervalFraction;
 
       // RT timeout interval (session will end) and warning interval (warning that session will end)
       const rtTimeoutInterval = (rotationInterval.refreshTokenExpiration - Date.now());
