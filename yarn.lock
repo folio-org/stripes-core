@@ -12539,11 +12539,6 @@ react-titled@^2.0.0:
   resolved "https://registry.yarnpkg.com/react-titled/-/react-titled-2.1.0.tgz#718f1dd01c19b891f20de33febe136b840232554"
   integrity sha512-ZK6V5h7ahPNFaXWccC/CXXMnr9KOeoEND20XAICfwhB3utpfRyx69nPksDKW+zAHZw/ZCHrPANyblKKzw8BHhA==
 
-react-transform-catch-errors@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/react-transform-catch-errors/-/react-transform-catch-errors-1.0.2.tgz#1b4d4a76e97271896fc16fe3086c793ec88a9eeb"
-  integrity sha512-FCeTXLTpRM8wMrwAlYVoEI+HXUFYEJLKdmf9zd5YtH1yc2Dq81JL1YMr0eHeUe699CCTezG4CfEB5D9RpmovEw==
-
 react-transition-group@^4.4.5:
   version "4.4.5"
   resolved "https://registry.yarnpkg.com/react-transition-group/-/react-transition-group-4.4.5.tgz#e53d4e3f3344da8521489fbef8f2581d42becdd1"
