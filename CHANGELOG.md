@@ -1,6 +1,7 @@
 # Change history for stripes-core
 
-## 11.0.2 IN PROGRESS
+## [11.0.2](https://github.com/folio-org/stripes-core/tree/v11.0.2) (2025-03-24)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v11.0.1...v11.0.2)
 
 * CSS Support for printing of results lists content. Refs STCOR-956.
 
