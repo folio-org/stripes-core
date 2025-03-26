@@ -47,6 +47,7 @@ jest.mock('@folio/stripes-components', () => ({
       </div>
     </div>
   )),
+  'datepicker-util': jest.fn(),
   Datepicker: jest.fn(({ ref, children, ...rest }) => (
     <div ref={ref} {...rest}>
       {children}
@@ -187,10 +188,10 @@ jest.mock('@folio/stripes-components', () => ({
     </fieldset>
   )),
   Row: jest.fn(({ children }) => <div className="row">{ children }</div>),
-  Select: jest.fn(({ children, dataOptions }) => (
+  Select: jest.fn(({ children, dataOptions, ...props }) => (
     <div>
-      <select>
-        {dataOptions.forEach((option, i) => (
+      <select {...props}>
+        {dataOptions.map((option, i) => (
           <option
             value={option.value}
             key={option.id || `option-${i}`}
