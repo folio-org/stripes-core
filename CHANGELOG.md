@@ -1,5 +1,9 @@
 # Change history for stripes-core
 
+## 11.0.3 IN PROGRESS
+
+* Show user-friendly labels on ECS pre-login screen. Refs STCOR-899.
+
 ## [11.0.2](https://github.com/folio-org/stripes-core/tree/v11.0.2) (2025-03-24)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v11.0.1...v11.0.2)
 
