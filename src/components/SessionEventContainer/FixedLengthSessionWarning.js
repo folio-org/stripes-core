@@ -1,12 +1,6 @@
-import { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
-import ms from 'ms';
-
-import {
-  MessageBanner
-} from '@folio/stripes-components';
-
-import { useStripes } from '../../StripesContext';
+import { MessageBanner } from '@folio/stripes-components';
 import css from './style.css';
 
 /**
@@ -16,23 +10,7 @@ import css from './style.css';
  *
  * @param {function} callback function to call when clicking "Keep working" button
  */
-const FixedLengthSessionWarning = () => {
-  const stripes = useStripes();
-  const [remainingMillis, setRemainingMillis] = useState(ms(stripes.config.rtr.fixedLengthSessionWarningTTL));
-
-  // configure an interval timer that sets state each second,
-  // counting down to 0.
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setRemainingMillis(i => i - 1000);
-    }, 1000);
-
-    // cleanup: clear the timer
-    return () => {
-      clearInterval(interval);
-    };
-  }, []);
-
+const FixedLengthSessionWarning = ({ flsTimer }) => {
   /**
    * timestampFormatter
    * convert time-remaining to mm:ss. Given the remaining time can easily be
@@ -42,14 +20,18 @@ const FixedLengthSessionWarning = () => {
    * like `1970-01-01T00:01:39.000Z`; extract the `01:39`.
    */
   const timestampFormatter = () => {
-    if (remainingMillis >= 1000) {
-      return new Date(remainingMillis).toISOString().substring(14, 19);
+    if (flsTimer >= 1000) {
+      return new Date(flsTimer).toISOString().substring(14, 19);
     }
 
     return '00:00';
   };
 
   return <MessageBanner show contentClassName={css.fixedSessionBanner}><FormattedMessage id="stripes-core.rtr.fixedLengthSession.timeRemaining" /> {timestampFormatter()}</MessageBanner>;
+};
+
+FixedLengthSessionWarning.propTypes = {
+  flsTimer: PropTypes.number.isRequired,
 };
 
 export default FixedLengthSessionWarning;

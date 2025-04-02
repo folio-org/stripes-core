@@ -27,7 +27,8 @@ const stripes = {
     rtr: {
       idleModalTTL: '3s',
       idleSessionTTL: '3s',
-      activityEvents: ['right thing', 'hustle', 'hand jive']
+      activityEvents: ['right thing', 'hustle', 'hand jive'],
+      fixedLengthSessionWarningTTL: '60s'
     }
   },
   okapi: {
