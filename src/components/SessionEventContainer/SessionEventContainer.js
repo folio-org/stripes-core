@@ -158,7 +158,7 @@ const SessionEventContainer = ({ history }) => {
    * used to determine if the keepWorking modal should be shown during the Fls countdown.
    */
 
-  const isFlsExceededModalTTL = flsTimer < ms(stripes.config.rtr.idleModalTTL);
+  const isFlsExceededModalTTL = isFlsVisible && (flsTimer < ms(stripes.config.rtr.idleModalTTL));
 
   /**
    * keepWorkingCallback
