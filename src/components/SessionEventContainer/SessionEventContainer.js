@@ -141,6 +141,24 @@ const SessionEventContainer = ({ history }) => {
   // inactivity timers
   const timers = useRef();
   const stripes = useStripes();
+  const [flsTimer, setFlsTimer] = useState(ms(stripes.config.rtr.fixedLengthSessionWarningTTL));
+
+  useEffect(() => {
+    let interval;
+    if (isFlsVisible) {
+      interval = setInterval(() => {
+        setFlsTimer(i => i - 1000);
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [isFlsVisible]);
+
+  /**
+   * Indicator that fixed-length session warning countdown has exceeded the modal TTL,
+   * used to determine if the keepWorking modal should be shown during the Fls countdown.
+   */
+
+  const isFlsExceededModalTTL = flsTimer < ms(stripes.config.rtr.idleModalTTL);
 
   /**
    * keepWorkingCallback
@@ -192,6 +210,9 @@ const SessionEventContainer = ({ history }) => {
 
     // inactive timer: show the "keep working?" modal
     const showModalIT = createInactivityTimer(ms(idleSessionTTL) - ms(idleModalTTL), () => {
+      // Don't show the keepWorking modal if the fixed-length session warning countdown has exceeded the modal TTL.
+      if (isFlsExceededModalTTL) return;
+
       stripes.logger.log('rtr', 'session idle; showing modal');
       stripes.store.dispatch(toggleRtrModal(true));
       setIsVisible(true);
@@ -260,11 +281,11 @@ const SessionEventContainer = ({ history }) => {
       bc.close();
     };
 
-    // no deps? It should be history and stripes!!! >:)
-    // We only want to configure the event listeners once, not every time
-    // there is a change to stripes or history. Hence, an empty dependency
-    // array.
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    // isFlsExceededModalTTL only? It should be history and stripes!!! >:)
+    // We only want to configure the event listeners once or on isFlsExceededModalTTL
+    // change that could happen very rarely, not every time there is a change to stripes or history.
+    // Hence, only isFlsExceededModalTTL in dependency array.
+  }, [isFlsExceededModalTTL]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const renderList = [];
 
@@ -275,14 +296,16 @@ const SessionEventContainer = ({ history }) => {
 
   // show the fixed-length session warning?
   if (isFlsVisible) {
-    renderList.push(<FixedLengthSessionWarning key="FixedLengthSessionWarning" />);
+    renderList.push(<FixedLengthSessionWarning key="FixedLengthSessionWarning" flsTimer={flsTimer} />);
   }
 
   return renderList.length ? createPortal(renderList, document.getElementById(eventsPortal)) : null;
 };
 
 SessionEventContainer.propTypes = {
-  history: PropTypes.object,
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+  }),
 };
 
 export default SessionEventContainer;
