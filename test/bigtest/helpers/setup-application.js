@@ -113,6 +113,13 @@ export default function setupApplication({
       visit: { value: visit },
       location: { get: location },
     });
+
+    const origWarn = console.warn;
+    console.warn = (msg) => {
+      if (!msg.includes('[@formatjs/intl]')) {
+        origWarn(msg);
+      }
+    };
   });
 
   afterEach(async () => {
