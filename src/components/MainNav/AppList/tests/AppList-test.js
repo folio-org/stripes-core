@@ -11,8 +11,111 @@ import { mountWithContext } from '../../../../../test/bigtest/helpers/render-hel
 import AppList from '../AppList';
 // import AppListInteractor from './interactor';
 
-import apps from './apps';
+// import apps from './apps';
 import selectedApp from './selectedApp';
+import settingsIcon from '../../settings.svg';
+
+/* eslint-disable quotes */
+const apps = [
+  {
+    "id": "clickable-users-module",
+    "href": "/users?sort=name",
+    "active": false,
+    "name": "users",
+    "displayName": "Users",
+    "route": "/users",
+    "home": "/users?sort=name",
+    "queryResource": "query",
+    "actionNames": [
+      "stripesHome",
+      "usersSortByName"
+    ],
+    "okapiInterfaces": {
+      "users": "15.0",
+      "configuration": "2.0",
+      "circulation": "3.0 4.0 5.0 6.0 7.0 8.0",
+      "permissions": "5.0",
+      "loan-policy-storage": "1.0 2.0",
+      "loan-storage": "4.0 5.0 6.0 7.0",
+      "login": "6.0",
+      "feesfines": "15.0",
+      "request-storage": "2.5 3.0",
+      "users-bl": "5.0"
+    },
+    "module": "@folio/users",
+    "description": "User management",
+    "version": "2.26.0"
+  },
+  {
+    "id": "clickable-inventory-module",
+    "href": "/inventory?filters=&sort=Title",
+    "active": false,
+    "name": "inventory",
+    "displayName": "Inventory",
+    "route": "/inventory",
+    "home": "/inventory?filters=&sort=Title",
+    "queryResource": "query",
+    "okapiInterfaces": {
+      "inventory": "9.0",
+      "instance-storage": "7.0",
+      "holdings-storage": "3.0 4.0",
+      "item-storage": "7.0",
+      "loan-types": "2.0",
+      "material-types": "2.0",
+      "item-note-types": "1.0",
+      "locations": "3.0",
+      "identifier-types": "1.1",
+      "contributor-types": "2.0",
+      "contributor-name-types": "1.2",
+      "instance-types": "2.0",
+      "nature-of-content-terms": "1.0",
+      "instance-formats": "2.0",
+      "classification-types": "1.1",
+      "statistical-code-types": "1.0",
+      "statistical-codes": "1.0",
+      "modes-of-issuance": "1.0",
+      "instance-statuses": "1.0",
+      "instance-relationship-types": "1.0",
+      "instance-note-types": "1.0",
+      "alternative-title-types": "1.0",
+      "holdings-types": "1.0",
+      "call-number-types": "1.0",
+      "electronic-access-relationships": "1.0",
+      "ill-policies": "1.0",
+      "holdings-note-types": "1.0",
+      "users": "15.0",
+      "location-units": "2.0",
+      "circulation": "4.0 5.0 6.0 7.0 8.0"
+    },
+    "translations": {
+      "en": {
+        "search": "Search",
+        "resultCount": "{count, number} {count, plural, one {Record found} other {Records found}}"
+      },
+      "de": {
+        "search": "Suche",
+        "resultCount": "Gefunden {count, number} {count, plural, one {Aufzeichnung} other {Aufzeichnungen}}"
+      }
+    },
+    "module": "@folio/inventory",
+    "description": "Inventory manager",
+    "version": "1.13.0"
+},
+{
+    "displayName": "Settings",
+    "id": "clickable-settings",
+    "href": "/settings",
+    "active": false,
+    "description": "FOLIO settings",
+    "iconData": {
+      "src": settingsIcon,
+      "alt": "Tenant Settings",
+      "title": "Settings"
+    },
+    "route": "/settings"
+  }
+];
+/* eslint-enable quotes */
 
 const AppDropdownInteractor = HTML.extend('app dropdown')
   .selector('[data-test-app-list]')
@@ -51,6 +154,11 @@ describe('AppList', () => {
   beforeEach(async () => {
     await mountWithContext(
       <BrowserRouter>
+        <style>
+          {`html {
+            background-color: #333;
+          }`}
+        </style>
         <AppList
           apps={apps}
           selectedApp={selectedApp}
