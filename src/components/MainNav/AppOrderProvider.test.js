@@ -117,20 +117,8 @@ const testAppModules = [
   }
 ];
 
-// default order - same as config.
+// default order - sorted by displayName.
 const testOrderedNoPref = [
-  {
-    id: 'clickable-invoice-module',
-    href: '/invoice',
-    active: false,
-    name: 'invoice',
-    displayName: 'Invoices',
-    route: '/invoice',
-    queryResource: 'query',
-    module: '@folio/invoice',
-    description: 'Invoice',
-    version: '6.1.1090000001259'
-  },
   {
     id: 'clickable-agreements-module',
     href: '/erm/agreements',
@@ -169,14 +157,23 @@ const testOrderedNoPref = [
     description: 'Item Check-in',
     version: '9.3.109000000926'
   },
+  {
+    id: 'clickable-invoice-module',
+    href: '/invoice',
+    active: false,
+    name: 'invoice',
+    displayName: 'Invoices',
+    route: '/invoice',
+    queryResource: 'query',
+    module: '@folio/invoice',
+    description: 'Invoice',
+    version: '6.1.1090000001259'
+  },
   ...settingsOnly
 ];
 
-// default order preference (value that's derived when no user preferred order is present) - same order as config.
+// default order preference (value that's derived when no user preferred order is present) - ordered by displayName of the original app objects.
 const testPreferencedOrderNoPref = [
-  {
-    name: 'invoice',
-  },
   {
     name: 'agreements',
   },
@@ -185,6 +182,9 @@ const testPreferencedOrderNoPref = [
   },
   {
     name: 'checkin',
+  },
+  {
+    name: 'invoice',
   },
   {
     name: 'settings',
