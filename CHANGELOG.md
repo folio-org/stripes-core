@@ -5,6 +5,7 @@
 * Improve useModuleInfo hook. Refs STCOR-955.
 * Provide `useQueryLimit()` hook. Refs STCOR-616, STCOR-617.
 * Show user-friendly labels on ECS pre-login screen. Refs STCOR-899.
+* Sort app links in the main navigation by their `displayName` by default. Refs STCOR-964.
 
 ## [11.0.0](https://github.com/folio-org/stripes-core/tree/v11.0.0) (2025-02-24)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.2.0...v11.0.0)
