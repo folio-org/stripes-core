@@ -9,12 +9,10 @@ import { HTML, Bigtest } from '@folio/stripes-testing';
 import { mountWithContext } from '../../../../../test/bigtest/helpers/render-helpers';
 
 import AppList from '../AppList';
-// import AppListInteractor from './interactor';
-
-// import apps from './apps';
 import selectedApp from './selectedApp';
 import settingsIcon from '../../settings.svg';
 
+// disable lint for the double-quotes in all this JSON...
 /* eslint-disable quotes */
 const apps = [
   {
@@ -100,8 +98,8 @@ const apps = [
     "module": "@folio/inventory",
     "description": "Inventory manager",
     "version": "1.13.0"
-},
-{
+  },
+  {
     "displayName": "Settings",
     "id": "clickable-settings",
     "href": "/settings",
