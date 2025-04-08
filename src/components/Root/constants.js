@@ -57,7 +57,7 @@ export const RTR_ACTIVITY_EVENTS = ['keydown', 'mousedown'];
  * overridden in stripes.configs.js::config.rtr.idleSessionTTL
  * value must be a string parsable by ms()
  */
-export const RTR_IDLE_SESSION_TTL = '60m';
+export const RTR_IDLE_SESSION_TTL = '4h';
 
 /**
  * how long is the "keep working?" modal visible

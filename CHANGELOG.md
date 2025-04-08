@@ -3,6 +3,7 @@
 ## 11.0.3 IN PROGRESS
 
 * Show user-friendly labels on ECS pre-login screen. Refs STCOR-899.
+* Change default Idle Session Timeout to `4h` from `1h`. Refs STCOR-962.
 
 ## [11.0.2](https://github.com/folio-org/stripes-core/tree/v11.0.2) (2025-03-24)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v11.0.1...v11.0.2)
