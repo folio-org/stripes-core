@@ -1,10 +1,12 @@
 # Change history for stripes-core
 
 ## 11.1.0 IN PROGRESS
+
 * CSS Support for printing of results lists content. Refs STCOR-956.
 * Improve useModuleInfo hook. Refs STCOR-955.
 * Provide `useQueryLimit()` hook. Refs STCOR-616, STCOR-617.
 * Show user-friendly labels on ECS pre-login screen. Refs STCOR-899.
+* Sort app links in the main navigation by their `displayName` by default. Refs STCOR-964.
 * Change default Idle Session Timeout to `4h` from `1h`. Refs STCOR-962.
 
 ## [11.0.0](https://github.com/folio-org/stripes-core/tree/v11.0.0) (2025-02-24)
