@@ -2,7 +2,6 @@ import { createContext, useContext, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useIntl } from 'react-intl';
 import { useQuery } from 'react-query';
-import sortBy from 'lodash/sortBy';
 
 import { useStripes } from '../../StripesContext';
 import { useModules } from '../../ModulesContext';
