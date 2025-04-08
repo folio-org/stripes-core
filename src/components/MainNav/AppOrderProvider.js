@@ -104,7 +104,7 @@ function getAllowedApps(appModules, stripes, pathname, lastVisited, formatMessag
       route: SETTINGS_ROUTE
     });
   }
-  return sortBy(apps, ['displayName']);
+  return apps.toSorted((a, b) => a.displayName.localeCompare(b.displayName));
 }
 
 /**

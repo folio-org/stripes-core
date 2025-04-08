@@ -114,6 +114,13 @@ const testAppModules = [
     module: '@folio/checkin',
     description: 'Item Check-in',
     version: '9.3.109000000926'
+  },
+  {
+    displayName: 'eHoldings',
+    route: '/eholdings',
+    module: '@folio/eholdings',
+    description: 'Description for e-holdings',
+    version: '2.7.1828'
   }
 ];
 
@@ -158,6 +165,17 @@ const testOrderedNoPref = [
     version: '9.3.109000000926'
   },
   {
+    id: 'clickable-eholdings-module',
+    href: '/eholdings',
+    active: false,
+    name: 'eholdings',
+    displayName: 'eHoldings',
+    route: '/eholdings',
+    module: '@folio/eholdings',
+    description: 'Description for e-holdings',
+    version: '2.7.1828'
+  },
+  {
     id: 'clickable-invoice-module',
     href: '/invoice',
     active: false,
@@ -182,6 +200,9 @@ const testPreferencedOrderNoPref = [
   },
   {
     name: 'checkin',
+  },
+  {
+    name: 'eholdings',
   },
   {
     name: 'invoice',
@@ -243,7 +264,18 @@ const testOrderedWithPref = [
     description: 'Description for bulk edit',
     version: '4.2.2090000003517'
   },
-  ...settingsOnly
+  ...settingsOnly,
+  {
+    id: 'clickable-eholdings-module',
+    href: '/eholdings',
+    active: false,
+    name: 'eholdings',
+    displayName: 'eHoldings',
+    route: '/eholdings',
+    module: '@folio/eholdings',
+    description: 'Description for e-holdings',
+    version: '2.7.1828'
+  },
 ];
 
 // order changed to move 'checkin' to the start of the list...
@@ -262,6 +294,9 @@ const testPreferencedOrderWithPref = [
   },
   {
     name: 'settings',
+  },
+  {
+    name: 'eholdings',
   }
 ];
 
@@ -274,11 +309,11 @@ describe('AppOrderProvider', () => {
       renderedHook = await act(() => renderHook(() => useAppOrderContext(), { wrapper }));
     });
 
-    it('provides a settings-only list', () => {
+    it('provides a settings-only list in `apps`', () => {
       expect(renderedHook.result.current.apps).toEqual(settingsOnly);
     });
 
-    it('provides preference sorted list (no preference, just default)', () => {
+    it('provides a settings-only list in `appNavOrder`)', () => {
       expect(renderedHook.result.current.appNavOrder).toEqual([{ name: 'settings' }]);
     });
 
@@ -303,11 +338,11 @@ describe('AppOrderProvider', () => {
       renderedHook = await act(() => renderHook(() => useAppOrderContext(), { wrapper }));
     });
 
-    it('provides a settings-only list', () => {
+    it('provides apps and settings in `apps`', () => {
       expect(renderedHook.result.current.apps).toEqual(testOrderedNoPref);
     });
 
-    it('provides preference sorted list (no preference, just default)', () => {
+    it('sorts apps alphabetically by display-name in `appNavOrder`', () => {
       expect(renderedHook.result.current.appNavOrder).toEqual(testPreferencedOrderNoPref);
     });
   });
@@ -321,11 +356,11 @@ describe('AppOrderProvider', () => {
       renderedHook = await act(() => renderHook(() => useAppOrderContext(), { wrapper }));
     });
 
-    it('provides a settings-only list', () => {
+    it('provides apps and settings in `apps`', () => {
       expect(renderedHook.result.current.apps).toEqual(testOrderedWithPref);
     });
 
-    it('provides preference sorted list (no preference, just default)', () => {
+    it('sorts apps by preference in `appNavOrder`', () => {
       expect(renderedHook.result.current.appNavOrder).toEqual(testPreferencedOrderWithPref);
     });
 
