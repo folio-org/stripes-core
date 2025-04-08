@@ -344,7 +344,7 @@ describe('getPromise', () => {
 describe('configureRtr', () => {
   it('sets idleSessionTTL and idleModalTTL', () => {
     const res = configureRtr({});
-    expect(res.idleSessionTTL).toBe('60m');
+    expect(res.idleSessionTTL).toBe('4h');
     expect(res.idleModalTTL).toBe('1m');
   });
 
