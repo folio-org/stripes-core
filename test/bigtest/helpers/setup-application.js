@@ -114,6 +114,7 @@ export default function setupApplication({
       location: { get: location },
     });
 
+    // suppress noisy warnings for compiling translations.
     const origWarn = console.warn;
     console.warn = (msg) => {
       if (!msg.includes('[@formatjs/intl]')) {
