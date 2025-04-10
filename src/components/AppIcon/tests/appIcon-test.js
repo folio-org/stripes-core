@@ -4,17 +4,30 @@
 
 import React from 'react';
 import { beforeEach, it, describe } from 'mocha';
-import { expect } from 'chai';
+import {
+  HTML,
+  Image,
+  including
+} from '@folio/stripes-testing';
 
 import { mount } from '../../../../test/bigtest/helpers/render-helpers';
 
 import AppIcon from '../AppIcon';
-import AppIconInteractor from './interactor';
 import png from './users-app-icon.png';
 import svg from './users-app-icon.svg';
 
+const AppIconInteractor = HTML.extend('AppIcon')
+  .selector('[class^=appIcon]')
+  .filters({
+    hasImg: el => Boolean(el.querySelector('img')),
+    tag: el => el.tagName.toLowerCase(),
+    className: el => el.className,
+    label: el => el.innerText
+  });
+
+
 describe('AppIcon', async () => {
-  const appIcon = new AppIconInteractor();
+  const appIcon = AppIconInteractor();
   const alt = 'My alt';
   const label = 'My label';
   const tag = 'div';
@@ -54,13 +67,9 @@ describe('AppIcon', async () => {
       );
     });
 
-    it('Should render an <img>', () => {
-      expect(appIcon.hasImg).to.equal(true);
-    });
+    it('Should render an <img>', () => appIcon.has({ hasImg: true }));
 
-    it('Should render an img with an alt-attribute', () => {
-      expect(appIcon.img.alt).to.equal(stripesMock.icons.users.app.alt);
-    });
+    it('Should render an img with an alt-attribute', () => Image({ alt: stripesMock.icons.users.app.alt }).exists());
   });
 
   describe('Rendering an AppIcon using an icon-object', () => {
@@ -73,17 +82,11 @@ describe('AppIcon', async () => {
       );
     });
 
-    it('Should render an <img>', () => {
-      expect(appIcon.hasImg).to.equal(true);
-    });
+    it('Should render an <img>', () => appIcon.has({ hasImg: true }));
 
-    it('Should render an img with an alt-attribute', () => {
-      expect(appIcon.img.alt).to.equal(alt);
-    });
+    it('Should render an img with an alt-attribute', () => Image({ alt }).exists());
 
-    it(`Should render with a className of "${className}"`, () => {
-      expect(appIcon.className).to.include(className);
-    });
+    it(`Should render with a className of "${className}"`, () => appIcon.has({ className: including(className) }));
   });
 
   describe('Passing a string using the children-prop', () => {
@@ -95,9 +98,7 @@ describe('AppIcon', async () => {
       );
     });
 
-    it('Should render an AppIcon with a label', () => {
-      expect(appIcon.label).to.equal(label);
-    });
+    it('Should render an AppIcon with a label', () => appIcon.has({ label }));
   });
 
   describe('Passing a string to the tag-prop', () => {
@@ -110,9 +111,7 @@ describe('AppIcon', async () => {
       );
     });
 
-    it(`Should render an AppIcon with a HTML tag of "${tag}"`, () => {
-      expect(appIcon.tag.toLowerCase()).to.equal(tag);
-    });
+    it(`Should render an AppIcon with a HTML tag of "${tag}"`, () => appIcon.has({ tag }));
   });
 
   const sizeTest = (size) => {
@@ -126,9 +125,7 @@ describe('AppIcon', async () => {
         );
       });
 
-      it(`Should render an icon into a ${size}-sized container`, () => {
-        expect(appIcon.className).to.match(new RegExp(size));
-      });
+      it(`Should render an icon into a ${size}-sized container`, () => appIcon.has({ className: including(size) }));
     });
   };
 
