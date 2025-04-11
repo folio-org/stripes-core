@@ -126,7 +126,8 @@ export const thisWindowActivity = (_e, stripes, timers, broadcastChannel) => {
  * By default, the "keep working?" modal will be visible for 1 minute, i.e.
  * after 59 minutes of inactivity. These values may be overridden in
  * stripes.config.js in the `config.rtr` object by the values `idleSessionTTL`
- * and `idleModalTTL`, respectively; the values must be strings parsable by ms.
+ * and `idleModalTTL`, respectively; the values must be strings parsable by ms,
+ * `idleSessionTTL` should always be greater than or equal to `idleModalTTL`
  *
  * @param {object} history
  * @returns KeepWorkingModal or null
@@ -141,13 +142,13 @@ const SessionEventContainer = ({ history }) => {
   // inactivity timers
   const timers = useRef();
   const stripes = useStripes();
-  const [flsTimer, setFlsTimer] = useState(ms(stripes.config.rtr.fixedLengthSessionWarningTTL));
+  const [timeRemainingMillis, setTimeRemainingMillis] = useState(ms(stripes.config.rtr.fixedLengthSessionWarningTTL));
 
   useEffect(() => {
     let interval;
     if (isFlsVisible) {
       interval = setInterval(() => {
-        setFlsTimer(i => i - 1000);
+        setTimeRemainingMillis(i => i - 1000);
       }, 1000);
     }
     return () => clearInterval(interval);
@@ -158,7 +159,7 @@ const SessionEventContainer = ({ history }) => {
    * used to determine if the keepWorking modal should be shown during the Fls countdown.
    */
 
-  const isFlsExceededModalTTL = isFlsVisible && (flsTimer < ms(stripes.config.rtr.idleModalTTL));
+  const isModalRelevant = timeRemainingMillis < ms(stripes.config.rtr.idleModalTTL);
 
   /**
    * keepWorkingCallback
@@ -211,7 +212,7 @@ const SessionEventContainer = ({ history }) => {
     // inactive timer: show the "keep working?" modal
     const showModalIT = createInactivityTimer(ms(idleSessionTTL) - ms(idleModalTTL), () => {
       // Don't show the keepWorking modal if the fixed-length session warning countdown has exceeded the modal TTL.
-      if (isFlsExceededModalTTL) return;
+      if (isModalRelevant) return;
 
       stripes.logger.log('rtr', 'session idle; showing modal');
       stripes.store.dispatch(toggleRtrModal(true));
@@ -281,11 +282,11 @@ const SessionEventContainer = ({ history }) => {
       bc.close();
     };
 
-    // isFlsExceededModalTTL only? It should be history and stripes!!! >:)
-    // We only want to configure the event listeners once or on isFlsExceededModalTTL
+    // isModalRelevant only? It should be history and stripes!!! >:)
+    // We only want to configure the event listeners once or on isModalRelevant
     // change that could happen very rarely, not every time there is a change to stripes or history.
-    // Hence, only isFlsExceededModalTTL in dependency array.
-  }, [isFlsExceededModalTTL]); // eslint-disable-line react-hooks/exhaustive-deps
+    // Hence, only isModalRelevant in dependency array.
+  }, [isModalRelevant]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const renderList = [];
 
@@ -296,7 +297,7 @@ const SessionEventContainer = ({ history }) => {
 
   // show the fixed-length session warning?
   if (isFlsVisible) {
-    renderList.push(<FixedLengthSessionWarning key="FixedLengthSessionWarning" flsTimer={flsTimer} />);
+    renderList.push(<FixedLengthSessionWarning key="FixedLengthSessionWarning" timeRemainingMillis={timeRemainingMillis} />);
   }
 
   return renderList.length ? createPortal(renderList, document.getElementById(eventsPortal)) : null;

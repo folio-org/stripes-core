@@ -10,7 +10,7 @@ import css from './style.css';
  *
  * @param {function} callback function to call when clicking "Keep working" button
  */
-const FixedLengthSessionWarning = ({ flsTimer }) => {
+const FixedLengthSessionWarning = ({ timeRemainingMillis }) => {
   /**
    * timestampFormatter
    * convert time-remaining to mm:ss. Given the remaining time can easily be
@@ -20,8 +20,8 @@ const FixedLengthSessionWarning = ({ flsTimer }) => {
    * like `1970-01-01T00:01:39.000Z`; extract the `01:39`.
    */
   const timestampFormatter = () => {
-    if (flsTimer >= 1000) {
-      return new Date(flsTimer).toISOString().substring(14, 19);
+    if (timeRemainingMillis >= 1000) {
+      return new Date(timeRemainingMillis).toISOString().substring(14, 19);
     }
 
     return '00:00';
@@ -31,7 +31,7 @@ const FixedLengthSessionWarning = ({ flsTimer }) => {
 };
 
 FixedLengthSessionWarning.propTypes = {
-  flsTimer: PropTypes.number.isRequired,
+  timeRemainingMillis: PropTypes.number.isRequired,
 };
 
 export default FixedLengthSessionWarning;
