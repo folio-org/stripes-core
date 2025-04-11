@@ -142,13 +142,13 @@ const SessionEventContainer = ({ history }) => {
   // inactivity timers
   const timers = useRef();
   const stripes = useStripes();
-  const [timeRemainingMillis, setTimeRemainingMillis] = useState(ms(stripes.config.rtr.fixedLengthSessionWarningTTL));
+  const [flsTimeRemaining, setFlsTimeRemaining] = useState(ms(stripes.config.rtr.fixedLengthSessionWarningTTL));
 
   useEffect(() => {
     let interval;
     if (isFlsVisible) {
       interval = setInterval(() => {
-        setTimeRemainingMillis(i => i - 1000);
+        setFlsTimeRemaining(i => i - 1000);
       }, 1000);
     }
     return () => clearInterval(interval);
@@ -159,7 +159,7 @@ const SessionEventContainer = ({ history }) => {
    * used to determine if the keepWorking modal should be shown during the Fls countdown.
    */
 
-  const isModalRelevant = timeRemainingMillis < ms(stripes.config.rtr.idleModalTTL);
+  const isModalRelevant = flsTimeRemaining < ms(stripes.config.rtr.idleModalTTL);
 
   /**
    * keepWorkingCallback
@@ -297,7 +297,7 @@ const SessionEventContainer = ({ history }) => {
 
   // show the fixed-length session warning?
   if (isFlsVisible) {
-    renderList.push(<FixedLengthSessionWarning key="FixedLengthSessionWarning" timeRemainingMillis={timeRemainingMillis} />);
+    renderList.push(<FixedLengthSessionWarning key="FixedLengthSessionWarning" timeRemainingMillis={flsTimeRemaining} />);
   }
 
   return renderList.length ? createPortal(renderList, document.getElementById(eventsPortal)) : null;
