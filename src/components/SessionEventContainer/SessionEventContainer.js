@@ -154,12 +154,8 @@ const SessionEventContainer = ({ history }) => {
     return () => clearInterval(interval);
   }, [isFlsVisible]);
 
-  /**
-   * Indicator that fixed-length session warning countdown has exceeded the modal TTL,
-   * used to determine if the keepWorking modal should be shown during the Fls countdown.
-   */
-
-  const isModalRelevant = flsTimeRemaining < ms(stripes.config.rtr.idleModalTTL);
+  // Indicator that fixed-length session warning timer will expire before the modal's TTL
+  const isModalIgnorable = flsTimeRemaining < ms(stripes.config.rtr.idleModalTTL);
 
   /**
    * keepWorkingCallback
@@ -211,8 +207,7 @@ const SessionEventContainer = ({ history }) => {
 
     // inactive timer: show the "keep working?" modal
     const showModalIT = createInactivityTimer(ms(idleSessionTTL) - ms(idleModalTTL), () => {
-      // Don't show the keepWorking modal if the fixed-length session warning countdown has exceeded the modal TTL.
-      if (isModalRelevant) return;
+      if (isModalIgnorable) return;
 
       stripes.logger.log('rtr', 'session idle; showing modal');
       stripes.store.dispatch(toggleRtrModal(true));
@@ -282,11 +277,11 @@ const SessionEventContainer = ({ history }) => {
       bc.close();
     };
 
-    // isModalRelevant only? It should be history and stripes!!! >:)
-    // We only want to configure the event listeners once or on isModalRelevant
+    // isModalIgnorable only? It should be history and stripes!!! >:)
+    // We only want to configure the event listeners once or on isModalIgnorable
     // change that could happen very rarely, not every time there is a change to stripes or history.
-    // Hence, only isModalRelevant in dependency array.
-  }, [isModalRelevant]); // eslint-disable-line react-hooks/exhaustive-deps
+    // Hence, only isModalIgnorable in dependency array.
+  }, [isModalIgnorable]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const renderList = [];
 
