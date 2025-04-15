@@ -1,5 +1,9 @@
 # Change history for stripes-core
 
+## IN PROGRESS 11.0.5
+
+* Don't show IST modal if `flsTimeRemaining` less than config.rtr.idleModalTTL. STCOR-884.
+
 ## [11.0.4](https://github.com/folio-org/stripes-core/tree/v11.0.4) (2025-04-15)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v11.0.3...v11.0.4)
 
