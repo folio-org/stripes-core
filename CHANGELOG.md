@@ -1,6 +1,7 @@
 # Change history for stripes-core
 
-## 11.0.4 IN PROGRESS
+## [11.0.4](https://github.com/folio-org/stripes-core/tree/v11.0.4) (2025-04-15)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v11.0.3...v11.0.4)
 
 * Sort app links in the main navigation by their `displayName` by default. Refs STCOR-964.
 
