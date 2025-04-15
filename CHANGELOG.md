@@ -1,4 +1,4 @@
--# Change history for stripes-core
+- # Change history for stripes-core
 
 ## 11.1.0 IN PROGRESS
 
