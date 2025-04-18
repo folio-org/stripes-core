@@ -1,8 +1,8 @@
 import ky from 'ky';
 import { useStripes } from './StripesContext';
 
-export default ({ tenant } = {}) => {
-  const { locale = 'en', timeout = 30000, tenant: currentTenant, token, url } = useStripes().okapi;
+export default ({ tenant, timeout } = {}) => {
+  const { locale = 'en', timeout: defaultTimeout = 30000, tenant: currentTenant, token, url } = useStripes().okapi;
 
   return ky.create({
     credentials: 'include',
@@ -20,6 +20,6 @@ export default ({ tenant } = {}) => {
     mode: 'cors',
     prefixUrl: url,
     retry: 0,
-    timeout,
+    timeout: timeout || defaultTimeout,
   });
 };
