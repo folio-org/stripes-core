@@ -10,6 +10,7 @@
 * Change default Idle Session Timeout to `4h` from `1h`. Refs STCOR-962.
 * Prune unused `./utils/` scripts, deps. Refs STCOR-959.
 * Don't show IST modal if `flsTimeRemaining` less than config.rtr.idleModalTTL. STCOR-884.
+* Allow customizing request timeout in `useOkapiKy`. STCOR-967.
 
 ## [11.0.0](https://github.com/folio-org/stripes-core/tree/v11.0.0) (2025-02-24)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.2.0...v11.0.0)
