@@ -28,8 +28,8 @@
     "about.notEnabledModules": "尚未為此租戶啟用的已安裝模組以<span>灰色顯示</span> 。",
     "about.moduleCount": "{count, number} {count, plural, one {模組} other {模組}}",
     "about.interfaceCount": "{count, number} {count, plural, one {界面接口} other {界面接口}}",
-    "about.uiOrServiceDependencies": "UI /Service 依賴性",
-    "about.moduleDependsOn": "{module} 需依賴：",
+    "about.uiOrServiceDependencies": "UI / Service 依賴性",
+    "about.moduleDependsOn": "{module} 需依賴 : ",
     "about.newerModuleAvailable": "{required}({available} 可用)",
     "about.noDependencies": "{base} 聲明沒有依賴性",
     "about.key.absentInterfaces": "必需的，但不存在的介面接口以<span>粗體紅色</span>突出顯示。",
@@ -57,8 +57,8 @@
     "title.ssoRedirect": "SSO 重定向",
     "title.notFound": "未找到",
     "title.ssoLanding": "SSO 登入",
-    "currentServicePoint": "服務地點：{name}",
-    "currentServicePointNotSelected": "服務地點：無",
+    "currentServicePoint": "服務地點 : {name}",
+    "currentServicePointNotSelected": "服務地點 : 無",
     "title.CreateResetPassword": "選擇一個密碼",
     "title.forgotPassword": "忘記密碼？",
     "title.forgotUsername": "忘記使用者名稱？",
@@ -162,5 +162,5 @@
     "logoutComplete": "You have logged out.",
     "errors.oidc": "Error: server is forbidden, unreachable, or unavailable.",
     "title.logoutTimeout": "Inactivity log out",
-    "help": "Help"
+    "help": "幫助"
 }
