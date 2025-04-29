@@ -877,7 +877,7 @@ describe('loadResources', () => {
     if (url?.includes('key=="localeSettings"')) return userLocaleData;
 
     return { url };
-  }
+  };
 
   beforeEach(() => {
     store = {
@@ -919,7 +919,7 @@ describe('loadResources', () => {
           url,
           json: () => Promise.resolve(getResponseData(url)),
         }));
-      })
+      });
 
       it('should fetch the tenant and user locale settings from mod-settings', async () => {
         await loadResources(store, 'tenant', 'userId');
@@ -1015,7 +1015,7 @@ describe('loadResources', () => {
         }
 
         return { url };
-      }
+      };
 
       beforeEach(() => {
         global.fetch = jest.fn().mockImplementation((url) => Promise.resolve({
@@ -1082,7 +1082,7 @@ describe('loadResources', () => {
 
       global.fetch = jest.fn().mockImplementation(url => {
         if (url?.includes('key=="localeSettings"')) {
-          return Promise.reject({});
+          return Promise.reject(new Error('Request failed'));
         }
 
         return Promise.resolve({
@@ -1116,7 +1116,7 @@ describe('loadResources', () => {
         'http://okapi-url/configurations/entries?query=(module==ORG and configName==bindings)',
         expect.anything(),
       );
-    })
+    });
 
     it('should apply tenant locale settings', async () => {
       const timezone = tenantLocaleData.items[0].value.timezone;
@@ -1138,7 +1138,7 @@ describe('loadResources', () => {
         'discoverServices',
       ]);
     });
-  })
+  });
 
   describe('when there is permission to only read mod-configuration', () => {
     beforeEach(() => {
@@ -1152,7 +1152,7 @@ describe('loadResources', () => {
       });
 
       const getData = (url) => {
-       // mod-configuration locales
+        // mod-configuration locales
         if (url?.includes('configName == localeSettings') || url?.includes('"configName"=="localeSettings"')) {
           return {
             url,
@@ -1167,7 +1167,7 @@ describe('loadResources', () => {
         }
 
         return { url };
-      }
+      };
 
       global.fetch = jest.fn().mockImplementation((url) => Promise.resolve({
         url,
