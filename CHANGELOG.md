@@ -1,6 +1,7 @@
 # Change history for stripes-core
 
-## 11.0.6 IN PROGRESS
+## [11.0.6](https://github.com/folio-org/stripes-core/tree/v11.0.6) (2025-04-30)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v11.0.5...v11.0.6)
 
 * Allow customizing ryyequest timeout in `useOkapiKy`. STCOR-967.
 
