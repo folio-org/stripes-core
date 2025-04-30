@@ -490,49 +490,56 @@ const applyLocaleSettings = (locale, timezone, currency, store) => {
 };
 
 /**
- * Constructs a full locale string by joining the provided language region and numbering system.
+ * Generates a full locale string by combining a language-region and a numbering system
+ * with the Unicode extension key '-u-nu-' (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/Locale/numberingSystem).
+ * If no language-region is provided, the function returns null.
  *
- * The function filters out any falsy values from the provided parameters and then joins
- * the non-falsy parts using the unicode numbering system extension key ("-u-nu-").
- * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/Locale/numberingSystem
- *
- * @param {string} languageRegion - The language and region identifier (e.g., "en-US").
- * @param {string} numberingSystem - The numbering system identifier (e.g., "latn").
- * @returns {string} The full locale string composed of the language region and numbering system,
- *                   joined by the unicode extension key.
+ * @param {string} [languageRegion] - A locale string, such as "en-US". If omitted, the value is obtained from document.documentElement.lang.
+ * @param {string} [numberingSystem] - A numbering system, such as "latn", to append to the locale.
+ * @returns {string|null} The constructed locale string combining the language-region and the numbering system, or null if languageRegion is not provided.
  */
 export const getFullLocale = (languageRegion, numberingSystem) => {
+  if (!languageRegion) return null;
+
   const unicodeExtensionKey = '-u-nu-';
 
   return [languageRegion, numberingSystem].filter(Boolean).join(unicodeExtensionKey);
 };
 
 
+
 /**
- * Processes locale settings by merging tenant and user locale data,
- * and applies the resulting locale configuration to the provided store.
+ * Processes and applies locale settings to the given store based on tenant and user locale data.
  *
- * The function retrieves locale details (locale identifier, numbering system, timezone, and currency)
- * from the userLocaleData if available, otherwise falls back to tenantLocaleData. If the locale is still
- * not defined, it falls back to the language attribute of the document element.
+ * The function retrieves locale-specific settings from both tenantLocaleData and userLocaleData. If the user settings indicate
+ * that tenant settings should be used (via the empty locale or locale equality), then the tenant's locale, numbering system,
+ * timezone, and currency values take precedence over the user's own values. It then computes a full locale string using the
+ * getFullLocale function and applies the final locale settings including the timezone and currency to the store using
+ * applyLocaleSettings.
  *
- * It constructs the full locale string using getFullLocale based on the locale and numbering system,
- * and applies these settings to the store via applyLocaleSettings.
- *
- * @param {object} store - The application store in which locale settings will be applied.
- * @param {object} tenantLocaleData - Tenant-specific locale data object with at least one item containing the locale settings.
- * @param {object} userLocaleData - User-specific locale data object with at least one item containing the locale settings.
+ * @param {Object} store - The store instance where locale settings are applied.
+ * @param {Object} tenantLocaleData - An object containing tenant's settings.
+ * @param {Object} userLocaleData - An object containing user's settings.
  *
  * @returns {void}
  */
-const processSettings = (store, tenantLocaleData, userLocaleData) => {
+const processLocaleSettings = (store, tenantLocaleData, userLocaleData) => {
   const tenantLocaleSettings = tenantLocaleData?.items[0]?.value;
   const userLocaleSettings = userLocaleData?.items[0]?.value;
 
-  const locale = userLocaleSettings?.locale || tenantLocaleSettings?.locale || document.documentElement.getAttribute('lang');
-  const numberingSystem = userLocaleSettings?.numberingSystem || tenantLocaleSettings?.numberingSystem;
-  const timezone = userLocaleSettings?.timezone || tenantLocaleSettings?.timezone;
-  const currency = userLocaleSettings?.currency || tenantLocaleSettings?.currency;
+  let locale = userLocaleSettings?.locale || tenantLocaleSettings?.locale;
+  let numberingSystem = userLocaleSettings?.numberingSystem || tenantLocaleSettings?.numberingSystem;
+  let timezone = userLocaleSettings?.timezone || tenantLocaleSettings?.timezone;
+  let currency = userLocaleSettings?.currency || tenantLocaleSettings?.currency;
+
+  // we should use tenant's settings if user has not set their own locale or their locale is the same as tenant's locale
+  if (!userLocaleSettings?.locale || userLocaleSettings?.locale === tenantLocaleSettings?.locale) {
+    locale = tenantLocaleSettings?.locale;
+    numberingSystem = tenantLocaleSettings?.numberingSystem;
+    timezone = tenantLocaleSettings?.timezone;
+    currency = tenantLocaleSettings?.currency;
+  }
+
   const fullLocale = getFullLocale(locale, numberingSystem);
 
   applyLocaleSettings(fullLocale, timezone, currency, store);
@@ -584,7 +591,7 @@ export async function loadResources(store, tenant, userId) {
         const hasSetting = tenantLocaleData?.items[0] || userLocaleData?.items[0];
 
         if (hasSetting) {
-          processSettings(store, tenantLocaleData, userLocaleData);
+          processLocaleSettings(store, tenantLocaleData, userLocaleData);
 
           return responses.map(res => res?.value);
         }
