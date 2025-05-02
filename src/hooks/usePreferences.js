@@ -19,7 +19,7 @@ export default () => {
 
   const getPreference = useCallback(async ({ scope, key, userId: providedUserId }) => { // eslint-disable-line
     // get preferences by querying preferences with the userId, scope, and key...
-    // this will return an array that's likely a single item long. We store the item's id in state so that we can update it later.
+    // this will return an array that's likely a single item long. We store the item's id in a ref so that we can update the preference later.
     let respJSON = null;
     let resp;
 
