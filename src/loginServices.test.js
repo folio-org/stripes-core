@@ -972,8 +972,103 @@ describe('loadResources', () => {
         });
       });
 
-      describe('when something is missing in user locale settings', () => {
+      describe('when the user locale settings are missing something other than the locale', () => {
         it('should take it from tenant locale settings', async () => {
+          await loadResources(store, 'tenant', 'userId');
+
+          expect(document.documentElement.lang).toBe('en-GB-u-nu-latn');
+        });
+      });
+
+      describe('when the user `locale` field is missing', () => {
+        const tenantLocaleResponse = {
+          items: [{
+            id: 'tenantDataId',
+            value: {
+              locale: 'en-US',
+              numberingSystem: 'latn',
+              timezone: 'America/New_York',
+              currency: 'USD',
+            },
+          }],
+        };
+
+        const userLocaleResponse = {
+          items: [
+            {
+              id: 'userDataId',
+              value: {
+                numberingSystem: 'arab',
+                timezone: 'Europe/London',
+                currency: 'GBP',
+              },
+            },
+          ],
+        };
+
+        const getData = (url) => {
+          if (url?.includes('key=="tenantLocaleSettings"')) return tenantLocaleResponse;
+          if (url?.includes('key=="localeSettings"')) return userLocaleResponse;
+
+          return { url };
+        };
+
+        beforeEach(() => {
+          global.fetch = jest.fn().mockImplementation((url) => Promise.resolve({
+            url,
+            json: () => Promise.resolve(getData(url)),
+          }));
+        });
+
+        it('should apply tenant settings', async () => {
+          await loadResources(store, 'tenant', 'userId');
+
+          expect(document.documentElement.lang).toBe('en-US-u-nu-latn');
+        });
+      });
+
+      describe('when the user and tenant locale are the same', () => {
+        const tenantLocaleResponse = {
+          items: [{
+            id: 'tenantDataId',
+            value: {
+              locale: 'en-GB',
+              numberingSystem: 'latn',
+              timezone: 'America/New_York',
+              currency: 'USD',
+            },
+          }],
+        };
+
+        const userLocaleResponse = {
+          items: [
+            {
+              id: 'userDataId',
+              value: {
+                locale: 'en-GB',
+                numberingSystem: 'arab',
+                timezone: 'Europe/London',
+                currency: 'GBP',
+              },
+            },
+          ],
+        };
+
+        const getData = (url) => {
+          if (url?.includes('key=="tenantLocaleSettings"')) return tenantLocaleResponse;
+          if (url?.includes('key=="localeSettings"')) return userLocaleResponse;
+
+          return { url };
+        };
+
+        beforeEach(() => {
+          global.fetch = jest.fn().mockImplementation((url) => Promise.resolve({
+            url,
+            json: () => Promise.resolve(getData(url)),
+          }));
+        });
+
+        it('should apply tenant settings', async () => {
           await loadResources(store, 'tenant', 'userId');
 
           expect(document.documentElement.lang).toBe('en-GB-u-nu-latn');
