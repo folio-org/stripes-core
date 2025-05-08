@@ -31,6 +31,7 @@ import processBadResponse from './processBadResponse';
 import {
   RTR_TIMEOUT_EVENT
 } from './components/Root/constants';
+import { settings } from './constants';
 
 // export supported locales, i.e. the languages we provide translations for
 export const supportedLocales = [
@@ -143,6 +144,18 @@ export const userLocaleConfig = {
   'module': '@folio/stripes-core',
 };
 
+// config values for storing user locale in mod-settings
+export const userOwnLocaleConfig = {
+  SCOPE: settings.SCOPE,
+  KEY: 'localeSettings',
+};
+
+// config values for storing tenant locale
+export const tenantLocaleConfig = {
+  SCOPE: settings.SCOPE,
+  KEY: 'tenantLocaleSettings',
+};
+
 function getHeaders(tenant, token) {
   return {
     'X-Okapi-Tenant': tenant,
@@ -165,6 +178,24 @@ function canReadConfig(store) {
   const perms = store.getState().okapi.currentPerms;
   return perms?.['configuration.entries.collection.get'];
 }
+
+/**
+ * Checks if the current user has sufficient permissions to read from mod-settings.
+ *
+ * This function verifies that the user has the required permission to access the settings entries,
+ * and that the user also has at least one permission to manage their settings preferences.
+ *
+ * @param {Object} store - The store containing application state.
+ * @returns {boolean} True if the user possesses the required permissions for reading settings, false otherwise.
+ */
+const canReadSettings = (store) => {
+  const perms = store.getState().okapi.currentPerms;
+
+  return (
+    perms?.['mod-settings.entries.collection.get']
+    && (perms?.['mod-settings.global.read.stripes-core.prefs.manage'] || perms?.['mod-settings.owner.read.stripes-core.prefs.manage'])
+  );
+};
 
 /**
  * loadTranslations
@@ -382,9 +413,151 @@ export function getBindings(okapiUrl, store, tenant) {
 }
 
 /**
+ * Fetch the locale data from the provided URL.
+ *
+ * @param {string} url - The URL from which to fetch locale data.
+ * @param {object} store - The store providing state access to retrieve the OKAPI token.
+ * @param {string} tenant - The tenant name for which the locale settings are being requested.
+ * @returns {Promise} A promise that resolves to the fetch API's response.
+ */
+const fetchLocale = (url, store, tenant) => {
+  return fetch(url, {
+    headers: getHeaders(tenant, store.getState().okapi.token),
+    credentials: 'include',
+    mode: 'cors',
+  });
+};
+
+/**
+ * Retrieves the tenant's locale setting from the mod-settings.
+ *
+ * Constructs a query based on preset scope and tenant locale configuration constants, then
+ * fetches the locale data by making an HTTP request to the settings entries endpoint.
+ *
+ * @param {string} url - The base URL for the settings API endpoint.
+ * @param {Object} store - The store object used to manage application state.
+ * @param {string} tenant - The tenant name for which the locale settings are being requested.
+ * @returns {Promise} A promise that resolves with the locale configuration data.
+ */
+const getTenantLocale = (url, store, tenant) => {
+  const query = `scope=="${settings.SCOPE}" and key=="${tenantLocaleConfig.KEY}"`;
+
+  return fetchLocale(
+    `${url}/settings/entries?query=(${query})`,
+    store,
+    tenant
+  );
+};
+
+/**
+ * Retrieves the user's own locale setting from the mod-settings.
+ *
+ * This function constructs a query string to filter settings entries based on the provided userId,
+ * a predefined scope, and key. It then delegates the fetching of the locale data to the fetchLocale
+ * function using the constructed query.
+ *
+ * @param {string} url - The base URL for the settings API endpoint.
+ * @param {Object} store - The store object used to manage application state.
+ * @param {string} tenant - The tenant name for which the locale settings are being requested.
+ * @param {string} userId - The unique identifier for the user.
+ * @returns {Promise} A promise resolving with the user's locale settings information.
+ */
+const getUserOwnLocale = (url, store, tenant, userId) => {
+  const query = `userId=="${userId}" and scope=="${settings.SCOPE}" and key=="${userOwnLocaleConfig.KEY}"`;
+
+  return fetchLocale(
+    `${url}/settings/entries?query=(${query})`,
+    store,
+    tenant
+  );
+};
+
+/**
+ * Applies locale settings by loading translations and dispatching actions to update timezone and currency.
+ *
+ * @param {string} [locale] - The locale identifier used to load translations. If provided, it triggers loading translations.
+ * @param {string} [timezone] - The timezone setting to apply. Dispatches an action to update the store if provided.
+ * @param {string} [currency] - The currency setting to apply. Dispatches an action to update the store if provided.
+ * @param {Object} store - The store object used to dispatch actions for updating timezone and currency.
+ */
+const applyLocaleSettings = (locale, timezone, currency, store) => {
+  if (locale) {
+    loadTranslations(store, locale);
+  }
+
+  if (timezone) store.dispatch(setTimezone(timezone));
+  if (currency) store.dispatch(setCurrency(currency));
+};
+
+/**
+ * Generates a full locale string by combining a language-region and a numbering system
+ * with the Unicode extension key '-u-nu-' (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/Locale/numberingSystem).
+ * If no language-region is provided, the function returns null.
+ *
+ * @param {string} [languageRegion] - A locale string, such as "en-US". If omitted, the value is obtained from document.documentElement.lang.
+ * @param {string} [numberingSystem] - A numbering system, such as "latn", to append to the locale.
+ * @returns {string|null} The constructed locale string combining the language-region and the numbering system, or null if languageRegion is not provided.
+ */
+export const getFullLocale = (languageRegion, numberingSystem) => {
+  if (!languageRegion) return null;
+
+  const unicodeExtensionKey = '-u-nu-';
+
+  return [languageRegion, numberingSystem].filter(Boolean).join(unicodeExtensionKey);
+};
+
+
+
+/**
+ * Processes and applies locale settings to the given store based on tenant and user locale data.
+ *
+ * The function retrieves locale-specific settings from both tenantLocaleData and userLocaleData. If the user settings indicate
+ * that tenant settings should be used (via the empty locale or locale equality), then the tenant's locale, numbering system,
+ * timezone, and currency values take precedence over the user's own values. It then computes a full locale string using the
+ * getFullLocale function and applies the final locale settings including the timezone and currency to the store using
+ * applyLocaleSettings.
+ *
+ * @param {Object} store - The store instance where locale settings are applied.
+ * @param {Object} tenantLocaleData - An object containing tenant's settings.
+ * @param {Object} userLocaleData - An object containing user's settings.
+ *
+ * @returns {void}
+ */
+const processLocaleSettings = (store, tenantLocaleData, userLocaleData) => {
+  const tenantLocaleSettings = tenantLocaleData?.items[0]?.value;
+  const userLocaleSettings = userLocaleData?.items[0]?.value;
+
+  let locale = userLocaleSettings?.locale || tenantLocaleSettings?.locale;
+  let numberingSystem = userLocaleSettings?.numberingSystem || tenantLocaleSettings?.numberingSystem;
+  let timezone = userLocaleSettings?.timezone || tenantLocaleSettings?.timezone;
+  let currency = userLocaleSettings?.currency || tenantLocaleSettings?.currency;
+
+  // we should use tenant's settings if user has not set their own locale or their locale is the same as tenant's locale
+  if (!userLocaleSettings?.locale || userLocaleSettings?.locale === tenantLocaleSettings?.locale) {
+    locale = tenantLocaleSettings?.locale;
+    numberingSystem = tenantLocaleSettings?.numberingSystem;
+    timezone = tenantLocaleSettings?.timezone;
+    currency = tenantLocaleSettings?.currency;
+  }
+
+  const fullLocale = getFullLocale(locale, numberingSystem);
+
+  applyLocaleSettings(fullLocale, timezone, currency, store);
+};
+
+// This function is used to support the deprecated mod-configuration API.
+// It is only used when the new mod-settings API returns empty settings.
+const getLocalesPromise = (url, store, tenant, userId) => {
+  return Promise.all([
+    getLocale(url, store, tenant),
+    getUserLocale(url, store, tenant, userId),
+  ]);
+};
+
+/**
  * loadResources
  * return a promise that retrieves the tenant's locale, user's locale,
- * plugins, and key-bindings from mod-configuration, as well as retreiving
+ * plugins, and key-bindings from mod-configuration and/or mod-settings, as well as retrieving
  * module information directly from okapi.
  *
  * @param {redux store} store
@@ -392,28 +565,68 @@ export function getBindings(okapiUrl, store, tenant) {
  * @param {string} userId user's UUID
  *
  * @returns {Promise}
+ *
+ * It builds an array of promises based on available user permissions.
+ * First, if the user can read mod-settings, it fetches locale information using two endpoints (one for tenant and one for the user)
+ * using Promise.allSettled. When these calls return, it checks if at least one response contains a valid setting.
+ * If so, it applies those settings; otherwise, if the user has mod-configuration reading permission, it fetches locale information
+ * using the mod-configuration API for both user and tenant settings and applies them.
+ * If the user doesn't have mod-settings permission but has mod-configuration permission, it fetches locale information using the mod-configuration API.
+ * Additionally, if the user has mod-configuration permission, it fetches plugins and bindings by calling getPlugins and getBindings.
+ * It also checks if the okapi instance is not in "withoutOkapi" mode, it fetches module information using discoverServices.
+ * Finally, it returns a flattened array of all the results from the promises.
  */
-function loadResources(store, tenant, userId) {
-  let promises = [];
+export async function loadResources(store, tenant, userId) {
+  const promises = [];
+  const okapiUrl = store.getState()?.okapi.url;
+  const hasReadConfigPerm = canReadConfig(store);
+
+  if (canReadSettings(store)) {
+    const localesPromise = Promise.allSettled([
+      getTenantLocale(okapiUrl, store, tenant),
+      getUserOwnLocale(okapiUrl, store, tenant, userId),
+    ])
+      .then(async (responses) => {
+        const [tenantLocaleData, userLocaleData] = await Promise.all(responses.map(res => res.value?.json?.()));
+        const hasSetting = tenantLocaleData?.items[0] || userLocaleData?.items[0];
+
+        if (hasSetting) {
+          processLocaleSettings(store, tenantLocaleData, userLocaleData);
+
+          return responses.map(res => res?.value);
+        }
+
+        if (hasReadConfigPerm) {
+          return getLocalesPromise(okapiUrl, store, tenant, userId);
+        }
+
+        return null;
+      });
+
+    promises.push(localesPromise);
+  } else if (hasReadConfigPerm) {
+    promises.push(getLocalesPromise(okapiUrl, store, tenant, userId));
+  }
 
   // tenant's locale, plugin, bindings, and user's locale are all stored
   // in mod-configuration so we can only retrieve them if the user has
   // read-permission for configuration entries.
-  if (canReadConfig(store)) {
+  if (hasReadConfigPerm) {
     const okapiObject = store.getState()?.okapi;
-    promises = [
-      getLocale(okapiObject.url, store, tenant),
-      getUserLocale(okapiObject.url, store, tenant, userId),
+
+    promises.push(
       getPlugins(okapiObject.url, store, tenant),
       getBindings(okapiObject.url, store, tenant),
-    ];
+    );
   }
 
   if (!store.getState().okapi.withoutOkapi) {
     promises.push(discoverServices(store));
   }
 
-  return Promise.all(promises);
+  const result = await Promise.all(promises);
+
+  return result.flat();
 }
 
 /**

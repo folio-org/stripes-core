@@ -27,7 +27,10 @@ import {
   requestLogin,
   requestUserWithPerms,
   fetchOverriddenUserWithPerms,
+  loadResources,
 } from './loginServices';
+
+import { discoverServices } from './discoverServices';
 
 import {
   clearCurrentUser,
@@ -55,6 +58,11 @@ import { defaultErrors } from './constants';
 jest.mock('./loginServices', () => ({
   ...jest.requireActual('./loginServices'),
   fetchOverriddenUserWithPerms: jest.fn()
+}));
+
+jest.mock('./discoverServices', () => ({
+  ...jest.requireActual('./discoverServices'),
+  discoverServices: jest.fn().mockResolvedValue([]),
 }));
 
 jest.mock('localforage', () => ({
@@ -832,5 +840,500 @@ describe('unauthorizedPath functions', () => {
       await expect(requestUserWithPerms('okapiUrl', mockStore, 'tenant', true)).rejects.toEqual('Reject message');
       mockFetchCleanUp();
     });
+  });
+});
+
+describe('loadResources', () => {
+  let store;
+  let loadResourcesResult;
+
+  const tenantLocaleData = {
+    items: [{
+      id: 'tenantDataId',
+      value: {
+        locale: 'en-US',
+        numberingSystem: 'latn',
+        timezone: 'America/New_York',
+        currency: 'USD',
+      },
+    }],
+  };
+
+  const userLocaleData = {
+    items: [
+      {
+        id: 'userDataId',
+        value: {
+          locale: 'en-GB',
+          timezone: 'Europe/London',
+          currency: 'GBP',
+        },
+      },
+    ],
+  };
+
+  const getResponseData = (url) => {
+    if (url?.includes('key=="tenantLocaleSettings"')) return tenantLocaleData;
+    if (url?.includes('key=="localeSettings"')) return userLocaleData;
+
+    return { url };
+  };
+
+  beforeEach(() => {
+    store = {
+      dispatch: jest.fn(),
+      getState: jest.fn().mockReturnValue({
+        okapi: {
+          url: 'http://okapi-url',
+          currentPerms: {}
+        }
+      }),
+    };
+
+    discoverServices.mockResolvedValue({ url: 'discoverServices' });
+  });
+
+  afterEach(() => {
+    mockFetchCleanUp();
+    discoverServices.mockRestore();
+    jest.clearAllMocks();
+  });
+
+  describe('when there are permissions to read mod-settings and mod-configuration', () => {
+    beforeEach(() => {
+      store.getState.mockReturnValue({
+        okapi: {
+          url: 'http://okapi-url',
+          currentPerms: {
+            'mod-settings.entries.collection.get': true,
+            'mod-settings.owner.read.stripes-core.prefs.manage': true,
+            'configuration.entries.collection.get': true,
+          },
+        },
+      });
+    });
+
+    describe('when the user and tenant locale settings are present in mod-settings', () => {
+      beforeEach(() => {
+        global.fetch = jest.fn().mockImplementation((url) => Promise.resolve({
+          url,
+          json: () => Promise.resolve(getResponseData(url)),
+        }));
+      });
+
+      it('should fetch the tenant and user locale settings from mod-settings', async () => {
+        await loadResources(store, 'tenant', 'userId');
+
+        expect(global.fetch).toHaveBeenCalledWith(
+          'http://okapi-url/settings/entries?query=(scope=="stripes-core.prefs.manage" and key=="tenantLocaleSettings")',
+          expect.anything(),
+        );
+        expect(global.fetch).toHaveBeenCalledWith(
+          'http://okapi-url/settings/entries?query=(userId=="userId" and scope=="stripes-core.prefs.manage" and key=="localeSettings")',
+          expect.anything(),
+        );
+      });
+
+      it('should not fetch the tenant and user locale settings from mod-configuration', async () => {
+        await loadResources(store, 'tenant', 'userId');
+
+        expect(global.fetch).not.toHaveBeenCalledWith(
+          'http://okapi-url/configurations/entries?query=(module==ORG AND configName == localeSettings AND (cql.allRecords=1 NOT userId="" NOT code=""))',
+          expect.anything(),
+        );
+        expect(global.fetch).not.toHaveBeenCalledWith(
+          'http://okapi-url/configurations/entries?query=("configName"=="localeSettings" AND "module"=="@folio/stripes-core" and userId=="userId")',
+          expect.anything(),
+        );
+      });
+
+      it('should fetch the plugins and bindings', async () => {
+        await loadResources(store, 'tenant', 'userId');
+
+        expect(global.fetch).toHaveBeenCalledWith(
+          'http://okapi-url/configurations/entries?query=(module==PLUGINS)',
+          expect.anything(),
+        );
+        expect(global.fetch).toHaveBeenCalledWith(
+          'http://okapi-url/configurations/entries?query=(module==ORG and configName==bindings)',
+          expect.anything(),
+        );
+      });
+
+      describe('when both the tenant and user locale settings are present', () => {
+        it('should apply user locale settings', async () => {
+          const timezone = userLocaleData.items[0].value.timezone;
+          const currency = userLocaleData.items[0].value.currency;
+
+          await loadResources(store, 'tenant', 'userId');
+
+          expect(store.dispatch).toHaveBeenCalledWith(setTimezone(timezone));
+          expect(store.dispatch).toHaveBeenCalledWith(setCurrency(currency));
+        });
+      });
+
+      describe('when the user locale settings are missing something other than the locale', () => {
+        it('should take it from tenant locale settings', async () => {
+          await loadResources(store, 'tenant', 'userId');
+
+          expect(document.documentElement.lang).toBe('en-GB-u-nu-latn');
+        });
+      });
+
+      describe('when the user `locale` field is missing', () => {
+        const tenantLocaleResponse = {
+          items: [{
+            id: 'tenantDataId',
+            value: {
+              locale: 'en-US',
+              numberingSystem: 'latn',
+              timezone: 'America/New_York',
+              currency: 'USD',
+            },
+          }],
+        };
+
+        const userLocaleResponse = {
+          items: [
+            {
+              id: 'userDataId',
+              value: {
+                numberingSystem: 'arab',
+                timezone: 'Europe/London',
+                currency: 'GBP',
+              },
+            },
+          ],
+        };
+
+        const getData = (url) => {
+          if (url?.includes('key=="tenantLocaleSettings"')) return tenantLocaleResponse;
+          if (url?.includes('key=="localeSettings"')) return userLocaleResponse;
+
+          return { url };
+        };
+
+        beforeEach(() => {
+          global.fetch = jest.fn().mockImplementation((url) => Promise.resolve({
+            url,
+            json: () => Promise.resolve(getData(url)),
+          }));
+        });
+
+        it('should apply tenant settings', async () => {
+          await loadResources(store, 'tenant', 'userId');
+
+          expect(document.documentElement.lang).toBe('en-US-u-nu-latn');
+        });
+      });
+
+      describe('when the user and tenant locale are the same', () => {
+        const tenantLocaleResponse = {
+          items: [{
+            id: 'tenantDataId',
+            value: {
+              locale: 'en-GB',
+              numberingSystem: 'latn',
+              timezone: 'America/New_York',
+              currency: 'USD',
+            },
+          }],
+        };
+
+        const userLocaleResponse = {
+          items: [
+            {
+              id: 'userDataId',
+              value: {
+                locale: 'en-GB',
+                numberingSystem: 'arab',
+                timezone: 'Europe/London',
+                currency: 'GBP',
+              },
+            },
+          ],
+        };
+
+        const getData = (url) => {
+          if (url?.includes('key=="tenantLocaleSettings"')) return tenantLocaleResponse;
+          if (url?.includes('key=="localeSettings"')) return userLocaleResponse;
+
+          return { url };
+        };
+
+        beforeEach(() => {
+          global.fetch = jest.fn().mockImplementation((url) => Promise.resolve({
+            url,
+            json: () => Promise.resolve(getData(url)),
+          }));
+        });
+
+        it('should apply tenant settings', async () => {
+          await loadResources(store, 'tenant', 'userId');
+
+          expect(document.documentElement.lang).toBe('en-GB-u-nu-latn');
+        });
+      });
+
+      it('should wait for the following requests', async () => {
+        loadResourcesResult = await loadResources(store, 'tenant', 'userId');
+
+        expect(loadResourcesResult.map(({ url }) => url)).toEqual([
+          'http://okapi-url/settings/entries?query=(scope=="stripes-core.prefs.manage" and key=="tenantLocaleSettings")',
+          'http://okapi-url/settings/entries?query=(userId=="userId" and scope=="stripes-core.prefs.manage" and key=="localeSettings")',
+          'http://okapi-url/configurations/entries?query=(module==PLUGINS)',
+          'http://okapi-url/configurations/entries?query=(module==ORG and configName==bindings)',
+          'discoverServices',
+        ]);
+      });
+    });
+
+    describe('when the user or tenant locale settings are not present in mod-settings', () => {
+      const getData = (url) => {
+        // if mod-settings API
+        if (url?.includes('key=="tenantLocaleSettings"') || url?.includes('key=="localeSettings"')) {
+          return { url, items: [] };
+        }
+
+        // if mod-configuration API
+        if (url?.includes('configName == localeSettings') || url?.includes('"configName"=="localeSettings"')) {
+          return {
+            url,
+            configs: [{
+              value: JSON.stringify({
+                locale: 'en-GB-u-nu-latn',
+                timezone: 'UTC',
+                currency: 'USD'
+              }),
+            }],
+          };
+        }
+
+        return { url };
+      };
+
+      beforeEach(() => {
+        global.fetch = jest.fn().mockImplementation((url) => Promise.resolve({
+          url,
+          json: () => Promise.resolve(getData(url)),
+          ok: true,
+        }));
+      });
+
+      it('should fetch the tenant and user locale settings from mod-settings and mod-configuration', async () => {
+        await loadResources(store, 'tenant', 'userId');
+
+        expect(global.fetch).toHaveBeenCalledWith(
+          'http://okapi-url/settings/entries?query=(scope=="stripes-core.prefs.manage" and key=="tenantLocaleSettings")',
+          expect.anything(),
+        );
+        expect(global.fetch).toHaveBeenCalledWith(
+          'http://okapi-url/settings/entries?query=(userId=="userId" and scope=="stripes-core.prefs.manage" and key=="localeSettings")',
+          expect.anything(),
+        );
+        expect(global.fetch).toHaveBeenCalledWith(
+          'http://okapi-url/configurations/entries?query=(module==ORG AND configName == localeSettings AND (cql.allRecords=1 NOT userId="" NOT code=""))',
+          expect.anything(),
+        );
+        expect(global.fetch).toHaveBeenCalledWith(
+          'http://okapi-url/configurations/entries?query=("configName"=="localeSettings" AND "module"=="@folio/stripes-core" and userId=="userId")',
+          expect.anything(),
+        );
+      });
+
+      it('should apply locale settings from mod-configuration', async () => {
+        await loadResources(store, 'tenant', 'userId');
+
+        expect(store.dispatch).toHaveBeenCalledWith(setTimezone('UTC'));
+        expect(store.dispatch).toHaveBeenCalledWith(setCurrency('USD'));
+        expect(document.documentElement.lang).toBe('en-GB-u-nu-latn');
+      });
+
+      it('should wait for the following requests', async () => {
+        loadResourcesResult = await loadResources(store, 'tenant', 'userId');
+
+        expect(loadResourcesResult.map(({ url }) => url)).toEqual([
+          'http://okapi-url/configurations/entries?query=(module==ORG AND configName == localeSettings AND (cql.allRecords=1 NOT userId="" NOT code=""))',
+          'http://okapi-url/configurations/entries?query=("configName"=="localeSettings" AND "module"=="@folio/stripes-core" and userId=="userId")',
+          'http://okapi-url/configurations/entries?query=(module==PLUGINS)',
+          'http://okapi-url/configurations/entries?query=(module==ORG and configName==bindings)',
+          'discoverServices',
+        ]);
+      });
+    });
+  });
+
+  describe('when there is permission to only read tenant settings from mod-settings', () => {
+    beforeEach(() => {
+      store.getState.mockReturnValue({
+        okapi: {
+          url: 'http://okapi-url',
+          currentPerms: {
+            'mod-settings.entries.collection.get': true,
+            'mod-settings.global.read.stripes-core.prefs.manage': true,
+          },
+        },
+      });
+
+      global.fetch = jest.fn().mockImplementation(url => {
+        if (url?.includes('key=="localeSettings"')) {
+          return Promise.reject(new Error('Request failed'));
+        }
+
+        return Promise.resolve({
+          url,
+          json: () => Promise.resolve(getResponseData(url)),
+        });
+      });
+    });
+
+    it('should fetch the tenant and user locale settings from mod-settings', async () => {
+      await loadResources(store, 'tenant', 'userId');
+
+      expect(global.fetch).toHaveBeenCalledWith(
+        'http://okapi-url/settings/entries?query=(scope=="stripes-core.prefs.manage" and key=="tenantLocaleSettings")',
+        expect.anything(),
+      );
+      expect(global.fetch).toHaveBeenCalledWith(
+        'http://okapi-url/settings/entries?query=(userId=="userId" and scope=="stripes-core.prefs.manage" and key=="localeSettings")',
+        expect.anything(),
+      );
+    });
+
+    it('should not fetch the plugins and bindings', async () => {
+      await loadResources(store, 'tenant', 'userId');
+
+      expect(global.fetch).not.toHaveBeenCalledWith(
+        'http://okapi-url/configurations/entries?query=(module==PLUGINS)',
+        expect.anything(),
+      );
+      expect(global.fetch).not.toHaveBeenCalledWith(
+        'http://okapi-url/configurations/entries?query=(module==ORG and configName==bindings)',
+        expect.anything(),
+      );
+    });
+
+    it('should apply tenant locale settings', async () => {
+      const timezone = tenantLocaleData.items[0].value.timezone;
+      const currency = tenantLocaleData.items[0].value.currency;
+
+      await loadResources(store, 'tenant', 'userId');
+
+      expect(store.dispatch).toHaveBeenCalledWith(setTimezone(timezone));
+      expect(store.dispatch).toHaveBeenCalledWith(setCurrency(currency));
+      expect(document.documentElement.lang).toBe('en-US-u-nu-latn');
+    });
+
+    it('should wait for the following requests', async () => {
+      loadResourcesResult = await loadResources(store, 'tenant', 'userId');
+
+      expect(loadResourcesResult.map(({ url } = {}) => url)).toEqual([
+        'http://okapi-url/settings/entries?query=(scope=="stripes-core.prefs.manage" and key=="tenantLocaleSettings")',
+        undefined, // rejected request for user locale
+        'discoverServices',
+      ]);
+    });
+  });
+
+  describe('when there is permission to only read mod-configuration', () => {
+    beforeEach(() => {
+      store.getState = jest.fn().mockReturnValue({
+        okapi: {
+          url: 'http://okapi-url',
+          currentPerms: {
+            'configuration.entries.collection.get': true,
+          },
+        },
+      });
+
+      const getData = (url) => {
+        // mod-configuration locales
+        if (url?.includes('configName == localeSettings') || url?.includes('"configName"=="localeSettings"')) {
+          return {
+            url,
+            configs: [{
+              value: JSON.stringify({
+                locale: 'en-GB-u-nu-latn',
+                timezone: 'UTC',
+                currency: 'USD'
+              }),
+            }],
+          };
+        }
+
+        return { url };
+      };
+
+      global.fetch = jest.fn().mockImplementation((url) => Promise.resolve({
+        url,
+        json: () => Promise.resolve(getData(url)),
+        ok: true,
+      }));
+    });
+
+    it('should not fetch the tenant and user locale settings from mod-settings', async () => {
+      await loadResources(store, 'tenant', 'userId');
+
+      expect(global.fetch).not.toHaveBeenCalledWith(
+        'http://okapi-url/settings/entries?query=(scope=="stripes-core.prefs.manage" and key=="tenantLocaleSettings")',
+        expect.anything(),
+      );
+      expect(global.fetch).not.toHaveBeenCalledWith(
+        'http://okapi-url/settings/entries?query=(userId=="userId" and scope=="stripes-core.prefs.manage" and key=="localeSettings")',
+        expect.anything(),
+      );
+    });
+
+    it('should fetch the tenant and user locale settings from mod-configuration', async () => {
+      await loadResources(store, 'tenant', 'userId');
+
+      expect(global.fetch).toHaveBeenCalledWith(
+        'http://okapi-url/configurations/entries?query=(module==ORG AND configName == localeSettings AND (cql.allRecords=1 NOT userId="" NOT code=""))',
+        expect.anything(),
+      );
+      expect(global.fetch).toHaveBeenCalledWith(
+        'http://okapi-url/configurations/entries?query=("configName"=="localeSettings" AND "module"=="@folio/stripes-core" and userId=="userId")',
+        expect.anything(),
+      );
+    });
+
+    it('should fetch the plugins and bindings', async () => {
+      await loadResources(store, 'tenant', 'userId');
+
+      expect(global.fetch).toHaveBeenCalledWith(
+        'http://okapi-url/configurations/entries?query=(module==PLUGINS)',
+        expect.anything(),
+      );
+      expect(global.fetch).toHaveBeenCalledWith(
+        'http://okapi-url/configurations/entries?query=(module==ORG and configName==bindings)',
+        expect.anything(),
+      );
+    });
+
+    it('should apply locale settings', async () => {
+      await loadResources(store, 'tenant', 'userId');
+
+      expect(store.dispatch).toHaveBeenCalledWith(setTimezone('UTC'));
+      expect(store.dispatch).toHaveBeenCalledWith(setCurrency('USD'));
+      expect(document.documentElement.lang).toBe('en-GB-u-nu-latn');
+    });
+
+    it('should wait for the following requests', async () => {
+      loadResourcesResult = await loadResources(store, 'tenant', 'userId');
+
+      expect(loadResourcesResult.map(({ url }) => url)).toEqual([
+        'http://okapi-url/configurations/entries?query=(module==ORG AND configName == localeSettings AND (cql.allRecords=1 NOT userId="" NOT code=""))',
+        'http://okapi-url/configurations/entries?query=("configName"=="localeSettings" AND "module"=="@folio/stripes-core" and userId=="userId")',
+        'http://okapi-url/configurations/entries?query=(module==PLUGINS)',
+        'http://okapi-url/configurations/entries?query=(module==ORG and configName==bindings)',
+        'discoverServices',
+      ]);
+    });
+  });
+
+  it('should fetch discoverServices when okapi is available', async () => {
+    await loadResources(store, 'tenant', 'userId');
+
+    expect(discoverServices).toHaveBeenCalledWith(store);
   });
 });

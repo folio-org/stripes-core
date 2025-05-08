@@ -84,7 +84,7 @@ describe('usePreferences', () => {
   describe('getPreference', () => {
     let pref;
     beforeEach(async () => {
-      pref = await act(() => renderedHook.result.current.getPreference({ scope: 'test.manage', key: 'testPref' }));
+      pref = await renderedHook.result.current.getPreference({ scope: 'test.manage', key: 'testPref' });
     });
 
     it('getPreference returns preference value', () => {

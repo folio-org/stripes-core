@@ -40,16 +40,21 @@ export {
 /* Queries */
 export { useChunkedCQLFetch } from './src/queries';
 export { getUserTenantsPermissions } from './src/queries';
+export { useSettings } from './src/queries';
 
 /* Hooks */
 export { useUserTenantPermissions } from './src/hooks';
 export { useModuleInfo } from './src/hooks';
 export { usePreferences } from './src/hooks';
+export { useTenantPreferences } from './src/hooks';
 
 /* misc */
 export { supportedLocales } from './src/loginServices';
 export { supportedNumberingSystems } from './src/loginServices';
 export { userLocaleConfig } from './src/loginServices';
+export { userOwnLocaleConfig } from './src/loginServices';
+export { tenantLocaleConfig } from './src/loginServices';
+export { getFullLocale } from './src/loginServices';
 export * from './src/consortiaServices';
 export { default as queryLimit } from './src/queryLimit';
 export { default as init } from './src/init';
