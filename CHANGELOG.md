@@ -1,6 +1,7 @@
 # Change history for stripes-core
 
-## IN PROGRESS
+## [10.2.7](https://github.com/folio-org/stripes-core/tree/v10.2.7) (2025-05-12)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.2.6...v10.2.7)
 
 * When a session-restart request fails, trap errors and purge both redux and browser-storage. Refs STCOR-970. 
 
