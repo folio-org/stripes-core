@@ -21,7 +21,6 @@ import {
   setAuthError,
   checkSSO,
   setOkapiReady,
-  setServerDown,
   setSessionData,
   setLoginData,
   updateCurrentUser,
@@ -770,18 +769,26 @@ export function processOkapiSession(store, tenant, resp, ssoToken) {
 
 /**
  * validateUser
- * return a promise that fetches from .../_self.
- * if successful, dispatch the result to create a session
- * if not, clear the session and token.
+ * Data in localstorage has led us to believe a session is active. To confirm,
+ * fetch from .../_self and dispatch the results, allowing any changes to authz
+ * since that session data was persisted to take effect immediately.
+ *
+ * If the fetch succeeds, dispatch the result to update the session.
+ * Otherwise, call logout() to purge redux and storage because either:
+ *   1. the session data was corrupt. yikes!
+ *   2. the session data was valid but cookies were missing. yikes!
+ * Either way, our belief that a session is active has been proven wrong, so
+ * we want to clear out all relevant storage.
  *
  * @param {string} okapiUrl
  * @param {redux store} store
  * @param {string} tenant
  * @param {object} session
+ * @param {function} handleError error-handler function; returns a Promise that returns null
  *
  * @returns {Promise}
  */
-export function validateUser(okapiUrl, store, tenant, session) {
+export function validateUser(okapiUrl, store, tenant, session, handleError) {
   const { token, tenant: sessionTenant = tenant } = session;
   const usersPath = okapi.authnUrl ? 'users-keycloak' : 'bl-users';
   return fetch(`${okapiUrl}/${usersPath}/_self?expandPermissions=true`, {
@@ -822,15 +829,14 @@ export function validateUser(okapiUrl, store, tenant, session) {
         return loadResources(store, sessionTenant, user.id);
       });
     } else {
-      store.dispatch(clearCurrentUser());
-      return resp.text((text) => {
+      return resp.text().then(text => {
         throw text;
       });
     }
   }).catch((error) => {
+    // log a warning, then call the error handler if we received one
     console.error(error); // eslint-disable-line no-console
-    store.dispatch(setServerDown());
-    return error;
+    return handleError ? handleError() : Promise.resolve();
   });
 }
 
@@ -849,7 +855,8 @@ export function validateUser(okapiUrl, store, tenant, session) {
 export function checkOkapiSession(okapiUrl, store, tenant) {
   getOkapiSession()
     .then((sess) => {
-      return sess?.user?.id ? validateUser(okapiUrl, store, tenant, sess) : null;
+      const handleError = () => logout(okapiUrl, store);
+      return sess?.user?.id ? validateUser(okapiUrl, store, tenant, sess, handleError) : null;
     })
     .then((res) => {
       // check whether SSO is enabled if either
