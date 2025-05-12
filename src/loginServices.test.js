@@ -290,11 +290,13 @@ describe('validateUser', () => {
       dispatch: jest.fn(),
       getState: () => ({ okapi: { tenant: 'monkey', url: 'monkeyUrl' } }),
     };
+    const handleError = jest.fn().mockReturnValue(Promise.resolve());
 
     mockFetchError();
 
-    await validateUser('url', store, 'tenant', {});
-    expect(store.dispatch).toHaveBeenCalledWith(setServerDown());
+    const res = await validateUser('url', store, 'tenant', {}, handleError);
+    expect(handleError).toHaveBeenCalled();
+    expect(res).toBeUndefined();
     mockFetchCleanUp();
   });
 
@@ -407,14 +409,15 @@ describe('validateUser', () => {
       dispatch: jest.fn(),
       getState: () => ({ okapi: { tenant: 'monkey', url: 'monkeyUrl' } }),
     };
+    const handleError = jest.fn().mockReturnValue(Promise.resolve());
 
     global.fetch = jest.fn().mockImplementation(() => {
-      return Promise.resolve({ ok: false });
+      return Promise.resolve({ ok: false, text: () => Promise.resolve('boom') });
     });
 
-    await validateUser('url', store, 'tenant', {});
-    expect(store.dispatch).toHaveBeenCalledWith(clearCurrentUser());
-    expect(store.dispatch).toHaveBeenCalledWith(setServerDown());
+    const res = await validateUser('url', store, 'tenant', {}, handleError);
+    expect(handleError).toHaveBeenCalled();
+    expect(res).toBeUndefined();
     mockFetchCleanUp();
   });
 });
