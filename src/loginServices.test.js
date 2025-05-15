@@ -28,6 +28,7 @@ import {
   requestUserWithPerms,
   fetchOverriddenUserWithPerms,
   loadResources,
+  getOIDCRedirectUri,
 } from './loginServices';
 
 import { discoverServices } from './discoverServices';
@@ -737,6 +738,18 @@ describe('unauthorizedPath functions', () => {
       const value = 'monkey';
       setUnauthorizedPathToSession(value);
       expect(getUnauthorizedPathFromSession()).toBe(value);
+    });
+  });
+
+  describe('getOIDCRedirectUri', () => {
+    it('should return encoded return_uri', () => {
+      window.location.protocol = 'http';
+      window.location.host = 'localhost';
+
+      const tenant = 'tenant';
+      const clientId = 'client_id';
+
+      expect(getOIDCRedirectUri(tenant, clientId)).toEqual('http%3A%2F%2Flocalhost%2Foidc-landing%3Ftenant%3Dtenant%26client_id%3Dclient_id');
     });
   });
 
