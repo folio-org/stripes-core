@@ -740,19 +740,6 @@ describe('unauthorizedPath functions', () => {
     });
   });
 
-  describe('getStoredTenant', () => {
-    afterEach(() => {
-      localStorage.clear();
-    });
-    it('retrieves the value from localstorage', () => {
-      const value = { tenantName: 'diku', clientId: 'diku-id' };
-      localStorage.setItem('tenant', JSON.stringify(value));
-      const parsedTenant = getStoredTenant();
-
-      expect(parsedTenant).toStrictEqual(value);
-    });
-  });
-
   describe('requestLogin', () => {
     afterEach(() => {
       mockFetchCleanUp();
