@@ -133,8 +133,10 @@ export const getUnauthorizedPathFromSession = () => sessionStorage.getItem(UNAUT
 
 const TENANT_LOCAL_STORAGE_KEY = 'tenant';
 export const getStoredTenant = () => {
-  const storedTenant = localStorage.getItem(TENANT_LOCAL_STORAGE_KEY);
-  return storedTenant ? JSON.parse(storedTenant) : undefined;
+  // This is WIP
+  return { tenantName: new URLSearchParams(window.location.search).get('tenant') };
+  // const storedTenant = localStorage.getItem(TENANT_LOCAL_STORAGE_KEY);
+  // return storedTenant ? JSON.parse(storedTenant) : undefined;
 };
 
 // export config values for storing user locale

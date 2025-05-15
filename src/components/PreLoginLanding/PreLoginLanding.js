@@ -10,7 +10,7 @@ function PreLoginLanding({ onSelectTenant }) {
   const intl = useIntl();
   const { okapi, config: { tenantOptions = {} } } = useStripes();
 
-  const redirectUri = `${window.location.protocol}//${window.location.host}/oidc-landing`;
+  const redirectUri = `${window.location.protocol}//${window.location.host}/oidc-landing?tenant=${okapi.tenant}`;
   const options = Object.values(tenantOptions).map(i => ({ value: i.name, label: i.displayName ?? i.name }));
 
   const getLoginUrl = () => {

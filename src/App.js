@@ -76,6 +76,8 @@ export default class StripesCore extends Component {
       const okapi = (typeof okapiConfig === 'object' && Object.keys(okapiConfig).length > 0)
         ? { ...okapiConfig, tenant: parsedTenant?.tenantName || okapiConfig.tenant, clientId: parsedTenant?.clientId || okapiConfig.clientId } : { withoutOkapi: true };
 
+
+      console.log(`Okapi tenant is ${okapi.tenant}`);
       const initialState = merge({}, { okapi }, props.initialState);
 
       this.logger = configureLogger(config);
