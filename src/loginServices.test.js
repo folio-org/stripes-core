@@ -870,6 +870,7 @@ describe('loadResources', () => {
           locale: 'en-GB',
           timezone: 'Europe/London',
           currency: 'GBP',
+          isEnabled: true,
         },
       },
     ],
@@ -972,6 +973,47 @@ describe('loadResources', () => {
 
           expect(store.dispatch).toHaveBeenCalledWith(setTimezone(timezone));
           expect(store.dispatch).toHaveBeenCalledWith(setCurrency(currency));
+        });
+
+        describe('and user locale setting is disabled', () => {
+          const getData = (url) => {
+            if (url?.includes('key=="tenantLocaleSettings"')) return tenantLocaleData;
+            if (url?.includes('key=="localeSettings"')) {
+              return {
+                items: [
+                  {
+                    id: 'userDataId',
+                    value: {
+                      locale: 'en-GB',
+                      timezone: 'Europe/London',
+                      currency: 'GBP',
+                      isEnabled: false,
+                    },
+                  },
+                ],
+              }
+            }
+
+            return { url };
+          };
+
+          beforeEach(() => {
+            global.fetch = jest.fn().mockImplementation((url) => Promise.resolve({
+              url,
+              json: () => Promise.resolve(getData(url)),
+            }));
+          });
+
+          it('should apply tenant locale settings', async () => {
+            const currency = tenantLocaleData.items[0].value.currency;
+            const timezone = tenantLocaleData.items[0].value.timezone;
+
+            await loadResources(store, 'tenant', 'userId');
+
+            expect(document.documentElement.lang).toBe('en-US-u-nu-latn');
+            expect(store.dispatch).toHaveBeenCalledWith(setCurrency(currency));
+            expect(store.dispatch).toHaveBeenCalledWith(setTimezone(timezone));
+          });
         });
       });
 

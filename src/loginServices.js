@@ -531,8 +531,7 @@ const processLocaleSettings = (store, tenantLocaleData, userLocaleData) => {
   let timezone = userLocaleSettings?.timezone || tenantLocaleSettings?.timezone;
   let currency = userLocaleSettings?.currency || tenantLocaleSettings?.currency;
 
-  // we should use tenant's settings if user has not set their own locale or their locale is the same as tenant's locale
-  if (!userLocaleSettings?.locale || userLocaleSettings?.locale === tenantLocaleSettings?.locale) {
+  if (!userLocaleSettings?.isEnabled) {
     locale = tenantLocaleSettings?.locale;
     numberingSystem = tenantLocaleSettings?.numberingSystem;
     timezone = tenantLocaleSettings?.timezone;
