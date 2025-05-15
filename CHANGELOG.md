@@ -12,7 +12,8 @@
 * Don't show IST modal if `flsTimeRemaining` less than config.rtr.idleModalTTL. STCOR-884.
 * Allow customizing request timeout in `useOkapiKy`. STCOR-967.
 * Enhance locale management to support user and tenant locale configurations from both mod-configuration and mod-settings. STCOR-968.
-* When a session-restart request fails, trap errors and purge both redux and browser-storage. Refs STCOR-970. 
+* When a session-restart request fails, trap errors and purge both redux and browser-storage. Refs STCOR-970.
+* For OIDC login - store `tenant` and `clientId` in `redirect_uri` url parameter, instead of localStorage. Refs STCOR-972.
 
 ## [11.0.0](https://github.com/folio-org/stripes-core/tree/v11.0.0) (2025-02-24)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.2.0...v11.0.0)

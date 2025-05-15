@@ -131,12 +131,18 @@ export const setUnauthorizedPathToSession = (pathname) => {
 };
 export const getUnauthorizedPathFromSession = () => sessionStorage.getItem(UNAUTHORIZED_PATH);
 
-const TENANT_LOCAL_STORAGE_KEY = 'tenant';
+export const getOIDCRedirectUri = (tenant, clientId) => {
+  // we need to use `encodeURIComponent` to separate `redirect_uri` URL parameters from the rest of URL parameters that `redirect_uri` itself is part of
+  return encodeURIComponent(`${window.location.protocol}//${window.location.host}/oidc-landing?tenant=${tenant}&client_id=${clientId}`);
+};
+
 export const getStoredTenant = () => {
-  // This is WIP
-  return { tenantName: new URLSearchParams(window.location.search).get('tenant') };
-  // const storedTenant = localStorage.getItem(TENANT_LOCAL_STORAGE_KEY);
-  // return storedTenant ? JSON.parse(storedTenant) : undefined;
+  const urlParams = new URLSearchParams(window.location.search);
+
+  return {
+    tenantName: urlParams.get('tenant'),
+    clientId: urlParams.get('client_id'),
+  };
 };
 
 // export config values for storing user locale

@@ -14,7 +14,6 @@ const AuthnLogin = ({ stripes }) => {
   const tenants = Object.values(tenantOptions);
 
   const setTenant = (tenant, clientId) => {
-    localStorage.setItem('tenant', JSON.stringify({ tenantName: tenant, clientId }));
     stripes.store.dispatch(setOkapiTenant({ tenant, clientId }));
   };
 

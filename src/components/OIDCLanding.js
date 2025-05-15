@@ -13,10 +13,14 @@ import {
 } from '@folio/stripes-components';
 
 import OrganizationLogo from './OrganizationLogo';
-import { requestUserWithPerms, setTokenExpiry } from '../loginServices';
+import {
+  getOIDCRedirectUri,
+  requestUserWithPerms,
+  setTokenExpiry,
+} from '../loginServices';
+import { useStripes } from '../StripesContext';
 
 import css from './Front.css';
-import { useStripes } from '../StripesContext';
 
 /**
  * OIDCLanding: un-authenticated route handler for /oidc-landing.
@@ -60,8 +64,10 @@ const OIDCLanding = () => {
 
     const otp = getOtp();
 
+    const redirectUri = getOIDCRedirectUri(okapi.tenant, okapi.clientId);
+
     if (otp) {
-      fetch(`${okapi.url}/authn/token?code=${otp}&redirect-uri=${window.location.protocol}//${window.location.host}/oidc-landing`, {
+      fetch(`${okapi.url}/authn/token?code=${otp}&redirect-uri=${redirectUri}`, {
         credentials: 'include',
         headers: { 'X-Okapi-tenant': okapi.tenant, 'Content-Type': 'application/json' },
         mode: 'cors',
