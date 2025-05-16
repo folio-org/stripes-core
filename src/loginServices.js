@@ -767,6 +767,7 @@ export async function logout(okapiUrl, store, queryClient) {
     // clear shared storage
     .then(localforage.removeItem(SESSION_NAME))
     .then(localforage.removeItem('loginResponse'))
+    .then(() => localStorage.removeItem(TENANT_LOCAL_STORAGE_KEY))
     .catch(e => {
       console.error('error during logout', e); // eslint-disable-line no-console
     })
