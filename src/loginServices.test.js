@@ -23,7 +23,7 @@ import {
   updateUser,
   validateUser,
   IS_LOGGING_OUT,
-  SESSION_NAME, getStoredTenant,
+  SESSION_NAME,
   requestLogin,
   requestUserWithPerms,
   fetchOverriddenUserWithPerms,

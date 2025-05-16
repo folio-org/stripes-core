@@ -5,7 +5,10 @@ import PreLoginLanding from '../PreLoginLanding';
 import Login from '../Login';
 
 import { setOkapiTenant } from '../../okapiActions';
-import { setUnauthorizedPathToSession } from '../../loginServices';
+import {
+  setUnauthorizedPathToSession,
+  getOIDCRedirectUri,
+} from '../../loginServices';
 
 const AuthnLogin = ({ stripes }) => {
   const { config, okapi } = stripes;
@@ -52,7 +55,7 @@ const AuthnLogin = ({ stripes }) => {
     // If only 1 tenant is defined in config, skip the tenant selection screen.
     if (tenants.length === 1) {
       const loginTenant = tenants[0];
-      const redirectUri = `${window.location.protocol}//${window.location.host}/oidc-landing`;
+      const redirectUri = getOIDCRedirectUri(loginTenant.name, loginTenant.clientId);
       const authnUri = `${okapi.authnUrl}/realms/${loginTenant.name}/protocol/openid-connect/auth?client_id=${loginTenant.clientId}&response_type=code&redirect_uri=${redirectUri}&scope=openid`;
       return <Redirect to={authnUri} />;
     }
