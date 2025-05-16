@@ -29,6 +29,7 @@ import {
   fetchOverriddenUserWithPerms,
   loadResources,
   getOIDCRedirectUri,
+  getStoredTenant,
 } from './loginServices';
 
 import { discoverServices } from './discoverServices';
@@ -738,6 +739,19 @@ describe('unauthorizedPath functions', () => {
       const value = 'monkey';
       setUnauthorizedPathToSession(value);
       expect(getUnauthorizedPathFromSession()).toBe(value);
+    });
+  });
+
+  describe('getStoredTenant', () => {
+    afterEach(() => {
+      localStorage.clear();
+    });
+
+    it('retrieves the value from localstorage', () => {
+      const value = { tenantName: 'diku', clientId: 'diku-id' };
+      localStorage.setItem('tenant', JSON.stringify(value));
+      const parsedTenant = getStoredTenant();
+      expect(parsedTenant).toStrictEqual(value);
     });
   });
 

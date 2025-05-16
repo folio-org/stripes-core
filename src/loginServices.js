@@ -136,13 +136,20 @@ export const getOIDCRedirectUri = (tenant, clientId) => {
   return encodeURIComponent(`${window.location.protocol}//${window.location.host}/oidc-landing?tenant=${tenant}&client_id=${clientId}`);
 };
 
-export const getStoredTenant = () => {
+export const getTenantAndClientIdFromLoginURL = () => {
   const urlParams = new URLSearchParams(window.location.search);
 
   return {
     tenantName: urlParams.get('tenant'),
     clientId: urlParams.get('client_id'),
   };
+};
+
+export const TENANT_LOCAL_STORAGE_KEY = 'tenant';
+
+export const getStoredTenant = () => {
+  const storedTenant = localStorage.getItem(TENANT_LOCAL_STORAGE_KEY);
+  return storedTenant ? JSON.parse(storedTenant) : undefined;
 };
 
 // export config values for storing user locale

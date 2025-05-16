@@ -17,6 +17,7 @@ import {
   getOIDCRedirectUri,
   requestUserWithPerms,
   setTokenExpiry,
+  TENANT_LOCAL_STORAGE_KEY,
 } from '../loginServices';
 import { useStripes } from '../StripesContext';
 
@@ -83,6 +84,12 @@ const OIDCLanding = () => {
               })
               .then(() => {
                 return requestUserWithPerms(okapi.url, store, okapi.tenant);
+              })
+              .then(() => {
+                // for login itself we're storing selected tenant and clientId in the url
+                // but we still need to store the same data in localStorage for logout purposes
+                // `logout` function in loginServices.js provides details about this.
+                localStorage.setItem(TENANT_LOCAL_STORAGE_KEY, JSON.stringify({ tenantName: okapi.tenant, clientId: okapi.clientId }));
               });
           } else {
             return resp.json().then((error) => {
