@@ -29,6 +29,7 @@ jest.mock('../loginServices', () => ({
   setTokenExpiry: () => mockSetTokenExpiry(),
   requestUserWithPerms: () => mockRequestUserWithPerms(),
   foo: () => mockFoo(),
+  getOIDCRedirectUri: () => '',
 }));
 
 

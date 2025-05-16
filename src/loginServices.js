@@ -131,7 +131,22 @@ export const setUnauthorizedPathToSession = (pathname) => {
 };
 export const getUnauthorizedPathFromSession = () => sessionStorage.getItem(UNAUTHORIZED_PATH);
 
-const TENANT_LOCAL_STORAGE_KEY = 'tenant';
+export const getOIDCRedirectUri = (tenant, clientId) => {
+  // we need to use `encodeURIComponent` to separate `redirect_uri` URL parameters from the rest of URL parameters that `redirect_uri` itself is part of
+  return encodeURIComponent(`${window.location.protocol}//${window.location.host}/oidc-landing?tenant=${tenant}&client_id=${clientId}`);
+};
+
+export const getTenantAndClientIdFromLoginURL = () => {
+  const urlParams = new URLSearchParams(window.location.search);
+
+  return {
+    tenantName: urlParams.get('tenant'),
+    clientId: urlParams.get('client_id'),
+  };
+};
+
+export const TENANT_LOCAL_STORAGE_KEY = 'tenant';
+
 export const getStoredTenant = () => {
   const storedTenant = localStorage.getItem(TENANT_LOCAL_STORAGE_KEY);
   return storedTenant ? JSON.parse(storedTenant) : undefined;
@@ -752,6 +767,7 @@ export async function logout(okapiUrl, store, queryClient) {
     // clear shared storage
     .then(localforage.removeItem(SESSION_NAME))
     .then(localforage.removeItem('loginResponse'))
+    .then(() => localStorage.removeItem(TENANT_LOCAL_STORAGE_KEY))
     .catch(e => {
       console.error('error during logout', e); // eslint-disable-line no-console
     })
