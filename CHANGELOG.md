@@ -1,5 +1,9 @@
 # Change history for stripes-core
 
+## IN PROGRESS
+
+* For OIDC login - store `tenant` and `clientId` in `redirect_uri` url parameter, instead of localStorage. Refs STCOR-972.
+
 ## [11.0.7](https://github.com/folio-org/stripes-core/tree/v11.0.7) (2025-05-12)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v11.0.6...v11.0.7)
 

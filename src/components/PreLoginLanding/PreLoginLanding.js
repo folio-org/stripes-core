@@ -1,16 +1,18 @@
 import React, { useRef } from 'react';
-import { Button, Select, Col, Row } from '@folio/stripes-components';
 import { useIntl } from 'react-intl';
 import PropTypes from 'prop-types';
+
+import { Button, Select, Col, Row } from '@folio/stripes-components';
 import OrganizationLogo from '../OrganizationLogo';
-import styles from './index.css';
 import { useStripes } from '../../StripesContext';
+import { getOIDCRedirectUri } from '../../loginServices';
+import styles from './index.css';
 
 function PreLoginLanding({ onSelectTenant }) {
   const intl = useIntl();
   const { okapi, config: { tenantOptions = {} } } = useStripes();
 
-  const redirectUri = `${window.location.protocol}//${window.location.host}/oidc-landing`;
+  const redirectUri = getOIDCRedirectUri(okapi.tenant, okapi.clientId);
   const options = Object.values(tenantOptions).map(i => ({ value: i.name, label: i.displayName ?? i.name }));
 
   const getLoginUrl = () => {

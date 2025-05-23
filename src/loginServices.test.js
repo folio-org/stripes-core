@@ -23,10 +23,14 @@ import {
   updateUser,
   validateUser,
   IS_LOGGING_OUT,
-  SESSION_NAME, getStoredTenant,
+  SESSION_NAME,
   requestLogin,
   requestUserWithPerms,
   fetchOverriddenUserWithPerms,
+  loadResources,
+  getOIDCRedirectUri,
+  getStoredTenant,
+  getLogoutTenant,
 } from './loginServices';
 
 import {
@@ -732,16 +736,28 @@ describe('unauthorizedPath functions', () => {
     });
   });
 
-  describe('getStoredTenant', () => {
+  describe('getLogoutTenant', () => {
     afterEach(() => {
       localStorage.clear();
     });
-    it('retrieves the value from localstorage', () => {
-      const value = { tenantName: 'diku', clientId: 'diku-id' };
-      localStorage.setItem('tenant', JSON.stringify(value));
-      const parsedTenant = getStoredTenant();
 
+    it('retrieves the value from localstorage', () => {
+      const value = { tenantId: 'diku' };
+      localStorage.setItem('tenant', JSON.stringify(value));
+      const parsedTenant = getLogoutTenant();
       expect(parsedTenant).toStrictEqual(value);
+    });
+  });
+
+  describe('getOIDCRedirectUri', () => {
+    it('should return encoded return_uri', () => {
+      window.location.protocol = 'http';
+      window.location.host = 'localhost';
+
+      const tenant = 'tenant';
+      const clientId = 'client_id';
+
+      expect(getOIDCRedirectUri(tenant, clientId)).toEqual('http%3A%2F%2Flocalhost%2Foidc-landing%3Ftenant%3Dtenant%26client_id%3Dclient_id');
     });
   });
 
