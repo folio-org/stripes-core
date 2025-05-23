@@ -145,13 +145,6 @@ export const getTenantAndClientIdFromLoginURL = () => {
   };
 };
 
-export const TENANT_LOCAL_STORAGE_KEY = 'tenant';
-
-export const getStoredTenant = () => {
-  const storedTenant = localStorage.getItem(TENANT_LOCAL_STORAGE_KEY);
-  return storedTenant ? JSON.parse(storedTenant) : undefined;
-};
-
 // export config values for storing user locale
 export const userLocaleConfig = {
   'configName': 'localeSettings',
@@ -717,6 +710,18 @@ export function spreadUserWithPerms(userWithPerms) {
  * @returns {Promise}
  */
 export const IS_LOGGING_OUT = '@folio/stripes/core::Logout';
+
+export const TENANT_LOCAL_STORAGE_KEY = 'tenant';
+
+export const storeLogoutTenant = (tenantId) => {
+  localStorage.setItem(TENANT_LOCAL_STORAGE_KEY, JSON.stringify({ tenantId }));
+};
+
+export const getLogoutTenant = () => {
+  const storedTenant = localStorage.getItem(TENANT_LOCAL_STORAGE_KEY);
+  return storedTenant ? JSON.parse(storedTenant) : undefined;
+};
+
 export async function logout(okapiUrl, store, queryClient) {
   // check the private-storage sentinel: if logout has already started
   // in this window, we don't want to start it again.
@@ -738,7 +743,7 @@ export async function logout(okapiUrl, store, queryClient) {
       switching affiliations updates store.okapi.tenant, leading to mismatched tenant names from the token.
       Use the tenant name stored during login to ensure they match.
         */
-      headers: getHeaders(getStoredTenant()?.tenantName || store.getState()?.okapi?.tenant),
+      headers: getHeaders(getLogoutTenant()?.tenantId || store.getState()?.okapi?.tenant),
     })
     :
     Promise.resolve();
@@ -753,6 +758,7 @@ export async function logout(okapiUrl, store, queryClient) {
       // BroadcastChannel to communicate with all tabs/windows
       localStorage.removeItem(SESSION_NAME);
       localStorage.removeItem(RTR_TIMEOUT_EVENT);
+      localStorage.removeItem(TENANT_LOCAL_STORAGE_KEY);
 
       store.dispatch(setIsAuthenticated(false));
       store.dispatch(clearCurrentUser());
@@ -767,7 +773,6 @@ export async function logout(okapiUrl, store, queryClient) {
     // clear shared storage
     .then(localforage.removeItem(SESSION_NAME))
     .then(localforage.removeItem('loginResponse'))
-    .then(() => localStorage.removeItem(TENANT_LOCAL_STORAGE_KEY))
     .catch(e => {
       console.error('error during logout', e); // eslint-disable-line no-console
     })

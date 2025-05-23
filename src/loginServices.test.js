@@ -30,6 +30,7 @@ import {
   loadResources,
   getOIDCRedirectUri,
   getStoredTenant,
+  getLogoutTenant,
 } from './loginServices';
 
 import { discoverServices } from './discoverServices';
@@ -742,15 +743,15 @@ describe('unauthorizedPath functions', () => {
     });
   });
 
-  describe('getStoredTenant', () => {
+  describe('getLogoutTenant', () => {
     afterEach(() => {
       localStorage.clear();
     });
 
     it('retrieves the value from localstorage', () => {
-      const value = { tenantName: 'diku', clientId: 'diku-id' };
+      const value = { tenantId: 'diku' };
       localStorage.setItem('tenant', JSON.stringify(value));
-      const parsedTenant = getStoredTenant();
+      const parsedTenant = getLogoutTenant();
       expect(parsedTenant).toStrictEqual(value);
     });
   });
