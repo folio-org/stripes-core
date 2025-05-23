@@ -2,14 +2,23 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { describe, beforeEach, it } from 'mocha';
-import { expect } from 'chai';
+import {
+  HTML
+} from '@folio/stripes-testing';
 
+import {
+  AppListInteractor
+} from '../interactors/app';
 import setupApplication from '../helpers/setup-core-application';
-import AppInteractor from '../interactors/app';
 
 import { useNamespace, withNamespace } from '../../../src/components';
 import Pluggable from '../../../src/Pluggable';
-import NamespaceInteractor from '../interactors/Namespace';
+
+const NamespaceInteractor = HTML.extend('Namespace')
+  .selector('#module-namespace')
+  .filters({
+    name: el => el.innerText
+  });
 
 const PrintNamespace = ({ options }) => {
   const [namespace] = useNamespace(options);
@@ -47,8 +56,8 @@ const ModuleD = () => <PrintViaGetNamespace />;
 const ModuleE = () => <WrappedWithNamespace />;
 
 describe('Namespace', () => {
-  const app = new AppInteractor();
-  const namespace = new NamespaceInteractor();
+  const nav = AppListInteractor();
+  const namespace = NamespaceInteractor();
 
   setupApplication({
     modules: [
@@ -115,51 +124,41 @@ describe('Namespace', () => {
 
   describe('Open app A with a plugin', () => {
     beforeEach(async () => {
-      await app.nav('ModuleA').click();
+      await nav.choose('ModuleA');
     });
 
-    it('shows full namespace', () => {
-      expect(namespace.name).to.equal('@folio/ui-module-a:@folio/plugin-a');
-    });
+    it('shows full namespace', () => namespace.has({ name: '@folio/ui-module-a:@folio/plugin-a' }));
   });
 
   describe('open app B with a plugin ignoring parents', () => {
     beforeEach(async () => {
-      await app.nav('ModuleB').click();
+      await nav.choose('ModuleB');
     });
 
-    it('shows plugin namespace', () => {
-      expect(namespace.name).to.equal('@folio/plugin-b');
-    });
+    it('shows plugin namespace', () => namespace.has({ name: '@folio/plugin-b' }));
   });
 
   describe('open app C with a namespace key', () => {
     beforeEach(async () => {
-      await app.nav('ModuleC').click();
+      await nav.choose('ModuleC');
     });
 
-    it('shows module namespace with a key', () => {
-      expect(namespace.name).to.equal('@folio/ui-module-c:test-key');
-    });
+    it('shows module namespace with a key', () => namespace.has({ name: '@folio/ui-module-c:test-key' }));
   });
 
   describe('open app D', () => {
     beforeEach(async () => {
-      await app.nav('ModuleD').click();
+      await nav.choose('ModuleD');
     });
 
-    it('shows module namespace with a key', () => {
-      expect(namespace.name).to.equal('@folio/ui-module-d:test-key-2');
-    });
+    it('shows module namespace with a key', () => namespace.has({ name: '@folio/ui-module-d:test-key-2' }));
   });
 
   describe('open app E wrapped in a withNamespace HOC', () => {
     beforeEach(async () => {
-      await app.nav('ModuleE').click();
+      await nav.choose('ModuleE');
     });
 
-    it('shows module namespace with a key via props', () => {
-      expect(namespace.name).to.equal('@folio/ui-module-e:with-namespace');
-    });
+    it('shows module namespace with a key via props', () => namespace.has({ name: '@folio/ui-module-e:with-namespace' }));
   });
 });
