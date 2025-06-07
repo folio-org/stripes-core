@@ -131,7 +131,7 @@
     "routeErrorBoundary.goToModuleHomeLabel": "Wróć do {name} strony docelowej",
     "routeErrorBoundary.goToModuleSettingsHomeLabel": "Wróć do {name} ustawień",
     "logoutKeepSso": "Wyloguj się z Folio, zachowaj sesję SSO",
-    "mainnav.profileDropdown.locale": "Locale",
+    "mainnav.profileDropdown.locale": "Lokalne",
     "mainnav.profileDropdown.permissions": "Permissions",
     "front.error.header": "404 Error",
     "errors.password.compromised.invalid": "The password must not be commonly-used, expected or compromised",
