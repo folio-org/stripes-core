@@ -4,10 +4,10 @@ import { expect } from 'chai';
 import React, { Component } from 'react';
 import { Button } from '@folio/stripes-testing';
 import setupApplication from '../helpers/setup-core-application';
-import AppInteractor from '../interactors/app';
+import { AppListInteractor } from '../interactors/app';
 
 describe('Nav', () => {
-  const app = new AppInteractor();
+  const nav = new AppListInteractor();
 
   class DummyApp extends Component {
     render() {
@@ -37,7 +37,7 @@ describe('Nav', () => {
 
   describe('clicking settings', () => {
     beforeEach(async () => {
-      await app.nav('Settings').click();
+      await nav.choose('Settings');
     });
 
     it('navigates to /settings', function () {
@@ -47,7 +47,7 @@ describe('Nav', () => {
 
   describe('clicking the dummy app', () => {
     beforeEach(async () => {
-      await app.nav('Dummy').click();
+      await nav.choose('Dummy');
     });
 
     it('navigates to the dummy route', function () {
