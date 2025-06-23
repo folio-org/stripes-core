@@ -43,9 +43,9 @@ Information can be combined with others to form a person’s identity.
 
 - [x] First name
 - [x] Last name
-- [ ] Gender
-- [ ] Date of birth
-- [x] Place of birth
+- [x] Gender
+- [x] Date of birth
+- [ ] Place of birth
 - [ ] Racial or ethnic origin
 - [x] Address
 - [ ] Location information
