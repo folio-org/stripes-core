@@ -534,18 +534,10 @@ const processLocaleSettings = (store, tenantLocaleData, userLocaleData) => {
   const tenantLocaleSettings = tenantLocaleData?.items[0]?.value;
   const userLocaleSettings = userLocaleData?.items[0]?.value;
 
-  let locale = userLocaleSettings?.locale || tenantLocaleSettings?.locale;
-  let numberingSystem = userLocaleSettings?.numberingSystem || tenantLocaleSettings?.numberingSystem;
-  let timezone = userLocaleSettings?.timezone || tenantLocaleSettings?.timezone;
-  let currency = userLocaleSettings?.currency || tenantLocaleSettings?.currency;
-
-  // we should use tenant's settings if user has not set their own locale or their locale is the same as tenant's locale
-  if (!userLocaleSettings?.locale || userLocaleSettings?.locale === tenantLocaleSettings?.locale) {
-    locale = tenantLocaleSettings?.locale;
-    numberingSystem = tenantLocaleSettings?.numberingSystem;
-    timezone = tenantLocaleSettings?.timezone;
-    currency = tenantLocaleSettings?.currency;
-  }
+  const locale = userLocaleSettings?.locale || tenantLocaleSettings?.locale;
+  const numberingSystem = userLocaleSettings?.numberingSystem || tenantLocaleSettings?.numberingSystem;
+  const timezone = userLocaleSettings?.timezone || tenantLocaleSettings?.timezone;
+  const currency = userLocaleSettings?.currency || tenantLocaleSettings?.currency;
 
   const fullLocale = getFullLocale(locale, numberingSystem);
 
