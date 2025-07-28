@@ -126,7 +126,8 @@ export const thisWindowActivity = (_e, stripes, timers, broadcastChannel) => {
  * By default, the "keep working?" modal will be visible for 1 minute, i.e.
  * after 59 minutes of inactivity. These values may be overridden in
  * stripes.config.js in the `config.rtr` object by the values `idleSessionTTL`
- * and `idleModalTTL`, respectively; the values must be strings parsable by ms.
+ * and `idleModalTTL`, respectively; the values must be strings parsable by ms,
+ * `idleSessionTTL` should always be greater than or equal to `idleModalTTL`
  *
  * @param {object} history
  * @returns KeepWorkingModal or null
@@ -141,6 +142,20 @@ const SessionEventContainer = ({ history }) => {
   // inactivity timers
   const timers = useRef();
   const stripes = useStripes();
+  const [flsTimeRemaining, setFlsTimeRemaining] = useState(ms(stripes.config.rtr.fixedLengthSessionWarningTTL));
+
+  useEffect(() => {
+    let interval;
+    if (isFlsVisible) {
+      interval = setInterval(() => {
+        setFlsTimeRemaining(i => i - 1000);
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [isFlsVisible]);
+
+  // Indicator that fixed-length session warning timer will expire before the modal's TTL
+  const isModalIgnorable = flsTimeRemaining < ms(stripes.config.rtr.idleModalTTL);
 
   /**
    * keepWorkingCallback
@@ -192,6 +207,8 @@ const SessionEventContainer = ({ history }) => {
 
     // inactive timer: show the "keep working?" modal
     const showModalIT = createInactivityTimer(ms(idleSessionTTL) - ms(idleModalTTL), () => {
+      if (isModalIgnorable) return;
+
       stripes.logger.log('rtr', 'session idle; showing modal');
       stripes.store.dispatch(toggleRtrModal(true));
       setIsVisible(true);
@@ -260,11 +277,11 @@ const SessionEventContainer = ({ history }) => {
       bc.close();
     };
 
-    // no deps? It should be history and stripes!!! >:)
-    // We only want to configure the event listeners once, not every time
-    // there is a change to stripes or history. Hence, an empty dependency
-    // array.
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    // isModalIgnorable only? It should be history and stripes!!! >:)
+    // We only want to configure the event listeners once or on isModalIgnorable
+    // change that could happen very rarely, not every time there is a change to stripes or history.
+    // Hence, only isModalIgnorable in dependency array.
+  }, [isModalIgnorable]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const renderList = [];
 
@@ -275,14 +292,16 @@ const SessionEventContainer = ({ history }) => {
 
   // show the fixed-length session warning?
   if (isFlsVisible) {
-    renderList.push(<FixedLengthSessionWarning key="FixedLengthSessionWarning" />);
+    renderList.push(<FixedLengthSessionWarning key="FixedLengthSessionWarning" timeRemainingMillis={flsTimeRemaining} />);
   }
 
   return renderList.length ? createPortal(renderList, document.getElementById(eventsPortal)) : null;
 };
 
 SessionEventContainer.propTypes = {
-  history: PropTypes.object,
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+  }),
 };
 
 export default SessionEventContainer;

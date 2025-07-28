@@ -21,7 +21,6 @@ import {
   setAuthError,
   checkSSO,
   setOkapiReady,
-  setServerDown,
   setSessionData,
   setLoginData,
   updateCurrentUser,
@@ -31,6 +30,7 @@ import processBadResponse from './processBadResponse';
 import {
   RTR_TIMEOUT_EVENT
 } from './components/Root/constants';
+import { settings } from './constants';
 
 // export supported locales, i.e. the languages we provide translations for
 export const supportedLocales = [
@@ -131,16 +131,36 @@ export const setUnauthorizedPathToSession = (pathname) => {
 };
 export const getUnauthorizedPathFromSession = () => sessionStorage.getItem(UNAUTHORIZED_PATH);
 
-const TENANT_LOCAL_STORAGE_KEY = 'tenant';
-export const getStoredTenant = () => {
-  const storedTenant = localStorage.getItem(TENANT_LOCAL_STORAGE_KEY);
-  return storedTenant ? JSON.parse(storedTenant) : undefined;
+export const getOIDCRedirectUri = (tenant, clientId) => {
+  // we need to use `encodeURIComponent` to separate `redirect_uri` URL parameters from the rest of URL parameters that `redirect_uri` itself is part of
+  return encodeURIComponent(`${window.location.protocol}//${window.location.host}/oidc-landing?tenant=${tenant}&client_id=${clientId}`);
+};
+
+export const getTenantAndClientIdFromLoginURL = () => {
+  const urlParams = new URLSearchParams(window.location.search);
+
+  return {
+    tenantName: urlParams.get('tenant'),
+    clientId: urlParams.get('client_id'),
+  };
 };
 
 // export config values for storing user locale
 export const userLocaleConfig = {
   'configName': 'localeSettings',
   'module': '@folio/stripes-core',
+};
+
+// config values for storing user locale in mod-settings
+export const userOwnLocaleConfig = {
+  SCOPE: settings.SCOPE,
+  KEY: 'localeSettings',
+};
+
+// config values for storing tenant locale
+export const tenantLocaleConfig = {
+  SCOPE: settings.SCOPE,
+  KEY: 'tenantLocaleSettings',
 };
 
 function getHeaders(tenant, token) {
@@ -165,6 +185,24 @@ function canReadConfig(store) {
   const perms = store.getState().okapi.currentPerms;
   return perms?.['configuration.entries.collection.get'];
 }
+
+/**
+ * Checks if the current user has sufficient permissions to read from mod-settings.
+ *
+ * This function verifies that the user has the required permission to access the settings entries,
+ * and that the user also has at least one permission to manage their settings preferences.
+ *
+ * @param {Object} store - The store containing application state.
+ * @returns {boolean} True if the user possesses the required permissions for reading settings, false otherwise.
+ */
+const canReadSettings = (store) => {
+  const perms = store.getState().okapi.currentPerms;
+
+  return (
+    perms?.['mod-settings.entries.collection.get']
+    && (perms?.['mod-settings.global.read.stripes-core.prefs.manage'] || perms?.['mod-settings.owner.read.stripes-core.prefs.manage'])
+  );
+};
 
 /**
  * loadTranslations
@@ -382,9 +420,143 @@ export function getBindings(okapiUrl, store, tenant) {
 }
 
 /**
+ * Fetch the locale data from the provided URL.
+ *
+ * @param {string} url - The URL from which to fetch locale data.
+ * @param {object} store - The store providing state access to retrieve the OKAPI token.
+ * @param {string} tenant - The tenant name for which the locale settings are being requested.
+ * @returns {Promise} A promise that resolves to the fetch API's response.
+ */
+const fetchLocale = (url, store, tenant) => {
+  return fetch(url, {
+    headers: getHeaders(tenant, store.getState().okapi.token),
+    credentials: 'include',
+    mode: 'cors',
+  });
+};
+
+/**
+ * Retrieves the tenant's locale setting from the mod-settings.
+ *
+ * Constructs a query based on preset scope and tenant locale configuration constants, then
+ * fetches the locale data by making an HTTP request to the settings entries endpoint.
+ *
+ * @param {string} url - The base URL for the settings API endpoint.
+ * @param {Object} store - The store object used to manage application state.
+ * @param {string} tenant - The tenant name for which the locale settings are being requested.
+ * @returns {Promise} A promise that resolves with the locale configuration data.
+ */
+const getTenantLocale = (url, store, tenant) => {
+  const query = `scope=="${settings.SCOPE}" and key=="${tenantLocaleConfig.KEY}"`;
+
+  return fetchLocale(
+    `${url}/settings/entries?query=(${query})`,
+    store,
+    tenant
+  );
+};
+
+/**
+ * Retrieves the user's own locale setting from the mod-settings.
+ *
+ * This function constructs a query string to filter settings entries based on the provided userId,
+ * a predefined scope, and key. It then delegates the fetching of the locale data to the fetchLocale
+ * function using the constructed query.
+ *
+ * @param {string} url - The base URL for the settings API endpoint.
+ * @param {Object} store - The store object used to manage application state.
+ * @param {string} tenant - The tenant name for which the locale settings are being requested.
+ * @param {string} userId - The unique identifier for the user.
+ * @returns {Promise} A promise resolving with the user's locale settings information.
+ */
+const getUserOwnLocale = (url, store, tenant, userId) => {
+  const query = `userId=="${userId}" and scope=="${settings.SCOPE}" and key=="${userOwnLocaleConfig.KEY}"`;
+
+  return fetchLocale(
+    `${url}/settings/entries?query=(${query})`,
+    store,
+    tenant
+  );
+};
+
+/**
+ * Applies locale settings by loading translations and dispatching actions to update timezone and currency.
+ *
+ * @param {string} [locale] - The locale identifier used to load translations. If provided, it triggers loading translations.
+ * @param {string} [timezone] - The timezone setting to apply. Dispatches an action to update the store if provided.
+ * @param {string} [currency] - The currency setting to apply. Dispatches an action to update the store if provided.
+ * @param {Object} store - The store object used to dispatch actions for updating timezone and currency.
+ */
+const applyLocaleSettings = (locale, timezone, currency, store) => {
+  if (locale) {
+    loadTranslations(store, locale);
+  }
+
+  if (timezone) store.dispatch(setTimezone(timezone));
+  if (currency) store.dispatch(setCurrency(currency));
+};
+
+/**
+ * Generates a full locale string by combining a language-region and a numbering system
+ * with the Unicode extension key '-u-nu-' (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/Locale/numberingSystem).
+ * If no language-region is provided, the function returns null.
+ *
+ * @param {string} [languageRegion] - A locale string, such as "en-US". If omitted, the value is obtained from document.documentElement.lang.
+ * @param {string} [numberingSystem] - A numbering system, such as "latn", to append to the locale.
+ * @returns {string|null} The constructed locale string combining the language-region and the numbering system, or null if languageRegion is not provided.
+ */
+export const getFullLocale = (languageRegion, numberingSystem) => {
+  if (!languageRegion) return null;
+
+  const unicodeExtensionKey = '-u-nu-';
+
+  return [languageRegion, numberingSystem].filter(Boolean).join(unicodeExtensionKey);
+};
+
+
+
+/**
+ * Processes and applies locale settings to the given store based on tenant and user locale data.
+ *
+ * The function retrieves locale-specific settings from both tenantLocaleData and userLocaleData. If the user settings indicate
+ * that tenant settings should be used (via the empty locale or locale equality), then the tenant's locale, numbering system,
+ * timezone, and currency values take precedence over the user's own values. It then computes a full locale string using the
+ * getFullLocale function and applies the final locale settings including the timezone and currency to the store using
+ * applyLocaleSettings.
+ *
+ * @param {Object} store - The store instance where locale settings are applied.
+ * @param {Object} tenantLocaleData - An object containing tenant's settings.
+ * @param {Object} userLocaleData - An object containing user's settings.
+ *
+ * @returns {void}
+ */
+const processLocaleSettings = (store, tenantLocaleData, userLocaleData) => {
+  const tenantLocaleSettings = tenantLocaleData?.items[0]?.value;
+  const userLocaleSettings = userLocaleData?.items[0]?.value;
+
+  const locale = userLocaleSettings?.locale || tenantLocaleSettings?.locale;
+  const numberingSystem = userLocaleSettings?.numberingSystem || tenantLocaleSettings?.numberingSystem;
+  const timezone = userLocaleSettings?.timezone || tenantLocaleSettings?.timezone;
+  const currency = userLocaleSettings?.currency || tenantLocaleSettings?.currency;
+
+  const fullLocale = getFullLocale(locale, numberingSystem);
+
+  applyLocaleSettings(fullLocale, timezone, currency, store);
+};
+
+// This function is used to support the deprecated mod-configuration API.
+// It is only used when the new mod-settings API returns empty settings.
+const getLocalesPromise = (url, store, tenant, userId) => {
+  return Promise.all([
+    getLocale(url, store, tenant),
+    getUserLocale(url, store, tenant, userId),
+  ]);
+};
+
+/**
  * loadResources
  * return a promise that retrieves the tenant's locale, user's locale,
- * plugins, and key-bindings from mod-configuration, as well as retreiving
+ * plugins, and key-bindings from mod-configuration and/or mod-settings, as well as retrieving
  * module information directly from okapi.
  *
  * @param {redux store} store
@@ -392,28 +564,68 @@ export function getBindings(okapiUrl, store, tenant) {
  * @param {string} userId user's UUID
  *
  * @returns {Promise}
+ *
+ * It builds an array of promises based on available user permissions.
+ * First, if the user can read mod-settings, it fetches locale information using two endpoints (one for tenant and one for the user)
+ * using Promise.allSettled. When these calls return, it checks if at least one response contains a valid setting.
+ * If so, it applies those settings; otherwise, if the user has mod-configuration reading permission, it fetches locale information
+ * using the mod-configuration API for both user and tenant settings and applies them.
+ * If the user doesn't have mod-settings permission but has mod-configuration permission, it fetches locale information using the mod-configuration API.
+ * Additionally, if the user has mod-configuration permission, it fetches plugins and bindings by calling getPlugins and getBindings.
+ * It also checks if the okapi instance is not in "withoutOkapi" mode, it fetches module information using discoverServices.
+ * Finally, it returns a flattened array of all the results from the promises.
  */
-function loadResources(store, tenant, userId) {
-  let promises = [];
+export async function loadResources(store, tenant, userId) {
+  const promises = [];
+  const okapiUrl = store.getState()?.okapi.url;
+  const hasReadConfigPerm = canReadConfig(store);
+
+  if (canReadSettings(store)) {
+    const localesPromise = Promise.allSettled([
+      getTenantLocale(okapiUrl, store, tenant),
+      getUserOwnLocale(okapiUrl, store, tenant, userId),
+    ])
+      .then(async (responses) => {
+        const [tenantLocaleData, userLocaleData] = await Promise.all(responses.map(res => res.value?.json?.()));
+        const hasSetting = tenantLocaleData?.items[0] || userLocaleData?.items[0];
+
+        if (hasSetting) {
+          processLocaleSettings(store, tenantLocaleData, userLocaleData);
+
+          return responses.map(res => res?.value);
+        }
+
+        if (hasReadConfigPerm) {
+          return getLocalesPromise(okapiUrl, store, tenant, userId);
+        }
+
+        return null;
+      });
+
+    promises.push(localesPromise);
+  } else if (hasReadConfigPerm) {
+    promises.push(getLocalesPromise(okapiUrl, store, tenant, userId));
+  }
 
   // tenant's locale, plugin, bindings, and user's locale are all stored
   // in mod-configuration so we can only retrieve them if the user has
   // read-permission for configuration entries.
-  if (canReadConfig(store)) {
+  if (hasReadConfigPerm) {
     const okapiObject = store.getState()?.okapi;
-    promises = [
-      getLocale(okapiObject.url, store, tenant),
-      getUserLocale(okapiObject.url, store, tenant, userId),
+
+    promises.push(
       getPlugins(okapiObject.url, store, tenant),
       getBindings(okapiObject.url, store, tenant),
-    ];
+    );
   }
 
   if (!store.getState().okapi.withoutOkapi) {
     promises.push(discoverServices(store));
   }
 
-  return Promise.all(promises);
+  const result = await Promise.all(promises);
+
+  return result.flat();
 }
 
 /**
@@ -490,6 +702,18 @@ export function spreadUserWithPerms(userWithPerms) {
  * @returns {Promise}
  */
 export const IS_LOGGING_OUT = '@folio/stripes/core::Logout';
+
+export const TENANT_LOCAL_STORAGE_KEY = 'tenant';
+
+export const storeLogoutTenant = (tenantId) => {
+  localStorage.setItem(TENANT_LOCAL_STORAGE_KEY, JSON.stringify({ tenantId }));
+};
+
+export const getLogoutTenant = () => {
+  const storedTenant = localStorage.getItem(TENANT_LOCAL_STORAGE_KEY);
+  return storedTenant ? JSON.parse(storedTenant) : undefined;
+};
+
 export async function logout(okapiUrl, store, queryClient) {
   // check the private-storage sentinel: if logout has already started
   // in this window, we don't want to start it again.
@@ -511,7 +735,7 @@ export async function logout(okapiUrl, store, queryClient) {
       switching affiliations updates store.okapi.tenant, leading to mismatched tenant names from the token.
       Use the tenant name stored during login to ensure they match.
         */
-      headers: getHeaders(getStoredTenant()?.tenantName || store.getState()?.okapi?.tenant),
+      headers: getHeaders(getLogoutTenant()?.tenantId || store.getState()?.okapi?.tenant),
     })
     :
     Promise.resolve();
@@ -526,6 +750,7 @@ export async function logout(okapiUrl, store, queryClient) {
       // BroadcastChannel to communicate with all tabs/windows
       localStorage.removeItem(SESSION_NAME);
       localStorage.removeItem(RTR_TIMEOUT_EVENT);
+      localStorage.removeItem(TENANT_LOCAL_STORAGE_KEY);
 
       store.dispatch(setIsAuthenticated(false));
       store.dispatch(clearCurrentUser());
@@ -779,18 +1004,26 @@ export function processOkapiSession(store, tenant, resp, ssoToken) {
 
 /**
  * validateUser
- * return a promise that fetches from .../_self.
- * if successful, dispatch the result to create a session
- * if not, clear the session and token.
+ * Data in localstorage has led us to believe a session is active. To confirm,
+ * fetch from .../_self and dispatch the results, allowing any changes to authz
+ * since that session data was persisted to take effect immediately.
+ *
+ * If the fetch succeeds, dispatch the result to update the session.
+ * Otherwise, call logout() to purge redux and storage because either:
+ *   1. the session data was corrupt. yikes!
+ *   2. the session data was valid but cookies were missing. yikes!
+ * Either way, our belief that a session is active has been proven wrong, so
+ * we want to clear out all relevant storage.
  *
  * @param {string} okapiUrl
  * @param {redux store} store
  * @param {string} tenant
  * @param {object} session
+ * @param {function} handleError error-handler function; returns a Promise that returns null
  *
  * @returns {Promise}
  */
-export function validateUser(okapiUrl, store, tenant, session) {
+export function validateUser(okapiUrl, store, tenant, session, handleError) {
   const { token, tenant: sessionTenant = tenant } = session;
   const usersPath = store.getState()?.okapi?.authnUrl ? 'users-keycloak' : 'bl-users';
   return fetch(`${okapiUrl}/${usersPath}/_self?expandPermissions=true`, {
@@ -831,15 +1064,14 @@ export function validateUser(okapiUrl, store, tenant, session) {
         return loadResources(store, sessionTenant, user.id);
       });
     } else {
-      store.dispatch(clearCurrentUser());
-      return resp.text((text) => {
+      return resp.text().then(text => {
         throw text;
       });
     }
   }).catch((error) => {
+    // log a warning, then call the error handler if we received one
     console.error(error); // eslint-disable-line no-console
-    store.dispatch(setServerDown());
-    return error;
+    return handleError ? handleError() : Promise.resolve();
   });
 }
 
@@ -858,7 +1090,8 @@ export function validateUser(okapiUrl, store, tenant, session) {
 export function checkOkapiSession(okapiUrl, store, tenant) {
   getOkapiSession()
     .then((sess) => {
-      return sess?.user?.id ? validateUser(okapiUrl, store, tenant, sess) : null;
+      const handleError = () => logout(okapiUrl, store);
+      return sess?.user?.id ? validateUser(okapiUrl, store, tenant, sess, handleError) : null;
     })
     .then((res) => {
       // check whether SSO is enabled if either

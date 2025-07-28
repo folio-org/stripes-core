@@ -146,7 +146,7 @@
     "placeholder.forgotPassword": "Merci de saisir un email ou un numéro de téléphone",
     "placeholder.forgotUsername": "Merci de saisir un email ou un numéro de téléphone",
     "title.cookieEnabled": "Cookies are required to login. Please enable cookies and try again.",
-    "logoutPending": "Log out in process...",
+    "logoutPending": "Déconnexion en cours…",
     "rtr.idleSession.modalHeader": "Your session will expire soon!",
     "rtr.idleSession.timeRemaining": "Time remaining",
     "rtr.idleSession.keepWorking": "Keep working",

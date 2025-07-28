@@ -10,6 +10,7 @@ import { ConnectContext } from '@folio/stripes-connect';
 import {
   requestLogin,
   requestSSOLogin,
+  storeLogoutTenant,
 } from '../../loginServices';
 import { setAuthError } from '../../okapiActions';
 import Login from './Login';
@@ -51,6 +52,10 @@ class LoginCtrl extends Component {
     if (matchPath(this.props.location.pathname, '/login')) {
       this.props.history.push('/');
     }
+
+    // need to store tenant id in localStorage for logout purposes
+    // `logout` function in loginServices.js provides details about this.
+    storeLogoutTenant(this.tenant);
   }
 
   handleSubmit = (data) => {

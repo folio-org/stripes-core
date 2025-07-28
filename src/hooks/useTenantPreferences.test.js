@@ -4,7 +4,7 @@ import {
   QueryClientProvider,
 } from 'react-query';
 
-import usePreferences from './usePreferences';
+import useTenantPreferences from './useTenantPreferences';
 
 const testValue = { pref: '22' };
 const response = {
@@ -14,7 +14,6 @@ const response = {
       scope: 'test.manage',
       key: 'testPref',
       value: { pref: '22' },
-      userId: 'test-user'
     },
   ],
   'resultInfo': {
@@ -74,26 +73,26 @@ const wrapper = ({ children }) => (
   </QueryClientProvider>
 );
 
-describe('usePreferences', () => {
+describe('useTenantPreferences', () => {
   let renderedHook;
 
   beforeAll(() => {
-    renderedHook = renderHook(() => usePreferences(), { wrapper });
+    renderedHook = renderHook(() => useTenantPreferences(), { wrapper });
   });
 
-  describe('getPreference', () => {
+  describe('getTenantPreference', () => {
     let pref;
     beforeEach(async () => {
-      pref = await renderedHook.result.current.getPreference({ scope: 'test.manage', key: 'testPref' });
+      pref = await act(() => renderedHook.result.current.getTenantPreference({ scope: 'test.manage', key: 'testPref' }));
     });
 
-    it('getPreference returns preference value', () => {
+    it('getTenantPreference returns preference value', () => {
       expect(pref).toEqual(testValue);
     });
 
-    describe('subsequent setPreference call ', () => {
+    describe('subsequent setTenantPreference call ', () => {
       beforeEach(async () => {
-        await renderedHook.result.current.setPreference({ scope: 'test.manage', key: 'testPref', value: { pref: 25 } });
+        await renderedHook.result.current.setTenantPreference({ scope: 'test.manage', key: 'testPref', value: { pref: 25 } });
       });
 
       it('uses "put" method', () => {
@@ -101,9 +100,9 @@ describe('usePreferences', () => {
       });
     });
 
-    describe('subsequent deletePreference call ', () => {
+    describe('subsequent deleteTenantPreference call ', () => {
       beforeEach(async () => {
-        await renderedHook.result.current.removePreference({ scope: 'test.manage', key: 'testPref' });
+        await renderedHook.result.current.removeTenantPreference({ scope: 'test.manage', key: 'testPref' });
       });
 
       it('uses "delete" method', () => {
@@ -115,21 +114,21 @@ describe('usePreferences', () => {
   describe('with no saved preferences', () => {
     let pref;
     beforeEach(async () => {
-      renderedHook = renderHook(() => usePreferences(), { wrapper });
+      renderedHook = renderHook(() => useTenantPreferences(), { wrapper });
       mockGet.mockImplementation(() => ({
         ok: true,
         json: () => emptyResponse,
       }));
-      pref = await act(() => renderedHook.result.current.getPreference({ scope: 'test.manage', key: 'testPref' }));
+      pref = await act(() => renderedHook.result.current.getTenantPreference({ scope: 'test.manage', key: 'testPref' }));
     });
 
-    it('getPreference returns undefined', async () => {
+    it('getTenantPreference returns undefined', async () => {
       await waitFor(() => expect(pref).toEqual(undefined));
     });
 
-    describe('subsequent setPreference call ', () => {
+    describe('subsequent setTenantPreference call ', () => {
       beforeEach(async () => {
-        await renderedHook.result.current.setPreference({ scope: 'test.manage', key: 'testPref', value: { pref: 25 } });
+        await renderedHook.result.current.setTenantPreference({ scope: 'test.manage', key: 'testPref', value: { pref: 25 } });
       });
 
       it('uses "post" method', async () => {
