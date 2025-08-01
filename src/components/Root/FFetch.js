@@ -55,6 +55,8 @@ import {
   isFolioApiRequest,
   isLogoutRequest,
   rtr,
+  storageGet,
+  storageSet
 } from './token-util';
 import {
   RTRError,
@@ -67,6 +69,7 @@ import {
   RTR_TIME_MARGIN_IN_MS,
   RTR_FLS_WARNING_EVENT,
   RTR_RT_EXPIRY_IF_UNKNOWN,
+  RTR_ROTATE_AFTER,
 } from './constants';
 import FXHR from './FXHR';
 
@@ -99,6 +102,17 @@ export class FFetch {
     global.XMLHttpRequest = FXHR(this);
   };
 
+  syncedRtrInterval = (rotationInterval) => {
+    this.logger.log('rtr', `... callback will be synced to other tabs at ${new Date(storageGet(RTR_ROTATE_AFTER))}`);
+    const instant = storageGet(RTR_ROTATE_AFTER);
+    return instant ? instant - Date.now() : this.newRtrInterval(rotationInterval);
+  };
+
+  newRtrInterval = (rotationInterval) => {
+    this.logger.log('rtr', `... callback will be scheduled anew at ${new Date(Date.now() + ((rotationInterval.accessTokenExpiration - Date.now()) * RTR_AT_TTL_FRACTION))}`);
+    return (rotationInterval.accessTokenExpiration - Date.now()) * RTR_AT_TTL_FRACTION;
+  }
+
   /**
    * scheduleRotation
    * Given a promise that resolves with timestamps for the AT's and RT's
@@ -109,10 +123,10 @@ export class FFetch {
    *
    * @param {Promise} rotationP
    */
-  scheduleRotation = (rotationP) => {
+  scheduleRotation = (rotationP, exactSchedule) => {
     rotationP.then((rotationInterval) => {
       // AT refresh interval: a large fraction of the actual AT TTL
-      const atInterval = (rotationInterval.accessTokenExpiration - Date.now()) * RTR_AT_TTL_FRACTION;
+      const atInterval = exactSchedule ? this.syncedRtrInterval(rotationInterval) : this.newRtrInterval(rotationInterval); // (rotationInterval.accessTokenExpiration - Date.now()) * RTR_AT_TTL_FRACTION;
 
       // RT timeout interval (session will end) and warning interval (warning that session will end)
       const rtTimeoutInterval = (rotationInterval.refreshTokenExpiration - Date.now());
@@ -127,6 +141,8 @@ export class FFetch {
           const { okapi } = this.store.getState();
           rtr(this.nativeFetch, this.logger, this.rotateCallback, okapi);
         }, atInterval)));
+        storageSet(RTR_ROTATE_AFTER, Date.now() + atInterval);
+        console.log(`rotate-after: ${new Date(Date.now() + atInterval)}`);
       } else {
         this.logger.log('rtr', 'rotation canceled; AT and RT will expire simultaneously');
       }
@@ -160,7 +176,7 @@ export class FFetch {
    * @param {object} res object shaped like { accessTokenExpiration, refreshTokenExpiration }
    *   where the values are ISO-8601 datestamps like YYYY-MM-DDTHH:mm:ssZ
    */
-  rotateCallback = (res) => {
+  rotateCallback = (res, exactSchedule = false) => {
     this.logger.log('rtr', 'rotation callback setup', res);
 
     // When starting a new session, the response from /bl-users/login-with-expiry
@@ -178,7 +194,7 @@ export class FFetch {
         refreshTokenExpiration: new Date(res.refreshTokenExpiration).getTime(),
       });
 
-      this.scheduleRotation(rotationPromise);
+      this.scheduleRotation(rotationPromise, exactSchedule);
     } else {
       const rotationPromise = getTokenExpiry().then((expiry) => {
         if (expiry?.atExpires && expiry?.atExpires >= Date.now()) {
@@ -201,7 +217,7 @@ export class FFetch {
         };
       });
 
-      this.scheduleRotation(rotationPromise);
+      this.scheduleRotation(rotationPromise, exactSchedule);
     }
   }
 

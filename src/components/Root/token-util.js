@@ -9,6 +9,8 @@ import {
   RTR_FLS_WARNING_TTL,
   RTR_IDLE_MODAL_TTL,
   RTR_IDLE_SESSION_TTL,
+  RTR_LOCK,
+  RTR_ROTATE_AFTER,
   RTR_SUCCESS_EVENT,
 } from './constants';
 
@@ -45,7 +47,7 @@ export const RTR_IS_ROTATING = '@folio/stripes/core::rtrIsRotating';
  *
  * Time in milliseconds
  */
-export const RTR_MAX_AGE = ms('20s');
+export const RTR_MAX_AGE = ms('10s');
 
 /**
  * resourceMapper
@@ -162,6 +164,35 @@ export const isFolioApiRequest = (resource, oUrl) => {
 };
 
 /**
+ * storageGet
+ * Retrieve `key` from localstorage, parse it as JSON, and return the
+ * corresponding value. Return null if `key` is not found or the value cannot
+ * be parsed.
+ * @param {string} key key to lookup an item in local storage
+ * @returns {*}
+ */
+export const storageGet = (key) => {
+  const val = localStorage.getItem(key);
+  try {
+    return val ? JSON.parse(val) : val;
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.warn(`could not parse value for ${key}`, val);
+    return null;
+  }
+};
+
+/**
+ * storageGet
+ * Given a key-value pair, serialize the value and store it in localstorage.
+ * @param {string} key key
+ * @param {*} val serializable value to store
+ */
+export const storageSet = (key, val) => {
+  localStorage.setItem(key, JSON.stringify(val));
+};
+
+/**
  * isRotating
  * Return true if a rotation-request is pending; false otherwise.
  * A pending rotation-request that is older than RTR_MAX_AGE is
@@ -177,6 +208,7 @@ export const isRotating = () => {
     }
     console.warn('rotation request is stale'); // eslint-disable-line no-console
     localStorage.removeItem(RTR_IS_ROTATING);
+    // TODO: send AbortSignal to lock to implement a timeout on its request
   }
 
   return false;
@@ -196,7 +228,6 @@ export const isRotating = () => {
  * rotation is finished. If rotation hasn't started, that's the rotation
  * promise itself (with some other business chained on). If rotation has
  * started, it's a promise that auto-resolves after RTR_MAX_AGEms have elapsed.
- * That
  *
  * The other business consists of:
  * 1 unsetting the isRotating flag in localstorage
@@ -209,71 +240,116 @@ export const isRotating = () => {
  * @param {object} okapi
  * @returns void
  */
-export const rtr = (fetchfx, logger, callback, okapi) => {
+export const rtr = async (fetchfx, logger, callback, okapi) => {
   logger.log('rtr', '** RTR ...');
+
+
+  const p = await navigator.locks.query();
+  if (p.held?.length || p.pending?.length) {
+    console.log('>>>>> RTR_LOCK THERE ARE ACTIVE LOCKS!', p)
+  }
+
+  if (!document.hasFocus()) {
+    console.log('sorry, no focus!!!!')
+    return new Promise(() => {
+      logger.log('rtr', '** cancelling; no focus;');
+      getTokenExpiry().then((te) => {
+        callback(te, true);
+        window.dispatchEvent(new Event(RTR_SUCCESS_EVENT));
+      });
+      // console.log('<<<<< RTR_LOCK RELEASED (STALLED)');
+    });
+  } else {
+    console.log('why yes I have focus!!!!')
+  }
+
+
+  // rotation is unnecessary because another tab recently refreshed.
+  // we should only rotate
+  // const rotateAfter = storageGet(RTR_ROTATE_AFTER);
+  // if (rotateAfter && (new Date(rotateAfter).getTime()) > (new Date().getTime())) {
+  //   return new Promise(() => {
+  //     logger.log('rtr', `** cancelling because another tab rotated first; rotation rescheduled until ${new Date(Number.parseInt(rotateAfter, 10))}`)
+  //     getTokenExpiry().then((te) => {
+  //       callback(te, true);
+  //       window.dispatchEvent(new Event(RTR_SUCCESS_EVENT));
+  //     });
+  //     // console.log('<<<<< RTR_LOCK RELEASED (STALLED)');
+  //   });
+  // }
 
   // rotation is already in progress, maybe in this window,
   // maybe in another: wait until RTR_MAX_AGE has elapsed,
   // which means the RTR request will either be finished or
   // stale, then continue
-  if (isRotating()) {
-    logger.log('rtr', '** already in progress; exiting');
-    return new Promise(res => setTimeout(res, RTR_MAX_AGE))
-      .then(() => {
-        if (!isRotating()) {
-          logger.log('rtr', '**     success after waiting!');
-          getTokenExpiry().then((te) => {
-            callback(te);
-            window.dispatchEvent(new Event(RTR_SUCCESS_EVENT));
-          });
+  // if (isRotating()) {
+  //   logger.log('rtr', '** already in progress; exiting');
+  //   return new Promise(res => setTimeout(res, RTR_MAX_AGE))
+  //     .then(() => {
+  //       if (!isRotating()) {
+  //         logger.log('rtr', '**     success after waiting!');
+  //         getTokenExpiry().then((te) => {
+  //           callback(te, true);
+  //           window.dispatchEvent(new Event(RTR_SUCCESS_EVENT));
+  //         });
+  //       } else {
+  //         // TODO: what if this
+  //       }
+  //       // console.log('<<<<< RTR_LOCK RELEASED (SIMULTANEOUS ROTATION)');
+  //     });
+  // }
+
+  return navigator.locks.request(RTR_LOCK, async () => {
+    console.log('>>>>> RTR_LOCK LOCKED');
+
+    logger.log('rtr', '**     rotation beginning...');
+
+    localStorage.setItem(RTR_IS_ROTATING, `${Date.now()}`);
+    return fetchfx.apply(global, [`${okapi.url}/authn/refresh`, {
+      headers: {
+        'content-type': 'application/json',
+        'x-okapi-tenant': okapi.tenant,
+      },
+      method: 'POST',
+      credentials: 'include',
+      mode: 'cors',
+    }])
+      .then(res => {
+        if (res.ok) {
+          return res.json();
         }
+        // rtr failure. return an error message if we got one.
+        return res.json()
+          .then(json => {
+            localStorage.removeItem(RTR_IS_ROTATING);
+            console.log('<<<<< RTR_LOCK RELEASED??? (RTR FAILURE; throwing)');
+            if (Array.isArray(json.errors) && json.errors[0]) {
+              throw new RTRError(`${json.errors[0].message} (${json.errors[0].code})`);
+            } else {
+              throw new RTRError('RTR response failure');
+            }
+          });
+      })
+      .then(json => {
+        logger.log('rtr', '**     success!');
+        callback(json);
+        const te = {
+          atExpires: new Date(json.accessTokenExpiration).getTime(),
+          rtExpires: new Date(json.refreshTokenExpiration).getTime(),
+        };
+        setTokenExpiry(te);
+        window.dispatchEvent(new Event(RTR_SUCCESS_EVENT));
+      })
+      .catch((err) => {
+        console.log('<<<<< RTR_LOCK RELEASED??? (ROTATION FAILURE; dispatching)');
+        console.error('RTR_ERROR_EVENT', err); // eslint-disable-line no-console
+        window.dispatchEvent(new Event(RTR_ERROR_EVENT));
+      })
+      .finally(() => {
+        localStorage.removeItem(RTR_IS_ROTATING);
+        console.log('<<<<< RTR_LOCK RELEASED (REGULAR ROTATION)');
       });
-  }
-
-  logger.log('rtr', '**     rotation beginning...');
-
-  localStorage.setItem(RTR_IS_ROTATING, `${Date.now()}`);
-  return fetchfx.apply(global, [`${okapi.url}/authn/refresh`, {
-    headers: {
-      'content-type': 'application/json',
-      'x-okapi-tenant': okapi.tenant,
-    },
-    method: 'POST',
-    credentials: 'include',
-    mode: 'cors',
-  }])
-    .then(res => {
-      if (res.ok) {
-        return res.json();
-      }
-      // rtr failure. return an error message if we got one.
-      return res.json()
-        .then(json => {
-          localStorage.removeItem(RTR_IS_ROTATING);
-          if (Array.isArray(json.errors) && json.errors[0]) {
-            throw new RTRError(`${json.errors[0].message} (${json.errors[0].code})`);
-          } else {
-            throw new RTRError('RTR response failure');
-          }
-        });
-    })
-    .then(json => {
-      logger.log('rtr', '**     success!');
-      callback(json);
-      const te = {
-        atExpires: new Date(json.accessTokenExpiration).getTime(),
-        rtExpires: new Date(json.refreshTokenExpiration).getTime(),
-      };
-      setTokenExpiry(te);
-      window.dispatchEvent(new Event(RTR_SUCCESS_EVENT));
-    })
-    .catch((err) => {
-      console.error('RTR_ERROR_EVENT', err); // eslint-disable-line no-console
-      window.dispatchEvent(new Event(RTR_ERROR_EVENT));
-    })
-    .finally(() => {
-      localStorage.removeItem(RTR_IS_ROTATING);
-    });
+  });
 };
 
 

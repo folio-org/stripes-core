@@ -15,6 +15,13 @@ export const RTR_FLS_WARNING_EVENT = '@folio/stripes/core::RTRFLSWarning';
 /** dispatched when the fixed-length session ends */
 export const RTR_FLS_TIMEOUT_EVENT = '@folio/stripes/core::RTRFLSTimeout';
 
+/** rotation must not happen before this value */
+export const RTR_ROTATE_AFTER = '@folio/stripes/core::rtrRotateAfter';
+
+/** rotation lock */
+export const RTR_LOCK = '@folio/stripes/core::rtrLock';
+
+
 /**
  * how long is the FLS warning visible?
  * When a fixed-length session expires, the session ends immediately and the
@@ -37,7 +44,7 @@ export const RTR_ACTIVITY_CHANNEL = '@folio/stripes/core::RTRActivityChannel';
  * (i.e. it isn't a user-visible feature), rotating early has no user-visible
  * impact.
  */
-export const RTR_AT_TTL_FRACTION = 0.8;
+export const RTR_AT_TTL_FRACTION = 0.05;
 
 /**
  * events that constitute "activity" and will prolong the session.
