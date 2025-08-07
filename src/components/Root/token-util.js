@@ -219,8 +219,13 @@ export const rtr = (fetchfx, logger, callback, okapi) => {
 
   // only continue current rotation if this window is the active one.
   if (activeWindowId && myId !== activeWindowId) {
-    logger.log('rtr', `**     skipping because this window (${myId}) is not the active window (${activeWindowId})`);
-    return Promise.resolve({});
+    return new Promise(() => {
+      logger.log('rtr', `**     skipping because this window (${myId}) is not the active window (${activeWindowId})`);
+      getTokenExpiry().then((te) => {
+        callback(te, true);
+        window.dispatchEvent(new Event(RTR_SUCCESS_EVENT));
+      });
+    });
   }
 
   // rotation is already in progress, maybe in this window,
