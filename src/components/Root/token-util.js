@@ -10,6 +10,8 @@ import {
   RTR_IDLE_MODAL_TTL,
   RTR_IDLE_SESSION_TTL,
   RTR_SUCCESS_EVENT,
+  RTR_DELAYED_NOT_FOCUSED,
+  SESSION_ACTIVE_WINDOW_ID
 } from './constants';
 
 /** localstorage flag indicating whether an RTR request is already under way. */
@@ -212,6 +214,15 @@ export const isRotating = () => {
 export const rtr = (fetchfx, logger, callback, okapi) => {
   logger.log('rtr', '** RTR ...');
 
+  const myId = window.windowId;
+  const activeWindowId = sessionStorage.getItem(SESSION_ACTIVE_WINDOW_ID);
+
+  // only continue current rotation if this window is the active one.
+  if (activeWindowId && myId !== activeWindowId) {
+    logger.log('rtr', `**     skipping because this window (${myId}) is not the active window (${activeWindowId})`);
+    return Promise.resolve({});
+  }
+
   // rotation is already in progress, maybe in this window,
   // maybe in another: wait until RTR_MAX_AGE has elapsed,
   // which means the RTR request will either be finished or
@@ -275,6 +286,7 @@ export const rtr = (fetchfx, logger, callback, okapi) => {
       localStorage.removeItem(RTR_IS_ROTATING);
     });
 };
+
 
 
 

@@ -42,6 +42,7 @@
  */
 
 import ms from 'ms';
+import { v4 as uuidv4 } from 'uuid';
 import {
   setRtrTimeout,
   setRtrFlsTimeout,
@@ -67,8 +68,12 @@ import {
   RTR_TIME_MARGIN_IN_MS,
   RTR_FLS_WARNING_EVENT,
   RTR_RT_EXPIRY_IF_UNKNOWN,
+  SESSION_ACTIVE_WINDOW_ID,
+  RTR_ACTIVE_WINDOW_MSG
 } from './constants';
 import FXHR from './FXHR';
+
+
 
 const OKAPI_FETCH_OPTIONS = {
   credentials: 'include',
@@ -81,6 +86,10 @@ export class FFetch {
     this.store = store;
     this.rtrConfig = rtrConfig;
     this.okapi = okapi;
+    this.focusEventSet = false;
+    this.bc = new BroadcastChannel('active-window-id');
+    this.setWindowIdMessageEvent();
+    this.setDocumentFocusHandler();
   }
 
   /**
@@ -98,6 +107,58 @@ export class FFetch {
     this.NativeXHR = global.XMLHttpRequest;
     global.XMLHttpRequest = FXHR(this);
   };
+
+  /**
+   * onActiveWindowIdMessage
+   * Handles changes to the SESSION_ACTIVE_WINDOW_ID in localStorage.
+   * Changes are synced to sessionStorage, and this value is used to determine if token rotation
+   * should be performed in this window.
+   */
+  onActiveWindowIdMessage = ({ data }) => {
+    if (data?.type === RTR_ACTIVE_WINDOW_MSG) {
+      this.logger.log('rtr', `Message handler: Active window changed: ${data.activeWindow}`);
+      sessionStorage.setItem(SESSION_ACTIVE_WINDOW_ID, data.activeWindow);
+      // If the current window is not the active one, set focus handler
+      if (!document.hasFocus()) {
+        this.setDocumentFocusHandler();
+      }
+    }
+  }
+
+  /**
+   * setWindowIdMessageEvent
+   * Sets the window.windowId to a UUID if it doesn't already exist.
+   * Also sets up a storage event listener to handle changes to the
+   * SESSION_ACTIVE_WINDOW_ID in localStorage.
+   */
+  setWindowIdMessageEvent = () => {
+    window.windowId = window.windowId ? window.windowId : uuidv4();
+    this.bc.addEventListener('message', this.onActiveWindowIdMessage);
+  }
+
+  /**
+   * Document Focus Handler
+   * Check if we need to do a rotation request
+   * @return {void}
+   */
+  documentFocusHandler = () => {
+    this.logger.log('rtr', 'Focus handler - new window focused, broadcasting active window ID');
+    this.bc.postMessage({ type: RTR_ACTIVE_WINDOW_MSG, activeWindow: window.windowId });
+    sessionStorage.setItem(SESSION_ACTIVE_WINDOW_ID, window.windowId);
+    this.focusEventSet = false;
+  };
+
+  /**
+   * setDocumentFocusHandler
+   * Sets up a document-level focus handler that will check if RTR is needed
+   * and initiate it if the access token is expired.
+  */
+  setDocumentFocusHandler = () => {
+    if (!this.focusEventSet) {
+      this.focusEventSet = true;
+      window.addEventListener('focusin', this.documentFocusHandler, { once: true });
+    }
+  }
 
   /**
    * scheduleRotation

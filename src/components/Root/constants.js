@@ -4,6 +4,9 @@ export const RTR_SUCCESS_EVENT = '@folio/stripes/core::RTRSuccess';
 /** dispatched during RTR if RTR itself fails */
 export const RTR_ERROR_EVENT = '@folio/stripes/core::RTRError';
 
+/** dispatched if window isn't focused when RTR is attempted */
+export const RTR_DELAYED_NOT_FOCUSED = '@folio/stripes/core::RTRDelayedNotFocused';
+
 /**
  * dispatched if the session is idle (without activity) for too long
  */
@@ -93,3 +96,10 @@ export const RTR_RT_EXPIRY_IF_UNKNOWN = '10m';
  * this is a small amount of time to wait so the proper order can be ensured if they happen simultaneously.
  */
 export const RTR_TIME_MARGIN_IN_MS = 200;
+
+/**
+ * Used by RTR logic to determine the priority window - only windows with matching ID's can rotate.
+*/
+export const SESSION_ACTIVE_WINDOW_ID = '@folio/stripes/core::activeWindowId';
+
+export const RTR_ACTIVE_WINDOW_MSG = '@folio/stripes/core::activeWindowMessage';
