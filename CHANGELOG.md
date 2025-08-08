@@ -16,6 +16,7 @@
 * For OIDC login - store `tenant` and `clientId` in `redirect_uri` url parameter, instead of localStorage. Refs STCOR-972.
 * Disclose personal data disclosure (i.e. user data cached in storage). Refs STCOR-973.
 * Removed code that switches locale, numbering system etc to tenant settings when user doesn't have a locale preference. Refs STCOR-981.
+* Implement active window id/messaging for RTR functionality. The last window/tab the user interacted with will handle token rotation. Refs STCOR-978.
 
 ## [11.0.0](https://github.com/folio-org/stripes-core/tree/v11.0.0) (2025-02-24)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.2.0...v11.0.0)
