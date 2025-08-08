@@ -652,7 +652,7 @@ describe('FFetch class', () => {
     });
 
     it('sends a message when setActiveWindow is called', async () => {
-      const windowId = window.windowId;
+      const windowId = window.stripesRTRWindowId;
       testFfetch.documentFocusHandler();
       expect(mockBroadcastChannel.postMessage).toHaveBeenCalledWith({
         type: '@folio/stripes/core::activeWindowMessage',
