@@ -69,7 +69,8 @@ import {
   RTR_FLS_WARNING_EVENT,
   RTR_RT_EXPIRY_IF_UNKNOWN,
   SESSION_ACTIVE_WINDOW_ID,
-  RTR_ACTIVE_WINDOW_MSG
+  RTR_ACTIVE_WINDOW_MSG,
+  RTR_ACTIVE_WINDOW_MSG_CHANNEL
 } from './constants';
 import FXHR from './FXHR';
 
@@ -87,7 +88,7 @@ export class FFetch {
     this.rtrConfig = rtrConfig;
     this.okapi = okapi;
     this.focusEventSet = false;
-    this.bc = new BroadcastChannel('active-window-id');
+    this.bc = new BroadcastChannel(RTR_ACTIVE_WINDOW_MSG_CHANNEL);
     this.setWindowIdMessageEvent();
     this.setDocumentFocusHandler();
   }
@@ -110,15 +111,15 @@ export class FFetch {
 
   /**
    * onActiveWindowIdMessage
-   * Handles changes to the SESSION_ACTIVE_WINDOW_ID in localStorage.
-   * Changes are synced to sessionStorage, and this value is used to determine if token rotation
-   * should be performed in this window.
+   * Handles receiving messages from other windows via the BroadcastChannel.
+   * The broadcast windowId is stored in sessionStorage as SESSION_ACTIVE_WINDOW_ID.
+   * and used in the rtr function (token-utils) to determine if rotation should proceed.
    */
   onActiveWindowIdMessage = ({ data }) => {
     if (data?.type === RTR_ACTIVE_WINDOW_MSG) {
       this.logger.log('rtr', `Message handler: Active window changed: ${data.activeWindow}`);
       sessionStorage.setItem(SESSION_ACTIVE_WINDOW_ID, data.activeWindow);
-      // If the current window is not the active one, set focus handler
+      // If the current window is not the active one, set focus handler to catch focus when it returns.
       if (!document.hasFocus()) {
         this.setDocumentFocusHandler();
       }
@@ -128,8 +129,8 @@ export class FFetch {
   /**
    * setWindowIdMessageEvent
    * Sets the window.windowId to a UUID if it doesn't already exist.
-   * Also sets up a storage event listener to handle changes to the
-   * SESSION_ACTIVE_WINDOW_ID in localStorage.
+   * Also sets up a 'message' eventHandler to catch the current active windowId
+   * when it's broadcast from another window.
    */
   setWindowIdMessageEvent = () => {
     window.windowId = window.windowId ? window.windowId : uuidv4();
@@ -138,7 +139,9 @@ export class FFetch {
 
   /**
    * Document Focus Handler
-   * Check if we need to do a rotation request
+   * Posts a message to the BroadcastChannel with the current window's windowId.
+   * Sets the SESSION_ACTIVE_WINDOW_ID in sessionStorage to the current window's windowId.
+   * Sets the focusEventSet flag to false to allow setting a new focus handler.
    * @return {void}
    */
   documentFocusHandler = () => {
@@ -152,6 +155,8 @@ export class FFetch {
    * setDocumentFocusHandler
    * Sets up a document-level focus handler that will check if RTR is needed
    * and initiate it if the access token is expired.
+   * The 'once' setting ensures that the handler removes itself after the first focus event.
+   * To reduce chattiness, we only assign one of these handlers at a time, hence the `focusEventSet` flag.
   */
   setDocumentFocusHandler = () => {
     if (!this.focusEventSet) {

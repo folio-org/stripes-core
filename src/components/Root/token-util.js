@@ -214,13 +214,20 @@ export const isRotating = () => {
 export const rtr = (fetchfx, logger, callback, okapi) => {
   logger.log('rtr', '** RTR ...');
 
-  const myId = window.windowId;
+  /**
+   * Check the windowId against the active windowId stored in sessionStorage.
+   * If they don't match, this window is not the active one, so we skip the
+   * rotation request and return a promise that resolves
+   * with the current token expiry data. This is to prevent multiple windows
+   * from trying to rotate the token at the same time.
+   */
+  const thisWindowId = window.windowId;
   const activeWindowId = sessionStorage.getItem(SESSION_ACTIVE_WINDOW_ID);
 
-  // only continue current rotation if this window is the active one.
-  if (activeWindowId && myId !== activeWindowId) {
+  if (activeWindowId && thisWindowId !== activeWindowId) {
     return new Promise(() => {
-      logger.log('rtr', `**     skipping because this window (${myId}) is not the active window (${activeWindowId})`);
+      logger.log('rtr', `Skipping rotation because this window (${thisWindowId}) is not the active window (${activeWindowId})`);
+      // skip and schedule future rotations via the callback;
       getTokenExpiry().then((te) => {
         callback(te, true);
         window.dispatchEvent(new Event(RTR_SUCCESS_EVENT));

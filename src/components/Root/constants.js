@@ -102,4 +102,7 @@ export const RTR_TIME_MARGIN_IN_MS = 200;
 */
 export const SESSION_ACTIVE_WINDOW_ID = '@folio/stripes/core::activeWindowId';
 
+/** Message type for the BroadcastChannel to indicate the active window */
 export const RTR_ACTIVE_WINDOW_MSG = '@folio/stripes/core::activeWindowMessage';
+/** Message channel for the BroadcastChannel to indicate the active window */
+export const RTR_ACTIVE_WINDOW_MSG_CHANNEL = '@folio/stripes/core::activeWindowMessageChannel';
