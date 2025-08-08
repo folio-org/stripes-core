@@ -133,7 +133,7 @@ export class FFetch {
    * when it's broadcast from another window.
    */
   setWindowIdMessageEvent = () => {
-    window.windowId = window.windowId ? window.windowId : uuidv4();
+    window.stripesRTRWindowId = window.stripesRTRWindowId ? window.stripesRTRWindowId : uuidv4();
     this.bc.addEventListener('message', this.onActiveWindowIdMessage);
   }
 
@@ -146,8 +146,8 @@ export class FFetch {
    */
   documentFocusHandler = () => {
     this.logger.log('rtr', 'Focus handler - new window focused, broadcasting active window ID');
-    this.bc.postMessage({ type: RTR_ACTIVE_WINDOW_MSG, activeWindow: window.windowId });
-    sessionStorage.setItem(SESSION_ACTIVE_WINDOW_ID, window.windowId);
+    this.bc.postMessage({ type: RTR_ACTIVE_WINDOW_MSG, activeWindow: window.stripesRTRWindowId });
+    sessionStorage.setItem(SESSION_ACTIVE_WINDOW_ID, window.stripesRTRWindowId);
     this.focusEventSet = false;
   };
 

@@ -221,7 +221,7 @@ export const rtr = (fetchfx, logger, callback, okapi) => {
    * with the current token expiry data. This is to prevent multiple windows
    * from trying to rotate the token at the same time.
    */
-  const thisWindowId = window.windowId;
+  const thisWindowId = window.stripesRTRWindowId;
   const activeWindowId = sessionStorage.getItem(SESSION_ACTIVE_WINDOW_ID);
 
   if (activeWindowId && thisWindowId !== activeWindowId) {
