@@ -3,6 +3,7 @@
 /* eslint-disable no-unused-vars */
 
 import ms from 'ms';
+import '../../../test/jest/__mock__';
 
 import { getTokenExpiry } from '../../loginServices';
 import { FFetch } from './FFetch';
@@ -28,14 +29,27 @@ jest.mock('stripes-config', () => ({
     tenant: 'okapiTenant'
   }
 }),
-{ virtual: true });
+  { virtual: true });
 
 const log = jest.fn();
 
 const mockFetch = jest.fn();
 
+const mockBroadcastChannel = {
+  postMessage: jest.fn(),
+  onmessage: null,
+  close: jest.fn(),
+  addEventListener: jest.fn((event, callback) => {
+    if (event === 'message') {
+      mockBroadcastChannel.onmessage = callback;
+    }
+  }),
+  removeEventListener: jest.fn(),
+};
+
 describe('FFetch class', () => {
   beforeEach(() => {
+    global.BroadcastChannel = jest.fn(() => mockBroadcastChannel);
     global.fetch = mockFetch;
     getTokenExpiry.mockResolvedValue({
       atExpires: Date.now() + (10 * 60 * 1000),
@@ -50,7 +64,13 @@ describe('FFetch class', () => {
   describe('Calling a non-FOLIO API', () => {
     it('calls native fetch once', async () => {
       mockFetch.mockResolvedValueOnce('non-okapi-success');
-      const testFfetch = new FFetch({ logger: { log } });
+      const testFfetch = new FFetch({
+        logger: { log },
+        okapi: {
+          url: 'okapiUrl',
+          tenant: 'okapiTenant'
+        }
+      });
       testFfetch.replaceFetch();
       testFfetch.replaceXMLHttpRequest();
 
@@ -63,7 +83,13 @@ describe('FFetch class', () => {
   describe('Calling a FOLIO API fetch', () => {
     it('calls native fetch once', async () => {
       mockFetch.mockResolvedValueOnce('okapi-success');
-      const testFfetch = new FFetch({ logger: { log } });
+      const testFfetch = new FFetch({
+        logger: { log },
+        okapi: {
+          url: 'okapiUrl',
+          tenant: 'okapiTenant'
+        }
+      });
       testFfetch.replaceFetch();
       testFfetch.replaceXMLHttpRequest();
       const response = await global.fetch('okapiUrl/whatever', { testOption: 'test' });
@@ -91,6 +117,10 @@ describe('FFetch class', () => {
         logger: { log },
         store: {
           dispatch: jest.fn(),
+        },
+        okapi: {
+          url: 'okapiUrl',
+          tenant: 'okapiTenant'
         }
       });
       testFfetch.replaceFetch();
@@ -110,7 +140,13 @@ describe('FFetch class', () => {
   describe('logging out', () => {
     it('calls native fetch once to log out', async () => {
       mockFetch.mockResolvedValueOnce('logged out');
-      const testFfetch = new FFetch({ logger: { log } });
+      const testFfetch = new FFetch({
+        logger: { log },
+        okapi: {
+          url: 'okapiUrl',
+          tenant: 'okapiTenant'
+        }
+      });
       testFfetch.replaceFetch();
       testFfetch.replaceXMLHttpRequest();
 
@@ -124,7 +160,13 @@ describe('FFetch class', () => {
     it('fetch failure is silently trapped', async () => {
       mockFetch.mockRejectedValueOnce('logged out FAIL');
 
-      const testFfetch = new FFetch({ logger: { log } });
+      const testFfetch = new FFetch({
+        logger: { log },
+        okapi: {
+          url: 'okapiUrl',
+          tenant: 'okapiTenant'
+        }
+      });
       testFfetch.replaceFetch();
       testFfetch.replaceXMLHttpRequest();
 
@@ -143,7 +185,13 @@ describe('FFetch class', () => {
   describe('logging out', () => {
     it('Calling an okapi fetch with valid token...', async () => {
       mockFetch.mockResolvedValueOnce('okapi success');
-      const testFfetch = new FFetch({ logger: { log } });
+      const testFfetch = new FFetch({
+        logger: { log },
+        okapi: {
+          url: 'okapiUrl',
+          tenant: 'okapiTenant'
+        }
+      });
       testFfetch.replaceFetch();
       testFfetch.replaceXMLHttpRequest();
 
@@ -188,6 +236,10 @@ describe('FFetch class', () => {
         rtrConfig: {
           fixedLengthSessionWarningTTL: '1m',
         },
+        okapi: {
+          url: 'okapiUrl',
+          tenant: 'okapiTenant'
+        }
       });
       testFfetch.replaceFetch();
       testFfetch.replaceXMLHttpRequest();
@@ -244,6 +296,10 @@ describe('FFetch class', () => {
         rtrConfig: {
           fixedLengthSessionWarningTTL: '1m',
         },
+        okapi: {
+          url: 'okapiUrl',
+          tenant: 'okapiTenant'
+        }
       });
       testFfetch.replaceFetch();
       testFfetch.replaceXMLHttpRequest();
@@ -282,6 +338,10 @@ describe('FFetch class', () => {
         rtrConfig: {
           fixedLengthSessionWarningTTL: '1m',
         },
+        okapi: {
+          url: 'okapiUrl',
+          tenant: 'okapiTenant'
+        }
       });
       testFfetch.replaceFetch();
       testFfetch.replaceXMLHttpRequest();
@@ -317,6 +377,10 @@ describe('FFetch class', () => {
         logger: { log },
         store: {
           dispatch: jest.fn(),
+        },
+        okapi: {
+          url: 'okapiUrl',
+          tenant: 'okapiTenant'
         }
       });
       testFfetch.replaceFetch();
@@ -361,6 +425,10 @@ describe('FFetch class', () => {
         rtrConfig: {
           fixedLengthSessionWarningTTL: '1m',
         },
+        okapi: {
+          url: 'okapiUrl',
+          tenant: 'okapiTenant'
+        }
       });
       testFfetch.replaceFetch();
       testFfetch.replaceXMLHttpRequest();
@@ -389,7 +457,13 @@ describe('FFetch class', () => {
     it('returns the error', async () => {
       mockFetch.mockResolvedValue('success')
         .mockResolvedValueOnce('failure');
-      const testFfetch = new FFetch({ logger: { log } });
+      const testFfetch = new FFetch({
+        logger: { log },
+        okapi: {
+          url: 'okapiUrl',
+          tenant: 'okapiTenant'
+        }
+      });
       testFfetch.replaceFetch();
       testFfetch.replaceXMLHttpRequest();
 
@@ -411,7 +485,13 @@ describe('FFetch class', () => {
             },
           }
         ));
-      const testFfetch = new FFetch({ logger: { log } });
+      const testFfetch = new FFetch({
+        logger: { log },
+        okapi: {
+          url: 'okapiUrl',
+          tenant: 'okapiTenant'
+        }
+      });
       testFfetch.replaceFetch();
       testFfetch.replaceXMLHttpRequest();
 
@@ -435,7 +515,13 @@ describe('FFetch class', () => {
           }
         ))
         .mockRejectedValueOnce(new Error('token error message'));
-      const testFfetch = new FFetch({ logger: { log } });
+      const testFfetch = new FFetch({
+        logger: { log },
+        okapi: {
+          url: 'okapiUrl',
+          tenant: 'okapiTenant'
+        }
+      });
       testFfetch.replaceFetch();
       testFfetch.replaceXMLHttpRequest();
 
@@ -470,7 +556,13 @@ describe('FFetch class', () => {
             }
           }
         ));
-      const testFfetch = new FFetch({ logger: { log } });
+      const testFfetch = new FFetch({
+        logger: { log },
+        okapi: {
+          url: 'okapiUrl',
+          tenant: 'okapiTenant'
+        }
+      });
       testFfetch.replaceFetch();
       testFfetch.replaceXMLHttpRequest();
 
@@ -500,7 +592,13 @@ describe('FFetch class', () => {
             }
           }
         ));
-      const testFfetch = new FFetch({ logger: { log } });
+      const testFfetch = new FFetch({
+        logger: { log },
+        okapi: {
+          url: 'okapiUrl',
+          tenant: 'okapiTenant'
+        }
+      });
       testFfetch.replaceFetch();
       testFfetch.replaceXMLHttpRequest();
 
@@ -530,7 +628,13 @@ describe('FFetch class', () => {
             }
           }
         ));
-      const testFfetch = new FFetch({ logger: { log } });
+      const testFfetch = new FFetch({
+        logger: { log },
+        okapi: {
+          url: 'okapiUrl',
+          tenant: 'okapiTenant'
+        }
+      });
       testFfetch.replaceFetch();
       testFfetch.replaceXMLHttpRequest();
 
@@ -540,6 +644,37 @@ describe('FFetch class', () => {
         expect(e instanceof UnexpectedResourceError).toBeTrue;
         expect(mockFetch.mock.calls).toHaveLength(0);
       }
+    });
+  });
+
+  describe('active window messaging', () => {
+    let testFfetch;
+    beforeEach(() => {
+      testFfetch = new FFetch({
+        logger: { log },
+        okapi: {
+          url: 'okapiUrl',
+          tenant: 'okapiTenant'
+        }
+      });
+      testFfetch.replaceFetch();
+      testFfetch.replaceXMLHttpRequest();
+    });
+
+    it('sends a message when setActiveWindow is called', async () => {
+      const windowId = window.stripesRTRWindowId;
+      testFfetch.documentFocusHandler();
+      expect(mockBroadcastChannel.postMessage).toHaveBeenCalledWith({
+        type: '@folio/stripes/core::activeWindowMessage',
+        activeWindow: windowId,
+      });
+    });
+
+    it('handles messages from other windows', async () => {
+      const windowId = 'test-window-id';
+      mockBroadcastChannel.onmessage({ data: { type: '@folio/stripes/core::activeWindowMessage', activeWindow: windowId } });
+
+      expect(sessionStorage.getItem('@folio/stripes/core::activeWindowId')).toEqual(windowId);
     });
   });
 });
