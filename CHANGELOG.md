@@ -1,5 +1,9 @@
 # Change history for stripes-core
 
+## 11.0.9 IN PROGRESS
+
+* Implement active window id/messaging for RTR functionality. The last window/tab the user interacted with will handle token rotation. Refs STCOR-978.
+
 ## [11.0.8](https://github.com/folio-org/stripes-core/tree/v11.0.8) (2025-06-04)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v11.0.7...v11.0.8)
 

@@ -22,7 +22,7 @@ import { getQueryResourceKey, getCurrentModule } from '../../locationService';
 import Stripes from '../../Stripes';
 import RootWithIntl from '../../RootWithIntl';
 import SystemSkeleton from '../SystemSkeleton';
-import { configureRtr } from './token-util';
+import { configureRtr, documentFocusHandler } from './token-util';
 
 import './Root.css';
 
@@ -84,6 +84,7 @@ class Root extends Component {
     const locale = this.props.config.locale ?? 'en-US';
     // TODO: remove this after we load locale and translations at start from a public endpoint
     loadTranslations(store, locale, defaultTranslations);
+    document.addEventListener('focus', documentFocusHandler);
   }
 
   shouldComponentUpdate(nextProps) {
@@ -179,8 +180,8 @@ class Root extends Component {
                 currency={currency}
                 messages={translations}
                 textComponent={Fragment}
-                onError={config?.suppressIntlErrors ? () => {} : undefined}
-                onWarn={config?.suppressIntlWarnings ? () => {} : undefined}
+                onError={config?.suppressIntlErrors ? () => { } : undefined}
+                onWarn={config?.suppressIntlWarnings ? () => { } : undefined}
                 defaultRichTextElements={this.defaultRichTextElements}
               >
                 <RootWithIntl
