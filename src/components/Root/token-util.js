@@ -287,14 +287,15 @@ export const rtr = (fetchfx, logger, callback, okapi) => {
         rtExpires: new Date(json.refreshTokenExpiration).getTime(),
       };
       setTokenExpiry(te);
+      // Removing `RTR_IS_ROTATING` from local storage must be done before dispatching the `RTR_SUCCESS_EVENT`
+      // to correctly determine the `RTR_IS_ROTATING` state in the `rotationHandler` function.
+      localStorage.removeItem(RTR_IS_ROTATING);
       window.dispatchEvent(new Event(RTR_SUCCESS_EVENT));
     })
     .catch((err) => {
       console.error('RTR_ERROR_EVENT', err); // eslint-disable-line no-console
-      window.dispatchEvent(new Event(RTR_ERROR_EVENT));
-    })
-    .finally(() => {
       localStorage.removeItem(RTR_IS_ROTATING);
+      window.dispatchEvent(new Event(RTR_ERROR_EVENT));
     });
 };
 
