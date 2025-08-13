@@ -149,6 +149,14 @@ export class FFetch {
     this.bc.postMessage({ type: RTR_ACTIVE_WINDOW_MSG, activeWindow: window.stripesRTRWindowId });
     sessionStorage.setItem(SESSION_ACTIVE_WINDOW_ID, window.stripesRTRWindowId);
     this.focusEventSet = false;
+    // check if RTR is needed and initiate it if the access token is expired
+    getTokenExpiry().then((expiry) => {
+      if (expiry?.atExpires && expiry.atExpires < Date.now()) {
+        this.logger.log('rtr', 'Window focused - access token expired, initiating RTR');
+        const { okapi } = this.store.getState();
+        rtr(this.nativeFetch, this.logger, this.rotateCallback, okapi);
+      }
+    });
   };
 
   /**
