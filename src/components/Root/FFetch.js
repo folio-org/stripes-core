@@ -49,7 +49,7 @@ import {
   setRtrFlsWarningTimeout,
 } from '../../okapiActions';
 
-import { getTokenExpiry } from '../../loginServices';
+import { getTokenExpiry, SESSION_NAME } from '../../loginServices';
 import {
   getPromise,
   isAuthenticationRequest,
@@ -150,13 +150,16 @@ export class FFetch {
     sessionStorage.setItem(SESSION_ACTIVE_WINDOW_ID, window.stripesRTRWindowId);
     this.focusEventSet = false;
     // check if RTR is needed and initiate it if the access token is expired
-    getTokenExpiry().then((expiry) => {
-      if (expiry?.atExpires && expiry.atExpires < Date.now()) {
-        this.logger.log('rtr', 'Window focused - access token expired, initiating RTR');
+    const sessionString = localStorage.getItem(SESSION_NAME);
+    if (sessionString) {
+      const sess = JSON.parse(sessionString);
+      const atExpires = sess?.tokenExpiration?.atExpires;
+      if (atExpires && atExpires < Date.now()) {
+        this.logger.log('rtr', 'Focus handler - access token expired, initiating RTR');
         const { okapi } = this.store.getState();
         rtr(this.nativeFetch, this.logger, this.rotateCallback, okapi);
       }
-    });
+    }
   };
 
   /**
