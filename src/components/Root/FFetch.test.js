@@ -5,7 +5,8 @@
 import ms from 'ms';
 import '../../../test/jest/__mock__';
 
-import { getTokenExpiry } from '../../loginServices';
+import { getTokenExpiry, SESSION_NAME } from '../../loginServices';
+import * as TokenUtil from './token-util';
 import { FFetch } from './FFetch';
 import { RTRError, UnexpectedResourceError } from './Errors';
 import {
@@ -38,6 +39,7 @@ const mockBroadcastChannel = {
 };
 
 describe('FFetch class', () => {
+  let rtrSpy;
   beforeEach(() => {
     global.BroadcastChannel = jest.fn(() => mockBroadcastChannel);
     global.fetch = mockFetch;
@@ -45,6 +47,7 @@ describe('FFetch class', () => {
       atExpires: Date.now() + (10 * 60 * 1000),
       rtExpires: Date.now() + (10 * 60 * 1000),
     });
+    rtrSpy = jest.spyOn(TokenUtil, 'rtr');
   });
 
   afterEach(() => {
@@ -640,24 +643,49 @@ describe('FFetch class', () => {
   describe('active window messaging', () => {
     let testFfetch;
     beforeEach(() => {
+      const expiredSessionData = {
+        tokenExpiration: {
+          atExpires: Date.now() - (10 * 60 * 1000),
+          rtExpires: Date.now() - (10 * 60 * 1000),
+        }
+      };
+      localStorage.setItem(SESSION_NAME, JSON.stringify(expiredSessionData));
       testFfetch = new FFetch({
         logger: { log },
         okapi: {
           url: 'okapiUrl',
-          tenant: 'okapiTenant'
+          tenant: 'okapiTenant',
+        },
+        store: {
+          getState: () => ({
+            okapi: {}
+          })
         }
       });
       testFfetch.replaceFetch();
       testFfetch.replaceXMLHttpRequest();
     });
 
-    it('sends a message when setActiveWindow is called', async () => {
+    it('sends a message when setActiveWindow is called rotates if token expired', async () => {
       const windowId = window.stripesRTRWindowId;
       testFfetch.documentFocusHandler();
       expect(mockBroadcastChannel.postMessage).toHaveBeenCalledWith({
         type: '@folio/stripes/core::activeWindowMessage',
         activeWindow: windowId,
       });
+      expect(rtrSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('focusHandler does NOT rotate if token is still valid', async () => {
+      const activeSessionData = {
+        tokenExpiration: {
+          atExpires: Date.now() + (10 * 60 * 1000),
+          rtExpires: Date.now() + (10 * 60 * 1000),
+        }
+      };
+      localStorage.setItem(SESSION_NAME, JSON.stringify(activeSessionData));
+      testFfetch.documentFocusHandler();
+      expect(rtrSpy).toHaveBeenCalledTimes(0);
     });
 
     it('handles messages from other windows', async () => {

@@ -228,7 +228,7 @@ export const rtr = (fetchfx, logger, callback, okapi) => {
       logger.log('rtr', `Skipping rotation because this window (${thisWindowId}) is not the active window (${activeWindowId})`);
       // skip and schedule future rotations via the callback;
       getTokenExpiry().then((te) => {
-        callback(te, true);
+        callback(te);
         window.dispatchEvent(new Event(RTR_SUCCESS_EVENT));
       });
     });
