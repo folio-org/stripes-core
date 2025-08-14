@@ -5,7 +5,7 @@
 import ms from 'ms';
 import '../../../test/jest/__mock__';
 
-import { getTokenExpiry, SESSION_NAME } from '../../loginServices';
+import { getTokenExpiry } from '../../loginServices';
 import * as TokenUtil from './token-util';
 import { FFetch } from './FFetch';
 import { RTRError, UnexpectedResourceError } from './Errors';
@@ -39,7 +39,6 @@ const mockBroadcastChannel = {
 };
 
 describe('FFetch class', () => {
-  let rtrSpy;
   beforeEach(() => {
     global.BroadcastChannel = jest.fn(() => mockBroadcastChannel);
     global.fetch = mockFetch;
@@ -47,7 +46,6 @@ describe('FFetch class', () => {
       atExpires: Date.now() + (10 * 60 * 1000),
       rtExpires: Date.now() + (10 * 60 * 1000),
     });
-    rtrSpy = jest.spyOn(TokenUtil, 'rtr');
   });
 
   afterEach(() => {
@@ -642,14 +640,14 @@ describe('FFetch class', () => {
 
   describe('active window messaging', () => {
     let testFfetch;
+    let rtrSpy;
     beforeEach(() => {
-      const expiredSessionData = {
-        tokenExpiration: {
-          atExpires: Date.now() - (10 * 60 * 1000),
-          rtExpires: Date.now() - (10 * 60 * 1000),
-        }
-      };
-      localStorage.setItem(SESSION_NAME, JSON.stringify(expiredSessionData));
+      getTokenExpiry.mockResolvedValue({
+        atExpires: Date.now() - (10 * 60 * 1000),
+        rtExpires: Date.now() - (10 * 60 * 1000),
+      });
+      rtrSpy = jest.spyOn(TokenUtil, 'rtr');
+      rtrSpy.mockImplementation(() => Promise.resolve());
       testFfetch = new FFetch({
         logger: { log },
         okapi: {
@@ -667,6 +665,10 @@ describe('FFetch class', () => {
     });
 
     it('sends a message when setActiveWindow is called rotates if token expired', async () => {
+      getTokenExpiry.mockResolvedValue({
+        atExpires: Date.now() - (10 * 60 * 1000),
+        rtExpires: Date.now() - (10 * 60 * 1000),
+      });
       const windowId = window.stripesRTRWindowId;
       testFfetch.documentFocusHandler();
       expect(mockBroadcastChannel.postMessage).toHaveBeenCalledWith({
@@ -677,13 +679,10 @@ describe('FFetch class', () => {
     });
 
     it('focusHandler does NOT rotate if token is still valid', async () => {
-      const activeSessionData = {
-        tokenExpiration: {
-          atExpires: Date.now() + (10 * 60 * 1000),
-          rtExpires: Date.now() + (10 * 60 * 1000),
-        }
-      };
-      localStorage.setItem(SESSION_NAME, JSON.stringify(activeSessionData));
+      getTokenExpiry.mockResolvedValue({
+        atExpires: Date.now() + (10 * 60 * 1000),
+        rtExpires: Date.now() + (10 * 60 * 1000),
+      });
       testFfetch.documentFocusHandler();
       expect(rtrSpy).toHaveBeenCalledTimes(0);
     });
