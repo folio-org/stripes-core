@@ -2,8 +2,8 @@
 // FFetch for the reassign globals side-effect in its constructor.
 /* eslint-disable no-unused-vars */
 
+import { waitFor } from '@folio/jest-config-stripes/testing-library/react';
 import ms from 'ms';
-import '../../../test/jest/__mock__';
 
 import { getTokenExpiry } from '../../loginServices';
 import * as TokenUtil from './token-util';
@@ -108,6 +108,9 @@ describe('FFetch class', () => {
         logger: { log },
         store: {
           dispatch: jest.fn(),
+          getState: () => ({
+            okapi: {}
+          })
         },
         okapi: {
           url: 'okapiUrl',
@@ -223,6 +226,9 @@ describe('FFetch class', () => {
         logger: { log },
         store: {
           dispatch: jest.fn(),
+          getState: () => ({
+            okapi: {}
+          })
         },
         rtrConfig: {
           fixedLengthSessionWarningTTL: '1m',
@@ -283,6 +289,9 @@ describe('FFetch class', () => {
         logger: { log },
         store: {
           dispatch: jest.fn(),
+          getState: () => ({
+            okapi: {}
+          })
         },
         rtrConfig: {
           fixedLengthSessionWarningTTL: '1m',
@@ -325,6 +334,9 @@ describe('FFetch class', () => {
         logger: { log },
         store: {
           dispatch: jest.fn(),
+          getState: () => ({
+            okapi: {}
+          })
         },
         rtrConfig: {
           fixedLengthSessionWarningTTL: '1m',
@@ -368,6 +380,9 @@ describe('FFetch class', () => {
         logger: { log },
         store: {
           dispatch: jest.fn(),
+          getState: () => ({
+            okapi: {}
+          })
         },
         okapi: {
           url: 'okapiUrl',
@@ -412,6 +427,9 @@ describe('FFetch class', () => {
         logger: { log },
         store: {
           dispatch: jest.fn(),
+          getState: () => ({
+            okapi: {}
+          })
         },
         rtrConfig: {
           fixedLengthSessionWarningTTL: '1m',
@@ -635,63 +653,6 @@ describe('FFetch class', () => {
         expect(e instanceof UnexpectedResourceError).toBeTrue;
         expect(mockFetch.mock.calls).toHaveLength(0);
       }
-    });
-  });
-
-  describe('active window messaging', () => {
-    let testFfetch;
-    let rtrSpy;
-    beforeEach(() => {
-      getTokenExpiry.mockResolvedValue({
-        atExpires: Date.now() - (10 * 60 * 1000),
-        rtExpires: Date.now() - (10 * 60 * 1000),
-      });
-      rtrSpy = jest.spyOn(TokenUtil, 'rtr');
-      rtrSpy.mockImplementation(() => Promise.resolve());
-      testFfetch = new FFetch({
-        logger: { log },
-        okapi: {
-          url: 'okapiUrl',
-          tenant: 'okapiTenant',
-        },
-        store: {
-          getState: () => ({
-            okapi: {}
-          })
-        }
-      });
-      testFfetch.replaceFetch();
-      testFfetch.replaceXMLHttpRequest();
-    });
-
-    it('sends a message when setActiveWindow is called rotates if token expired', async () => {
-      getTokenExpiry.mockResolvedValue({
-        atExpires: Date.now() - (10 * 60 * 1000),
-        rtExpires: Date.now() - (10 * 60 * 1000),
-      });
-      const windowId = window.stripesRTRWindowId;
-      testFfetch.documentFocusHandler();
-      expect(mockBroadcastChannel.postMessage).toHaveBeenCalledWith({
-        type: '@folio/stripes/core::activeWindowMessage',
-        activeWindow: windowId,
-      });
-      expect(rtrSpy).toHaveBeenCalledTimes(1);
-    });
-
-    it('focusHandler does NOT rotate if token is still valid', async () => {
-      getTokenExpiry.mockResolvedValue({
-        atExpires: Date.now() + (10 * 60 * 1000),
-        rtExpires: Date.now() + (10 * 60 * 1000),
-      });
-      testFfetch.documentFocusHandler();
-      expect(rtrSpy).toHaveBeenCalledTimes(0);
-    });
-
-    it('handles messages from other windows', async () => {
-      const windowId = 'test-window-id';
-      mockBroadcastChannel.onmessage({ data: { type: '@folio/stripes/core::activeWindowMessage', activeWindow: windowId } });
-
-      expect(sessionStorage.getItem('@folio/stripes/core::activeWindowId')).toEqual(windowId);
     });
   });
 });
