@@ -1,29 +1,26 @@
 # Change history for stripes-core
 
-## 10.2.8 [IN PROGRESS]
+## [10.2.8](https://github.com/folio-org/stripes-core/tree/v10.2.8) (2025-08-22)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.2.7...v10.2.8)
 
 - Implement active window id/messaging for RTR functionality. The last window/tab the user interacted with will handle token rotation. Refs STCOR-978.
 
 ## [10.2.7](https://github.com/folio-org/stripes-core/tree/v10.2.7) (2025-05-12)
-
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.2.6...v10.2.7)
 
 - When a session-restart request fails, trap errors and purge both redux and browser-storage. Refs STCOR-970.
 
 ## [10.2.6](https://github.com/folio-org/stripes-core/tree/v10.2.6) (2025-04-18)
-
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.2.5...v10.2.6)
 
 - Show user-friendly labels on ECS pre-login screen. Refs STCOR-899.
 
 ## [10.2.5](https://github.com/folio-org/stripes-core/tree/v10.2.5) (2025-01-16)
-
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.2.4...v10.2.5)
 
 - Fetch `/saml/check` when starting a new session, i.e. before discovery. Refs STCOR-933, STCOR-816.
 
 ## [10.2.4](https://github.com/folio-org/stripes-core/tree/v10.2.4) (2024-12-02)
-
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.2.3...v10.2.4)
 
 - Show a "you have logged out" message after logging out instead of redirecting to login. Refs STCOR-882.
@@ -34,26 +31,22 @@
 - On resuming session, spread session and `_self` together to preserve session values. Refs STCOR-912.
 
 ## [10.2.3](https://github.com/folio-org/stripes-core/tree/v10.2.3) (2024-11-15)
-
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.2.2...v10.2.3)
 
 - Provide `<IfAnyPermission>` and `stripes.hasAnyPermission()`. Refs STCOR-910.
 
 ## [10.2.2](https://github.com/folio-org/stripes-core/tree/v10.2.2) (2024-10-31)
-
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.2.1...v10.2.2)
 
 - Conditionally use `/users-keycloak/_self` endpoint when `users-keycloak` interface is present. Refs STCOR-835.
 - Send the stored central tenant name in the header on logout. Refs STCOR-900.
 
 ## [10.2.1](https://github.com/folio-org/stripes-core/tree/v10.2.1) (2024-10-30)
-
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.2.0...v10.2.1)
 
 - Wait longer before declaring a rotation request to be stale. Refs STCOR-895.
 
 ## [10.2.0](https://github.com/folio-org/stripes-core/tree/v10.2.0) (2024-10-11)
-
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.1.1...v10.2.0)
 
 - Utilize the `tenant` procured through the SSO login process. Refs STCOR-769.
@@ -90,13 +83,11 @@
 - Move session timeout banner to the bottom of the page. Refs STCOR-883.
 
 ## [10.1.1](https://github.com/folio-org/stripes-core/tree/v10.1.1) (2024-03-25)
-
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.1.0...v10.1.1)
 
 - Utilize the `tenant` procured through the SSO login process. Refs STCOR-769.
 
 ## [10.1.0](https://github.com/folio-org/stripes-core/tree/v10.1.0) (2024-03-12)
-
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.0.0...v10.1.0)
 
 - Provide optional tenant argument to `useOkapiKy` hook. Refs STCOR-747.
@@ -123,20 +114,17 @@
 - Remove `autoComplete` from `<ForgotPassword>`, `<ForgotUsername>` fields. Refs STCOR-742.
 
 ## [10.0.3](https://github.com/folio-org/stripes-core/tree/v10.0.3) (2023-11-10)
-
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.0.2...v10.0.3)
 
 - Revert "Use cookies and RTR" until further notice. Refs FOLIO-3627.
 - Ensure `<AppIcon>` is not cut off when app name is long. Refs STCOR-752.
 
 ## [10.0.2](https://github.com/folio-org/stripes-core/tree/v10.0.2) (2023-11-06)
-
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.0.1...v10.0.2)
 
 - Use cookies and RTR instead of directly handling the JWT. Refs STCOR-671, STCOR-754, STCOR-756, FOLIO-3627.
 
 ## [10.0.1](https://github.com/folio-org/stripes-core/tree/v10.0.1) (2023-10-25)
-
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.0.0...v10.0.1)
 
 - Export `validateUser`. Refs STCOR-749.
@@ -153,7 +141,6 @@
 - For the `/reset-password` route, allow token to be specified in the path or query arguments. Refs STCOR-820.
 
 ## [10.0.0](https://github.com/folio-org/stripes-core/tree/v10.0.0) (2023-10-11)
-
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v9.0.0...v10.0.0)
 
 - Close app-context menu when its wrapper is undefined, which it will be when switching among apps. Fixes STCOR-680.
