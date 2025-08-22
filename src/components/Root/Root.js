@@ -73,6 +73,7 @@ class Root extends Component {
         logger: this.props.logger,
         store,
         rtrConfig,
+        okapi
       });
       this.ffetch.replaceFetch();
       this.ffetch.replaceXMLHttpRequest();
@@ -180,8 +181,8 @@ class Root extends Component {
                 currency={currency}
                 messages={translations}
                 textComponent={Fragment}
-                onError={config?.suppressIntlErrors ? () => {} : undefined}
-                onWarn={config?.suppressIntlWarnings ? () => {} : undefined}
+                onError={config?.suppressIntlErrors ? () => { } : undefined}
+                onWarn={config?.suppressIntlWarnings ? () => { } : undefined}
                 defaultRichTextElements={this.defaultRichTextElements}
               >
                 <RootWithIntl
