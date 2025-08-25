@@ -30,6 +30,7 @@ class AppCtxMenuProvider extends React.Component {
   deregister() {
     this.setState({
       displayDropdownButton: false, // eslint-disable-line react/no-unused-state
+      open: false, // eslint-disable-line react/no-unused-state
     });
   }
 

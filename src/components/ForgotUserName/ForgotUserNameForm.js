@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Field, Form } from 'react-final-form';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 
 import {
   TextField,
@@ -22,6 +22,9 @@ class ForgotUserNameForm extends Component {
     isValid: PropTypes.bool.isRequired,
     onSubmit: PropTypes.func.isRequired,
     errors: PropTypes.arrayOf(PropTypes.object),
+    intl: PropTypes.shape({
+      formatMessage: PropTypes.func.isRequired,
+    }),
   };
 
   static defaultProps = {
@@ -32,7 +35,8 @@ class ForgotUserNameForm extends Component {
     const {
       onSubmit,
       isValid,
-      errors
+      errors,
+      intl: { formatMessage },
     } = this.props;
 
     return (
@@ -71,12 +75,12 @@ class ForgotUserNameForm extends Component {
                     type="text"
                     marginBottom0
                     fullWidth
-                    inputClass={formStyles.input}
+                    inputClass={formStyles.forgotUserInput}
                     validationEnabled={false}
                     hasClearIcon={false}
-                    autoComplete="on"
                     autoCapitalize="none"
                     autoFocus
+                    placeholder={formatMessage({ id: 'stripes-core.placeholder.forgotUsername' })}
                   />
                 </div>
                 <Button
@@ -84,7 +88,7 @@ class ForgotUserNameForm extends Component {
                   id="clickable-login"
                   name="continue-button"
                   type="submit"
-                  buttonClass={formStyles.submitButton}
+                  buttonClass={formStyles.forgotUserSubmitButton}
                   disabled={pristine}
                   fullWidth
                   marginBottom0
@@ -117,4 +121,4 @@ class ForgotUserNameForm extends Component {
   }
 }
 
-export default ForgotUserNameForm;
+export default injectIntl(ForgotUserNameForm);

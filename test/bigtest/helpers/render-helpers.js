@@ -1,6 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import { setupAppForTesting } from '@bigtest/react';
+import { setupAppForTesting } from './setupAppForTesting';
 
 import Harness from './Harness';
 
@@ -18,9 +17,6 @@ export async function mount(component) {
   await setupAppForTesting(ComponentHarness, {
     mountId: 'testing-root',
   });
-
-  // set the root to 100% height
-  document.getElementById('testing-root').style.height = '100%';
 }
 
 /**

@@ -1,6 +1,8 @@
 import React from 'react';
 
 jest.mock('@folio/stripes-components', () => ({
+  ...jest.requireActual('@folio/stripes-components'),
+  loadDayJSLocale: jest.fn(),
   Accordion: jest.fn(({ children, ...rest }) => (
     <span {...rest}>{children}</span>
   )),
@@ -12,13 +14,24 @@ jest.mock('@folio/stripes-components', () => ({
       <span>{props.children}</span>
     </span>
   )),
-  Button: jest.fn(({ children, onClick = jest.fn() }) => (
-    <button data-test-button type="button" onClick={onClick}>
-      <span>
-        {children}
-      </span>
-    </button>
-  )),
+  Button: jest.fn(({ children, to, onClick = jest.fn() }) => {
+    if (to) {
+      return (
+        <a href={to} role="button" data-test-button onClick={onClick}>
+          <span>
+            {children}
+          </span>
+        </a>
+      );
+    }
+    return (
+      <button data-test-button type="button" onClick={onClick}>
+        <span>
+          {children}
+        </span>
+      </button>
+    );
+  }),
   Callout: jest.fn(({ children, ...rest }) => (
     <span {...rest}>{children}</span>
   )),
@@ -34,6 +47,7 @@ jest.mock('@folio/stripes-components', () => ({
       </div>
     </div>
   )),
+  'datepicker-util': jest.fn(),
   Datepicker: jest.fn(({ ref, children, ...rest }) => (
     <div ref={ref} {...rest}>
       {children}
@@ -47,6 +61,7 @@ jest.mock('@folio/stripes-components', () => ({
     <span>{children}</span>
   )),
   Headline: jest.fn(({ children }) => <div>{ children }</div>),
+  HotKeys: jest.fn(({ children }) => <>{ children }</>),
   Icon: jest.fn((props) => (props && props.children ? props.children : <span />)),
   IconButton: jest.fn(({
     buttonProps,
@@ -67,7 +82,15 @@ jest.mock('@folio/stripes-components', () => ({
   Label: jest.fn(({ children, ...rest }) => (
     <span {...rest}>{children}</span>
   )),
+  List: jest.fn(({ items, itemFormatter = (item, i) => (<li key={i}>{item}</li>) }) => (
+    <ul>
+      [{items?.map((item, i) => itemFormatter(item, i))}]
+    </ul>
+  )),
   Loading: () => <div>Loading</div>,
+  LoadingView: () => <div>LoadingView</div>,
+  MessageBanner: jest.fn(({ show, children }) => { return show ? <>{children}</> : <></>; }),
+
   // oy, dismissible. we need to pull it out of props so it doesn't
   // get applied to the div as an attribute, which must have a string-value,
   // which will shame you in the console:
@@ -165,10 +188,10 @@ jest.mock('@folio/stripes-components', () => ({
     </fieldset>
   )),
   Row: jest.fn(({ children }) => <div className="row">{ children }</div>),
-  Select: jest.fn(({ children, dataOptions }) => (
+  Select: jest.fn(({ children, dataOptions, ...props }) => (
     <div>
-      <select>
-        {dataOptions.forEach((option, i) => (
+      <select {...props}>
+        {dataOptions.map((option, i) => (
           <option
             value={option.value}
             key={option.id || `option-${i}`}

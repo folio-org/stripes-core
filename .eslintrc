@@ -1,13 +1,8 @@
 {
-  "extends": "@folio/eslint-config-stripes",
-  "parser": "@babel/eslint-parser",
-  "rules": {
-    "global-require": "off",
-    "import/no-cycle": [ 2, { "maxDepth": 1 } ],
-    "import/no-dynamic-require": "off",
-    "import/no-extraneous-dependencies": "off",
-    "prefer-object-spread": "off"
+  "env": {
+    "jest": true
   },
+  "extends": "@folio/eslint-config-stripes",
   "overrides": [
     {
       "files": [ "src/**/tests/*", "test/**/*", "*test.js" ],
@@ -21,7 +16,24 @@
       }
     }
   ],
-  "env": {
-    "jest/globals": true
+  "parser": "@babel/eslint-parser",
+  "rules": {
+    "global-require": "off",
+    "import/no-cycle": [ 2, { "maxDepth": 1 } ],
+    "import/no-dynamic-require": "off",
+    "import/no-extraneous-dependencies": "off",
+    "prefer-object-spread": "off"
+  },
+  "settings": {
+    "import/resolver": {
+      "alias": {
+        "map": [
+          ["__mock__", "./test/jest/__mock__"],
+          ["fixtures", "./test/jest/fixtures"],
+          ["helpers", "./test/jest/helpers"]
+        ]
+      }
+    }
   }
 }
+

@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 
 import { Button } from '@folio/stripes-components';
-import styles from '../CreateResetPassword/CreateResetPassword.css';
+import styles from '../Login/Login.css';
 
 const propTypes = {
   handleSSOLogin: PropTypes.func.isRequired,
@@ -19,7 +19,7 @@ function SSOLogin(props) {
         data-test-sso-login-button
         buttonStyle="primary"
         type="button"
-        buttonClass={styles.submitButton}
+        buttonClass={styles.loginSubmitButton}
         fullWidth
         onClick={handleSSOLogin}
       >

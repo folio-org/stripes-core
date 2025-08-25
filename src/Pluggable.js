@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { modules } from 'stripes-config';
 import { withStripes } from './StripesContext';
 import { ModuleHierarchyProvider } from './components';
-import { LoadingView } from '@folio/stripes-components';
+import { Loading } from '@folio/stripes-components';
 
 const Pluggable = (props) => {
   const plugins = modules.plugin || [];
@@ -28,17 +28,19 @@ const Pluggable = (props) => {
         cached.push({
           Child,
           plugin: best.module
-        })
+        });
       }
     }
 
     return cached;
+    // props.stripes is not stable on each re-render, which causes an infinite trigger
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [plugins]);
 
   if (cachedPlugins.length) {
     return cachedPlugins.map(({ plugin, Child }) => (
-      <ModuleHierarchyProvider module={plugin}>
-        <Suspense fallback={<LoadingView />}>
+      <ModuleHierarchyProvider module={plugin} key={plugin}>
+        <Suspense fallback={<Loading />}>
           <Child {...props} actAs="plugin" />
         </Suspense>
       </ModuleHierarchyProvider>
@@ -51,7 +53,7 @@ const Pluggable = (props) => {
     console.error(`<Pluggable type="${props.type}"> has ${props.children.length} children, can only return one`);
   }
   return (
-    <Suspense fallback={<LoadingView />}>
+    <Suspense fallback={<Loading />}>
       {props.children}
     </Suspense>
   );

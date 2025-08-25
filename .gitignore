@@ -8,8 +8,9 @@ npm-debug.log
 static
 README.html
 OVERVIEW.html
-yarn.lock
 yarn-error.log
 artifacts
 dist
 junit.xml
+.vscode/launch.json
+.idea

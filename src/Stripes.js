@@ -8,6 +8,7 @@ export const stripesShape = PropTypes.shape({
   clone: PropTypes.func.isRequired,
   hasInterface: PropTypes.func.isRequired,
   hasPerm: PropTypes.func.isRequired,
+  hasAnyPerm: PropTypes.func.isRequired,
 
   // Properties passed into the constructor by the caller
   actionNames: PropTypes.arrayOf(
@@ -23,6 +24,7 @@ export const stripesShape = PropTypes.shape({
     logTimestamp: PropTypes.bool,
     showHomeLink: PropTypes.bool,
     showPerms: PropTypes.bool,
+    tenantOptions: PropTypes.object,
   }).isRequired,
   connect: PropTypes.func.isRequired,
   currency: PropTypes.string,
@@ -50,6 +52,7 @@ export const stripesShape = PropTypes.shape({
     okapiReady: PropTypes.bool,
     tenant: PropTypes.string.isRequired,
     token: PropTypes.string,
+    isAuthenticated: PropTypes.bool,
     translations: PropTypes.object,
     url: PropTypes.string.isRequired,
     withoutOkapi: PropTypes.bool,
@@ -57,6 +60,7 @@ export const stripesShape = PropTypes.shape({
   plugins: PropTypes.object,
   setBindings: PropTypes.func.isRequired,
   setCurrency: PropTypes.func.isRequired,
+  setIsAuthenticated: PropTypes.func.isRequired,
   setLocale: PropTypes.func.isRequired,
   setSinglePlugin: PropTypes.func.isRequired,
   setTimezone: PropTypes.func.isRequired,
@@ -88,6 +92,12 @@ class Stripes {
     Object.assign(this, properties);
   }
 
+  /**
+   * hasPerm
+   * Return true if user has every permission on the given list; false otherwise.
+   * @param {string} perm comma-separated list of permissions
+   * @returns boolean
+   */
   hasPerm(perm) {
     const logger = this.logger;
     if (this.config && this.config.hasAllPerms) {
@@ -101,6 +111,28 @@ class Stripes {
 
     const ok = _.every(perm.split(','), p => !!this.user.perms[p]);
     logger.log('perm', `checking perm '${perm}': `, ok);
+    return ok;
+  }
+
+  /**
+   * hasAnyPerm
+   * Return true if user has any permission on the given list; false otherwise.
+   * @param {string} perm comma-separated list of permissions
+   * @returns boolean
+   */
+  hasAnyPerm(perm) {
+    const logger = this.logger;
+    if (this.config && this.config.hasAllPerms) {
+      logger.log('perm', `assuming perm '${perm}': hasAllPerms is true`);
+      return true;
+    }
+    if (!this.user.perms) {
+      logger.log('perm', `not checking perm '${perm}': no user permissions yet`);
+      return undefined;
+    }
+
+    const ok = _.some(perm.split(','), p => !!this.user.perms[p]);
+    logger.log('perm', `checking any perm '${perm}': `, ok);
     return ok;
   }
 

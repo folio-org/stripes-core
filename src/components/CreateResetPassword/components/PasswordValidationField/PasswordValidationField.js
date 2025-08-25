@@ -20,7 +20,7 @@ class PasswordValidationField extends React.Component {
   static manifest = Object.freeze({
     validators: {
       type: 'okapi',
-      path: 'tenant/rules?query=(type==RegExp and state==Enabled)',
+      path: 'tenant/rules',
       throwErrors: false,
       fetch: false,
       accumulate: true,

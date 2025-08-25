@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import { connectFor } from '@folio/stripes-connect';
 
 import { StripesContext } from './StripesContext';
-import AddContext from './AddContext';
 import TitleManager from './components/TitleManager';
 import RouteErrorBoundary from './components/RouteErrorBoundary';
 import { getEventHandlers } from './handlerService';
@@ -43,11 +42,11 @@ const AppRoutes = ({ modules, stripes }) => {
         module,
         stripes,
         connect,
-      }
+      };
     }).filter(x => x);
-  }, [modules.app]);
+  }, [modules.app, stripes]);
 
-  return cachedModules.map(({ ModuleComponent, connect, module, name, moduleStripes, stripes, displayName }) => (
+  return cachedModules.map(({ ModuleComponent, connect, module, name, moduleStripes, stripes: propsStripes, displayName }) => (
     <Route
       path={module.route}
       key={module.route}
@@ -55,34 +54,32 @@ const AppRoutes = ({ modules, stripes }) => {
         const data = { displayName, name };
 
         // allow SELECT_MODULE handlers to intervene
-        const components = getEventHandlers(events.SELECT_MODULE, moduleStripes, modules.handler, data);
-        if (components.length) {
-          return components.map(HandlerComponent => (<HandlerComponent stripes={stripes} data={data} />));
+        const handlerComponents = getEventHandlers(events.SELECT_MODULE, moduleStripes, modules.handler, data);
+        if (handlerComponents.length) {
+          return handlerComponents.map(Handler => (<Handler stripes={propsStripes} data={data} />));
         }
 
         return (
           <StripesContext.Provider value={moduleStripes}>
-            <AddContext context={{ stripes: moduleStripes }}>
-              <ModuleHierarchyProvider module={module.module}>
-                <div id={`${name}-module-display`} data-module={module.module} data-version={module.version}>
-                  <RouteErrorBoundary
-                    escapeRoute={module.home}
-                    moduleName={displayName}
-                    stripes={moduleStripes}
-                  >
-                    <TitleManager page={displayName}>
-                      <ModuleComponent {...props} connect={connect} stripes={moduleStripes} actAs="app" />
-                    </TitleManager>
-                  </RouteErrorBoundary>
-                </div>
-              </ModuleHierarchyProvider>
-            </AddContext>
+            <ModuleHierarchyProvider module={module.module}>
+              <div id={`${name}-module-display`} data-module={module.module} data-version={module.version}>
+                <RouteErrorBoundary
+                  escapeRoute={module.home ?? module.route}
+                  moduleName={displayName}
+                  stripes={moduleStripes}
+                >
+                  <TitleManager page={displayName}>
+                    <ModuleComponent {...props} connect={connect} stripes={moduleStripes} actAs="app" />
+                  </TitleManager>
+                </RouteErrorBoundary>
+              </div>
+            </ModuleHierarchyProvider>
           </StripesContext.Provider>
         );
       }}
     />
   ));
-}
+};
 
 AppRoutes.propTypes = {
   modules: PropTypes.object,

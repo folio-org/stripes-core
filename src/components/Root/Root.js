@@ -6,32 +6,28 @@ import { createBrowserHistory } from 'history';
 import { IntlProvider } from 'react-intl';
 import queryString from 'query-string';
 import { QueryClientProvider } from 'react-query';
-import { SWRConfig } from 'swr';
 import { ApolloProvider } from '@apollo/client';
 
 import { ErrorBoundary } from '@folio/stripes-components';
 import { metadata, icons } from 'stripes-config';
 
-/* ConnectContext - formerly known as RootContext, now comes from stripes-connect, so stripes-connect
-* is providing the infrastructure for store connectivity to the system. This eliminates a circular
-* dependency between stripes-connect and stripes-core. STCON-76
-*/
 import { ConnectContext } from '@folio/stripes-connect';
 import initialReducers from '../../initialReducers';
 import enhanceReducer from '../../enhanceReducer';
 import createApolloClient from '../../createApolloClient';
 import createReactQueryClient from '../../createReactQueryClient';
-import createSwrOptions from '../../createSwrOptions';
-import { setSinglePlugin, setBindings, setOkapiToken, setTimezone, setCurrency } from '../../okapiActions';
+import { setSinglePlugin, setBindings, setIsAuthenticated, setOkapiToken, setTimezone, setCurrency, updateCurrentUser } from '../../okapiActions';
 import { loadTranslations, checkOkapiSession } from '../../loginServices';
 import { getQueryResourceKey, getCurrentModule } from '../../locationService';
 import Stripes from '../../Stripes';
 import RootWithIntl from '../../RootWithIntl';
 import SystemSkeleton from '../SystemSkeleton';
+import { configureRtr } from './token-util';
 
 import './Root.css';
 
 import { withModules } from '../Modules';
+import { FFetch } from './FFetch';
 
 if (!metadata) {
   // eslint-disable-next-line no-console
@@ -42,7 +38,7 @@ class Root extends Component {
   constructor(...args) {
     super(...args);
 
-    const { modules, history, okapi } = this.props;
+    const { modules, history, okapi, store } = this.props;
 
     this.reducers = { ...initialReducers };
     this.epics = {};
@@ -66,16 +62,26 @@ class Root extends Component {
 
     this.apolloClient = createApolloClient(okapi);
     this.reactQueryClient = createReactQueryClient();
-    this.swrOptions = createSwrOptions();
-  }
 
-  getChildContext() {
-    return { addReducer: this.addReducer, addEpic: this.addEpic };
+    // enhanced security mode:
+    // * configure fetch and xhr interceptors to conduct RTR
+    // * see SessionEventContainer for RTR handling
+    const rtrConfig = configureRtr(this.props.config.rtr);
+
+    this.ffetch = new FFetch({
+      logger: this.props.logger,
+      store,
+      rtrConfig,
+      okapi
+    });
+    this.ffetch.replaceFetch();
+    this.ffetch.replaceXMLHttpRequest();
   }
 
   componentDidMount() {
-    const { okapi, store, locale, defaultTranslations } = this.props;
+    const { okapi, store, defaultTranslations } = this.props;
     if (this.withOkapi) checkOkapiSession(okapi.url, store, okapi.tenant);
+    const locale = this.props.config.locale ?? 'en-US';
     // TODO: remove this after we load locale and translations at start from a public endpoint
     loadTranslations(store, locale, defaultTranslations);
   }
@@ -110,16 +116,25 @@ class Root extends Component {
   }
 
   render() {
-    const { logger, store, epics, config, okapi, actionNames, token, disableAuth, currentUser, currentPerms, locale, defaultTranslations, timezone, currency, plugins, bindings, discovery, translations, history, serverDown } = this.props;
-
+    const { logger, store, epics, config, okapi, actionNames, token, isAuthenticated, disableAuth, currentUser, currentPerms, locale, defaultTranslations, timezone, currency, plugins, bindings, discovery, translations, history, serverDown } = this.props;
     if (serverDown) {
-      return <div>Error: server is down.</div>;
+      // note: this isn't i18n'ed because we haven't rendered an IntlProvider yet.
+      return <div>Error: server is forbidden, unreachable or down. Clear the cookies? Use incognito mode? VPN issue?</div>;
     }
 
     if (!translations) {
       // We don't know the locale, so we use English as backup
       return (<SystemSkeleton />);
     }
+
+    // make sure RTR is configured
+    // gross: this overwrites whatever is currently stored at config.rtr
+    // gross: technically, this may be different than what is configured
+    //   in the constructor since the constructor only runs once but
+    //   render runs when props change. realistically, that'll never happen
+    //   since config values are read only once from a static file at build
+    //   time, but still, props are props so technically it's possible.
+    config.rtr = configureRtr(this.props.config.rtr);
 
     const stripes = new Stripes({
       logger,
@@ -129,6 +144,7 @@ class Root extends Component {
       okapi,
       withOkapi: this.withOkapi,
       setToken: (val) => { store.dispatch(setOkapiToken(val)); },
+      setIsAuthenticated: (val) => { store.dispatch(setIsAuthenticated(val)); },
       actionNames,
       locale,
       timezone,
@@ -138,6 +154,7 @@ class Root extends Component {
       setLocale: (localeValue) => { loadTranslations(store, localeValue, defaultTranslations); },
       setTimezone: (timezoneValue) => { store.dispatch(setTimezone(timezoneValue)); },
       setCurrency: (currencyValue) => { store.dispatch(setCurrency(currencyValue)); },
+      updateUser: (userValue) => { store.dispatch(updateCurrentUser(userValue)); },
       plugins: plugins || {},
       setSinglePlugin: (key, value) => { store.dispatch(setSinglePlugin(key, value)); },
       bindings,
@@ -155,25 +172,26 @@ class Root extends Component {
         <ConnectContext.Provider value={{ addReducer: this.addReducer, addEpic: this.addEpic, store }}>
           <ApolloProvider client={this.apolloClient}>
             <QueryClientProvider client={this.reactQueryClient}>
-              <SWRConfig value={this.swrOptions}>
-                <IntlProvider
-                  locale={locale}
-                  key={locale}
-                  timeZone={timezone}
-                  currency={currency}
-                  messages={translations}
-                  textComponent={Fragment}
-                  onError={config?.suppressIntlErrors ? () => {} : undefined}
-                  defaultRichTextElements={this.defaultRichTextElements}
-                >
-                  <RootWithIntl
-                    stripes={stripes}
-                    token={token}
-                    disableAuth={disableAuth}
-                    history={history}
-                  />
-                </IntlProvider>
-              </SWRConfig>
+              <IntlProvider
+                locale={locale}
+                key={locale}
+                timeZone={timezone}
+                currency={currency}
+                messages={translations}
+                textComponent={Fragment}
+                onError={config?.suppressIntlErrors ? () => { } : undefined}
+                onWarn={config?.suppressIntlWarnings ? () => { } : undefined}
+                defaultRichTextElements={this.defaultRichTextElements}
+              >
+                <RootWithIntl
+                  stripes={stripes}
+                  token={token}
+                  isAuthenticated={isAuthenticated}
+                  disableAuth={disableAuth}
+                  history={history}
+                  queryClient={this.reactQueryClient}
+                />
+              </IntlProvider>
             </QueryClientProvider>
           </ApolloProvider>
         </ConnectContext.Provider>
@@ -181,11 +199,6 @@ class Root extends Component {
     );
   }
 }
-
-Root.childContextTypes = {
-  addReducer: PropTypes.func,
-  addEpic: PropTypes.func,
-};
 
 Root.propTypes = {
   store: PropTypes.shape({
@@ -195,6 +208,7 @@ Root.propTypes = {
     replaceReducer: PropTypes.func.isRequired,
   }),
   token: PropTypes.string,
+  isAuthenticated: PropTypes.bool,
   disableAuth: PropTypes.bool.isRequired,
   logger: PropTypes.object.isRequired,
   currentPerms: PropTypes.object,
@@ -237,8 +251,6 @@ Root.propTypes = {
 
 Root.defaultProps = {
   history: createBrowserHistory(),
-  // TODO: remove after locale is accessible from a global config / public url
-  locale: 'en-US',
   timezone: 'UTC',
   currency: 'USD',
   okapiReady: false,
@@ -247,19 +259,20 @@ Root.defaultProps = {
 
 function mapStateToProps(state) {
   return {
-    token: state.okapi.token,
-    currentUser: state.okapi.currentUser,
-    currentPerms: state.okapi.currentPerms,
-    locale: state.okapi.locale,
-    timezone: state.okapi.timezone,
-    currency: state.okapi.currency,
-    translations: state.okapi.translations,
-    plugins: state.okapi.plugins,
     bindings: state.okapi.bindings,
+    currency: state.okapi.currency,
+    currentPerms: state.okapi.currentPerms,
+    currentUser: state.okapi.currentUser,
     discovery: state.discovery,
-    okapiReady: state.okapi.okapiReady,
-    serverDown: state.okapi.serverDown,
+    isAuthenticated: state.okapi.isAuthenticated,
+    locale: state.okapi.locale,
     okapi: state.okapi,
+    okapiReady: state.okapi.okapiReady,
+    plugins: state.okapi.plugins,
+    serverDown: state.okapi.serverDown,
+    timezone: state.okapi.timezone,
+    token: state.okapi.token,
+    translations: state.okapi.translations,
   };
 }
 

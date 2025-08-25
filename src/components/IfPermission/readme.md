@@ -1,6 +1,8 @@
 # IfPermission
 
-A wrapper component that facilitates conditional rendering based on the existence of a permission.
+A wrapper component that facilitates conditional rendering based on
+whether the currently authentiated user has _all_ the permissions
+named in the given comma-delimited string.
 
 Supports children in the form of React nodes or as a render-prop function.
 
@@ -28,5 +30,4 @@ Supports children in the form of React nodes or as a render-prop function.
 
 A single property is supported:
 
-* `perm`: a short string containing the name of the permission that is required.
-
+* `perm`: a comma-delimited string of permissions to check.

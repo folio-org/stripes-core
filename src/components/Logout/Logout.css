@@ -1,0 +1,53 @@
+@import "@folio/stripes-components/lib/variables.css";
+
+.wrapper {
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.container {
+  width: 100%;
+  max-width: 940px;
+  min-height: 330px;
+  margin: 12vh 2rem 0;
+}
+
+.linksWrapper,
+.authErrorsWrapper {
+  margin-top: 1rem;
+}
+
+.link {
+  display: block;
+  width: 100%;
+  font-size: var(--font-size-large);
+  font-weight: var(--text-weight-headline-basis);
+  margin: 0;
+}
+
+@media (--medium-up) {
+  .container {
+    min-height: initial;
+  }
+}
+
+@media (--large-up) {
+  .header {
+    font-size: var(--font-size-xx-large);
+  }
+
+  .toggleButtonWrapper {
+    justify-content: left;
+
+    & > button {
+      margin: 0 0 1rem 1rem;
+    }
+  }
+}
+
+@media (height <= 440px) {
+  .container {
+    min-height: 330px;
+  }
+}

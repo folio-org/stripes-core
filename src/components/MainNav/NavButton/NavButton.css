@@ -8,6 +8,24 @@
   --main-nav-button-color: #fff;
 }
 
+.navButton,
+.inner {
+  display: flex;
+  align-items: center;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.inner {
+  position: relative;
+  padding: var(--main-nav-button-padding) 0;
+}
+
+.navButton .inner::before {
+  left: calc(var(--main-nav-button-padding) * -1);
+  right: calc(var(--main-nav-button-padding) * -1);
+}
+
 .navButton {
   composes: interactionStylesControl from "~@folio/stripes-components/lib/sharedStyles/interactionStyles.css";  /* stylelint-disable-line */
   padding: 0 var(--gutter-static-one-third);
@@ -48,22 +66,14 @@ button.navButton {
   display: flex;
 
   & svg {
-    fill: currentColor;
+    fill: currentcolor;
   }
 }
 
 .icon,
 .label {
   position: relative;
-  z-index: 2;
-}
-
-.navButton,
-.inner {
-  display: flex;
-  align-items: center;
-  position: relative;
-  flex-shrink: 0;
+  z-index: 4;
 }
 
 .label {
@@ -78,16 +88,6 @@ button.navButton {
 
 [dir="rtl"] .label {
   margin-right: var(--main-nav-button-label-spacing);
-}
-
-.inner {
-  position: relative;
-  padding: var(--main-nav-button-padding) 0;
-}
-
-.navButton .inner::before {
-  left: calc(var(--main-nav-button-padding) * -1);
-  right: calc(var(--main-nav-button-padding) * -1);
 }
 
 /**
@@ -105,7 +105,7 @@ button.navButton {
  * AppIcon
  */
 .appIcon > span::after {
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 0 0 1px rgba(255 255 255 / 10%);
 }
 
 /**

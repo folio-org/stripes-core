@@ -18,7 +18,7 @@ h1.frontTitle {
   line-height: 125%;
 }
 
-@media screen and (max-width: 900px) {
+@media screen and (width <= 900px) {
   h1.frontTitle {
     font-size: var(--font-size-large);
   }

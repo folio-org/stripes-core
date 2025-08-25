@@ -42,11 +42,8 @@
   &::after {
     content: "";
     position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.2);
+    inset: 0;
+    box-shadow: inset 0 0 0 1px rgba(0 0 0 / 20%);
     border-radius: 25%;
   }
 
@@ -72,16 +69,28 @@
 /**
  * Sizes
  */
+.appIcon.large {
+  min-width: 48px;
+}
+
 .large .icon {
   height: 48px;
   min-width: 48px;
   width: 48px;
 }
 
+.appIcon.medium {
+  min-width: 24px;
+}
+
 .medium .icon {
   width: 24px;
   min-width: 24px;
   height: 24px;
+}
+
+.appIcon.small {
+  min-width: 14px;
 }
 
 .small .icon {

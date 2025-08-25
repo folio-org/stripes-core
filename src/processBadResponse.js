@@ -25,6 +25,7 @@ function getProcessedErrors(response, status, defaultClientError) {
       return [defaultClientError];
     case 422:
       return getLoginErrors(response);
+    case 404:  // Okapi's deployment of mod-users-bl hasn't completed
     case 500:
       return [defaultErrors.DEFAULT_LOGIN_SERVER_ERROR];
     default:
