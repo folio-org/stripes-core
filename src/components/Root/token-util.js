@@ -10,6 +10,7 @@ import {
   RTR_IDLE_MODAL_TTL,
   RTR_IDLE_SESSION_TTL,
   RTR_SUCCESS_EVENT,
+  SESSION_ACTIVE_WINDOW_ID
 } from './constants';
 
 /** localstorage flag indicating whether an RTR request is already under way. */
@@ -212,6 +213,27 @@ export const isRotating = () => {
 export const rtr = (fetchfx, logger, callback, okapi) => {
   logger.log('rtr', '** RTR ...');
 
+  /**
+   * Check the windowId against the active windowId stored in sessionStorage.
+   * If they don't match, this window is not the active one, so we skip the
+   * rotation request and return a promise that resolves
+   * with the current token expiry data. This is to prevent multiple windows
+   * from trying to rotate the token at the same time.
+   */
+  const thisWindowId = window.stripesRTRWindowId;
+  const activeWindowId = sessionStorage.getItem(SESSION_ACTIVE_WINDOW_ID);
+
+  if (activeWindowId && thisWindowId !== activeWindowId) {
+    return new Promise(() => {
+      logger.log('rtr', `Skipping rotation because this window (${thisWindowId}) is not the active window (${activeWindowId})`);
+      // skip and schedule future rotations via the callback;
+      getTokenExpiry().then((te) => {
+        callback(te);
+        window.dispatchEvent(new Event(RTR_SUCCESS_EVENT));
+      });
+    });
+  }
+
   // rotation is already in progress, maybe in this window,
   // maybe in another: wait until RTR_MAX_AGE has elapsed,
   // which means the RTR request will either be finished or
@@ -275,6 +297,7 @@ export const rtr = (fetchfx, logger, callback, okapi) => {
       localStorage.removeItem(RTR_IS_ROTATING);
     });
 };
+
 
 
 

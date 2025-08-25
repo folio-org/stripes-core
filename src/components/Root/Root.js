@@ -179,8 +179,8 @@ class Root extends Component {
                 currency={currency}
                 messages={translations}
                 textComponent={Fragment}
-                onError={config?.suppressIntlErrors ? () => {} : undefined}
-                onWarn={config?.suppressIntlWarnings ? () => {} : undefined}
+                onError={config?.suppressIntlErrors ? () => { } : undefined}
+                onWarn={config?.suppressIntlWarnings ? () => { } : undefined}
                 defaultRichTextElements={this.defaultRichTextElements}
               >
                 <RootWithIntl
