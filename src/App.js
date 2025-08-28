@@ -57,6 +57,33 @@ export const isStorageEnabled = () => {
   return isEnabled;
 };
 
+export const getLoginTenant = (stripesOkapi, stripesConfig) => {
+  // derive from the URL
+  const urlParams = new URLSearchParams(window.location.search);
+  let tenant = urlParams.get('tenant');
+  let clientId = urlParams.get('client_id');
+  if (tenant && clientId) {
+    return { tenant, clientId };
+  }
+
+  // derive from stripes.config.js::config::tenantOptions
+  if (stripesConfig.tenantOptions && Object.keys(stripesConfig?.tenantOptions).length === 1) {
+    const key = Object.keys(stripesConfig.tenantOptions)[0];
+    tenant = stripesConfig.tenantOptions[key]?.name;
+    clientId = stripesConfig.tenantOptions[key]?.clientId;
+    if (tenant && clientId) {
+      return { tenant, clientId };
+    }
+  }
+
+  // default to stripes.config.js::okapi
+  return {
+    tenant: stripesOkapi?.tenant,
+    clientId: stripesOkapi?.clientId,
+    monkey: stripesOkapi?.monkey,
+  };
+};
+
 StrictWrapper.propTypes = {
   children: PropTypes.node.isRequired,
 };
@@ -71,10 +98,10 @@ export default class StripesCore extends Component {
     super(props);
 
     if (isStorageEnabled()) {
-      const parsedTenant = getTenantAndClientIdFromLoginURL();
+      const parsedTenant = getLoginTenant(okapiConfig, config);
 
       const okapi = (typeof okapiConfig === 'object' && Object.keys(okapiConfig).length > 0)
-        ? { ...okapiConfig, tenant: parsedTenant?.tenantName || okapiConfig.tenant, clientId: parsedTenant?.clientId || okapiConfig.clientId } : { withoutOkapi: true };
+        ? { ...okapiConfig, ...parsedTenant } : { withoutOkapi: true };
 
       const initialState = merge({}, { okapi }, props.initialState);
 

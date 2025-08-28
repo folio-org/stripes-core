@@ -136,15 +136,6 @@ export const getOIDCRedirectUri = (tenant, clientId) => {
   return encodeURIComponent(`${window.location.protocol}//${window.location.host}/oidc-landing?tenant=${tenant}&client_id=${clientId}`);
 };
 
-export const getTenantAndClientIdFromLoginURL = () => {
-  const urlParams = new URLSearchParams(window.location.search);
-
-  return {
-    tenantName: urlParams.get('tenant'),
-    clientId: urlParams.get('client_id'),
-  };
-};
-
 // export config values for storing user locale
 export const userLocaleConfig = {
   'configName': 'localeSettings',
