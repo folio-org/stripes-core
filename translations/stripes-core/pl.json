@@ -133,7 +133,7 @@
     "logoutKeepSso": "Wyloguj się z Folio, zachowaj sesję SSO",
     "mainnav.profileDropdown.locale": "Lokalne",
     "mainnav.profileDropdown.permissions": "Permissions",
-    "front.error.header": "404 Error",
+    "front.error.header": "Błąd 404",
     "errors.password.compromised.invalid": "The password must not be commonly-used, expected or compromised",
     "createResetPassword.ruleTemplate": "Must {description}",
     "front.error.general.message": "The requested URL {br}{url}{br} was not found on this server.",
@@ -159,8 +159,8 @@
     "tenantLibrary": "Tenant/Biblioteka",
     "errors.saml.missingToken": "Brak parametru zapytania <code>code</code>.",
     "rtr.fixedLengthSession.timeRemaining": "Twoja sesja wkrótce się zakończy! Pozostały czas:",
-    "logoutComplete": "You have logged out.",
-    "errors.oidc": "Error: server is forbidden, unreachable, or unavailable.",
+    "logoutComplete": "Zostałeś wylogowany.",
+    "errors.oidc": "Błąd: serwer jest zakazany, niedostępny lub nieosiągalny.",
     "title.logoutTimeout": "Wyloguj się z powodu braku aktywności",
     "help": "Pomoc"
 }
