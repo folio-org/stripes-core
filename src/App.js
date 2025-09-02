@@ -14,7 +14,7 @@ import css from './components/SessionEventContainer/style.css';
 
 import Root from './components/Root';
 import { eventsPortal } from './constants';
-import { getTenantAndClientIdFromLoginURL } from './loginServices';
+import { getLoginTenant } from './loginServices';
 
 const StrictWrapper = ({ children }) => {
   if (config.disableStrictMode) {
@@ -55,33 +55,6 @@ export const isStorageEnabled = () => {
   }
 
   return isEnabled;
-};
-
-export const getLoginTenant = (stripesOkapi, stripesConfig) => {
-  // derive from the URL
-  const urlParams = new URLSearchParams(window.location.search);
-  let tenant = urlParams.get('tenant');
-  let clientId = urlParams.get('client_id');
-  if (tenant && clientId) {
-    return { tenant, clientId };
-  }
-
-  // derive from stripes.config.js::config::tenantOptions
-  if (stripesConfig.tenantOptions && Object.keys(stripesConfig?.tenantOptions).length === 1) {
-    const key = Object.keys(stripesConfig.tenantOptions)[0];
-    tenant = stripesConfig.tenantOptions[key]?.name;
-    clientId = stripesConfig.tenantOptions[key]?.clientId;
-    if (tenant && clientId) {
-      return { tenant, clientId };
-    }
-  }
-
-  // default to stripes.config.js::okapi
-  return {
-    tenant: stripesOkapi?.tenant,
-    clientId: stripesOkapi?.clientId,
-    monkey: stripesOkapi?.monkey,
-  };
 };
 
 StrictWrapper.propTypes = {
