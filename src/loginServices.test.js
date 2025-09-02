@@ -30,6 +30,7 @@ import {
   loadResources,
   getOIDCRedirectUri,
   getStoredTenant,
+  getLoginTenant,
   getLogoutTenant,
 } from './loginServices';
 
@@ -117,7 +118,7 @@ describe('createOkapiSession', () => {
       getState: () => ({
         okapi: {
           currentPerms: [],
-          url:'okapiUrl'
+          url: 'okapiUrl'
         }
       }),
     };
@@ -629,7 +630,7 @@ describe('getLocale', () => {
     mockFetchSuccess({ configs: [{ value: JSON.stringify(value) }] });
     const store = {
       dispatch: jest.fn(),
-      getState: () => ({ okapi: { } }),
+      getState: () => ({ okapi: {} }),
     };
     await getLocale('url', store, 'tenant');
     expect(store.dispatch).toHaveBeenCalledWith(setTimezone(value.timezone));
@@ -644,7 +645,7 @@ describe('getUserLocale', () => {
     mockFetchSuccess({ configs: [{ value: JSON.stringify(value) }] });
     const store = {
       dispatch: jest.fn(),
-      getState: () => ({ okapi: { } }),
+      getState: () => ({ okapi: {} }),
     };
     await getUserLocale('url', store, 'tenant');
     expect(store.dispatch).toHaveBeenCalledWith(setTimezone(value.timezone));
@@ -662,7 +663,7 @@ describe('getPlugins', () => {
     mockFetchSuccess({ configs });
     const store = {
       dispatch: jest.fn(),
-      getState: () => ({ okapi: { } }),
+      getState: () => ({ okapi: {} }),
     };
     await getPlugins('url', store, 'tenant');
 
@@ -681,7 +682,7 @@ describe('getBindings', () => {
     mockFetchSuccess({ configs: [{ value: JSON.stringify(value) }] });
     const store = {
       dispatch: jest.fn(),
-      getState: () => ({ okapi: { } }),
+      getState: () => ({ okapi: {} }),
     };
     await getBindings('url', store, 'tenant');
     expect(store.dispatch).toHaveBeenCalledWith(setBindings(value));
@@ -740,6 +741,36 @@ describe('unauthorizedPath functions', () => {
       const value = 'monkey';
       setUnauthorizedPathToSession(value);
       expect(getUnauthorizedPathFromSession()).toBe(value);
+    });
+  });
+
+  describe('getLoginTenant', () => {
+    it('uses URL values when present', () => {
+      window.location.search = '?tenant=t&client_id=c';
+      const res = getLoginTenant(
+        { tenant: 'ot', clientId: 'oc' },
+        { tenantOptions: { to: { name: 'to', clientId: 'toc' } } },
+      );
+
+      expect(res).toMatchObject({ tenant: 't', clientId: 'c' });
+    });
+
+    it('uses stripes-config::config::tenantOptions', () => {
+      const stripesOkapi = { tenant: 't', clientId: 'c' };
+      const config = { tenantOptions: { to: { name: 'to', clientId: 'toc' } } };
+      const res = getLoginTenant(stripesOkapi, config);
+
+      expect(res).toMatchObject({
+        tenant: config.tenantOptions.to.name,
+        clientId: config.tenantOptions.to.clientId,
+      });
+    });
+
+    it('defaults to stripes-config::okapi values when all else fails', () => {
+      const stripesOkapi = { tenant: 't', clientId: 'c' };
+      const res = getLoginTenant(stripesOkapi, {});
+
+      expect(res).toMatchObject(stripesOkapi);
     });
   });
 
@@ -808,7 +839,7 @@ describe('unauthorizedPath functions', () => {
       jest.clearAllMocks();
     });
     it('should authenticate and create session when valid credentials provided', async () => {
-      mockFetchSuccess({ tenant:'tenant', originalTenantId:'originalTenantId', ok: true });
+      mockFetchSuccess({ tenant: 'tenant', originalTenantId: 'originalTenantId', ok: true });
       const mockStore = {
         getState: () => ({
           okapi: {},
