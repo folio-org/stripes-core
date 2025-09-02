@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from '@folio/jest-config-stripes/testing-library/react';
 
-import OIDCLanding from './OIDCLanding';
+import OIDCLanding, { exchangeOtp } from './OIDCLanding';
 
 jest.mock('react-router-dom', () => ({
   useLocation: () => ({
@@ -121,4 +121,49 @@ describe('OIDCLanding', () => {
 
     mockFetchCleanUp();
   });
+});
+
+describe('exchangeOtp', () => {
+  beforeEach(() => {
+    jest.resetAllMocks();
+  });
+
+  it('sets token and tenant data on success', async () => {
+    window.location.search = '?code=code&redirect-url=redirect-url';
+    window.dispatchEvent = jest.fn();
+    mockFetchSuccess({
+      accessTokenExpiration: '2024-05-23T09:47:17.000-04:00',
+      refreshTokenExpiration: '2024-05-23T10:07:17.000-04:00',
+    });
+
+    const setToken = jest.fn();
+    const setTenant = jest.fn();
+    exchangeOtp(setToken, setTenant);
+    await waitFor(() => {
+      expect(setToken).toHaveBeenCalled();
+    });
+    await waitFor(() => {
+      expect(setTenant).toHaveBeenCalled();
+    });
+    await waitFor(() => {
+      expect(window.dispatchEvent).toHaveBeenCalled();
+    });
+  });
+
+  it('logs an error on failure', async () => {
+    window.location.search = '?code=code&redirect-url=redirect-url';
+    console.error = jest.fn();
+    mockFetchError({
+      accessTokenExpiration: '2024-05-23T09:47:17.000-04:00',
+      refreshTokenExpiration: '2024-05-23T10:07:17.000-04:00',
+    });
+
+    const setToken = jest.fn();
+    const setTenant = jest.fn();
+    exchangeOtp(setToken, setTenant);
+    await waitFor(() => {
+      expect(console.error).toHaveBeenCalled();
+    });
+  });
+
 });

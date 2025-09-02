@@ -43,7 +43,7 @@ import css from './Front.css';
 const OTP_EXCHANGE_SUCCESS = '@folio/stripes/core::OTPExchangeSuccess';
 let otpError = null;
 
-const exchangeOtp = () => {
+export const exchangeOtp = (setToken, setTenant) => {
   otpError = null;
   const urlParams = new URLSearchParams(window.location.search);
   const otp = urlParams.get('code');
@@ -61,7 +61,7 @@ const exchangeOtp = () => {
         if (resp.ok) {
           return resp.json()
             .then((json) => {
-              return setTokenExpiry({
+              return setToken({
                 // if AT/RT values are missing in the response from _self,
                 // store near-future expiration values instead of the (missing)
                 // actual values. given that we arrived here, we know the request
@@ -75,7 +75,7 @@ const exchangeOtp = () => {
               // for login itself we're storing selected tenant and clientId in the url
               // but we still need to store tenantId in localStorage for logout purposes
               // `logout` function in loginServices.js provides details about this.
-              storeLogoutTenant(tenant);
+              setTenant(tenant);
 
               // emit OPT_EXCHANGE_SUCCESS just in case the component mounted
               // before OTP exchange completed. otherwise, the component would
@@ -98,7 +98,7 @@ const exchangeOtp = () => {
   }
 };
 
-exchangeOtp();
+exchangeOtp(setTokenExpiry, storeLogoutTenant);
 
 /**
  * OIDCLanding: un-authenticated route handler for /oidc-landing.
