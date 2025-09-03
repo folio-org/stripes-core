@@ -38,7 +38,7 @@ export {
 } from './src/components';
 
 /* Queries */
-export { useChunkedCQLFetch } from './src/queries';
+export { useChunkedCQLFetch, useChunkedIdTransformFetch } from './src/queries';
 export { getUserTenantsPermissions } from './src/queries';
 export { useSettings } from './src/queries';
 
