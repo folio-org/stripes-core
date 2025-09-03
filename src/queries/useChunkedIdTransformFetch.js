@@ -8,7 +8,7 @@ import {
 import { useQueries } from 'react-query';
 
 import { chunk } from 'lodash';
-import { useOkapiKy } from '@folio/stripes/core';
+import useOkapiKy from '../useOkapiKy';
 
 /* When fetching from a potentially large list of items,
  * make sure to chunk the request to avoid hitting limits.
