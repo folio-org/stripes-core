@@ -746,32 +746,6 @@ export const getLogoutTenant = () => {
   return storedTenant ? JSON.parse(storedTenant) : undefined;
 };
 
-export const getLoginTenant = (stripesOkapi, stripesConfig) => {
-  // derive from the URL
-  const urlParams = new URLSearchParams(window.location.search);
-  let tenant = urlParams.get('tenant');
-  let clientId = urlParams.get('client_id');
-  if (tenant && clientId) {
-    return { tenant, clientId };
-  }
-
-  // derive from stripes.config.js::config::tenantOptions
-  if (stripesConfig.tenantOptions && Object.keys(stripesConfig?.tenantOptions).length === 1) {
-    const key = Object.keys(stripesConfig.tenantOptions)[0];
-    tenant = stripesConfig.tenantOptions[key]?.name;
-    clientId = stripesConfig.tenantOptions[key]?.clientId;
-    if (tenant && clientId) {
-      return { tenant, clientId };
-    }
-  }
-
-  // default to stripes.config.js::okapi
-  return {
-    tenant: stripesOkapi?.tenant,
-    clientId: stripesOkapi?.clientId,
-  };
-};
-
 export async function logout(okapiUrl, store, queryClient) {
   // check the private-storage sentinel: if logout has already started
   // in this window, we don't want to start it again.
