@@ -4,6 +4,7 @@ import {
   createOkapiSession,
   getBindings,
   getLocale,
+  getLoginTenant,
   getPlugins,
   getOkapiSession,
   getTokenExpiry,
@@ -29,7 +30,6 @@ import {
   fetchOverriddenUserWithPerms,
   loadResources,
   getOIDCRedirectUri,
-  getStoredTenant,
   getLogoutTenant,
 } from './loginServices';
 
@@ -47,7 +47,7 @@ import {
   // checkSSO,
   setIsAuthenticated,
   setOkapiReady,
-  setServerDown,
+  // setServerDown,
   setSessionData,
   // setTokenExpiration,
   setLoginData,
@@ -110,7 +110,7 @@ describe('createOkapiSession', () => {
       getState: () => ({
         okapi: {
           currentPerms: [],
-          url:'okapiUrl'
+          url: 'okapiUrl'
         }
       }),
     };
@@ -622,7 +622,7 @@ describe('getLocale', () => {
     mockFetchSuccess({ configs: [{ value: JSON.stringify(value) }] });
     const store = {
       dispatch: jest.fn(),
-      getState: () => ({ okapi: { } }),
+      getState: () => ({ okapi: {} }),
     };
     await getLocale('url', store, 'tenant');
     expect(store.dispatch).toHaveBeenCalledWith(setTimezone(value.timezone));
@@ -637,7 +637,7 @@ describe('getUserLocale', () => {
     mockFetchSuccess({ configs: [{ value: JSON.stringify(value) }] });
     const store = {
       dispatch: jest.fn(),
-      getState: () => ({ okapi: { } }),
+      getState: () => ({ okapi: {} }),
     };
     await getUserLocale('url', store, 'tenant');
     expect(store.dispatch).toHaveBeenCalledWith(setTimezone(value.timezone));
@@ -655,7 +655,7 @@ describe('getPlugins', () => {
     mockFetchSuccess({ configs });
     const store = {
       dispatch: jest.fn(),
-      getState: () => ({ okapi: { } }),
+      getState: () => ({ okapi: {} }),
     };
     await getPlugins('url', store, 'tenant');
 
@@ -674,7 +674,7 @@ describe('getBindings', () => {
     mockFetchSuccess({ configs: [{ value: JSON.stringify(value) }] });
     const store = {
       dispatch: jest.fn(),
-      getState: () => ({ okapi: { } }),
+      getState: () => ({ okapi: {} }),
     };
     await getBindings('url', store, 'tenant');
     expect(store.dispatch).toHaveBeenCalledWith(setBindings(value));
@@ -801,7 +801,7 @@ describe('unauthorizedPath functions', () => {
       jest.clearAllMocks();
     });
     it('should authenticate and create session when valid credentials provided', async () => {
-      mockFetchSuccess({ tenant:'tenant', originalTenantId:'originalTenantId', ok: true });
+      mockFetchSuccess({ tenant: 'tenant', originalTenantId: 'originalTenantId', ok: true });
       const mockStore = {
         getState: () => ({
           okapi: {},
@@ -852,4 +852,48 @@ describe('unauthorizedPath functions', () => {
       mockFetchCleanUp();
     });
   });
+});
+
+describe('getLoginTenant', () => {
+  it('uses URL values when present', () => {
+    const search = { tenant: 't', client_id: 'c' };
+    Object.defineProperty(window, 'location', { value: { search } });
+
+    const res = getLoginTenant({}, {});
+    expect(res.tenant).toBe(search.tenant);
+    expect(res.clientId).toBe(search.client_id);
+  });
+
+  describe('single-tenant', () => {
+    it('uses config.tenantOptions values when URL values are absent', () => {
+      const config = {
+        tenantOptions: {
+          denzel: { name: 'denzel', clientId: 'nolan' }
+        }
+      };
+
+      const res = getLoginTenant({}, config);
+      expect(res.tenant).toBe(config.tenantOptions.denzel.name);
+      expect(res.clientId).toBe(config.tenantOptions.denzel.clientId);
+    });
+
+    it('uses okapi.tenant and okapi.clientId when config.tenantOptions is missing', () => {
+      const okapi = {
+        tenant: 't',
+        clientId: 'c',
+      };
+
+      const res = getLoginTenant(okapi, {});
+      expect(res.tenant).toBe(okapi.tenant);
+      expect(res.clientId).toBe(okapi.clientId);
+    });
+
+    it('returns undefined when all options are exhausted', () => {
+      const res = getLoginTenant({}, {});
+      expect(res.tenant).toBeUndefined();
+      expect(res.clientId).toBeUndefined();
+    });
+  });
+
+  describe('ECS', () => { });
 });
