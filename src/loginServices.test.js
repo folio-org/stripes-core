@@ -4,6 +4,7 @@ import {
   createOkapiSession,
   getBindings,
   getLocale,
+  getLoginTenant,
   getPlugins,
   getOkapiSession,
   getTokenExpiry,
@@ -29,7 +30,6 @@ import {
   fetchOverriddenUserWithPerms,
   loadResources,
   getOIDCRedirectUri,
-  getStoredTenant,
   getLoginTenant,
   getLogoutTenant,
 } from './loginServices';
@@ -50,7 +50,7 @@ import {
   // checkSSO,
   setIsAuthenticated,
   setOkapiReady,
-  setServerDown,
+  // setServerDown,
   setSessionData,
   // setTokenExpiration,
   setLoginData,
@@ -1291,3 +1291,48 @@ describe('loadResources', () => {
     expect(discoverServices).toHaveBeenCalledWith(store);
   });
 });
+
+describe('getLoginTenant', () => {
+  it('uses URL values when present', () => {
+    const search = { tenant: 't', client_id: 'c' };
+    Object.defineProperty(window, 'location', { value: { search } });
+
+    const res = getLoginTenant({}, {});
+    expect(res.tenant).toBe(search.tenant);
+    expect(res.clientId).toBe(search.client_id);
+  });
+
+  describe('single-tenant', () => {
+    it('uses config.tenantOptions values when URL values are absent', () => {
+      const config = {
+        tenantOptions: {
+          denzel: { name: 'denzel', clientId: 'nolan' }
+        }
+      };
+
+      const res = getLoginTenant({}, config);
+      expect(res.tenant).toBe(config.tenantOptions.denzel.name);
+      expect(res.clientId).toBe(config.tenantOptions.denzel.clientId);
+    });
+
+    it('uses okapi.tenant and okapi.clientId when config.tenantOptions is missing', () => {
+      const okapi = {
+        tenant: 't',
+        clientId: 'c',
+      };
+
+      const res = getLoginTenant(okapi, {});
+      expect(res.tenant).toBe(okapi.tenant);
+      expect(res.clientId).toBe(okapi.clientId);
+    });
+
+    it('returns undefined when all options are exhausted', () => {
+      const res = getLoginTenant({}, {});
+      expect(res.tenant).toBeUndefined();
+      expect(res.clientId).toBeUndefined();
+    });
+  });
+
+  describe('ECS', () => { });
+});
+
