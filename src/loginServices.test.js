@@ -30,7 +30,6 @@ import {
   fetchOverriddenUserWithPerms,
   loadResources,
   getOIDCRedirectUri,
-  getLoginTenant,
   getLogoutTenant,
 } from './loginServices';
 
@@ -744,36 +743,6 @@ describe('unauthorizedPath functions', () => {
     });
   });
 
-  describe('getLoginTenant', () => {
-    it('uses URL values when present', () => {
-      window.location.search = '?tenant=t&client_id=c';
-      const res = getLoginTenant(
-        { tenant: 'ot', clientId: 'oc' },
-        { tenantOptions: { to: { name: 'to', clientId: 'toc' } } },
-      );
-
-      expect(res).toMatchObject({ tenant: 't', clientId: 'c' });
-    });
-
-    it('uses stripes-config::config::tenantOptions', () => {
-      const stripesOkapi = { tenant: 't', clientId: 'c' };
-      const config = { tenantOptions: { to: { name: 'to', clientId: 'toc' } } };
-      const res = getLoginTenant(stripesOkapi, config);
-
-      expect(res).toMatchObject({
-        tenant: config.tenantOptions.to.name,
-        clientId: config.tenantOptions.to.clientId,
-      });
-    });
-
-    it('defaults to stripes-config::okapi values when all else fails', () => {
-      const stripesOkapi = { tenant: 't', clientId: 'c' };
-      const res = getLoginTenant(stripesOkapi, {});
-
-      expect(res).toMatchObject(stripesOkapi);
-    });
-  });
-
   describe('getLogoutTenant', () => {
     afterEach(() => {
       localStorage.clear();
@@ -1335,4 +1304,3 @@ describe('getLoginTenant', () => {
 
   describe('ECS', () => { });
 });
-
