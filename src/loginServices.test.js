@@ -30,7 +30,6 @@ import {
   fetchOverriddenUserWithPerms,
   loadResources,
   getOIDCRedirectUri,
-  getStoredTenant,
   getLogoutTenant,
 } from './loginServices';
 
@@ -50,7 +49,7 @@ import {
   // checkSSO,
   setIsAuthenticated,
   setOkapiReady,
-  setServerDown,
+  // setServerDown,
   setSessionData,
   // setTokenExpiration,
   setLoginData,
