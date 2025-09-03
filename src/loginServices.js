@@ -159,7 +159,6 @@ export const getLoginTenant = (stripesOkapi, stripesConfig) => {
   return {
     tenant: stripesOkapi?.tenant,
     clientId: stripesOkapi?.clientId,
-    monkey: stripesOkapi?.monkey,
   };
 };
 
