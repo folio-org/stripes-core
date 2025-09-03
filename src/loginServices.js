@@ -136,12 +136,44 @@ export const getOIDCRedirectUri = (tenant, clientId) => {
   return encodeURIComponent(`${window.location.protocol}//${window.location.host}/oidc-landing?tenant=${tenant}&client_id=${clientId}`);
 };
 
-export const getTenantAndClientIdFromLoginURL = () => {
+/**
+ * getLoginTenant
+ * Retrieve tenant and clientId values. In order of preference, look here:
+ *
+ * 1 the URL for params named tenant and client_id
+ * 2 stripes.config.js::config::tenantOptions iff it contains a single tenant,
+ *   i.e. if it is shaped like this:
+ *   tenantOptions: { someT: { name: 'someT', clientId: 'someC' }}
+ * 3 stripes.config.js::okapi, the deprecated-but-historical location of these
+ *   values
+ *
+ * @param {*} stripesOkapi stripes.config.js::okapi
+ * @param {*} stripesConfig stripes.config.js::config
+ * @returns { tenant: string, clientId: string }
+ */
+export const getLoginTenant = (stripesOkapi, stripesConfig) => {
+  // derive from the URL
   const urlParams = new URLSearchParams(window.location.search);
+  let tenant = urlParams.get('tenant');
+  let clientId = urlParams.get('client_id');
+  if (tenant && clientId) {
+    return { tenant, clientId };
+  }
 
+  // derive from stripes.config.js::config::tenantOptions
+  if (stripesConfig.tenantOptions && Object.keys(stripesConfig?.tenantOptions).length === 1) {
+    const key = Object.keys(stripesConfig.tenantOptions)[0];
+    tenant = stripesConfig.tenantOptions[key]?.name;
+    clientId = stripesConfig.tenantOptions[key]?.clientId;
+    if (tenant && clientId) {
+      return { tenant, clientId };
+    }
+  }
+
+  // default to stripes.config.js::okapi
   return {
-    tenantName: urlParams.get('tenant'),
-    clientId: urlParams.get('client_id'),
+    tenant: stripesOkapi?.tenant,
+    clientId: stripesOkapi?.clientId,
   };
 };
 
