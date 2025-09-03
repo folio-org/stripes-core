@@ -1304,4 +1304,3 @@ describe('getLoginTenant', () => {
 
   describe('ECS', () => { });
 });
-
