@@ -1,7 +1,7 @@
 import { render, screen } from '@folio/jest-config-stripes/testing-library/react';
 import OIDCLandingError from './OIDCLandingError';
 
-jest.mock('./OrganizationLogo', () => () => 'Logo')
+jest.mock('./OrganizationLogo', () => () => 'Logo');
 
 describe('OIDCLandingError', () => {
   it('handles expected error shape', () => {

@@ -1,4 +1,5 @@
 import { FormattedMessage } from 'react-intl';
+import PropTypes from 'prop-types';
 
 import {
   Button,
@@ -38,4 +39,13 @@ const OIDCLandingError = ({ error }) => {
   );
 };
 
+OIDCLandingError.propTypes = {
+  error: PropTypes.oneOfType([
+    PropTypes.shape({
+      errors: PropTypes.arrayOf(PropTypes.shape({
+        message: PropTypes.string
+      }))
+    }),
+    PropTypes.string])
+};
 export default OIDCLandingError;

@@ -165,5 +165,4 @@ describe('exchangeOtp', () => {
       expect(console.error).toHaveBeenCalled();
     });
   });
-
 });
