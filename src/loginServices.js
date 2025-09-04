@@ -161,7 +161,7 @@ export const getLoginTenant = (stripesOkapi, stripesConfig) => {
   }
 
   // derive from stripes.config.js::config::tenantOptions
-  if (stripesConfig.tenantOptions && Object.keys(stripesConfig?.tenantOptions).length === 1) {
+  if (stripesConfig?.tenantOptions && Object.keys(stripesConfig?.tenantOptions).length === 1) {
     const key = Object.keys(stripesConfig.tenantOptions)[0];
     tenant = stripesConfig.tenantOptions[key]?.name;
     clientId = stripesConfig.tenantOptions[key]?.clientId;
