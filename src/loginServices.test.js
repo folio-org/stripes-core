@@ -889,7 +889,7 @@ describe('getLoginTenant', () => {
     });
 
     it('returns undefined when all options are exhausted', () => {
-      const res = getLoginTenant({}, {});
+      const res = getLoginTenant();
       expect(res.tenant).toBeUndefined();
       expect(res.clientId).toBeUndefined();
     });
