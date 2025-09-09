@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 
 import {
@@ -65,6 +66,12 @@ const SelectAndDispatchTenant = ({ styles }) => {
   }
 
   return null;
+};
+
+SelectAndDispatchTenant.propTypes = {
+  styles: PropTypes.shape({
+    loginInput: PropTypes.string,
+  }),
 };
 
 export default SelectAndDispatchTenant;
