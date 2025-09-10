@@ -1,5 +1,5 @@
 import localforage from 'localforage';
-import { config, okapi, translations } from 'stripes-config';
+import { getConfig, getOkapiConfig, getOkapi, getTranslations } from './entitlementService';
 import rtlDetect from 'rtl-detect';
 import moment from 'moment';
 import { loadDayJSLocale } from '@folio/stripes-components';
@@ -177,6 +177,48 @@ export const getLoginTenant = (stripesOkapi, stripesConfig) => {
   };
 };
 
+/**
+ * getLoginTenantAsync
+ * Async version of getLoginTenant that uses the entitlement service
+ * 
+ * @returns {Promise<{ tenant: string, clientId: string }>}
+ */
+export const getLoginTenantAsync = async () => {
+  // derive from the URL first (fast path)
+  const urlParams = new URLSearchParams(window.location.search);
+  let tenant = urlParams.get('tenant');
+  let clientId = urlParams.get('client_id');
+  if (tenant && clientId) {
+    return { tenant, clientId };
+  }
+
+  try {
+    const [stripesConfig, stripesOkapi] = await Promise.all([
+      getConfig(),
+      getOkapiConfig()
+    ]);
+
+    // derive from stripes.config.js::config::tenantOptions
+    if (stripesConfig?.tenantOptions && Object.keys(stripesConfig?.tenantOptions).length === 1) {
+      const key = Object.keys(stripesConfig.tenantOptions)[0];
+      tenant = stripesConfig.tenantOptions[key]?.name;
+      clientId = stripesConfig.tenantOptions[key]?.clientId;
+      if (tenant && clientId) {
+        return { tenant, clientId };
+      }
+    }
+
+    // default to stripes.config.js::okapi
+    return {
+      tenant: stripesOkapi?.tenant,
+      clientId: stripesOkapi?.clientId,
+    };
+  } catch (error) {
+    console.warn('Failed to load entitlement data for tenant lookup, using defaults', error);
+    return { tenant: null, clientId: null };
+  }
+};
+
 // export config values for storing user locale
 export const userLocaleConfig = {
   'configName': 'localeSettings',
@@ -287,19 +329,29 @@ export function loadTranslations(store, locale, defaultTranslations = {}) {
   // load the static locale data themselves.
   loadDayJSLocale(locale);
 
-  // Here we put additional condition because languages
-  // like Japan we need to use like ja, but with numeric system
-  // Japan language builds like ja_u, that incorrect. We need to be safe from that bug.
-  return fetch(translations[region] ? translations[region] :
-    translations[loadedLocale] || translations[[parentLocale]])
-    .then((response) => {
-      if (response.ok) {
-        response.json().then((stripesTranslations) => {
-          store.dispatch(setTranslations(Object.assign(stripesTranslations, defaultTranslations)));
-          store.dispatch(setLocale(locale));
-        });
-      }
-    });
+  // Get translations from entitlement service and use them to fetch locale data
+  return getTranslations().then(translations => {
+    // Here we put additional condition because languages
+    // like Japan we need to use like ja, but with numeric system
+    // Japan language builds like ja_u, that incorrect. We need to be safe from that bug.
+    
+    // Guard against fetch not being available (e.g., in test environments)
+    if (typeof fetch === 'undefined') {
+      console.warn('fetch is not available, skipping translation loading');
+      return Promise.resolve();
+    }
+    
+    return fetch(translations[region] ? translations[region] :
+      translations[loadedLocale] || translations[[parentLocale]])
+      .then((response) => {
+        if (response.ok) {
+          response.json().then((stripesTranslations) => {
+            store.dispatch(setTranslations(Object.assign(stripesTranslations, defaultTranslations)));
+            store.dispatch(setLocale(locale));
+          });
+        }
+      });
+  });
 }
 
 /**
@@ -800,9 +852,16 @@ export async function logout(okapiUrl, store, queryClient) {
     .catch(e => {
       console.error('error during logout', e); // eslint-disable-line no-console
     })
-    .finally(() => {
-      // clear the console unless config asks to preserve it
-      if (!config.preserveConsole) {
+    .finally(async () => {
+      // Get config from entitlement service to check preserveConsole setting
+      try {
+        const config = await getConfig();
+        // clear the console unless config asks to preserve it
+        if (!config.preserveConsole) {
+          console.clear(); // eslint-disable-line no-console
+        }
+      } catch (e) {
+        // If we can't get config, default to clearing console
         console.clear(); // eslint-disable-line no-console
       }
       // clear the storage sentinel
@@ -1173,14 +1232,16 @@ export function requestLogin(okapiUrl, store, tenant, data) {
  * @returns {Promise} Promise resolving to the response of the request
  */
 function fetchUserWithPerms(okapiUrl, tenant, token, rtrIgnore = false) {
-  const usersPath = okapi.authnUrl ? 'users-keycloak' : 'bl-users';
-  return fetch(
-    `${okapiUrl}/${usersPath}/_self?expandPermissions=true&fullPermissions=true`,
-    {
-      headers: getHeaders(tenant, token),
-      rtrIgnore,
-    },
-  );
+  return getOkapi().then(okapi => {
+    const usersPath = okapi.authnUrl ? 'users-keycloak' : 'bl-users';
+    return fetch(
+      `${okapiUrl}/${usersPath}/_self?expandPermissions=true&fullPermissions=true`,
+      {
+        headers: getHeaders(tenant, token),
+        rtrIgnore,
+      },
+    );
+  });
 }
 
 /**
@@ -1203,14 +1264,16 @@ function fetchUserWithPerms(okapiUrl, tenant, token, rtrIgnore = false) {
  */
 
 export function fetchOverriddenUserWithPerms(okapiUrl, tenant, token, rtrIgnore = false) {
-  const usersPath = okapi.authnUrl ? 'users-keycloak' : 'bl-users';
-  return fetch(
-    `${okapiUrl}/${usersPath}/_self?expandPermissions=true&fullPermissions=true&overrideUser=true`,
-    {
-      headers: getHeaders(tenant, token),
-      rtrIgnore,
-    },
-  );
+  return getOkapi().then(okapi => {
+    const usersPath = okapi.authnUrl ? 'users-keycloak' : 'bl-users';
+    return fetch(
+      `${okapiUrl}/${usersPath}/_self?expandPermissions=true&fullPermissions=true&overrideUser=true`,
+      {
+        headers: getHeaders(tenant, token),
+        rtrIgnore,
+      },
+    );
+  });
 }
 
 /**

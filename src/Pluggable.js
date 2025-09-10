@@ -1,10 +1,27 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { modules } from 'stripes-config';
+import { getModules, legacyModules } from './entitlementService';
 import { withStripes } from './StripesContext';
 import { ModuleHierarchyProvider } from './components';
 
 const Pluggable = (props) => {
+  const [modules, setModules] = useState(legacyModules);
+  const [modulesLoaded, setModulesLoaded] = useState(false);
+
+  // Load modules asynchronously
+  useEffect(() => {
+    getModules()
+      .then(moduleData => {
+        setModules(moduleData);
+        setModulesLoaded(true);
+      })
+      .catch(() => {
+        // Fall back to legacy modules if async loading fails
+        setModules(legacyModules);
+        setModulesLoaded(true);
+      });
+  }, []);
+
   const plugins = modules.plugin || [];
   const cachedPlugins = useMemo(() => {
     const cached = [];
@@ -34,7 +51,7 @@ const Pluggable = (props) => {
     return cached;
     // props.stripes is not stable on each re-render, which causes an infinite trigger
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [plugins]);
+  }, [plugins, modulesLoaded]);
 
   if (cachedPlugins.length) {
     return cachedPlugins.map(({ plugin, Child }) => (

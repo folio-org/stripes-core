@@ -1,5 +1,5 @@
 import { some } from 'lodash';
-import { config } from 'stripes-config';
+import { hasTenantOptions } from './entitlementService';
 
 function getHeaders(tenant, token) {
   return {
@@ -228,17 +228,19 @@ function fetchModules(store) {
  * non-circulating library that doesn't provide the circ interface)
  */
 export function discoverServices(store) {
-  const promises = [];
-  if (config.tenantOptions) {
-    promises.push(fetchApplicationDetails(store));
-    promises.push(fetchGatewayVersion(store));
-  } else {
-    promises.push(fetchOkapiVersion(store));
-    promises.push(fetchModules(store));
-  }
+  return hasTenantOptions().then(tenantOptions => {
+    const promises = [];
+    if (tenantOptions) {
+      promises.push(fetchApplicationDetails(store));
+      promises.push(fetchGatewayVersion(store));
+    } else {
+      promises.push(fetchOkapiVersion(store));
+      promises.push(fetchModules(store));
+    }
 
-  return Promise.all(promises).then(() => {
-    store.dispatch({ type: 'DISCOVERY_FINISHED' });
+    return Promise.all(promises).then(() => {
+      store.dispatch({ type: 'DISCOVERY_FINISHED' });
+    });
   });
 }
 

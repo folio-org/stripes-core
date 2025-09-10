@@ -5,17 +5,32 @@ export { CalloutContext, useCallout } from './src/CalloutContext';
 /* internal utilities */
 export { stripesShape } from './src/Stripes';
 export { withStripes, useStripes, StripesContext } from './src/StripesContext';
-export { useModules } from './src/ModulesContext';
+export { useModules, useModulesAsync } from './src/ModulesContext';
 export { withModule, withModules } from './src/components/Modules';
 export { default as stripesConnect } from './src/stripesConnect';
 export { default as Pluggable } from './src/Pluggable';
-export { updateUser, updateTenant, validateUser } from './src/loginServices';
+export { updateUser, updateTenant, validateUser, getLoginTenantAsync } from './src/loginServices';
 export { default as coreEvents } from './src/events';
 export { default as useOkapiKy } from './src/useOkapiKy';
 export { default as withOkapiKy } from './src/withOkapiKy';
 export { default as useCustomFields } from './src/useCustomFields';
 export { default as createReactQueryClient } from './src/createReactQueryClient';
 export { useAppOrderContext } from './src/components/MainNav/AppOrderProvider';
+
+/* entitlement service - new Promise-based interface */
+export {
+  getEntitlements,
+  getConfig,
+  getModules,
+  getBranding,
+  getMetadata,
+  getIcons,
+  getTranslations,
+  getOkapiConfig,
+  hasTenantOptions,
+  fetchDynamicEntitlements,
+  clearCache as clearEntitlementCache
+} from './src/entitlementService';
 
 /* components */
 export { default as AppContextMenu } from './src/components/MainNav/CurrentApp/AppContextMenu';

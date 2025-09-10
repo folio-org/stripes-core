@@ -1,8 +1,18 @@
-import React from 'react';
-import { branding } from 'stripes-config';
+import React, { useState, useEffect } from 'react';
+import { getBranding } from '../../entitlementService';
 import styles from './OrganizationLogo.css';
 
 const OrganizationLogo = () => {
+  const [branding, setBranding] = useState(null);
+
+  useEffect(() => {
+    getBranding()
+      .then(brandingData => setBranding(brandingData))
+      .catch(err => {
+        console.warn('Failed to load branding data', err);
+        setBranding(null);
+      });
+  }, []);
   return (
     branding &&
       <div className={styles.logo}>
