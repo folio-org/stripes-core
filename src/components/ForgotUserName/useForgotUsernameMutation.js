@@ -4,16 +4,16 @@ import useOkapiKy from '../../useOkapiKy';
 
 /**
  * return a POST mutator that accepts a single argument, id, corresponding
- * to an email, username, or phone number. On success, the endpoint will
- * send a "reset password" email to the primary email address on file for the
- * given id. On failure, it returns 400 with a body shaped like
+ * to an email, or phone number. On success, the endpoint will send a "reset
+ * password" email to the primary email address on file for the given id. On
+ * failure, it returns 400 with a body shaped like
  *   {
  *     { errors: [ { message, type, code, parameters: []}] },
  *     "total_records": 1
  *   }
  *
  */
-const useWhoopsForgot = () => {
+const useForgotPasswordMutation = () => {
   const stripes = useStripes();
   const ky = useOkapiKy();
 
@@ -21,11 +21,11 @@ const useWhoopsForgot = () => {
 
   const mutation = useMutation({
     mutationFn: (id) => ky.post(
-      `${pathPrefix}/forgotten/password`, { json: { id } }
+      `${pathPrefix}/forgotten/username`, { json: { id } }
     ).json(),
   });
 
   return mutation;
 };
 
-export default useWhoopsForgot;
+export default useForgotPasswordMutation;

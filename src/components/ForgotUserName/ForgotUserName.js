@@ -6,14 +6,14 @@ import {
 import processBadResponse from '../../processBadResponse';
 import { defaultErrors } from '../../constants';
 import ForgotUserNameForm from './ForgotUserNameForm';
-import useWhoopsForgot from './useWhoopsForgot';
+import useForgotUsernameMutation from './useForgotUsernameMutation';
 import { validateForgotUsernameForm as isValidUsername } from '../../validators';
 
 const ForgotUserName = () => {
   const [userEmail, setUserEmail] = useState(null);
   const [isValidInput, setIsValidInput] = useState(true);
   const [authFailure, setAuthFailure] = useState([]);
-  const sendReminderMutation = useWhoopsForgot();
+  const sendReminderMutation = useForgotUsernameMutation();
 
   const handleSubmit = async (values) => {
     setUserEmail(null);
