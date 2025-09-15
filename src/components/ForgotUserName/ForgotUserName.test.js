@@ -3,7 +3,7 @@ import { userEvent } from '@folio/jest-config-stripes/testing-library/user-event
 
 import ForgotUserNameForm from './ForgotUserNameForm';
 import ForgotUserName from './ForgotUserName';
-import useWhoopsForgot from './useWhoopsForgot';
+import useForgotUsernameMutation from './useForgotUsernameMutation';
 import { defaultErrors } from '../../constants';
 
 jest.mock('../../StripesContext', () => ({
@@ -39,7 +39,7 @@ jest.mock('@folio/stripes-components', () => ({
   }),
 }));
 
-jest.mock('./useWhoopsForgot');
+jest.mock('./useForgotUsernameMutation');
 
 describe('ForgotUserNameForm', () => {
   it('displays headline, input field, submit button', () => {
@@ -95,8 +95,8 @@ describe('ForgotUserName', () => {
     const user = userEvent.setup();
     const userInput = 'some-username@some-school.edu';
 
-    const mockUseWhoopsForgot = useWhoopsForgot;
-    mockUseWhoopsForgot.mockReturnValue({
+    const mockUseForgotUsernameMutation = useForgotUsernameMutation;
+    mockUseForgotUsernameMutation.mockReturnValue({
       mutateAsync: jest.fn(() => Promise.resolve()),
     });
 
@@ -118,8 +118,8 @@ describe('ForgotUserName', () => {
     const user = userEvent.setup();
     const userInput = 'some-username@some-school.edu';
 
-    const mockUseWhoopsForgot = useWhoopsForgot;
-    mockUseWhoopsForgot.mockReturnValue({
+    const mockUseForgotUsernameMutation = useForgotUsernameMutation;
+    mockUseForgotUsernameMutation.mockReturnValue({
       mutateAsync: () => Promise.reject({ // eslint-disable-line prefer-promise-reject-errors
         response: {
           json: () => Promise.resolve({
