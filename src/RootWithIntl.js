@@ -31,8 +31,8 @@ import {
   OverlayContainer,
   CreateResetPassword,
   CheckEmailStatusPage,
-  ForgotPasswordCtrl,
-  ForgotUserNameCtrl,
+  ForgotPassword,
+  ForgotUserName,
   AppCtxMenuProvider,
   SessionEventContainer,
   AppOrderProvider,
@@ -63,7 +63,7 @@ const RootWithIntl = ({ stripes, token = '', isAuthenticated = false, disableAut
             >
               <Provider store={connectedStripes.store}>
                 <Router history={history}>
-                  { isAuthenticated || token || disableAuth ?
+                  {isAuthenticated || token || disableAuth ?
                     <>
                       <QueryStateUpdater stripes={connectedStripes} queryClient={queryClient} />
                       <MainContainer>
@@ -75,7 +75,7 @@ const RootWithIntl = ({ stripes, token = '', isAuthenticated = false, disableAut
                               event={events.LOGIN}
                               stripes={connectedStripes}
                             />
-                            { (typeof connectedStripes.okapi !== 'object' || connectedStripes.discovery.isFinished) && (
+                            {(typeof connectedStripes.okapi !== 'object' || connectedStripes.discovery.isFinished) && (
                               <ModuleContainer id="content">
                                 <OverlayContainer />
                                 <SessionEventContainer history={history} queryClient={queryClient} />
@@ -148,12 +148,12 @@ const RootWithIntl = ({ stripes, token = '', isAuthenticated = false, disableAut
                       <TitledRoute
                         name="forgotPassword"
                         path="/forgot-password"
-                        component={<ForgotPasswordCtrl stripes={connectedStripes} />}
+                        component={<ForgotPassword stripes={connectedStripes} />}
                       />
                       <TitledRoute
                         name="forgotUsername"
                         path="/forgot-username"
-                        component={<ForgotUserNameCtrl stripes={connectedStripes} />}
+                        component={<ForgotUserName stripes={connectedStripes} />}
                       />
                       <TitledRoute
                         name="checkEmail"
