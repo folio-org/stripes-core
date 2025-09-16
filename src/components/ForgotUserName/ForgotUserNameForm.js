@@ -1,124 +1,136 @@
-import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Field, Form } from 'react-final-form';
-import { FormattedMessage, injectIntl } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
+import { branding } from 'stripes-config';
 
 import {
-  TextField,
   Button,
+  Col,
   Headline,
   Row,
-  Col,
+  TextField,
 } from '@folio/stripes-components';
 
 import { forgotFormErrorCodes } from '../../constants';
+import FieldLabel from '../CreateResetPassword/components/FieldLabel';
 import OrganizationLogo from '../OrganizationLogo';
 import AuthErrorsContainer from '../AuthErrorsContainer';
+import { useStripes } from '../../StripesContext';
+import SelectAndDispatchTenant from '../SelectAndDispatchTenant';
 
-import formStyles from './ForgotUserNameForm.css';
+import styles from '../Login/Login.css';
 
-class ForgotUserNameForm extends Component {
-  static propTypes = {
-    isValid: PropTypes.bool.isRequired,
-    onSubmit: PropTypes.func.isRequired,
-    errors: PropTypes.arrayOf(PropTypes.object),
-    intl: PropTypes.shape({
-      formatMessage: PropTypes.func.isRequired,
-    }),
-  };
+const ForgotUserNameForm = ({ errors = [], isValid, onSubmit }) => {
+  const { okapi } = useStripes();
 
-  static defaultProps = {
-    errors: []
-  };
-
-  render() {
-    const {
-      onSubmit,
-      isValid,
-      errors,
-      intl: { formatMessage },
-    } = this.props;
-
-    return (
-      <Form
-        onSubmit={onSubmit}
-        render={({ handleSubmit, pristine }) => (
-          <div className={formStyles.wrap}>
-            <div className={formStyles.centered}>
-              <OrganizationLogo />
-              <form
-                className={formStyles.form}
-                data-form="forgot"
-                onSubmit={handleSubmit}
-              >
-                <Headline
-                  size="xx-large"
-                  tag="h1"
-                  data-test-h1
+  return (
+    <Form
+      onSubmit={onSubmit}
+      render={({ handleSubmit, pristine }) => (
+        <main>
+          <div className={styles.wrapper} style={branding?.style?.login ?? {}}>
+            <div className={styles.container}>
+              <Row center="xs">
+                <Col xs={6}>
+                  <OrganizationLogo />
+                </Col>
+              </Row>
+              <Row>
+                <form
+                  className={styles.form}
+                  data-form="forgot"
+                  onSubmit={handleSubmit}
                 >
-                  <FormattedMessage id="stripes-core.label.forgotUsername" />
-                </Headline>
-                <Headline
-                  size="large"
-                  tag="p"
-                  weight="regular"
-                  faded
-                  data-test-p
-                >
-                  <FormattedMessage id="stripes-core.label.forgotUsernameCallToAction" />
-                </Headline>
-                <div className={formStyles.formGroup}>
-                  <Field
-                    id="input-email-or-phone"
-                    component={TextField}
-                    name="userInput"
-                    type="text"
-                    marginBottom0
-                    fullWidth
-                    inputClass={formStyles.forgotUserInput}
-                    validationEnabled={false}
-                    hasClearIcon={false}
-                    autoCapitalize="none"
-                    autoFocus
-                    placeholder={formatMessage({ id: 'stripes-core.placeholder.forgotUsername' })}
-                  />
-                </div>
-                <Button
-                  buttonStyle="primary"
-                  id="clickable-login"
-                  name="continue-button"
-                  type="submit"
-                  buttonClass={formStyles.forgotUserSubmitButton}
-                  disabled={pristine}
-                  fullWidth
-                  marginBottom0
-                  data-test-submit
-                >
-                  <FormattedMessage id="stripes-core.button.continue" />
-                </Button>
-                <Row center="xs">
-                  <Col xs={12}>
-                    <div
-                      className={formStyles.authErrorsWrapper}
-                      data-test-errors
-                    >
-                      <AuthErrorsContainer
-                        errors={!isValid
-                          ? [{ code: forgotFormErrorCodes.EMAIL_INVALID }]
-                          : errors
-                        }
-                        data-test-container
-                      />
-                    </div>
-                  </Col>
-                </Row>
-              </form>
+                  <Row center="xs">
+                    <Col xs={6}>
+                      <Headline
+                        size="xx-large"
+                        tag="h1"
+                        data-test-h1
+                      >
+                        <FormattedMessage id="stripes-core.label.forgotUsername" />
+                      </Headline>
+                    </Col>
+                  </Row>
+                  <SelectAndDispatchTenant styles={styles} />
+                  <div data-test-new-username-field>
+                    <Row center="xs">
+                      <Col xs={6}>
+                        <Row
+                          between="xs"
+                          bottom="xs"
+                        >
+                          <Col xs={6}>
+                            <FieldLabel htmlFor="input-email-or-phone">
+                              <FormattedMessage id="stripes-core.placeholder.forgotUsername" />
+                            </FieldLabel>
+                          </Col>
+                        </Row>
+                      </Col>
+                    </Row>
+                    <Row center="xs">
+                      <Col xs={6}>
+                        <Field
+                          id="input-email-or-phone"
+                          component={TextField}
+                          name="userInput"
+                          type="text"
+                          marginBottom0
+                          fullWidth
+                          inputClass={styles.loginInput}
+                          validationEnabled={false}
+                          hasClearIcon={false}
+                          autoCapitalize="none"
+                          required
+                          value=""
+                        />
+                      </Col>
+                    </Row>
+                  </div>
+                  <Row center="xs">
+                    <Col xs={6}>
+                      <div className={styles.formGroup}>
+                        <Button
+                          buttonStyle="primary"
+                          id="clickable-login"
+                          type="submit"
+                          buttonClass={styles.loginSubmitButton}
+                          disabled={pristine || !okapi.tenant}
+                          fullWidth
+                          marginBottom0
+                        >
+                          <FormattedMessage id="stripes-core.button.continue" />
+                        </Button>
+                      </div>
+                    </Col>
+                  </Row>
+                  <Row center="xs">
+                    <Col xs={6}>
+                      <div className={styles.authErrorsWrapper}>
+                        <AuthErrorsContainer
+                          errors={!isValid
+                            ? [{ code: forgotFormErrorCodes.EMAIL_INVALID }]
+                            : errors
+                          }
+                          data-test-container
+                        />
+                      </div>
+                    </Col>
+                  </Row>
+                </form>
+              </Row>
             </div>
           </div>
-        )}
-      />
-    );
-  }
-}
+        </main>
+      )}
+    />
+  );
+};
 
-export default injectIntl(ForgotUserNameForm);
+ForgotUserNameForm.propTypes = {
+  errors: PropTypes.arrayOf(PropTypes.object),
+  isValid: PropTypes.bool.isRequired,
+  onSubmit: PropTypes.func.isRequired,
+};
+
+export default ForgotUserNameForm;

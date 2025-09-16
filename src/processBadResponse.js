@@ -44,5 +44,12 @@ export default async function processBadResponse(dispatch, response, defaultClie
   } catch (e) {
     actionPayload = [defaultErrors.DEFAULT_LOGIN_CLIENT_ERROR];
   }
-  dispatch(setAuthError(actionPayload));
+
+  if (typeof dispatch === 'function') {
+    dispatch(setAuthError(actionPayload));
+    return undefined;
+  } else {
+    return actionPayload;
+  }
 }
+
