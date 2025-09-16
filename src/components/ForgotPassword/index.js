@@ -1,1 +1,1 @@
-export { default } from './ForgotPasswordWrapper';
+export { default } from './ForgotPassword';

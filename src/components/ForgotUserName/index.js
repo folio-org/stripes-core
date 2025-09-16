@@ -1,1 +1,1 @@
-export { default } from './ForgotUserNameWrapper';
+export { default } from './ForgotUserName';
