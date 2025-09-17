@@ -1,6 +1,12 @@
 import { render, screen, waitFor } from '@folio/jest-config-stripes/testing-library/react';
 
+import {
+  setTokenExpiry,
+  requestUserWithPerms
+} from '../loginServices';
+
 import OIDCLanding from './OIDCLanding';
+import useExchangeCode from './useExchangeCode';
 
 jest.mock('react-router-dom', () => ({
   useLocation: () => ({
@@ -22,16 +28,15 @@ jest.mock('../StripesContext', () => ({
 
 jest.mock('./OrganizationLogo', () => (() => <div>OrganizationLogo</div>));
 
-const mockSetTokenExpiry = jest.fn();
-const mockRequestUserWithPerms = jest.fn();
-const mockFoo = jest.fn();
 jest.mock('../loginServices', () => ({
-  setTokenExpiry: () => mockSetTokenExpiry(),
-  requestUserWithPerms: () => mockRequestUserWithPerms(),
-  foo: () => mockFoo(),
+  ...(jest.requireActual('../loginServices')),
+  setTokenExpiry: jest.fn(() => Promise.resolve()),
+  requestUserWithPerms: jest.fn(() => Promise.resolve()),
   getOIDCRedirectUri: () => '',
+  getLoginTenant: () => 't',
 }));
 
+jest.mock('./useExchangeCode');
 
 // fetch success: resolve promise with ok == true and $data in json()
 const mockFetchSuccess = (data) => {
@@ -63,6 +68,14 @@ const mockFetchCleanUp = () => {
 
 describe('OIDCLanding', () => {
   it('calls requestUserWithPerms, setTokenExpiry on success', async () => {
+    const mockUseExchangeCode = useExchangeCode;
+    mockUseExchangeCode.mockReturnValue({
+      data: { key: 'value' },
+      isloading: false,
+      error: null,
+    });
+
+
     mockFetchSuccess({
       accessTokenExpiration: '2024-05-23T09:47:17.000-04:00',
       refreshTokenExpiration: '2024-05-23T10:07:17.000-04:00',
@@ -70,16 +83,8 @@ describe('OIDCLanding', () => {
 
     await render(<OIDCLanding />);
     screen.getByText('Loading');
-    await waitFor(() => expect(mockSetTokenExpiry).toHaveBeenCalledTimes(1));
-    await waitFor(() => expect(mockRequestUserWithPerms).toHaveBeenCalledTimes(1));
-    mockFetchCleanUp();
-  });
-
-  it('displays an error on failure', async () => {
-    mockFetchError('barf');
-
-    await render(<OIDCLanding />);
-    await screen.findByText('stripes-core.errors.oidc');
+    await waitFor(() => expect(setTokenExpiry).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(requestUserWithPerms).toHaveBeenCalledTimes(1));
     mockFetchCleanUp();
   });
 });
