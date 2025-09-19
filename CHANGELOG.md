@@ -1,8 +1,10 @@
 # Change history for stripes-core
 
-## IN PROGRESS
+## [11.0.10](https://github.com/folio-org/stripes-core/tree/v11.0.10) (2025-09-19)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v11.0.9...v11.0.10)
 
 * Correctly implement tenant-selection ringdown during application init. Refs STCOR-985.
+* Handle forgot-username, forgot-password for ECS tenants. Refs STCOR-987.
 
 ## [11.0.9](https://github.com/folio-org/stripes-core/tree/v11.0.9) (2025-08-25)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v11.0.8...v11.0.9)
