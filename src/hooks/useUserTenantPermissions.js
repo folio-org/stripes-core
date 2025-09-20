@@ -1,4 +1,5 @@
 import { useQuery } from 'react-query';
+import { useState, useEffect } from 'react';
 
 import { useStripes } from '../StripesContext';
 import { useNamespace } from '../components';
@@ -18,8 +19,22 @@ const useUserTenantPermissions = (
     }
   });
   const [namespace] = useNamespace({ key: 'user-self-permissions' });
+  const [permPath, setPermPath] = useState('bl-users');
 
-  const permPath = stripes.hasInterface('users-keycloak') ? 'users-keycloak' : 'bl-users';
+  // Determine permission path asynchronously
+  useEffect(() => {
+    const determinePermPath = async () => {
+      try {
+        const hasKeycloak = await stripes.hasInterface('users-keycloak');
+        setPermPath(hasKeycloak ? 'users-keycloak' : 'bl-users');
+      } catch (error) {
+        console.error('Failed to check users-keycloak interface:', error);
+        setPermPath('bl-users'); // fallback
+      }
+    };
+
+    determinePermPath();
+  }, [stripes]);
 
   const {
     isFetching,
@@ -27,7 +42,7 @@ const useUserTenantPermissions = (
     isLoading,
     data,
   } = useQuery(
-    [namespace, tenantId],
+    [namespace, tenantId, permPath], // Include permPath in dependency array
     ({ signal }) => {
       return api.get(
         `${permPath}/_self?expandPermissions=true`,

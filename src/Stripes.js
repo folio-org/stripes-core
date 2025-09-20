@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { isVersionCompatible } from './discoverServices';
+import { isVersionCompatible, entitlementService } from './discoverServices';
 
 
 export const stripesShape = PropTypes.shape({
@@ -155,6 +155,37 @@ class Stripes {
     const cond = ok ? 'is' : 'is not';
     logger.log('interface', `interface '${name}' v${versionWanted} ${cond} compatible with available v${version}`);
     return ok ? version : 0;
+  }
+
+  /**
+   * Async version of hasInterface that uses entitlement service
+   * @param {string} name - Interface name
+   * @param {string} versionWanted - Optional version requirement
+   * @returns {Promise} Promise resolving to interface compatibility result
+   */
+  hasInterfaceAsync(name, versionWanted) {
+    const logger = this.logger;
+    
+    // Return a Promise for async entitlement data access
+    return entitlementService.hasInterface(name, versionWanted)
+      .then(result => {
+        if (result === undefined) {
+          logger.log('interface', `interface '${name}' is missing`);
+          return undefined;
+        }
+        if (!versionWanted) {
+          logger.log('interface', `interface '${name}' exists`);
+          return true;
+        }
+        const ok = result !== false;
+        const cond = ok ? 'is' : 'is not';
+        logger.log('interface', `interface '${name}' v${versionWanted} ${cond} compatible with available v${result}`);
+        return ok ? result : 0;
+      })
+      .catch(error => {
+        logger.log('interface', `error checking interface '${name}': ${error.message}`);
+        return undefined;
+      });
   }
 
   clone(extraProps) {

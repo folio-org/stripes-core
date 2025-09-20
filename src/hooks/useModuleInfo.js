@@ -1,4 +1,6 @@
+import { useState, useEffect } from 'react';
 import { useStripes } from '../StripesContext';
+import { entitlementService } from '../discoverServices';
 
 /**
  * map a module implementation string to a module-name, hopefully.
@@ -69,12 +71,32 @@ const canonicalPath = (str) => {
  */
 const useModuleInfo = (path) => {
   const stripes = useStripes();
+  const [moduleInfo, setModuleInfo] = useState(null);
 
-  const paths = stripes.discovery.interfaceProviders?.reduce((acc, impl) => {
-    return { ...acc, ...mapPathToImpl(impl) };
-  }, {});
+  useEffect(() => {
+    const loadModuleInfo = async () => {
+      try {
+        const interfaceProviders = await entitlementService.getInterfaceProviders();
+        
+        const paths = interfaceProviders?.reduce((acc, impl) => {
+          return { ...acc, ...mapPathToImpl(impl) };
+        }, {});
 
-  return paths?.[canonicalPath(path)];
+        setModuleInfo(paths?.[canonicalPath(path)]);
+      } catch (error) {
+        console.error('Failed to load interface providers in useModuleInfo:', error);
+        // Fallback to sync access
+        const paths = stripes.discovery?.interfaceProviders?.reduce((acc, impl) => {
+          return { ...acc, ...mapPathToImpl(impl) };
+        }, {});
+        setModuleInfo(paths?.[canonicalPath(path)]);
+      }
+    };
+
+    loadModuleInfo();
+  }, [path, stripes.discovery]);
+
+  return moduleInfo;
 };
 
 export default useModuleInfo;

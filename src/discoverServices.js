@@ -1,5 +1,6 @@
 import { some } from 'lodash';
 import { config } from 'stripes-config';
+import entitlementService from './entitlementService';
 
 function getHeaders(tenant, token) {
   return {
@@ -228,6 +229,9 @@ function fetchModules(store) {
  * non-circulating library that doesn't provide the circ interface)
  */
 export function discoverServices(store) {
+  // Initialize entitlement service with store
+  entitlementService.initialize(store);
+  
   const promises = [];
   if (config.tenantOptions) {
     promises.push(fetchApplicationDetails(store));
@@ -341,3 +345,6 @@ function isSingleVersionCompatible(got, wanted) {
 export function isVersionCompatible(got, wanted) {
   return some(wanted.split(/\s+/), (w) => isSingleVersionCompatible(got, w));
 }
+
+// Export the entitlement service for use by other modules
+export { entitlementService };

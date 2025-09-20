@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import {
   Router,
@@ -12,6 +12,7 @@ import { Callout, HotKeys } from '@folio/stripes-components';
 
 import ModuleRoutes from './ModuleRoutes';
 import events from './events';
+import { entitlementService } from './discoverServices';
 
 import {
   MainContainer,
@@ -48,9 +49,38 @@ const RootWithIntl = ({ stripes, token = '', isAuthenticated = false, disableAut
   const connectedStripes = stripes.clone({ connect });
 
   const [callout, setCallout] = useState(null);
+  const [entitlementFinished, setEntitlementFinished] = useState(false);
+  
   const setCalloutDomRef = (ref) => {
     setCallout(ref);
   };
+
+  useEffect(() => {
+    // Check entitlement loading status asynchronously
+    const checkEntitlementStatus = async () => {
+      try {
+        const finished = await entitlementService.isFinished();
+        setEntitlementFinished(finished);
+      } catch (error) {
+        console.error('Failed to check entitlement status:', error);
+        // Fallback to sync discovery check
+        setEntitlementFinished(!!connectedStripes.discovery?.isFinished);
+      }
+    };
+
+    checkEntitlementStatus();
+    
+    // Set up interval to periodically check until finished
+    const interval = setInterval(() => {
+      if (!entitlementFinished) {
+        checkEntitlementStatus();
+      } else {
+        clearInterval(interval);
+      }
+    }, 100);
+
+    return () => clearInterval(interval);
+  }, [connectedStripes.discovery, entitlementFinished]);
 
   return (
     <StripesContext.Provider value={connectedStripes}>
@@ -75,7 +105,7 @@ const RootWithIntl = ({ stripes, token = '', isAuthenticated = false, disableAut
                               event={events.LOGIN}
                               stripes={connectedStripes}
                             />
-                            { (typeof connectedStripes.okapi !== 'object' || connectedStripes.discovery.isFinished) && (
+                            { (typeof connectedStripes.okapi !== 'object' || entitlementFinished) && (
                               <ModuleContainer id="content">
                                 <OverlayContainer />
                                 <SessionEventContainer history={history} queryClient={queryClient} />

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import { Headline, List } from '@folio/stripes-components';
@@ -12,13 +12,49 @@ import { withModules } from '../Modules';
 import css from './About.css';
 import stripesCore from '../../../package';
 import { useStripes } from '../../StripesContext';
+import { entitlementService } from '../../discoverServices';
 import AboutEnabledModules from './AboutEnabledModules';
 
-const AboutOkapi = ({ modules }) => {
+const AboutOkapi = ({ modules, discovery }) => {
   const stripes = useStripes();
+  const [entitlementData, setEntitlementData] = useState(null);
 
-  const dmodules = stripes.discovery.modules || {};
-  const dinterfaces = stripes.discovery.interfaces || {};
+  useEffect(() => {
+    // Load entitlement data asynchronously
+    const loadEntitlementData = async () => {
+      try {
+        const [dmodules, dinterfaces] = await Promise.all([
+          entitlementService.getModules(),
+          entitlementService.getInterfaces()
+        ]);
+        
+        setEntitlementData({
+          modules: dmodules,
+          interfaces: dinterfaces
+        });
+      } catch (error) {
+        console.error('Failed to load entitlement data in AboutOkapi:', error);
+        // Fallback to discovery prop if available
+        if (discovery) {
+          setEntitlementData({
+            modules: discovery.modules || {},
+            interfaces: discovery.interfaces || {}
+          });
+        } else {
+          setEntitlementData({
+            modules: {},
+            interfaces: {}
+          });
+        }
+      }
+    };
+
+    loadEntitlementData();
+  }, [discovery]);
+
+  // Use entitlementData when available, fallback to discovery prop, then to stripes.discovery
+  const dmodules = entitlementData?.modules || discovery?.modules || stripes.discovery?.modules || {};
+  const dinterfaces = entitlementData?.interfaces || discovery?.interfaces || stripes.discovery?.interfaces || {};
 
   const nm = Object.keys(dmodules).length;
   const ni = Object.keys(dinterfaces).length;
@@ -90,6 +126,12 @@ AboutOkapi.propTypes = {
     plugin: PropTypes.arrayOf(PropTypes.object),
     settings: PropTypes.arrayOf(PropTypes.object),
     handler: PropTypes.arrayOf(PropTypes.object),
+  }),
+  discovery: PropTypes.shape({
+    applications: PropTypes.object,
+    interfaces: PropTypes.object,
+    modules: PropTypes.object,
+    isFinished: PropTypes.bool,
   }),
 };
 

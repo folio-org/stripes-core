@@ -15,7 +15,16 @@ const getUserTenantsPermissions = async (stripes, tenants = []) => {
   } = stripes;
   const userTenantIds = tenants.map(tenant => tenant.id || tenant);
 
-  const permPath = stripes.hasInterface('users-keycloak') ? 'users-keycloak' : 'bl-users';
+  // Determine permission path asynchronously
+  let permPath = 'bl-users'; // default fallback
+  try {
+    const hasKeycloak = await stripes.hasInterface('users-keycloak');
+    permPath = hasKeycloak ? 'users-keycloak' : 'bl-users';
+  } catch (error) {
+    console.error('Failed to check users-keycloak interface:', error);
+    // Use fallback value
+  }
+
   const permUrl = `${url}/${permPath}/_self?expandPermissions=true`;
 
   const promises = userTenantIds.map(async (tenantId) => {

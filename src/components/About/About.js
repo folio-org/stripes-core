@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import { config } from 'stripes-config';
@@ -13,6 +13,7 @@ import WarningBanner from './WarningBanner';
 import { withModules } from '../Modules';
 import css from './About.css';
 import { useStripes } from '../../StripesContext';
+import { entitlementService } from '../../discoverServices';
 import AboutOkapi from './AboutOkapi';
 import AboutApplicationVersions from './AboutApplicationVersions';
 import AboutStripes from './AboutStripes';
@@ -25,6 +26,8 @@ const About = (props) => {
   const titleRef = useRef(null);
   const bannerRef = useRef(null);
   const stripes = useStripes();
+  const [entitlementData, setEntitlementData] = useState(null);
+  const [isLoadingFinished, setIsLoadingFinished] = useState(false);
 
   useEffect(() => {
     if (bannerRef.current) {
@@ -34,9 +37,38 @@ const About = (props) => {
     }
   }, []);
 
-  const applications = stripes.discovery?.applications || {};
-  const interfaces = stripes.discovery?.interfaces || {};
-  const isLoadingFinished = stripes.discovery?.isFinished;
+  useEffect(() => {
+    // Load entitlement data asynchronously
+    const loadEntitlementData = async () => {
+      try {
+        const [applications, interfaces, finished] = await Promise.all([
+          entitlementService.getApplications(),
+          entitlementService.getInterfaces(),
+          entitlementService.isFinished()
+        ]);
+        
+        setEntitlementData({
+          applications,
+          interfaces
+        });
+        setIsLoadingFinished(finished);
+      } catch (error) {
+        console.error('Failed to load entitlement data:', error);
+        // Set empty data on error
+        setEntitlementData({
+          applications: {},
+          interfaces: {}
+        });
+        setIsLoadingFinished(true);
+      }
+    };
+
+    loadEntitlementData();
+  }, []);
+
+  // Use fallback values while loading
+  const applications = entitlementData?.applications || {};
+  const interfaces = entitlementData?.interfaces || {};
   const na = Object.keys(applications).length;
 
   const numApplicationsMsg = (
@@ -91,7 +123,12 @@ const About = (props) => {
             </div>
           </>
         ) : (
-          <AboutOkapi discovery={stripes.discovery} />
+          <AboutOkapi 
+            discovery={entitlementData ? {
+              ...entitlementData,
+              isFinished: isLoadingFinished
+            } : stripes.discovery} 
+          />
         )}
       </div>
     </Pane>
