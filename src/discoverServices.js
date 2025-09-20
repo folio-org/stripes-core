@@ -1,5 +1,6 @@
 import { some } from 'lodash';
 import { config } from 'stripes-config';
+import { getEntitlementService } from './entitlementService';
 
 function getHeaders(tenant, token) {
   return {

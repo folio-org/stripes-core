@@ -1,12 +1,14 @@
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { isVersionCompatible } from './discoverServices';
+import { isVersionCompatible, getEntitlementDataAsync } from './discoverServices';
+import { getEntitlementService } from './entitlementService';
 
 
 export const stripesShape = PropTypes.shape({
   // Properties provided by the class
   clone: PropTypes.func.isRequired,
   hasInterface: PropTypes.func.isRequired,
+  getEntitlementDataAsync: PropTypes.func.isRequired,
   hasPerm: PropTypes.func.isRequired,
   hasAnyPerm: PropTypes.func.isRequired,
 
@@ -90,6 +92,17 @@ export const stripesShape = PropTypes.shape({
 class Stripes {
   constructor(properties) {
     Object.assign(this, properties);
+    
+    // Initialize the entitlement service if we have a store
+    if (this.store) {
+      try {
+        getEntitlementService(this.store);
+      } catch (error) {
+        // EntitlementService initialization failed, but we can continue
+        // The service will be initialized later when needed
+        this.logger?.log('entitlement', 'EntitlementService initialization deferred:', error.message);
+      }
+    }
   }
 
   /**
@@ -136,25 +149,81 @@ class Stripes {
     return ok;
   }
 
+  /**
+   * hasInterface
+   * Check if a specific interface is available.
+   * Returns synchronously if discovery is complete, or a Promise if discovery is still in progress.
+   * 
+   * @param {string} name Interface name
+   * @param {string} versionWanted Optional version requirement
+   * @returns {boolean|string|undefined|Promise<boolean|string|undefined>} 
+   *   - If discovery complete: boolean (exists), string (version), undefined (missing), or 0 (incompatible)
+   *   - If discovery in progress: Promise that resolves to the above values
+   */
   hasInterface(name, versionWanted) {
     const logger = this.logger;
-    if (!this.discovery || !this.discovery.interfaces) {
-      logger.log('interface', `not checking interface '${name}': no discovery yet`);
-      return undefined;
+    
+    // If discovery data is available, handle synchronously
+    if (this.discovery && this.discovery.interfaces) {
+      const version = this.discovery.interfaces[name];
+      if (!version) {
+        logger.log('interface', `interface '${name}' is missing`);
+        return undefined;
+      }
+      if (!versionWanted) {
+        logger.log('interface', `interface '${name}' exists`);
+        return true;
+      }
+      const ok = isVersionCompatible(version, versionWanted);
+      const cond = ok ? 'is' : 'is not';
+      logger.log('interface', `interface '${name}' v${versionWanted} ${cond} compatible with available v${version}`);
+      return ok ? version : 0;
     }
-    const version = this.discovery.interfaces[name];
-    if (!version) {
-      logger.log('interface', `interface '${name}' is missing`);
-      return undefined;
+    
+    // If discovery is not complete and we have a store, return a Promise
+    if (this.store) {
+      logger.log('interface', `discovery not complete, returning Promise for interface '${name}'`);
+      const { getEntitlementService } = require('./entitlementService');
+      const service = getEntitlementService(this.store);
+      return service.hasInterface(name, versionWanted);
     }
-    if (!versionWanted) {
-      logger.log('interface', `interface '${name}' exists`);
-      return true;
+    
+    // Fallback for cases where we have no discovery and no store
+    logger.log('interface', `not checking interface '${name}': no discovery yet`);
+    return undefined;
+  }
+
+  /**
+   * getDiscovery
+   * Access discovery data, returning a Promise if discovery is not yet complete.
+   * This provides async access to the same data normally available via this.discovery
+   * 
+   * @returns {Object|Promise<Object>} Discovery data or Promise that resolves to discovery data
+   */
+  getDiscovery() {
+    // If discovery data is available, return it synchronously
+    if (this.discovery && this.discovery.isFinished) {
+      return this.discovery;
     }
-    const ok = isVersionCompatible(version, versionWanted);
-    const cond = ok ? 'is' : 'is not';
-    logger.log('interface', `interface '${name}' v${versionWanted} ${cond} compatible with available v${version}`);
-    return ok ? version : 0;
+    
+    // If discovery is not complete and we have a store, return a Promise
+    if (this.store) {
+      return getEntitlementDataAsync(this.store);
+    }
+    
+    // Fallback - return what we have (even if incomplete)
+    return this.discovery || {};
+  }
+
+  /**
+   * getEntitlementDataAsync
+   * Returns a Promise that resolves to all entitlement data including applications,
+   * interfaces, modules, etc.
+   * 
+   * @returns {Promise<Object>} Promise that resolves to entitlement data
+   */
+  getEntitlementDataAsync() {
+    return getEntitlementDataAsync(this.store);
   }
 
   clone(extraProps) {

@@ -6,6 +6,7 @@ export { CalloutContext, useCallout } from './src/CalloutContext';
 export { stripesShape } from './src/Stripes';
 export { withStripes, useStripes, StripesContext } from './src/StripesContext';
 export { useModules } from './src/ModulesContext';
+export { useModulesAsync, AsyncModulesProvider } from './src/AsyncModulesContext';
 export { withModule, withModules } from './src/components/Modules';
 export { default as stripesConnect } from './src/stripesConnect';
 export { default as Pluggable } from './src/Pluggable';
@@ -16,6 +17,20 @@ export { default as withOkapiKy } from './src/withOkapiKy';
 export { default as useCustomFields } from './src/useCustomFields';
 export { default as createReactQueryClient } from './src/createReactQueryClient';
 export { useAppOrderContext } from './src/components/MainNav/AppOrderProvider';
+
+/* entitlement services */
+export { 
+  createEntitlementService, 
+  getEntitlementService, 
+  resetEntitlementService 
+} from './src/entitlementService';
+
+/* config services */
+export { 
+  getConfigService, 
+  createConfigService, 
+  resetConfigService 
+} from './src/configService';
 
 /* components */
 export { default as AppContextMenu } from './src/components/MainNav/CurrentApp/AppContextMenu';
@@ -45,6 +60,7 @@ export { useSettings } from './src/queries';
 /* Hooks */
 export { useUserTenantPermissions } from './src/hooks';
 export { useModuleInfo } from './src/hooks';
+export { useModuleInfoAsync } from './src/hooks';
 export { usePreferences } from './src/hooks';
 export { useTenantPreferences } from './src/hooks';
 

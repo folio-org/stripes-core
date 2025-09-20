@@ -8,6 +8,7 @@
 * Show user-friendly labels on ECS pre-login screen. Refs STCOR-899.
 * Sort app links in the main navigation by their `displayName` by default. Refs STCOR-964.
 * Change default Idle Session Timeout to `4h` from `1h`. Refs STCOR-962.
+* Return entitlement data in a Promise. Adds async API for both discovery data and stripes-config entitlement data including modules, tenant options, and interface information. Refs STCOR-976.
 * Prune unused `./utils/` scripts, deps. Refs STCOR-959.
 * Don't show IST modal if `flsTimeRemaining` less than config.rtr.idleModalTTL. STCOR-884.
 * Allow customizing request timeout in `useOkapiKy`. STCOR-967.
