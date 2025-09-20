@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import { config } from 'stripes-config';
@@ -7,6 +7,8 @@ import {
   Loading,
   Pane,
 } from '@folio/stripes-components';
+
+import entitlementService from '../../entitlementService';
 
 import AboutInstallMessages from './AboutInstallMessages';
 import WarningBanner from './WarningBanner';
@@ -25,6 +27,8 @@ const About = (props) => {
   const titleRef = useRef(null);
   const bannerRef = useRef(null);
   const stripes = useStripes();
+  const [tenantOptions, setTenantOptions] = useState(null);
+  const [isLoadingTenantOptions, setIsLoadingTenantOptions] = useState(true);
 
   useEffect(() => {
     if (bannerRef.current) {
@@ -32,6 +36,22 @@ const About = (props) => {
     } else {
       titleRef.current?.focus();
     }
+  }, []);
+
+  useEffect(() => {
+    const loadTenantOptions = async () => {
+      try {
+        const options = await entitlementService.getTenantOptions();
+        setTenantOptions(options);
+      } catch (error) {
+        console.error('Failed to load tenant options:', error);
+        setTenantOptions(null);
+      } finally {
+        setIsLoadingTenantOptions(false);
+      }
+    };
+
+    loadTenantOptions();
   }, []);
 
   const applications = stripes.discovery?.applications || {};
@@ -63,7 +83,9 @@ const About = (props) => {
       )}
       <AboutInstallMessages />
       <div className={css.versionsContainer}>
-        {config.tenantOptions ? (
+        {isLoadingTenantOptions ? (
+          <Loading />
+        ) : tenantOptions ? (
           <>
             <div className={css.versionsColumn} data-test-stripes-core-about-module-versions>
               <AboutApplicationVersions message={numApplicationsMsg} applications={applications} />

@@ -6,6 +6,7 @@ import { loadDayJSLocale } from '@folio/stripes-components';
 
 import { discoverServices } from './discoverServices';
 import { resetStore } from './mainActions';
+import entitlementService from './entitlementService';
 
 import {
   clearCurrentUser,
@@ -160,14 +161,74 @@ export const getLoginTenant = (stripesOkapi, stripesConfig) => {
     return { tenant, clientId };
   }
 
-  // derive from stripes.config.js::config::tenantOptions
-  if (stripesConfig?.tenantOptions && Object.keys(stripesConfig?.tenantOptions).length === 1) {
-    const key = Object.keys(stripesConfig.tenantOptions)[0];
-    tenant = stripesConfig.tenantOptions[key]?.name;
-    clientId = stripesConfig.tenantOptions[key]?.clientId;
+  // Use stripesConfig.tenantOptions as the primary source for backward compatibility
+  // Only use entitlementService as an enhancement when config.tenantOptions is not available
+  let tenantOptions = stripesConfig?.tenantOptions;
+  
+  // If stripesConfig doesn't have tenantOptions, try to get from entitlementService cache
+  if (!tenantOptions || Object.keys(tenantOptions).length === 0) {
+    try {
+      const cachedOptions = entitlementService.getCachedTenantOptions();
+      // Only use cached options if they actually have content
+      if (cachedOptions && Object.keys(cachedOptions).length > 0) {
+        tenantOptions = cachedOptions;
+      }
+    } catch (error) {
+      // Ignore error and continue with empty tenantOptions
+    }
+  }
+
+  if (tenantOptions && Object.keys(tenantOptions).length === 1) {
+    const key = Object.keys(tenantOptions)[0];
+    tenant = tenantOptions[key]?.name;
+    clientId = tenantOptions[key]?.clientId;
     if (tenant && clientId) {
       return { tenant, clientId };
     }
+  }
+
+  // default to stripes.config.js::okapi
+  return {
+    tenant: stripesOkapi?.tenant,
+    clientId: stripesOkapi?.clientId,
+  };
+};
+
+/**
+ * getLoginTenantAsync
+ * Asynchronous version of getLoginTenant that uses the entitlementService.
+ * Retrieve tenant and clientId values. In order of preference, look here:
+ *
+ * 1 the URL for params named tenant and client_id
+ * 2 entitlementService tenantOptions iff it contains a single tenant
+ * 3 stripes.config.js::okapi, the deprecated-but-historical location of these
+ *   values
+ *
+ * @param {*} stripesOkapi stripes.config.js::okapi
+ * @returns {Promise<{ tenant: string, clientId: string }>}
+ */
+export const getLoginTenantAsync = async (stripesOkapi) => {
+  // derive from the URL
+  const urlParams = new URLSearchParams(window.location.search);
+  let tenant = urlParams.get('tenant');
+  let clientId = urlParams.get('client_id');
+  if (tenant && clientId) {
+    return { tenant, clientId };
+  }
+
+  // derive from entitlementService tenantOptions
+  try {
+    const tenantOptions = await entitlementService.getTenantOptions();
+    if (tenantOptions && Object.keys(tenantOptions).length === 1) {
+      const key = Object.keys(tenantOptions)[0];
+      tenant = tenantOptions[key]?.name;
+      clientId = tenantOptions[key]?.clientId;
+      if (tenant && clientId) {
+        return { tenant, clientId };
+      }
+    }
+  } catch (error) {
+    console.warn('Failed to get tenant options from entitlementService, falling back to okapi config:', error);
   }
 
   // default to stripes.config.js::okapi

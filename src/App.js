@@ -14,7 +14,7 @@ import css from './components/SessionEventContainer/style.css';
 
 import Root from './components/Root';
 import { eventsPortal } from './constants';
-import { getLoginTenant } from './loginServices';
+import { getLoginTenantAsync } from './loginServices';
 
 const StrictWrapper = ({ children }) => {
   if (config.disableStrictMode) {
@@ -70,22 +70,32 @@ export default class StripesCore extends Component {
   constructor(props) {
     super(props);
 
-    if (isStorageEnabled()) {
-      const parsedTenant = getLoginTenant(okapiConfig, config);
+    this.state = { 
+      isStorageEnabled: isStorageEnabled(),
+      isStoreInitialized: false
+    };
+  }
 
-      const okapi = (typeof okapiConfig === 'object' && Object.keys(okapiConfig).length > 0)
-        ? { ...okapiConfig, ...parsedTenant } : { withoutOkapi: true };
+  async componentDidMount() {
+    if (this.state.isStorageEnabled) {
+      try {
+        const parsedTenant = await getLoginTenantAsync(okapiConfig, config);
 
-      const initialState = merge({}, { okapi }, props.initialState);
+        const okapi = (typeof okapiConfig === 'object' && Object.keys(okapiConfig).length > 0)
+          ? { ...okapiConfig, ...parsedTenant } : { withoutOkapi: true };
 
-      this.logger = configureLogger(config);
-      this.epics = configureEpics(connectErrorEpic);
-      this.store = configureStore(initialState, this.logger, this.epics);
-      this.actionNames = gatherActions();
+        const initialState = merge({}, { okapi }, this.props.initialState);
 
-      this.state = { isStorageEnabled: true };
-    } else {
-      this.state = { isStorageEnabled: false };
+        this.logger = configureLogger(config);
+        this.epics = configureEpics(connectErrorEpic);
+        this.store = configureStore(initialState, this.logger, this.epics);
+        this.actionNames = gatherActions();
+
+        this.setState({ isStoreInitialized: true });
+      } catch (error) {
+        console.error('Failed to initialize app store:', error);
+        this.setState({ isStorageEnabled: false });
+      }
     }
   }
 
@@ -99,6 +109,21 @@ export default class StripesCore extends Component {
     // stop and show an error message.
     if (!this.state.isStorageEnabled) {
       return <AppConfigError />;
+    }
+
+    // Show loading state while store is being initialized
+    if (!this.state.isStoreInitialized) {
+      return (
+        <div style={{ 
+          display: 'flex', 
+          justifyContent: 'center', 
+          alignItems: 'center', 
+          height: '100vh',
+          fontSize: '18px'
+        }}>
+          Loading...
+        </div>
+      );
     }
 
     // no need to pass along `initialState`

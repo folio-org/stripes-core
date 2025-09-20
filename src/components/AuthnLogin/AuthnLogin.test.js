@@ -1,7 +1,7 @@
 /* shhhh, eslint, it's ok. we need "unused" imports for mocks */
 /* eslint-disable no-unused-vars */
 
-import { render, screen } from '@folio/jest-config-stripes/testing-library/react';
+import { render, screen, waitFor } from '@folio/jest-config-stripes/testing-library/react';
 
 import { Redirect as InternalRedirect } from 'react-router-dom';
 import Redirect from '../Redirect';
@@ -9,6 +9,12 @@ import Login from '../Login';
 import PreLoginLanding from '../PreLoginLanding';
 
 import AuthnLogin from './AuthnLogin';
+
+// Mock entitlementService to return empty object so it falls back to config
+jest.mock('../../entitlementService', () => ({
+  getTenantOptions: jest.fn().mockResolvedValue({}),
+  getCachedTenantOptions: jest.fn().mockReturnValue({}),
+}));
 
 jest.mock('react-router-dom', () => ({
   Redirect: () => '<internalredirect>',
@@ -31,15 +37,17 @@ const store = {
 
 describe('RootWithIntl', () => {
   describe('AuthnLogin', () => {
-    it('handles legacy login', () => {
+    it('handles legacy login', async () => {
       const stripes = { okapi: {}, config: {}, store };
       render(<AuthnLogin stripes={stripes} />);
 
-      expect(screen.getByText(/<login>/)).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByText(/<login>/)).toBeInTheDocument();
+      });
     });
 
     describe('handles third-party login', () => {
-      it('handles single-tenant', () => {
+      it('handles single-tenant', async () => {
         const stripes = {
           okapi: { authnUrl: 'https://barbie.com' },
           config: {
@@ -52,10 +60,12 @@ describe('RootWithIntl', () => {
         };
         render(<AuthnLogin stripes={stripes} />);
 
-        expect(screen.getByText(/<redirect>/)).toBeInTheDocument();
+        await waitFor(() => {
+          expect(screen.getByText(/<redirect>/)).toBeInTheDocument();
+        });
       });
 
-      it('handles multi-tenant', () => {
+      it('handles multi-tenant', async () => {
         const stripes = {
           okapi: { authnUrl: 'https://oppie.com' },
           config: {
@@ -69,7 +79,9 @@ describe('RootWithIntl', () => {
         };
         render(<AuthnLogin stripes={stripes} />);
 
-        expect(screen.getByText(/<preloginlanding>/)).toBeInTheDocument();
+        await waitFor(() => {
+          expect(screen.getByText(/<preloginlanding>/)).toBeInTheDocument();
+        });
       });
     });
   });

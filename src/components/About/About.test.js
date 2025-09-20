@@ -39,6 +39,10 @@ jest.mock('stripes-config', () => ({
   config: { tenantOptions: true },
 }));
 
+jest.mock('../../entitlementService', () => ({
+  getTenantOptions: jest.fn(() => Promise.resolve({ test: 'tenant' })),
+}));
+
 // set query retries to false. otherwise, react-query will thoughtfully
 // (but unhelpfully, in the context of testing) retry a failed query
 // several times causing the test to timeout when what we really want
@@ -103,6 +107,9 @@ describe('About', () => {
         <About />
       </QueryClientProvider>
     );
+
+    // Wait for the async loading to complete
+    await screen.findByText(/AboutApplicationVersions/);
 
     expect(screen.getByText(/WarningBanner/)).toBeInTheDocument();
     expect(screen.getByText(/AboutInstallMessages/)).toBeInTheDocument();

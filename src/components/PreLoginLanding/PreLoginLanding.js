@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { useIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 
@@ -6,11 +6,31 @@ import { Button, Select, Col, Row } from '@folio/stripes-components';
 import OrganizationLogo from '../OrganizationLogo';
 import { useStripes } from '../../StripesContext';
 import { getOIDCRedirectUri } from '../../loginServices';
+import entitlementService from '../../entitlementService';
 import styles from './index.css';
 
 function PreLoginLanding({ onSelectTenant }) {
   const intl = useIntl();
-  const { okapi, config: { tenantOptions = {} } } = useStripes();
+  const { okapi, config: { tenantOptions: fallbackTenantOptions = {} } } = useStripes();
+  const [tenantOptions, setTenantOptions] = useState(fallbackTenantOptions);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const loadTenantOptions = async () => {
+      try {
+        const asyncTenantOptions = await entitlementService.getTenantOptions();
+        // Use async tenant options if available, otherwise fall back to the ones from useStripes
+        setTenantOptions(Object.keys(asyncTenantOptions).length > 0 ? asyncTenantOptions : fallbackTenantOptions);
+      } catch (error) {
+        console.warn('Failed to load tenant options from entitlementService, using fallback:', error);
+        setTenantOptions(fallbackTenantOptions);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadTenantOptions();
+  }, [fallbackTenantOptions]);
 
   const redirectUri = getOIDCRedirectUri(okapi.tenant, okapi.clientId);
   const options = Object.values(tenantOptions).map(i => ({ value: i.name, label: i.displayName ?? i.name }));
@@ -51,11 +71,12 @@ function PreLoginLanding({ onSelectTenant }) {
                 label={intl.formatMessage({ id: 'stripes-core.tenantLibrary' })}
                 defaultValue=""
                 onChange={handleChangeTenant}
-                dataOptions={[...options, { value: '', label:intl.formatMessage({ id:'stripes-core.tenantChoose' }) }]}
+                disabled={isLoading}
+                dataOptions={[...options, { value: '', label: isLoading ? intl.formatMessage({ id: 'stripes-core.loading' }) : intl.formatMessage({ id:'stripes-core.tenantChoose' }) }]}
               />
               <Button
                 buttonClass={styles.submitButton}
-                disabled={submitButtonRef.current.disabled}
+                disabled={submitButtonRef.current.disabled || isLoading}
                 ref={submitButtonRef}
                 onClick={() => window.location.assign(getLoginUrl())}
                 buttonStyle="primary"
