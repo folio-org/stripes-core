@@ -1,5 +1,5 @@
 import React from 'react';
-import { before, afterEach, beforeEach, describe, it } from 'mocha';
+import { before, beforeEach, describe, it } from 'mocha';
 import {
   HTML,
   TextField,
