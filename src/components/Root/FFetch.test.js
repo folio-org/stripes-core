@@ -2,9 +2,11 @@
 // FFetch for the reassign globals side-effect in its constructor.
 /* eslint-disable no-unused-vars */
 
+import { waitFor } from '@folio/jest-config-stripes/testing-library/react';
 import ms from 'ms';
 
 import { getTokenExpiry } from '../../loginServices';
+import * as TokenUtil from './token-util';
 import { FFetch } from './FFetch';
 import { RTRError, UnexpectedResourceError } from './Errors';
 import {
@@ -24,8 +26,21 @@ const log = jest.fn();
 
 const mockFetch = jest.fn();
 
+const mockBroadcastChannel = {
+  postMessage: jest.fn(),
+  onmessage: null,
+  close: jest.fn(),
+  addEventListener: jest.fn((event, callback) => {
+    if (event === 'message') {
+      mockBroadcastChannel.onmessage = callback;
+    }
+  }),
+  removeEventListener: jest.fn(),
+};
+
 describe('FFetch class', () => {
   beforeEach(() => {
+    global.BroadcastChannel = jest.fn(() => mockBroadcastChannel);
     global.fetch = mockFetch;
     getTokenExpiry.mockResolvedValue({
       atExpires: Date.now() + (10 * 60 * 1000),
@@ -40,11 +55,13 @@ describe('FFetch class', () => {
   describe('Calling a non-FOLIO API', () => {
     it('calls native fetch once', async () => {
       mockFetch.mockResolvedValueOnce('non-okapi-success');
-      const testFfetch = new FFetch({ logger: { log },
-        okapi:{
+      const testFfetch = new FFetch({
+        logger: { log },
+        okapi: {
           url: 'okapiUrl',
           tenant: 'okapiTenant'
-        } });
+        }
+      });
       testFfetch.replaceFetch();
       testFfetch.replaceXMLHttpRequest();
 
@@ -57,11 +74,13 @@ describe('FFetch class', () => {
   describe('Calling a FOLIO API fetch', () => {
     it('calls native fetch once', async () => {
       mockFetch.mockResolvedValueOnce('okapi-success');
-      const testFfetch = new FFetch({ logger: { log },
-        okapi:{
+      const testFfetch = new FFetch({
+        logger: { log },
+        okapi: {
           url: 'okapiUrl',
           tenant: 'okapiTenant'
-        } });
+        }
+      });
       testFfetch.replaceFetch();
       testFfetch.replaceXMLHttpRequest();
       const response = await global.fetch('okapiUrl/whatever', { testOption: 'test' });
@@ -89,8 +108,11 @@ describe('FFetch class', () => {
         logger: { log },
         store: {
           dispatch: jest.fn(),
+          getState: () => ({
+            okapi: {}
+          })
         },
-        okapi:{
+        okapi: {
           url: 'okapiUrl',
           tenant: 'okapiTenant'
         }
@@ -112,11 +134,13 @@ describe('FFetch class', () => {
   describe('logging out', () => {
     it('calls native fetch once to log out', async () => {
       mockFetch.mockResolvedValueOnce('logged out');
-      const testFfetch = new FFetch({ logger: { log },
-        okapi:{
+      const testFfetch = new FFetch({
+        logger: { log },
+        okapi: {
           url: 'okapiUrl',
           tenant: 'okapiTenant'
-        } });
+        }
+      });
       testFfetch.replaceFetch();
       testFfetch.replaceXMLHttpRequest();
 
@@ -130,11 +154,13 @@ describe('FFetch class', () => {
     it('fetch failure is silently trapped', async () => {
       mockFetch.mockRejectedValueOnce('logged out FAIL');
 
-      const testFfetch = new FFetch({ logger: { log },
-        okapi:{
+      const testFfetch = new FFetch({
+        logger: { log },
+        okapi: {
           url: 'okapiUrl',
           tenant: 'okapiTenant'
-        } });
+        }
+      });
       testFfetch.replaceFetch();
       testFfetch.replaceXMLHttpRequest();
 
@@ -153,11 +179,13 @@ describe('FFetch class', () => {
   describe('logging out', () => {
     it('Calling an okapi fetch with valid token...', async () => {
       mockFetch.mockResolvedValueOnce('okapi success');
-      const testFfetch = new FFetch({ logger: { log },
-        okapi:{
+      const testFfetch = new FFetch({
+        logger: { log },
+        okapi: {
           url: 'okapiUrl',
           tenant: 'okapiTenant'
-        } });
+        }
+      });
       testFfetch.replaceFetch();
       testFfetch.replaceXMLHttpRequest();
 
@@ -198,11 +226,14 @@ describe('FFetch class', () => {
         logger: { log },
         store: {
           dispatch: jest.fn(),
+          getState: () => ({
+            okapi: {}
+          })
         },
         rtrConfig: {
           fixedLengthSessionWarningTTL: '1m',
         },
-        okapi:{
+        okapi: {
           url: 'okapiUrl',
           tenant: 'okapiTenant'
         }
@@ -258,11 +289,14 @@ describe('FFetch class', () => {
         logger: { log },
         store: {
           dispatch: jest.fn(),
+          getState: () => ({
+            okapi: {}
+          })
         },
         rtrConfig: {
           fixedLengthSessionWarningTTL: '1m',
         },
-        okapi:{
+        okapi: {
           url: 'okapiUrl',
           tenant: 'okapiTenant'
         }
@@ -300,11 +334,14 @@ describe('FFetch class', () => {
         logger: { log },
         store: {
           dispatch: jest.fn(),
+          getState: () => ({
+            okapi: {}
+          })
         },
         rtrConfig: {
           fixedLengthSessionWarningTTL: '1m',
         },
-        okapi:{
+        okapi: {
           url: 'okapiUrl',
           tenant: 'okapiTenant'
         }
@@ -343,8 +380,11 @@ describe('FFetch class', () => {
         logger: { log },
         store: {
           dispatch: jest.fn(),
+          getState: () => ({
+            okapi: {}
+          })
         },
-        okapi:{
+        okapi: {
           url: 'okapiUrl',
           tenant: 'okapiTenant'
         }
@@ -387,11 +427,14 @@ describe('FFetch class', () => {
         logger: { log },
         store: {
           dispatch: jest.fn(),
+          getState: () => ({
+            okapi: {}
+          })
         },
         rtrConfig: {
           fixedLengthSessionWarningTTL: '1m',
         },
-        okapi:{
+        okapi: {
           url: 'okapiUrl',
           tenant: 'okapiTenant'
         }
@@ -423,11 +466,13 @@ describe('FFetch class', () => {
     it('returns the error', async () => {
       mockFetch.mockResolvedValue('success')
         .mockResolvedValueOnce('failure');
-      const testFfetch = new FFetch({ logger: { log },
-        okapi:{
+      const testFfetch = new FFetch({
+        logger: { log },
+        okapi: {
           url: 'okapiUrl',
           tenant: 'okapiTenant'
-        } });
+        }
+      });
       testFfetch.replaceFetch();
       testFfetch.replaceXMLHttpRequest();
 
@@ -449,11 +494,13 @@ describe('FFetch class', () => {
             },
           }
         ));
-      const testFfetch = new FFetch({ logger: { log },
-        okapi:{
+      const testFfetch = new FFetch({
+        logger: { log },
+        okapi: {
           url: 'okapiUrl',
           tenant: 'okapiTenant'
-        } });
+        }
+      });
       testFfetch.replaceFetch();
       testFfetch.replaceXMLHttpRequest();
 
@@ -477,11 +524,13 @@ describe('FFetch class', () => {
           }
         ))
         .mockRejectedValueOnce(new Error('token error message'));
-      const testFfetch = new FFetch({ logger: { log },
-        okapi:{
+      const testFfetch = new FFetch({
+        logger: { log },
+        okapi: {
           url: 'okapiUrl',
           tenant: 'okapiTenant'
-        } });
+        }
+      });
       testFfetch.replaceFetch();
       testFfetch.replaceXMLHttpRequest();
 
@@ -516,11 +565,13 @@ describe('FFetch class', () => {
             }
           }
         ));
-      const testFfetch = new FFetch({ logger: { log },
-        okapi:{
+      const testFfetch = new FFetch({
+        logger: { log },
+        okapi: {
           url: 'okapiUrl',
           tenant: 'okapiTenant'
-        } });
+        }
+      });
       testFfetch.replaceFetch();
       testFfetch.replaceXMLHttpRequest();
 
@@ -550,11 +601,13 @@ describe('FFetch class', () => {
             }
           }
         ));
-      const testFfetch = new FFetch({ logger: { log },
-        okapi:{
+      const testFfetch = new FFetch({
+        logger: { log },
+        okapi: {
           url: 'okapiUrl',
           tenant: 'okapiTenant'
-        } });
+        }
+      });
       testFfetch.replaceFetch();
       testFfetch.replaceXMLHttpRequest();
 
@@ -584,11 +637,13 @@ describe('FFetch class', () => {
             }
           }
         ));
-      const testFfetch = new FFetch({ logger: { log },
-        okapi:{
+      const testFfetch = new FFetch({
+        logger: { log },
+        okapi: {
           url: 'okapiUrl',
           tenant: 'okapiTenant'
-        } });
+        }
+      });
       testFfetch.replaceFetch();
       testFfetch.replaceXMLHttpRequest();
 

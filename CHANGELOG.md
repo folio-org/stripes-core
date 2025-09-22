@@ -16,6 +16,10 @@
 * For OIDC login - store `tenant` and `clientId` in `redirect_uri` url parameter, instead of localStorage. Refs STCOR-972.
 * Disclose personal data disclosure (i.e. user data cached in storage). Refs STCOR-973.
 * Removed code that switches locale, numbering system etc to tenant settings when user doesn't have a locale preference. Refs STCOR-981.
+* Implement active window id/messaging for RTR functionality. The last window/tab the user interacted with will handle token rotation. Refs STCOR-978.
+* Remove `RTR_IS_ROTATING` from local storage before dispatching the `RTR_SUCCESS_EVENT` to correctly determine the `RTR_IS_ROTATING` state in the `rotationHandler` function. Refs STCOR-983.
+* Correctly implement tenant-selection ringdown during application init. Refs STCOR-985.
+* Conform `@apollo/client` init to the v4 API to suppress warnings. Refs STCOR-992.
 
 ## [11.0.0](https://github.com/folio-org/stripes-core/tree/v11.0.0) (2025-02-24)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.2.0...v11.0.0)
