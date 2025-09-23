@@ -1,20 +1,29 @@
 import React, { Component, useContext } from 'react';
 
 import { describe, beforeEach, it } from 'mocha';
-import { expect } from 'chai';
-
-
-import CalloutInteractor from '@folio/stripes-components/lib/Callout/tests/interactor';
+import {
+  Callout as CalloutInteractor,
+  HTML,
+  Link
+} from '@folio/stripes-testing';
 
 import { CalloutContext } from '../../../src/CalloutContext';
 import setupApplication from '../helpers/setup-core-application';
-import AppInteractor from '../interactors/app';
+import always from '../helpers/always';
 
 const HookApp = () => {
   const callout = useContext(CalloutContext);
   callout.sendCallout({ message: 'Hook', type: 'success' });
   return <h1>Hook App</h1>;
 };
+
+
+// local until appList interactor is exported from `@folio/stripes-testing`
+export const AppListInteractor = HTML.extend('App List')
+  .selector('[data-test-app-list]')
+  .actions({
+    choose: ({ find }, linkText) => find(Link(linkText)).click(),
+  });
 
 class ContextApp extends Component {
   static contextType = CalloutContext;
@@ -31,8 +40,8 @@ class ContextApp extends Component {
 const CalloutFreeApp = () => <h1>No Callouts!</h1>;
 
 describe('CalloutContext', () => {
-  const app = new AppInteractor();
-  const callout = new CalloutInteractor();
+  const app = AppListInteractor();
+  const callout = CalloutInteractor();
 
   setupApplication({
     modules: [{
@@ -63,41 +72,33 @@ describe('CalloutContext', () => {
 
   describe('navigating to the Hook app that shows a success Callout', () => {
     beforeEach(async () => {
-      await app.nav('Hook').click();
+      await app.choose('Hook');
     });
 
-    it('shows a success callout', () => {
-      expect(callout.successCalloutIsPresent).to.be.true;
-    });
+    it('shows a success callout', () => callout.is({ type: 'success' }));
 
     describe('navigating to another app that shows no callouts', () => {
       beforeEach(async () => {
-        await app.nav('No Callout').click();
+        await app.choose('No Callout');
       });
 
-      it('continues to show the previous success callout', () => {
-        expect(callout.successCalloutIsPresent).to.be.true;
-      });
+      it('continues to show the previous success callout', () => always(CalloutInteractor({ type: 'success' }).exists));
     });
   });
 
   describe('navigating to the Context app that shows an error Callout', () => {
     beforeEach(async () => {
-      await app.nav('Context').click();
+      await app.choose('Context');
     });
 
-    it('shows a error callout', () => {
-      expect(callout.errorCalloutIsPresent).to.be.true;
-    });
+    it('shows a error callout', () => CalloutInteractor({ type: 'error' }).exists());
 
     describe('navigating to another app that shows no callouts', () => {
       beforeEach(async () => {
-        await app.nav('No Callout').click();
+        await app.choose('No Callout');
       });
 
-      it('continues to show the previous error callout', () => {
-        expect(callout.errorCalloutIsPresent).to.be.true;
-      });
+      it('continues to show the previous error callout', () => always(CalloutInteractor({ type: 'error' }).exists));
     });
   });
 });
