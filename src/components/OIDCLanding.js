@@ -36,11 +36,14 @@ const OIDCLanding = () => {
 
   const { data: tokenData, isLoading, error: tokenError } = useExchangeCode();
 
+  const atDefaultExpiration = Date.now() + (60 * 1000);
+  const rtDefaultExpiration = Date.now() + (2 * 60 * 1000);
+
   useEffect(() => {
     if (tokenData) {
       setTokenExpiry({
-        atExpires: tokenData.accessTokenExpiration ? new Date(tokenData.accessTokenExpiration).getTime() : Date.now() + (60 * 1000),
-        rtExpires: tokenData.refreshTokenExpiration ? new Date(tokenData.refreshTokenExpiration).getTime() : Date.now() + (2 * 60 * 1000),
+        atExpires: tokenData.accessTokenExpiration ? new Date(tokenData.accessTokenExpiration).getTime() : atDefaultExpiration,
+        rtExpires: tokenData.refreshTokenExpiration ? new Date(tokenData.refreshTokenExpiration).getTime() : rtDefaultExpiration,
       })
         .then(() => {
           return storeLogoutTenant(okapi.tenant);

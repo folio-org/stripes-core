@@ -19,9 +19,7 @@ describe('useExchangeCode', () => {
     const history = createMemoryHistory();
 
     render(<Harness history={history} stripes={stripes}><OIDCLanding /></Harness>);
-    await waitFor(() => {
-      screen.findByText('stripes-core.errors.oidc');
-    });
+    await screen.findByText('stripes-core.errors.oidc');
   });
 
   it('extracts errors from the authn/token reponse', async () => {

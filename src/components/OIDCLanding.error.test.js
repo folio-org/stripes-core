@@ -47,9 +47,7 @@ describe('OIDCLanding', () => {
 
     render(<OIDCLanding />);
 
-    await waitFor(() => {
-      screen.getByText(error);
-    });
+    screen.findByText(error);
   });
 
   it('displays an error on session init failure', async () => {
@@ -61,8 +59,6 @@ describe('OIDCLanding', () => {
     });
 
     render(<OIDCLanding />);
-    await waitFor(() => {
-      screen.getByText('requestUserWithPerms-error');
-    });
+    screen.findByText('requestUserWithPerms-error');
   });
 });
