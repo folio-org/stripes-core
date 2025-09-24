@@ -49,17 +49,6 @@ const mockFetchSuccess = (data) => {
   ));
 };
 
-// fetch failure: resolve promise with ok == false and $error in json()
-const mockFetchError = (error) => {
-  global.fetch = jest.fn().mockImplementation(() => (
-    Promise.resolve({
-      ok: false,
-      json: () => Promise.resolve(error),
-      headers: new Map(),
-    })
-  ));
-};
-
 // restore default fetch impl
 const mockFetchCleanUp = () => {
   global.fetch.mockClear();
