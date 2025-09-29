@@ -21,14 +21,8 @@ function withLastVisited(WrappedComponent) {
 
     constructor(props) {
       super();
-
-      const { modules, history } = props;
-
-      this.moduleList = modules.app.concat({
-        route: '/settings',
-        module: '@folio/x_settings',
-      });
-
+      const { history } = props;
+      this.moduleList = [];
       this.cachePreviousUrl = this.cachePreviousUrl.bind(this);
       this.lastVisited = {};
       this.previous = {};
@@ -40,6 +34,29 @@ function withLastVisited(WrappedComponent) {
         this.previous[name] = this.lastVisited[name];
         this.lastVisited[name] = `${location.pathname}${location.search}`;
         this.currentName = name;
+      });
+    }
+
+    componentDidMount() {
+      this.updateAppList();
+    }
+
+    componentDidUpdate(prevProps) {
+      const { modules } = this.props;
+
+      if (prevProps.modules !== modules) {
+        this.updateAppList();
+      }
+    }
+
+    updateAppList() {
+      const { modules } = this.props;
+
+      if (!modules.app?.length) return;
+
+      this.moduleList = modules.app.concat({
+        route: '/settings',
+        module: '@folio/x_settings',
       });
     }
 

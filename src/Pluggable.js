@@ -1,10 +1,11 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { modules } from 'stripes-config';
+import { useModules } from './ModulesContext';
 import { withStripes } from './StripesContext';
 import { ModuleHierarchyProvider } from './components';
 
 const Pluggable = (props) => {
+  const modules = useModules();
   const plugins = modules.plugin || [];
   const cachedPlugins = useMemo(() => {
     const cached = [];
@@ -44,7 +45,8 @@ const Pluggable = (props) => {
     ));
   }
 
-  if (!props.children) return null;
+  // Display null when no plugins are available to avoid rendering BadRequestScreen
+  if (!props.children || !plugins.length) return null;
   if (props.children.length) {
     // eslint-disable-next-line no-console
     console.error(`<Pluggable type="${props.type}"> has ${props.children.length} children, can only return one`);

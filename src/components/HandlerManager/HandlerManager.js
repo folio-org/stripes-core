@@ -19,18 +19,39 @@ class HandlerManager extends React.Component {
 
   constructor(props) {
     super(props);
-    const { event, stripes, modules, data } = props;
+    this.state = {
+      components: [],
+    };
+  }
 
-    this.components = getEventHandlers(event, stripes, modules.handler, data);
+  componentDidMount() {
+    this.updateComponents();
+  }
+
+  componentDidUpdate(prevProps) {
+    const { modules } = this.props;
+
+    if (prevProps.modules !== modules) {
+      this.updateComponents();
+    }
+  }
+
+  updateComponents() {
+    const { event, stripes, modules, data } = this.props;
+
+    const components = getEventHandlers(event, stripes, modules.handler, data);
+    this.setState({ components });
   }
 
   render() {
     const { stripes, data, props } = this.props;
-    return (this.components.map(Component => (
+    const { components } = this.state;
+
+    return components.map(Component => (
       <ModuleHierarchyProvider key={Component.name} module={Component.module.module}>
         <Component stripes={stripes} actAs="handler" data={data} {...props} />
       </ModuleHierarchyProvider>
-    )));
+    ));
   }
 }
 

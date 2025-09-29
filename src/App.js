@@ -10,6 +10,8 @@ import configureLogger from './configureLogger';
 import configureStore from './configureStore';
 import gatherActions from './gatherActions';
 import { destroyStore } from './mainActions';
+import { getModules } from './entitlementService';
+import { modulesInitialState } from './ModulesContext';
 import css from './components/SessionEventContainer/style.css';
 
 import Root from './components/Root';
@@ -81,11 +83,34 @@ export default class StripesCore extends Component {
       this.logger = configureLogger(config);
       this.epics = configureEpics(connectErrorEpic);
       this.store = configureStore(initialState, this.logger, this.epics);
-      this.actionNames = gatherActions();
 
-      this.state = { isStorageEnabled: true };
+      this.state = {
+        isStorageEnabled: true,
+        actionNames: [],
+        modules: modulesInitialState,
+      };
     } else {
-      this.state = { isStorageEnabled: false };
+      this.state = {
+        isStorageEnabled: false,
+        actionNames: [],
+        modules: modulesInitialState,
+      };
+    }
+  }
+
+  async componentDidMount() {
+    if (this.state.isStorageEnabled) {
+      try {
+        const modules = await getModules();
+        const actionNames = gatherActions(modules);
+
+        this.setState({
+          actionNames,
+          modules,
+        });
+      } catch (error) {
+        console.error('Failed to gather actions:', error); // eslint-disable-line
+      }
     }
   }
 
@@ -94,6 +119,10 @@ export default class StripesCore extends Component {
   }
 
   render() {
+    const {
+      actionNames,
+      modules,
+    } = this.state;
     // Stripes requires cookies (for login) and session and local storage
     // (for session state and all manner of things). If these are not enabled,
     // stop and show an error message.
@@ -116,7 +145,8 @@ export default class StripesCore extends Component {
           epics={this.epics}
           logger={this.logger}
           config={config}
-          actionNames={this.actionNames}
+          actionNames={actionNames}
+          modules={modules}
           disableAuth={(config?.disableAuth) || false}
           {...props}
         />

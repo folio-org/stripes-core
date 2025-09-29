@@ -26,7 +26,6 @@ import { configureRtr } from './token-util';
 
 import './Root.css';
 
-import { withModules } from '../Modules';
 import { FFetch } from './FFetch';
 
 if (!metadata) {
@@ -38,14 +37,13 @@ class Root extends Component {
   constructor(...args) {
     super(...args);
 
-    const { modules, history, okapi, store } = this.props;
+    const { okapi, store } = this.props;
 
     this.reducers = { ...initialReducers };
     this.epics = {};
     this.withOkapi = okapi.withoutOkapi !== true;
 
-    const appModule = getCurrentModule(modules, history.location);
-    this.queryResourceStateKey = (appModule) ? getQueryResourceKey(appModule) : null;
+    this.queryResourceStateKey = null;
     this.defaultRichTextElements = {
       b: (chunks) => <b>{chunks}</b>,
       i: (chunks) => <i>{chunks}</i>,
@@ -84,10 +82,26 @@ class Root extends Component {
     const locale = this.props.config.locale ?? 'en-US';
     // TODO: remove this after we load locale and translations at start from a public endpoint
     loadTranslations(store, locale, defaultTranslations);
+    this.updateQueryResourceStateKey();
   }
 
   shouldComponentUpdate(nextProps) {
-    return !this.withOkapi || nextProps.okapiReady || nextProps.serverDown;
+    const { modules } = this.props;
+    return nextProps.modules !== modules || !this.withOkapi || nextProps.okapiReady || nextProps.serverDown;
+  }
+
+  componentDidUpdate(prevProps) {
+    const { modules } = this.props;
+
+    if (prevProps.modules !== modules) {
+      this.updateQueryResourceStateKey();
+    }
+  }
+
+  updateQueryResourceStateKey = () => {
+    const { modules, history } = this.props;
+    const appModule = getCurrentModule(modules, history.location);
+    this.queryResourceStateKey = appModule ? getQueryResourceKey(appModule) : null;
   }
 
   addReducer = (key, reducer) => {
@@ -276,4 +290,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(withModules(Root));
+export default connect(mapStateToProps)(Root);
