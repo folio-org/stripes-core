@@ -2,7 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 
-import { ModulesContext, originalModules } from '../../ModulesContext';
+import { getModules } from '../../entitlementService';
+import {
+  ModulesContext,
+  modulesInitialState,
+} from '../../ModulesContext';
 
 class ModuleTranslator extends React.Component {
   static propTypes = {
@@ -14,11 +18,22 @@ class ModuleTranslator extends React.Component {
     super(props);
 
     this.state = {
-      modules: this.translateModules(),
+      modules: modulesInitialState,
     };
   }
 
-  translateModules = () => {
+  async componentDidMount() {
+    try {
+      const moduleData = await getModules();
+      const modules = this.translateModules(moduleData);
+
+      this.setState({ modules });
+    } catch (error) {
+      console.error('Failed to load modules:', error); // eslint-disable-line
+    }
+  }
+
+  translateModules = (originalModules) => {
     return {
       app: (originalModules.app || []).map(this.translateModule),
       plugin: (originalModules.plugin || []).map(this.translateModule),
