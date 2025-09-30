@@ -5,11 +5,22 @@
 import React from 'react';
 import times from 'lodash/times';
 import { beforeEach, it, describe } from 'mocha';
-import { expect } from 'chai';
+import {
+  HTML
+} from '@folio/stripes-testing';
+
 import { mount } from '../../../../../../../test/bigtest/helpers/render-helpers';
 
 import ResizeContainer from '../ResizeContainer';
-import ResizeContainerInteractor from './interactor';
+
+const ResizeContainerInteractor = HTML.extend('ResizeContainer')
+  .selector('[data-test-resize-container]')
+  .filters({
+    visibleCount: el => el.querySelectorAll('[data-test-resize-container-visible-item]').length,
+    hiddenCount: el => el.querySelectorAll('[data-test-resize-container-hidden-item]').length,
+  });
+
+
 
 // The width of each item
 // These values would vary depending on the length of the label in a real app
@@ -72,7 +83,7 @@ const ResizeContainerMock = ({ items, wrapperWidth, itemWidth, hideAllWidth, off
 };
 
 describe('ResizeContainer', () => {
-  const resizeContainer = new ResizeContainerInteractor('.my-test-interactor');
+  const resizeContainer = ResizeContainerInteractor();
 
   beforeEach(async () => {
     await mount(
@@ -86,13 +97,9 @@ describe('ResizeContainer', () => {
     );
   });
 
-  it(`renders ${EXPECTED_VISIBLE_ITEMS} visible items`, () => {
-    expect(resizeContainer.visibleItems.length).to.equal(EXPECTED_VISIBLE_ITEMS);
-  });
+  it(`renders ${EXPECTED_VISIBLE_ITEMS} visible items`, () => resizeContainer.has({ visibleCount: EXPECTED_VISIBLE_ITEMS }));
 
-  it(`should have ${EXPECTED_HIDDEN_ITEMS} hidden items`, () => {
-    expect(resizeContainer.hiddenItems.length).to.equal(EXPECTED_HIDDEN_ITEMS);
-  });
+  it(`should have ${EXPECTED_HIDDEN_ITEMS} hidden items`, () => resizeContainer.has({ hiddenCount: EXPECTED_HIDDEN_ITEMS }));
 
   describe('If the value of the "hideAllWidth"-prop is larger than the width of the window', () => {
     beforeEach(async () => {
@@ -107,13 +114,9 @@ describe('ResizeContainer', () => {
       );
     });
 
-    it('renders 0 visible items', () => {
-      expect(resizeContainer.visibleItems.length).to.equal(0);
-    });
+    it('renders 0 visible items', () => resizeContainer.has({ visibleCount: 0 }));
 
-    it(`renders ${ITEMS.length} hidden items (equal to all items)`, () => {
-      expect(resizeContainer.hiddenItems.length).to.equal(ITEMS.length);
-    });
+    it(`renders ${ITEMS.length} hidden items (equal to all items)`, () => resizeContainer.has({ hiddenCount: ITEMS.length }));
   });
 
   describe('If rendered with right-to-left direction', () => {
@@ -130,12 +133,8 @@ describe('ResizeContainer', () => {
       );
     });
 
-    it(`renders ${EXPECTED_VISIBLE_ITEMS} visible items`, () => {
-      expect(resizeContainer.visibleItems.length).to.equal(EXPECTED_VISIBLE_ITEMS);
-    });
+    it(`renders ${EXPECTED_VISIBLE_ITEMS} visible items`, () => resizeContainer.has({ visibleCount: EXPECTED_VISIBLE_ITEMS }));
 
-    it(`should have ${EXPECTED_HIDDEN_ITEMS} hidden items`, () => {
-      expect(resizeContainer.hiddenItems.length).to.equal(EXPECTED_HIDDEN_ITEMS);
-    });
+    it(`should have ${EXPECTED_HIDDEN_ITEMS} hidden items`, () => resizeContainer.has({ hiddenCount: EXPECTED_HIDDEN_ITEMS }));
   });
 });
