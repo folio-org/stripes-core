@@ -109,7 +109,7 @@ export default class StripesCore extends Component {
           modules,
         });
       } catch (error) {
-        console.error('Failed to gather actions:', error); // eslint-disable-line
+        console.error('Failed to gather actions:', error); // eslint-disable-line no-console
       }
     }
   }

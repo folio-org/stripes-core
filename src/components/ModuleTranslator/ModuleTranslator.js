@@ -29,7 +29,7 @@ class ModuleTranslator extends React.Component {
 
       this.setState({ modules });
     } catch (error) {
-      console.error('Failed to load modules:', error); // eslint-disable-line
+      console.error('Failed to load modules:', error); // eslint-disable-line no-console
     }
   }
 
