@@ -1,6 +1,7 @@
 # Change history for stripes-core
 
-## 11.0.11 IN PROGRESS
+## [11.0.11](https://github.com/folio-org/stripes-core/tree/v11.0.11) (2025-10-01)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v11.0.10...v11.0.11)
 
 * Remove `RTR_IS_ROTATING` from local storage before dispatching the `RTR_SUCCESS_EVENT` to correctly determine the `RTR_IS_ROTATING` state in the `rotationHandler` function. Refs STCOR-983.
 
