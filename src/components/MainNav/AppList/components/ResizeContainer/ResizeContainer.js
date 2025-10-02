@@ -27,7 +27,7 @@ class ResizeContainer extends React.Component {
     super(props);
 
     this.wrapperRef = React.createRef(null);
-    this.cachedItemWidths = [];
+    this.cachedItemWidths = {};
   }
 
   state = {
@@ -42,11 +42,20 @@ class ResizeContainer extends React.Component {
 
   componentDidUpdate(prevProps) {
     const { currentAppId, items } = this.props;
-    const itemIds = items.map(item => item.id);
-    const prevItemIds = prevProps.items.map(item => item.id);
+
+    const itemIds = items.reduce((acc, { id }) => {
+      acc[id] = true;
+      return acc;
+    }, {});
+
+    const prevItemIds = prevProps.items.reduce((acc, { id }) => {
+      acc[id] = true;
+      return acc;
+    }, {});
+
     const hasSetOfItemsChanged = !isEqual(itemIds, prevItemIds);
 
-    // Cache item widths if the set of items has changed.
+    // Only re-cache widths when the set of item IDs changes (not when their order changes).
     // The set of items currently changes only when the component is mounted along with the initial items,
     // and then the request returns the new items.
     // This allows items that don't fit within the container to be hidden when resized or clicked.

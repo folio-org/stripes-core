@@ -188,6 +188,29 @@ describe('ResizeContainer (Jest)', () => {
     expect(cacheSpy).toHaveBeenCalledTimes(1);
   });
 
+  it('does not re-caches widths when only items order changes', () => {
+    const items1 = makeItems(3);
+    const ref = createRef();
+    const props = {
+      ref,
+      items: items1,
+      hideAllWidth: 0,
+      offset: 0,
+    };
+
+    const { rerender } = renderComponent(props);
+
+    // Spy after initial mount so we only count subsequent calls
+    const cacheSpy = jest.spyOn(ref.current, 'cacheWidthsOfItems');
+
+    rerender(getComponent({
+      ...props,
+      items: items1.toReversed(),
+    }));
+
+    expect(cacheSpy).not.toHaveBeenCalled();
+  });
+
   it('updates hidden items when currentAppId changes', () => {
     const items = makeItems(4);
     const ref = createRef();
