@@ -1,6 +1,6 @@
-import { useState } from 'react';
 import { useQuery } from 'react-query';
 import { useIntl } from 'react-intl';
+import { noop } from 'lodash';
 
 import useOkapiKy from '../useOkapiKy';
 import {
@@ -8,52 +8,60 @@ import {
 } from '../loginServices';
 import { useStripes } from '../StripesContext';
 
-const useExchangeCode = () => {
+const useExchangeCode = (initSession = noop) => {
   const stripes = useStripes();
   const ky = useOkapiKy();
   const intl = useIntl();
-
-  const [error, setError] = useState();
 
   const urlParams = new URLSearchParams(window.location.search);
   const code = urlParams.get('code');
   const { tenant, clientId } = getLoginTenant(stripes.okapi, stripes.config);
 
-  const { isFetching, data } = useQuery(
+  const { isFetching, data, error } = useQuery(
     ['@folio/stripes-core', 'authn/token'],
-    () => {
+    async () => {
       if (code) {
-        return ky('authn/token', {
-          searchParams: {
-            code,
-            'redirect-uri': `${window.location.protocol}//${window.location.host}/oidc-landing?tenant=${tenant}&client_id=${clientId}`,
-          }
-        })
-          .json();
-      }
+        try {
+          const json = await ky('authn/token', {
+            searchParams: {
+              code,
+              'redirect-uri': `${window.location.protocol}//${window.location.host}/oidc-landing?tenant=${tenant}&client_id=${clientId}`,
+            }
+          }).json();
 
-      throw new Error(intl.formatMessage({ id: 'stripes-core.oidc.otp.missingCode' }));
-    },
-    {
-      retry: false,
-      onError: (e) => {
-        // pull error message from an API response if present,
-        // or directly from the Error object thrown during fetch
-        if (e?.response?.json) {
-          e.response.json()
-            .then(json => {
-              setError(json);
-            });
-        } else {
-          setError({ errors: [{ message: e.message }] });
+          // note: initSession is expected to execute an unawaited promise.
+          // initSession calls .../_self and other functions in order to
+          // populate the session, eventually dispatching redux actions
+          // (isAuthenticated, sessionData, okapiReady), triggering
+          // RootWithIntl to re-render.
+          //
+          // return the json response from `authn/token` in order to
+          // show a status update on the calling page while session-init
+          // is still in-flight.
+          initSession(json);
+
+          return json;
+        } catch (fetchError) {
+          // throw json from the error-response, or just rethrow
+          if (fetchError?.response?.json) {
+            const errorJson = await fetchError.response.json();
+            throw errorJson;
+          }
+
+          throw fetchError;
         }
       }
 
+      // eslint-disable-next-line no-throw-literal
+      throw intl.formatMessage({ id: 'stripes-core.oidc.otp.missingCode' });
+    },
+    {
+      retry: false,
     }
   );
 
   return ({
-    data,
+    tokenData: data,
     isLoading: isFetching,
     error,
   });

@@ -3,11 +3,22 @@ import { createMemoryHistory } from 'history';
 
 import Harness from '../../test/jest/helpers/harness';
 import useOkapiKy from '../useOkapiKy';
+import {
+  setTokenExpiry,
+} from '../loginServices';
 import OIDCLanding from './OIDCLanding';
+
 
 jest.mock('./OrganizationLogo', () => (() => <div>OrganizationLogo</div>));
 
 jest.mock('../useOkapiKy');
+
+jest.mock('../loginServices', () => ({
+  ...(jest.requireActual('../loginServices')),
+  setTokenExpiry: jest.fn(() => Promise.resolve()),
+  requestUserWithPerms: jest.fn(() => Promise.resolve()),
+  storeLogoutTenant: jest.fn(() => Promise.resolve()),
+}));
 
 describe('useExchangeCode', () => {
   it('errors when code is missing from window.location.search', async () => {
@@ -22,7 +33,7 @@ describe('useExchangeCode', () => {
     await screen.findByText('stripes-core.errors.oidc');
   });
 
-  it('extracts errors from the authn/token reponse', async () => {
+  it('extracts JSON errors from the authn/token reponse', async () => {
     window.location.pathname = '/some-path';
     window.location.search = '?code=code';
 
@@ -45,8 +56,48 @@ describe('useExchangeCode', () => {
     }));
 
     render(<Harness history={history} stripes={stripes}><OIDCLanding /></Harness>);
-    await waitFor(() => {
-      screen.getByText(message);
+    screen.findByText(message);
+  });
+
+  it('extracts plaintext errors from the authn/token reponse', async () => {
+    window.location.pathname = '/some-path';
+    window.location.search = '?code=code';
+
+    const message = 'I am nobody; who are you?';
+
+    const stripes = {
+      config: {},
+      hasPerm: jest.fn(),
+      okapi: {},
+    };
+    const history = createMemoryHistory();
+    const mockUseOkapiKy = useOkapiKy;
+    mockUseOkapiKy.mockReturnValue(() => ({
+      json: () => { throw message; }
+    }));
+
+    render(<Harness history={history} stripes={stripes}><OIDCLanding /></Harness>);
+    screen.findByText(message);
+  });
+
+  it('executes the callback when token exchange succeeds', async () => {
+    window.location.pathname = '/some-path';
+    window.location.search = '?code=code';
+
+    const stripes = {
+      config: {},
+      hasPerm: jest.fn(),
+      okapi: {},
+    };
+    const history = createMemoryHistory();
+    const mockUseOkapiKy = useOkapiKy;
+    mockUseOkapiKy.mockReturnValue(() => ({
+      json: () => ({ some: 'object' })
+    }));
+
+    render(<Harness history={history} stripes={stripes}><OIDCLanding /></Harness>);
+    waitFor(() => {
+      expect(setTokenExpiry).toHaveBeenCalled();
     });
   });
 });

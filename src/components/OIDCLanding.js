@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 
 import {
@@ -32,14 +31,17 @@ import OIDCLandingError from './OIDCLandingError';
 const OIDCLanding = () => {
   const intl = useIntl();
   const { okapi, store } = useStripes();
-  const [userFetchError, setUserFetchError] = useState();
-
-  const { data: tokenData, isLoading, error: tokenError } = useExchangeCode();
 
   const atDefaultExpiration = Date.now() + (60 * 1000);
   const rtDefaultExpiration = Date.now() + (2 * 60 * 1000);
 
-  useEffect(() => {
+  /**
+   * initSession
+   * Callback for useExchangeCode to execute after exchanging the OTP
+   * for token-expiration data and cookies
+   * @param {object} tokenData shaped like { accessTokenExpiration, refreshTokenExpiration}
+   */
+  const initSession = (tokenData) => {
     if (tokenData) {
       setTokenExpiry({
         atExpires: tokenData.accessTokenExpiration ? new Date(tokenData.accessTokenExpiration).getTime() : atDefaultExpiration,
@@ -50,21 +52,14 @@ const OIDCLanding = () => {
         })
         .then(() => {
           return requestUserWithPerms(okapi.url, store, okapi.tenant);
-        })
-        .catch(e => {
-          setUserFetchError(e);
         });
     }
-  }, [tokenData]); // eslint-disable-line react-hooks/exhaustive-deps
+  };
 
-  // token exchange failure
-  if (tokenError) {
-    return <OIDCLandingError error={tokenError} />;
-  }
+  const { tokenData, isLoading, error } = useExchangeCode(initSession);
 
-  // session-init failure
-  if (userFetchError) {
-    return <OIDCLandingError error={userFetchError} />;
+  if (error) {
+    return <OIDCLandingError error={error} />;
   }
 
   return (
