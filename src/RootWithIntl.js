@@ -59,6 +59,7 @@ const RootWithIntl = ({ stripes, token = '', isAuthenticated = false, disableAut
           <TitleManager>
             <HotKeys
               keyMap={connectedStripes.bindings}
+              attach={document.body}
               noWrapper
             >
               <Provider store={connectedStripes.store}>
