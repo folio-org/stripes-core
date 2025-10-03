@@ -98,18 +98,32 @@ export const getTokenExpiry = async () => {
 };
 
 /**
- * getTokenSess
+ * setTokenExpiry
  * simple wrapper around access to values stored in localforage
  * to insulate RTR functions from that API. Supplement the existing
- * session with updated token expiration data.
+ * session with updated token expiration data. Given values (millisecond
+ * timestamps) are persisted as-is; corresponding human-readable values
+ * (accessTokenExpiration, refreshTokenExpiration) are written as well.
  *
  * @param {object} shaped like { atExpires, rtExpires }; each is a millisecond timestamp
- * @returns {object} updated session object
+ * @returns {Promise} Resolves to updated session object
  */
 export const setTokenExpiry = async (te) => {
-  const sess = await getOkapiSession();
-  const val = { ...sess, tokenExpiration: te };
-  return localforage.setItem(SESSION_NAME, val);
+  if (Number.isInteger(te.atExpires) && Number.isInteger(te.rtExpires)) {
+    const tokenExpiration = {
+      ...te,
+      accessTokenExpiration: new Date(te.atExpires).toISOString(),
+      refreshTokenExpiration: new Date(te.rtExpires).toISOString(),
+    };
+
+    const sess = await getOkapiSession();
+    const val = { ...sess, tokenExpiration };
+    return localforage.setItem(SESSION_NAME, val);
+  }
+
+  // eslint-disable-next-line no-console
+  console.error('Expected { atExpires: int, rtExpires: int }; received', te);
+  return Promise.reject(new TypeError('Did not receive { atExpires: int, rtExpires: int }'));
 };
 
 /**
@@ -826,11 +840,11 @@ export async function logout(okapiUrl, store, queryClient) {
  * @param {object} store redux store
  * @param {string} tenant tenant name
  * @param {string} token access token [deprecated; prefer folioAccessToken cookie]
- * @param {*} data
+ * @param {*} data response from call to _self
  *
  * @returns {Promise}
  */
-export function createOkapiSession(store, tenant, token, data) {
+export async function createOkapiSession(store, tenant, token, data) {
   // clear any auth-n errors
   store.dispatch(setAuthError(null));
 
@@ -876,7 +890,9 @@ export function createOkapiSession(store, tenant, token, data) {
   localStorage.setItem(SESSION_NAME, 'true');
 
   return localforage.setItem('loginResponse', data)
-    .then(localforage.getItem(SESSION_NAME))
+    .then(() => {
+      return localforage.getItem(SESSION_NAME);
+    })
     .then(sessionData => {
       // for keycloak-based logins, token-expiration data was already
       // pushed to storage, so we pull it out and reuse it here.
@@ -888,6 +904,8 @@ export function createOkapiSession(store, tenant, token, data) {
         okapiSess.tokenExpiration = {
           atExpires: new Date(data.tokenExpiration.accessTokenExpiration).getTime(),
           rtExpires: new Date(data.tokenExpiration.refreshTokenExpiration).getTime(),
+          accessTokenExpiration: data.tokenExpiration.accessTokenExpiration,
+          refreshTokenExpiration: data.tokenExpiration.refreshTokenExpiration,
         };
       } else {
         // somehow, we ended up here without any legit token-expiration values.
