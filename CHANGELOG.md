@@ -20,6 +20,8 @@
 * Remove `RTR_IS_ROTATING` from local storage before dispatching the `RTR_SUCCESS_EVENT` to correctly determine the `RTR_IS_ROTATING` state in the `rotationHandler` function. Refs STCOR-983.
 * Correctly implement tenant-selection ringdown during application init. Refs STCOR-985.
 * Conform `@apollo/client` init to the v4 API to suppress warnings. Refs STCOR-992.
+* Provide `attach` to `<HotKeys>` to avoid its deprecated `findDOMNode` fallback. Refs STCOR-996.
+* Implement async `modules` loading infrastructure and update related components. Refs STCOR-976.
 
 ## [11.0.0](https://github.com/folio-org/stripes-core/tree/v11.0.0) (2025-02-24)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.2.0...v11.0.0)
