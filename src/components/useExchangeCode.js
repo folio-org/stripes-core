@@ -18,7 +18,7 @@ const useExchangeCode = (initSession = noop) => {
   const { tenant, clientId } = getLoginTenant(stripes.okapi, stripes.config);
 
   const { isFetching, data, error } = useQuery(
-    ['@folio/stripes-core', 'authn/token'],
+    ['@folio/stripes-core', 'authn/token', code],
     async () => {
       if (code) {
         try {
