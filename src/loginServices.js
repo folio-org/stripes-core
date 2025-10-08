@@ -79,10 +79,11 @@ export const SESSION_NAME = 'okapiSess';
  * simple wrapper around access to values stored in localforage
  * to insulate RTR functions from that API.
  *
- * @returns {object}
+ * @returns {Promise}
  */
 export const getOkapiSession = async () => {
-  return localforage.getItem(SESSION_NAME);
+  const session = await localforage.getItem(SESSION_NAME);
+  return session;
 };
 
 /**
@@ -90,11 +91,11 @@ export const getOkapiSession = async () => {
  * simple wrapper around access to values stored in localforage
  * to insulate RTR functions from that API.
  *
- * @returns {object} shaped like { atExpires, rtExpires }; each is a millisecond timestamp
+ * returns {Promise} resolving to { atExpires, rtExpires }; each is a millisecond timestamp
  */
 export const getTokenExpiry = async () => {
   const sess = await getOkapiSession();
-  return new Promise((resolve) => resolve(sess?.tokenExpiration));
+  return sess?.tokenExpiration;
 };
 
 /**
@@ -106,7 +107,7 @@ export const getTokenExpiry = async () => {
  * (accessTokenExpiration, refreshTokenExpiration) are written as well.
  *
  * @param {object} shaped like { atExpires, rtExpires }; each is a millisecond timestamp
- * @returns {Promise} Resolves to updated session object
+ * @returns {Promise} resolving to updated session object
  */
 export const setTokenExpiry = async (te) => {
   if (Number.isInteger(te.atExpires) && Number.isInteger(te.rtExpires)) {
@@ -260,7 +261,7 @@ const canReadSettings = (store) => {
  *
  * @returns {Promise}
  */
-export function loadTranslations(store, locale, defaultTranslations = {}) {
+export async function loadTranslations(store, locale, defaultTranslations = {}) {
   const parentLocale = locale.split('-')[0];
   // Since moment.js don't support translations like it or it-IT-u-nu-latn
   // we need to build string like it_IT for fetch call
@@ -304,7 +305,7 @@ export function loadTranslations(store, locale, defaultTranslations = {}) {
   // Here we put additional condition because languages
   // like Japan we need to use like ja, but with numeric system
   // Japan language builds like ja_u, that incorrect. We need to be safe from that bug.
-  return fetch(translations[region] ? translations[region] :
+  const res = await fetch(translations[region] ? translations[region] :
     translations[loadedLocale] || translations[[parentLocale]])
     .then((response) => {
       if (response.ok) {
@@ -314,6 +315,8 @@ export function loadTranslations(store, locale, defaultTranslations = {}) {
         });
       }
     });
+
+  return res;
 }
 
 /**
@@ -326,29 +329,27 @@ export function loadTranslations(store, locale, defaultTranslations = {}) {
  * @param {string} tenant
  * @returns {Promise}
  */
-function dispatchLocale(url, store, tenant) {
-  return fetch(url, {
+async function dispatchLocale(url, store, tenant) {
+  const response = await fetch(url, {
     headers: getHeaders(tenant, store.getState().okapi.token),
     credentials: 'include',
     mode: 'cors',
-  })
-    .then((response) => {
-      if (response.ok) {
-        response.json().then((json) => {
-          if (json.configs?.length) {
-            const localeValues = JSON.parse(json.configs[0].value);
-            const { locale, timezone, currency } = localeValues;
-            if (locale) {
-              loadTranslations(store, locale);
-            }
-            if (timezone) store.dispatch(setTimezone(timezone));
-            if (currency) store.dispatch(setCurrency(currency));
-          }
-        });
-      }
+  });
 
-      return response;
-    });
+  if (response.ok) {
+    const json = await response.json();
+    if (json.configs?.length) {
+      const localeValues = JSON.parse(json.configs[0].value);
+      const { locale, timezone, currency } = localeValues;
+      if (locale) {
+        await loadTranslations(store, locale);
+      }
+      if (timezone) store.dispatch(setTimezone(timezone));
+      if (currency) store.dispatch(setCurrency(currency));
+    }
+  }
+
+  return response;
 }
 
 /**
@@ -361,18 +362,20 @@ function dispatchLocale(url, store, tenant) {
  *
  * @returns {Promise}
  */
-export function getLocale(okapiUrl, store, tenant) {
+export async function getLocale(okapiUrl, store, tenant) {
   const query = [
     'module==ORG',
     'configName == localeSettings',
     '(cql.allRecords=1 NOT userId="" NOT code="")'
   ].join(' AND ');
 
-  return dispatchLocale(
+  const res = await dispatchLocale(
     `${okapiUrl}/configurations/entries?query=(${query})`,
     store,
     tenant
   );
+
+  return res;
 }
 
 /**
@@ -385,16 +388,18 @@ export function getLocale(okapiUrl, store, tenant) {
  *
  * @returns {Promise}
  */
-export function getUserLocale(okapiUrl, store, tenant, userId) {
+export async function getUserLocale(okapiUrl, store, tenant, userId) {
   const query = Object.entries(userLocaleConfig)
     .map(([k, v]) => `"${k}"=="${v}"`)
     .join(' AND ');
 
-  return dispatchLocale(
+  const res = await dispatchLocale(
     `${okapiUrl}/configurations/entries?query=(${query} and userId=="${userId}")`,
     store,
     tenant
   );
+
+  return res;
 }
 
 /**
@@ -406,24 +411,23 @@ export function getUserLocale(okapiUrl, store, tenant, userId) {
  *
  * @returns {Promise}
  */
-export function getPlugins(okapiUrl, store, tenant) {
-  return fetch(`${okapiUrl}/configurations/entries?query=(module==PLUGINS)`, {
+export async function getPlugins(okapiUrl, store, tenant) {
+  const response = await fetch(`${okapiUrl}/configurations/entries?query=(module==PLUGINS)`, {
     credentials: 'include',
     headers: getHeaders(tenant, store.getState().okapi.token),
     mode: 'cors',
-  })
-    .then((response) => {
-      if (response.ok) {
-        response.json().then((json) => {
-          const configs = json.configs?.reduce((acc, val) => ({
-            ...acc,
-            [val.configName]: val.value,
-          }), {});
-          store.dispatch(setPlugins(configs));
-        });
-      }
-      return response;
-    });
+  });
+
+  if (response.ok) {
+    const json = await response.json();
+    const configs = json.configs?.reduce((acc, val) => ({
+      ...acc,
+      [val.configName]: val.value,
+    }), {});
+    store.dispatch(setPlugins(configs));
+  }
+
+  return response;
 }
 
 /**
@@ -435,34 +439,33 @@ export function getPlugins(okapiUrl, store, tenant) {
  *
  * @returns {Promise}
  */
-export function getBindings(okapiUrl, store, tenant) {
-  return fetch(`${okapiUrl}/configurations/entries?query=(module==ORG and configName==bindings)`, {
+export async function getBindings(okapiUrl, store, tenant) {
+  const response = await fetch(`${okapiUrl}/configurations/entries?query=(module==ORG and configName==bindings)`, {
     headers: getHeaders(tenant, store.getState().okapi.token),
     credentials: 'include',
     mode: 'cors',
-  })
-    .then((response) => {
-      let bindings = {};
-      if (response.ok) {
-        response.json().then((json) => {
-          const configs = json.configs;
-          if (Array.isArray(configs) && configs.length > 0) {
-            const string = configs[0].value;
-            try {
-              const tmp = JSON.parse(string);
-              bindings = tmp; // only if no exception is thrown
-            } catch (err) {
-              // eslint-disable-next-line no-console
-              console.log(`getBindings cannot parse key bindings '${string}':`, err);
-            }
-          }
-          store.dispatch(setBindings(bindings));
-        });
-      } else {
-        store.dispatch(setBindings(bindings));
+  });
+
+  let bindings = {};
+  if (response.ok) {
+    const json = await response.json();
+    const configs = json.configs;
+    if (Array.isArray(configs) && configs.length > 0) {
+      const string = configs[0].value;
+      try {
+        const tmp = JSON.parse(string);
+        bindings = tmp; // only if no exception is thrown
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.log(`getBindings cannot parse key bindings '${string}':`, err);
       }
-      return response;
-    });
+    }
+    store.dispatch(setBindings(bindings));
+  } else {
+    store.dispatch(setBindings(bindings));
+  }
+
+  return response;
 }
 
 /**
@@ -473,12 +476,14 @@ export function getBindings(okapiUrl, store, tenant) {
  * @param {string} tenant - The tenant name for which the locale settings are being requested.
  * @returns {Promise} A promise that resolves to the fetch API's response.
  */
-const fetchLocale = (url, store, tenant) => {
-  return fetch(url, {
+const fetchLocale = async (url, store, tenant) => {
+  const res = await fetch(url, {
     headers: getHeaders(tenant, store.getState().okapi.token),
     credentials: 'include',
     mode: 'cors',
   });
+
+  return res;
 };
 
 /**
@@ -492,14 +497,16 @@ const fetchLocale = (url, store, tenant) => {
  * @param {string} tenant - The tenant name for which the locale settings are being requested.
  * @returns {Promise} A promise that resolves with the locale configuration data.
  */
-const getTenantLocale = (url, store, tenant) => {
+const getTenantLocale = async (url, store, tenant) => {
   const query = `scope=="${settings.SCOPE}" and key=="${tenantLocaleConfig.KEY}"`;
 
-  return fetchLocale(
+  const res = await fetchLocale(
     `${url}/settings/entries?query=(${query})`,
     store,
     tenant
   );
+
+  return res;
 };
 
 /**
@@ -515,14 +522,16 @@ const getTenantLocale = (url, store, tenant) => {
  * @param {string} userId - The unique identifier for the user.
  * @returns {Promise} A promise resolving with the user's locale settings information.
  */
-const getUserOwnLocale = (url, store, tenant, userId) => {
+const getUserOwnLocale = async (url, store, tenant, userId) => {
   const query = `userId=="${userId}" and scope=="${settings.SCOPE}" and key=="${userOwnLocaleConfig.KEY}"`;
 
-  return fetchLocale(
+  const res = await fetchLocale(
     `${url}/settings/entries?query=(${query})`,
     store,
     tenant
   );
+
+  return res;
 };
 
 /**
@@ -533,9 +542,9 @@ const getUserOwnLocale = (url, store, tenant, userId) => {
  * @param {string} [currency] - The currency setting to apply. Dispatches an action to update the store if provided.
  * @param {Object} store - The store object used to dispatch actions for updating timezone and currency.
  */
-const applyLocaleSettings = (locale, timezone, currency, store) => {
+const applyLocaleSettings = async (locale, timezone, currency, store) => {
   if (locale) {
-    loadTranslations(store, locale);
+    await loadTranslations(store, locale);
   }
 
   if (timezone) store.dispatch(setTimezone(timezone));
@@ -574,9 +583,9 @@ export const getFullLocale = (languageRegion, numberingSystem) => {
  * @param {Object} tenantLocaleData - An object containing tenant's settings.
  * @param {Object} userLocaleData - An object containing user's settings.
  *
- * @returns {void}
+ * @returns {Promise}
  */
-const processLocaleSettings = (store, tenantLocaleData, userLocaleData) => {
+const processLocaleSettings = async (store, tenantLocaleData, userLocaleData) => {
   const tenantLocaleSettings = tenantLocaleData?.items[0]?.value;
   const userLocaleSettings = userLocaleData?.items[0]?.value;
 
@@ -587,7 +596,8 @@ const processLocaleSettings = (store, tenantLocaleData, userLocaleData) => {
 
   const fullLocale = getFullLocale(locale, numberingSystem);
 
-  applyLocaleSettings(fullLocale, timezone, currency, store);
+  const res = await applyLocaleSettings(fullLocale, timezone, currency, store);
+  return res;
 };
 
 // This function is used to support the deprecated mod-configuration API.
@@ -626,29 +636,20 @@ export async function loadResources(store, tenant, userId) {
   const okapiUrl = store.getState()?.okapi.url;
   const hasReadConfigPerm = canReadConfig(store);
 
+  // canReadSetting: mod-settings
+  // hasReadConfigPerm: mod-configuration (legacy)
   if (canReadSettings(store)) {
-    const localesPromise = Promise.allSettled([
+    const responses = await Promise.allSettled([
       getTenantLocale(okapiUrl, store, tenant),
       getUserOwnLocale(okapiUrl, store, tenant, userId),
-    ])
-      .then(async (responses) => {
-        const [tenantLocaleData, userLocaleData] = await Promise.all(responses.map(res => res.value?.json?.()));
-        const hasSetting = tenantLocaleData?.items[0] || userLocaleData?.items[0];
+    ]);
+    const [tenantLocaleData, userLocaleData] = await Promise.all(responses.map(res => res.value?.json?.()));
+    const hasSetting = tenantLocaleData?.items[0] || userLocaleData?.items[0];
 
-        if (hasSetting) {
-          processLocaleSettings(store, tenantLocaleData, userLocaleData);
-
-          return responses.map(res => res?.value);
-        }
-
-        if (hasReadConfigPerm) {
-          return getLocalesPromise(okapiUrl, store, tenant, userId);
-        }
-
-        return null;
-      });
-
-    promises.push(localesPromise);
+    if (hasSetting) {
+      await processLocaleSettings(store, tenantLocaleData, userLocaleData);
+      promises.push(responses.map(res => res?.value));
+    }
   } else if (hasReadConfigPerm) {
     promises.push(getLocalesPromise(okapiUrl, store, tenant, userId));
   }
@@ -661,7 +662,7 @@ export async function loadResources(store, tenant, userId) {
 
     promises.push(
       getPlugins(okapiObject.url, store, tenant),
-      getBindings(okapiObject.url, store, tenant),
+      getBindings(okapiObject.url, store, tenant)
     );
   }
 
@@ -724,6 +725,19 @@ export function spreadUserWithPerms(userWithPerms) {
   return { user, perms };
 }
 
+export const IS_LOGGING_OUT = '@folio/stripes/core::Logout';
+
+export const TENANT_LOCAL_STORAGE_KEY = 'tenant';
+
+export const storeLogoutTenant = (tenantId) => {
+  localStorage.setItem(TENANT_LOCAL_STORAGE_KEY, JSON.stringify({ tenantId }));
+};
+
+export const getLogoutTenant = () => {
+  const storedTenant = localStorage.getItem(TENANT_LOCAL_STORAGE_KEY);
+  return storedTenant ? JSON.parse(storedTenant) : undefined;
+};
+
 /**
  * logout
  * logout is a multi-part process, but this function is idempotent.
@@ -747,24 +761,11 @@ export function spreadUserWithPerms(userWithPerms) {
  *
  * @returns {Promise}
  */
-export const IS_LOGGING_OUT = '@folio/stripes/core::Logout';
-
-export const TENANT_LOCAL_STORAGE_KEY = 'tenant';
-
-export const storeLogoutTenant = (tenantId) => {
-  localStorage.setItem(TENANT_LOCAL_STORAGE_KEY, JSON.stringify({ tenantId }));
-};
-
-export const getLogoutTenant = () => {
-  const storedTenant = localStorage.getItem(TENANT_LOCAL_STORAGE_KEY);
-  return storedTenant ? JSON.parse(storedTenant) : undefined;
-};
-
 export async function logout(okapiUrl, store, queryClient) {
   // check the private-storage sentinel: if logout has already started
   // in this window, we don't want to start it again.
   if (sessionStorage.getItem(IS_LOGGING_OUT)) {
-    return Promise.resolve();
+    return;
   }
 
   // check the shared-storage sentinel: if logout has already started
@@ -772,56 +773,53 @@ export async function logout(okapiUrl, store, queryClient) {
   // (like calling /authn/logout, which can only be called once)
   // BUT we DO want to clear private storage such as session storage
   // and redux, which are not shared across tabs/windows.
-  const logoutPromise = localStorage.getItem(SESSION_NAME) ?
-    fetch(`${okapiUrl}/authn/logout`, {
+  if (localStorage.getItem(SESSION_NAME)) {
+    await fetch(`${okapiUrl}/authn/logout`, {
       method: 'POST',
       mode: 'cors',
       credentials: 'include',
-      /* Since the tenant in the x-okapi-token and the x-okapi-tenant header on logout should match,
-      switching affiliations updates store.okapi.tenant, leading to mismatched tenant names from the token.
-      Use the tenant name stored during login to ensure they match.
-        */
+      // Since the tenant in the x-okapi-token and the x-okapi-tenant header
+      // on logout should match, switching affiliations updates
+      // store.okapi.tenant, leading to mismatched tenant names from the token.
+      // Use the tenant name stored during login to ensure they match.
       headers: getHeaders(getLogoutTenant()?.tenantId || store.getState()?.okapi?.tenant),
-    })
-    :
-    Promise.resolve();
-
-  return logoutPromise
-    // clear private-storage
-    .then(() => {
-      // set the private-storage sentinel to indicate logout is in-progress
-      sessionStorage.setItem(IS_LOGGING_OUT, 'true');
-
-      // localStorage events emit across tabs so we can use it like a
-      // BroadcastChannel to communicate with all tabs/windows
-      localStorage.removeItem(SESSION_NAME);
-      localStorage.removeItem(RTR_TIMEOUT_EVENT);
-      localStorage.removeItem(TENANT_LOCAL_STORAGE_KEY);
-
-      store.dispatch(setIsAuthenticated(false));
-      store.dispatch(clearCurrentUser());
-      store.dispatch(clearOkapiToken());
-      store.dispatch(resetStore());
-
-      // clear react-query cache
-      if (queryClient) {
-        queryClient.removeQueries();
-      }
-    })
-    // clear shared storage
-    .then(localforage.removeItem(SESSION_NAME))
-    .then(localforage.removeItem('loginResponse'))
-    .catch(e => {
-      console.error('error during logout', e); // eslint-disable-line no-console
-    })
-    .finally(() => {
-      // clear the console unless config asks to preserve it
-      if (!config.preserveConsole) {
-        console.clear(); // eslint-disable-line no-console
-      }
-      // clear the storage sentinel
-      sessionStorage.removeItem(IS_LOGGING_OUT);
     });
+  }
+
+  try {
+    // clear private-storage
+    //
+    // set the private-storage sentinel to indicate logout is in-progress
+    sessionStorage.setItem(IS_LOGGING_OUT, 'true');
+
+    // localStorage events emit across tabs so we can use it like a
+    // BroadcastChannel to communicate with all tabs/windows
+    localStorage.removeItem(SESSION_NAME);
+    localStorage.removeItem(RTR_TIMEOUT_EVENT);
+    localStorage.removeItem(TENANT_LOCAL_STORAGE_KEY);
+
+    store.dispatch(setIsAuthenticated(false));
+    store.dispatch(clearCurrentUser());
+    store.dispatch(clearOkapiToken());
+    store.dispatch(resetStore());
+
+    // clear react-query cache
+    if (queryClient) {
+      queryClient.removeQueries();
+    }
+    // clear shared storage
+    await localforage.removeItem(SESSION_NAME);
+    await localforage.removeItem('loginResponse');
+  } catch (e) {
+    console.error('error during logout', e); // eslint-disable-line no-console
+  }
+
+  // clear the console unless config asks to preserve it
+  if (!config.preserveConsole) {
+    console.clear(); // eslint-disable-line no-console
+  }
+  // clear the storage sentinel
+  sessionStorage.removeItem(IS_LOGGING_OUT);
 }
 
 /**
@@ -842,7 +840,7 @@ export async function logout(okapiUrl, store, queryClient) {
  * @param {string} token access token [deprecated; prefer folioAccessToken cookie]
  * @param {*} data response from call to _self
  *
- * @returns {Promise}
+ * @returns {Promise} resolving to { user, tenant, perms, isAuthenticated, tokenExpiration }
  */
 export async function createOkapiSession(store, tenant, token, data) {
   // clear any auth-n errors
@@ -889,44 +887,40 @@ export async function createOkapiSession(store, tenant, token, data) {
   // remove (and therefore emit and respond to) on logout
   localStorage.setItem(SESSION_NAME, 'true');
 
-  return localforage.setItem('loginResponse', data)
-    .then(() => {
-      return localforage.getItem(SESSION_NAME);
-    })
-    .then(sessionData => {
-      // for keycloak-based logins, token-expiration data was already
-      // pushed to storage, so we pull it out and reuse it here.
-      // for legacy logins, token-expiration data is available in the
-      // login response.
-      if (sessionData?.tokenExpiration) {
-        okapiSess.tokenExpiration = sessionData.tokenExpiration;
-      } else if (data.tokenExpiration) {
-        okapiSess.tokenExpiration = {
-          atExpires: new Date(data.tokenExpiration.accessTokenExpiration).getTime(),
-          rtExpires: new Date(data.tokenExpiration.refreshTokenExpiration).getTime(),
-          accessTokenExpiration: data.tokenExpiration.accessTokenExpiration,
-          refreshTokenExpiration: data.tokenExpiration.refreshTokenExpiration,
-        };
-      } else {
-        // somehow, we ended up here without any legit token-expiration values.
-        // that's not great, but in theory we only ended up here as a result
-        // of logging in, so let's punt and assume our cookies are valid.
-        // set an expired AT and RT 10 minutes into the future; the expired
-        // AT will kick off RTR, and on success we'll store real values as a result,
-        // or on failure we'll get kicked out. no harm, no foul.
-        okapiSess.tokenExpiration = {
-          atExpires: -1,
-          rtExpires: Date.now() + (10 * 60 * 1000),
-        };
-      }
+  await localforage.setItem('loginResponse', data);
+  const sessionData = await localforage.getItem(SESSION_NAME);
+  // for keycloak-based logins, token-expiration data was already
+  // pushed to storage, so we pull it out and reuse it here.
+  // for legacy logins, token-expiration data is available in the
+  // login response.
+  if (sessionData?.tokenExpiration) {
+    okapiSess.tokenExpiration = sessionData.tokenExpiration;
+  } else if (data.tokenExpiration) {
+    okapiSess.tokenExpiration = {
+      atExpires: new Date(data.tokenExpiration.accessTokenExpiration).getTime(),
+      rtExpires: new Date(data.tokenExpiration.refreshTokenExpiration).getTime(),
+      accessTokenExpiration: data.tokenExpiration.accessTokenExpiration,
+      refreshTokenExpiration: data.tokenExpiration.refreshTokenExpiration,
+    };
+  } else {
+    // somehow, we ended up here without any legit token-expiration values.
+    // that's not great, but in theory we only ended up here as a result
+    // of logging in, so let's punt and assume our cookies are valid.
+    // set an expired AT and RT 10 minutes into the future; the expired
+    // AT will kick off RTR, and on success we'll store real values as a result,
+    // or on failure we'll get kicked out. no harm, no foul.
+    okapiSess.tokenExpiration = {
+      atExpires: -1,
+      rtExpires: Date.now() + (10 * 60 * 1000),
+    };
+  }
 
-      return localforage.setItem(SESSION_NAME, okapiSess);
-    })
-    .then(() => {
-      store.dispatch(setIsAuthenticated(true));
-      store.dispatch(setSessionData(okapiSess));
-      return loadResources(store, sessionTenant, user.id);
-    });
+  await localforage.setItem(SESSION_NAME, okapiSess);
+
+  store.dispatch(setIsAuthenticated(true));
+  store.dispatch(setSessionData(okapiSess));
+
+  await loadResources(store, sessionTenant, user.id);
 }
 
 /**
@@ -938,22 +932,18 @@ export async function createOkapiSession(store, tenant, token, data) {
  *
  * @returns {Promise}
  */
-export function getSSOEnabled(okapiUrl, store, tenant) {
-  return fetch(`${okapiUrl}/saml/check`, { headers: { 'X-Okapi-Tenant': tenant, 'Accept': 'application/json' } })
-    .then((response) => {
-      if (response.ok) {
-        return response.json()
-          .then((json) => {
-            store.dispatch(checkSSO(json.active));
-          });
-      } else {
-        store.dispatch(checkSSO(false));
-        return null;
-      }
-    })
-    .catch(() => {
+export async function getSSOEnabled(okapiUrl, store, tenant) {
+  try {
+    const response = await fetch(`${okapiUrl}/saml/check`, { headers: { 'X-Okapi-Tenant': tenant, 'Accept': 'application/json' } });
+    if (response.ok) {
+      const json = await response.json();
+      store.dispatch(checkSSO(json.active));
+    } else {
       store.dispatch(checkSSO(false));
-    });
+    }
+  } catch (_e) {
+    store.dispatch(checkSSO(false));
+  }
 }
 
 /**
@@ -963,31 +953,30 @@ export function getSSOEnabled(okapiUrl, store, tenant) {
  * for a GET binding, navigate to the requested location
  * @param {object} resp fetch Response
  */
-function processSSOLoginResponse(resp) {
+async function processSSOLoginResponse(resp) {
   if (resp.ok) {
-    resp.json().then((json) => {
-      const form = document.getElementById('ssoForm');
-      if (json.bindingMethod === 'POST') {
-        form.setAttribute('action', json.location);
-        form.setAttribute('method', json.bindingMethod);
+    const json = await resp.json();
+    const form = document.getElementById('ssoForm');
+    if (json.bindingMethod === 'POST') {
+      form.setAttribute('action', json.location);
+      form.setAttribute('method', json.bindingMethod);
 
-        const samlRequest = document.createElement('input');
-        samlRequest.setAttribute('type', 'hidden');
-        samlRequest.setAttribute('name', 'SAMLRequest');
-        samlRequest.setAttribute('value', json.samlRequest);
-        form.appendChild(samlRequest);
+      const samlRequest = document.createElement('input');
+      samlRequest.setAttribute('type', 'hidden');
+      samlRequest.setAttribute('name', 'SAMLRequest');
+      samlRequest.setAttribute('value', json.samlRequest);
+      form.appendChild(samlRequest);
 
-        const relayState = document.createElement('input');
-        relayState.setAttribute('type', 'hidden');
-        relayState.setAttribute('name', 'RelayState');
-        relayState.setAttribute('value', json.relayState);
-        form.appendChild(relayState);
+      const relayState = document.createElement('input');
+      relayState.setAttribute('type', 'hidden');
+      relayState.setAttribute('name', 'RelayState');
+      relayState.setAttribute('value', json.relayState);
+      form.appendChild(relayState);
 
-        form.submit();
-      } else {
-        window.open(json.location, '_self');
-      }
-    });
+      form.submit();
+    } else {
+      window.open(json.location, '_self');
+    }
   }
 }
 
@@ -1002,13 +991,11 @@ function processSSOLoginResponse(resp) {
  *
  * @returns {Promise} resolving to the response's JSON
  */
-export function handleLoginError(dispatch, resp) {
-  return localforage.removeItem(SESSION_NAME)
-    .then(() => processBadResponse(dispatch, resp))
-    .then(responseBody => {
-      dispatch(setOkapiReady());
-      return responseBody;
-    });
+export async function handleLoginError(dispatch, resp) {
+  await localforage.removeItem(SESSION_NAME);
+  const responseBody = await processBadResponse(dispatch, resp);
+  dispatch(setOkapiReady());
+  return responseBody;
 }
 
 /**
@@ -1031,23 +1018,19 @@ export function handleLoginError(dispatch, resp) {
  * @param {string} tenant
  * @param {Response} resp HTTP response
  *
- * @returns {Promise} resolving with login response body, rejecting with, ummmmm
+ * @returns {Promise} resolving to login response body or undefined on error
  */
-export function processOkapiSession(store, tenant, resp, ssoToken) {
+export async function processOkapiSession(store, tenant, resp, ssoToken) {
   const { dispatch } = store;
 
   if (resp.ok) {
-    return resp.json()
-      .then(json => {
-        const token = resp.headers.get('X-Okapi-Token') || json.access_token || ssoToken;
-        return createOkapiSession(store, tenant, token, json)
-          .then(() => json);
-      })
-      .then((json) => {
-        store.dispatch(setOkapiReady());
-        return json;
-      });
+    const json = await resp.json();
+    const token = resp.headers.get('X-Okapi-Token') || json.access_token || ssoToken;
+    await createOkapiSession(store, tenant, token, json);
+    store.dispatch(setOkapiReady());
+    return json;
   } else {
+    // handleLoginError will dispatch setAuthError, then resolve to undefined
     return handleLoginError(dispatch, resp);
   }
 }
@@ -1073,56 +1056,55 @@ export function processOkapiSession(store, tenant, resp, ssoToken) {
  *
  * @returns {Promise}
  */
-export function validateUser(okapiUrl, store, tenant, session, handleError) {
-  const { token, tenant: sessionTenant = tenant } = session;
-  const usersPath = store.getState()?.okapi?.authnUrl ? 'users-keycloak' : 'bl-users';
-  return fetch(`${okapiUrl}/${usersPath}/_self?expandPermissions=true`, {
-    headers: getHeaders(sessionTenant, token),
-    credentials: 'include',
-    mode: 'cors',
-  }).then((resp) => {
+export async function validateUser(okapiUrl, store, tenant, session, handleError) {
+  try {
+    const { token, tenant: sessionTenant = tenant } = session;
+    const usersPath = store.getState()?.okapi?.authnUrl ? 'users-keycloak' : 'bl-users';
+    const resp = await fetch(`${okapiUrl}/${usersPath}/_self?expandPermissions=true`, {
+      headers: getHeaders(sessionTenant, token),
+      credentials: 'include',
+      mode: 'cors',
+    });
     if (resp.ok) {
-      return resp.json().then((data) => {
-        // clear any auth-n errors
-        store.dispatch(setAuthError(null));
-        store.dispatch(setLoginData(data));
+      const data = await resp.json();
+      // clear any auth-n errors
+      store.dispatch(setAuthError(null));
+      store.dispatch(setLoginData(data));
 
-        const { user, perms } = spreadUserWithPerms(data);
-        store.dispatch(setCurrentPerms(perms));
+      const { user, perms } = spreadUserWithPerms(data);
+      store.dispatch(setCurrentPerms(perms));
 
-        // update the session data with values from the response from _self
-        // in case they have changed since the previous login. this allows
-        // permissions changes to take effect immediately, without needing to
-        // re-authenticate.
-        //
-        // tenant and tokenExpiration data are still pulled from the session,
-        // tenant because the user may have switched the session-tenant to
-        // something other than their default and tokenExpiration because that
-        // data isn't provided by _self.
-        store.dispatch(setSessionData({
-          isAuthenticated: true,
-          // spread data from the previous session (which may include session-specific
-          // values such as the current service point), and the restructured user object
-          // (which includes permissions in a lookup-friendly way)
-          user: { ...session.user, ...user },
-          perms,
-          tenant: sessionTenant,
-          token,
-          tokenExpiration: session.tokenExpiration
-        }));
+      // update the session data with values from the response from _self
+      // in case they have changed since the previous login. this allows
+      // permissions changes to take effect immediately, without needing to
+      // re-authenticate.
+      //
+      // tenant and tokenExpiration data are still pulled from the session,
+      // tenant because the user may have switched the session-tenant to
+      // something other than their default and tokenExpiration because that
+      // data isn't provided by _self.
+      store.dispatch(setSessionData({
+        isAuthenticated: true,
+        // spread data from the previous session (which may include session-specific
+        // values such as the current service point), and the restructured user object
+        // (which includes permissions in a lookup-friendly way)
+        user: { ...session.user, ...user },
+        perms,
+        tenant: sessionTenant,
+        token,
+        tokenExpiration: session.tokenExpiration
+      }));
 
-        return loadResources(store, sessionTenant, user.id);
-      });
+      return loadResources(store, sessionTenant, user.id);
     } else {
-      return resp.text().then(text => {
-        throw text;
-      });
+      const text = await resp.text();
+      throw text;
     }
-  }).catch((error) => {
+  } catch (error) {
     // log a warning, then call the error handler if we received one
     console.error(error); // eslint-disable-line no-console
     return handleError ? handleError() : Promise.resolve();
-  });
+  }
 }
 
 /**
@@ -1137,24 +1119,17 @@ export function validateUser(okapiUrl, store, tenant, session, handleError) {
  * @param {redux store} store
  * @param {string} tenant
  */
-export function checkOkapiSession(okapiUrl, store, tenant) {
-  getOkapiSession()
-    .then((sess) => {
-      const handleError = () => logout(okapiUrl, store);
-      return sess?.user?.id ? validateUser(okapiUrl, store, tenant, sess, handleError) : null;
-    })
-    .then((res) => {
-      // check whether SSO is enabled if either
-      // 1. res is null (when we are starting a new session)
-      // 2. login-saml interface is present (when we are resuming an existing session)
-      if (!res || store.getState().discovery?.interfaces?.['login-saml']) {
-        return getSSOEnabled(okapiUrl, store, tenant);
-      }
-      return Promise.resolve();
-    })
-    .finally(() => {
-      store.dispatch(setOkapiReady());
-    });
+export async function checkOkapiSession(okapiUrl, store, tenant) {
+  const sess = await getOkapiSession();
+  const handleError = () => logout(okapiUrl, store);
+  const res = sess?.user?.id ? await validateUser(okapiUrl, store, tenant, sess, handleError) : null;
+  // check whether SSO is enabled if either
+  // 1. res is null (when we are starting a new session)
+  // 2. login-saml interface is present (when we are resuming an existing session)
+  if (!res || store.getState().discovery?.interfaces?.['login-saml']) {
+    await getSSOEnabled(okapiUrl, store, tenant);
+  }
+  store.dispatch(setOkapiReady());
 }
 
 /**
@@ -1168,16 +1143,17 @@ export function checkOkapiSession(okapiUrl, store, tenant) {
  *
  * @returns {Promise}
  */
-export function requestLogin(okapiUrl, store, tenant, data) {
+export async function requestLogin(okapiUrl, store, tenant, data) {
   const loginPath = 'login-with-expiry';
-  return fetch(`${okapiUrl}/bl-users/${loginPath}?expandPermissions=true&fullPermissions=true`, {
+  const resp = await fetch(`${okapiUrl}/bl-users/${loginPath}?expandPermissions=true&fullPermissions=true`, {
     body: JSON.stringify(data),
     credentials: 'include',
     headers: { 'X-Okapi-Tenant': tenant, 'Content-Type': 'application/json' },
     method: 'POST',
     mode: 'cors',
-  })
-    .then(resp => processOkapiSession(store, tenant, resp));
+  });
+
+  await processOkapiSession(store, tenant, resp);
 }
 
 /**
@@ -1190,15 +1166,17 @@ export function requestLogin(okapiUrl, store, tenant, data) {
  *
  * @returns {Promise} Promise resolving to the response of the request
  */
-function fetchUserWithPerms(okapiUrl, tenant, token, rtrIgnore = false) {
+async function fetchUserWithPerms(okapiUrl, tenant, token, rtrIgnore = false) {
   const usersPath = okapi.authnUrl ? 'users-keycloak' : 'bl-users';
-  return fetch(
+  const res = await fetch(
     `${okapiUrl}/${usersPath}/_self?expandPermissions=true&fullPermissions=true`,
     {
       headers: getHeaders(tenant, token),
       rtrIgnore,
     },
   );
+
+  return res;
 }
 
 /**
@@ -1220,15 +1198,17 @@ function fetchUserWithPerms(okapiUrl, tenant, token, rtrIgnore = false) {
  * @returns {Promise} Promise resolving to the response-body (JSON) of the request
  */
 
-export function fetchOverriddenUserWithPerms(okapiUrl, tenant, token, rtrIgnore = false) {
+export async function fetchOverriddenUserWithPerms(okapiUrl, tenant, token, rtrIgnore = false) {
   const usersPath = okapi.authnUrl ? 'users-keycloak' : 'bl-users';
-  return fetch(
+  const res = await fetch(
     `${okapiUrl}/${usersPath}/_self?expandPermissions=true&fullPermissions=true&overrideUser=true`,
     {
       headers: getHeaders(tenant, token),
       rtrIgnore,
     },
   );
+
+  return res;
 }
 
 /**
@@ -1241,17 +1221,15 @@ export function fetchOverriddenUserWithPerms(okapiUrl, tenant, token, rtrIgnore 
  *
  * @returns {Promise} Promise resolving to the response-body (JSON) of the request
  */
-export function requestUserWithPerms(okapiUrl, store, tenant, token) {
-  return fetchOverriddenUserWithPerms(okapiUrl, tenant, token, !token)
-    .then((resp) => {
-      if (resp.ok) {
-        return processOkapiSession(store, tenant, resp, token);
-      } else {
-        return resp.json().then((error) => {
-          throw error;
-        });
-      }
-    });
+export async function requestUserWithPerms(okapiUrl, store, tenant, token) {
+  const resp = await fetchOverriddenUserWithPerms(okapiUrl, tenant, token, !token);
+  if (resp.ok) {
+    const sessionData = await processOkapiSession(store, tenant, resp, token);
+    return sessionData;
+  } else {
+    const error = await resp.json();
+    throw error;
+  }
 }
 
 /**
@@ -1262,19 +1240,19 @@ export function requestUserWithPerms(okapiUrl, store, tenant, token) {
  *
  * @returns {Promise}
  */
-export function requestSSOLogin(okapiUrl, tenant) {
+export async function requestSSOLogin(okapiUrl, tenant) {
   const stripesUrl = (window.location.origin || `${window.location.protocol}//${window.location.host}`) + window.location.pathname;
   // the /_/invoke/... URL is used for systems that make call-backs
   // to okapi and don't handle setting of the tenant in the HTTP header.
   // i.e. ordinarily, we'd just call ${okapiUrl}/saml/login.
   // https://s3.amazonaws.com/foliodocs/api/okapi/p/okapi.html#invoke_tenant__id_
-  return fetch(`${okapiUrl}/_/invoke/tenant/${tenant}/saml/login`, {
+  const resp = await fetch(`${okapiUrl}/_/invoke/tenant/${tenant}/saml/login`, {
     method: 'POST',
     headers: { 'X-Okapi-tenant': tenant, 'Content-Type': 'application/json' },
     credentials: 'include',
     body: JSON.stringify({ stripesUrl }),
-  })
-    .then(resp => processSSOLoginResponse(resp));
+  });
+  await processSSOLoginResponse(resp);
 }
 
 /**
@@ -1286,15 +1264,11 @@ export function requestSSOLogin(okapiUrl, tenant) {
  *
  * @returns {Promise}
  */
-export function updateUser(store, data) {
-  return getOkapiSession()
-    .then((sess) => {
-      sess.user = { ...sess.user, ...data };
-      return localforage.setItem(SESSION_NAME, sess);
-    })
-    .then(() => {
-      store.dispatch(updateCurrentUser(data));
-    });
+export async function updateUser(store, data) {
+  const sess = await getOkapiSession();
+  sess.user = { ...sess.user, ...data };
+  await localforage.setItem(SESSION_NAME, sess);
+  store.dispatch(updateCurrentUser(data));
 }
 
 /**
