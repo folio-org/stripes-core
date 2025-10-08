@@ -48,7 +48,7 @@ const RootWithIntl = ({ stripes, token = '', isAuthenticated = false, disableAut
   const connectedStripes = stripes.clone({ connect });
 
   const [callout, setCallout] = useState(null);
-  const [, forceRerender] = useState(false);
+  const [_, setForceRenderFlag] = useState(false);
 
   const setCalloutDomRef = (ref) => {
     setCallout(ref);
@@ -57,13 +57,13 @@ const RootWithIntl = ({ stripes, token = '', isAuthenticated = false, disableAut
   // Listen for SessionReady events and trigger re-render
   useEffect(() => {
     const handleSessionReady = () => {
-      forceRerender(prev => !prev);
+      setForceRenderFlag(prev => !prev);
     };
 
-    window.addEventListener('SessionReady', handleSessionReady);
+    globalThis.addEventListener('SessionReady', handleSessionReady);
 
     return () => {
-      window.removeEventListener('SessionReady', handleSessionReady);
+      globalThis.removeEventListener('SessionReady', handleSessionReady);
     };
   }, []);
 
