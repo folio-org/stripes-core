@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import {
   Router,
@@ -48,9 +48,24 @@ const RootWithIntl = ({ stripes, token = '', isAuthenticated = false, disableAut
   const connectedStripes = stripes.clone({ connect });
 
   const [callout, setCallout] = useState(null);
+  const [, forceRerender] = useState(false);
+
   const setCalloutDomRef = (ref) => {
     setCallout(ref);
   };
+
+  // Listen for SessionReady events and trigger re-render
+  useEffect(() => {
+    const handleSessionReady = () => {
+      forceRerender(prev => !prev);
+    };
+
+    window.addEventListener('SessionReady', handleSessionReady);
+
+    return () => {
+      window.removeEventListener('SessionReady', handleSessionReady);
+    };
+  }, []);
 
   return (
     <StripesContext.Provider value={connectedStripes}>
