@@ -1017,6 +1017,18 @@ describe('loadResources', () => {
         );
       });
 
+      it('should retrieve tenant-locale and user-locale from settings, plugins and bindings from configurations', async () => {
+        loadResourcesResult = await loadResources(store, 'tenant', 'userId');
+
+        expect(loadResourcesResult.map(({ url }) => url)).toEqual([
+          'http://okapi-url/settings/entries?query=(scope=="stripes-core.prefs.manage" and key=="tenantLocaleSettings")',
+          'http://okapi-url/settings/entries?query=(userId=="userId" and scope=="stripes-core.prefs.manage" and key=="localeSettings")',
+          'http://okapi-url/configurations/entries?query=(module==PLUGINS)',
+          'http://okapi-url/configurations/entries?query=(module==ORG and configName==bindings)',
+          'discoverServices',
+        ]);
+      });
+
       describe('when both the tenant and user locale settings are present', () => {
         it('should apply user locale settings', async () => {
           const timezone = userLocaleData.items[0].value.timezone;
@@ -1035,18 +1047,6 @@ describe('loadResources', () => {
 
           expect(document.documentElement.lang).toBe('en-GB-u-nu-latn');
         });
-      });
-
-      it('should wait for the following requests', async () => {
-        loadResourcesResult = await loadResources(store, 'tenant', 'userId');
-
-        expect(loadResourcesResult.map(({ url }) => url)).toEqual([
-          'http://okapi-url/settings/entries?query=(scope=="stripes-core.prefs.manage" and key=="tenantLocaleSettings")',
-          'http://okapi-url/settings/entries?query=(userId=="userId" and scope=="stripes-core.prefs.manage" and key=="localeSettings")',
-          'http://okapi-url/configurations/entries?query=(module==PLUGINS)',
-          'http://okapi-url/configurations/entries?query=(module==ORG and configName==bindings)',
-          'discoverServices',
-        ]);
       });
     });
 
@@ -1111,7 +1111,7 @@ describe('loadResources', () => {
         expect(document.documentElement.lang).toBe('en-GB-u-nu-latn');
       });
 
-      it('should wait for the following requests', async () => {
+      it('should retrieve tenant-locale, user-locale, plugins, and bindings from configurations', async () => {
         loadResourcesResult = await loadResources(store, 'tenant', 'userId');
 
         expect(loadResourcesResult.map(({ url }) => url)).toEqual([
@@ -1186,7 +1186,7 @@ describe('loadResources', () => {
       expect(document.documentElement.lang).toBe('en-US-u-nu-latn');
     });
 
-    it('should wait for the following requests', async () => {
+    it('should retrieve tenant locale from settings', async () => {
       loadResourcesResult = await loadResources(store, 'tenant', 'userId');
 
       expect(loadResourcesResult.map(({ url } = {}) => url)).toEqual([
@@ -1280,7 +1280,7 @@ describe('loadResources', () => {
       expect(document.documentElement.lang).toBe('en-GB-u-nu-latn');
     });
 
-    it('should wait for the following requests', async () => {
+    it('should retrieve tenant-locale, user-locale, plugins, and bindings from configurations', async () => {
       loadResourcesResult = await loadResources(store, 'tenant', 'userId');
 
       expect(loadResourcesResult.map(({ url }) => url)).toEqual([
