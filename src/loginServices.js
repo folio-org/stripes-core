@@ -635,6 +635,7 @@ export async function loadResources(store, tenant, userId) {
   const promises = [];
   const okapiUrl = store.getState()?.okapi.url;
   const hasReadConfigPerm = canReadConfig(store);
+  let hasSetting = false;
 
   // canReadSetting: mod-settings
   // hasReadConfigPerm: mod-configuration (legacy)
@@ -644,13 +645,16 @@ export async function loadResources(store, tenant, userId) {
       getUserOwnLocale(okapiUrl, store, tenant, userId),
     ]);
     const [tenantLocaleData, userLocaleData] = await Promise.all(responses.map(res => res.value?.json?.()));
-    const hasSetting = tenantLocaleData?.items[0] || userLocaleData?.items[0];
+    hasSetting = tenantLocaleData?.items[0] || userLocaleData?.items[0];
 
     if (hasSetting) {
       await processLocaleSettings(store, tenantLocaleData, userLocaleData);
       promises.push(responses.map(res => res?.value));
     }
-  } else if (hasReadConfigPerm) {
+  }
+
+  // only read from legacy mod-config if we haven't already read from mod-settings
+  if (hasReadConfigPerm && !hasSetting) {
     promises.push(getLocalesPromise(okapiUrl, store, tenant, userId));
   }
 
