@@ -35,7 +35,8 @@ const useChunkedIdTransformFetch = ({
   endpoint, // endpoint to hit to fetch items
   generateQueryKey, // Passed function to allow customised query keys
   ids: passedIds, // List of IDs to fetch
-  chunkedQueryIdTransform, // A transform applied to an entire chunk of identifiers. This will be used in ky's "searchParams" option and so can return any valid https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams shape
+  // See https://github.com/sindresorhus/ky?tab=readme-ov-file#searchparams and https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams
+  chunkedQueryIdTransform, // A transform applied to an entire chunk of identifiers. This will be used in ky's "searchParams" option and so can return any valid input for URLSearchParams. See links above.
   queryOptions: passedQueryOptions = {}, // React-Query options to pass to each query object. Not to be confused with the "query" string that chunkedQueryIdTransform provides
   reduceFunction, // Function to reduce fetched objects at the end into single array
   STEP_SIZE = STEP_SIZE_DEFAULT, // Number of IDs fetch per request
