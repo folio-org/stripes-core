@@ -22,7 +22,7 @@ const makeid = (length) => {
 
 const baseOptions = {
   endpoint: 'users',
-  chunkedQueryIdTransform: (chunkedIds) => `?(${chunkedIds.map(theId => `id==${theId}`).join('||')}`,
+  chunkedQueryIdTransform: (chunkedIds) => `?(${chunkedIds.map(theId => `id==${theId}`).join('||')})`,
   ids: [
     '1234-5678-a',
     '1234-5678-b',
@@ -328,9 +328,14 @@ describe('Given useChunkedIdTransformFetch', () => {
         return result.current.itemQueries?.filter(iq => iq.isLoading)?.length === 0;
       });
 
-      expect(mockUseOkapiKyValue.get.mock.calls[0][0]).toEqual('users?(id==1234-5678-a||id==1234-5678-b');
-      expect(mockUseOkapiKyValue.get.mock.calls[1][0]).toEqual('users?(id==1234-5678-c||id==1234-5678-d');
-      expect(mockUseOkapiKyValue.get.mock.calls[2][0]).toEqual('users?(id==1234-5678-e');
+      expect(mockUseOkapiKyValue.get.mock.calls[0][0]).toEqual('users');
+      expect(mockUseOkapiKyValue.get.mock.calls[0][1]).toEqual({ searchParams: '?(id==1234-5678-a||id==1234-5678-b)' });
+
+      expect(mockUseOkapiKyValue.get.mock.calls[1][0]).toEqual('users');
+      expect(mockUseOkapiKyValue.get.mock.calls[1][1]).toEqual({ searchParams: '?(id==1234-5678-c||id==1234-5678-d)' });
+
+      expect(mockUseOkapiKyValue.get.mock.calls[2][0]).toEqual('users');
+      expect(mockUseOkapiKyValue.get.mock.calls[2][1]).toEqual({ searchParams: '?(id==1234-5678-e)' });
     });
 
     it('sets up 3 fetches using custom chunkedQueryIdTransform', async () => {
@@ -344,9 +349,14 @@ describe('Given useChunkedIdTransformFetch', () => {
         return result.current.itemQueries?.filter(iq => iq.isLoading)?.length === 0;
       });
 
-      expect(mockUseOkapiKyValue.get.mock.calls[0][0]).toEqual('users?wibble=true&anId=~=1234-5678-a,anId=~=1234-5678-b');
-      expect(mockUseOkapiKyValue.get.mock.calls[1][0]).toEqual('users?wibble=true&anId=~=1234-5678-c,anId=~=1234-5678-d');
-      expect(mockUseOkapiKyValue.get.mock.calls[2][0]).toEqual('users?wibble=true&anId=~=1234-5678-e');
+      expect(mockUseOkapiKyValue.get.mock.calls[0][0]).toEqual('users');
+      expect(mockUseOkapiKyValue.get.mock.calls[0][1]).toEqual({ searchParams: '?wibble=true&anId=~=1234-5678-a,anId=~=1234-5678-b' });
+
+      expect(mockUseOkapiKyValue.get.mock.calls[1][0]).toEqual('users');
+      expect(mockUseOkapiKyValue.get.mock.calls[1][1]).toEqual({ searchParams: '?wibble=true&anId=~=1234-5678-c,anId=~=1234-5678-d' });
+
+      expect(mockUseOkapiKyValue.get.mock.calls[2][0]).toEqual('users');
+      expect(mockUseOkapiKyValue.get.mock.calls[2][1]).toEqual({ searchParams: '?wibble=true&anId=~=1234-5678-e' });
     });
   });
 });

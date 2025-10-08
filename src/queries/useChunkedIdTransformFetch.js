@@ -74,9 +74,11 @@ const useChunkedIdTransformFetch = ({
         ['stripes-core', endpoint, chunkedItem, tenantId];
       queryArray.push({
         queryKey,
-        // !WARNING! DO NOT PUT LOGIC INTO THE GET HERE
-        // LOGIC FOR CQL FETCHES SHOULD BE IN CHUNKED CQL FETCH HOOK INSTEAD
-        queryFn: () => ky.get(`${endpoint}${query}`).json(),
+        // !WARNING! This is likely not the place to make query parameter changes
+        // This hook acts as a generic query hook, capable of making this kind
+        // of frontend join to ANY api, not just CQL-shape ones.
+        // For CQL-specific query parameters or changes, see useChunkedCQLFetch instead
+        queryFn: () => ky.get(endpoint, { searchParams: query }).json(),
         // Only enable once the previous slice has all been fetched
         enabled: queryEnabled && chunkedItemIndex < CONCURRENT_REQUESTS,
         ...queryOptions

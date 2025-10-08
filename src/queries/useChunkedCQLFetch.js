@@ -2,7 +2,7 @@ import useChunkedIdTransformFetch from './useChunkedIdTransformFetch';
 
 // useChunkedCQLFetch remains to avoid backwards compatibility issues,
 // but makes use of generalised useChunkedIdTransformFetch
-// THIS IS THE PLACE TO PUT EXTRA LOGIC FOR CQL QUERIES
+// This is the place to make changes and additions which can be consumed by CQL type API endpoints
 const useChunkedCQLFetch = ({
   idName = 'id', // Named ID field to use in the CQL query (i.e. id or userId)
   limit = 1000, // Item limit to fetch on each request
