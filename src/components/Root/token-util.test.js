@@ -11,7 +11,7 @@ import {
   RTR_IS_ROTATING,
   RTR_MAX_AGE,
 } from './token-util';
-import { 
+import {
   RTR_SUCCESS_EVENT,
   RTR_ERROR_EVENT,
 } from './constants';

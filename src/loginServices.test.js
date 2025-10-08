@@ -467,13 +467,21 @@ describe('updateTenant', () => {
   });
 });
 
-describe('localforage session wrapper', () => {
-  it('getOkapiSession retrieves a session object', async () => {
-    const o = { user: {} };
-    localforage.getItem = jest.fn(() => Promise.resolve(o));
+describe('localforage wrappers', () => {
+  describe('getOkapiSession', () => {
+    it('retrieves a session object', async () => {
+      const o = {
+        margo: 'timmins',
+        margot: 'margot with a t looks better',
+        also: 'i thought we were talking about margot robbie?',
+        tokenExpiration: 'time out of mind',
+      };
 
-    const s = await getOkapiSession();
-    expect(s).toMatchObject(o);
+      localforage.getItem = jest.fn(() => Promise.resolve(o));
+
+      const s = await getOkapiSession();
+      expect(s).toMatchObject(o);
+    });
   });
 
   describe('getTokenExpiry', () => {
@@ -494,23 +502,54 @@ describe('localforage session wrapper', () => {
     });
   });
 
-  it('setTokenExpiry set', async () => {
-    const o = {
-      margo: 'timmins',
-      margot: 'margot with a t looks better',
-      also: 'i thought we were talking about margot robbie?',
-      tokenExpiration: 'time out of mind',
-    };
-    localforage.getItem = () => Promise.resolve(o);
-    localforage.setItem = (k, v) => Promise.resolve(v);
+  describe('setTokenExpiry', () => {
+    describe('rejects invalid input', () => {
+      it('missing values', async () => {
+        const te = {
+          trinity: 'cowboy junkies',
+          sweet: 'james',
+        };
 
-    const te = {
-      trinity: 'cowboy junkies',
-      sweet: 'james',
-    };
+        await expect(setTokenExpiry(te)).rejects.toThrow(TypeError);
+      });
 
-    const s = await setTokenExpiry(te);
-    expect(s).toMatchObject({ ...o, tokenExpiration: te });
+      describe('non-integer values', () => {
+        it('atExpires', async () => {
+          const te = {
+            atExpires: 3.1415926,
+          };
+          await expect(setTokenExpiry(te)).rejects.toThrow(TypeError);
+        });
+
+        it('rtExpires', async () => {
+          const te = {
+            atExpires: 9_007_199_254_740_991,
+            rtExpires: 2.71828,
+          };
+          await expect(setTokenExpiry(te)).rejects.toThrow(TypeError);
+        });
+      });
+    });
+
+    it('returns updated session data', async () => {
+      const storage = {
+        margo: 'timmins',
+        margot: 'margot with a t looks better',
+        also: 'i thought we were talking about margot robbie?',
+        tokenExpiration: 'time out of mind',
+      };
+
+      localforage.getItem = jest.fn(() => Promise.resolve(storage));
+      localforage.setItem = jest.fn((k, v) => Promise.resolve(v));
+
+
+      const te = {
+        atExpires: 1,
+        rtExpires: 2,
+      };
+      const res = await setTokenExpiry(te);
+      expect(res).toMatchObject({ ...storage, tokenExpiration: te });
+    });
   });
 });
 
