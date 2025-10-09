@@ -945,7 +945,8 @@ export async function getSSOEnabled(okapiUrl, store, tenant) {
     } else {
       store.dispatch(checkSSO(false));
     }
-  } catch (_e) {
+  } catch (error) {
+    console.error(error); // eslint-disable-line no-console
     store.dispatch(checkSSO(false));
   }
 }
@@ -1113,6 +1114,7 @@ export async function validateUser(okapiUrl, store, tenant, session, handleError
 
 /**
  * checkOkapiSession
+ *
  * 1. Pull the session from local storage; if it contains a user id,
  *    validate it by fetching /_self to verify that it is still active,
  *    dispatching load-resources actions.
