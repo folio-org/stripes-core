@@ -12,6 +12,7 @@ import { Callout, HotKeys } from '@folio/stripes-components';
 
 import ModuleRoutes from './ModuleRoutes';
 import events from './events';
+import { SESSION_READY_EVENT } from './components/Root/constants';
 
 import {
   MainContainer,
@@ -48,7 +49,7 @@ const RootWithIntl = ({ stripes, token = '', isAuthenticated = false, disableAut
   const connectedStripes = stripes.clone({ connect });
 
   const [callout, setCallout] = useState(null);
-  const [_, setForceRenderFlag] = useState(false);
+  const [, setForceRenderFlag] = useState(false);
 
   const setCalloutDomRef = (ref) => {
     setCallout(ref);
@@ -60,10 +61,10 @@ const RootWithIntl = ({ stripes, token = '', isAuthenticated = false, disableAut
       setForceRenderFlag(prev => !prev);
     };
 
-    globalThis.addEventListener('SessionReady', handleSessionReady);
+    globalThis.addEventListener(SESSION_READY_EVENT, handleSessionReady);
 
     return () => {
-      globalThis.removeEventListener('SessionReady', handleSessionReady);
+      globalThis.removeEventListener(SESSION_READY_EVENT, handleSessionReady);
     };
   }, []);
 
