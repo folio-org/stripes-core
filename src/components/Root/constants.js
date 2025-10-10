@@ -106,3 +106,5 @@ export const SESSION_ACTIVE_WINDOW_ID = '@folio/stripes/core::activeWindowId';
 export const RTR_ACTIVE_WINDOW_MSG = '@folio/stripes/core::activeWindowMessage';
 /** Message channel for the BroadcastChannel to indicate the active window */
 export const RTR_ACTIVE_WINDOW_MSG_CHANNEL = '@folio/stripes/core::activeWindowMessageChannel';
+/** dispatched when the session is ready */
+export const SESSION_READY_EVENT = '@folio/stripes/core::SessionReady';
