@@ -51,7 +51,8 @@ const makeStore = (stateOverrides = {}) => {
       serverDown: false,
       timezone: 'UTC',
       token: undefined,
-      translations: { ready: true },
+      translations: undefined,
+      withoutOkapi: false,
       ...stateOverrides.okapi,
     },
     discovery: stateOverrides.discovery || { isFinished: true },
@@ -102,17 +103,108 @@ describe('Root component', () => {
     expect(screen.queryByTestId('root-with-intl')).toBeNull();
   });
 
-  it('renders RootWithIntl when translations are present', () => {
-    renderRoot();
-    expect(screen.getByTestId('root-with-intl')).toBeInTheDocument();
+  describe('when user is logged in and reloading the page', () => {
+    describe('and translations are loaded first', () => {
+      describe('and modules are loaded second', () => {
+        it('should display SystemSkeleton, otherwise will show login page flicker', () => {
+          // Initial state - no translations, not authenticated, okapi not ready
+          const initialStore = makeStore({
+            okapi: {
+              translations: undefined,
+              okapiReady: false,
+            }
+          });
+
+          const { rerender } = renderRoot({
+            store: initialStore,
+            modules: { app: [], settings: [] }
+          });
+
+          // Should show SystemSkeleton (no translations)
+          expect(screen.getByTestId('system-skeleton')).toBeInTheDocument();
+          expect(screen.queryByTestId('root-with-intl')).toBeNull();
+
+          // Stage 1: Load translations first
+          const stageOneState = {
+            ...initialStore.getState(),
+            okapi: {
+              ...initialStore.getState().okapi,
+              translations: { title: 'foo' },
+            }
+          };
+
+          const stageOneStore = {
+            ...initialStore,
+            getState: () => stageOneState,
+          };
+
+          rerender(getRootComponent({
+            store: stageOneStore,
+            modules: { app: [], settings: [] }
+          }));
+
+          // Should show SystemSkeleton (okapiReady is still false)
+          expect(screen.queryByTestId('root-with-intl')).toBeNull();
+          expect(screen.getByTestId('system-skeleton')).toBeInTheDocument();
+
+          // Stage 2: Load modules
+          const stageTwoModules = {
+            app: [
+              { module: 'QueryMod', route: '/app1' },
+            ],
+            settings: []
+          };
+
+          rerender(getRootComponent({
+            store: stageOneStore,
+            modules: stageTwoModules
+          }));
+
+          // Should show SystemSkeleton (okapiReady is still false)
+          expect(screen.queryByTestId('root-with-intl')).toBeNull();
+          expect(screen.getByTestId('system-skeleton')).toBeInTheDocument();
+
+          // Stage 3: Complete session validation (authenticate user and set okapiReady)
+          const stageThreeState = {
+            ...stageOneState,
+            okapi: {
+              ...stageOneState.okapi,
+              okapiReady: true,
+              currentUser: { id: 'user123', username: 'testuser' }
+            }
+          };
+
+          const stageThreeStore = {
+            ...initialStore,
+            getState: () => stageThreeState,
+          };
+
+          rerender(getRootComponent({
+            store: stageThreeStore,
+            modules: stageTwoModules,
+          }));
+
+          // Should show RootWithIntl
+          expect(screen.getByTestId('root-with-intl')).toBeInTheDocument();
+          expect(screen.queryByTestId('system-skeleton')).toBeNull();
+        });
+      });
+    });
   });
 
   it('addEpic only adds a new epic once', () => {
     const mockAdd = jest.fn();
     const epic = jest.fn();
+    const store = makeStore({
+      okapi: {
+        okapiReady: true,
+        translations: { title: 'Home' },
+      },
+    });
 
     renderRoot({
       epics: { add: mockAdd },
+      store,
     });
 
     expect(latestContextFns.addEpic('epic1', epic)).toBe(true);
@@ -139,17 +231,27 @@ describe('Root component', () => {
       store,
       history,
       modules: initialModules,
-      okapi: {
-        url: '',
-        tenant: 'diku',
-        withoutOkapi: true,
-      },
     };
 
     const { rerender } = renderRoot(props);
 
+    const updatedState = {
+      ...store.getState(),
+      okapi: {
+        ...store.getState().okapi,
+        okapiReady: true,
+        translations: { title: 'Home' },
+      },
+    };
+
+    const updatedStore = {
+      ...store,
+      getState: () => updatedState,
+    };
+
     rerender(getRootComponent({
       ...props,
+      store: updatedStore,
       modules: {
         app: [queryModule],
         settings: [],
