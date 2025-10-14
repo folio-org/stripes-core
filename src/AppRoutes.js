@@ -1,8 +1,9 @@
-import React, { useMemo } from 'react';
+import { Suspense, useMemo } from 'react';
 import { Route } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import { connectFor } from '@folio/stripes-connect';
+import { LoadingView } from '@folio/stripes-components';
 
 import { StripesContext } from './StripesContext';
 import TitleManager from './components/TitleManager';
@@ -69,7 +70,9 @@ const AppRoutes = ({ modules, stripes }) => {
                   stripes={moduleStripes}
                 >
                   <TitleManager page={displayName}>
-                    <ModuleComponent {...props} connect={connect} stripes={moduleStripes} actAs="app" />
+                    <Suspense fallback={<LoadingView />}>
+                      <ModuleComponent {...props} connect={connect} stripes={moduleStripes} actAs="app" />
+                    </Suspense>
                   </TitleManager>
                 </RouteErrorBoundary>
               </div>

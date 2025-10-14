@@ -1,5 +1,8 @@
-import React, { useMemo } from 'react';
+import React, { Suspense, useMemo } from 'react';
 import PropTypes from 'prop-types';
+
+import { Loading } from '@folio/stripes-components';
+
 import { useModules } from './ModulesContext';
 import { withStripes } from './StripesContext';
 import { ModuleHierarchyProvider } from './components';
@@ -40,7 +43,9 @@ const Pluggable = (props) => {
   if (cachedPlugins.length) {
     return cachedPlugins.map(({ plugin, Child }) => (
       <ModuleHierarchyProvider module={plugin} key={plugin}>
-        <Child {...props} actAs="plugin" />
+        <Suspense fallback={<Loading />}>
+          <Child {...props} actAs="plugin" />
+        </Suspense>
       </ModuleHierarchyProvider>
     ));
   }
