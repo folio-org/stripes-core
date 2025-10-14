@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 
 import { Headline } from '@folio/stripes-components';
@@ -51,6 +52,12 @@ const AuthenticatedError = ({ location }) => {
       </div>
     </Pluggable>
   );
+};
+
+AuthenticatedError.propTypes = {
+  location: PropTypes.shape({
+    pathname: PropTypes.string,
+  })
 };
 
 export default AuthenticatedError;
