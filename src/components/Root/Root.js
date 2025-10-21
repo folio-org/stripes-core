@@ -85,9 +85,15 @@ class Root extends Component {
     this.updateQueryResourceStateKey();
   }
 
+  // Do not re-render before session validation completes to avoid UX issues on page reload:
+  // 1. Login page flicker: when user is already logged in (multi-tenant setup in tenantOptions).
+  // 2. Unnecessary Keycloak redirects: when the user is already logged in (single-tenant setup in tenantOptions).
+  // Those issues can happen when `translations` are loaded first and then `modules` are loaded, but
+  // session check (okapiReady) is not complete yet, the `RootWithIntl` would incorrectly render `AuthnLogin`,
+  // because `isAuthenticated` starts as false and only becomes true after session check completes.
+  // IMPORTANT: Do not add `modules` or other props to this condition without considering authentication timing.
   shouldComponentUpdate(nextProps) {
-    const { modules } = this.props;
-    return nextProps.modules !== modules || !this.withOkapi || nextProps.okapiReady || nextProps.serverDown;
+    return !this.withOkapi || nextProps.okapiReady || nextProps.serverDown;
   }
 
   componentDidUpdate(prevProps) {

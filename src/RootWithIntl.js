@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import {
   Router,
@@ -12,6 +12,7 @@ import { Callout, HotKeys } from '@folio/stripes-components';
 
 import ModuleRoutes from './ModuleRoutes';
 import events from './events';
+import { SESSION_READY_EVENT } from './components/Root/constants';
 
 import {
   MainContainer,
@@ -48,9 +49,24 @@ const RootWithIntl = ({ stripes, token = '', isAuthenticated = false, disableAut
   const connectedStripes = stripes.clone({ connect });
 
   const [callout, setCallout] = useState(null);
+  const [, setForceRenderFlag] = useState(false);
+
   const setCalloutDomRef = (ref) => {
     setCallout(ref);
   };
+
+  // Listen for SessionReady events and trigger re-render
+  useEffect(() => {
+    const handleSessionReady = () => {
+      setForceRenderFlag(prev => !prev);
+    };
+
+    globalThis.addEventListener(SESSION_READY_EVENT, handleSessionReady);
+
+    return () => {
+      globalThis.removeEventListener(SESSION_READY_EVENT, handleSessionReady);
+    };
+  }, []);
 
   return (
     <StripesContext.Provider value={connectedStripes}>
