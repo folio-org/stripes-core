@@ -1,4 +1,5 @@
 export { default as About } from './About';
+export { default as AuthenticatedError } from './AuthenticatedError';
 export { default as AuthErrorsContainer } from './AuthErrorsContainer';
 export { default as CreateResetPassword } from './CreateResetPassword';
 export { default as HandlerManager } from './HandlerManager';
@@ -30,9 +31,7 @@ export { default as Settings } from './Settings/Settings';
 export { default as ForgotPassword } from './ForgotPassword';
 export { default as ForgotUserName } from './ForgotUserName';
 export { default as CheckEmailStatusPage } from './CheckEmailStatusPage';
-export { default as BadRequestScreen } from './BadRequestScreen';
 export { default as NoPermissionScreen } from './NoPermissionScreen';
-export { default as ResetPasswordNotAvailableScreen } from './ResetPasswordNotAvailableScreen';
 export { default as SessionEventContainer } from './SessionEventContainer';
 export { default as StaleBundleWarning } from './StaleBundleWarning';
 
