@@ -24,6 +24,7 @@
 * Implement async `modules` loading infrastructure and update related components. Refs STCOR-976.
 * Listen for SessionReady events and update state to trigger re-render. Refs STCOR-977.
 * Take `tenant` from URL for multi-tenant setup in `getLoginTenant`. Make `makeCall` method async to avoid displaying an error message when loading the password reset page. Refs STCOR-1000.
+* Use async/await consistently in all `loginServices.js` functions. Refs STCOR-1004.
 
 ## [11.0.0](https://github.com/folio-org/stripes-core/tree/v11.0.0) (2025-02-24)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.2.0...v11.0.0)
