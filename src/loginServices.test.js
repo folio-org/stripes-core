@@ -1341,6 +1341,25 @@ describe('getLoginTenant', () => {
     });
   });
 
+  describe('multi-tenant', () => {
+    const stripesConfig = {
+      tenantOptions: {
+        tenant1: { name: 'tenant1', clientId: 'client1' },
+        tenant2: { name: 'tenant2', clientId: 'client2' },
+      }
+    };
+    describe('when URL contains tenant and no client_id', () => {
+      it('should take tenant from URL', () => {
+        // URL: /reset-password?resetToken=token1&tenant=tenant1
+        const search = { tenant: 'tenant1' };
+        Object.defineProperty(window, 'location', { value: { search } });
+
+        const res = getLoginTenant({}, stripesConfig);
+        expect(res.tenant).toBe(search.tenant);
+      });
+    });
+  });
+
   describe('ECS', () => { });
 });
 
