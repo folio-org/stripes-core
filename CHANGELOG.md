@@ -1,5 +1,9 @@
 # Change history for stripes-core
 
+## 11.0.12 IN PROGRESS
+
+* Take `tenant` from URL for multi-tenant setup in `getLoginTenant`. Make `makeCall` method async to avoid displaying an error message when loading the password reset page. Refs STCOR-1000.
+
 ## [11.0.11](https://github.com/folio-org/stripes-core/tree/v11.0.11) (2025-10-01)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v11.0.10...v11.0.11)
 
