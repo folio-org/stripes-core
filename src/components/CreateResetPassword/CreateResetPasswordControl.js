@@ -91,7 +91,7 @@ class CreateResetPasswordControl extends Component {
     }
   };
 
-  makeCall = (body) => {
+  makeCall = async (body) => {
     const {
       stripes,
       location,
@@ -116,7 +116,7 @@ class CreateResetPasswordControl extends Component {
     const interfacePath = stripes.okapi.authnUrl ? 'users-keycloak' : 'bl-users';
     const path = `${url}/${interfacePath}/password-reset/${isValidToken ? 'reset' : 'validate'}`;
 
-    fetch(path, {
+    const res = await fetch(path, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -133,6 +133,8 @@ class CreateResetPasswordControl extends Component {
       .catch(error => {
         handleBadResponse(error);
       });
+
+    return res;
   };
 
   handleSubmit = async (values) => {
