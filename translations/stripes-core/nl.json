@@ -88,7 +88,7 @@
     "mainnav.topLevelLabel": "Primair",
     "mainnav.applicationListLabel": "Applicatielijst",
     "errors.default.error": "Sorry, de ingevoerde informatie komt niet overeen met onze records.",
-    "errors.username.incorrect": "Dit FOLIO-account kan niet worden gevonden. Neem contact op met uw FOLIO-systeembeheerder.",
+    "errors.username.incorrect": "Onjuiste invoer",
     "errors.password.incorrect": "Onjuiste invoer",
     "errors.user.blocked": "Om veiligheidsredenen is uw account vergrendeld. Probeer het opnieuw of neem contact op met uw FOLIO-systeembeheerder.",
     "errors.password.match.error": "Wachtwoord komt niet overeen. Typ uw wachtwoord opnieuw.",

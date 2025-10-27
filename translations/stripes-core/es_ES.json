@@ -88,7 +88,7 @@
     "mainnav.topLevelLabel": "Primaria",
     "mainnav.applicationListLabel": "Lista de aplicaciones",
     "errors.default.error": "Lo sentimos, la información ingresada no coincide con nuestros registros.",
-    "errors.username.incorrect": "Esta cuenta de FOLIO no se puede localizar. Contacte con su administrador de sistemas FOLIO.",
+    "errors.username.incorrect": "Credenciales incorrectas",
     "errors.password.incorrect": "Credenciales incorrectas",
     "errors.user.blocked": "Por motivos de seguridad, su cuenta ha sido bloqueada. Vuelva a intentarlo o póngase en contacto con el administrador del sistema FOLIO.",
     "errors.password.match.error": "Las contraseña no coincide. Reescribe tu contraseña.",

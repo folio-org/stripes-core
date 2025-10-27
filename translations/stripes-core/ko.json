@@ -88,7 +88,7 @@
     "mainnav.topLevelLabel": "기본",
     "mainnav.applicationListLabel": "응용 프로그램 목록",
     "errors.default.error": "죄송합니다. 입력한 정보가 저희 기록과 일치하지 않습니다.",
-    "errors.username.incorrect": "이 FOLIO 계정을 찾을 수 없습니다. FOLIO 시스템 관리자에게 문의하십시오.",
+    "errors.username.incorrect": "잘못된 자격 증명",
     "errors.password.incorrect": "잘못된 자격 증명",
     "errors.user.blocked": "보안상의 이유로 귀하의 계정이 잠겨 있습니다. 다시 시도하거나 FOLIO 시스템 관리자에게 문의하십시오.",
     "errors.password.match.error": "비밀번호가 일치하지 않습니다. 비밀번호를 다시 입력하십시오.",

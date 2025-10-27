@@ -88,7 +88,7 @@
     "mainnav.topLevelLabel": "Hlavní",
     "mainnav.applicationListLabel": "Seznam aplikací",
     "errors.default.error": "Omlouváme se, zadané informace neodpovídají našim záznamům.",
-    "errors.username.incorrect": "Tento účet FOLIO nelze najít. Kontaktujte svého správce systému FOLIO.",
+    "errors.username.incorrect": "Chybné přihlašovací údaje",
     "errors.password.incorrect": "Chybné přihlašovací údaje",
     "errors.user.blocked": "Z bezpečnostních důvodů byl váš účet uzamčen. Zkuste to znovu nebo kontaktujte správce systému FOLIO.",
     "errors.password.match.error": "Heslo se neshoduje. Znovu zadejte heslo.",

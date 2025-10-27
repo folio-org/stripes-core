@@ -88,7 +88,7 @@
     "mainnav.topLevelLabel": "Основний",
     "mainnav.applicationListLabel": "Список додатків",
     "errors.default.error": "На жаль, введена інформація не відповідає нашим записам.",
-    "errors.username.incorrect": "Не вдається знайти цей обліковий запис FOLIO. Зверніться до системного адміністратора FOLIO.",
+    "errors.username.incorrect": "Недійсні облікові дані",
     "errors.password.incorrect": "Недійсні облікові дані",
     "errors.user.blocked": "З міркувань безпеки ваш обліковий запис заблоковано. Спробуйте ще раз, або зверніться до системного адміністратора FOLIO.",
     "errors.password.match.error": "Пароль не збігається. Введіть пароль ще раз.",

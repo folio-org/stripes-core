@@ -140,7 +140,39 @@ describe('ForgotUserName', () => {
     await user.click(submit);
 
     await waitFor(() => {
-      expect(screen.getByText(defaultErrors.FORGOTTEN_USERNAME_CLIENT_ERROR.code));
+      expect(screen.getByText('<Redirect />'));
+    });
+  });
+
+  describe('when server returns non-400 error', () => {
+    it('handles failure', async () => {
+      const user = userEvent.setup();
+      const userInput = 'some-username@some-school.edu';
+
+      const mockUseForgotUsernameMutation = useForgotUsernameMutation;
+      mockUseForgotUsernameMutation.mockReturnValue({
+        mutateAsync: () => Promise.reject({ // eslint-disable-line prefer-promise-reject-errors
+          response: {
+            json: () => Promise.resolve({
+              errorMessage: 'some error',
+            }),
+            status: 500,
+          }
+        }),
+      });
+
+      render(<ForgotUserName />);
+      const submit = screen.getByRole('button');
+
+      await user.type(screen.getByRole('textbox'), userInput);
+      await waitFor(() => {
+        expect(submit).not.toHaveProperty('disabled', true);
+      });
+      await user.click(submit);
+
+      await waitFor(() => {
+        expect(screen.getByText(defaultErrors.DEFAULT_LOGIN_SERVER_ERROR.code));
+      });
     });
   });
 });

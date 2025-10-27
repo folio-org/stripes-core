@@ -88,7 +88,7 @@
     "mainnav.topLevelLabel": "主要",
     "mainnav.applicationListLabel": "應用程式清單",
     "errors.default.error": "抱歉，輸入的資訊與我們的紀錄不符。",
-    "errors.username.incorrect": "無法找到此 FOLIO帳戶。請聯繫您的Folio系統管理員。",
+    "errors.username.incorrect": "憑證錯誤",
     "errors.password.incorrect": "憑證錯誤",
     "errors.user.blocked": "為了安全起見，您的帳戶已被鎖定。請重試或聯絡您的 FOLIO 系統管理員。",
     "errors.password.match.error": "密碼不對，請重新輸入密碼。",

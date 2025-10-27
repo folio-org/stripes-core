@@ -88,7 +88,7 @@
     "mainnav.topLevelLabel": "プライマリ",
     "mainnav.applicationListLabel": "アプリケーションリスト",
     "errors.default.error": "申し訳ございませんが、入力された情報は記録と一致しません",
-    "errors.username.incorrect": "この FOLIO アカウントが見つかりません。FOLIO システム管理者に問い合わせてください。",
+    "errors.username.incorrect": "資格情報が正しくありません",
     "errors.password.incorrect": "資格情報が正しくありません",
     "errors.user.blocked": "セキュリティ上の理由により、アカウントはロックされています。もう一度お試しいただくか、FOLIO システム管理者にお問い合わせください。",
     "errors.password.match.error": "パスワードが一致しません。パスワードを再入力してください。",

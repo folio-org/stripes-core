@@ -4,7 +4,6 @@ import {
 } from 'react-router-dom';
 
 import processBadResponse from '../../processBadResponse';
-import { defaultErrors } from '../../constants';
 import ForgotUserNameForm from './ForgotUserNameForm';
 import useForgotUsernameMutation from './useForgotUsernameMutation';
 import { validateForgotUsernameForm as isValidUsername } from '../../validators';
@@ -19,14 +18,22 @@ const ForgotUserName = () => {
     setUserEmail(null);
     setAuthFailure([]);
     const { userInput } = values;
-    const { FORGOTTEN_USERNAME_CLIENT_ERROR } = defaultErrors;
 
     if (isValidUsername(userInput)) {
       try {
         await sendReminderMutation.mutateAsync(userInput);
         setUserEmail(userInput);
       } catch (error) {
-        const res = await processBadResponse(undefined, error.response, FORGOTTEN_USERNAME_CLIENT_ERROR);
+        if (error.response.status === 400) {
+          // Do not display the information that the email address or phone number was invalid for password recovery,
+          // as per OWASP guidelines https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html#password-recovery
+
+          // Set user input to redirect to the "/check-email" page
+          setUserEmail(userInput);
+          return;
+        }
+
+        const res = await processBadResponse(undefined, error.response);
         setIsValidInput(true);
         setAuthFailure(res);
       }

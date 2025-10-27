@@ -88,7 +88,7 @@
     "mainnav.topLevelLabel": "Główny",
     "mainnav.applicationListLabel": "Lista aplikacji",
     "errors.default.error": "Przepraszamy, wprowadzone informacje nie zgadzają się z naszymi danymi.",
-    "errors.username.incorrect": "Nie można znaleźć tego konta FOLIO. Skontaktuj się z administratorem systemów FOLIO.",
+    "errors.username.incorrect": "Nieprawidłowe dane uwierzytelniające",
     "errors.password.incorrect": "Nieprawidłowe dane uwierzytelniające",
     "errors.user.blocked": "Ze względów bezpieczeństwa Twoje konto zostało zablokowane. Spróbuj ponownie lub skontaktuj się z administratorem systemu FOLIO.",
     "errors.password.match.error": "Hasło nie jest zgodne. Wpisz ponownie hasło.",
