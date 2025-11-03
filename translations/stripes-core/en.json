@@ -13,6 +13,7 @@
   "title.noPermission": "No permission",
   "title.cookieEnabled": "Cookies are required to login. Please enable cookies and try again.",
   "title.logout": "Log out",
+  "title.logoutTimeout": "Inactivity log out",
   "front.welcome": "Welcome, the Future Of Libraries Is OPEN!",
   "front.home": "Home",
   "front.about": "Software versions",
@@ -104,6 +105,7 @@
   "settingChoose": "Choose settings",
   "tenantChoose": "Select your tenant/library",
   "tenantLibrary": "Tenant/Library",
+  "help": "Help",
 
   "mainnav.showAllApplicationsButtonLabel": "Apps",
   "mainnav.showAllApplicationsButtonAriaLabel": "All applications",
@@ -170,6 +172,9 @@
   "rtr.idleSession.keepWorking": "Keep working",
   "rtr.idleSession.sessionExpiredSoSad": "Your session expired due to inactivity.",
   "rtr.idleSession.logInAgain": "Log in again",
-  "rtr.fixedLengthSession.timeRemaining": "Your session will end soon! Time remaining:"
+  "rtr.fixedLengthSession.timeRemaining": "Your session will end soon! Time remaining:",
 
+  "oidc.validatingAuthenticationToken": "Validating authentication token...",
+  "oidc.initializingSession": "Initializing session...",
+  "oidc.otp.missingCode": "The query parameter 'code' is missing."
 }

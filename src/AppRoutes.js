@@ -74,7 +74,9 @@ const AppRoutes = ({ modules, stripes }) => {
                     stripes={moduleStripes}
                   >
                     <TitleManager page={displayName}>
-                      <ModuleComponent {...props} connect={connect} stripes={moduleStripes} actAs="app" />
+                      <Suspense fallback={<LoadingView />}>
+                        <ModuleComponent {...props} connect={connect} stripes={moduleStripes} actAs="app" />
+                      </Suspense>
                     </TitleManager>
                   </RouteErrorBoundary>
                 </div>

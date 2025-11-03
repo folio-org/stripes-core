@@ -11,7 +11,10 @@ import {
   RTR_IS_ROTATING,
   RTR_MAX_AGE,
 } from './token-util';
-import { RTR_SUCCESS_EVENT } from './constants';
+import {
+  RTR_SUCCESS_EVENT,
+  RTR_ERROR_EVENT,
+} from './constants';
 
 const okapi = {
   tenant: 'diku',
@@ -276,6 +279,81 @@ describe('rtr', () => {
     expect(window.dispatchEvent).toHaveBeenCalledWith(expect.any(Event));
     expect(ex).toBe(null);
   });
+
+  it('should remove RTR_IS_ROTATING from localStorage before dispatching RTR_SUCCESS_EVENT', async () => {
+    const logger = {
+      log: jest.fn(),
+    };
+    const fetchfx = {
+      apply: () => Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve({
+          accessTokenExpiration: '2023-11-17T10:39:15.000Z',
+          refreshTokenExpiration: '2023-11-27T10:39:15.000Z'
+        }),
+      })
+    };
+
+    const mockRemoveItem = jest.spyOn(Storage.prototype, 'removeItem');
+    const mockDispatchEvent = jest.spyOn(window, 'dispatchEvent');
+
+    let removalBeforeDispatch = false;
+    mockDispatchEvent.mockImplementation((event) => {
+      if (event.type === RTR_SUCCESS_EVENT) {
+        removalBeforeDispatch = mockRemoveItem.mock.calls.some(call => call[0] === RTR_IS_ROTATING);
+      }
+      return true;
+    });
+
+    await rtr(fetchfx, logger, jest.fn(), okapi);
+
+    expect(removalBeforeDispatch).toBe(true);
+    expect(mockRemoveItem).toHaveBeenCalledWith(RTR_IS_ROTATING);
+    expect(mockDispatchEvent).toHaveBeenCalledWith(
+      expect.objectContaining({ type: RTR_SUCCESS_EVENT })
+    );
+
+    mockRemoveItem.mockRestore();
+    mockDispatchEvent.mockRestore();
+  });
+
+  it('should remove RTR_IS_ROTATING from localStorage before dispatching RTR_ERROR_EVENT on error', async () => {
+    const logger = {
+      log: jest.fn(),
+    };
+    const errors = [{ message: 'Token refresh failed', code: 'AUTH_ERROR' }];
+    const fetchfx = {
+      apply: () => Promise.resolve({
+        ok: false,
+        json: () => Promise.resolve({
+          errors,
+        }),
+      })
+    };
+
+    const mockRemoveItem = jest.spyOn(Storage.prototype, 'removeItem');
+    const mockDispatchEvent = jest.spyOn(window, 'dispatchEvent');
+    jest.spyOn(console, 'error');
+
+    let removalBeforeDispatch = false;
+    mockDispatchEvent.mockImplementation((event) => {
+      if (event.type === RTR_ERROR_EVENT) {
+        removalBeforeDispatch = mockRemoveItem.mock.calls.some(call => call[0] === RTR_IS_ROTATING);
+      }
+      return true;
+    });
+
+    await rtr(fetchfx, logger, jest.fn(), okapi);
+
+    expect(removalBeforeDispatch).toBe(true);
+    expect(mockRemoveItem).toHaveBeenCalledWith(RTR_IS_ROTATING);
+    expect(mockDispatchEvent).toHaveBeenCalledWith(
+      expect.objectContaining({ type: RTR_ERROR_EVENT })
+    );
+
+    mockRemoveItem.mockRestore();
+    mockDispatchEvent.mockRestore();
+  });
 });
 
 describe('isRotating', () => {
@@ -344,7 +422,7 @@ describe('getPromise', () => {
 describe('configureRtr', () => {
   it('sets idleSessionTTL and idleModalTTL', () => {
     const res = configureRtr({});
-    expect(res.idleSessionTTL).toBe('60m');
+    expect(res.idleSessionTTL).toBe('4h');
     expect(res.idleModalTTL).toBe('1m');
   });
 

@@ -4,12 +4,9 @@ import { useLocation } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import queryString from 'query-string';
 
-import { config, okapi } from 'stripes-config';
-
 import { defaultErrors } from '../../constants';
 import { setAuthError } from '../../okapiActions';
 import { requestUserWithPerms } from '../../loginServices';
-import { parseJWT } from '../../helpers';
 
 const getParams = (location) => {
   const search = location.search;
@@ -24,9 +21,7 @@ const getToken = (cookies, params) => {
 };
 
 const getTenant = (params, token, store) => {
-  const tenant = config.useSecureTokens
-    ? params?.tenantId
-    : parseJWT(token)?.tenant;
+  const tenant = params?.tenantId;
 
   return tenant || store.getState()?.okapi?.tenant;
 };
@@ -45,7 +40,7 @@ const useSSOSession = () => {
   const tenant = getTenant(params, token, store);
 
   useEffect(() => {
-    requestUserWithPerms(okapi.url, store, tenant, token)
+    requestUserWithPerms(store.getState().okapi.url, store, tenant, token)
       .then(() => {
         if (store.getState()?.okapi?.authFailure) {
           return Promise.reject(new Error('SSO Failed'));

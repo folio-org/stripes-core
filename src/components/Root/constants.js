@@ -4,6 +4,9 @@ export const RTR_SUCCESS_EVENT = '@folio/stripes/core::RTRSuccess';
 /** dispatched during RTR if RTR itself fails */
 export const RTR_ERROR_EVENT = '@folio/stripes/core::RTRError';
 
+/** dispatched if window isn't focused when RTR is attempted */
+export const RTR_DELAYED_NOT_FOCUSED = '@folio/stripes/core::RTRDelayedNotFocused';
+
 /**
  * dispatched if the session is idle (without activity) for too long
  */
@@ -21,7 +24,7 @@ export const RTR_FLS_TIMEOUT_EVENT = '@folio/stripes/core::RTRFLSTimeout';
  * user is forcibly logged out. This interval describes how much warning they
  * get before the session ends.
  *
- * overridden in stripes.configs.js::config.rtr.fixedLengthSessionWarningTTL
+ * overridden in stripes.config.js::config.rtr.fixedLengthSessionWarningTTL
  * value must be a string parsable by ms()
  */
 export const RTR_FLS_WARNING_TTL = '1m';
@@ -54,10 +57,10 @@ export const RTR_ACTIVITY_EVENTS = ['keydown', 'mousedown'];
  * but the first action that makes and API request (which will fail with an
  * RTR error) causes the session to end.
  *
- * overridden in stripes.configs.js::config.rtr.idleSessionTTL
+ * overridden in stripes.config.js::config.rtr.idleSessionTTL
  * value must be a string parsable by ms()
  */
-export const RTR_IDLE_SESSION_TTL = '60m';
+export const RTR_IDLE_SESSION_TTL = '4h';
 
 /**
  * how long is the "keep working?" modal visible
@@ -67,7 +70,7 @@ export const RTR_IDLE_SESSION_TTL = '60m';
  * then the modal will be displayed after 59 minutes of inactivity and
  * be displayed for one minute.
  *
- * overridden in stripes.configs.js::config.rtr.idleModalTTL
+ * overridden in stripes.config.js::config.rtr.idleModalTTL
  * value must be a string parsable by ms()
  */
 export const RTR_IDLE_MODAL_TTL = '1m';
@@ -93,3 +96,15 @@ export const RTR_RT_EXPIRY_IF_UNKNOWN = '10m';
  * this is a small amount of time to wait so the proper order can be ensured if they happen simultaneously.
  */
 export const RTR_TIME_MARGIN_IN_MS = 200;
+
+/**
+ * Used by RTR logic to determine the priority window - only windows with matching ID's can rotate.
+*/
+export const SESSION_ACTIVE_WINDOW_ID = '@folio/stripes/core::activeWindowId';
+
+/** Message type for the BroadcastChannel to indicate the active window */
+export const RTR_ACTIVE_WINDOW_MSG = '@folio/stripes/core::activeWindowMessage';
+/** Message channel for the BroadcastChannel to indicate the active window */
+export const RTR_ACTIVE_WINDOW_MSG_CHANNEL = '@folio/stripes/core::activeWindowMessageChannel';
+/** dispatched when the session is ready */
+export const SESSION_READY_EVENT = '@folio/stripes/core::SessionReady';

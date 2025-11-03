@@ -16,6 +16,11 @@ export default function configure() {
   });
   this.get('/_/env', {});
 
+  this.get('/settings/entries', {
+    items: [],
+    totalRecords: 1
+  });
+
   this.get('_/proxy/tenants/:id/modules', [{
     id : 'mod-users-42.0.0-EXAMPLE.12345',
     name : 'users',
@@ -85,23 +90,6 @@ export default function configure() {
   this.post('/bl-users/password-reset/reset', {}, 401);
 
   this.post('/authn/logout', {}, 204);
-
-  this.post('/bl-users/login', () => {
-    return new Response(201, {}, {
-      user: {
-        id: 'test',
-        username: 'testuser',
-        personal: {
-          lastName: 'User',
-          firstName: 'Test',
-          email: 'user@folio.org',
-        }
-      },
-      permissions: {
-        permissions: []
-      }
-    });
-  });
 
   this.post('/bl-users/login-with-expiry', () => {
     return new Response(201, {}, {

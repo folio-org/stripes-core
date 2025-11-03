@@ -25,21 +25,19 @@ import { configureRtr } from './token-util';
 
 import './Root.css';
 
-import { withModules } from '../Modules';
 import { FFetch } from './FFetch';
 
 class Root extends Component {
   constructor(...args) {
     super(...args);
 
-    const { modules, history, okapi, store } = this.props;
+    const { okapi, store } = this.props;
 
     this.reducers = { ...initialReducers };
     this.epics = {};
     this.withOkapi = okapi.withoutOkapi !== true;
 
-    const appModule = getCurrentModule(modules, history.location);
-    this.queryResourceStateKey = (appModule) ? getQueryResourceKey(appModule) : null;
+    this.queryResourceStateKey = null;
     this.defaultRichTextElements = {
       b: (chunks) => <b>{chunks}</b>,
       i: (chunks) => <i>{chunks}</i>,
@@ -60,17 +58,16 @@ class Root extends Component {
     // enhanced security mode:
     // * configure fetch and xhr interceptors to conduct RTR
     // * see SessionEventContainer for RTR handling
-    if (this.props.config.useSecureTokens) {
-      const rtrConfig = configureRtr(this.props.config.rtr);
+    const rtrConfig = configureRtr(this.props.config.rtr);
 
-      this.ffetch = new FFetch({
-        logger: this.props.logger,
-        store,
-        rtrConfig,
-      });
-      this.ffetch.replaceFetch();
-      this.ffetch.replaceXMLHttpRequest();
-    }
+    this.ffetch = new FFetch({
+      logger: this.props.logger,
+      store,
+      rtrConfig,
+      okapi
+    });
+    this.ffetch.replaceFetch();
+    this.ffetch.replaceXMLHttpRequest();
   }
 
   componentDidMount() {
@@ -79,10 +76,32 @@ class Root extends Component {
     const locale = this.props.config.locale ?? 'en-US';
     // TODO: remove this after we load locale and translations at start from a public endpoint
     loadTranslations(store, locale, defaultTranslations);
+    this.updateQueryResourceStateKey();
   }
 
+  // Do not re-render before session validation completes to avoid UX issues on page reload:
+  // 1. Login page flicker: when user is already logged in (multi-tenant setup in tenantOptions).
+  // 2. Unnecessary Keycloak redirects: when the user is already logged in (single-tenant setup in tenantOptions).
+  // Those issues can happen when `translations` are loaded first and then `modules` are loaded, but
+  // session check (okapiReady) is not complete yet, the `RootWithIntl` would incorrectly render `AuthnLogin`,
+  // because `isAuthenticated` starts as false and only becomes true after session check completes.
+  // IMPORTANT: Do not add `modules` or other props to this condition without considering authentication timing.
   shouldComponentUpdate(nextProps) {
     return !this.withOkapi || nextProps.okapiReady || nextProps.serverDown;
+  }
+
+  componentDidUpdate(prevProps) {
+    const { modules } = this.props;
+
+    if (prevProps.modules !== modules) {
+      this.updateQueryResourceStateKey();
+    }
+  }
+
+  updateQueryResourceStateKey = () => {
+    const { modules, history } = this.props;
+    const appModule = getCurrentModule(modules, history.location);
+    this.queryResourceStateKey = appModule ? getQueryResourceKey(appModule) : null;
   }
 
   addReducer = (key, reducer) => {
@@ -174,8 +193,8 @@ class Root extends Component {
                 currency={currency}
                 messages={translations}
                 textComponent={Fragment}
-                onError={config?.suppressIntlErrors ? () => {} : undefined}
-                onWarn={config?.suppressIntlWarnings ? () => {} : undefined}
+                onError={config?.suppressIntlErrors ? () => { } : undefined}
+                onWarn={config?.suppressIntlWarnings ? () => { } : undefined}
                 defaultRichTextElements={this.defaultRichTextElements}
               >
                 <RootWithIntl
@@ -274,4 +293,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(withModules(Root));
+export default connect(mapStateToProps)(Root);

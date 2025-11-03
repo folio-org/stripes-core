@@ -63,6 +63,7 @@ describe('Profile dropdown', () => {
 
   describe('opening the dropdown', () => {
     beforeEach(async () => {
+      await new Promise(resolve => setTimeout(resolve, 150)); // wait for `modules`
       await profileDropdown.toggle();
     });
 

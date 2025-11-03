@@ -1,16 +1,12 @@
-import React, { Suspense } from 'react';
 import { useLocation } from 'react-router';
 import PropTypes from 'prop-types';
-
-import { LoadingView } from '@folio/stripes-components';
 
 import { ModulesContext } from './ModulesContext';
 
 import { packageName } from './constants';
 import {
-  BadRequestScreen,
+  AuthenticatedError,
   NoPermissionScreen,
-  ResetPasswordNotAvailableScreen,
   TitledRoute,
 } from './components';
 
@@ -35,24 +31,9 @@ function ModuleRoutes({ stripes }) {
           throw new Error('At least one module of type "app" must be enabled.');
         }
 
-        const isValidRoute = modules.app.some(module => location.pathname.startsWith(`${module.route}`));
-
-        if (!isValidRoute) {
-          const isResetPasswordRoute = location.pathname.startsWith('/reset-password');
-
-          return isResetPasswordRoute
-            ? (
-              <TitledRoute
-                name="notFound"
-                component={<ResetPasswordNotAvailableScreen />}
-              />
-            )
-            : (
-              <TitledRoute
-                name="notFound"
-                component={<BadRequestScreen />}
-              />
-            );
+        // requested route does not belong to any module
+        if (!modules.app.some(module => location.pathname.startsWith(`${module.route}`))) {
+          return <AuthenticatedError location={location} />;
         }
 
         const currentModule = modules.app.find(module => {
@@ -62,6 +43,7 @@ function ModuleRoutes({ stripes }) {
         });
         const moduleName = currentModule?.module?.replace(packageName.PACKAGE_SCOPE_REGEX, '');
 
+        // requested route is forbidden
         if (!stripes.hasPerm(`module.${moduleName}.enabled`)) {
           return (
             <TitledRoute
@@ -71,7 +53,9 @@ function ModuleRoutes({ stripes }) {
           );
         }
 
-        return <AppRoutes modules={modules} stripes={stripes} />;
+        return (
+          <AppRoutes modules={modules} stripes={stripes} />
+        );
       }}
     </ModulesContext.Consumer>
   );

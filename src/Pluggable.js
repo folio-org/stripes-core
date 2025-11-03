@@ -1,7 +1,7 @@
-import React, { useMemo, Suspense } from 'react';
+import React, { Suspense, useMemo } from 'react';
 import PropTypes from 'prop-types';
 
-import { Icon } from '@folio/stripes-components';
+import { Loading } from '@folio/stripes-components';
 
 import { useModules } from './ModulesContext';
 import { withStripes } from './StripesContext';
@@ -38,19 +38,22 @@ const Pluggable = (props) => {
     }
 
     return cached;
-  }, [plugins, props.type]);
+    // props.stripes is not stable on each re-render, which causes an infinite trigger
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [plugins]);
 
   if (cachedPlugins.length) {
     return cachedPlugins.map(({ plugin, Child }) => (
       <ModuleHierarchyProvider module={plugin} key={plugin}>
-        <Suspense fallback={<Icon icon="spinner-ellipsis" />}>
+        <Suspense fallback={<Loading />}>
           <Child {...props} actAs="plugin" />
         </Suspense>
       </ModuleHierarchyProvider>
     ));
   }
 
-  if (!props.children) return null;
+  // Display null when no plugins are available to avoid rendering BadRequestScreen
+  if (!props.children || !plugins.length) return null;
   if (props.children.length) {
     // eslint-disable-next-line no-console
     console.error(`<Pluggable type="${props.type}"> has ${props.children.length} children, can only return one`);

@@ -286,4 +286,26 @@ describe('Given useChunkedCQLFetch', () => {
       expect(generateQueryKey).toHaveBeenCalledWith(expect.objectContaining({ tenantId: providedTenantId }));
     });
   });
+
+  describe('chunkedQueryIdTransform works as expected', () => {
+    it('sets up 3 fetches using default chunkedQueryIdTransform', async () => {
+      const { result } = renderHook(() => useChunkedCQLFetch({
+        ...baseOptions,
+        STEP_SIZE: 2
+      }), { wrapper });
+
+      await waitFor(() => {
+        return result.current.itemQueries?.filter(iq => iq.isLoading)?.length === 0;
+      });
+
+      expect(mockUseOkapiKyValue.get.mock.calls[0][0]).toEqual('users');
+      expect(mockUseOkapiKyValue.get.mock.calls[0][1]).toEqual({ searchParams: '?limit=1000&query=id==(1234-5678-a or 1234-5678-b)' });
+
+      expect(mockUseOkapiKyValue.get.mock.calls[1][0]).toEqual('users');
+      expect(mockUseOkapiKyValue.get.mock.calls[1][1]).toEqual({ searchParams: '?limit=1000&query=id==(1234-5678-c or 1234-5678-d)' });
+
+      expect(mockUseOkapiKyValue.get.mock.calls[2][0]).toEqual('users');
+      expect(mockUseOkapiKyValue.get.mock.calls[2][1]).toEqual({ searchParams: '?limit=1000&query=id==(1234-5678-e)' });
+    });
+  });
 });

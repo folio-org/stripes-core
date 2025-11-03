@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import {
   Router,
@@ -12,6 +12,7 @@ import { Callout, HotKeys } from '@folio/stripes-components';
 
 import ModuleRoutes from './ModuleRoutes';
 import events from './events';
+import { SESSION_READY_EVENT } from './components/Root/constants';
 
 import {
   MainContainer,
@@ -30,10 +31,12 @@ import {
   OverlayContainer,
   CreateResetPassword,
   CheckEmailStatusPage,
-  ForgotPasswordCtrl,
-  ForgotUserNameCtrl,
+  ForgotPassword,
+  ForgotUserName,
   AppCtxMenuProvider,
   SessionEventContainer,
+  AppOrderProvider,
+  QueryStateUpdater
 } from './components';
 import StaleBundleWarning from './components/StaleBundleWarning';
 import { StripesContext } from './StripesContext';
@@ -46,9 +49,24 @@ const RootWithIntl = ({ stripes, token = '', isAuthenticated = false, disableAut
   const connectedStripes = stripes.clone({ connect });
 
   const [callout, setCallout] = useState(null);
+  const [, setForceRenderFlag] = useState(false);
+
   const setCalloutDomRef = (ref) => {
     setCallout(ref);
   };
+
+  // Listen for SessionReady events and trigger re-render
+  useEffect(() => {
+    const handleSessionReady = () => {
+      setForceRenderFlag(prev => !prev);
+    };
+
+    globalThis.addEventListener(SESSION_READY_EVENT, handleSessionReady);
+
+    return () => {
+      globalThis.removeEventListener(SESSION_READY_EVENT, handleSessionReady);
+    };
+  }, []);
 
   return (
     <StripesContext.Provider value={connectedStripes}>
@@ -57,63 +75,67 @@ const RootWithIntl = ({ stripes, token = '', isAuthenticated = false, disableAut
           <TitleManager>
             <HotKeys
               keyMap={connectedStripes.bindings}
+              attach={document.body}
               noWrapper
             >
               <Provider store={connectedStripes.store}>
                 <Router history={history}>
-                  { isAuthenticated || token || disableAuth ?
+                  {isAuthenticated || token || disableAuth ?
                     <>
+                      <QueryStateUpdater stripes={connectedStripes} queryClient={queryClient} />
                       <MainContainer>
                         <AppCtxMenuProvider>
-                          <MainNav stripes={connectedStripes} queryClient={queryClient} />
-                          {typeof connectedStripes?.config?.staleBundleWarning === 'object' && <StaleBundleWarning />}
-                          <HandlerManager
-                            event={events.LOGIN}
-                            stripes={connectedStripes}
-                          />
-                          { (typeof connectedStripes.okapi !== 'object' || connectedStripes.discovery.isFinished) && (
-                            <ModuleContainer id="content">
-                              <OverlayContainer />
-                              {connectedStripes.config.useSecureTokens && <SessionEventContainer history={history} queryClient={queryClient} />}
-                              <Switch>
-                                <TitledRoute
-                                  name="home"
-                                  path="/"
-                                  key="root"
-                                  exact
-                                  component={<Front stripes={connectedStripes} />}
-                                />
-                                <TitledRoute
-                                  name="ssoRedirect"
-                                  path="/sso-landing"
-                                  key="sso-landing"
-                                  component={<SSORedirect stripes={connectedStripes} />}
-                                />
-                                <TitledRoute
-                                  name="oidcRedirect"
-                                  path="/oidc-landing"
-                                  key="oidc-landing"
-                                  component={<OIDCRedirect stripes={stripes} />}
-                                />
-                                <TitledRoute
-                                  name="logoutTimeout"
-                                  path="/logout-timeout"
-                                  component={<Logout />}
-                                />
-                                <TitledRoute
-                                  name="settings"
-                                  path="/settings"
-                                  component={<Settings stripes={connectedStripes} />}
-                                />
-                                <TitledRoute
-                                  name="logout"
-                                  path="/logout"
-                                  component={<Logout />}
-                                />
-                                <ModuleRoutes stripes={connectedStripes} />
-                              </Switch>
-                            </ModuleContainer>
-                          )}
+                          <AppOrderProvider>
+                            <MainNav stripes={connectedStripes} queryClient={queryClient} />
+                            {typeof connectedStripes?.config?.staleBundleWarning === 'object' && <StaleBundleWarning />}
+                            <HandlerManager
+                              event={events.LOGIN}
+                              stripes={connectedStripes}
+                            />
+                            {(typeof connectedStripes.okapi !== 'object' || connectedStripes.discovery.isFinished) && (
+                              <ModuleContainer id="content">
+                                <OverlayContainer />
+                                <SessionEventContainer history={history} queryClient={queryClient} />
+                                <Switch>
+                                  <TitledRoute
+                                    name="home"
+                                    path="/"
+                                    key="root"
+                                    exact
+                                    component={<Front stripes={connectedStripes} />}
+                                  />
+                                  <TitledRoute
+                                    name="ssoRedirect"
+                                    path="/sso-landing"
+                                    key="sso-landing"
+                                    component={<SSORedirect stripes={connectedStripes} />}
+                                  />
+                                  <TitledRoute
+                                    name="oidcRedirect"
+                                    path="/oidc-landing"
+                                    key="oidc-landing"
+                                    component={<OIDCRedirect stripes={stripes} />}
+                                  />
+                                  <TitledRoute
+                                    name="logoutTimeout"
+                                    path="/logout-timeout"
+                                    component={<Logout />}
+                                  />
+                                  <TitledRoute
+                                    name="settings"
+                                    path="/settings"
+                                    component={<Settings stripes={connectedStripes} />}
+                                  />
+                                  <TitledRoute
+                                    name="logout"
+                                    path="/logout"
+                                    component={<Logout />}
+                                  />
+                                  <ModuleRoutes stripes={connectedStripes} />
+                                </Switch>
+                              </ModuleContainer>
+                            )}
+                          </AppOrderProvider>
                         </AppCtxMenuProvider>
                       </MainContainer>
                       <Callout ref={setCalloutDomRef} />
@@ -143,12 +165,12 @@ const RootWithIntl = ({ stripes, token = '', isAuthenticated = false, disableAut
                       <TitledRoute
                         name="forgotPassword"
                         path="/forgot-password"
-                        component={<ForgotPasswordCtrl stripes={connectedStripes} />}
+                        component={<ForgotPassword stripes={connectedStripes} />}
                       />
                       <TitledRoute
                         name="forgotUsername"
                         path="/forgot-username"
-                        component={<ForgotUserNameCtrl stripes={connectedStripes} />}
+                        component={<ForgotUserName stripes={connectedStripes} />}
                       />
                       <TitledRoute
                         name="checkEmail"

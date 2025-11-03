@@ -91,7 +91,7 @@ class CreateResetPasswordControl extends Component {
     }
   };
 
-  makeCall = (body) => {
+  makeCall = async (body) => {
     const {
       stripes,
       location,
@@ -113,10 +113,10 @@ class CreateResetPasswordControl extends Component {
     // This part of the path is optional (hence the ?) and can instead be placed in the URL param `resetToken`
     // to allow for keys longer than the URL length restriction of 2048 characters.
     const resetToken = token ?? getLocationQuery(location)?.resetToken;
-    const interfacePath = stripes.config.isEureka ? 'users-keycloak' : 'bl-users';
+    const interfacePath = stripes.okapi.authnUrl ? 'users-keycloak' : 'bl-users';
     const path = `${url}/${interfacePath}/password-reset/${isValidToken ? 'reset' : 'validate'}`;
 
-    fetch(path, {
+    const res = await fetch(path, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -133,6 +133,8 @@ class CreateResetPasswordControl extends Component {
       .catch(error => {
         handleBadResponse(error);
       });
+
+    return res;
   };
 
   handleSubmit = async (values) => {

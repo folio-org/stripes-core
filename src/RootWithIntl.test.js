@@ -8,11 +8,13 @@ import Stripes from './Stripes';
 jest.mock('./components/AuthnLogin', () => () => '<AuthnLogin>');
 jest.mock('./components/Login', () => () => '<Login>');
 jest.mock('./components/MainNav', () => () => '<MainNav>');
+jest.mock('./components/MainNav/AppOrderProvider', () => ({ AppOrderProvider: ({ children }) => children }));
 jest.mock('./components/OverlayContainer', () => () => '<OverlayContainer>');
 jest.mock('./components/ModuleContainer', () => ({ children }) => children);
 jest.mock('./components/MainContainer', () => ({ children }) => children);
 jest.mock('./components/StaleBundleWarning', () => () => '<StaleBundleWarning>');
 jest.mock('./components/SessionEventContainer', () => () => '<SessionEventContainer>');
+jest.mock('./components/MainNav/QueryStateUpdater', () => () => null);
 
 const defaultHistory = createMemoryHistory();
 

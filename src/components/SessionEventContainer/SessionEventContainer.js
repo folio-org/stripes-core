@@ -126,7 +126,8 @@ export const thisWindowActivity = (_e, stripes, timers, broadcastChannel) => {
  * By default, the "keep working?" modal will be visible for 1 minute, i.e.
  * after 59 minutes of inactivity. These values may be overridden in
  * stripes.config.js in the `config.rtr` object by the values `idleSessionTTL`
- * and `idleModalTTL`, respectively; the values must be strings parsable by ms.
+ * and `idleModalTTL`, respectively; the values must be strings parsable by ms,
+ * `idleSessionTTL` should always be greater than or equal to `idleModalTTL`
  *
  * @param {object} history
  * @returns KeepWorkingModal or null
@@ -141,6 +142,20 @@ const SessionEventContainer = ({ history }) => {
   // inactivity timers
   const timers = useRef();
   const stripes = useStripes();
+  const [flsTimeRemaining, setFlsTimeRemaining] = useState(ms(stripes.config.rtr.fixedLengthSessionWarningTTL));
+
+  useEffect(() => {
+    let interval;
+    if (isFlsVisible) {
+      interval = setInterval(() => {
+        setFlsTimeRemaining(i => i - 1000);
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [isFlsVisible]);
+
+  // Indicator that fixed-length session warning timer will expire before the modal's TTL
+  const isModalIgnorable = flsTimeRemaining < ms(stripes.config.rtr.idleModalTTL);
 
   /**
    * keepWorkingCallback
@@ -188,62 +203,62 @@ const SessionEventContainer = ({ history }) => {
     // i.e. same keys as channels, but the value is the identically named object
     const channelListeners = { window, bc };
 
-    if (stripes.config.useSecureTokens) {
-      const { idleModalTTL, idleSessionTTL, activityEvents } = stripes.config.rtr;
+    const { idleModalTTL, idleSessionTTL, activityEvents } = stripes.config.rtr;
 
-      // inactive timer: show the "keep working?" modal
-      const showModalIT = createInactivityTimer(ms(idleSessionTTL) - ms(idleModalTTL), () => {
-        stripes.logger.log('rtr', 'session idle; showing modal');
-        stripes.store.dispatch(toggleRtrModal(true));
-        setIsVisible(true);
+    // inactive timer: show the "keep working?" modal
+    const showModalIT = createInactivityTimer(ms(idleSessionTTL) - ms(idleModalTTL), () => {
+      if (isModalIgnorable) return;
+
+      stripes.logger.log('rtr', 'session idle; showing modal');
+      stripes.store.dispatch(toggleRtrModal(true));
+      setIsVisible(true);
+    });
+    showModalIT.signal();
+
+    // inactive timer: logout
+    const logoutIT = createInactivityTimer(idleSessionTTL, () => {
+      stripes.logger.log('rtr', 'session idle; dispatching RTR_TIMEOUT_EVENT');
+      // set a localstorage key so other windows know it was a timeout
+      localStorage.setItem(RTR_TIMEOUT_EVENT, 'true');
+
+      // dispatch a timeout event for handling in this window
+      window.dispatchEvent(new Event(RTR_TIMEOUT_EVENT));
+    });
+    logoutIT.signal();
+
+    timers.current = { showModalIT, logoutIT };
+
+    // RTR error in this window: logout
+    channels.window[RTR_ERROR_EVENT] = (e) => thisWindowRtrError(e, stripes, history);
+
+    // idle session timeout in this window: logout
+    channels.window[RTR_TIMEOUT_EVENT] = (e) => thisWindowRtrIstTimeout(e, stripes, history);
+
+    // localstorage change in another window: logout?
+    channels.window.storage = (e) => otherWindowStorage(e, stripes, history);
+
+    // activity in another window: send keep-alive to idle-timers.
+    channels.bc.message = (message) => otherWindowActivity(message, stripes, timers, setIsVisible);
+
+    // activity in this window: ping idle-timers and BroadcastChannel
+    activityEvents.forEach(eventName => {
+      channels.window[eventName] = (e) => thisWindowActivity(e, stripes, timers, bc);
+    });
+
+    // fixed-length session: show session-is-ending warning
+    channels.window[RTR_FLS_WARNING_EVENT] = (e) => thisWindowRtrFlsWarning(e, stripes, setIsFlsVisible);
+
+    // fixed-length session: terminate session
+    channels.window[RTR_FLS_TIMEOUT_EVENT] = (e) => thisWindowRtrFlsTimeout(e, stripes, history);
+
+
+    // add listeners
+    Object.entries(channels).forEach(([k, channel]) => {
+      Object.entries(channel).forEach(([e, h]) => {
+        stripes.logger.log('rtrv', `adding listener ${k}.${e}`);
+        channelListeners[k].addEventListener(e, h);
       });
-      showModalIT.signal();
-
-      // inactive timer: logout
-      const logoutIT = createInactivityTimer(idleSessionTTL, () => {
-        stripes.logger.log('rtr', 'session idle; dispatching RTR_TIMEOUT_EVENT');
-        // set a localstorage key so other windows know it was a timeout
-        localStorage.setItem(RTR_TIMEOUT_EVENT, 'true');
-
-        // dispatch a timeout event for handling in this window
-        window.dispatchEvent(new Event(RTR_TIMEOUT_EVENT));
-      });
-      logoutIT.signal();
-
-      timers.current = { showModalIT, logoutIT };
-
-      // RTR error in this window: logout
-      channels.window[RTR_ERROR_EVENT] = (e) => thisWindowRtrError(e, stripes, history);
-
-      // idle session timeout in this window: logout
-      channels.window[RTR_TIMEOUT_EVENT] = (e) => thisWindowRtrIstTimeout(e, stripes, history);
-
-      // localstorage change in another window: logout?
-      channels.window.storage = (e) => otherWindowStorage(e, stripes, history);
-
-      // activity in another window: send keep-alive to idle-timers.
-      channels.bc.message = (message) => otherWindowActivity(message, stripes, timers, setIsVisible);
-
-      // activity in this window: ping idle-timers and BroadcastChannel
-      activityEvents.forEach(eventName => {
-        channels.window[eventName] = (e) => thisWindowActivity(e, stripes, timers, bc);
-      });
-
-      // fixed-length session: show session-is-ending warning
-      channels.window[RTR_FLS_WARNING_EVENT] = (e) => thisWindowRtrFlsWarning(e, stripes, setIsFlsVisible);
-
-      // fixed-length session: terminate session
-      channels.window[RTR_FLS_TIMEOUT_EVENT] = (e) => thisWindowRtrFlsTimeout(e, stripes, history);
-
-
-      // add listeners
-      Object.entries(channels).forEach(([k, channel]) => {
-        Object.entries(channel).forEach(([e, h]) => {
-          stripes.logger.log('rtrv', `adding listener ${k}.${e}`);
-          channelListeners[k].addEventListener(e, h);
-        });
-      });
-    }
+    });
 
     // cleanup: clear timers and event listeners
     return () => {
@@ -262,11 +277,11 @@ const SessionEventContainer = ({ history }) => {
       bc.close();
     };
 
-    // no deps? It should be history and stripes!!! >:)
-    // We only want to configure the event listeners once, not every time
-    // there is a change to stripes or history. Hence, an empty dependency
-    // array.
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    // isModalIgnorable only? It should be history and stripes!!! >:)
+    // We only want to configure the event listeners once or on isModalIgnorable
+    // change that could happen very rarely, not every time there is a change to stripes or history.
+    // Hence, only isModalIgnorable in dependency array.
+  }, [isModalIgnorable]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const renderList = [];
 
@@ -277,14 +292,16 @@ const SessionEventContainer = ({ history }) => {
 
   // show the fixed-length session warning?
   if (isFlsVisible) {
-    renderList.push(<FixedLengthSessionWarning key="FixedLengthSessionWarning" />);
+    renderList.push(<FixedLengthSessionWarning key="FixedLengthSessionWarning" timeRemainingMillis={flsTimeRemaining} />);
   }
 
   return renderList.length ? createPortal(renderList, document.getElementById(eventsPortal)) : null;
 };
 
 SessionEventContainer.propTypes = {
-  history: PropTypes.object,
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+  }),
 };
 
 export default SessionEventContainer;

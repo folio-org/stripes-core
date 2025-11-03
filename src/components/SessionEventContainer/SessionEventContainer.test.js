@@ -27,7 +27,8 @@ const stripes = {
     rtr: {
       idleModalTTL: '3s',
       idleSessionTTL: '3s',
-      activityEvents: ['right thing', 'hustle', 'hand jive']
+      activityEvents: ['right thing', 'hustle', 'hand jive'],
+      fixedLengthSessionWarningTTL: '60s'
     }
   },
   okapi: {
@@ -42,16 +43,6 @@ describe('SessionEventContainer', () => {
     const eventsPortalElement = document.createElement('div');
     eventsPortalElement.id = eventsPortal;
     document.body.appendChild(eventsPortalElement);
-  });
-  it('Renders nothing if useSecureTokens is false', async () => {
-    const insecureStripes = {
-      config: {
-        useSecureTokens: false,
-      },
-    };
-    render(<Harness stripes={insecureStripes}><SessionEventContainer /></Harness>);
-
-    expect(screen.queryByText('KeepWorkingModal')).toBe(null);
   });
 
   it('Shows a modal when idle timer expires', async () => {

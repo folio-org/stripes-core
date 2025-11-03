@@ -1,4 +1,3 @@
-import { okapi } from 'stripes-config';
 import { getPromise, isFolioApiRequest } from './token-util';
 import {
   RTR_ERROR_EVENT,
@@ -15,7 +14,7 @@ export default (deps) => {
 
     open = (method, url) => {
       this.FFetchContext.logger?.log('rtr', 'capture XHR.open');
-      this.shouldEnsureToken = isFolioApiRequest(url, okapi.url);
+      this.shouldEnsureToken = isFolioApiRequest(url, this.FFetchContext.okapi.url);
       super.open(method, url);
     }
 

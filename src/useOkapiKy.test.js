@@ -26,11 +26,11 @@ describe('useOkapiKy', () => {
       }
     };
 
-    const { result } = renderHook(() => useOkapiKy());
+    const { result } = renderHook(() => useOkapiKy({ timeout: 30 }));
     result.current.hooks.beforeRequest[0](r);
 
     expect(result.current.prefixUrl).toBe(okapi.url);
-    expect(result.current.timeout).toBe(okapi.timeout);
+    expect(result.current.timeout).toBe(30);
 
     expect(r.headers.set).toHaveBeenCalledWith('Accept-Language', okapi.locale);
     expect(r.headers.set).toHaveBeenCalledWith('X-Okapi-Tenant', okapi.tenant);
@@ -74,6 +74,7 @@ describe('useOkapiKy', () => {
 
     const { result } = renderHook(() => useOkapiKy({ tenant: 'monkey' }));
     result.current.hooks.beforeRequest[0](r);
+    expect(result.current.timeout).toBe(okapi.timeout);
 
     expect(r.headers.set).toHaveBeenCalledWith('X-Okapi-Tenant', 'monkey');
   });

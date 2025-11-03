@@ -1,22 +1,21 @@
-import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
-import queryString from 'query-string';
-import { useStore } from 'react-redux';
-import { FormattedMessage } from 'react-intl';
+import { useIntl } from 'react-intl';
 
 import {
-  Button,
-  Col,
   Headline,
   Loading,
-  Row,
 } from '@folio/stripes-components';
 
-import OrganizationLogo from './OrganizationLogo';
-import { requestUserWithPerms, setTokenExpiry } from '../loginServices';
+import {
+  requestUserWithPerms,
+  setTokenExpiry,
+  storeLogoutTenant,
+} from '../loginServices';
+import { useStripes } from '../StripesContext';
 
 import css from './Front.css';
-import { useStripes } from '../StripesContext';
+
+import useExchangeCode from './useExchangeCode';
+import OIDCLandingError from './OIDCLandingError';
 
 /**
  * OIDCLanding: un-authenticated route handler for /oidc-landing.
@@ -30,119 +29,49 @@ import { useStripes } from '../StripesContext';
  * @see RootWithIntl
  */
 const OIDCLanding = () => {
-  const location = useLocation();
-  const store = useStore();
-  const { okapi } = useStripes();
-  const [oidcError, setOIDCError] = useState();
+  const intl = useIntl();
+  const { okapi, store } = useStripes();
+
+  const atDefaultExpiration = Date.now() + (60 * 1000);
+  const rtDefaultExpiration = Date.now() + (2 * 60 * 1000);
 
   /**
-   * Exchange the otp for AT/RT cookies, then retrieve the user.
-   *
-   * See https://ebscoinddev.atlassian.net/wiki/spaces/TEUR/pages/12419306/mod-login-keycloak#mod-login-keycloak-APIs
-   * for additional details. May not be necessary for SAML-specific pages
-   * to exist since the workflow is the same for SSO. We can just inspect
-   * the response for SSO-y values or SAML-y values and act accordingly.
+   * initSession
+   * Callback for useExchangeCode to execute after exchanging the OTP
+   * for token-expiration data and cookies
+   * @param {object} tokenData shaped like { accessTokenExpiration, refreshTokenExpiration}
    */
-  useEffect(() => {
-    const getParams = () => {
-      const search = location.search;
-      if (!search) return undefined;
-      return queryString.parse(search) || {};
-    };
-
-    /**
-     * retrieve the OTP
-     * @returns {string}
-     */
-    const getOtp = () => {
-      return getParams()?.code;
-    };
-
-    const otp = getOtp();
-
-    if (otp) {
-      fetch(`${okapi.url}/authn/token?code=${otp}&redirect-uri=${window.location.protocol}//${window.location.host}/oidc-landing`, {
-        credentials: 'include',
-        headers: { 'X-Okapi-tenant': okapi.tenant, 'Content-Type': 'application/json' },
-        mode: 'cors',
+  const initSession = (tokenData) => {
+    if (tokenData) {
+      setTokenExpiry({
+        atExpires: tokenData.accessTokenExpiration ? new Date(tokenData.accessTokenExpiration).getTime() : atDefaultExpiration,
+        rtExpires: tokenData.refreshTokenExpiration ? new Date(tokenData.refreshTokenExpiration).getTime() : rtDefaultExpiration,
       })
-        .then((resp) => {
-          if (resp.ok) {
-            return resp.json()
-              .then((json) => {
-                return setTokenExpiry({
-                  atExpires: json.accessTokenExpiration ? new Date(json.accessTokenExpiration) : Date.now() + (60 * 1000),
-                  rtExpires: json.refreshTokenExpiration ? new Date(json.refreshTokenExpiration) : Date.now() + (2 * 60 * 1000),
-                });
-              })
-              .then(() => {
-                return requestUserWithPerms(okapi.url, store, okapi.tenant);
-              });
-          } else {
-            return resp.json().then((error) => {
-              throw error;
-            });
-          }
+        .then(() => {
+          return storeLogoutTenant(okapi.tenant);
         })
-        .catch(e => {
-          // eslint-disable-next-line no-console
-          console.error('@@ Oh, snap, OTP exchange failed!', e);
-          setOIDCError(e);
+        .then(() => {
+          return requestUserWithPerms(okapi.url, store, okapi.tenant);
         });
     }
-    // we only want to run this effect once, on load.
-    // keycloak authentication will redirect here and the other deps will be constant:
-    // location.search: the query string; this will never change
-    // okapi.tenant, okapi.url: these are defined in stripes.config.js
-    // store: the redux store
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  /**
-   * formatOIDCError
-   * Return formatted OIDC error message, or null
-   * @returns
-   */
-  const formatOIDCError = () => {
-    if (Array.isArray(oidcError?.errors)) {
-      return (
-        <Row center="xs">
-          <Col xs={12}>
-            <Headline>{oidcError.errors[0]?.message}</Headline>
-          </Col>
-        </Row>
-      );
-    }
-
-    return null;
   };
 
-  if (oidcError) {
-    return (
-      <main data-test-saml-error>
-        <Row center="xs">
-          <Col xs={12}>
-            <OrganizationLogo />
-          </Col>
-        </Row>
-        <Row center="xs">
-          <Col xs={12}>
-            <Headline size="large"><FormattedMessage id="stripes-core.errors.oidc" /></Headline>
-          </Col>
-        </Row>
-        {formatOIDCError()}
-        <Row center="xs">
-          <Col xs={12}>
-            <Button to="/"><FormattedMessage id="stripes-core.rtr.idleSession.logInAgain" /></Button>
-          </Col>
-        </Row>
-      </main>
-    );
+  const { tokenData, isLoading, error } = useExchangeCode(initSession);
+
+  if (error) {
+    return <OIDCLandingError error={error} />;
   }
 
   return (
     <div data-test-saml-success>
       <div className={css.frontWrap}>
-        <Loading size="xlarge" />
+        <div>
+          <Loading size="xlarge" />
+        </div>
+        <Headline size="xx-large">
+          {isLoading && intl.formatMessage({ id: 'stripes-core.oidc.validatingAuthenticationToken' })}
+          {tokenData && intl.formatMessage({ id: 'stripes-core.oidc.initializingSession' })}
+        </Headline>
       </div>
     </div>
   );

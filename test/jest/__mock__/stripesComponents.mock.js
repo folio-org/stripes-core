@@ -14,7 +14,7 @@ jest.mock('@folio/stripes-components', () => ({
       <span>{props.children}</span>
     </span>
   )),
-  Button: jest.fn(({ children, to, onClick = jest.fn() }) => {
+  Button: jest.fn(({ children, to, disabled, type, onClick = jest.fn() }) => {
     if (to) {
       return (
         <a href={to} role="button" data-test-button onClick={onClick}>
@@ -24,8 +24,9 @@ jest.mock('@folio/stripes-components', () => ({
         </a>
       );
     }
+
     return (
-      <button data-test-button type="button" onClick={onClick}>
+      <button data-test-button onClick={onClick} type={type || 'button'}>
         <span>
           {children}
         </span>
@@ -35,7 +36,7 @@ jest.mock('@folio/stripes-components', () => ({
   Callout: jest.fn(({ children, ...rest }) => (
     <span {...rest}>{children}</span>
   )),
-  Col: jest.fn(({ children }) => <div className="col">{ children }</div>),
+  Col: jest.fn(({ children }) => <div className="col">{children}</div>),
   ConfirmationModal: jest.fn(({ heading, message, onConfirm, onCancel }) => (
     <div>
       <span>ConfirmationModal</span>
@@ -47,6 +48,7 @@ jest.mock('@folio/stripes-components', () => ({
       </div>
     </div>
   )),
+  'datepicker-util': jest.fn(),
   Datepicker: jest.fn(({ ref, children, ...rest }) => (
     <div ref={ref} {...rest}>
       {children}
@@ -59,8 +61,8 @@ jest.mock('@folio/stripes-components', () => ({
   HasCommand: jest.fn(({ children }) => (
     <span>{children}</span>
   )),
-  Headline: jest.fn(({ children }) => <div>{ children }</div>),
-  HotKeys: jest.fn(({ children }) => <>{ children }</>),
+  Headline: jest.fn(({ children }) => <div>{children}</div>),
+  HotKeys: jest.fn(({ children }) => <>{children}</>),
   Icon: jest.fn((props) => (props && props.children ? props.children : <span />)),
   IconButton: jest.fn(({
     buttonProps,
@@ -186,19 +188,22 @@ jest.mock('@folio/stripes-components', () => ({
       {children}
     </fieldset>
   )),
-  Row: jest.fn(({ children }) => <div className="row">{ children }</div>),
-  Select: jest.fn(({ children, dataOptions }) => (
+  Row: jest.fn(({ children }) => <div className="row">{children}</div>),
+  Select: jest.fn(({ children, dataOptions, label, ...props }) => (
     <div>
-      <select>
-        {dataOptions.forEach((option, i) => (
-          <option
-            value={option.value}
-            key={option.id || `option-${i}`}
-          >
-            {option.label}
-          </option>))}
-      </select>
-      {children}
+      <label>{label}
+        <select {...props}>
+          {dataOptions.map((option, i) => (
+            <option
+              value={option.value}
+              key={option.id || `option-${i}`}
+            >
+              {option.label}
+            </option>))}
+        </select>
+        {children}
+
+      </label>
     </div>
   )),
 }));
