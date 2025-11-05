@@ -185,6 +185,7 @@ class Root extends Component {
         perms: currentPerms,
       },
       connect(X) { return X; },
+      modules: this.props.modules,
     });
 
     return (
