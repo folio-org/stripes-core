@@ -1,12 +1,31 @@
-import { modules } from 'stripes-config';
-
 /**
- * Gets the module configuration data through a Promise interface.
- *
- * Currently returns modules from stripes-config wrapped in Promise.
- * This maintains backward compatibility while providing the Promise-based
- * interface needed for future dynamic loading.
+ * getModules
+ * 1 Retrieve modules from stripes-config, wrapped in a dynamic import() in
+ *   hopeful anticipation of that glorious day when we retrieve entitlement
+ *   values in an API request instead of from a static list assembled at
+ *   build-time.
+ * 2 Load all the handler modules. Module-loading may be an async process but
+ *   handler-modules must be available synchronously during AppRoutes' render
+ *   cycle in order to call the static event-handler methods. Thus, we take
+ *   advantage of this function's asynchonicity to load and cache them outside
+ *   of render.
  */
-export function getModules() {
-  return new Promise(resolve => setTimeout(() => resolve(modules), 100));
+export async function getModules() {
+  const { modules } = await import('stripes-config');
+
+  for (const handler of modules.handler) {
+    // stripes-config compiled with --lazy defines getUnsuspendedModule()
+    // so we can access dynamically loaded modules outside lazy().
+    // this function is absent in a monolithic build so we use it here as the
+    // condition to distinguish between a tree-shaken/lazy build and a
+    // legacy/monolithic build.
+    if (handler.getUnsuspendedModule) {
+      handler.cachedModule = (await handler.getUnsuspendedModule()).default;
+    } else {
+      handler.cachedModule = handler.getModule();
+    }
+  }
+
+  return modules;
 }
+

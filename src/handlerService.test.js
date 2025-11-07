@@ -1,6 +1,6 @@
-import { getEventHandler, getEventHandlers } from './handlerService';
+import { handleEvent, invokeEventHandlers } from './handlerService';
 
-describe('getEventHandler', () => {
+describe('handleEvent', () => {
   it('does nothing in modules without handlers', () => {
     const e = {};
     const stripes = {};
@@ -9,7 +9,7 @@ describe('getEventHandler', () => {
     };
     const data = {};
 
-    expect(getEventHandler(e, stripes, module, data)).toBeNull();
+    expect(handleEvent(e, stripes, module, data)).toBeNull();
   });
 
 
@@ -24,13 +24,13 @@ describe('getEventHandler', () => {
     };
     const d = {};
 
-    const h = getEventHandler(e, s, module, d);
+    const h = handleEvent(e, s, module, d);
     expect(h).toMatchObject({ event: e, stripes: s, data: d });
   });
 });
 
-describe('getEventHandlers', () => {
-  it('returns handlers from modules that contain them', () => {
+describe('invokeEventHandlers', () => {
+  it('invokes event handler on modules that contain them', () => {
     const e = {};
     const s = {
       connect: (component) => (component),
@@ -49,7 +49,7 @@ describe('getEventHandlers', () => {
       },
     ];
 
-    const h = getEventHandlers(e, s, modules, d);
+    const h = invokeEventHandlers(e, s, modules, d);
     expect(h.length).toEqual(1);
   });
 });

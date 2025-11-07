@@ -19,7 +19,7 @@ import {
 import NavButton from '../NavButton';
 import css from './ProfileDropdown.css';
 import { withModules } from '../../Modules';
-import { getEventHandler } from '../../../handlerService';
+import { handleEvent } from '../../../handlerService';
 import validations from '../../../userDropdownLinksService';
 import IntlConsumer from '../../IntlConsumer';
 
@@ -90,7 +90,7 @@ class ProfileDropdown extends Component {
 
   createHandlerComponent(link, module) {
     const { stripes } = this.props;
-    const HandlerComponent = getEventHandler(link.event, stripes, module);
+    const HandlerComponent = handleEvent(link.event, stripes, module);
 
     // forces to recreate a handler component
     this.setInitialState(() => this.setState({ HandlerComponent }));
@@ -234,7 +234,7 @@ class ProfileDropdown extends Component {
             </NavListItem>
           </NavListSection>
         </NavList>
-        { perms }
+        {perms}
       </div>
     );
   }
@@ -295,7 +295,7 @@ class ProfileDropdown extends Component {
 
     return (
       <>
-        { HandlerComponent && <HandlerComponent stripes={this.props.stripes} /> }
+        {HandlerComponent && <HandlerComponent stripes={this.props.stripes} />}
         <Dropdown
           id="profileDropdown"
           renderTrigger={this.renderProfileTrigger}
