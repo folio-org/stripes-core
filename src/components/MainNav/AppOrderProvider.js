@@ -2,10 +2,9 @@ import { createContext, useContext, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useIntl } from 'react-intl';
 import { useQuery } from 'react-query';
+import isArray from 'lodash/isArray';
 
-import { useStripes } from '../../StripesContext';
-import { useModules } from '../../ModulesContext';
-import { LastVisitedContext } from '../LastVisited';
+import { LastVisitedContext, useModules, useStripes } from '@folio/stripes-shared-context';
 import usePreferences from '../../hooks/usePreferences';
 import { packageName } from '../../constants';
 import settingsIcon from './settings.svg';
@@ -39,11 +38,11 @@ export const AppOrderContext = createContext({
    * Function to update the preference. Accepts an list of objects with shape:
    * { name: string - the module package name, sans scope and `ui-` prefix }
    */
-  updateList: () => {},
+  updateList: () => { },
   /**
    * Function to delete any the app order preference and reset the list.
   */
-  reset: () => {},
+  reset: () => { },
 });
 
 // hook for AppOrderContext consumption.
@@ -103,6 +102,13 @@ function getAllowedApps(appModules, stripes, pathname, lastVisited, formatMessag
       route: SETTINGS_ROUTE
     });
   }
+
+  // use translated displayName rather that ast object;
+  apps.forEach((app) => {
+    if (isArray(app.displayName)) {
+      app.displayName = app.displayName[0].value;
+    }
+  });
   return apps.toSorted((a, b) => a.displayName.localeCompare(b.displayName));
 }
 
