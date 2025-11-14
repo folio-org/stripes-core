@@ -52,7 +52,7 @@ const AppRoutes = ({ modules, stripes }) => {
       path={module.route}
       key={module.route}
       render={props => {
-        const data = { displayName, name };
+        const data = { displayName, name, module: module.module };
 
         // allow SELECT_MODULE handlers to intervene
         const handlerComponents = getEventHandlers(events.SELECT_MODULE, moduleStripes, modules.handler, data);
