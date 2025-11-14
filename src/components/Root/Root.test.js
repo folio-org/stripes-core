@@ -1,6 +1,7 @@
 import { render, screen } from '@folio/jest-config-stripes/testing-library/react';
 
 import Root from './Root';
+import { modulesInitialState } from '../../ModulesContext';
 
 jest.mock('../../loginServices', () => ({
   loadTranslations: jest.fn(),
@@ -86,6 +87,11 @@ const getRootComponent = (props = {}) => (
 const renderRoot = (props = {}) => render(getRootComponent(props));
 
 describe('Root component', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    latestContextFns = {};
+  });
+
   it('shows server down message if serverDown state is true', () => {
     const store = makeStore({ okapi: { serverDown: true } });
 
@@ -262,6 +268,78 @@ describe('Root component', () => {
     const result = latestContextFns.addReducer('query_mod_list', passedReducer);
 
     expect(passedReducer).toHaveBeenCalledWith({ x: '1' }, expect.anything());
+    expect(store.replaceReducer).toHaveBeenCalled();
+    expect(result).toBe(true);
+  });
+
+  describe('when modules are loading', () => {
+    it('should render SystemSkeleton to avoid stripes-connect calling addReducer without modules on initial render', () => {
+      const store = makeStore({
+        okapi: {
+          translations: { title: 'Home' },
+          okapiReady: true,
+        },
+      });
+
+      renderRoot({
+        store,
+        modules: modulesInitialState, // No modules yet
+      });
+
+      expect(screen.getByTestId('system-skeleton')).toBeInTheDocument();
+    });
+  });
+
+  it('should call addReducer with query params from URL only when modules are loaded', () => {
+    const search = '?query=test&filters=status.active';
+    window.location.search = search;
+
+    const queryModule = {
+      route: '/users',
+      queryResource: 'query',
+      module: '@folio/users',
+    };
+
+    const history = {
+      location: {
+        pathname: '/users',
+        search,
+      },
+    };
+
+    // Initial render with okapiReady=true but NO modules yet
+    const store = makeStore({
+      okapi: {
+        translations: { title: 'Home' },
+        okapiReady: true, // Session check already complete
+      },
+    });
+
+    const { rerender } = renderRoot({
+      store,
+      history,
+      modules: modulesInitialState, // No modules yet
+    });
+
+    expect(screen.getByTestId('system-skeleton')).toBeInTheDocument();
+
+    rerender(getRootComponent({
+      store,
+      history,
+      modules: {
+        app: [queryModule],
+        settings: [],
+      },
+    }));
+
+    const passedReducer = jest.fn();
+    const result = latestContextFns.addReducer('folio_users_query', passedReducer);
+
+    // The reducer should be initialized with the URL query parameters
+    expect(passedReducer).toHaveBeenCalledWith(
+      { query: 'test', filters: 'status.active' },
+      expect.anything()
+    );
     expect(store.replaceReducer).toHaveBeenCalled();
     expect(result).toBe(true);
   });
