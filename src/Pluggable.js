@@ -6,7 +6,6 @@ import { Loading } from '@folio/stripes-components';
 import { useModules } from './ModulesContext';
 import { withStripes } from './StripesContext';
 import { ModuleHierarchyProvider } from './components';
-import loadRemoteComponent from './loadRemoteComponent';
 
 const Pluggable = (props) => {
   const modules = useModules();
@@ -27,8 +26,7 @@ const Pluggable = (props) => {
       }
 
       if (best) {
-        const RemoteComponent = React.lazy(() => loadRemoteComponent(best.url, best.name));
-        const Child = props.stripes.connect(RemoteComponent);
+        const Child = props.stripes.connect(best.getModule());
 
         cached.push({
           Child,
