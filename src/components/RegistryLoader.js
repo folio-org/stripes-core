@@ -14,13 +14,50 @@ import loadRemoteComponent from '../loadRemoteComponent';
  * @param {array} remotes
  * @returns {app: [], plugin: [], settings: [], handler: []}
  */
-const parseModules = (remotes) => {
+const parseModules = async (remotes) => {
   const modules = { app: [], plugin: [], settings: [], handler: [] };
 
-  remotes.forEach(remote => {
-    const { actsAs, ...rest } = remote;
-    actsAs.forEach(type => modules[type].push(rest));
-  });
+  // TODO finish prefetching modules here....
+  try {
+    const loaderArray = [];
+    remotes.forEach(async remote => {
+      const { name, url } = remote;
+      // setting getModule for backwards compatibility with parts of stripes that call it..
+      loaderArray.push(loadRemoteComponent(url, name));
+    });
+    await Promise.all(loaderArray);
+    remotes.forEach((remote, i) => {
+      const { actsAs, name, url, ...rest } = remote;
+      const getModule = () => loaderArray[i].default;
+      actsAs.forEach(type => modules[type].push({ actsAs, name, url, getModule, ...rest }));
+    });
+  } catch (e) {
+    console.error('Error parsing modules from registry', e);
+  }
+
+  return modules;
+};
+
+const preloadModules = async (remotes) => {
+  const modules = { app: [], plugin: [], settings: [], handler: [] };
+
+  // TODO finish prefetching modules here....
+  try {
+    const loaderArray = [];
+    remotes.forEach(async remote => {
+      const { name, url } = remote;
+      // setting getModule for backwards compatibility with parts of stripes that call it..
+      loaderArray.push(loadRemoteComponent(url, name));
+    });
+    await Promise.all(loaderArray);
+    remotes.forEach((remote, i) => {
+      const { actsAs, name, url, ...rest } = remote;
+      const getModule = () => loaderArray[i].default;
+      actsAs.forEach(type => modules[type].push({ actsAs, name, url, getModule, ...rest }));
+    });
+  } catch (e) {
+    console.error('Error parsing modules from registry', e);
+  }
 
   return modules;
 };
@@ -52,13 +89,13 @@ const loadTranslations = (stripes, module) => {
         return response.json().then((translations) => {
           // 1. translation entries look like "key: val"; we want "ui-${app}.key: val"
           // 2. module.name is snake_case (I have no idea why); we want kebab-case
-          const prefix = module.name.replace('folio_', 'ui-').replaceAll('_', '-');
-          const keyed = [];
-          Object.keys(translations).forEach(key => {
-            keyed[`${prefix}.${key}`] = translations[key];
-          });
+          // const prefix = module.name.replace('folio_', 'ui-').replaceAll('_', '-');
+          // const keyed = [];
+          // Object.keys(translations).forEach(key => {
+          //   keyed[`${prefix}.${key}`] = translations[key];
+          // });
 
-          const tx = { ...stripes.okapi.translations, ...keyed };
+          const tx = { ...stripes.okapi.translations, ...translations };
 
           // stripes.store.dispatch(setTranslations(tx));
 
@@ -117,17 +154,29 @@ const loadModuleAssets = (stripes, module) => {
   // register translations
   return loadTranslations(stripes, module)
     .then((tx) => {
+      // tx[module.displayName] instead of formatMessage({ id: module.displayName})
+      // because ... I'm not sure exactly. I suspect the answer is that we're doing
+      // something async somewhere but not realizing it, and therefore not returning
+      // a promise. thus, loadTranslations returns before it's actually done loading
+      // translations, and calling formatMessage(...) here executes before the new
+      // values are loaded.
+      //
+      // when translations are compiled, the value of the tx[module.displayName] is an array
+      // containing a single object with shape { type: 'messageFormatPattern', value: 'the actual string' }
+      // so we have to extract the value from that structure.
+      let newDisplayName;
+      if (module.displayName) {
+        if (typeof tx[module.displayName] === 'string') {
+          newDisplayName = tx[module.displayName];
+        } else {
+          newDisplayName = tx[module.displayName][0].value;
+        }
+      }
+
       return {
         ...module,
-        // tx[module.displayName] instead of formatMessage({ id: module.displayName})
-        // because ... I'm not sure exactly. I suspect the answer is that we're doing
-        // something async somewhere but not realizing it, and therefore not returning
-        // a promise. thus, loadTranslations returns before it's actually done loading
-        // translations, and calling formatMessage(...) here executes before the new
-        // values are loaded.
-        //
-        // TODO: update when modules are served with compiled translations
-        displayName: module.displayName ? tx[module.displayName] : module.module,
+        displayName: module.displayName ?
+          newDisplayName : module.module,
       };
     })
     .catch(e => {
@@ -150,6 +199,9 @@ const loadModules = async ({ app, plugin, settings, handler, stripes }) => ({
   handler: await Promise.all(handler.map(i => loadModuleAssets(stripes, i))),
 });
 
+const loadAllModuleAssets = async (stripes, remotes) => {
+  return Promise.all(remotes.map((r) => loadModuleAssets(stripes, r)));
+};
 
 /**
  * Registry Loader
@@ -169,17 +221,31 @@ const RegistryLoader = ({ stripes, children }) => {
       // remap registry from an object shaped like { key1: app1, key2: app2, ...}
       // to an array shaped like [ { name: key1, ...app1 }, { name: key2, ...app2 } ...]
       const remotes = Object.entries(registry.remotes).map(([name, metadata]) => ({ name, ...metadata }));
-      const parsedModules = await loadModules({ stripes, ...parseModules(remotes) });
 
+      // load module assets, then load modules...
+      const remotesWithLoadedAssets = await loadAllModuleAssets(stripes, remotes);
+      // const parsedModules = await loadModules({ stripes, ...parseModules(remotes) });
+      const parsedModules = await preloadModules(remotesWithLoadedAssets);
       // prefetch all handlers so they can be executed in a sync way.
-      const { handler: handlerModules } = parsedModules;
-      if (handlerModules) {
-        await Promise.all(handlerModules.map(async (module) => {
-          const component = await loadRemoteComponent(module.url, module.name);
-          module.getModule = () => component?.default;
-        }));
+      // const { handler: handlerModules } = parsedModules;
+      // if (handlerModules) {
+      //   await Promise.all(handlerModules.map(async (module) => {
+      //     const component = await loadRemoteComponent(module.url, module.name);
+      //     module.getModule = () => component?.default;
+      //   }));
+      // }
+
+      // preload all modules...
+      for (const type in parsedModules) {
+        if (parsedModules[type]) {
+          parsedModules[type].forEach(async (module) => {
+            const loadedModule = await loadRemoteComponent(module.url, module.name);
+            module.getModule = () => loadedModule?.default;
+          });
+        }
       }
 
+      // prefetch
       setModules(parsedModules);
     };
 
