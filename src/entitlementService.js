@@ -4,25 +4,24 @@
  *   hopeful anticipation of that glorious day when we retrieve entitlement
  *   values in an API request instead of from a static list assembled at
  *   build-time.
- * 2 Load all the handler modules. Module-loading may be an async process but
- *   handler-modules must be available synchronously during AppRoutes' render
- *   cycle in order to call the static event-handler methods. Thus, we take
- *   advantage of this function's asynchonicity to load and cache them outside
- *   of render.
+ * 2 If the bundle was constructed with --lazy, load and cache all the modules,
+ *   taking advantage of this function's asynchronicity to handle the dynamic
+ *   import calls that cannot be called during render.
+ *
  */
 export async function getModules() {
-  const { modules } = await import('stripes-config');
+  const { config, modules } = await import('stripes-config');
 
-  for (const handler of modules.handler) {
-    // stripes-config compiled with --lazy defines getUnsuspendedModule()
-    // so we can access dynamically loaded modules outside lazy().
-    // this function is absent in a monolithic build so we use it here as the
-    // condition to distinguish between a tree-shaken/lazy build and a
-    // legacy/monolithic build.
-    if (handler.getUnsuspendedModule) {
-      handler.cachedModule = (await handler.getUnsuspendedModule()).default;
-    } else {
-      handler.cachedModule = handler.getModule();
+  // monolithic builds define sync getModule() methods; lazy builds define
+  // async getDynamicModule() methods and therefore need to have their modules
+  // loaded and cached ahead of time in order to provide synchronous access
+  // during render when event handlers and plugins may be invoked.
+  if (config.isLazy) {
+    for (const [, list] of Object.entries(modules)) {
+      for (const module of list) {
+        module.cachedModule = (await module.getDynamicModule());
+        module.getModule = () => module.cachedModule.default;
+      }
     }
   }
 

@@ -12,7 +12,7 @@
  * @returns Component to intercede, null otherwise
  */
 export function handleEvent(event, stripes, handler, data) {
-  const m = handler.cachedModule;
+  const m = handler.getModule();
   const eventHander = m[handler.handlerName];
 
   // it's possible this module declares handlerName in its package.json
