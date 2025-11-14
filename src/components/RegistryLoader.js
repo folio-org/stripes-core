@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { okapi } from 'stripes-config';
 
@@ -6,7 +6,8 @@ import { ModulesContext } from '../ModulesContext';
 import loadRemoteComponent from '../loadRemoteComponent';
 
 /**
- * parseModules
+ * preloadModules
+ * Loads each module code and sets up its getModule function.
  * Map the list of applications to a hash keyed by acts-as type (app, plugin,
  * settings, handler) where the value of each is an array of corresponding
  * applications.
@@ -14,46 +15,23 @@ import loadRemoteComponent from '../loadRemoteComponent';
  * @param {array} remotes
  * @returns {app: [], plugin: [], settings: [], handler: []}
  */
-const parseModules = async (remotes) => {
-  const modules = { app: [], plugin: [], settings: [], handler: [] };
-
-  // TODO finish prefetching modules here....
-  try {
-    const loaderArray = [];
-    remotes.forEach(async remote => {
-      const { name, url } = remote;
-      // setting getModule for backwards compatibility with parts of stripes that call it..
-      loaderArray.push(loadRemoteComponent(url, name));
-    });
-    await Promise.all(loaderArray);
-    remotes.forEach((remote, i) => {
-      const { actsAs, name, url, ...rest } = remote;
-      const getModule = () => loaderArray[i].default;
-      actsAs.forEach(type => modules[type].push({ actsAs, name, url, getModule, ...rest }));
-    });
-  } catch (e) {
-    console.error('Error parsing modules from registry', e);
-  }
-
-  return modules;
-};
 
 const preloadModules = async (remotes) => {
   const modules = { app: [], plugin: [], settings: [], handler: [] };
 
-  // TODO finish prefetching modules here....
   try {
     const loaderArray = [];
     remotes.forEach(async remote => {
       const { name, url } = remote;
-      // setting getModule for backwards compatibility with parts of stripes that call it..
-      loaderArray.push(loadRemoteComponent(url, name));
+      loaderArray.push(loadRemoteComponent(url, name)
+        .then((module) => {
+          remote.getModule = () => module.default;
+        }));
     });
     await Promise.all(loaderArray);
-    remotes.forEach((remote, i) => {
-      const { actsAs, name, url, ...rest } = remote;
-      const getModule = () => loaderArray[i].default;
-      actsAs.forEach(type => modules[type].push({ actsAs, name, url, getModule, ...rest }));
+    remotes.forEach((remote) => {
+      const { actsAs } = remote;
+      actsAs.forEach(type => modules[type].push({ ...remote }));
     });
   } catch (e) {
     console.error('Error parsing modules from registry', e);
@@ -155,11 +133,7 @@ const loadModuleAssets = (stripes, module) => {
   return loadTranslations(stripes, module)
     .then((tx) => {
       // tx[module.displayName] instead of formatMessage({ id: module.displayName})
-      // because ... I'm not sure exactly. I suspect the answer is that we're doing
-      // something async somewhere but not realizing it, and therefore not returning
-      // a promise. thus, loadTranslations returns before it's actually done loading
-      // translations, and calling formatMessage(...) here executes before the new
-      // values are loaded.
+      // because updating store is async and we don't have the updated values quite yet...
       //
       // when translations are compiled, the value of the tx[module.displayName] is an array
       // containing a single object with shape { type: 'messageFormatPattern', value: 'the actual string' }
@@ -186,19 +160,11 @@ const loadModuleAssets = (stripes, module) => {
 };
 
 /**
- * loadModules
- * NB: this means multi-type modules, i.e. those like `actsAs: [app, settings]`
- * will be loaded multiple times. I'm not sure that's right.
+ * loadAllModuleAssets
+ * Loads icons, translations, and sounds for all modules. Inserts the correct 'displayName' for each module.
  * @param {props}
  * @returns Promise
  */
-const loadModules = async ({ app, plugin, settings, handler, stripes }) => ({
-  app: await Promise.all(app.map(i => loadModuleAssets(stripes, i))),
-  plugin: await Promise.all(plugin.map(i => loadModuleAssets(stripes, i))),
-  settings: await Promise.all(settings.map(i => loadModuleAssets(stripes, i))),
-  handler: await Promise.all(handler.map(i => loadModuleAssets(stripes, i))),
-});
-
 const loadAllModuleAssets = async (stripes, remotes) => {
   return Promise.all(remotes.map((r) => loadModuleAssets(stripes, r)));
 };
@@ -222,35 +188,17 @@ const RegistryLoader = ({ stripes, children }) => {
       // to an array shaped like [ { name: key1, ...app1 }, { name: key2, ...app2 } ...]
       const remotes = Object.entries(registry.remotes).map(([name, metadata]) => ({ name, ...metadata }));
 
-      // load module assets, then load modules...
+      // load module assets (translations, icons), then load modules...
       const remotesWithLoadedAssets = await loadAllModuleAssets(stripes, remotes);
-      // const parsedModules = await loadModules({ stripes, ...parseModules(remotes) });
-      const parsedModules = await preloadModules(remotesWithLoadedAssets);
-      // prefetch all handlers so they can be executed in a sync way.
-      // const { handler: handlerModules } = parsedModules;
-      // if (handlerModules) {
-      //   await Promise.all(handlerModules.map(async (module) => {
-      //     const component = await loadRemoteComponent(module.url, module.name);
-      //     module.getModule = () => component?.default;
-      //   }));
-      // }
-
-      // preload all modules...
-      for (const type in parsedModules) {
-        if (parsedModules[type]) {
-          parsedModules[type].forEach(async (module) => {
-            const loadedModule = await loadRemoteComponent(module.url, module.name);
-            module.getModule = () => loadedModule?.default;
-          });
-        }
-      }
+      // load module code - this loads each module only once and up `getModule` so that it can be used sychronously.
+      const cachedModules = await preloadModules(remotesWithLoadedAssets);
 
       // prefetch
-      setModules(parsedModules);
+      setModules(cachedModules);
     };
 
     fetchRegistry();
-    // We know what we are doing here so just ignore the dependency warning about 'formatMessage'
+    // no, we don't want to refetch the registry if stripes changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
