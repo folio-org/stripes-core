@@ -73,7 +73,6 @@ const createCustomFieldRenderer = (interfaceId, interfaceVersion) => (
 );
 
 
-
 describe('useCustomFields hook', () => {
   const i = UseCustomFieldsInteractor();
 
