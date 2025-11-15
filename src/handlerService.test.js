@@ -15,7 +15,7 @@ describe('handleEvent', () => {
 
   it('calls module\'s handler when it is defined', () => {
     const e = {};
-    const s = {};
+    const s = { logger: { log: jest.fn() } };
     const module = {
       getModule: () => ({
         eventHandler: (ee, ss, dd) => ({ event: ee, stripes: ss, data: dd }),
@@ -34,6 +34,7 @@ describe('invokeEventHandlers', () => {
     const e = {};
     const s = {
       connect: (component) => (component),
+      logger: { log: jest.fn() },
     };
     const d = {};
 
