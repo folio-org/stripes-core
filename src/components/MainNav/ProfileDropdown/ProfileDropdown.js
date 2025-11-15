@@ -234,7 +234,7 @@ class ProfileDropdown extends Component {
             </NavListItem>
           </NavListSection>
         </NavList>
-        {perms}
+        { perms }
       </div>
     );
   }
@@ -295,7 +295,7 @@ class ProfileDropdown extends Component {
 
     return (
       <>
-        {HandlerComponent && <HandlerComponent stripes={this.props.stripes} />}
+        { HandlerComponent && <HandlerComponent stripes={this.props.stripes} /> }
         <Dropdown
           id="profileDropdown"
           renderTrigger={this.renderProfileTrigger}
