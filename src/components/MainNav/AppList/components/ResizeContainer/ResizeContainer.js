@@ -84,7 +84,7 @@ class ResizeContainer extends React.Component {
     const { items } = this.props;
 
     this.cachedItemWidths = items.reduce((acc, { id }) => Object.assign(acc, {
-      [id]: document.getElementById(`app-list-item-${id}`).parentNode.offsetWidth,
+      [id]: document.getElementById(`app-list-item-${id}`)?.parentNode.offsetWidth,
     }), {});
   }
 
