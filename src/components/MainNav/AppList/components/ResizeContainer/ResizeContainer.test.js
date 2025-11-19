@@ -178,19 +178,12 @@ describe('ResizeContainer (Jest)', () => {
 
     const itemsNew = [...itemsSameIds, { id: '999' }];
 
-    act(() => {
-      rerender(getComponent({
-        ref,
-        items: itemsNew,
-        hideAllWidth: 0,
-        offset: 0,
-      }));
-    });
-
-    // Flush all pending promises and timers (includes requestAnimationFrame)
-    act(() => {
-      jest.runAllTimers();
-    });
+    rerender(getComponent({
+      ref,
+      items: itemsNew,
+      hideAllWidth: 0,
+      offset: 0,
+    }));
 
     expect(cacheSpy).toHaveBeenCalledTimes(1);
   });
@@ -312,19 +305,13 @@ describe('ResizeContainer (Jest)', () => {
 
       const items2 = [...items1, { id: '6' }];
 
-      act(() => {
-        rerender(getComponent({
-          ref,
-          items: items2,
-          hideAllWidth: 0,
-          offset: 0,
-        }));
-      });
+      rerender(getComponent({
+        ref,
+        items: items2,
+        hideAllWidth: 0,
+        offset: 0,
+      }));
 
-      act(() => {
-        jest.runAllTimers();
-      });
-      
       expect(cacheBeforeMeasuring).toEqual({});
       expect(hiddenItemsWhenMeasuring).toEqual([]);
     });

@@ -61,10 +61,8 @@ class ResizeContainer extends React.Component {
       // Clear cached widths and show all items temporarily to measure them accurately
       this.cachedItemWidths = {};
       this.setState({ hiddenItems: [] }, () => {
-        requestAnimationFrame(() => {
-          this.cacheWidthsOfItems();
-          this.updateHiddenItems();
-        });
+        this.cacheWidthsOfItems();
+        this.updateHiddenItems();
       });
     }
     // Update hidden items when the current app ID changes
@@ -84,7 +82,7 @@ class ResizeContainer extends React.Component {
     const { items } = this.props;
 
     this.cachedItemWidths = items.reduce((acc, { id }) => Object.assign(acc, {
-      [id]: document.getElementById(`app-list-item-${id}`)?.parentNode.offsetWidth,
+      [id]: document.getElementById(`app-list-item-${id}`).parentNode.offsetWidth,
     }), {});
   }
 
