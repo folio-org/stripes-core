@@ -4,7 +4,9 @@ import { useIntl } from 'react-intl';
 import { useQuery } from 'react-query';
 import isArray from 'lodash/isArray';
 
-import { LastVisitedContext, useModules, useStripes } from '@folio/stripes-shared-context';
+import { LastVisitedContext } from '@folio/stripes-shared-context';
+import { useStripes } from '../../StripesContext';
+import { useModules } from '../../ModulesContext';
 import usePreferences from '../../hooks/usePreferences';
 import { packageName } from '../../constants';
 import settingsIcon from './settings.svg';
