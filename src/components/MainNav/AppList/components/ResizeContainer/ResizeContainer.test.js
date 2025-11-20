@@ -1,6 +1,6 @@
-import { createRef, forwardRef } from 'react';
+import { createRef, forwardRef, act } from 'react';
 
-import { render, act } from '@folio/jest-config-stripes/testing-library/react';
+import { render } from '@folio/jest-config-stripes/testing-library/react';
 
 import ResizeContainer from './ResizeContainer';
 
@@ -271,6 +271,49 @@ describe('ResizeContainer (Jest)', () => {
 
     items.forEach(i => {
       expect(getByText(new RegExp(`Item ${i.id} \\(${FIXED_ITEM_WIDTH}\\)`))).toBeTruthy();
+    });
+  });
+
+  describe('when items change', () => {
+    it('should clear cache and show all items before measuring', () => {
+      const items1 = makeItems(5);
+      const ref = createRef();
+      let hiddenItemsWhenMeasuring = null;
+      let cacheBeforeMeasuring = null;
+
+      const { rerender } = renderComponent({
+        ref,
+        items: items1,
+        hideAllWidth: 0,
+        offset: 0,
+      });
+
+      // Initial: item 5 is hidden, cache has items 1-5
+      expect(ref.current.state.hiddenItems).toEqual(['5']);
+      expect(ref.current.cachedItemWidths).toEqual({
+        '1': 120, '2': 120, '3': 120, '4': 120, '5': 120
+      });
+
+      // Spy on cacheWidthsOfItems to capture state and cache when it's called
+      const originalCache = ref.current.cacheWidthsOfItems;
+      ref.current.cacheWidthsOfItems = function(...args) {
+        hiddenItemsWhenMeasuring = [...this.state.hiddenItems];
+        cacheBeforeMeasuring = { ...this.cachedItemWidths };
+
+        return originalCache.apply(this, args);
+      };
+
+      const items2 = [...items1, { id: '6' }];
+
+      rerender(getComponent({
+        ref,
+        items: items2,
+        hideAllWidth: 0,
+        offset: 0,
+      }));
+
+      expect(cacheBeforeMeasuring).toEqual({});
+      expect(hiddenItemsWhenMeasuring).toEqual([]);
     });
   });
 });
