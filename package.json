@@ -10,6 +10,9 @@
   "publishConfig": {
     "registry": "https://repository.folio.org/repository/npm-folio/"
   },
+  "main": "index.js",
+  "type": "module",
+  "module": "dist/index.js",
   "scripts": {
     "start": "stripes serve",
     "test": "yarn run test:jest && yarn run test:bigtest ",
@@ -94,6 +97,7 @@
   "dependencies": {
     "@apollo/client": "^3.2.1",
     "@folio/stripes-shared-context": "^1.0.0",
+    "@module-federation/runtime": "^0.21.6",
     "classnames": "^2.2.5",
     "core-js": "^3.26.1",
     "final-form": "^4.18.2",

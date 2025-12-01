@@ -5,6 +5,8 @@ import {
   withRouter,
   matchPath,
 } from 'react-router-dom';
+import { okapi } from 'stripes-config';
+
 
 import { ConnectContext } from '@folio/stripes-connect';
 import {
@@ -14,6 +16,8 @@ import {
 } from '../../loginServices';
 import { setAuthError } from '../../okapiActions';
 import Login from './Login';
+
+
 
 class LoginCtrl extends Component {
   static propTypes = {
@@ -37,8 +41,7 @@ class LoginCtrl extends Component {
 
   constructor(props) {
     super(props);
-    this.sys = require('stripes-config'); // eslint-disable-line global-require
-    this.tenant = this.sys.okapi.tenant;
+    this.tenant = okapi.tenant;
     if (props.autoLogin && props.autoLogin.username) {
       this.handleSubmit(props.autoLogin);
     }

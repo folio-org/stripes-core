@@ -1,4 +1,4 @@
-const webpack = require('webpack');
+import webpack from 'webpack';
 
 const miragePlugin = {
   // Standard yargs options object
@@ -32,7 +32,7 @@ const miragePlugin = {
   }
 }
 
-module.exports = {
+export default {
   hasAllPerms: true,
 
   aliases: {

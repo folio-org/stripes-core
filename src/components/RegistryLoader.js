@@ -4,6 +4,7 @@ import { okapi } from 'stripes-config';
 
 import { ModulesContext } from '../ModulesContext';
 import loadRemoteComponent from '../loadRemoteComponent';
+import { loadRemote, registerRemotes } from '@module-federation/runtime';
 
 /**
  * preloadModules
@@ -21,9 +22,14 @@ const preloadModules = async (remotes) => {
 
   try {
     const loaderArray = [];
+    const remotesToRegister = remotes.map(remote => ({
+      name: remote.name, entry: remote.entry
+    }));
+    registerRemotes(remotesToRegister);
     remotes.forEach(async remote => {
       const { name, url } = remote;
-      loaderArray.push(loadRemoteComponent(url, name)
+
+      loaderArray.push(loadRemote(name)
         .then((module) => {
           remote.getModule = () => module.default;
         }));
@@ -180,6 +186,14 @@ const RegistryLoader = ({ stripes, children }) => {
 
   // read the list of registered apps from the registry,
   useEffect(() => {
+    // ENABLE MOD FED DEBUGGING
+    localStorage.setItem('FEDERATION_DEBUG', 'true');
+
+    const fetchMFStats = async () => {
+      const stats = await fetch(`${location.protocol}//${location.host}/mf-stats.json`).then((response) => response.json());
+      stripes.logger.log('core', 'Module Federation Stats:', stats);
+    };
+
     const fetchRegistry = async () => {
       // read the list of registered apps
       const registry = await fetch(okapi.registryUrl).then((response) => response.json());
@@ -197,6 +211,7 @@ const RegistryLoader = ({ stripes, children }) => {
       setModules(cachedModules);
     };
 
+    fetchMFStats();
     fetchRegistry();
     // no, we don't want to refetch the registry if stripes changes
     // eslint-disable-next-line react-hooks/exhaustive-deps

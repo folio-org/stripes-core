@@ -2,9 +2,7 @@ import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import hoistNonReactStatics from 'hoist-non-react-statics';
 
-import { StripesContext } from '@folio/stripes-shared-context';
-
-export { StripesContext };
+export const StripesContext = React.createContext();
 
 function getDisplayName(WrappedComponent) {
   return WrappedComponent.displayName || WrappedComponent.name || 'Component';

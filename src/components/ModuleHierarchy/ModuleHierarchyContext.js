@@ -1,3 +1,5 @@
-import { ModuleHierarchyContext } from '@folio/stripes-shared-context';
+import React from 'react';
+
+const ModuleHierarchyContext = React.createContext();
 
 export default ModuleHierarchyContext;

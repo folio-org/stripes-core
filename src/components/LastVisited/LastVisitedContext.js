@@ -1,3 +1,3 @@
-import { LastVisitedContext } from '@folio/stripes-shared-context';
+import React from 'react';
 
-export default LastVisitedContext;
+export default React.createContext({});
