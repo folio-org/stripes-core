@@ -26,7 +26,9 @@
 * Take `tenant` from URL for multi-tenant setup in `getLoginTenant`. Make `makeCall` method async to avoid displaying an error message when loading the password reset page. Refs STCOR-1000.
 * Use async/await consistently in all `loginServices.js` functions. Refs STCOR-1004.
 * Provide `<Suspense>` boundaries around modules and plugins. Refs STCOR-635.
-* Given a bundle built with `--lazy`, cache all modules up front. Refs STCOR-635, STRIPES-999.
+* `<ResizeContainer>` - clear cache and show all items before measuring changed items. Refs STCOR-1010.
+* Adjust "errors.default.error" message text for security fix. Fixes STCOR-703.
+* Given a bundle with async module-loaders, pre-load modules to provide sync access during render. Refs STCOR-1014, STRIPES-999.
 
 ## [11.0.0](https://github.com/folio-org/stripes-core/tree/v11.0.0) (2025-02-24)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.2.0...v11.0.0)

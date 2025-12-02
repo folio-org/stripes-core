@@ -119,7 +119,7 @@
   "mainnav.profileDropdown.locale": "Locale",
   "mainnav.profileDropdown.permissions": "Permissions",
 
-  "errors.default.error": "Sorry, the information entered does not match our records.",
+  "errors.default.error": "Wrong username or wrong password or account blocked.",
   "errors.username.incorrect": "This FOLIO account cannot be located. Please contact your FOLIO systems administrator.",
   "errors.password.incorrect": "Bad credentials",
   "errors.password.incorrect.warn.user": "You have entered the wrong username or password for the third time. You have two more tries to log in before your account will be locked.",
