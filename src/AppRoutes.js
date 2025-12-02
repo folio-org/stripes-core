@@ -8,7 +8,7 @@ import { LoadingView } from '@folio/stripes-components';
 import { StripesContext } from './StripesContext';
 import TitleManager from './components/TitleManager';
 import RouteErrorBoundary from './components/RouteErrorBoundary';
-import { getEventHandlers } from './handlerService';
+import { invokeEventHandlers } from './handlerService';
 import { packageName } from './constants';
 import { ModuleHierarchyProvider } from './components';
 import events from './events';
@@ -55,7 +55,7 @@ const AppRoutes = ({ modules, stripes }) => {
         const data = { displayName, name };
 
         // allow SELECT_MODULE handlers to intervene
-        const handlerComponents = getEventHandlers(events.SELECT_MODULE, moduleStripes, modules.handler, data);
+        const handlerComponents = invokeEventHandlers(events.SELECT_MODULE, moduleStripes, modules.handler, data);
         if (handlerComponents.length) {
           return handlerComponents.map(Handler => (<Handler stripes={propsStripes} data={data} />));
         }

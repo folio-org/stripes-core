@@ -7,7 +7,7 @@ import { useIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { ErrorBoundary } from '@folio/stripes-components';
 import events from '../../events';
-import { getEventHandlers } from '../../handlerService';
+import { invokeEventHandlers } from '../../handlerService';
 import { ModulesContext } from '../../ModulesContext';
 import { StripesContext } from '../../StripesContext';
 
@@ -37,12 +37,14 @@ const RouteErrorBoundary = ({ children, escapeRoute = '/', moduleName, isSetting
    * Callback from ErrorBoundary's componentDidCatch method. Pass along
    * the values received there to any functions that are registered to
    * listen to events.ERROR.
+   *
+   * Here, we invoke the handlers but ignore any returned components, allowing
+   * the handlers to process side-effects but not to intervene and display an
+   * alternative component. Not sure if that's intentional or not. Hmmmmmmm.
+   *
    */
   const handleError = (error, info) => {
-    const handlers = getEventHandlers(events.ERROR, stripes, modules.handler, {});
-    handlers.forEach(handleEvent => {
-      handleEvent(error, info);
-    });
+    invokeEventHandlers(events.ERROR, stripes, modules.handler, { error, info });
   };
 
   return (

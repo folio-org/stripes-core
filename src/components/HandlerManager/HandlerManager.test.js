@@ -2,10 +2,10 @@ import { render, screen } from '@folio/jest-config-stripes/testing-library/react
 
 import HandlerManager from './HandlerManager';
 
-import { getEventHandlers } from '../../handlerService';
+import { invokeEventHandlers } from '../../handlerService';
 
 jest.mock('../../handlerService', () => ({
-  getEventHandlers: jest.fn(),
+  invokeEventHandlers: jest.fn(),
 }));
 
 let mockModulesProp = {};
@@ -37,14 +37,14 @@ describe('HandlerManager', () => {
 
   it('renders handlers on mount (componentDidMount -> updateComponents)', () => {
     const FirstHandlerComponent = createMockHandlerComponent('First');
-    getEventHandlers.mockReturnValue([FirstHandlerComponent]);
+    invokeEventHandlers.mockReturnValue([FirstHandlerComponent]);
     mockModulesProp = { handler: [{}, {}] };
 
     renderComponent({
       event: 'create',
     });
 
-    expect(getEventHandlers).toHaveBeenCalledTimes(1);
+    expect(invokeEventHandlers).toHaveBeenCalledTimes(1);
     expect(screen.getByTestId('handler-First')).toBeInTheDocument();
   });
 
@@ -53,21 +53,21 @@ describe('HandlerManager', () => {
     const SecondHandlerComponent = createMockHandlerComponent('Second');
     const props = { event: 'update' };
 
-    getEventHandlers.mockReturnValueOnce([FirstHandlerComponent]);
+    invokeEventHandlers.mockReturnValueOnce([FirstHandlerComponent]);
     mockModulesProp = { handler: [{}] };
 
     const { rerender } = renderComponent(props);
 
     expect(screen.getByTestId('handler-First')).toBeInTheDocument();
-    expect(getEventHandlers).toHaveBeenCalledTimes(1);
+    expect(invokeEventHandlers).toHaveBeenCalledTimes(1);
 
-    getEventHandlers.mockReturnValueOnce([FirstHandlerComponent, SecondHandlerComponent]);
+    invokeEventHandlers.mockReturnValueOnce([FirstHandlerComponent, SecondHandlerComponent]);
     mockModulesProp = { handler: [{}, {}, {}] };
 
     rerender(getComponent(props));
 
     expect(screen.getByTestId('handler-First')).toBeInTheDocument();
     expect(screen.getByTestId('handler-Second')).toBeInTheDocument();
-    expect(getEventHandlers).toHaveBeenCalledTimes(2);
+    expect(invokeEventHandlers).toHaveBeenCalledTimes(2);
   });
 });
