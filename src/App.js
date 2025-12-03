@@ -2,6 +2,7 @@ import React, { Component, StrictMode } from 'react';
 import PropTypes from 'prop-types';
 import { okapi as okapiConfig, config } from 'stripes-config';
 import merge from 'lodash/merge';
+import { modulesInitialState } from '@folio/stripes-shared-context';
 
 import AppConfigError from './components/AppConfigError';
 import connectErrorEpic from './connectErrorEpic';
@@ -11,7 +12,6 @@ import configureStore from './configureStore';
 import gatherActions from './gatherActions';
 import { destroyStore } from './mainActions';
 import { getModules } from './entitlementService';
-import { modulesInitialState } from './ModulesContext';
 import css from './components/SessionEventContainer/style.css';
 
 import Root from './components/Root';

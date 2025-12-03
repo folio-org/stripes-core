@@ -48,7 +48,7 @@ const WarningBanner = ({
       <MessageBanner
         type="warning"
         show={!!missingModulesCount}
-        dismissable
+        dismissible
         ref={bannerRef}
       >
         <Headline>{missingModulesMsg}</Headline>
@@ -61,7 +61,7 @@ const WarningBanner = ({
       <MessageBanner
         type="warning"
         show={!!incompatibleModulesCount}
-        dismissable
+        dismissible
         ref={bannerRef}
       >
         <Headline>{incompatibleModuleMsg}</Headline>

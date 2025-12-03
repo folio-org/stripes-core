@@ -14,15 +14,6 @@ function addKeys(moduleName, register, list) {
 
 export default function gatherActions(modules) {
   const allActions = {};
-
-  for (const key of Object.keys(modules)) {
-    const set = modules[key];
-    for (const key2 of Object.keys(set)) {
-      const module = set[key2];
-      addKeys(module.module, allActions, module.actionNames);
-    }
-  }
-
   addKeys('stripes-components', allActions, (stripesComponents.stripes || {}).actionNames);
 
   return Object.keys(allActions);

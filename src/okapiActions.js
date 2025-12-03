@@ -197,7 +197,16 @@ function toggleRtrModal(isVisible) {
   };
 }
 
+function addIcon(key, icon) {
+  return {
+    type: OKAPI_REDUCER_ACTIONS.ADD_ICON,
+    key,
+    icon
+  };
+}
+
 export {
+  addIcon,
   checkSSO,
   clearCurrentUser,
   clearOkapiToken,
