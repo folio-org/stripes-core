@@ -266,6 +266,7 @@ Root.propTypes = {
     push: PropTypes.func.isRequired,
     replace: PropTypes.func.isRequired,
   }),
+  icons: PropTypes.object,
   okapiReady: PropTypes.bool,
   serverDown: PropTypes.bool,
 };
@@ -276,6 +277,7 @@ Root.defaultProps = {
   currency: 'USD',
   okapiReady: false,
   serverDown: false,
+  icons: {},
 };
 
 function mapStateToProps(state) {
@@ -285,6 +287,7 @@ function mapStateToProps(state) {
     currentPerms: state.okapi.currentPerms,
     currentUser: state.okapi.currentUser,
     discovery: state.discovery,
+    icons: state.okapi.icons,
     isAuthenticated: state.okapi.isAuthenticated,
     locale: state.okapi.locale,
     okapi: state.okapi,
