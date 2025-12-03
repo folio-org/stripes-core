@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { okapi } from 'stripes-config';
 import { useStripes } from '../StripesContext';
-import { ModulesContext } from '../ModulesContext';
+import { ModulesContext, useModules } from '../ModulesContext';
 import loadRemoteComponent from '../loadRemoteComponent';
 
 /**
@@ -175,9 +175,10 @@ const loadAllModuleAssets = async (stripes, remotes) => {
  * @param {*} children
  * @returns
  */
-const RegistryLoader = ({ children }) => {
+const EntitlementLoader = ({ children }) => {
   const stripes = useStripes();
-  const [modules, setModules] = useState(stripes.modules);
+  const configModules = useModules();
+  const [modules, setModules] = useState(configModules);
 
   // if platform is configured for module federation, read the list of registered apps from <fill in source of truth>
   // localstorage, okapi, direct call to registry endpoint?
@@ -196,7 +197,7 @@ const RegistryLoader = ({ children }) => {
         // load module code - this loads each module only once and up `getModule` so that it can be used sychronously.
         const cachedModules = await preloadModules(remotesWithLoadedAssets);
 
-        const combinedModules = { ...stripes.modules, ...cachedModules };
+        const combinedModules = { ...configModules, ...cachedModules };
 
         setModules(combinedModules);
       };
@@ -214,7 +215,7 @@ const RegistryLoader = ({ children }) => {
   );
 };
 
-RegistryLoader.propTypes = {
+EntitlementLoader.propTypes = {
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node,
@@ -222,4 +223,4 @@ RegistryLoader.propTypes = {
   ])
 };
 
-export default RegistryLoader;
+export default EntitlementLoader;
