@@ -198,7 +198,6 @@ const RegistryLoader = ({ children }) => {
 
         const combinedModules = { ...stripes.modules, ...cachedModules };
 
-        // prefetch
         setModules(combinedModules);
       };
 
