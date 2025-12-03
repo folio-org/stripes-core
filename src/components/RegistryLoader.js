@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { okapi } from 'stripes-config';
-
+import { useStripes } from '../StripesContext';
 import { ModulesContext } from '../ModulesContext';
 import loadRemoteComponent from '../loadRemoteComponent';
 
@@ -175,29 +175,35 @@ const loadAllModuleAssets = async (stripes, remotes) => {
  * @param {*} children
  * @returns
  */
-const RegistryLoader = ({ stripes, children }) => {
-  const [modules, setModules] = useState();
+const RegistryLoader = ({ children }) => {
+  const stripes = useStripes();
+  const [modules, setModules] = useState(stripes.modules);
 
-  // read the list of registered apps from the registry,
+  // if platform is configured for module federation, read the list of registered apps from <fill in source of truth>
+  // localstorage, okapi, direct call to registry endpoint?
   useEffect(() => {
-    const fetchRegistry = async () => {
-      // read the list of registered apps
-      const registry = await fetch(okapi.registryUrl).then((response) => response.json());
+    if (okapi.entitlementUrl) {
+      const fetchRegistry = async () => {
+        // read the list of registered apps
+        const registry = await fetch(okapi.entitlementUrl).then((response) => response.json());
 
-      // remap registry from an object shaped like { key1: app1, key2: app2, ...}
-      // to an array shaped like [ { name: key1, ...app1 }, { name: key2, ...app2 } ...]
-      const remotes = Object.entries(registry.remotes).map(([name, metadata]) => ({ name, ...metadata }));
+        // remap registry from an object shaped like { key1: app1, key2: app2, ...}
+        // to an array shaped like [ { name: key1, ...app1 }, { name: key2, ...app2 } ...]
+        const remotes = Object.entries(registry.remotes).map(([name, metadata]) => ({ name, ...metadata }));
 
-      // load module assets (translations, icons), then load modules...
-      const remotesWithLoadedAssets = await loadAllModuleAssets(stripes, remotes);
-      // load module code - this loads each module only once and up `getModule` so that it can be used sychronously.
-      const cachedModules = await preloadModules(remotesWithLoadedAssets);
+        // load module assets (translations, icons), then load modules...
+        const remotesWithLoadedAssets = await loadAllModuleAssets(stripes, remotes);
+        // load module code - this loads each module only once and up `getModule` so that it can be used sychronously.
+        const cachedModules = await preloadModules(remotesWithLoadedAssets);
 
-      // prefetch
-      setModules(cachedModules);
-    };
+        const combinedModules = { ...stripes.modules, ...cachedModules };
 
-    fetchRegistry();
+        // prefetch
+        setModules(combinedModules);
+      };
+
+      fetchRegistry();
+    }
     // no, we don't want to refetch the registry if stripes changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -214,9 +220,7 @@ RegistryLoader.propTypes = {
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node,
     PropTypes.func,
-  ]),
-  stripes: PropTypes.object.isRequired,
+  ])
 };
-
 
 export default RegistryLoader;

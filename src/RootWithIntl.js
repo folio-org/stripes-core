@@ -71,7 +71,7 @@ const RootWithIntl = ({ stripes, token = '', isAuthenticated = false, disableAut
   return (
     <StripesContext.Provider value={connectedStripes}>
       <CalloutContext.Provider value={callout}>
-        <RegistryLoader stripes={connectedStripes}>
+        <RegistryLoader>
           <TitleManager>
             <HotKeys
               keyMap={connectedStripes.bindings}

@@ -1,8 +1,7 @@
 import React from 'react';
 import hoistNonReactStatics from 'hoist-non-react-statics';
-import { AppCtxMenuContext } from '@folio/stripes-shared-context';
 
-export { AppCtxMenuContext };
+export const AppCtxMenuContext = React.createContext();
 
 export function withAppCtxMenu(Component) {
   const WrappedComponent = (props) => {

@@ -2,7 +2,7 @@ import React, { Component, StrictMode } from 'react';
 import PropTypes from 'prop-types';
 import { okapi as okapiConfig, config } from 'stripes-config';
 import merge from 'lodash/merge';
-import { modulesInitialState } from '@folio/stripes-shared-context';
+import { modulesInitialState } from './ModulesContext';
 
 import AppConfigError from './components/AppConfigError';
 import connectErrorEpic from './connectErrorEpic';
