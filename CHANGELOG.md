@@ -28,6 +28,7 @@
 * Provide `<Suspense>` boundaries around modules and plugins. Refs STCOR-635.
 * `<ResizeContainer>` - clear cache and show all items before measuring changed items. Refs STCOR-1010.
 * Adjust "errors.default.error" message text for security fix. Fixes STCOR-703.
+* Sort tenants on PreLoginLanding. Refs STCOR-1015.
 
 ## [11.0.0](https://github.com/folio-org/stripes-core/tree/v11.0.0) (2025-02-24)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.2.0...v11.0.0)
