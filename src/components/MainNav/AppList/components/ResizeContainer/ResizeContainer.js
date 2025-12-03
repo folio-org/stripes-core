@@ -56,15 +56,18 @@ class ResizeContainer extends React.Component {
     const hasSetOfItemsChanged = !isEqual(itemIds, prevItemIds);
 
     // Only re-cache widths when the set of item IDs changes (not when their order changes).
-    // The set of items currently changes only when the component is mounted along with the initial items,
-    // and then the request returns the new items.
     // This allows items that don't fit within the container to be hidden when resized or clicked.
     if (hasSetOfItemsChanged) {
-      this.cacheWidthsOfItems();
+      // Clear cached widths and show all items temporarily to measure them accurately
+      this.cachedItemWidths = {};
+      this.setState({ hiddenItems: [] }, () => {
+        this.cacheWidthsOfItems();
+        this.updateHiddenItems();
+      });
     }
     // Update hidden items when the current app ID changes
     // to make sure that no items are hidden behind the current app label
-    if (currentAppId !== prevProps.currentAppId ||
+    else if (currentAppId !== prevProps.currentAppId ||
       !isEqual(items, prevProps.items)
     ) {
       this.updateHiddenItems();

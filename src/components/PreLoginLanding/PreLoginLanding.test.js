@@ -2,7 +2,7 @@ import { render, screen } from '@folio/jest-config-stripes/testing-library/react
 import { userEvent } from '@folio/jest-config-stripes/testing-library/user-event';
 
 import { useStripes } from '../../StripesContext';
-import PreLoginLanding from './PreLoginLanding';
+import PreLoginLanding, { sortedTenantOptions } from './PreLoginLanding';
 import OrganizationLogo from '../OrganizationLogo';
 
 jest.mock('react-router', () => ({
@@ -14,6 +14,22 @@ jest.mock('../../StripesContext');
 jest.mock('../OrganizationLogo', () => () => 'OrganizationLogo');
 
 describe('PreLoginLanding', () => {
+  describe('sortedTenantOptions', () => {
+    it('prefers sortableName to displayName to name', () => {
+      const tenantOptions = {
+        f: { name: 'f', clientId: 'f-client' },
+        g: { name: 'g', clientId: 'g-client', displayName: 'Greta' },
+        e: { name: 'e', clientId: 'e-client' },
+        b: { name: 'b', clientId: 'b-client', sortableName: 'Beatrice', displayName: 'Zoe (B)' },
+        a: { name: 'a', clientId: 'a-client', sortableName: 'Alice', displayName: 'Yusef (A)' },
+        c: { name: 'c', clientId: 'c-client', displayName: 'Charlene' },
+      };
+
+      const sorted = sortedTenantOptions(tenantOptions);
+      expect(sorted.map(i => i.label)).toEqual(['Yusef (A)', 'Zoe (B)', 'Charlene', 'e', 'f', 'Greta']);
+    });
+  });
+
   describe('clicking continue', () => {
     // this test looks fake, but it actually works because choosing
     // a tenant updates redux which updates okapi.tenant.

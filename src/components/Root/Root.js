@@ -22,6 +22,7 @@ import Stripes from '../../Stripes';
 import RootWithIntl from '../../RootWithIntl';
 import SystemSkeleton from '../SystemSkeleton';
 import { configureRtr } from './token-util';
+import { modulesInitialState } from '../../ModulesContext';
 
 import './Root.css';
 
@@ -90,14 +91,6 @@ class Root extends Component {
     return !this.withOkapi || nextProps.okapiReady || nextProps.serverDown;
   }
 
-  componentDidUpdate(prevProps) {
-    const { modules } = this.props;
-
-    if (prevProps.modules !== modules) {
-      this.updateQueryResourceStateKey();
-    }
-  }
-
   updateQueryResourceStateKey = () => {
     const { modules, history } = this.props;
     const appModule = getCurrentModule(modules, history.location);
@@ -105,6 +98,10 @@ class Root extends Component {
   }
 
   addReducer = (key, reducer) => {
+    if (this.queryResourceStateKey === null) {
+      this.updateQueryResourceStateKey();
+    }
+
     if (this.queryResourceStateKey === key) {
       const originalReducer = reducer;
       const initialQueryObject = queryString.parse(window.location.search);
@@ -136,7 +133,10 @@ class Root extends Component {
       return <div>Error: server is forbidden, unreachable or down. Clear the cookies? Use incognito mode? VPN issue?</div>;
     }
 
-    if (!translations) {
+    // Wait for modules to load before rendering the app, so when stripes-connect calls `addReducer`
+    // during module initialization, the `updateQueryResourceStateKey` can determine the current module
+    // and `addReducer` can initialize the query resource (`resources.query`) with URL params on page reload.
+    if (!translations || this.props.modules === modulesInitialState) {
       // We don't know the locale, so we use English as backup
       return (<SystemSkeleton />);
     }
