@@ -1,12 +1,12 @@
-import { useContext, createContext } from 'react';
+import React, { useContext } from 'react';
 
-export const modulesInitialValue = {
+export const modulesInitialState = {
   app: [],
   handler: [],
   plugin: [],
   settings: [],
 };
 
-export const ModulesContext = createContext(modulesInitialValue);
-
+export const ModulesContext = React.createContext(modulesInitialState);
+export default ModulesContext;
 export const useModules = () => useContext(ModulesContext);

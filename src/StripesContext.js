@@ -19,7 +19,7 @@ export function withStripes(WrappedComponent) {
     render() {
       return (
         <StripesContext.Consumer>
-          {stripes => <WrappedComponent {...this.props} stripes={this.props.stripes || stripes} />}
+          {stripes => <WrappedComponent {...this.props} stripes={this.props.stripes || stripes} /> }
         </StripesContext.Consumer>
       );
     }

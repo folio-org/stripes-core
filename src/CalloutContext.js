@@ -1,6 +1,6 @@
-import { useContext, createContext } from 'react';
+import React, { useContext } from 'react';
 
-export const CalloutContext = createContext();
+export const CalloutContext = React.createContext();
 
 export const useCallout = () => {
   return useContext(CalloutContext);
