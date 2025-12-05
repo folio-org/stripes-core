@@ -304,7 +304,7 @@ export async function loadTranslations(store, locale, defaultTranslations = {}) 
   // Japan language builds like ja_u, that incorrect. We need to be safe from that bug.
   const translationsUrl = translations[region] ? translations[region] :
     translations[loadedLocale] || translations[[parentLocale]];
-  const res = await fetch(translationsUrl)
+  await fetch(translationsUrl)
     .then((response) => {
       if (response.ok) {
         return response.json().then((stripesTranslations) => {
@@ -315,7 +315,6 @@ export async function loadTranslations(store, locale, defaultTranslations = {}) 
         throw new Error(`Could not load translations from ${translationsUrl}`);
       }
     });
-  return res;
 }
 
 /**

@@ -49,41 +49,39 @@ const AppRoutes = ({ modules, stripes }) => {
   }, [modules.app, stripes]);
 
   return cachedModules.map(({ ModuleComponent, connect, module, name, moduleStripes, stripes: propsStripes, displayName }) => (
-    <Suspense key="name" fallback={<LoadingView />}>
-      <Route
-        path={module.route}
-        key={module.route}
-        render={props => {
-          const data = { displayName, name };
+    <Route
+      path={module.route}
+      key={module.route}
+      render={props => {
+        const data = { displayName, name };
 
-          // allow SELECT_MODULE handlers to intervene
-          const handlerComponents = getEventHandlers(events.SELECT_MODULE, moduleStripes, modules.handler, data);
-          if (handlerComponents.length) {
-            return handlerComponents.map(Handler => (<Handler stripes={propsStripes} data={data} />));
-          }
+        // allow SELECT_MODULE handlers to intervene
+        const handlerComponents = getEventHandlers(events.SELECT_MODULE, moduleStripes, modules.handler, data);
+        if (handlerComponents.length) {
+          return handlerComponents.map(Handler => (<Handler stripes={propsStripes} data={data} />));
+        }
 
-          return (
-            <StripesContext.Provider value={moduleStripes}>
-              <ModuleHierarchyProvider module={module.module}>
-                <div id={`${name}-module-display`} data-module={module.module} data-version={module.version}>
-                  <RouteErrorBoundary
-                    escapeRoute={module.home ?? module.route}
-                    moduleName={displayName}
-                    stripes={moduleStripes}
-                  >
-                    <TitleManager page={displayName}>
-                      <Suspense fallback={<LoadingView />}>
-                        <ModuleComponent {...props} connect={connect} stripes={moduleStripes} actAs="app" />
-                      </Suspense>
-                    </TitleManager>
-                  </RouteErrorBoundary>
-                </div>
-              </ModuleHierarchyProvider>
-            </StripesContext.Provider>
-          );
-        }}
-      />
-    </Suspense>
+        return (
+          <StripesContext.Provider value={moduleStripes}>
+            <ModuleHierarchyProvider module={module.module}>
+              <div id={`${name}-module-display`} data-module={module.module} data-version={module.version}>
+                <RouteErrorBoundary
+                  escapeRoute={module.home ?? module.route}
+                  moduleName={displayName}
+                  stripes={moduleStripes}
+                >
+                  <TitleManager page={displayName}>
+                    <Suspense fallback={<LoadingView />}>
+                      <ModuleComponent {...props} connect={connect} stripes={moduleStripes} actAs="app" />
+                    </Suspense>
+                  </TitleManager>
+                </RouteErrorBoundary>
+              </div>
+            </ModuleHierarchyProvider>
+          </StripesContext.Provider>
+        );
+      }}
+    />
   ));
 };
 
