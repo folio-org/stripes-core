@@ -1,4 +1,4 @@
-import React, { useMemo, Suspense } from 'react';
+import { Suspense, useMemo } from 'react';
 import { Route } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
@@ -26,7 +26,6 @@ const AppRoutes = ({ modules, stripes }) => {
       const connect = connectFor(module.module, stripes.epics, stripes.logger);
 
       let ModuleComponent;
-
       try {
         ModuleComponent = connect(module.getModule());
       } catch (error) {

@@ -77,7 +77,7 @@ const loadTranslations = (stripes, module) => {
           return tx;
         });
       } else {
-        throw new Error(`Could not load translations for ${module}`);
+        throw new Error(`Could not load translations for ${module.name}`);
       }
     });
 };
@@ -93,7 +93,7 @@ const loadTranslations = (stripes, module) => {
  * @returns {void}
  */
 const loadIcons = (stripes, module) => {
-  if (module.icons && module.icons.length) {
+  if (module.icons?.length) {
     stripes.logger.log('core', `loading icons for ${module.module}`);
     module.icons.forEach(i => {
       stripes.logger.log('core', `  > ${i.name}`);
