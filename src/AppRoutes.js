@@ -12,7 +12,6 @@ import { getEventHandlers } from './handlerService';
 import { packageName } from './constants';
 import { ModuleHierarchyProvider } from './components';
 import events from './events';
-import loadRemoteComponent from './loadRemoteComponent';
 
 // Process and cache "app" type modules and render the routes
 const AppRoutes = ({ modules, stripes }) => {
@@ -24,13 +23,12 @@ const AppRoutes = ({ modules, stripes }) => {
       const perm = `module.${name}.enabled`;
       if (!stripes.hasPerm(perm)) return null;
 
-      const RemoteComponent = React.lazy(() => loadRemoteComponent(module.url, module.name));
       const connect = connectFor(module.module, stripes.epics, stripes.logger);
 
       let ModuleComponent;
 
       try {
-        ModuleComponent = connect(RemoteComponent);
+        ModuleComponent = connect(module.getModule());
       } catch (error) {
         console.error(error); // eslint-disable-line
         throw Error(error);
@@ -51,7 +49,7 @@ const AppRoutes = ({ modules, stripes }) => {
   }, [modules.app, stripes]);
 
   return cachedModules.map(({ ModuleComponent, connect, module, name, moduleStripes, stripes: propsStripes, displayName }) => (
-    <Suspense fallback={<LoadingView />}>
+    <Suspense key="name" fallback={<LoadingView />}>
       <Route
         path={module.route}
         key={module.route}

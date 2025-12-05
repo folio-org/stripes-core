@@ -16,7 +16,7 @@ import initialReducers from '../../initialReducers';
 import enhanceReducer from '../../enhanceReducer';
 import createApolloClient from '../../createApolloClient';
 import createReactQueryClient from '../../createReactQueryClient';
-import { addIcon, setSinglePlugin, setBindings, setIsAuthenticated, setOkapiToken, setTimezone, setCurrency, updateCurrentUser } from '../../okapiActions';
+import { addIcon, setSinglePlugin, setBindings, setIsAuthenticated, setOkapiToken, setTimezone, setCurrency, updateCurrentUser, setTranslations } from '../../okapiActions';
 import { loadTranslations, checkOkapiSession } from '../../loginServices';
 import { getQueryResourceKey, getCurrentModule } from '../../locationService';
 import Stripes from '../../Stripes';
@@ -174,6 +174,7 @@ class Root extends Component {
       addIcon: (key, icon) => { store.dispatch(addIcon(key, icon)); },
       setLocale: (localeValue) => { loadTranslations(store, localeValue, defaultTranslations); },
       setTimezone: (timezoneValue) => { store.dispatch(setTimezone(timezoneValue)); },
+      setTranslations: (nextTranslations) => { store.dispatch(setTranslations(nextTranslations)); },
       setCurrency: (currencyValue) => { store.dispatch(setCurrency(currencyValue)); },
       updateUser: (userValue) => { store.dispatch(updateCurrentUser(userValue)); },
       plugins: plugins || {},

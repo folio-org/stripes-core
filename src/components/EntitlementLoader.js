@@ -76,7 +76,7 @@ const loadTranslations = (stripes, module) => {
           const tx = { ...stripes.okapi.translations, ...translations };
 
           // stripes.store.dispatch(setTranslations(tx));
-
+          stripes.setTranslations(tx);
           // const tx = { ...stripes.okapi.translations, ...keyed };
           // console.log(`filters.status.active: ${tx['ui-users.filters.status.active']}`)
           stripes.setLocale(stripes.locale, tx);
@@ -192,14 +192,19 @@ const EntitlementLoader = ({ children }) => {
         // to an array shaped like [ { name: key1, ...app1 }, { name: key2, ...app2 } ...]
         const remotes = Object.entries(registry.remotes).map(([name, metadata]) => ({ name, ...metadata }));
 
-        // load module assets (translations, icons), then load modules...
-        const remotesWithLoadedAssets = await loadAllModuleAssets(stripes, remotes);
-        // load module code - this loads each module only once and up `getModule` so that it can be used sychronously.
-        const cachedModules = await preloadModules(remotesWithLoadedAssets);
+        if (remotes) {
+          // load module assets (translations, icons), then load modules...
+          const remotesWithLoadedAssets = await loadAllModuleAssets(stripes, remotes);
 
-        const combinedModules = { ...configModules, ...cachedModules };
+          if (remotesWithLoadedAssets[0]) {
+            // load module code - this loads each module only once and up `getModule` so that it can be used sychronously.
+            const cachedModules = await preloadModules(remotesWithLoadedAssets);
 
-        setModules(combinedModules);
+            const combinedModules = { ...configModules, ...cachedModules };
+
+            setModules(combinedModules);
+          }
+        }
       };
 
       fetchRegistry();

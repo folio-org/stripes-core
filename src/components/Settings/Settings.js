@@ -32,7 +32,6 @@ import AppIcon from '../AppIcon';
 import { packageName } from '../../constants';
 import RouteErrorBoundary from '../RouteErrorBoundary';
 import { ModuleHierarchyProvider } from '../ModuleHierarchy';
-import loadRemoteComponent from '../../loadRemoteComponent';
 
 import css from './Settings.css';
 
@@ -61,10 +60,9 @@ const Settings = ({ stripes }) => {
       .map((m) => {
         try {
           const connect = connectFor(m.module, stripes.epics, stripes.logger);
-          const RemoteComponent = React.lazy(() => loadRemoteComponent(m.url, m.name));
           return {
             module: m,
-            Component: connect(RemoteComponent),
+            Component: connect(m.getModule()),
             moduleStripes: stripes.clone({ connect }),
           };
         } catch (error) {
