@@ -16,7 +16,7 @@ import loadRemoteComponent from '../loadRemoteComponent';
  * @returns {app: [], plugin: [], settings: [], handler: []}
  */
 
-const preloadModules = async (remotes) => {
+const preloadModules = async (stripes, remotes) => {
   const modules = { app: [], plugin: [], settings: [], handler: [] };
 
   try {
@@ -26,15 +26,19 @@ const preloadModules = async (remotes) => {
       loaderArray.push(loadRemoteComponent(url, name)
         .then((module) => {
           remote.getModule = () => module.default;
-        }));
+        })
+        .catch((e) => { throw new Error(`Error loading code for remote module: ${name}: ${e}`); }));
     });
+
     await Promise.all(loaderArray);
+
+    // once the all the code for the modules are loaded, populate the `modules` structure based on `actsAs` keys.
     remotes.forEach((remote) => {
       const { actsAs } = remote;
       actsAs.forEach(type => modules[type].push({ ...remote }));
     });
   } catch (e) {
-    console.error('Error parsing modules from registry', e);
+    stripes.logger.log('core', `Error preloading modules from entitlement response: ${e}`);
   }
 
   return modules;
@@ -65,20 +69,10 @@ const loadTranslations = (stripes, module) => {
     .then((response) => {
       if (response.ok) {
         return response.json().then((translations) => {
-          // 1. translation entries look like "key: val"; we want "ui-${app}.key: val"
-          // 2. module.name is snake_case (I have no idea why); we want kebab-case
-          // const prefix = module.name.replace('folio_', 'ui-').replaceAll('_', '-');
-          // const keyed = [];
-          // Object.keys(translations).forEach(key => {
-          //   keyed[`${prefix}.${key}`] = translations[key];
-          // });
-
           const tx = { ...stripes.okapi.translations, ...translations };
 
-          // stripes.store.dispatch(setTranslations(tx));
           stripes.setTranslations(tx);
-          // const tx = { ...stripes.okapi.translations, ...keyed };
-          // console.log(`filters.status.active: ${tx['ui-users.filters.status.active']}`)
+
           stripes.setLocale(stripes.locale, tx);
           return tx;
         });
@@ -192,18 +186,19 @@ const EntitlementLoader = ({ children }) => {
         // to an array shaped like [ { name: key1, ...app1 }, { name: key2, ...app2 } ...]
         const remotes = Object.entries(registry.remotes).map(([name, metadata]) => ({ name, ...metadata }));
 
-        if (remotes) {
+        try {
           // load module assets (translations, icons), then load modules...
           const remotesWithLoadedAssets = await loadAllModuleAssets(stripes, remotes);
 
-          if (remotesWithLoadedAssets[0]) {
-            // load module code - this loads each module only once and up `getModule` so that it can be used sychronously.
-            const cachedModules = await preloadModules(remotesWithLoadedAssets);
+          // load module code - this loads each module only once and up `getModule` so that it can be used sychronously.
+          const cachedModules = await preloadModules(stripes, remotesWithLoadedAssets);
 
-            const combinedModules = { ...configModules, ...cachedModules };
+          const combinedModules = { ...configModules, ...cachedModules };
 
-            setModules(combinedModules);
-          }
+          setModules(combinedModules);
+        } catch (e) {
+          // eslint-disable-next-line no-console
+          stripes.logger.log('core', `error loading remote modules: ${e}`);
         }
       };
 
