@@ -8,12 +8,22 @@ import { useStripes } from '../../StripesContext';
 import { getOIDCRedirectUri } from '../../loginServices';
 import styles from './index.css';
 
+export function sortedTenantOptions(tenantOptions) {
+  return Object.values(tenantOptions)
+    .toSorted((a, b) => {
+      const aComparable = a.sortableName || a.displayName || a.name;
+      const bComparable = b.sortableName || b.displayName || b.name;
+      return aComparable.localeCompare(bComparable);
+    })
+    .map(i => ({ value: i.name, label: i.displayName ?? i.name }));
+}
+
 function PreLoginLanding({ onSelectTenant }) {
   const intl = useIntl();
   const { okapi, config: { tenantOptions = {} } } = useStripes();
 
   const redirectUri = getOIDCRedirectUri(okapi.tenant, okapi.clientId);
-  const options = Object.values(tenantOptions).map(i => ({ value: i.name, label: i.displayName ?? i.name }));
+  const options = sortedTenantOptions(tenantOptions);
 
   const getLoginUrl = () => {
     if (!okapi.tenant) return '';
@@ -37,7 +47,7 @@ function PreLoginLanding({ onSelectTenant }) {
   };
 
   return (
-    <main style={{ width:'100%' }}>
+    <main style={{ width: '100%' }}>
       <div>
         <div className={styles.container}>
           <Row center="xs">
@@ -51,7 +61,7 @@ function PreLoginLanding({ onSelectTenant }) {
                 label={intl.formatMessage({ id: 'stripes-core.tenantLibrary' })}
                 defaultValue=""
                 onChange={handleChangeTenant}
-                dataOptions={[...options, { value: '', label:intl.formatMessage({ id:'stripes-core.tenantChoose' }) }]}
+                dataOptions={[...options, { value: '', label: intl.formatMessage({ id: 'stripes-core.tenantChoose' }) }]}
               />
               <Button
                 buttonClass={styles.submitButton}
@@ -61,7 +71,7 @@ function PreLoginLanding({ onSelectTenant }) {
                 buttonStyle="primary"
                 fullWidth
               >
-                {intl.formatMessage({ id:'stripes-core.button.continue' })}
+                {intl.formatMessage({ id: 'stripes-core.button.continue' })}
               </Button>
             </Col>
           </Row>
