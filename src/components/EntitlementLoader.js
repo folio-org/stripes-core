@@ -4,7 +4,7 @@ import { okapi } from 'stripes-config';
 import { useStripes } from '../StripesContext';
 import { ModulesContext, useModules } from '../ModulesContext';
 import loadRemoteComponent from '../loadRemoteComponent';
-
+import { loadEntitlement } from './loadEntitlement';
 /**
  * preloadModules
  * Loads each module code and sets up its getModule function.
@@ -16,7 +16,7 @@ import loadRemoteComponent from '../loadRemoteComponent';
  * @returns {app: [], plugin: [], settings: [], handler: []}
  */
 
-const preloadModules = async (stripes, remotes) => {
+export const preloadModules = async (stripes, remotes) => {
   const modules = { app: [], plugin: [], settings: [], handler: [] };
 
   try {
@@ -116,7 +116,7 @@ const loadIcons = (stripes, module) => {
  * @param {object} module info read from the registry
  * @returns {} copy of the module, plus the key `displayName` containing its localized name
  */
-const loadModuleAssets = (stripes, module) => {
+export const loadModuleAssets = (stripes, module) => {
   // register icons
   loadIcons(stripes, module);
 
@@ -141,15 +141,16 @@ const loadModuleAssets = (stripes, module) => {
         }
       }
 
-      return {
+      const adjustedModule = {
         ...module,
         displayName: module.displayName ?
           newDisplayName : module.module,
       };
+      return adjustedModule;
     })
     .catch(e => {
       // eslint-disable-next-line no-console
-      console.error(e);
+      stripes.logger.log('core', `Error loading assets for ${module.name}: ${e.message || e}`);
     });
 };
 
@@ -180,7 +181,11 @@ const EntitlementLoader = ({ children }) => {
     if (okapi.entitlementUrl) {
       const fetchRegistry = async () => {
         // read the list of registered apps
-        const registry = await fetch(okapi.entitlementUrl).then((response) => response.json());
+        const registry = await loadEntitlement(okapi.entitlementUrl).then((response) => response.json()).catch((e) => {
+          const errorMsg = `Error fetching entitlement registry from ${okapi.entitlementUrl}: ${e}`;
+          stripes.logger.log('core', errorMsg);
+          throw new Error(errorMsg);
+        });
 
         // remap registry from an object shaped like { key1: app1, key2: app2, ...}
         // to an array shaped like [ { name: key1, ...app1 }, { name: key2, ...app2 } ...]
@@ -193,7 +198,8 @@ const EntitlementLoader = ({ children }) => {
           // load module code - this loads each module only once and up `getModule` so that it can be used sychronously.
           const cachedModules = await preloadModules(stripes, remotesWithLoadedAssets);
 
-          const combinedModules = { ...configModules, ...cachedModules };
+          const combinedModules = {};
+          Object.keys(configModules).forEach(key => { combinedModules[key] = [...configModules[key], ...cachedModules[key]]; });
 
           setModules(combinedModules);
         } catch (e) {
