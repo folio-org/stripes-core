@@ -4,7 +4,7 @@ import { withModules } from '../Modules';
 import { stripesShape } from '../../Stripes';
 import { ModuleHierarchyProvider } from '../ModuleHierarchy';
 
-import { getEventHandlers } from '../../handlerService';
+import { invokeEventHandlers } from '../../handlerService';
 
 class HandlerManager extends React.Component {
   static propTypes = {
@@ -39,7 +39,7 @@ class HandlerManager extends React.Component {
   updateComponents() {
     const { event, stripes, modules, data } = this.props;
 
-    const components = getEventHandlers(event, stripes, modules.handler, data);
+    const components = invokeEventHandlers(event, stripes, modules.handler, data);
     this.setState({ components });
   }
 
