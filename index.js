@@ -64,4 +64,5 @@ export { getOkapiSession, getTokenExpiry, setTokenExpiry } from './src/loginServ
 
 export { registerServiceWorker, unregisterServiceWorker } from './src/serviceWorkerRegistration';
 
-export { getEventHandler } from './src/handlerService';
+export { handleEvent as getEventHandler } from './src/handlerService';
+export { handleEvent } from './src/handlerService';
