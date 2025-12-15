@@ -77,34 +77,6 @@ describe('EntitlementLoader', () => {
     'appModule.label': 'App Module Display',
     'pluginModule.label': 'Plugin Module Display',
   };
-  // const mockLoadedModules = {
-  //   app: [
-  //     {
-  //       name: 'app-module',
-  //       url: 'http://localhost:3000/remoteEntry.js',
-  //       host: 'localhost',
-  //       port: 3000,
-  //       module: 'app-module',
-  //       displayName: 'App Module',
-  //       actsAs: ['app'],
-  //       getModule: jest.fn(() => ({ default: {} })),
-  //     },
-  //   ],
-  //   plugin: [
-  //     {
-  //       name: 'plugin-module',
-  //       url: 'http://localhost:3001/remoteEntry.js',
-  //       host: 'localhost',
-  //       port: 3001,
-  //       module: 'plugin-module',
-  //       displayName: 'Plugin Module',
-  //       actsAs: ['plugin'],
-  //       getModule: jest.fn(() => ({ default: {} })),
-  //     },
-  //   ],
-  //   settings: [],
-  //   handler: [],
-  // };
 
   const configModules = {
     app: [
@@ -427,6 +399,16 @@ describe('EntitlementLoader', () => {
       expect(global.fetch).toHaveBeenCalledWith(
         expect.stringContaining('en_US')
       );
+    });
+
+    it('loadEntitlement calls fetch', async () => {
+      const actualLoadEntitlement = jest.requireActual('./loadEntitlement').loadEntitlement;
+      global.fetch.mockResolvedValueOnce({
+        ok: true,
+        json: jest.fn().mockResolvedValueOnce(mockRegistry),
+      });
+      await actualLoadEntitlement(okapi.entitlementUrl);
+      expect(fetch).toHaveBeenCalledWith(okapi.entitlementUrl);
     });
   });
 });
