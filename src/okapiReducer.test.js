@@ -305,10 +305,10 @@ describe('okapiReducer', () => {
   });
 
   it('SET_TRANSLATIONS', () => {
-    const state = { translations: 'fred' };
-    const translations = 'george';
+    const state = { translations: { 'fred': 'Fredrick' } };
+    const translations = { 'george': 'George', 'fred': 'Freddy' };
     const o = okapiReducer(state, setTranslations(translations));
-    expect(o).toMatchObject({ translations });
+    expect(o).toMatchObject({ ...state.translations, ...translations });
   });
 
   it('CHECK_SSO', () => {
