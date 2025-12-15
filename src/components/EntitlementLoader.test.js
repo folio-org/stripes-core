@@ -59,6 +59,7 @@ describe('EntitlementLoader', () => {
         module: 'app-module',
         displayName: 'appModule.label',
         actsAs: ['app'],
+        icons: [{ name: 'icon', title: 'icon title' }],
       },
       'plugin-module': {
         url: 'http://localhost:3001/remoteEntry.js',
