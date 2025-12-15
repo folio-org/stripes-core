@@ -308,7 +308,7 @@ describe('okapiReducer', () => {
     const state = { translations: { 'fred': 'Fredrick' } };
     const translations = { 'george': 'George', 'fred': 'Freddy' };
     const o = okapiReducer(state, setTranslations(translations));
-    expect(o).toMatchObject({ ...state.translations, ...translations });
+    expect(o.translations).toMatchObject({ ...state.translations, ...translations });
   });
 
   it('CHECK_SSO', () => {
