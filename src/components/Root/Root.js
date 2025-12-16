@@ -9,7 +9,7 @@ import { QueryClientProvider } from 'react-query';
 import { ApolloProvider } from '@apollo/client';
 
 import { ErrorBoundary } from '@folio/stripes-components';
-import { metadata } from 'stripes-config';
+import { metadata, icons as configIcons } from 'stripes-config';
 
 import { ConnectContext } from '@folio/stripes-connect';
 import initialReducers from '../../initialReducers';
