@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { okapi } from 'stripes-config';
 import { useStripes } from '../StripesContext';
@@ -21,7 +21,7 @@ export const preloadModules = async (stripes, remotes) => {
 
   try {
     const loaderArray = [];
-    remotes.forEach(async remote => {
+    remotes.forEach(remote => {
       const { name, url } = remote;
       loaderArray.push(loadRemoteComponent(url, name)
         .then((module) => {
@@ -54,32 +54,26 @@ export const preloadModules = async (stripes, remotes) => {
  *
  * @returns {Promise}
  */
-const loadTranslations = (stripes, module) => {
+const loadTranslations = async (stripes, module) => {
   // construct a fully-qualified URL to load.
   //
   // locale strings include a name plus optional region and numbering system.
-  // we only care about the name and region. this stripes the numberin system
+  // we only care about the name and region. This strips off any numbering system
   // and converts from kebab-case (the IETF standard) to snake_case (which we
   // somehow adopted for our files in Lokalise).
   const locale = stripes.locale.split('-u-nu-')[0].replace('-', '_');
   const url = `${module.host}:${module.port}/translations/${locale}.json`;
   stripes.logger.log('core', `loading ${locale} translations for ${module.name}`);
 
-  return fetch(url)
-    .then((response) => {
-      if (response.ok) {
-        return response.json().then((translations) => {
-          const tx = { ...stripes.okapi.translations, ...translations };
-
-          stripes.setTranslations(tx);
-
-          stripes.setLocale(stripes.locale, tx);
-          return tx;
-        });
-      } else {
-        throw new Error(`Could not load translations for ${module.name}`);
-      }
-    });
+  const res = await fetch(url);
+  if (res.ok) {
+    const fetchedTranslations = await res.json();
+    const tx = { ...stripes.okapi.translations, ...fetchedTranslations };
+    stripes.setTranslations(tx);
+    return tx;
+  } else {
+    throw new Error(`Could not load translations for ${module.name}`);
+  }
 };
 
 /**
@@ -116,7 +110,7 @@ const loadIcons = (stripes, module) => {
  * @param {object} module info read from the registry
  * @returns {} copy of the module, plus the key `displayName` containing its localized name
  */
-export const loadModuleAssets = (stripes, module) => {
+export const loadModuleAssets = async (stripes, module) => {
   // register icons
   loadIcons(stripes, module);
 
@@ -124,34 +118,27 @@ export const loadModuleAssets = (stripes, module) => {
   // TODO loadSounds(stripes, module);
 
   // register translations
-  return loadTranslations(stripes, module)
-    .then((tx) => {
-      // tx[module.displayName] instead of formatMessage({ id: module.displayName})
-      // because updating store is async and we don't have the updated values quite yet...
-      //
-      // when translations are compiled, the value of the tx[module.displayName] is an array
-      // containing a single object with shape { type: 'messageFormatPattern', value: 'the actual string' }
-      // so we have to extract the value from that structure.
-      let newDisplayName;
-      if (module.displayName) {
-        if (typeof tx[module.displayName] === 'string') {
-          newDisplayName = tx[module.displayName];
-        } else {
-          newDisplayName = tx[module.displayName][0].value;
-        }
+  try {
+    const tx = await loadTranslations(stripes, module);
+    let newDisplayName;
+    if (module.displayName) {
+      if (typeof tx[module.displayName] === 'string') {
+        newDisplayName = tx[module.displayName];
+      } else {
+        newDisplayName = tx[module.displayName][0].value;
       }
+    }
 
-      const adjustedModule = {
-        ...module,
-        displayName: module.displayName ?
-          newDisplayName : module.module,
-      };
-      return adjustedModule;
-    })
-    .catch(e => {
-      // eslint-disable-next-line no-console
-      stripes.logger.log('core', `Error loading assets for ${module.name}: ${e.message || e}`);
-    });
+    const adjustedModule = {
+      ...module,
+      displayName: module.displayName ?
+        newDisplayName : module.module,
+    };
+    return adjustedModule;
+  } catch (e) {
+    stripes.logger.log('core', `Error loading assets for ${module.name}: ${e.message || e}`);
+    throw new Error(`Error loading assets for ${module.name}: ${e.message || e}`);
+  }
 };
 
 /**
@@ -163,6 +150,18 @@ export const loadModuleAssets = (stripes, module) => {
 const loadAllModuleAssets = async (stripes, remotes) => {
   return Promise.all(remotes.map((r) => loadModuleAssets(stripes, r)));
 };
+
+/**
+ * handleRemoteModuleError
+ * @param {*} stripes
+ * @param {*} errorMsg
+ * logs error to stripes and throws the error.
+ */
+const handleRemoteModuleError = (stripes, errorMsg) => {
+  stripes.logger.log('core', errorMsg);
+  throw new Error(errorMsg);
+};
+
 
 /**
  * Registry Loader
@@ -181,28 +180,36 @@ const EntitlementLoader = ({ children }) => {
     if (okapi.entitlementUrl) {
       const fetchRegistry = async () => {
         // read the list of registered apps
-        const registry = await loadEntitlement(okapi.entitlementUrl).then((response) => response.json()).catch((e) => {
-          const errorMsg = `Error fetching entitlement registry from ${okapi.entitlementUrl}: ${e}`;
-          stripes.logger.log('core', errorMsg);
-          throw new Error(errorMsg);
-        });
+        let registry;
+
+        try {
+          const res = await loadEntitlement(okapi.entitlementUrl);
+          registry = await res.json();
+        } catch (e) {
+          handleRemoteModuleError(stripes, `Error fetching entitlement registry from ${okapi.entitlementUrl}: ${e}`);
+        }
 
         // remap registry from an object shaped like { key1: app1, key2: app2, ...}
         // to an array shaped like [ { name: key1, ...app1 }, { name: key2, ...app2 } ...]
-        const remotes = Object.entries(registry.remotes).map(([name, metadata]) => ({ name, ...metadata }));
+        const remotes = Object.entries(registry?.remotes).map(([name, metadata]) => ({ name, ...metadata }));
+
+        let cachedModules = modulesInitialState;
+        let remotesWithLoadedAssets = [];
 
         try {
           // load module assets (translations, icons), then load modules...
-          const remotesWithLoadedAssets = await loadAllModuleAssets(stripes, remotes);
-
-          // load module code - this loads each module only once and up `getModule` so that it can be used sychronously.
-          const cachedModules = await preloadModules(stripes, remotesWithLoadedAssets);
-
-          setRemoteModules(cachedModules);
+          remotesWithLoadedAssets = await loadAllModuleAssets(stripes, remotes);
         } catch (e) {
-          // eslint-disable-next-line no-console
-          stripes.logger.log('core', `error loading remote modules: ${e}`);
+          handleRemoteModuleError(stripes, `Error loading remote module assets (icons, translations, sounds): ${e}`);
         }
+
+        try {
+          // load module code - this loads each module only once and up `getModule` so that it can be used sychronously.
+          cachedModules = await preloadModules(stripes, remotesWithLoadedAssets);
+        } catch (e) {
+          handleRemoteModuleError(stripes, `error loading remote modules: ${e}`);
+        }
+        setRemoteModules(cachedModules);
       };
 
       fetchRegistry();
@@ -211,12 +218,15 @@ const EntitlementLoader = ({ children }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const combinedModules = {};
-  Object.keys(configModules).forEach(key => { combinedModules[key] = [...configModules[key], ...remoteModules[key]]; });
+  const combinedModules = useMemo(() => {
+    const baseModules = {};
+    Object.keys(modulesInitialState).forEach(key => { baseModules[key] = [...configModules[key], ...remoteModules[key]]; });
+    return baseModules;
+  }, [configModules, remoteModules]);
 
   return (
     <ModulesContext.Provider value={combinedModules}>
-      {combinedModules ? children : null}
+      {children}
     </ModulesContext.Provider>
   );
 };
