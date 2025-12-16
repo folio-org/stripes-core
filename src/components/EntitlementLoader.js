@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { okapi } from 'stripes-config';
 import { useStripes } from '../StripesContext';
-import { ModulesContext, useModules } from '../ModulesContext';
+import { ModulesContext, useModules, modulesInitialState } from '../ModulesContext';
 import loadRemoteComponent from '../loadRemoteComponent';
 import { loadEntitlement } from './loadEntitlement';
 /**
@@ -173,7 +173,7 @@ const loadAllModuleAssets = async (stripes, remotes) => {
 const EntitlementLoader = ({ children }) => {
   const stripes = useStripes();
   const configModules = useModules();
-  const [modules, setModules] = useState(configModules);
+  const [remoteModules, setRemoteModules] = useState(modulesInitialState);
 
   // if platform is configured for module federation, read the list of registered apps from <fill in source of truth>
   // localstorage, okapi, direct call to registry endpoint?
@@ -198,10 +198,7 @@ const EntitlementLoader = ({ children }) => {
           // load module code - this loads each module only once and up `getModule` so that it can be used sychronously.
           const cachedModules = await preloadModules(stripes, remotesWithLoadedAssets);
 
-          const combinedModules = {};
-          Object.keys(configModules).forEach(key => { combinedModules[key] = [...configModules[key], ...cachedModules[key]]; });
-
-          setModules(combinedModules);
+          setRemoteModules(cachedModules);
         } catch (e) {
           // eslint-disable-next-line no-console
           stripes.logger.log('core', `error loading remote modules: ${e}`);
@@ -214,9 +211,12 @@ const EntitlementLoader = ({ children }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const combinedModules = {};
+  Object.keys(configModules).forEach(key => { combinedModules[key] = [...configModules[key], ...remoteModules[key]]; });
+
   return (
-    <ModulesContext.Provider value={modules}>
-      {modules ? children : null}
+    <ModulesContext.Provider value={combinedModules}>
+      {combinedModules ? children : null}
     </ModulesContext.Provider>
   );
 };
