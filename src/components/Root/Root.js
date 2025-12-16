@@ -170,7 +170,7 @@ class Root extends Component {
       timezone,
       currency,
       metadata,
-      icons,
+      icons: { ...configIcons, ...icons },
       addIcon: (key, icon) => { store.dispatch(addIcon(key, icon)); },
       setLocale: (localeValue) => { loadTranslations(store, localeValue, defaultTranslations); },
       setTimezone: (timezoneValue) => { store.dispatch(setTimezone(timezoneValue)); },
