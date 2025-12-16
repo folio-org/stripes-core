@@ -3,7 +3,7 @@ import { expect } from 'chai';
 import startMirage from '../network/start';
 import loadRemoteComponent from '../../../src/loadRemoteComponent';
 
-describe.only('loadRemoteComponent', () => {
+describe('loadRemoteComponent', () => {
   let server;
   const mockRemoteUrl = 'http://example.com/testRemote/remoteEntry.js';
   const mockErrorUrl = 'http://example.com/nonexistent/remoteEntry.js';
