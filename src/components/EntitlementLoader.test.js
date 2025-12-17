@@ -85,6 +85,8 @@ describe('EntitlementLoader', () => {
     },
   };
 
+  const mockRemotes = Object.entries(mockRegistry?.remotes).map(([name, metadata]) => ({ name, ...metadata }));
+
   const translations = {
     'testModule.label': 'Test Module Display',
     'appModule.label': 'App Module Display',
@@ -132,10 +134,7 @@ describe('EntitlementLoader', () => {
 
   beforeEach(() => {
     global.fetch = jest.fn();
-    loadEntitlement.mockResolvedValueOnce({
-      ok: true,
-      json: jest.fn().mockResolvedValue(mockRegistry)
-    });
+    loadEntitlement.mockResolvedValueOnce(mockRemotes);
     loadRemoteComponent.mockResolvedValue({ default: {} });
   });
 
@@ -409,8 +408,9 @@ describe('EntitlementLoader', () => {
         ok: true,
         json: jest.fn().mockResolvedValueOnce(mockRegistry),
       });
-      await actualLoadEntitlement(okapi.entitlementUrl);
+      const remotes = await actualLoadEntitlement(okapi.entitlementUrl);
       expect(fetch).toHaveBeenCalledWith(okapi.entitlementUrl);
+      expect(remotes).toEqual(mockRemotes);
     });
   });
 });

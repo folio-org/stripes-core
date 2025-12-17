@@ -180,18 +180,12 @@ const EntitlementLoader = ({ children }) => {
     if (okapi.entitlementUrl) {
       const fetchRegistry = async () => {
         // read the list of registered apps
-        let registry;
-
+        let remotes;
         try {
-          const res = await loadEntitlement(okapi.entitlementUrl);
-          registry = await res.json();
+          remotes = await loadEntitlement(okapi.entitlementUrl);
         } catch (e) {
           handleRemoteModuleError(stripes, `Error fetching entitlement registry from ${okapi.entitlementUrl}: ${e}`);
         }
-
-        // remap registry from an object shaped like { key1: app1, key2: app2, ...}
-        // to an array shaped like [ { name: key1, ...app1 }, { name: key2, ...app2 } ...]
-        const remotes = Object.entries(registry?.remotes).map(([name, metadata]) => ({ name, ...metadata }));
 
         let cachedModules = modulesInitialState;
         let remotesWithLoadedAssets = [];
