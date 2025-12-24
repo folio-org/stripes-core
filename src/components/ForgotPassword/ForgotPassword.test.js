@@ -46,7 +46,7 @@ describe('ForgotPasswordForm', () => {
     render(<ForgotPasswordForm onSubmit={jest.fn()} />);
 
     expect(screen.getByText('stripes-core.label.forgotPassword'));
-    expect(screen.getByText('stripes-core.placeholder.forgotPassword'));
+    expect(screen.getByText('stripes-core.placeholder.field.forgotPassword'));
     expect(screen.getByText('stripes-core.button.continue'));
   });
 
