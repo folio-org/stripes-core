@@ -1,6 +1,7 @@
 # Change history for stripes-core
 
-## 11.0.13 IN-PROGRESS
+## [11.0.13](https://github.com/folio-org/stripes-core/tree/v11.0.13) (2025-12-24)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v11.0.12...v11.0.13)
 
 * Update the label for the ForgotPassword field, add placeholders in ForgotPassword and ForgotUserName fields. Refs STCOR-1020.
 
