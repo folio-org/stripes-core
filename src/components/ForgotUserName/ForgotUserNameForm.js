@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { Field, Form } from 'react-final-form';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import { branding } from 'stripes-config';
 
 import {
@@ -22,6 +22,8 @@ import styles from '../Login/Login.css';
 
 const ForgotUserNameForm = ({ errors = [], isValid, onSubmit }) => {
   const { okapi } = useStripes();
+  const intl = useIntl();
+  const forgotUsernamePlaceholder = intl.formatMessage({ id: 'stripes-core.placeholder.forgotUsername' });
 
   return (
     <Form
@@ -62,7 +64,7 @@ const ForgotUserNameForm = ({ errors = [], isValid, onSubmit }) => {
                         >
                           <Col xs={6}>
                             <FieldLabel htmlFor="input-email-or-phone">
-                              <FormattedMessage id="stripes-core.placeholder.forgotUsername" />
+                              {forgotUsernamePlaceholder}
                             </FieldLabel>
                           </Col>
                         </Row>
@@ -83,6 +85,7 @@ const ForgotUserNameForm = ({ errors = [], isValid, onSubmit }) => {
                           autoCapitalize="none"
                           required
                           value=""
+                          placeholder={forgotUsernamePlaceholder}
                         />
                       </Col>
                     </Row>

@@ -1,5 +1,9 @@
 # Change history for stripes-core
 
+## 11.0.13 IN-PROGRESS
+
+* Update the label for the ForgotPassword field, add placeholders in ForgotPassword and ForgotUserName fields. Refs STCOR-1020.
+
 ## [11.0.12](https://github.com/folio-org/stripes-core/tree/v11.0.12) (2025-11-06)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v11.0.11...v11.0.12)
 
@@ -29,7 +33,7 @@
 ## [11.0.7](https://github.com/folio-org/stripes-core/tree/v11.0.7) (2025-05-12)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v11.0.6...v11.0.7)
 
-* When a session-restart request fails, trap errors and purge both redux and browser-storage. Refs STCOR-970. 
+* When a session-restart request fails, trap errors and purge both redux and browser-storage. Refs STCOR-970.
 
 ## [11.0.6](https://github.com/folio-org/stripes-core/tree/v11.0.6) (2025-04-30)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v11.0.5...v11.0.6)
