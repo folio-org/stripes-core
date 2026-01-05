@@ -1,5 +1,9 @@
 # Change history for stripes-core
 
+## IN PROGRESS
+
+* Increase default timeout to 60 seconds in useOkapiKy.js to match the value in Kong. Refs STCOR-1022.
+
 ## [11.0.13](https://github.com/folio-org/stripes-core/tree/v11.0.13) (2025-12-24)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v11.0.12...v11.0.13)
 
@@ -61,6 +65,7 @@
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v11.0.1...v11.0.2)
 
 * CSS Support for printing of results lists content. Refs STCOR-956.
+<<<<<<< HEAD
 
 ## [11.0.1](https://github.com/folio-org/stripes-core/tree/v11.0.1) (2025-03-12)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v11.0.0...v11.0.1)
