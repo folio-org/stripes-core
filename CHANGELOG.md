@@ -31,6 +31,7 @@
 * Sort tenants on PreLoginLanding. Refs STCOR-1015.
 * Given a bundle with async module-loaders, pre-load modules to provide sync access during render. Refs STCOR-1014, STRIPES-999.
 * Update the label for the ForgotPassword field, add placeholders in ForgotPassword and ForgotUserName fields. Refs STCOR-1020.
+* Load modules in parallel for greater efficiency. Refs STCOR-1021.
 * Increase default timeout to 60 seconds in useOkapiKy.js to match the value in Kong. Refs STCOR-1022.
 
 ## [11.0.0](https://github.com/folio-org/stripes-core/tree/v11.0.0) (2025-02-24)
