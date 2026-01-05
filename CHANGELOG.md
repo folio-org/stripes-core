@@ -1,6 +1,7 @@
 # Change history for stripes-core
 
-## IN PROGRESS
+## [11.0.14](https://github.com/folio-org/stripes-core/tree/v11.0.14) (2026-01-05)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v11.0.13...v11.0.14)
 
 * Increase default timeout to 60 seconds in useOkapiKy.js to match the value in Kong. Refs STCOR-1022.
 
