@@ -33,6 +33,7 @@
 * Update the label for the ForgotPassword field, add placeholders in ForgotPassword and ForgotUserName fields. Refs STCOR-1020.
 * Load modules in parallel for greater efficiency. Refs STCOR-1021.
 * Increase default timeout to 60 seconds in useOkapiKy.js to match the value in Kong. Refs STCOR-1022.
+* Add `tr` Türkçe (Turkish) locale. Refs STCOR-1026.
 
 ## [11.0.0](https://github.com/folio-org/stripes-core/tree/v11.0.0) (2025-02-24)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.2.0...v11.0.0)
