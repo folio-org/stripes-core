@@ -1,4 +1,5 @@
 import {
+  addIcon,
   checkSSO,
   clearCurrentUser,
   clearOkapiToken,
@@ -305,10 +306,10 @@ describe('okapiReducer', () => {
   });
 
   it('SET_TRANSLATIONS', () => {
-    const state = { translations: 'fred' };
-    const translations = 'george';
+    const state = { translations: { 'fred': 'Fredrick' } };
+    const translations = { 'george': 'George', 'fred': 'Freddy' };
     const o = okapiReducer(state, setTranslations(translations));
-    expect(o).toMatchObject({ translations });
+    expect(o.translations).toMatchObject({ ...state.translations, ...translations });
   });
 
   it('CHECK_SSO', () => {
@@ -323,6 +324,20 @@ describe('okapiReducer', () => {
     const okapiReady = true;
     const o = okapiReducer(state, setOkapiReady());
     expect(o).toMatchObject({ okapiReady });
+  });
+
+  it('ADD_ICON', () => {
+    const state = { icons: { 'iconKey': 'icon1' } };
+    const newIcon = { name: 'icon2' };
+    const o = okapiReducer(state, addIcon('iconKey2', newIcon));
+    expect(o.icons).toMatchObject({ ...state.icons, 'iconKey2': newIcon });
+  });
+
+  it('ADD_ICON, key present', () => {
+    const state = { icons: { 'iconKey': { name: 'icon1' } } };
+    const newIcon = { new: 'icon2' };
+    const o = okapiReducer(state, addIcon('iconKey', newIcon));
+    expect(o.icons).toMatchObject({ 'iconKey': { new: 'icon2', name: 'icon1' } });
   });
 
   it('SERVER_DOWN', () => {
