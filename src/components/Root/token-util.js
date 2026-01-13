@@ -113,6 +113,38 @@ export const isAuthenticationRequest = (resource, oUrl) => {
 };
 
 /**
+ * isValidSessionCheckRequest
+ * Return true if the given resource is a session check request (_self endpoints).
+ * These requests go through the RTR queue but trigger rotateCallback on success
+ * to ensure RTR is scheduled for the tab.
+ *
+ * @param {*} resource one of string, URL, Request
+ * @param {string} oUrl FOLIO API origin
+ * @returns boolean
+ */
+export const isValidSessionCheckRequest = (resource, oUrl) => {
+  const isSessionCheckResource = (string) => {
+    const sessionCheckEndpoints = [
+      '/bl-users/_self',
+      '/users-keycloak/_self',
+    ];
+
+    return sessionCheckEndpoints.some(i => string.startsWith(`${oUrl}${i}`));
+  };
+
+  try {
+    return resourceMapper(resource, isSessionCheckResource);
+  } catch (rme) {
+    if (rme instanceof UnexpectedResourceError) {
+      console.warn(rme.message, resource); // eslint-disable-line no-console
+      return false;
+    }
+
+    throw rme;
+  }
+};
+
+/**
  * isLogoutRequest
  * Return true if the given resource is a logout request; false otherwise.
  *

@@ -55,6 +55,7 @@ import {
   isAuthenticationRequest,
   isFolioApiRequest,
   isLogoutRequest,
+  isValidSessionCheckRequest,
   rtr,
 } from './token-util';
 import {
@@ -88,25 +89,11 @@ export class FFetch {
     this.rtrConfig = rtrConfig;
     this.okapi = okapi;
     this.focusEventSet = false;
+    this.rtrScheduled = false; // Track if RTR has been scheduled in this tab
     this.bc = new BroadcastChannel(RTR_ACTIVE_WINDOW_MSG_CHANNEL);
     this.setWindowIdMessageEvent();
     this.setDocumentFocusHandler();
-    this.initializeRtrSchedule();
   }
-
-  /**
-   * initializeRtrSchedule
-   * On FFetch initialization (new tab/window), check if there's valid cached
-   * token expiry data and schedule RTR accordingly. This ensures RTR is
-   * scheduled once per tab.
-   */
-  initializeRtrSchedule = async () => {
-    const expiry = await getTokenExpiry();
-    if (expiry?.atExpires > Date.now()) {
-      this.logger.log('rtr', 'initializing RTR schedule from cached token expiry');
-      this.rotateCallback();
-    }
-  };
 
   /**
    * save a reference to fetch, and then reassign the global :scream:
@@ -366,6 +353,28 @@ export class FFetch {
             // kill me softly: return an empty response to allow graceful failure
             console.error('-- (rtr-sw) logout failure', err); // eslint-disable-line no-console
             return Promise.resolve(new Response(JSON.stringify({})));
+          });
+      }
+
+      // Session check requests (_self endpoints) go through the RTR queue
+      // to wait for any in-progress rotation. On the first successful _self
+      // request, trigger rotateCallback to ensure RTR is scheduled for this tab.
+      if (isValidSessionCheckRequest(resource, this.okapi.url)) {
+        this.logger.log('rtr', 'session check request', resource);
+        return getPromise(this.logger)
+          .then(() => {
+            this.logger.log('rtrv', 'post-rtr session check fetch', resource);
+            return this.nativeFetch.apply(global, [resource, options && { ...options, ...OKAPI_FETCH_OPTIONS }]);
+          })
+          .then(res => {
+            // On first successful session check, trigger rotateCallback to ensure
+            // RTR is scheduled (only once per tab)
+            if (res.ok && !this.rtrScheduled) {
+              this.logger.log('rtr', 'session check success, scheduling RTR (first time)');
+              this.rotateCallback();
+              this.rtrScheduled = true;
+            }
+            return res;
           });
       }
 

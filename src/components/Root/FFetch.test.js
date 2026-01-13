@@ -104,15 +104,17 @@ describe('FFetch class', () => {
     });
   });
 
-  describe('initializeRtrSchedule', () => {
-    it('schedules RTR when valid cached token expiry exists', async () => {
+  describe('session check requests (_self endpoints)', () => {
+    it('schedules RTR on first successful _self request', async () => {
       const futureExpiry = Date.now() + (10 * 60 * 1000);
-      getTokenExpiry.mockResolvedValueOnce({
+      getTokenExpiry.mockResolvedValue({
         atExpires: futureExpiry,
         rtExpires: futureExpiry + (10 * 60 * 1000),
       });
 
-      const _ = new FFetch({
+      mockFetch.mockResolvedValueOnce({ ok: true });
+
+      const testFfetch = new FFetch({
         ...commonArgs,
         logger: { log },
         okapi: {
@@ -120,22 +122,24 @@ describe('FFetch class', () => {
           tenant: 'okapiTenant'
         }
       });
+      testFfetch.replaceFetch();
 
-      // Wait for async initialization to complete
-      await new Promise(resolve => setTimeout(resolve, 50));
+      await global.fetch('okapiUrl/bl-users/_self', { testOption: 'test' });
 
       // Verify that store.dispatch was called (indicating RTR was scheduled)
       expect(commonArgs.store.dispatch).toHaveBeenCalled();
     });
 
-    it('does not schedule RTR when cached token expiry is expired', async () => {
-      const pastExpiry = Date.now() - (10 * 60 * 1000);
-      getTokenExpiry.mockResolvedValueOnce({
-        atExpires: pastExpiry,
-        rtExpires: pastExpiry - (10 * 60 * 1000),
+    it('does not schedule RTR on subsequent _self requests', async () => {
+      const futureExpiry = Date.now() + (10 * 60 * 1000);
+      getTokenExpiry.mockResolvedValue({
+        atExpires: futureExpiry,
+        rtExpires: futureExpiry + (10 * 60 * 1000),
       });
 
-      const _ = new FFetch({
+      mockFetch.mockResolvedValue({ ok: true });
+
+      const testFfetch = new FFetch({
         ...commonArgs,
         logger: { log },
         okapi: {
@@ -143,17 +147,24 @@ describe('FFetch class', () => {
           tenant: 'okapiTenant'
         }
       });
+      testFfetch.replaceFetch();
 
-      // Wait for async initialization to complete
-      await new Promise(resolve => setTimeout(resolve, 50));
+      // First _self request
+      await global.fetch('okapiUrl/users-keycloak/_self', { testOption: 'test' });
+      const callCountAfterFirst = commonArgs.store.dispatch.mock.calls.length;
 
-      expect(commonArgs.store.dispatch).not.toHaveBeenCalled();
+      // Second _self request
+      await global.fetch('okapiUrl/users-keycloak/_self', { testOption: 'test' });
+      const callCountAfterSecond = commonArgs.store.dispatch.mock.calls.length;
+
+      // Dispatch count should not increase after second request
+      expect(callCountAfterSecond).toBe(callCountAfterFirst);
     });
 
-    it('does not schedule RTR when no cached token expiry exists', async () => {
-      getTokenExpiry.mockResolvedValueOnce({});
+    it('does not schedule RTR on failed _self request', async () => {
+      mockFetch.mockResolvedValueOnce({ ok: false });
 
-      const _ = new FFetch({
+      const testFfetch = new FFetch({
         ...commonArgs,
         logger: { log },
         okapi: {
@@ -161,10 +172,11 @@ describe('FFetch class', () => {
           tenant: 'okapiTenant'
         }
       });
+      testFfetch.replaceFetch();
 
-      // Wait for async initialization to complete
-      await new Promise(resolve => setTimeout(resolve, 50));
+      await global.fetch('okapiUrl/bl-users/_self', { testOption: 'test' });
 
+      // Verify that store.dispatch was NOT called
       expect(commonArgs.store.dispatch).not.toHaveBeenCalled();
     });
   });

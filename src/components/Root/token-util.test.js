@@ -6,6 +6,7 @@ import {
   isFolioApiRequest,
   isLogoutRequest,
   isRotating,
+  isValidSessionCheckRequest,
   resourceMapper,
   rtr,
   RTR_IS_ROTATING,
@@ -64,6 +65,29 @@ describe('isAuthenticationRequest', () => {
   it('rejects invalid input', () => {
     const path = { wat: '/if/you/need/to/go/to/church/is/that/a/critical/mass' };
     expect(isAuthenticationRequest(path, '')).toBe(false);
+  });
+});
+
+describe('isValidSessionCheckRequest', () => {
+  it('accepts _self endpoints', () => {
+    expect(isValidSessionCheckRequest('/bl-users/_self', '')).toBe(true);
+    expect(isValidSessionCheckRequest('/users-keycloak/_self', '')).toBe(true);
+    expect(isValidSessionCheckRequest('/users-keycloak/_self?expandPermissions=true', '')).toBe(true);
+  });
+
+  it('rejects login endpoints', () => {
+    expect(isValidSessionCheckRequest('/authn/token', '')).toBe(false);
+    expect(isValidSessionCheckRequest('/bl-users/login-with-expiry', '')).toBe(false);
+  });
+
+  it('rejects unknown endpoints', () => {
+    const path = '/maybe/oppie/would/have/been/happier/in/malibu';
+    expect(isValidSessionCheckRequest(path, '')).toBe(false);
+  });
+
+  it('rejects invalid input', () => {
+    const path = { wat: '/if/you/need/to/go/to/church/is/that/a/critical/mass' };
+    expect(isValidSessionCheckRequest(path, '')).toBe(false);
   });
 });
 
