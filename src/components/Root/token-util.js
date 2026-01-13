@@ -76,8 +76,15 @@ export const resourceMapper = (resource, fx) => {
 
 /**
  * isAuthenticationRequest
- * Return true if the given resource is an authentication request,
- * i.e. a request that should kick off the RTR cycle.
+ * Return true if the given resource is an authentication request that should
+ * bypass the RTR queue. This only includes actual login requests.
+ *
+ * IMPORTANT: _self endpoints are NOT included here because they should go
+ * through the normal RTR queue. When the _self request is in-flight and
+ * RTR occurs, request that bypass the queue will fail with 401 because
+ * their AT cookie becomes invalid when RTR completes. By going through
+ * the queue (getPromise), _self requests will wait for RTR to complete
+ * and then proceed with the fresh token.
  *
  * @param {*} resource one of string, URL, Request
  * @param {string} oUrl FOLIO API origin
@@ -88,8 +95,6 @@ export const isAuthenticationRequest = (resource, oUrl) => {
     const permissible = [
       '/authn/token',
       '/bl-users/login-with-expiry',
-      '/bl-users/_self',
-      '/users-keycloak/_self',
     ];
 
     return !!permissible.find(i => string.startsWith(`${oUrl}${i}`));

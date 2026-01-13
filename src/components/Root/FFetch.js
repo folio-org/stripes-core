@@ -309,8 +309,11 @@ export class FFetch {
     if (isFolioApiRequest(resource, this.okapi.url)) {
       this.logger.log('rtrv', 'will fetch', resource);
 
-      // on authentication, grab the response to kick of the rotation cycle,
-      // then return the response
+      // on authentication (login), grab the response to kick off the rotation cycle,
+      // then return the response.
+      // Note: _self endpoints are NOT included here - they go through the normal
+      // RTR queue (getPromise) so they wait for any in-progress rotation to complete.
+      // This prevents 401 errors for _self requests in-flight during RTR.
       if (isAuthenticationRequest(resource, this.okapi.url)) {
         this.logger.log('rtr', 'authn request', resource);
         return this.nativeFetch.apply(global, [resource, options && { ...options, ...OKAPI_FETCH_OPTIONS }])

@@ -241,7 +241,8 @@ describe('FFetch class', () => {
       testFfetch.replaceFetch();
       testFfetch.replaceXMLHttpRequest();
 
-      const response = await global.fetch('okapiUrl/bl-users/_self', { testOption: 'test' });
+      // Use a login endpoint (not _self) since only login endpoints trigger rotateCallback
+      const response = await global.fetch('okapiUrl/bl-users/login-with-expiry', { testOption: 'test' });
       // why this extra await/setTimeout? Because RTR happens in an un-awaited
       // promise in a separate thread fired off by setTimout, and we need to
       // give it the chance to complete. on the one hand, this feels super
@@ -304,7 +305,8 @@ describe('FFetch class', () => {
       testFfetch.replaceFetch();
       testFfetch.replaceXMLHttpRequest();
 
-      const response = await global.fetch('okapiUrl/bl-users/_self', { testOption: 'test' });
+      // Use a login endpoint (not _self) since only login endpoints trigger rotateCallback
+      const response = await global.fetch('okapiUrl/bl-users/login-with-expiry', { testOption: 'test' });
       // why this extra await/setTimeout? Because RTR happens in an un-awaited
       // promise in a separate thread fired off by setTimout, and we need to
       // give it the chance to complete. on the one hand, this feels super
@@ -349,7 +351,8 @@ describe('FFetch class', () => {
       testFfetch.replaceFetch();
       testFfetch.replaceXMLHttpRequest();
 
-      const response = await global.fetch('okapiUrl/bl-users/_self', { testOption: 'test' });
+      // Use a login endpoint (not _self) since only login endpoints trigger rotateCallback
+      const response = await global.fetch('okapiUrl/bl-users/login-with-expiry', { testOption: 'test' });
       // why this extra await/setTimeout? Because RTR happens in an un-awaited
       // promise in a separate thread fired off by setTimout, and we need to
       // give it the chance to complete. on the one hand, this feels super
@@ -392,7 +395,8 @@ describe('FFetch class', () => {
       testFfetch.replaceFetch();
       testFfetch.replaceXMLHttpRequest();
 
-      const response = await global.fetch('okapiUrl/bl-users/_self', { testOption: 'test' });
+      // Use a login endpoint (not _self) since only login endpoints trigger rotateCallback
+      const response = await global.fetch('okapiUrl/bl-users/login-with-expiry', { testOption: 'test' });
       expect(mockFetch.mock.calls).toHaveLength(1);
       expect(cloneJson).not.toHaveBeenCalled();
     });
@@ -442,7 +446,8 @@ describe('FFetch class', () => {
       testFfetch.replaceFetch();
       testFfetch.replaceXMLHttpRequest();
 
-      const response = await global.fetch('okapiUrl/bl-users/_self', { testOption: 'test' });
+      // Use a login endpoint (not _self) since only login endpoints trigger rotateCallback
+      const response = await global.fetch('okapiUrl/bl-users/login-with-expiry', { testOption: 'test' });
       // why this extra await/setTimeout? Because RTR happens in an un-awaited
       // promise in a separate thread fired off by setTimout, and we need to
       // give it the chance to complete. on the one hand, this feels super

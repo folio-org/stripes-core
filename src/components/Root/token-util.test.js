@@ -41,10 +41,18 @@ describe('isFolioApiRequest', () => {
 
 
 describe('isAuthenticationRequest', () => {
-  it('accepts authn endpoints', () => {
-    const path = '/bl-users/_self';
+  it('accepts login endpoints', () => {
+    expect(isAuthenticationRequest('/authn/token', '')).toBe(true);
+    expect(isAuthenticationRequest('/bl-users/login-with-expiry', '')).toBe(true);
+  });
 
-    expect(isAuthenticationRequest(path, '')).toBe(true);
+  it('rejects _self endpoints (should go through RTR queue)', () => {
+    // _self endpoints are NOT authentication requests - they should go through
+    // the normal RTR queue so they wait for any in-progress rotation to complete.
+    // This prevents 401 errors when the _self request is in-flight during RTR.
+    expect(isAuthenticationRequest('/bl-users/_self', '')).toBe(false);
+    expect(isAuthenticationRequest('/users-keycloak/_self', '')).toBe(false);
+    expect(isAuthenticationRequest('/users-keycloak/_self?expandPermissions=true', '')).toBe(false);
   });
 
   it('rejects unknown endpoints', () => {
