@@ -38,8 +38,21 @@ const mockBroadcastChannel = {
   removeEventListener: jest.fn(),
 };
 
+const commonArgs = {
+  store: {
+    dispatch: jest.fn(),
+    getState: () => ({
+      okapi: {},
+    }),
+  },
+  rtrConfig: {
+    fixedLengthSessionWarningTTL: '1m',
+  },
+};
+
 describe('FFetch class', () => {
   beforeEach(() => {
+    jest.clearAllMocks();
     global.BroadcastChannel = jest.fn(() => mockBroadcastChannel);
     global.fetch = mockFetch;
     getTokenExpiry.mockResolvedValue({
@@ -56,6 +69,7 @@ describe('FFetch class', () => {
     it('calls native fetch once', async () => {
       mockFetch.mockResolvedValueOnce('non-okapi-success');
       const testFfetch = new FFetch({
+        ...commonArgs,
         logger: { log },
         okapi: {
           url: 'okapiUrl',
@@ -75,6 +89,7 @@ describe('FFetch class', () => {
     it('calls native fetch once', async () => {
       mockFetch.mockResolvedValueOnce('okapi-success');
       const testFfetch = new FFetch({
+        ...commonArgs,
         logger: { log },
         okapi: {
           url: 'okapiUrl',
@@ -86,6 +101,71 @@ describe('FFetch class', () => {
       const response = await global.fetch('okapiUrl/whatever', { testOption: 'test' });
       await expect(mockFetch.mock.calls).toHaveLength(1);
       expect(response).toEqual('okapi-success');
+    });
+  });
+
+  describe('initializeRtrSchedule', () => {
+    it('schedules RTR when valid cached token expiry exists', async () => {
+      const futureExpiry = Date.now() + (10 * 60 * 1000);
+      getTokenExpiry.mockResolvedValueOnce({
+        atExpires: futureExpiry,
+        rtExpires: futureExpiry + (10 * 60 * 1000),
+      });
+
+      const _ = new FFetch({
+        ...commonArgs,
+        logger: { log },
+        okapi: {
+          url: 'okapiUrl',
+          tenant: 'okapiTenant'
+        }
+      });
+
+      // Wait for async initialization to complete
+      await new Promise(resolve => setTimeout(resolve, 50));
+
+      // Verify that store.dispatch was called (indicating RTR was scheduled)
+      expect(commonArgs.store.dispatch).toHaveBeenCalled();
+    });
+
+    it('does not schedule RTR when cached token expiry is expired', async () => {
+      const pastExpiry = Date.now() - (10 * 60 * 1000);
+      getTokenExpiry.mockResolvedValueOnce({
+        atExpires: pastExpiry,
+        rtExpires: pastExpiry - (10 * 60 * 1000),
+      });
+
+      const _ = new FFetch({
+        ...commonArgs,
+        logger: { log },
+        okapi: {
+          url: 'okapiUrl',
+          tenant: 'okapiTenant'
+        }
+      });
+
+      // Wait for async initialization to complete
+      await new Promise(resolve => setTimeout(resolve, 50));
+
+      expect(commonArgs.store.dispatch).not.toHaveBeenCalled();
+    });
+
+    it('does not schedule RTR when no cached token expiry exists', async () => {
+      getTokenExpiry.mockResolvedValueOnce({});
+
+      const _ = new FFetch({
+        ...commonArgs,
+        logger: { log },
+        okapi: {
+          url: 'okapiUrl',
+          tenant: 'okapiTenant'
+        }
+      });
+
+      // Wait for async initialization to complete
+      await new Promise(resolve => setTimeout(resolve, 50));
+
+      expect(commonArgs.store.dispatch).not.toHaveBeenCalled();
     });
   });
 
@@ -105,13 +185,8 @@ describe('FFetch class', () => {
         json,
       });
       const testFfetch = new FFetch({
+        ...commonArgs,
         logger: { log },
-        store: {
-          dispatch: jest.fn(),
-          getState: () => ({
-            okapi: {}
-          })
-        },
         okapi: {
           url: 'okapiUrl',
           tenant: 'okapiTenant'
@@ -135,6 +210,7 @@ describe('FFetch class', () => {
     it('calls native fetch once to log out', async () => {
       mockFetch.mockResolvedValueOnce('logged out');
       const testFfetch = new FFetch({
+        ...commonArgs,
         logger: { log },
         okapi: {
           url: 'okapiUrl',
@@ -155,6 +231,7 @@ describe('FFetch class', () => {
       mockFetch.mockRejectedValueOnce('logged out FAIL');
 
       const testFfetch = new FFetch({
+        ...commonArgs,
         logger: { log },
         okapi: {
           url: 'okapiUrl',
@@ -180,6 +257,7 @@ describe('FFetch class', () => {
     it('Calling an okapi fetch with valid token...', async () => {
       mockFetch.mockResolvedValueOnce('okapi success');
       const testFfetch = new FFetch({
+        ...commonArgs,
         logger: { log },
         okapi: {
           url: 'okapiUrl',
@@ -223,16 +301,8 @@ describe('FFetch class', () => {
 
       mockFetch.mockResolvedValueOnce('okapi success');
       const testFfetch = new FFetch({
+        ...commonArgs,
         logger: { log },
-        store: {
-          dispatch: jest.fn(),
-          getState: () => ({
-            okapi: {}
-          })
-        },
-        rtrConfig: {
-          fixedLengthSessionWarningTTL: '1m',
-        },
         okapi: {
           url: 'okapiUrl',
           tenant: 'okapiTenant'
@@ -287,16 +357,8 @@ describe('FFetch class', () => {
 
       mockFetch.mockResolvedValueOnce('okapi success');
       const testFfetch = new FFetch({
+        ...commonArgs,
         logger: { log },
-        store: {
-          dispatch: jest.fn(),
-          getState: () => ({
-            okapi: {}
-          })
-        },
-        rtrConfig: {
-          fixedLengthSessionWarningTTL: '1m',
-        },
         okapi: {
           url: 'okapiUrl',
           tenant: 'okapiTenant'
@@ -333,16 +395,8 @@ describe('FFetch class', () => {
 
       mockFetch.mockResolvedValueOnce('okapi success');
       const testFfetch = new FFetch({
+        ...commonArgs,
         logger: { log },
-        store: {
-          dispatch: jest.fn(),
-          getState: () => ({
-            okapi: {}
-          })
-        },
-        rtrConfig: {
-          fixedLengthSessionWarningTTL: '1m',
-        },
         okapi: {
           url: 'okapiUrl',
           tenant: 'okapiTenant'
@@ -380,13 +434,8 @@ describe('FFetch class', () => {
 
       mockFetch.mockResolvedValueOnce('okapi success');
       const testFfetch = new FFetch({
+        ...commonArgs,
         logger: { log },
-        store: {
-          dispatch: jest.fn(),
-          getState: () => ({
-            okapi: {}
-          })
-        },
         okapi: {
           url: 'okapiUrl',
           tenant: 'okapiTenant'
@@ -428,16 +477,8 @@ describe('FFetch class', () => {
 
       mockFetch.mockResolvedValueOnce('okapi success');
       const testFfetch = new FFetch({
+        ...commonArgs,
         logger: { log },
-        store: {
-          dispatch: jest.fn(),
-          getState: () => ({
-            okapi: {}
-          })
-        },
-        rtrConfig: {
-          fixedLengthSessionWarningTTL: '1m',
-        },
         okapi: {
           url: 'okapiUrl',
           tenant: 'okapiTenant'
@@ -472,6 +513,7 @@ describe('FFetch class', () => {
       mockFetch.mockResolvedValue('success')
         .mockResolvedValueOnce('failure');
       const testFfetch = new FFetch({
+        ...commonArgs,
         logger: { log },
         okapi: {
           url: 'okapiUrl',
@@ -500,6 +542,7 @@ describe('FFetch class', () => {
           }
         ));
       const testFfetch = new FFetch({
+        ...commonArgs,
         logger: { log },
         okapi: {
           url: 'okapiUrl',
@@ -530,6 +573,7 @@ describe('FFetch class', () => {
         ))
         .mockRejectedValueOnce(new Error('token error message'));
       const testFfetch = new FFetch({
+        ...commonArgs,
         logger: { log },
         okapi: {
           url: 'okapiUrl',
@@ -571,6 +615,7 @@ describe('FFetch class', () => {
           }
         ));
       const testFfetch = new FFetch({
+        ...commonArgs,
         logger: { log },
         okapi: {
           url: 'okapiUrl',
@@ -607,6 +652,7 @@ describe('FFetch class', () => {
           }
         ));
       const testFfetch = new FFetch({
+        ...commonArgs,
         logger: { log },
         okapi: {
           url: 'okapiUrl',
@@ -643,6 +689,7 @@ describe('FFetch class', () => {
           }
         ));
       const testFfetch = new FFetch({
+        ...commonArgs,
         logger: { log },
         okapi: {
           url: 'okapiUrl',

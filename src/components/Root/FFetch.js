@@ -91,7 +91,22 @@ export class FFetch {
     this.bc = new BroadcastChannel(RTR_ACTIVE_WINDOW_MSG_CHANNEL);
     this.setWindowIdMessageEvent();
     this.setDocumentFocusHandler();
+    this.initializeRtrSchedule();
   }
+
+  /**
+   * initializeRtrSchedule
+   * On FFetch initialization (new tab/window), check if there's valid cached
+   * token expiry data and schedule RTR accordingly. This ensures RTR is
+   * scheduled once per tab.
+   */
+  initializeRtrSchedule = async () => {
+    const expiry = await getTokenExpiry();
+    if (expiry?.atExpires > Date.now()) {
+      this.logger.log('rtr', 'initializing RTR schedule from cached token expiry');
+      this.rotateCallback();
+    }
+  };
 
   /**
    * save a reference to fetch, and then reassign the global :scream:
