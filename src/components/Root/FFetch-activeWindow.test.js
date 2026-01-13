@@ -36,7 +36,11 @@ describe('RTR - active window messaging', () => {
         url: 'okapiUrl',
         tenant: 'okapiTenant',
       },
+      rtrConfig: {
+        fixedLengthSessionWarningTTL: '1m',
+      },
       store: {
+        dispatch: jest.fn(),
         getState: () => ({
           okapi: {}
         })
