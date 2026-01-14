@@ -356,9 +356,10 @@ export class FFetch {
           });
       }
 
-      // Session check requests (_self endpoints) go through the RTR queue
-      // to wait for any in-progress rotation. On the first successful _self
-      // request, trigger rotateCallback to ensure RTR is scheduled for this tab.
+      // This block is only used to start RTR (rotateCallback) for new browser tabs.
+      // New tabs inherit only AT from the login session and don't start RTR timer to get RT.
+      // The first successful response will trigger rotateCallback to schedule RTR,
+      // preventing 401 errors when AT expires.
       if (isValidSessionCheckRequest(resource, this.okapi.url)) {
         this.logger.log('rtr', 'session check request', resource);
         return getPromise(this.logger)
