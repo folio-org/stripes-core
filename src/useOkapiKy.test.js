@@ -51,7 +51,7 @@ describe('useOkapiKy', () => {
     const { result } = renderHook(() => useOkapiKy());
     result.current.hooks.beforeRequest[0](r);
 
-    expect(result.current.timeout).toBe(30000);
+    expect(result.current.timeout).toBe(60000);
 
     expect(r.headers.set).toHaveBeenCalledWith('Accept-Language', 'en');
   });

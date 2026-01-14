@@ -18,13 +18,13 @@ export async function getModules() {
   // during render when event handlers and plugins may be invoked.
   if (config.isLazy) {
     for (const [, list] of Object.entries(modules)) {
-      for (const module of list) {
-        module.cachedModule = (await module.getDynamicModule());
-        module.getModule = () => module.cachedModule.default;
+      const results = await Promise.all(list.map(i => i.getDynamicModule()));
+      for (let i = 0; i < list.length; i++) {
+        list[i].cachedModule = results[i];
+        list[i].getModule = () => list[i].cachedModule.default;
       }
     }
   }
 
   return modules;
 }
-
