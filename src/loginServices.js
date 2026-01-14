@@ -302,8 +302,16 @@ export async function loadTranslations(store, locale, defaultTranslations = {}) 
   // Here we put additional condition because languages
   // like Japan we need to use like ja, but with numeric system
   // Japan language builds like ja_u, that incorrect. We need to be safe from that bug.
-  const res = await fetch(translations[region] ? translations[region] :
-    translations[loadedLocale] || translations[[parentLocale]])
+  const translationName = translations[region] ? translations[region] :
+    translations[loadedLocale] || translations[[parentLocale]];
+
+  // if stripes-core is served from a different origin (module-federation) then
+  // we need to fetch translations from that origin as well rather than a relative path.
+  // const stripsesCoreOrigin = 'http://localhost:3000';
+  // const translationUrl = new URL(translationName, stripsesCoreOrigin);
+
+  const translationUrl = new URL(translationName, window.location.origin);
+  const res = await fetch(translationUrl.href)
     .then((response) => {
       if (response.ok) {
         response.json().then((stripesTranslations) => {

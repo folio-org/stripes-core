@@ -1,32 +1,39 @@
-// https://webpack.js.org/concepts/module-federation/#dynamic-remote-containers
+// injects a script tag to load a remote module.
+// This has to be performed in this way for publicPath of the federated remote
+// to be automatically discovered since it works based on document.currentScript.src.
+// Once the script is loaded, it executes webpack module federation API
+// to initialize sharing and retrieve the exposed module.
+
+function injectScript(remoteUrl, remoteName) {
+  return new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = remoteUrl;
+    script.onload = async () => {
+      const container = window[remoteName];
+
+      // eslint-disable-next-line no-undef
+      await __webpack_init_sharing__('default');
+
+      // eslint-disable-next-line no-undef
+      await container.init(__webpack_share_scopes__.default);
+
+      const factory = await container.get('./MainEntry');
+      const Module = await factory();
+      resolve(Module);
+    };
+    script.onerror = () => {
+      reject(new Error(`Failed to load remote script from ${remoteUrl}`));
+    };
+    document.body.appendChild(script);
+  });
+}
+
 export default async function loadRemoteComponent(remoteUrl, remoteName) {
-  const errorMessage = `Failed to fetch remote module from ${remoteUrl}`;
   try {
-    if (!window[remoteName]) {
-      const response = await fetch(remoteUrl);
-      if (!response.ok) {
-        throw new Error(errorMessage);
-      }
-      const source = await response.text();
-      const script = document.createElement('script');
-      script.textContent = source;
-      document.body.appendChild(script);
-    }
-
-    const container = window[remoteName];
-
-    // eslint-disable-next-line no-undef
-    await __webpack_init_sharing__('default');
-
-    // eslint-disable-next-line no-undef
-    await container.init(__webpack_share_scopes__.default);
-
-    const factory = await container.get('./MainEntry');
-    const Module = await factory();
-
+    const Module = await injectScript(remoteUrl, remoteName);
     return Module;
   } catch (error) {
-    console.error(`${errorMessage}`, error);
+    console.error(error);
     throw error;
   }
 }
