@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { Field, Form } from 'react-final-form';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import { branding } from 'stripes-config';
 
 import {
@@ -21,6 +21,8 @@ import styles from '../Login/Login.css';
 
 const ForgotPasswordForm = ({ errors = [], onSubmit }) => {
   const { okapi } = useStripes();
+  const intl = useIntl();
+  const forgotPasswordPlaceholder = intl.formatMessage({ id: 'stripes-core.placeholder.field.forgotPassword' });
 
   return (
     <Form
@@ -59,9 +61,9 @@ const ForgotPasswordForm = ({ errors = [], onSubmit }) => {
                           between="xs"
                           bottom="xs"
                         >
-                          <Col xs={6}>
+                          <Col xs={8}>
                             <FieldLabel htmlFor="input-email-or-phone">
-                              <FormattedMessage id="stripes-core.placeholder.forgotPassword" />
+                              {forgotPasswordPlaceholder}
                             </FieldLabel>
                           </Col>
                         </Row>
@@ -82,6 +84,7 @@ const ForgotPasswordForm = ({ errors = [], onSubmit }) => {
                           autoCapitalize="none"
                           required
                           value=""
+                          placeholder={forgotPasswordPlaceholder}
                         />
                       </Col>
                     </Row>

@@ -2,7 +2,8 @@ import ky from 'ky';
 import { useStripes } from './StripesContext';
 
 export default ({ tenant, timeout } = {}) => {
-  const { locale = 'en', timeout: defaultTimeout = 30000, tenant: currentTenant, token, url } = useStripes().okapi;
+  // Kong has a default timeout of 60 seconds
+  const { locale = 'en', timeout: defaultTimeout = 60000, tenant: currentTenant, token, url } = useStripes().okapi;
 
   return ky.create({
     credentials: 'include',

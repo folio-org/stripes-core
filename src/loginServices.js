@@ -59,6 +59,7 @@ export const supportedLocales = [
   'pt-PT',  // portuguese, portugal
   'ru',     // russian
   'sv',     // swedish
+  'tr',     // turkish
   'ur',     // urdu
   'zh-CN',  // chinese, china
   'zh-TW',  // chinese, taiwan
