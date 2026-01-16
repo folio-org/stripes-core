@@ -35,6 +35,7 @@
 * Increase default timeout to 60 seconds in useOkapiKy.js to match the value in Kong. Refs STCOR-1022.
 * Add `tr` Türkçe (Turkish) locale. Refs STCOR-1026.
 * Remove the `/users-keycloak/_self` (and `/bl-users/_self`) requests. They were included in `isAuthenticationRequest`, which caused them to bypass the RTR queue (`getPromise`). Fixes STCOR-1029.
+* Define a permission-set containing values necessary for session-init API requests. Refs STCOR-1031.
 
 ## [11.0.0](https://github.com/folio-org/stripes-core/tree/v11.0.0) (2025-02-24)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v10.2.0...v11.0.0)
