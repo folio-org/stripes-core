@@ -1,5 +1,9 @@
 # Change history for stripes-core
 
+## IN PROGRESS
+
+* Remove the `/users-keycloak/_self` (and `/bl-users/_self`) requests. They were included in `isAuthenticationRequest`, which caused them to bypass the RTR queue (`getPromise`). Fixes STCOR-1029.
+
 ## [11.0.14](https://github.com/folio-org/stripes-core/tree/v11.0.14) (2026-01-05)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v11.0.13...v11.0.14)
 
@@ -66,7 +70,6 @@
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v11.0.1...v11.0.2)
 
 * CSS Support for printing of results lists content. Refs STCOR-956.
-<<<<<<< HEAD
 
 ## [11.0.1](https://github.com/folio-org/stripes-core/tree/v11.0.1) (2025-03-12)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v11.0.0...v11.0.1)
