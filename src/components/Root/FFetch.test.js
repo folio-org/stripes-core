@@ -38,8 +38,21 @@ const mockBroadcastChannel = {
   removeEventListener: jest.fn(),
 };
 
+const commonArgs = {
+  store: {
+    dispatch: jest.fn(),
+    getState: () => ({
+      okapi: {},
+    }),
+  },
+  rtrConfig: {
+    fixedLengthSessionWarningTTL: '1m',
+  },
+};
+
 describe('FFetch class', () => {
   beforeEach(() => {
+    jest.clearAllMocks();
     global.BroadcastChannel = jest.fn(() => mockBroadcastChannel);
     global.fetch = mockFetch;
     getTokenExpiry.mockResolvedValue({
@@ -56,6 +69,7 @@ describe('FFetch class', () => {
     it('calls native fetch once', async () => {
       mockFetch.mockResolvedValueOnce('non-okapi-success');
       const testFfetch = new FFetch({
+        ...commonArgs,
         logger: { log },
         okapi: {
           url: 'okapiUrl',
@@ -75,6 +89,7 @@ describe('FFetch class', () => {
     it('calls native fetch once', async () => {
       mockFetch.mockResolvedValueOnce('okapi-success');
       const testFfetch = new FFetch({
+        ...commonArgs,
         logger: { log },
         okapi: {
           url: 'okapiUrl',
@@ -86,6 +101,83 @@ describe('FFetch class', () => {
       const response = await global.fetch('okapiUrl/whatever', { testOption: 'test' });
       await expect(mockFetch.mock.calls).toHaveLength(1);
       expect(response).toEqual('okapi-success');
+    });
+  });
+
+  describe('session check requests (_self endpoints)', () => {
+    it('schedules RTR on first successful _self request', async () => {
+      const futureExpiry = Date.now() + (10 * 60 * 1000);
+      getTokenExpiry.mockResolvedValue({
+        atExpires: futureExpiry,
+        rtExpires: futureExpiry + (10 * 60 * 1000),
+      });
+
+      mockFetch.mockResolvedValueOnce({ ok: true });
+
+      const testFfetch = new FFetch({
+        ...commonArgs,
+        logger: { log },
+        okapi: {
+          url: 'okapiUrl',
+          tenant: 'okapiTenant'
+        }
+      });
+      testFfetch.replaceFetch();
+
+      await global.fetch('okapiUrl/bl-users/_self', { testOption: 'test' });
+
+      // Verify that store.dispatch was called (indicating RTR was scheduled)
+      expect(commonArgs.store.dispatch).toHaveBeenCalled();
+    });
+
+    it('does not schedule RTR on subsequent _self requests', async () => {
+      const futureExpiry = Date.now() + (10 * 60 * 1000);
+      getTokenExpiry.mockResolvedValue({
+        atExpires: futureExpiry,
+        rtExpires: futureExpiry + (10 * 60 * 1000),
+      });
+
+      mockFetch.mockResolvedValue({ ok: true });
+
+      const testFfetch = new FFetch({
+        ...commonArgs,
+        logger: { log },
+        okapi: {
+          url: 'okapiUrl',
+          tenant: 'okapiTenant'
+        }
+      });
+      testFfetch.replaceFetch();
+
+      // First _self request
+      await global.fetch('okapiUrl/users-keycloak/_self', { testOption: 'test' });
+      const callCountAfterFirst = commonArgs.store.dispatch.mock.calls.length;
+
+      // Second _self request
+      await global.fetch('okapiUrl/users-keycloak/_self', { testOption: 'test' });
+      const callCountAfterSecond = commonArgs.store.dispatch.mock.calls.length;
+
+      // Dispatch count should not increase after second request
+      expect(callCountAfterSecond).toBe(callCountAfterFirst);
+    });
+
+    it('does not schedule RTR on failed _self request', async () => {
+      mockFetch.mockResolvedValueOnce({ ok: false });
+
+      const testFfetch = new FFetch({
+        ...commonArgs,
+        logger: { log },
+        okapi: {
+          url: 'okapiUrl',
+          tenant: 'okapiTenant'
+        }
+      });
+      testFfetch.replaceFetch();
+
+      await global.fetch('okapiUrl/bl-users/_self', { testOption: 'test' });
+
+      // Verify that store.dispatch was NOT called
+      expect(commonArgs.store.dispatch).not.toHaveBeenCalled();
     });
   });
 
@@ -105,13 +197,8 @@ describe('FFetch class', () => {
         json,
       });
       const testFfetch = new FFetch({
+        ...commonArgs,
         logger: { log },
-        store: {
-          dispatch: jest.fn(),
-          getState: () => ({
-            okapi: {}
-          })
-        },
         okapi: {
           url: 'okapiUrl',
           tenant: 'okapiTenant'
@@ -135,6 +222,7 @@ describe('FFetch class', () => {
     it('calls native fetch once to log out', async () => {
       mockFetch.mockResolvedValueOnce('logged out');
       const testFfetch = new FFetch({
+        ...commonArgs,
         logger: { log },
         okapi: {
           url: 'okapiUrl',
@@ -155,6 +243,7 @@ describe('FFetch class', () => {
       mockFetch.mockRejectedValueOnce('logged out FAIL');
 
       const testFfetch = new FFetch({
+        ...commonArgs,
         logger: { log },
         okapi: {
           url: 'okapiUrl',
@@ -180,6 +269,7 @@ describe('FFetch class', () => {
     it('Calling an okapi fetch with valid token...', async () => {
       mockFetch.mockResolvedValueOnce('okapi success');
       const testFfetch = new FFetch({
+        ...commonArgs,
         logger: { log },
         okapi: {
           url: 'okapiUrl',
@@ -223,16 +313,8 @@ describe('FFetch class', () => {
 
       mockFetch.mockResolvedValueOnce('okapi success');
       const testFfetch = new FFetch({
+        ...commonArgs,
         logger: { log },
-        store: {
-          dispatch: jest.fn(),
-          getState: () => ({
-            okapi: {}
-          })
-        },
-        rtrConfig: {
-          fixedLengthSessionWarningTTL: '1m',
-        },
         okapi: {
           url: 'okapiUrl',
           tenant: 'okapiTenant'
@@ -241,7 +323,8 @@ describe('FFetch class', () => {
       testFfetch.replaceFetch();
       testFfetch.replaceXMLHttpRequest();
 
-      const response = await global.fetch('okapiUrl/bl-users/_self', { testOption: 'test' });
+      // Use a login endpoint (not _self) since only login endpoints trigger rotateCallback
+      const response = await global.fetch('okapiUrl/bl-users/login-with-expiry', { testOption: 'test' });
       // why this extra await/setTimeout? Because RTR happens in an un-awaited
       // promise in a separate thread fired off by setTimout, and we need to
       // give it the chance to complete. on the one hand, this feels super
@@ -286,16 +369,8 @@ describe('FFetch class', () => {
 
       mockFetch.mockResolvedValueOnce('okapi success');
       const testFfetch = new FFetch({
+        ...commonArgs,
         logger: { log },
-        store: {
-          dispatch: jest.fn(),
-          getState: () => ({
-            okapi: {}
-          })
-        },
-        rtrConfig: {
-          fixedLengthSessionWarningTTL: '1m',
-        },
         okapi: {
           url: 'okapiUrl',
           tenant: 'okapiTenant'
@@ -304,7 +379,8 @@ describe('FFetch class', () => {
       testFfetch.replaceFetch();
       testFfetch.replaceXMLHttpRequest();
 
-      const response = await global.fetch('okapiUrl/bl-users/_self', { testOption: 'test' });
+      // Use a login endpoint (not _self) since only login endpoints trigger rotateCallback
+      const response = await global.fetch('okapiUrl/bl-users/login-with-expiry', { testOption: 'test' });
       // why this extra await/setTimeout? Because RTR happens in an un-awaited
       // promise in a separate thread fired off by setTimout, and we need to
       // give it the chance to complete. on the one hand, this feels super
@@ -331,16 +407,8 @@ describe('FFetch class', () => {
 
       mockFetch.mockResolvedValueOnce('okapi success');
       const testFfetch = new FFetch({
+        ...commonArgs,
         logger: { log },
-        store: {
-          dispatch: jest.fn(),
-          getState: () => ({
-            okapi: {}
-          })
-        },
-        rtrConfig: {
-          fixedLengthSessionWarningTTL: '1m',
-        },
         okapi: {
           url: 'okapiUrl',
           tenant: 'okapiTenant'
@@ -349,7 +417,8 @@ describe('FFetch class', () => {
       testFfetch.replaceFetch();
       testFfetch.replaceXMLHttpRequest();
 
-      const response = await global.fetch('okapiUrl/bl-users/_self', { testOption: 'test' });
+      // Use a login endpoint (not _self) since only login endpoints trigger rotateCallback
+      const response = await global.fetch('okapiUrl/bl-users/login-with-expiry', { testOption: 'test' });
       // why this extra await/setTimeout? Because RTR happens in an un-awaited
       // promise in a separate thread fired off by setTimout, and we need to
       // give it the chance to complete. on the one hand, this feels super
@@ -377,13 +446,8 @@ describe('FFetch class', () => {
 
       mockFetch.mockResolvedValueOnce('okapi success');
       const testFfetch = new FFetch({
+        ...commonArgs,
         logger: { log },
-        store: {
-          dispatch: jest.fn(),
-          getState: () => ({
-            okapi: {}
-          })
-        },
         okapi: {
           url: 'okapiUrl',
           tenant: 'okapiTenant'
@@ -392,7 +456,8 @@ describe('FFetch class', () => {
       testFfetch.replaceFetch();
       testFfetch.replaceXMLHttpRequest();
 
-      const response = await global.fetch('okapiUrl/bl-users/_self', { testOption: 'test' });
+      // Use a login endpoint (not _self) since only login endpoints trigger rotateCallback
+      const response = await global.fetch('okapiUrl/bl-users/login-with-expiry', { testOption: 'test' });
       expect(mockFetch.mock.calls).toHaveLength(1);
       expect(cloneJson).not.toHaveBeenCalled();
     });
@@ -424,16 +489,8 @@ describe('FFetch class', () => {
 
       mockFetch.mockResolvedValueOnce('okapi success');
       const testFfetch = new FFetch({
+        ...commonArgs,
         logger: { log },
-        store: {
-          dispatch: jest.fn(),
-          getState: () => ({
-            okapi: {}
-          })
-        },
-        rtrConfig: {
-          fixedLengthSessionWarningTTL: '1m',
-        },
         okapi: {
           url: 'okapiUrl',
           tenant: 'okapiTenant'
@@ -442,7 +499,8 @@ describe('FFetch class', () => {
       testFfetch.replaceFetch();
       testFfetch.replaceXMLHttpRequest();
 
-      const response = await global.fetch('okapiUrl/bl-users/_self', { testOption: 'test' });
+      // Use a login endpoint (not _self) since only login endpoints trigger rotateCallback
+      const response = await global.fetch('okapiUrl/bl-users/login-with-expiry', { testOption: 'test' });
       // why this extra await/setTimeout? Because RTR happens in an un-awaited
       // promise in a separate thread fired off by setTimout, and we need to
       // give it the chance to complete. on the one hand, this feels super
@@ -467,6 +525,7 @@ describe('FFetch class', () => {
       mockFetch.mockResolvedValue('success')
         .mockResolvedValueOnce('failure');
       const testFfetch = new FFetch({
+        ...commonArgs,
         logger: { log },
         okapi: {
           url: 'okapiUrl',
@@ -495,6 +554,7 @@ describe('FFetch class', () => {
           }
         ));
       const testFfetch = new FFetch({
+        ...commonArgs,
         logger: { log },
         okapi: {
           url: 'okapiUrl',
@@ -525,6 +585,7 @@ describe('FFetch class', () => {
         ))
         .mockRejectedValueOnce(new Error('token error message'));
       const testFfetch = new FFetch({
+        ...commonArgs,
         logger: { log },
         okapi: {
           url: 'okapiUrl',
@@ -566,6 +627,7 @@ describe('FFetch class', () => {
           }
         ));
       const testFfetch = new FFetch({
+        ...commonArgs,
         logger: { log },
         okapi: {
           url: 'okapiUrl',
@@ -602,6 +664,7 @@ describe('FFetch class', () => {
           }
         ));
       const testFfetch = new FFetch({
+        ...commonArgs,
         logger: { log },
         okapi: {
           url: 'okapiUrl',
@@ -638,6 +701,7 @@ describe('FFetch class', () => {
           }
         ));
       const testFfetch = new FFetch({
+        ...commonArgs,
         logger: { log },
         okapi: {
           url: 'okapiUrl',

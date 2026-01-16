@@ -55,6 +55,7 @@ import {
   isAuthenticationRequest,
   isFolioApiRequest,
   isLogoutRequest,
+  isValidSessionCheckRequest,
   rtr,
 } from './token-util';
 import {
@@ -88,6 +89,7 @@ export class FFetch {
     this.rtrConfig = rtrConfig;
     this.okapi = okapi;
     this.focusEventSet = false;
+    this.rtrScheduled = false; // Track if RTR has been scheduled in this tab
     this.bc = new BroadcastChannel(RTR_ACTIVE_WINDOW_MSG_CHANNEL);
     this.setWindowIdMessageEvent();
     this.setDocumentFocusHandler();
@@ -309,8 +311,11 @@ export class FFetch {
     if (isFolioApiRequest(resource, this.okapi.url)) {
       this.logger.log('rtrv', 'will fetch', resource);
 
-      // on authentication, grab the response to kick of the rotation cycle,
-      // then return the response
+      // on authentication (login), grab the response to kick off the rotation cycle,
+      // then return the response.
+      // Note: _self endpoints are NOT included here - they go through the normal
+      // RTR queue (getPromise) so they wait for any in-progress rotation to complete.
+      // This prevents 401 errors for _self requests in-flight during RTR.
       if (isAuthenticationRequest(resource, this.okapi.url)) {
         this.logger.log('rtr', 'authn request', resource);
         return this.nativeFetch.apply(global, [resource, options && { ...options, ...OKAPI_FETCH_OPTIONS }])
@@ -348,6 +353,29 @@ export class FFetch {
             // kill me softly: return an empty response to allow graceful failure
             console.error('-- (rtr-sw) logout failure', err); // eslint-disable-line no-console
             return Promise.resolve(new Response(JSON.stringify({})));
+          });
+      }
+
+      // This block is only used to start RTR (rotateCallback) for new browser tabs.
+      // New tabs inherit only AT from the login session and don't start RTR timer to get RT.
+      // The first successful response will trigger rotateCallback to schedule RTR,
+      // preventing 401 errors when AT expires.
+      if (isValidSessionCheckRequest(resource, this.okapi.url)) {
+        this.logger.log('rtr', 'session check request', resource);
+        return getPromise(this.logger)
+          .then(() => {
+            this.logger.log('rtrv', 'post-rtr session check fetch', resource);
+            return this.nativeFetch.apply(global, [resource, options && { ...options, ...OKAPI_FETCH_OPTIONS }]);
+          })
+          .then(res => {
+            // On first successful session check, trigger rotateCallback to ensure
+            // RTR is scheduled (only once per tab)
+            if (res.ok && !this.rtrScheduled) {
+              this.logger.log('rtr', 'session check success, scheduling RTR (first time)');
+              this.rotateCallback();
+              this.rtrScheduled = true;
+            }
+            return res;
           });
       }
 

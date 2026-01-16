@@ -6,6 +6,7 @@ import {
   isFolioApiRequest,
   isLogoutRequest,
   isRotating,
+  isValidSessionCheckRequest,
   resourceMapper,
   rtr,
   RTR_IS_ROTATING,
@@ -41,10 +42,18 @@ describe('isFolioApiRequest', () => {
 
 
 describe('isAuthenticationRequest', () => {
-  it('accepts authn endpoints', () => {
-    const path = '/bl-users/_self';
+  it('accepts login endpoints', () => {
+    expect(isAuthenticationRequest('/authn/token', '')).toBe(true);
+    expect(isAuthenticationRequest('/bl-users/login-with-expiry', '')).toBe(true);
+  });
 
-    expect(isAuthenticationRequest(path, '')).toBe(true);
+  it('rejects _self endpoints (should go through RTR queue)', () => {
+    // _self endpoints are NOT authentication requests - they should go through
+    // the normal RTR queue so they wait for any in-progress rotation to complete.
+    // This prevents 401 errors when the _self request is in-flight during RTR.
+    expect(isAuthenticationRequest('/bl-users/_self', '')).toBe(false);
+    expect(isAuthenticationRequest('/users-keycloak/_self', '')).toBe(false);
+    expect(isAuthenticationRequest('/users-keycloak/_self?expandPermissions=true', '')).toBe(false);
   });
 
   it('rejects unknown endpoints', () => {
@@ -56,6 +65,29 @@ describe('isAuthenticationRequest', () => {
   it('rejects invalid input', () => {
     const path = { wat: '/if/you/need/to/go/to/church/is/that/a/critical/mass' };
     expect(isAuthenticationRequest(path, '')).toBe(false);
+  });
+});
+
+describe('isValidSessionCheckRequest', () => {
+  it('accepts _self endpoints', () => {
+    expect(isValidSessionCheckRequest('/bl-users/_self', '')).toBe(true);
+    expect(isValidSessionCheckRequest('/users-keycloak/_self', '')).toBe(true);
+    expect(isValidSessionCheckRequest('/users-keycloak/_self?expandPermissions=true', '')).toBe(true);
+  });
+
+  it('rejects login endpoints', () => {
+    expect(isValidSessionCheckRequest('/authn/token', '')).toBe(false);
+    expect(isValidSessionCheckRequest('/bl-users/login-with-expiry', '')).toBe(false);
+  });
+
+  it('rejects unknown endpoints', () => {
+    const path = '/maybe/oppie/would/have/been/happier/in/malibu';
+    expect(isValidSessionCheckRequest(path, '')).toBe(false);
+  });
+
+  it('rejects invalid input', () => {
+    const path = { wat: '/if/you/need/to/go/to/church/is/that/a/critical/mass' };
+    expect(isValidSessionCheckRequest(path, '')).toBe(false);
   });
 });
 
