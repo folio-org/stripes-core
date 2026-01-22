@@ -178,11 +178,14 @@ const EntitlementLoader = ({ children }) => {
   useEffect(() => {
     const { okapi } = stripes;
     if (okapi.entitlementUrl) {
+      const controller = new AbortController();
+      const signal = controller.signal;
+      let noFetch = false;
       const fetchRegistry = async () => {
         // read the list of registered apps
         let remotes;
         try {
-          remotes = await loadEntitlement(okapi.entitlementUrl);
+          remotes = await loadEntitlement(okapi.entitlementUrl, signal);
         } catch (e) {
           handleRemoteModuleError(stripes, `Error fetching entitlement registry from ${okapi.entitlementUrl}: ${e}`);
         }
@@ -203,10 +206,17 @@ const EntitlementLoader = ({ children }) => {
         } catch (e) {
           handleRemoteModuleError(stripes, `error loading remote modules: ${e}`);
         }
-        setRemoteModules(cachedModules);
+        if (!noFetch) {
+          setRemoteModules(cachedModules);
+        }
       };
 
       fetchRegistry();
+
+      return () => {
+        controller.abort();
+        noFetch = true;
+      };
     }
     // no, we don't want to refetch the registry if stripes changes
     // eslint-disable-next-line react-hooks/exhaustive-deps

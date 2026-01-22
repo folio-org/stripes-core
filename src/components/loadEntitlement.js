@@ -1,17 +1,24 @@
 import localforage from 'localforage';
 import { stripesHubAPI } from '../constants';
 
-export const loadEntitlement = async (entitlementUrl) => {
-  let registry;
+export const loadEntitlement = async (entitlementUrl, signal) => {
+  let registry = {};
   const discovery = await localforage.getItem(stripesHubAPI.REMOTE_LIST_KEY);
-  if (discovery) {
+  if (discovery && entitlementUrl) {
     registry = { discovery };
   } else {
-    const res = await fetch(entitlementUrl);
-    const registryData = await res.json();
+    try {
+      const res = await fetch(entitlementUrl, { signal });
+      if (!res.ok) throw new Error('Unable to fetch entitlement Url')
+      const registryData = await res.json();
 
-    // strip out the host app if it's present...
-    registry.discovery = registryData.filter((entry) => entry.name !== stripesHubAPI.HOST_APP_NAME);
+      // strip out the host app if it's present...
+      registry.discovery = registryData?.discovery.filter((entry) => entry.name !== stripesHubAPI.HOST_APP_NAME);
+    } catch (e) {
+      if (e.name !== 'AbortError') {
+        console.error('Entitlement fetch error:', e);
+      }
+    }
   }
 
   // Take the location information for each remote in the response and split out its origin...
