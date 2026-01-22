@@ -133,7 +133,32 @@ class Root extends Component {
   }
 
   render() {
-    const { logger, store, epics, config, okapi, actionNames, token, isAuthenticated, disableAuth, currentUser, currentPerms, icons, locale, defaultTranslations, timezone, currency, plugins, bindings, discovery, translations, history, serverDown } = this.props;
+    const {
+      logger,
+      store,
+      epics,
+      config,
+      okapi,
+      actionNames,
+      token,
+      isAuthenticated,
+      disableAuth,
+      currentUser,
+      currentPerms,
+      icons,
+      locale,
+      defaultTranslations,
+      timezone,
+      currency,
+      plugins,
+      bindings,
+      discovery,
+      translations,
+      history,
+      serverDown,
+      stripesHub,
+    } = this.props;
+
     if (serverDown) {
       // note: this isn't i18n'ed because we haven't rendered an IntlProvider yet.
       return <div>Error: server is forbidden, unreachable or down. Clear the cookies? Use incognito mode? VPN issue?</div>;
@@ -156,12 +181,16 @@ class Root extends Component {
     //   time, but still, props are props so technically it's possible.
     config.rtr = configureRtr(this.props.config.rtr);
 
+    // if we have a stripesHub entitlementUrl, pass it to stripes...
+
+    const stripesOkapi = stripesHub?.entitlementUrl ? { ...okapi, entitlementUrl: stripesHub.entitlementUrl } : okapi;
+
     const stripes = new Stripes({
       logger,
       store,
       epics,
       config,
-      okapi,
+      okapi: stripesOkapi,
       withOkapi: this.withOkapi,
       setToken: (val) => { store.dispatch(setOkapiToken(val)); },
       setIsAuthenticated: (val) => { store.dispatch(setIsAuthenticated(val)); },
@@ -187,6 +216,7 @@ class Root extends Component {
         perms: currentPerms,
       },
       connect(X) { return X; },
+      stripesHub,
     });
 
     return (

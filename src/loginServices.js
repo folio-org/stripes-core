@@ -307,11 +307,13 @@ export async function loadTranslations(store, locale, defaultTranslations = {}) 
     translations[loadedLocale] || translations[[parentLocale]];
 
   // if stripes-core is served from a different origin (module-federation) then
-  // we need to fetch translations from that origin as well rather than a relative path.
-  // const stripsesCoreOrigin = 'http://localhost:3000';
-  // const translationUrl = new URL(translationName, stripsesCoreOrigin);
+  // we need to fetch translations from that origin as well rather than the current location.
+  let translationOrigin = await localforage.getItem('hostLocation');
+  if (!translationOrigin) {
+    translationOrigin = window.location.origin;
+  }
 
-  const translationUrl = new URL(translationName, window.location.origin);
+  const translationUrl = new URL(translationName, translationOrigin);
   const res = await fetch(translationUrl.href)
     .then((response) => {
       if (response.ok) {
