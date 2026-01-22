@@ -9,7 +9,7 @@ export const loadEntitlement = async (entitlementUrl, signal) => {
   } else if (entitlementUrl) {
     try {
       const res = await fetch(entitlementUrl, { signal });
-      if (!res.ok) throw new Error('Unable to fetch entitlement Url')
+      if (!res.ok) throw new Error('Unable to fetch entitlement Url');
       const registryData = await res.json();
 
       // strip out the host app if it's present...
