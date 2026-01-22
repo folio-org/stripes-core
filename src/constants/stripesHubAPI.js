@@ -4,5 +4,6 @@
 export default {
   HOST_LOCATION_KEY: 'hostLocation',
   REMOTE_LIST_KEY: 'entitlements',
-  ENTITLEMENT_URL_KEY: 'entitlementUrl'
+  ENTITLEMENT_URL_KEY: 'entitlementUrl',
+  HOST_APP_NAME: 'folio_stripes',
 };
