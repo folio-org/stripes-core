@@ -163,10 +163,10 @@ const handleRemoteModuleError = (stripes, errorMsg) => {
 
 
 /**
- * Registry Loader
- * @param {object} stripes
+ * Entitlement Loader
+ * fetches/preloads all remote modules on mount.
+ * Passes the dynamically loaded modules into the modules context.
  * @param {*} children
- * @returns
  */
 const EntitlementLoader = ({ children }) => {
   const stripes = useStripes();
@@ -194,6 +194,7 @@ const EntitlementLoader = ({ children }) => {
         let cachedModules = modulesInitialState;
         let remotesWithLoadedAssets = [];
 
+        // if the signal is aborted, avoid all subsequent fetches, state updates...
         if (!signal.aborted) {
           try {
             // load module assets (translations, icons)...
@@ -212,13 +213,11 @@ const EntitlementLoader = ({ children }) => {
           setRemoteModules(cachedModules);
         }
       };
-
       fetchRegistry();
-
-      return () => {
-        controller.abort();
-      };
     }
+    return () => {
+      controller.abort();
+    };
     // no, we don't want to refetch the registry if stripes changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
