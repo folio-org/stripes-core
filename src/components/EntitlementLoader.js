@@ -173,16 +173,17 @@ const EntitlementLoader = ({ children }) => {
   const configModules = useModules();
   const [remoteModules, setRemoteModules] = useState(modulesInitialState);
 
-  // if platform is configured for module federation, read the list of registered apps from <fill in source of truth>
-  // localstorage, okapi, direct call to registry endpoint?
+  // fetching data in useEffect onMount using an AbortController. The cleanup function will abort the first call if the component is unmounted
+  // or useEffect re-fires as a result of strict mode.
   useEffect(() => {
     const { okapi } = stripes;
+    const controller = new AbortController();
+    const signal = controller.signal;
     if (okapi.entitlementUrl) {
-      const controller = new AbortController();
-      const signal = controller.signal;
-      let noFetch = false;
+      // fetches the list of registered apps/metadata,
+      // loads icons and translations, then module code,
+      // ultimately stores the result in the modules state to pass down into the modules context.
       const fetchRegistry = async () => {
-        // read the list of registered apps
         let remotes;
         try {
           remotes = await loadEntitlement(okapi.entitlementUrl, signal);
@@ -193,20 +194,21 @@ const EntitlementLoader = ({ children }) => {
         let cachedModules = modulesInitialState;
         let remotesWithLoadedAssets = [];
 
-        try {
-          // load module assets (translations, icons), then load modules...
-          remotesWithLoadedAssets = await loadAllModuleAssets(stripes, remotes);
-        } catch (e) {
-          handleRemoteModuleError(stripes, `Error loading remote module assets (icons, translations, sounds): ${e}`);
-        }
+        if (!signal.aborted) {
+          try {
+            // load module assets (translations, icons)...
+            remotesWithLoadedAssets = await loadAllModuleAssets(stripes, remotes);
+          } catch (e) {
+            handleRemoteModuleError(stripes, `Error loading remote module assets (icons, translations, sounds): ${e}`);
+          }
 
-        try {
-          // load module code - this loads each module only once and up `getModule` so that it can be used sychronously.
-          cachedModules = await preloadModules(stripes, remotesWithLoadedAssets);
-        } catch (e) {
-          handleRemoteModuleError(stripes, `error loading remote modules: ${e}`);
-        }
-        if (!noFetch) {
+          try {
+            // load module code - this loads each module only once and up `getModule` so that it can be used sychronously.
+            cachedModules = await preloadModules(stripes, remotesWithLoadedAssets);
+          } catch (e) {
+            handleRemoteModuleError(stripes, `error loading remote modules: ${e}`);
+          }
+
           setRemoteModules(cachedModules);
         }
       };
@@ -215,7 +217,6 @@ const EntitlementLoader = ({ children }) => {
 
       return () => {
         controller.abort();
-        noFetch = true;
       };
     }
     // no, we don't want to refetch the registry if stripes changes

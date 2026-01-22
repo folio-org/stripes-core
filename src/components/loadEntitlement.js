@@ -4,9 +4,9 @@ import { stripesHubAPI } from '../constants';
 export const loadEntitlement = async (entitlementUrl, signal) => {
   let registry = {};
   const discovery = await localforage.getItem(stripesHubAPI.REMOTE_LIST_KEY);
-  if (discovery && entitlementUrl) {
+  if (discovery) {
     registry = { discovery };
-  } else {
+  } else if (entitlementUrl) {
     try {
       const res = await fetch(entitlementUrl, { signal });
       if (!res.ok) throw new Error('Unable to fetch entitlement Url')
@@ -25,7 +25,7 @@ export const loadEntitlement = async (entitlementUrl, signal) => {
   // i.e. 'http://localhost:3002/remoteEntry.js -> 'http://localhost:3002'
   // this origin is where stripes-core will attempt to fetch translations and assets from.
 
-  registry.discovery.forEach(remote => {
+  registry?.discovery?.forEach(remote => {
     if (!remote?.location?.startsWith('http')) {
       remote.location = `${window.location.protocol}//${remote.location}`;
     }
@@ -34,5 +34,5 @@ export const loadEntitlement = async (entitlementUrl, signal) => {
     remote.port = url.port;
     remote.origin = url.origin;
   });
-  return Promise.resolve(registry.discovery);
+  return Promise.resolve(registry?.discovery);
 };
