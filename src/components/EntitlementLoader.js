@@ -1,6 +1,5 @@
 import { useEffect, useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { okapi } from 'stripes-config';
 import { useStripes } from '../StripesContext';
 import { ModulesContext, useModules, modulesInitialState } from '../ModulesContext';
 import loadRemoteComponent from '../loadRemoteComponent';
@@ -22,8 +21,8 @@ export const preloadModules = async (stripes, remotes) => {
   try {
     const loaderArray = [];
     remotes.forEach(remote => {
-      const { name, url } = remote;
-      loaderArray.push(loadRemoteComponent(url, name)
+      const { name, location } = remote;
+      loaderArray.push(loadRemoteComponent(location, name)
         .then((module) => {
           remote.getModule = () => module.default;
         })
@@ -62,7 +61,7 @@ const loadTranslations = async (stripes, module) => {
   // and converts from kebab-case (the IETF standard) to snake_case (which we
   // somehow adopted for our files in Lokalise).
   const locale = stripes.locale.split('-u-nu-')[0].replace('-', '_');
-  const url = `${module.host}:${module.port}/translations/${locale}.json`;
+  const url = `${module.origin}/translations/${locale}.json`;
   stripes.logger.log('core', `loading ${locale} translations for ${module.name}`);
 
   const res = await fetch(url);
@@ -94,7 +93,7 @@ const loadIcons = (stripes, module) => {
 
       const icon = {
         [i.name]: {
-          src: `${module.host}:${module.port}/icons/${i.name}.svg`,
+          src: `${module.origin}/icons/${i.name}.svg`,
           alt: i.title,
         }
       };
@@ -177,6 +176,7 @@ const EntitlementLoader = ({ children }) => {
   // if platform is configured for module federation, read the list of registered apps from <fill in source of truth>
   // localstorage, okapi, direct call to registry endpoint?
   useEffect(() => {
+    const { okapi } = stripes;
     if (okapi.entitlementUrl) {
       const fetchRegistry = async () => {
         // read the list of registered apps
