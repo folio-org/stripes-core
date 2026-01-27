@@ -33,6 +33,10 @@ export const loadEntitlement = async (entitlementUrl, signal) => {
     remote.host = url.hostname;
     remote.port = url.port;
     remote.origin = url.origin;
+    let segments = url.href.split('/');
+    segments.pop();
+    let hrefWithoutFilename = segments.join('/')
+    remote.assetPath = hrefWithoutFilename;
   });
   return Promise.resolve(registry?.discovery);
 };

@@ -61,7 +61,7 @@ const loadTranslations = async (stripes, module) => {
   // and converts from kebab-case (the IETF standard) to snake_case (which we
   // somehow adopted for our files in Lokalise).
   const locale = stripes.locale.split('-u-nu-')[0].replace('-', '_');
-  const url = `${module.origin}/translations/${locale}.json`;
+  const url = `${module.assetPath}/translations/${locale}.json`;
   stripes.logger.log('core', `loading ${locale} translations for ${module.name}`);
 
   const res = await fetch(url);
@@ -93,7 +93,7 @@ const loadIcons = (stripes, module) => {
 
       const icon = {
         [i.name]: {
-          src: `${module.origin}/icons/${i.name}.svg`,
+          src: `${module.assetPath}/icons/${i.name}.svg`,
           alt: i.title,
         }
       };
