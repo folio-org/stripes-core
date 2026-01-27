@@ -2,7 +2,7 @@ import React, { Component, StrictMode } from 'react';
 import PropTypes from 'prop-types';
 import { okapi as okapiConfig, config } from 'stripes-config';
 import merge from 'lodash/merge';
-
+import localforage from 'localforage';
 import AppConfigError from './components/AppConfigError';
 import connectErrorEpic from './connectErrorEpic';
 import configureEpics from './configureEpics';
@@ -15,8 +15,9 @@ import { modulesInitialState } from './ModulesContext';
 import css from './components/SessionEventContainer/style.css';
 
 import Root from './components/Root';
-import { eventsPortal } from './constants';
+import { eventsPortal, stripesHubAPI } from './constants';
 import { getLoginTenant } from './loginServices';
+
 
 const StrictWrapper = ({ children }) => {
   if (config.disableStrictMode) {
@@ -102,11 +103,21 @@ export default class StripesCore extends Component {
     if (this.state.isStorageEnabled) {
       try {
         const modules = await getModules();
+
+        const entitlementUrl = await localforage.getItem(stripesHubAPI.ENTITLEMENT_URL_KEY);
+        const hostLocation = await localforage.getItem(stripesHubAPI.HOST_LOCATION_KEY);
+        const remotesList = await localforage.getItem(stripesHubAPI.REMOTE_LIST_KEY);
+
         const actionNames = gatherActions(modules);
 
         this.setState({
           actionNames,
           modules,
+          stripesHub: {
+            entitlementUrl,
+            hostLocation,
+            remotesList,
+          }
         });
       } catch (error) {
         console.error('Failed to gather actions:', error); // eslint-disable-line no-console
@@ -122,6 +133,7 @@ export default class StripesCore extends Component {
     const {
       actionNames,
       modules,
+      stripesHub,
     } = this.state;
     // Stripes requires cookies (for login) and session and local storage
     // (for session state and all manner of things). If these are not enabled,
@@ -148,6 +160,7 @@ export default class StripesCore extends Component {
           actionNames={actionNames}
           modules={modules}
           disableAuth={(config?.disableAuth) || false}
+          stripesHub={stripesHub}
           {...props}
         />
       </StrictWrapper>

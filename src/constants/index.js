@@ -7,3 +7,4 @@ export { default as packageName } from './packageName';
 export { default as delimiters } from './delimiters';
 export { default as eventsPortal } from './eventsPortal';
 export { default as settings } from './settings';
+export { default as stripesHubAPI } from './stripesHubAPI';
