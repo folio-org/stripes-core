@@ -5,6 +5,7 @@ import { Headline } from '@folio/stripes-components';
 import { FormattedMessage } from 'react-intl';
 
 import Pluggable from '../Pluggable';
+import ReleaseNotesLink from './ReleaseNotesLink';
 
 import css from './Front.css';
 
@@ -15,6 +16,10 @@ const Front = ({ stripes }) => {
     <Pluggable type="frontpage">
       <div className={css.frontWrap}>
         <Headline faded tag="h1" margin="none" className={css.frontTitle}><FormattedMessage id={tag} /></Headline>
+
+        <div className={css.releaseNotesWrap}>
+          <ReleaseNotesLink label={<FormattedMessage id="stripes-core.releaseNotes.front" />} />
+        </div>
       </div>
     </Pluggable>
   );

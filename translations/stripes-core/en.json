@@ -176,5 +176,8 @@
 
   "oidc.validatingAuthenticationToken": "Validating authentication token...",
   "oidc.initializingSession": "Initializing session...",
-  "oidc.otp.missingCode": "The query parameter 'code' is missing."
+  "oidc.otp.missingCode": "The query parameter 'code' is missing.",
+
+  "releaseNotes.front": "FOLIO release notes",
+  "releaseNotes.settings": "Release notes"
 }

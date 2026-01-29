@@ -32,6 +32,7 @@ import AppIcon from '../AppIcon';
 import { packageName } from '../../constants';
 import RouteErrorBoundary from '../RouteErrorBoundary';
 import { ModuleHierarchyProvider } from '../ModuleHierarchy';
+import ReleaseNotesLink from '../ReleaseNotesLink';
 
 import css from './Settings.css';
 
@@ -140,6 +141,9 @@ const Settings = ({ stripes }) => {
               activeLink={activeLink}
               className={css.navListSection}
             >
+              <NavListItem>
+                <ReleaseNotesLink label={intl.formatMessage({ id: 'stripes-core.releaseNotes.settings' })} />
+              </NavListItem>
               <NavListItem to="/settings/about">
                 <FormattedMessage id="stripes-core.front.about" />
               </NavListItem>

@@ -9,6 +9,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
 }
 
 h1.frontTitle {
@@ -22,4 +23,12 @@ h1.frontTitle {
   h1.frontTitle {
     font-size: var(--font-size-large);
   }
+}
+
+.releaseNotesWrap {
+  font-size: var(--font-size-large);
+  font-weight: var(--text-weight-bold);
+  text-align: center;
+  color: var(--color-link);
+  margin-top: -10px;
 }
