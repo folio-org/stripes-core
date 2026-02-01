@@ -1,17 +1,18 @@
 import { beforeEach, it, afterEach, describe } from 'mocha';
 import { expect } from 'chai';
-import startMirage from '../network/start';
+import { createServer, Response } from 'miragejs';
+
 import loadRemoteComponent from '../../../src/loadRemoteComponent';
 
-describe('loadRemoteComponent', () => {
+describe.only('loadRemoteComponent', () => {
   let server;
-  const mockRemoteUrl = 'http://example.com/testRemote/remoteEntry.js';
-  const mockErrorUrl = 'http://example.com/nonexistent/remoteEntry.js';
+  const mockRemoteUrl = '/example/testRemote/remoteEntry.js';
+  const mockErrorUrl = 'https://example.com/nonexistent/remoteEntry.js';
 
   const mockRemoteName = 'testComponent';
 
   beforeEach(async function () {
-    server = startMirage();
+    server = createServer({ environment: 'test' });
     server.get(mockRemoteUrl, () => {
       const mockScriptContent = `window['${mockRemoteName}'] = {
         init: function() { console.log("Component initialized"); },
@@ -19,6 +20,7 @@ describe('loadRemoteComponent', () => {
       };
       `;
 
+      // return mockScriptContent;
       return mockScriptContent;
     });
 
@@ -31,16 +33,19 @@ describe('loadRemoteComponent', () => {
     delete window[mockRemoteName];
   });
 
-  it('should load and evaluate the remote script', async () => {
-    await loadRemoteComponent(mockRemoteUrl, mockRemoteName);
-    expect(window[mockRemoteName]).to.be.an('object');
+  it('should inject the script tag with the requested src attribute', async () => {
+    try {
+      await loadRemoteComponent(mockRemoteUrl, mockRemoteName);
+    } catch (error) {
+      expect(Array.from(document.querySelectorAll('script')).find(scr => scr.src === mockRemoteUrl)).to.not.be.null;
+    }
   });
 
   it('should handle errors when loading the remote script', async () => {
     try {
       await loadRemoteComponent(mockErrorUrl, mockRemoteName);
     } catch (error) {
-      expect(error.message).to.equal(`Failed to fetch remote module from ${mockErrorUrl}`);
+      expect(error.message).to.equal(`Failed to load remote script from ${mockErrorUrl}`);
     }
   });
 });

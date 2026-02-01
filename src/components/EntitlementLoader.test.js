@@ -64,9 +64,11 @@ describe('EntitlementLoader', () => {
   };
 
   const mockRegistry = {
-    remotes: {
-      'app-module': {
-        url: 'http://localhost:3000/remoteEntry.js',
+    discovery: [
+      {
+        name: 'app_module',
+        id: 'app_module-1.0.0',
+        location: 'http://localhost:3000/remoteEntry.js',
         host: 'localhost',
         port: 3000,
         module: 'app-module',
@@ -74,18 +76,20 @@ describe('EntitlementLoader', () => {
         actsAs: ['app'],
         icons: [{ name: 'icon', title: 'icon title' }],
       },
-      'plugin-module': {
-        url: 'http://localhost:3001/remoteEntry.js',
+      {
+        name: 'plugin_module',
+        location: 'http://localhost:3001/remoteEntry.js',
+        id: 'plugin_module-4.0.0',
         host: 'localhost',
         port: 3001,
         module: 'plugin-module',
         displayName: 'pluginModule.label',
         actsAs: ['plugin'],
       },
-    },
+    ],
   };
 
-  const mockRemotes = Object.entries(mockRegistry?.remotes).map(([name, metadata]) => ({ name, ...metadata }));
+  const mockRemotes = mockRegistry.discovery;
 
   const translations = {
     'testModule.label': 'Test Module Display',
@@ -168,15 +172,16 @@ describe('EntitlementLoader', () => {
     });
 
     it('fetches the registry and loads modules dynamically', async () => {
-      render(<TestHarness />);
+      const entitlementUrl = 'http://localhost:8000/entitlement';
+      render(<TestHarness testStripes={{ ...mockStripes, okapi: { entitlementUrl } }} />);
 
       await waitFor(() => {
-        expect(loadEntitlement).toHaveBeenCalledWith('http://localhost:8000/entitlement');
+        expect(loadEntitlement).toHaveBeenCalledWith(entitlementUrl, new AbortController().signal);
       });
     });
 
     it('passes dynamic modules to ModulesContext.Provider', async () => {
-      render(<TestHarness />);
+      render(<TestHarness testStripes={{ ...mockStripes, okapi: { entitlementUrl: 'testEntitlementUrl' } }} />);
 
       await waitFor(() => {
         // expect(screen.queryByText('No Modules')).not.toBeInTheDocument();
@@ -334,6 +339,8 @@ describe('EntitlementLoader', () => {
       port: 3000,
       module: 'test-module',
       displayName: 'testModule.label',
+      assetPath: 'localhost:3000/path',
+      location: 'localhost:3000'
     };
 
     beforeEach(() => {
@@ -350,7 +357,7 @@ describe('EntitlementLoader', () => {
       const result = await loadModuleAssets(mockStripes, module);
 
       expect(global.fetch).toHaveBeenCalledWith(
-        'localhost:3000/translations/en_US.json'
+        'localhost:3000/path/translations/en_US.json'
       );
       expect(result.displayName).toBe('Test Module Display');
     });
@@ -408,8 +415,8 @@ describe('EntitlementLoader', () => {
         ok: true,
         json: jest.fn().mockResolvedValueOnce(mockRegistry),
       });
-      const remotes = await actualLoadEntitlement(okapi.entitlementUrl);
-      expect(fetch).toHaveBeenCalledWith(okapi.entitlementUrl);
+      const remotes = await actualLoadEntitlement('okapi:3000');
+      expect(fetch).toHaveBeenCalledWith('okapi:3000', { signal: undefined });
       expect(remotes).toEqual(mockRemotes);
     });
   });

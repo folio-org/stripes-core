@@ -179,7 +179,7 @@ const EntitlementLoader = ({ children }) => {
     const { okapi } = stripes;
     const controller = new AbortController();
     const signal = controller.signal;
-    if (okapi.entitlementUrl) {
+    if (okapi?.entitlementUrl) {
       // fetches the list of registered apps/metadata,
       // loads icons and translations, then module code,
       // ultimately stores the result in the modules state to pass down into the modules context.
