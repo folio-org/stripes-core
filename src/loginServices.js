@@ -439,16 +439,6 @@ const getTenantLocale = async (url, store, tenant) => {
     mode: 'cors',
   });
 
-  if (response.ok) {
-    const locale = await response.json();
-
-    dispatchLocale(
-      locale,
-      store,
-      tenant
-    );
-  }
-
   return response;
 };
 
@@ -473,20 +463,6 @@ const getUserOwnLocale = async (url, store, tenant, userId) => {
     credentials: 'include',
     mode: 'cors',
   });
-
-  if (response.ok) {
-    const json = await response.json();
-
-    if (json.items?.length) {
-      const localeValues = JSON.parse(json.items[0]?.value);
-
-      dispatchLocale(
-        localeValues,
-        store,
-        tenant
-      );
-    }
-  }
 
   return response;
 };
@@ -592,7 +568,7 @@ export async function loadResources(store, tenant, userId) {
       getTenantLocale(okapiUrl, store, tenant),
       getUserOwnLocale(okapiUrl, store, tenant, userId),
     ]);
-    const [tenantLocaleData, userLocaleData] = [responses];
+    const [tenantLocaleData, userLocaleData] = await Promise.all(responses.map(res => res.value?.json?.()));
     hasSetting = tenantLocaleData || userLocaleData?.items[0].value;
 
     if (hasSetting) {
