@@ -36,6 +36,8 @@
 * Add `tr` Türkçe (Turkish) locale. Refs STCOR-1026.
 * Remove the `/users-keycloak/_self` (and `/bl-users/_self`) requests. They were included in `isAuthenticationRequest`, which caused them to bypass the RTR queue (`getPromise`). Fixes STCOR-1029.
 * Define a permission-set containing values necessary for session-init API requests. Refs STCOR-1031.
+* FOLIO Landing Page > Display text to link to FOLIO release notes. Refs STCOR-1017.
+* Settings > System Information > Add a link to Release Notes. Refs STCOR-1018.
 * Use GET mod-settings `/locale` API to get tenant language & locale settings. Refs STCOR-1027.
 
 ## [11.0.0](https://github.com/folio-org/stripes-core/tree/v11.0.0) (2025-02-24)
