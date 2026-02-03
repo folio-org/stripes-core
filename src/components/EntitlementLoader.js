@@ -63,8 +63,6 @@ const loadTranslations = async (stripes, module) => {
   // somehow adopted for our files in Lokalise).
   const locale = stripes.locale.split('-u-nu-')[0].replace('-', '_');
   const url = `${module.assetPath}/translations/${locale}.json`;
-  stripes.logger.log('core', `loading ${locale} translations for ${module.name}`);
-
   const res = await fetch(url);
   if (res.ok) {
     const fetchedTranslations = await res.json();
@@ -72,7 +70,7 @@ const loadTranslations = async (stripes, module) => {
     stripes.setTranslations(tx);
     return tx;
   } else {
-    throw new Error(`Could not load translations for ${module.name}; failed to find ${url} `);
+    throw new Error(`Could not load translations for ${module.name}; failed to find ${url}`);
   }
 };
 
@@ -88,10 +86,7 @@ const loadTranslations = async (stripes, module) => {
  */
 const loadIcons = (stripes, module) => {
   if (module.icons?.length) {
-    stripes.logger.log('core', `loading icons for ${module.module}`);
     module.icons.forEach(i => {
-      stripes.logger.log('core', `  > ${i.name}`);
-
       const icon = {
         [i.name]: {
           src: `${module.assetPath}/icons/${i.name}.svg`,
@@ -114,10 +109,6 @@ export const loadModuleAssets = async (stripes, module) => {
   // register icons
   loadIcons(stripes, module);
 
-  // register sounds
-  // TODO loadSounds(stripes, module);
-
-  // register translations
   try {
     const tx = await loadTranslations(stripes, module);
     let newDisplayName;
