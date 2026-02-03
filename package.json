@@ -31,6 +31,7 @@
     },
     "optionalOkapiInterfaces": {
       "consortia": "1.0",
+      "locale": "1.0",
       "login-saml": "2.0",
       "roles": "1.1",
       "users-keycloak": "1.0"
@@ -59,6 +60,17 @@
         "permissionName": "mod-settings.global.write.stripes-core.prefs.manage",
         "displayName": "UI: update the tenant's preferences",
         "visible": false
+      },
+      {
+        "permissionName": "stripes-core.settings.read",
+        "displayName": "UI: read global tenant and user settings",
+        "visible": false,
+        "subPermissions": [
+          "mod-settings.owner.read.stripes-core.prefs.manage",
+          "mod-settings.global.read.stripes-core.prefs.manage",
+          "mod-settings.entries.collection.get",
+          "locale.item.get"
+        ]
       }
     ]
   },
