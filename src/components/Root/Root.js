@@ -181,9 +181,9 @@ class Root extends Component {
     //   time, but still, props are props so technically it's possible.
     config.rtr = configureRtr(this.props.config.rtr);
 
-    // if we have a stripesHub entitlementUrl, pass it to stripes...
+    // if we have a stripesHub discoveryUrl, pass it to stripes...
 
-    const stripesOkapi = stripesHub?.entitlementUrl ? { ...okapi, entitlementUrl: stripesHub.entitlementUrl } : okapi;
+    const stripesOkapi = stripesHub?.discoveryUrl ? { ...okapi, discoveryUrl: stripesHub.discoveryUrl } : okapi;
 
     const stripes = new Stripes({
       logger,

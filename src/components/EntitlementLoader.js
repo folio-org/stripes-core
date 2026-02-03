@@ -4,6 +4,7 @@ import { useStripes } from '../StripesContext';
 import { ModulesContext, useModules, modulesInitialState } from '../ModulesContext';
 import loadRemoteComponent from '../loadRemoteComponent';
 import { loadEntitlement } from './loadEntitlement';
+
 /**
  * preloadModules
  * Loads each module code and sets up its getModule function.
@@ -11,10 +12,10 @@ import { loadEntitlement } from './loadEntitlement';
  * settings, handler) where the value of each is an array of corresponding
  * applications.
  *
+ * @param {object} stripes
  * @param {array} remotes
  * @returns {app: [], plugin: [], settings: [], handler: []}
  */
-
 export const preloadModules = async (stripes, remotes) => {
   const modules = { app: [], plugin: [], settings: [], handler: [] };
 
@@ -71,7 +72,7 @@ const loadTranslations = async (stripes, module) => {
     stripes.setTranslations(tx);
     return tx;
   } else {
-    throw new Error(`Could not load translations for ${module.name}`);
+    throw new Error(`Could not load translations for ${module.name}; failed to find ${url} `);
   }
 };
 
@@ -179,16 +180,16 @@ const EntitlementLoader = ({ children }) => {
     const { okapi } = stripes;
     const controller = new AbortController();
     const signal = controller.signal;
-    if (okapi?.entitlementUrl) {
+    if (okapi?.discoveryUrl) {
       // fetches the list of registered apps/metadata,
       // loads icons and translations, then module code,
       // ultimately stores the result in the modules state to pass down into the modules context.
       const fetchRegistry = async () => {
         let remotes;
         try {
-          remotes = await loadEntitlement(okapi.entitlementUrl, signal);
+          remotes = await loadEntitlement(okapi.discoveryUrl, signal);
         } catch (e) {
-          handleRemoteModuleError(stripes, `Error fetching entitlement registry from ${okapi.entitlementUrl}: ${e}`);
+          handleRemoteModuleError(stripes, `Error fetching entitlement registry from ${okapi.discoveryUrl}: ${e}`);
         }
 
         let cachedModules = modulesInitialState;

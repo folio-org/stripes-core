@@ -150,7 +150,7 @@ describe('EntitlementLoader', () => {
     jest.restoreAllMocks();
   });
 
-  describe('when entitlementUrl is configured', () => {
+  describe('when discoveryUrl is configured', () => {
     let capturedModules = null;
     const TestContextComponent = () => {
       capturedModules = useModules();
@@ -159,7 +159,7 @@ describe('EntitlementLoader', () => {
 
     beforeEach(() => {
       capturedModules = null;
-      okapi.entitlementUrl = 'http://localhost:8000/entitlement';
+      okapi.discoveryUrl = 'http://localhost:8000/entitlement';
       global.fetch = jest.fn();
       // two modules in mock, two calls to fetch translations...
       global.fetch.mockResolvedValueOnce({
@@ -172,16 +172,16 @@ describe('EntitlementLoader', () => {
     });
 
     it('fetches the registry and loads modules dynamically', async () => {
-      const entitlementUrl = 'http://localhost:8000/entitlement';
-      render(<TestHarness testStripes={{ ...mockStripes, okapi: { entitlementUrl } }} />);
+      const discoveryUrl = 'http://localhost:8000/entitlement';
+      render(<TestHarness testStripes={{ ...mockStripes, okapi: { discoveryUrl } }} />);
 
       await waitFor(() => {
-        expect(loadEntitlement).toHaveBeenCalledWith(entitlementUrl, new AbortController().signal);
+        expect(loadEntitlement).toHaveBeenCalledWith(discoveryUrl, new AbortController().signal);
       });
     });
 
     it('passes dynamic modules to ModulesContext.Provider', async () => {
-      render(<TestHarness testStripes={{ ...mockStripes, okapi: { entitlementUrl: 'testEntitlementUrl' } }} />);
+      render(<TestHarness testStripes={{ ...mockStripes, okapi: { discoveryUrl: 'testdiscoveryUrl' } }} />);
 
       await waitFor(() => {
         // expect(screen.queryByText('No Modules')).not.toBeInTheDocument();
@@ -220,7 +220,7 @@ describe('EntitlementLoader', () => {
     });
   });
 
-  describe('when entitlementUrl is not configured', () => {
+  describe('when discoveryUrl is not configured', () => {
     let capturedModules = null;
     const ContextTestComponent = () => {
       capturedModules = React.useContext(ModulesContext);
@@ -229,7 +229,7 @@ describe('EntitlementLoader', () => {
 
     beforeEach(() => {
       capturedModules = null;
-      okapi.entitlementUrl = undefined;
+      okapi.discoveryUrl = undefined;
     });
 
     it('does not fetch the registry', async () => {
@@ -244,7 +244,7 @@ describe('EntitlementLoader', () => {
       });
     });
 
-    it('passes through configModules to ModulesContext when no entitlementUrl', async () => {
+    it('passes through configModules to ModulesContext when no discoveryUrl', async () => {
       render(
         <TestHarness testModulesContext={mockConfigModules}>
           <ContextTestComponent />
@@ -259,7 +259,7 @@ describe('EntitlementLoader', () => {
 
   describe('children rendering', () => {
     it('renders children when modules are available', async () => {
-      okapi.entitlementUrl = undefined;
+      okapi.discoveryUrl = undefined;
 
       render(
         <TestHarness testModulesContext={mockConfigModules}>
