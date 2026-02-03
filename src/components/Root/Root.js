@@ -9,14 +9,14 @@ import { QueryClientProvider } from 'react-query';
 import { ApolloProvider } from '@apollo/client';
 
 import { ErrorBoundary } from '@folio/stripes-components';
-import { metadata, icons } from 'stripes-config';
+import { metadata, icons as configIcons } from 'stripes-config';
 
 import { ConnectContext } from '@folio/stripes-connect';
 import initialReducers from '../../initialReducers';
 import enhanceReducer from '../../enhanceReducer';
 import createApolloClient from '../../createApolloClient';
 import createReactQueryClient from '../../createReactQueryClient';
-import { setSinglePlugin, setBindings, setIsAuthenticated, setOkapiToken, setTimezone, setCurrency, updateCurrentUser } from '../../okapiActions';
+import { addIcon, setSinglePlugin, setBindings, setIsAuthenticated, setOkapiToken, setTimezone, setCurrency, updateCurrentUser, setTranslations } from '../../okapiActions';
 import { loadTranslations, checkOkapiSession } from '../../loginServices';
 import { getQueryResourceKey, getCurrentModule } from '../../locationService';
 import Stripes from '../../Stripes';
@@ -133,7 +133,32 @@ class Root extends Component {
   }
 
   render() {
-    const { logger, store, epics, config, okapi, actionNames, token, isAuthenticated, disableAuth, currentUser, currentPerms, locale, defaultTranslations, timezone, currency, plugins, bindings, discovery, translations, history, serverDown } = this.props;
+    const {
+      logger,
+      store,
+      epics,
+      config,
+      okapi,
+      actionNames,
+      token,
+      isAuthenticated,
+      disableAuth,
+      currentUser,
+      currentPerms,
+      icons,
+      locale,
+      defaultTranslations,
+      timezone,
+      currency,
+      plugins,
+      bindings,
+      discovery,
+      translations,
+      history,
+      serverDown,
+      stripesHub,
+    } = this.props;
+
     if (serverDown) {
       // note: this isn't i18n'ed because we haven't rendered an IntlProvider yet.
       return <div>Error: server is forbidden, unreachable or down. Clear the cookies? Use incognito mode? VPN issue?</div>;
@@ -156,12 +181,16 @@ class Root extends Component {
     //   time, but still, props are props so technically it's possible.
     config.rtr = configureRtr(this.props.config.rtr);
 
+    // if we have a stripesHub discoveryUrl, pass it to stripes...
+
+    const stripesOkapi = stripesHub?.discoveryUrl ? { ...okapi, discoveryUrl: stripesHub.discoveryUrl } : okapi;
+
     const stripes = new Stripes({
       logger,
       store,
       epics,
       config,
-      okapi,
+      okapi: stripesOkapi,
       withOkapi: this.withOkapi,
       setToken: (val) => { store.dispatch(setOkapiToken(val)); },
       setIsAuthenticated: (val) => { store.dispatch(setIsAuthenticated(val)); },
@@ -170,9 +199,11 @@ class Root extends Component {
       timezone,
       currency,
       metadata,
-      icons,
+      icons: { ...configIcons, ...icons },
+      addIcon: (key, icon) => { store.dispatch(addIcon(key, icon)); },
       setLocale: (localeValue) => { loadTranslations(store, localeValue, defaultTranslations); },
       setTimezone: (timezoneValue) => { store.dispatch(setTimezone(timezoneValue)); },
+      setTranslations: (nextTranslations) => { store.dispatch(setTranslations(nextTranslations)); },
       setCurrency: (currencyValue) => { store.dispatch(setCurrency(currencyValue)); },
       updateUser: (userValue) => { store.dispatch(updateCurrentUser(userValue)); },
       plugins: plugins || {},
@@ -185,6 +216,7 @@ class Root extends Component {
         perms: currentPerms,
       },
       connect(X) { return X; },
+      stripesHub,
     });
 
     return (
@@ -265,6 +297,7 @@ Root.propTypes = {
     push: PropTypes.func.isRequired,
     replace: PropTypes.func.isRequired,
   }),
+  icons: PropTypes.object,
   okapiReady: PropTypes.bool,
   serverDown: PropTypes.bool,
 };
@@ -275,6 +308,7 @@ Root.defaultProps = {
   currency: 'USD',
   okapiReady: false,
   serverDown: false,
+  icons: {},
 };
 
 function mapStateToProps(state) {
@@ -284,6 +318,7 @@ function mapStateToProps(state) {
     currentPerms: state.okapi.currentPerms,
     currentUser: state.okapi.currentUser,
     discovery: state.discovery,
+    icons: state.okapi.icons,
     isAuthenticated: state.okapi.isAuthenticated,
     locale: state.okapi.locale,
     okapi: state.okapi,

@@ -61,11 +61,9 @@ const Settings = ({ stripes }) => {
       .map((m) => {
         try {
           const connect = connectFor(m.module, stripes.epics, stripes.logger);
-          const module = m.getModule();
-
           return {
             module: m,
-            Component: connect(module),
+            Component: connect(m.getModule()),
             moduleStripes: stripes.clone({ connect }),
           };
         } catch (error) {

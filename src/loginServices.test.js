@@ -56,7 +56,7 @@ import {
   updateCurrentUser,
 } from './okapiActions';
 
-import { defaultErrors } from './constants';
+import { defaultErrors, stripesHubAPI } from './constants';
 
 jest.mock('./loginServices', () => ({
   ...jest.requireActual('./loginServices'),
@@ -68,8 +68,14 @@ jest.mock('./discoverServices', () => ({
   discoverServices: jest.fn().mockResolvedValue([]),
 }));
 
+const mockStripesHubAPI = stripesHubAPI;
 jest.mock('localforage', () => ({
-  getItem: jest.fn(() => Promise.resolve({ user: {} })),
+  getItem: jest.fn((str) => {
+    if (str === mockStripesHubAPI.HOST_LOCATION_KEY) {
+      return Promise.resolve(null);
+    }
+    return Promise.resolve({ user: {} });
+  }),
   setItem: jest.fn(() => Promise.resolve()),
   removeItem: jest.fn(() => Promise.resolve()),
 }));
@@ -84,7 +90,7 @@ jest.mock('stripes-config', () => ({
   okapi: {
     authnUrl: 'https://authn.url',
   },
-  translations: {}
+  translations: { cs_CZ: 'cs-CZ', cs: 'cs-CZ', fr: 'fr', ar: 'ar', en_US: 'en-US', en_GB: 'en-GB' }
 }));
 
 // fetch success: resolve promise with ok == true and $data in json()
@@ -159,65 +165,54 @@ describe('handleLoginError', () => {
 });
 
 describe('loadTranslations', () => {
-  it('dispatches setLocale', async () => {
-    const store = {
+  let store;
+  beforeEach(() => {
+    store = {
       dispatch: jest.fn(),
     };
+    mockFetchSuccess({});
+  });
+
+  it('dispatches setLocale', async () => {
     const locale = 'cs-CZ';
 
-    mockFetchSuccess({});
     await loadTranslations(store, locale, {});
     expect(store.dispatch).toHaveBeenCalledWith(setLocale(locale));
-    mockFetchCleanUp();
   });
 
   describe('sets document attributes correctly', () => {
     it('sets lang given region', async () => {
-      const store = {
-        dispatch: jest.fn(),
-      };
       const locale = 'cs-CZ';
-
-      mockFetchSuccess({});
       await loadTranslations(store, locale, {});
       expect(document.documentElement.lang).toMatch('cs');
-      mockFetchCleanUp();
     });
 
     it('sets lang without region', async () => {
-      const store = {
-        dispatch: jest.fn(),
-      };
       const locale = 'cs';
-
-      mockFetchSuccess({});
       await loadTranslations(store, locale, {});
       expect(document.documentElement.lang).toMatch('cs');
-      mockFetchCleanUp();
     });
 
     it('sets dir (LTR)', async () => {
-      const store = {
-        dispatch: jest.fn(),
-      };
       const locale = 'fr';
-
-      mockFetchSuccess({});
       await loadTranslations(store, locale, {});
       expect(document.dir).toMatch('ltr');
-      mockFetchCleanUp();
     });
 
     it('sets dir (RTL)', async () => {
-      const store = {
-        dispatch: jest.fn(),
-      };
       const locale = 'ar';
-
-      mockFetchSuccess({});
       await loadTranslations(store, locale, {});
       expect(document.dir).toMatch('rtl');
-      mockFetchCleanUp();
+    });
+  });
+
+  describe('when localforage contains a hostLocation', () => {
+    it('fetches using the hostLocation from localforage', async () => {
+      const hostLocation = 'http://my-app-here';
+      const locale = 'cs-CZ';
+      localforage.getItem.mockResolvedValueOnce(hostLocation);
+      await loadTranslations(store, locale, { cs: 'cs-CZ' });
+      expect(global.fetch).toHaveBeenCalledWith(`${hostLocation}/cs-CZ`);
     });
   });
 });
@@ -430,7 +425,19 @@ describe('updateUser', () => {
     const store = {
       dispatch: jest.fn(),
     };
+
+    const session = {
+      user: {
+        id: 'id',
+        username: 'username',
+        storageOnlyValue: 'is still persisted',
+      },
+      perms: { foo: true },
+      tenant: 'testTenant',
+      token: 'token',
+    };
     const data = { thunder: 'chicken' };
+    localforage.getItem.mockResolvedValueOnce(session);
     await updateUser(store, data);
     expect(store.dispatch).toHaveBeenCalledWith(updateCurrentUser(data));
   });
@@ -468,6 +475,10 @@ describe('updateTenant', () => {
 });
 
 describe('localforage wrappers', () => {
+  afterEach(() => {
+    jest.resetAllMocks();
+  });
+
   describe('getOkapiSession', () => {
     it('retrieves a session object', async () => {
       const o = {
@@ -475,9 +486,10 @@ describe('localforage wrappers', () => {
         margot: 'margot with a t looks better',
         also: 'i thought we were talking about margot robbie?',
         tokenExpiration: 'time out of mind',
+        test: 'okapiSess',
       };
 
-      localforage.getItem = jest.fn(() => Promise.resolve(o));
+      localforage.getItem.mockResolvedValue(o);
 
       const s = await getOkapiSession();
       expect(s).toMatchObject(o);
@@ -1362,4 +1374,3 @@ describe('getLoginTenant', () => {
 
   describe('ECS', () => { });
 });
-
