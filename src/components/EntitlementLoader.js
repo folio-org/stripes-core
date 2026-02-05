@@ -2,7 +2,6 @@ import { useEffect, useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { useStripes } from '../StripesContext';
 import { ModulesContext, useModules, modulesInitialState } from '../ModulesContext';
-import loadRemoteComponent from '../loadRemoteComponent';
 import { loadEntitlement } from './loadEntitlement';
 
 /**
@@ -23,7 +22,7 @@ export const preloadModules = async (stripes, remotes) => {
     const loaderArray = [];
     remotes.forEach(remote => {
       const { name, location } = remote;
-      loaderArray.push(loadRemoteComponent(location, name)
+      loaderArray.push(loadRemote(name)
         .then((module) => {
           remote.getModule = () => module.default;
         })
@@ -172,6 +171,14 @@ const EntitlementLoader = ({ children }) => {
     const controller = new AbortController();
     const signal = controller.signal;
     if (okapi?.discoveryUrl) {
+      // ENABLE MOD FED DEBUGGING
+      localStorage.setItem('FEDERATION_DEBUG', 'true');
+
+      const fetchMFStats = async () => {
+        const stats = await fetch(`${location.protocol}//${location.host}/mf-stats.json`).then((response) => response.json());
+        stripes.logger.log('core', 'Module Federation Stats:', stats);
+      };
+
       // fetches the list of registered apps/metadata,
       // loads icons and translations, then module code,
       // ultimately stores the result in the modules state to pass down into the modules context.
@@ -195,6 +202,11 @@ const EntitlementLoader = ({ children }) => {
             handleRemoteModuleError(stripes, `Error loading remote module assets (icons, translations, sounds): ${e}`);
           }
 
+          const remotesToRegister = remotes.map(remote => ({
+            name: remote.name, entry: remote.entry
+          }));
+          registerRemotes(remotesToRegister);
+
           try {
             // load module code - this loads each module only once and up `getModule` so that it can be used sychronously.
             cachedModules = await preloadModules(stripes, remotesWithLoadedAssets);
@@ -205,6 +217,7 @@ const EntitlementLoader = ({ children }) => {
           setRemoteModules(cachedModules);
         }
       };
+      fetchMFStats();
       fetchRegistry();
     }
     return () => {

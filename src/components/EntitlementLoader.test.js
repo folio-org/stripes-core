@@ -4,7 +4,7 @@ import { okapi } from 'stripes-config';
 import EntitlementLoader, { preloadModules, loadModuleAssets } from './EntitlementLoader';
 import { StripesContext } from '../StripesContext';
 import { ModulesContext, useModules, modulesInitialState as mockModuleInitialState } from '../ModulesContext';
-import loadRemoteComponent from '../loadRemoteComponent';
+import { loadRemote, registerRemotes } from '@module-federation/runtime';
 import { loadEntitlement } from './loadEntitlement';
 
 jest.mock('stripes-config');

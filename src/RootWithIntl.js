@@ -18,7 +18,6 @@ import {
   MainContainer,
   MainNav,
   ModuleContainer,
-  ModuleTranslator,
   TitledRoute,
   Front,
   OIDCRedirect,
@@ -202,8 +201,8 @@ const RootWithIntl = ({ stripes, token = '', isAuthenticated = false, disableAut
             </TitleManager>
           </EntitlementLoader>
         </ModuleTranslator>
-      </CalloutContext.Provider>
-    </StripesContext.Provider>
+      </CalloutContext.Provider >
+    </StripesContext.Provider >
   );
 };
 

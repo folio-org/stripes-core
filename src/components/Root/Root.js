@@ -29,11 +29,6 @@ import './Root.css';
 
 import { FFetch } from './FFetch';
 
-if (!metadata) {
-  // eslint-disable-next-line no-console
-  console.error('No metadata harvested from package files, so you will not get app icons. Probably the stripes-core in your Stripes CLI is too old. Try `yarn global upgrade @folio/stripes-cli`');
-}
-
 class Root extends Component {
   constructor(...args) {
     super(...args);
@@ -223,7 +218,7 @@ class Root extends Component {
       <ErrorBoundary>
         <ConnectContext.Provider value={{ addReducer: this.addReducer, addEpic: this.addEpic, store }}>
           <ApolloProvider client={this.apolloClient}>
-            <QueryClientProvider client={this.reactQueryClient}>
+            <QueryClientProvider client={this.reactQueryClient} contextSharing>
               <IntlProvider
                 locale={locale}
                 key={locale}
@@ -267,6 +262,7 @@ Root.propTypes = {
   currentUser: PropTypes.object,
   epics: PropTypes.object,
   locale: PropTypes.string,
+  icons: PropTypes.object,
   defaultTranslations: PropTypes.object,
   timezone: PropTypes.string,
   currency: PropTypes.string,
