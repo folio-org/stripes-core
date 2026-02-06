@@ -3,10 +3,6 @@
 .ReleaseNotesLink {
   color: inherit;
 
-  &:visited {
-    color: inherit;
-  }
-
   & span {
     color: var(--color-link);
     margin-left: 5px;
