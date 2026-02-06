@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { useStripes } from '../StripesContext';
 import { ModulesContext, useModules, modulesInitialState } from '../ModulesContext';
 import { loadEntitlement } from './loadEntitlement';
+import { registerRemotes, loadRemote } from '@module-federation/runtime';
 
 /**
  * preloadModules
@@ -195,6 +196,7 @@ const EntitlementLoader = ({ children }) => {
 
         // if the signal is aborted, avoid all subsequent fetches, state updates...
         if (!signal.aborted) {
+          fetchMFStats();
           try {
             // load module assets (translations, icons)...
             remotesWithLoadedAssets = await loadAllModuleAssets(stripes, remotes);
@@ -203,7 +205,7 @@ const EntitlementLoader = ({ children }) => {
           }
 
           const remotesToRegister = remotes.map(remote => ({
-            name: remote.name, entry: remote.entry
+            name: remote.name, entry: remote.location
           }));
           registerRemotes(remotesToRegister);
 
@@ -217,7 +219,7 @@ const EntitlementLoader = ({ children }) => {
           setRemoteModules(cachedModules);
         }
       };
-      fetchMFStats();
+
       fetchRegistry();
     }
     return () => {
