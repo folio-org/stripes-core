@@ -12,28 +12,13 @@
  * to them. The AT cookie accompanies every request, and the RT cookie is sent
  * only in refresh requests.
  *
- * The basic plot here is that RTR requests happen independently of other
- * activity. The login-response is used to trigger the RTR cycle, which then
- * continues in perpetuity until logout. Likewise, the response from each RTR
- * request is used to start the timer that will trigger the next round in the
- * cycle.
+ * The basic plot is to trap failed API requests and inspect the reason for
+ * failure. If it was an authentication failure, stash the request, rotate the
+ * tokens, then replay the original request. If the request failed for other
+ * reasons, allow that failure to bubble to the calling application. If the
+ * rotation request itself fails, that indicates we have no AT and no RT; this
+ * is an unrecoverable situation and the session is terminated.
  *
- * Requests that arrive while RTR is in flight are held until the RTR promise
- * resolves and then processed. This avoids the problem of a request's AT
- * expiring (or changing, if RTR succeeds) while it is in-flight.
- *
- * RTR failures will cause logout since they indicate an expired or
- * otherwise invalid RT, which is unrecoverable. Other request failures
- * should be handled locally within the applications that initiated the
- * requests; thus, such errors are untrapped and bubble up.
- *
- * The gross gory details:
- * In an ideal world, we would simply export a function and a class and
- * tell folks to use those, but we don't live in that world, at least not
- * yet. So. For now, we override the global implementations in `replace...`
- * methods so any calls directly invoking `fetch()` or instantiating
- * `XMLHttpRequest` get these updated versions that handle token rotation
- * automatically.
  *
  * Logging categories:
  *   rtr: rotation
@@ -82,6 +67,120 @@ const OKAPI_FETCH_OPTIONS = {
   mode: 'cors',
 };
 
+const RTR_LOCK_KEY = '@folio/stripes-core::RTR_LOCK_KEY';
+
+/**
+ * queueRotateReplay
+ * 1. queue the original request
+ * 2. rotate tokens
+ * 3. replay the original request now that tokens are fresh
+ *
+ * @param {*} fetchfx fetch function to execute
+ * @param {*} config rotation configuration
+ * @param {*} error failed request { response, resource, options }
+ *
+ * @returns response of the replayed request
+ */
+const queueRotateReplay = async (fetchfx, config, error) => {
+  console.log('rtr', 'queueRotateReplay...');
+
+  const replayQueuedRequest = async () => {
+    console.log('rtr', 'replaying ...', error.resource);
+    const response = await fetchfx.apply(global, [error.resource, config.options(error.options)]);
+    return response;
+  };
+
+  /**
+   * rotateTokens
+   * 1. getTokens: maybe another request has already rotated
+   * 2. rotate: race the rotation request with a rejecting timeout
+   * 3. callback: store updated token details
+   * 4. replay: replay the original request
+   *
+   * @returns promise response from the original request
+   */
+  const rotateTokens = async () => {
+    console.log('rtr', 'locked ...');
+    try {
+      //
+      // 1. if rotation completed elsewhere, we don't need to rotate!
+      // maybe another tab rotated, maybe it happened while awaiting the lock.
+      if (await config.isValidToken()) {
+        console.log('rtr', 'reusing token supplied by another request');
+        return replayQueuedRequest();
+      }
+
+      //
+      // 2. rotate: race the rotation-request with a timeout; default 30s
+      const refreshTimeout = new Promise((_res, rej) => {
+        const timeout = config.refreshTimeout || ms('30s');
+        setTimeout(() => {
+          rej(new Error(`Token refresh timed out after ${ms(timeout)}`));
+        }, timeout);
+      });
+
+      console.log('===> rotating ...');
+      const t = await Promise.race([
+        refreshTimeout,
+        config.rotate()
+      ]);
+      console.log('<=== rotated!');
+
+      //
+      // 3. callback
+      config.onSuccess(t);
+      console.log('rtr', 'rotated ...');
+
+      //
+      // 4. replay the original request
+      return replayQueuedRequest();
+    } catch (err) {
+      console.error('caught an RTR error!', err);
+      config.onFailure(err);
+
+      // return the original response
+      return Promise.reject(error);
+    }
+  };
+
+  // rotation config
+  const shouldRotate = config.shouldRotate ?? (() => Promise.resolve(true));
+  const statusCodes = config.statusCodes || [401];
+
+  // skip rotation if:
+  // 1. we don't have a failed response to work with
+  // 2. the response status code does not indicate an authn failure
+  // 3. the original request asked to ignore rtr
+  // 4. we were asked not to rotate
+  if (
+    !error.response ||
+    !statusCodes.includes(error.response.status) ||
+    error.options?.rtrIgnore ||
+    !await shouldRotate()
+  ) {
+    return Promise.reject(error);
+  }
+
+  // pause users requests, giving us time to complete RTR in another window,
+  // proving that when simulateous requests fire, they correctly lock each
+  // other out, and when the second returns, it reuses the token from the first
+  // if (error.resource.match(/users/)) {
+  //   console.log('===> users waiting')
+  //   await new Promise((res, rej) => {
+  //     setTimeout(res, 5000);
+  //   });
+  //   console.log('<=== users waited')
+  // }
+
+  // lock, then rotate
+  if (typeof navigator !== 'undefined' && navigator.locks) {
+    return navigator.locks.request(RTR_LOCK_KEY, rotateTokens);
+  } else {
+    return rotateTokens();
+  }
+};
+
+
 export class FFetch {
   constructor({ logger, store, rtrConfig, okapi }) {
     this.logger = logger;
@@ -91,8 +190,8 @@ export class FFetch {
     this.focusEventSet = false;
     this.rtrScheduled = false; // Track if RTR has been scheduled in this tab
     this.bc = new BroadcastChannel(RTR_ACTIVE_WINDOW_MSG_CHANNEL);
-    this.setWindowIdMessageEvent();
-    this.setDocumentFocusHandler();
+    // this.setWindowIdMessageEvent();
+    // this.setDocumentFocusHandler();
   }
 
   /**
@@ -111,291 +210,105 @@ export class FFetch {
     global.XMLHttpRequest = FXHR(this);
   };
 
-  /**
-   * onActiveWindowIdMessage
-   * Handles receiving messages from other windows via the BroadcastChannel.
-   * The broadcast windowId is stored in sessionStorage as SESSION_ACTIVE_WINDOW_ID.
-   * and used in the rtr function (token-utils) to determine if rotation should proceed.
-   */
-  onActiveWindowIdMessage = ({ data }) => {
-    if (data?.type === RTR_ACTIVE_WINDOW_MSG) {
-      this.logger.log('rtr', `Message handler: Active window changed: ${data.activeWindow}`);
-      sessionStorage.setItem(SESSION_ACTIVE_WINDOW_ID, data.activeWindow);
-      // If the current window is not the active one, set focus handler to catch focus when it returns.
-      if (!document.hasFocus()) {
-        this.setDocumentFocusHandler();
-      }
-    }
-  }
+  rotationConfig = {
+    // statuscodes to intercept
+    // optional; defaults to 401
+    statusCodes: [400, 401],
 
-  /**
-   * setWindowIdMessageEvent
-   * Sets the window.windowId to a UUID if it doesn't already exist.
-   * Also sets up a 'message' eventHandler to catch the current active windowId
-   * when it's broadcast from another window.
-   */
-  setWindowIdMessageEvent = () => {
-    window.stripesRTRWindowId = window.stripesRTRWindowId ? window.stripesRTRWindowId : uuidv4();
-    this.bc.addEventListener('message', this.onActiveWindowIdMessage);
-  }
+    // this doesn't work. binding weirdness?
+    logger: this.logger,
 
-  /**
-   * Document Focus Handler
-   * Posts a message to the BroadcastChannel with the current window's windowId.
-   * Sets the SESSION_ACTIVE_WINDOW_ID in sessionStorage to the current window's windowId.
-   * Sets the focusEventSet flag to false to allow setting a new focus handler.
-   * @return {void}
-   */
-  documentFocusHandler = () => {
-    this.logger.log('rtr', 'Focus handler - new window focused, broadcasting active window ID');
-    this.bc.postMessage({ type: RTR_ACTIVE_WINDOW_MSG, activeWindow: window.stripesRTRWindowId });
-    sessionStorage.setItem(SESSION_ACTIVE_WINDOW_ID, window.stripesRTRWindowId);
-    this.focusEventSet = false;
-    // check if RTR is needed and initiate it if the access token is expired
-    getTokenExpiry().then((expiry) => {
-      if (expiry?.atExpires && expiry.atExpires < Date.now()) {
-        this.logger.log('rtr', 'Focus handler - access token expired, initiating RTR');
-        const { okapi } = this.store.getState();
-        rtr(this.nativeFetch, this.logger, this.rotateCallback, okapi);
-      }
-    });
-  };
+    // timeout in milliseconds
+    // optional; defaults to 30s
+    // refreshTimeout: ms('30s'),
 
-  /**
-   * setDocumentFocusHandler
-   * Sets up a document-level focus handler that will check if RTR is needed
-   * and initiate it if the access token is expired.
-   * The 'once' setting ensures that the handler removes itself after the first focus event.
-   * To reduce chattiness, we only assign one of these handlers at a time, hence the `focusEventSet` flag.
-  */
-  setDocumentFocusHandler = () => {
-    if (!this.focusEventSet) {
-      this.focusEventSet = true;
-      window.addEventListener('focusin', this.documentFocusHandler, { once: true });
-    }
-  }
+    // fetch options
+    // configure request options with the token attached, headers munged, etc
+    options: (options = {}) => {
+      return { ...options, ...OKAPI_FETCH_OPTIONS };
+    },
 
-  /**
-   * scheduleRotation
-   * Given a promise that resolves with timestamps for the AT's and RT's
-   * expiration, configure relevant corresponding timers:
-   * * before the AT expires, conduct RTR
-   * * when the RT is about to expire, send a "session will end" event
-   * * when the RT expires, send a "session ended" event"
-   *
-   * @param {Promise} rotationP
-   */
-  scheduleRotation = (rotationP) => {
-    rotationP.then((rotationInterval) => {
-      // AT refresh interval: a large fraction of the actual AT TTL
-      const atInterval = (rotationInterval.accessTokenExpiration - Date.now()) * RTR_AT_TTL_FRACTION;
+    // alternative to status code inspection? ugh, have to read the body :(
+    // shouldRefresh: async (response) => {
+    //   const cr = response.clone();
+    //   const text = await cr.text();
+    //   return response.status === 400 && text.startsWith('Token missing, access requires permission');
+    // },
 
-      // RT timeout interval (session will end) and warning interval (warning that session will end)
-      const rtTimeoutInterval = (rotationInterval.refreshTokenExpiration - Date.now());
-      const rtWarningInterval = (rotationInterval.refreshTokenExpiration - Date.now()) - ms(this.rtrConfig.fixedLengthSessionWarningTTL);
+    // handle rotation
+    rotate: async () => {
+      const res = await this.nativeFetch.apply(global, [`${this.okapi.url}/authn/refresh`, {
+        headers: {
+          'content-type': 'application/json',
+          'x-okapi-tenant': this.okapi.tenant,
+        },
+        method: 'POST',
+        credentials: 'include',
+        mode: 'cors',
+      }]);
 
-      // schedule AT rotation IFF the AT will expire before the RT. this avoids
-      // refresh-thrashing near the end of the FLS with progressively shorter
-      // AT TTL windows.
-      if (rotationInterval.accessTokenExpiration < rotationInterval.refreshTokenExpiration) {
-        this.logger.log('rtr', `rotation scheduled from rotateCallback; next callback in ${ms(atInterval)}`);
-        this.store.dispatch(setRtrTimeout(setTimeout(() => {
-          const { okapi } = this.store.getState();
-          rtr(this.nativeFetch, this.logger, this.rotateCallback, okapi);
-        }, atInterval)));
-      } else {
-        this.logger.log('rtr', 'rotation canceled; AT and RT will expire simultaneously');
-      }
+      // so we can test the promise race
+      // await new Promise((res, rej) => {
+      //   setTimeout(res, ms('5s'))
+      // });
 
-      // schedule FLS end-of-session warning
-      this.logger.log('rtr-fls', `end-of-session warning at ${new Date(rotationInterval.refreshTokenExpiration - ms(this.rtrConfig.fixedLengthSessionWarningTTL))}`);
-      this.store.dispatch(setRtrFlsWarningTimeout(setTimeout(() => {
-        this.logger.log('rtr-fls', 'emitting RTR_FLS_WARNING_EVENT');
-        window.dispatchEvent(new Event(RTR_FLS_WARNING_EVENT));
-      }, rtWarningInterval)));
-
-      // schedule FLS end-of-session logout
-      this.logger.log('rtr-fls', `session will end at ${new Date(rotationInterval.refreshTokenExpiration)}`);
-      this.store.dispatch(setRtrFlsTimeout(setTimeout(() => {
-        this.logger.log('rtr-fls', 'emitting RTR_FLS_TIMEOUT_EVENT');
-        window.dispatchEvent(new Event(RTR_FLS_TIMEOUT_EVENT));
-      }, rtTimeoutInterval - RTR_TIME_MARGIN_IN_MS))); // Calling /logout a small margin before cookie is deleted to ensure it is included in the request
-    });
-  };
-
-  /**
-   * rotateCallback
-   * Set a timeout to rotate the AT before it expires. Stash the timer-id
-   * in redux so the setRtrTimeout action can be used to cancel the existing
-   * timer when a new one is set.
-   *
-   * The rotation interval is set to a fraction of the AT's expiration
-   * time, e.g. if the AT expires in 1000 seconds and the fraction is .8,
-   * the timeout will be 800 seconds.
-   *
-   * @param {object} res object shaped like { accessTokenExpiration, refreshTokenExpiration }
-   *   where the values are ISO-8601 datestamps like YYYY-MM-DDTHH:mm:ssZ
-   */
-  rotateCallback = (res) => {
-    this.logger.log('rtr', 'rotation callback setup', res);
-
-    // When starting a new session, the response from /bl-users/login-with-expiry
-    // will contain token expiration info, but when restarting an existing session,
-    // the response from /bl-users/_self will NOT, although that information should
-    // have been cached in local-storage. Thus, we check the following places for
-    // token expiration data:
-    // 1. response
-    // 2. session storage
-    // 3. hard-coded default
-    if (res?.accessTokenExpiration) {
-      this.logger.log('rtr', 'rotation scheduled with login response data');
-      const rotationPromise = Promise.resolve({
-        accessTokenExpiration: new Date(res.accessTokenExpiration).getTime(),
-        refreshTokenExpiration: new Date(res.refreshTokenExpiration).getTime(),
-      });
-
-      this.scheduleRotation(rotationPromise);
-    } else {
-      const rotationPromise = getTokenExpiry().then((expiry) => {
-        if (expiry?.atExpires && expiry?.atExpires >= Date.now()) {
-          this.logger.log('rtr', 'rotation scheduled with cached session data', expiry);
+      if (res.ok) {
+        const json = await res.json();
+        if (json.accessTokenExpiration && json.refreshTokenExpiration) {
           return {
-            accessTokenExpiration: new Date(expiry.atExpires).getTime(),
-            refreshTokenExpiration: new Date(expiry.rtExpires).getTime(),
+            accessToken: new Date(json.accessTokenExpiration).getTime(),
+            refreshToken: new Date(json.refreshTokenExpiration).getTime(),
           };
         }
+      }
 
-        // default: session data was corrupt but the resume-session request
-        // succeeded so we know the cookies were valid at the time. short-term
-        // expiry-values will kick off RTR in the very new future, allowing us
-        // to grab values from the response.
-        this.logger.log('rtr', 'rotation scheduled with default value');
+      throw new Error('Rotation failure!');
+    },
 
-        return {
-          accessTokenExpiration: Date.now() + ms(RTR_AT_EXPIRY_IF_UNKNOWN),
-          refreshTokenExpiration: Date.now() + ms(RTR_RT_EXPIRY_IF_UNKNOWN),
-        };
-      });
+    // return true if a valid token is available
+    isValidToken: () => {
+      try {
+        const { accessToken } = JSON.parse(localStorage.getItem(RTR_LOCK_KEY));
+        return accessToken > Date.now();
+      } catch (err) {
+        console.error({ err });
+      }
+      console.log('no token, or it is not valid');
+      return false;
+    },
 
-      this.scheduleRotation(rotationPromise);
-    }
-  }
+    // store token on success; void
+    onSuccess: (newTokens) => {
+      localStorage.setItem(RTR_LOCK_KEY, JSON.stringify(newTokens));
+      console.log({ newTokens });
+    },
 
-  /**
-   * ffetch
-   * Inspect resource to determine whether it's a FOLIO API request.
-   * * If it is an authentication-related request, complete the request
-   *   and then execute the RTR callback to initiate that cycle.
-   * * If it is a logout request, complete the request and swallow any
-   *   errors because ... what would be the point of a failed logout
-   *   request? It's telling you "you couldn't call /logout because
-   *   you didn't have a cookie" i.e. you're already logged out".
-   * * If it is a regular request, make sure RTR isn't in-flight (which
-   *   would cause this request to fail if the RTR request finished
-   *   processing first, because it would invalidate the old AT) and
-   *   then proceed.
-   *   If we catch an RTR error, emit a RTR_ERR_EVENT on the window and
-   *   then swallow the error, allowing the application-level event handlers
-   *   to handle that event.
-   *   If we catch any other kind of error, re-throw it because it represents
-   *   an application-specific problem that needs to be handled by an
-   *   application-specific handler.
-   *
-   * @param {*} resource any resource acceptable to fetch()
-   * @param {object} options
-   * @returns Promise
-   * @throws if any fetch fails
-   */
+    // what to do, what to do; void
+    onFailure: (error) => {
+      console.error('Session expired', error);
+      // window.dispatchEvent(new Event(RTR_ERROR_EVENT, { detail: error }));
+      window.dispatchEvent(new Event(RTR_ERROR_EVENT, { detail: 'Session expired' }));
+    },
+  };
+
   ffetch = async (resource, options = {}) => {
-    // FOLIO API requests are subject to RTR
-    if (isFolioApiRequest(resource, this.okapi.url)) {
-      this.logger.log('rtrv', 'will fetch', resource);
+    try {
+      console.log(`fetching ${resource}`);
+      let response = await this.nativeFetch.apply(global, [resource, options && { ...options, ...OKAPI_FETCH_OPTIONS }]);
 
-      // on authentication (login), grab the response to kick off the rotation cycle,
-      // then return the response.
-      // Note: _self endpoints are NOT included here - they go through the normal
-      // RTR queue (getPromise) so they wait for any in-progress rotation to complete.
-      // This prevents 401 errors for _self requests in-flight during RTR.
-      if (isAuthenticationRequest(resource, this.okapi.url)) {
-        this.logger.log('rtr', 'authn request', resource);
-        return this.nativeFetch.apply(global, [resource, options && { ...options, ...OKAPI_FETCH_OPTIONS }])
-          .then(res => {
-            // a response can only be read once, so we clone it to grab the
-            // tokenExpiration in order to kick of the rtr cycle, then return
-            // the original
-            const clone = res.clone();
-            if (clone.ok) {
-              this.logger.log('rtr', 'authn success!');
-              clone.json().then(json => {
-                // we want accessTokenExpiration. do we need to destructure?
-                // in community-folio, a /login-with-expiry response is shaped like
-                //   { ..., tokenExpiration: { accessTokenExpiration, refreshTokenExpiration } }
-                // in eureka-folio, a /authn/token response is shaped like
-                //   { accessTokenExpiration, refreshTokenExpiration }
-                this.rotateCallback(json.tokenExpiration ?? json);
-              });
-            }
-
-            return res;
-          });
+      if (!response?.ok) {
+        response = await queueRotateReplay(this.nativeFetch, this.rotationConfig, { response, resource, options });
       }
 
-      // on logout, never fail
-      // if somebody does something silly like delete their cookies and then
-      // tries to logout, the logout request will fail. And that's fine, just
-      // fine. We will let them fail, capturing the response and swallowing it
-      // to avoid getting stuck in an error loop.
-      if (isLogoutRequest(resource, this.okapi.url)) {
-        this.logger.log('rtr', 'logout request');
-
-        return this.nativeFetch.apply(global, [resource, options && { ...options, ...OKAPI_FETCH_OPTIONS }])
-          .catch(err => {
-            // kill me softly: return an empty response to allow graceful failure
-            console.error('-- (rtr-sw) logout failure', err); // eslint-disable-line no-console
-            return Promise.resolve(new Response(JSON.stringify({})));
-          });
+      return response;
+    } catch (err) {
+      console.log({ err });
+      if (err.response) {
+        return err.response;
       }
-
-      // This block is only used to start RTR (rotateCallback) for new browser tabs.
-      // New tabs inherit only AT from the login session and don't start RTR timer to get RT.
-      // The first successful response will trigger rotateCallback to schedule RTR,
-      // preventing 401 errors when AT expires.
-      if (isValidSessionCheckRequest(resource, this.okapi.url)) {
-        this.logger.log('rtr', 'session check request', resource);
-        return getPromise(this.logger)
-          .then(() => {
-            this.logger.log('rtrv', 'post-rtr session check fetch', resource);
-            return this.nativeFetch.apply(global, [resource, options && { ...options, ...OKAPI_FETCH_OPTIONS }]);
-          })
-          .then(res => {
-            // On first successful session check, trigger rotateCallback to ensure
-            // RTR is scheduled (only once per tab)
-            if (res.ok && !this.rtrScheduled) {
-              this.logger.log('rtr', 'session check success, scheduling RTR (first time)');
-              this.rotateCallback();
-              this.rtrScheduled = true;
-            }
-            return res;
-          });
-      }
-
-      return getPromise(this.logger)
-        .then(() => {
-          this.logger.log('rtrv', 'post-rtr-fetch', resource);
-          return this.nativeFetch.apply(global, [resource, options && { ...options, ...OKAPI_FETCH_OPTIONS }]);
-        })
-        .catch(err => {
-          if (err instanceof RTRError) {
-            console.error('RTR failure', err); // eslint-disable-line no-console
-            window.dispatchEvent(new Event(RTR_ERROR_EVENT, { detail: err }));
-            return Promise.resolve(new Response(JSON.stringify({})));
-          }
-
-          throw err;
-        });
+      // oh we're in a baaaad state; fetch failed, and rotation failed and
+      // did not return the original failed response!?!
+      throw new Error('sad panda');
     }
-
-    // default: pass requests through to the network
-    return Promise.resolve(this.nativeFetch.apply(global, [resource, options]));
   };
 }
