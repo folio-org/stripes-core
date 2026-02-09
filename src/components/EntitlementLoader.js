@@ -1,9 +1,10 @@
 import { useEffect, useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
+import { registerRemotes, loadRemote } from '@module-federation/runtime';
 import { useStripes } from '../StripesContext';
 import { ModulesContext, useModules, modulesInitialState } from '../ModulesContext';
 import { loadEntitlement } from './loadEntitlement';
-import { registerRemotes, loadRemote } from '@module-federation/runtime';
+
 
 /**
  * preloadModules
