@@ -250,6 +250,20 @@ const canReadSettings = (store) => {
 };
 
 /**
+ * Checks if the current user has sufficient permissions to use locale API.
+ *
+ * This function verifies that the user has the required permission to access the locale API
+ *
+ * @param {Object} store - The store containing application state.
+ * @returns {boolean} True if the user possesses the required permissions for reading locale, false otherwise.
+ */
+const canReadLocale = (store) => {
+  const perms = store.getState().okapi.currentPerms;
+
+  return perms?.['locale.item.get'];
+};
+
+/**
  * loadTranslations
  * return a promise that fetches translations for the given locale and then
  * dispatches the locale and translations.
@@ -319,14 +333,12 @@ export async function loadTranslations(store, locale, defaultTranslations = {}) 
 
 /**
  * dispatchLocale
- * Given a URL where locale, timezone, and currency information may be stored,
- * request the data then dispatch appropriate actions for facet, if available.
+ * dispatch appropriate actions to set locale, timezone and currency, if available.
  *
- * @param {string} url location of locale information
- * @param {object} store redux store
- * @param {string} tenant
- * @returns {Promise}
- */
+ * @param {object} localeValues locale data object
+ * @param {object} store
+
+*/
 async function dispatchLocale(localeValues, store) {
   const { locale, timezone, currency } = localeValues;
   if (locale) {
@@ -335,6 +347,35 @@ async function dispatchLocale(localeValues, store) {
   if (timezone) store.dispatch(setTimezone(timezone));
   if (currency) store.dispatch(setCurrency(currency));
 }
+
+/**
+ * fetchAndDispatchLocale
+ * Given a URL where locale, timezone, and currency information may be stored,
+ * request the data then dispatch appropriate actions for facet, if available.
+ *
+ * @param {string} url location of locale information
+ * @param {object} store redux store
+ * @param {string} tenant
+ * @returns {Promise}
+ */
+const fetchAndDispatchLocale = async (url, store, tenant) => {
+  const response = await fetch(url, {
+    headers: getHeaders(tenant, store.getState().okapi.token),
+    credentials: 'include',
+    mode: 'cors',
+  });
+
+  if (response.ok) {
+    const json = await response.json();
+    if (json.configs?.length) {
+      const localeValues = JSON.parse(json.configs[0]?.value);
+
+      dispatchLocale(localeValues, store);
+    }
+  }
+
+  return response;
+};
 
 /**
  * getPlugins
@@ -420,12 +461,10 @@ const fetchLocale = async (url, store, tenant) => {
   return res;
 };
 
-
 /**
- * Retrieves the tenant's locale setting from the mod-settings.
+ * Retrieves the tenant's locale setting from the mod-settings locale API.
  *
- * Constructs a query based on preset scope and tenant locale configuration constants, then
- * fetches the locale data by making an HTTP request to the settings entries endpoint.
+ * Fetches the locale data from locale API by making an HTTP request to the mod-settings/locale endpoint.
  *
  * @param {string} url - The base URL for the settings API endpoint.
  * @param {Object} store - The store object used to manage application state.
@@ -438,6 +477,30 @@ const getTenantLocale = async (url, store, tenant) => {
     credentials: 'include',
     mode: 'cors',
   });
+
+  return response;
+};
+
+
+/**
+ * Retrieves the tenant's locale setting from the mod-settings.
+ *
+ * Constructs a query based on preset scope and tenant locale configuration constants, then
+ * fetches the locale data by making an HTTP request to the settings entries endpoint.
+ *
+ * @param {string} url - The base URL for the settings API endpoint.
+ * @param {Object} store - The store object used to manage application state.
+ * @param {string} tenant - The tenant name for which the locale settings are being requested.
+ * @returns {Promise} A promise that resolves with the locale configuration data.
+ */
+const getTenantLocaleSettingsEntries = async (url, store, tenant) => {
+  const query = `scope=="${settings.SCOPE}" and key=="${tenantLocaleConfig.KEY}"`;
+
+  const response = await fetchLocale(
+    `${url}/settings/entries?query=(${query})`,
+    store,
+    tenant
+  );
 
   return response;
 };
@@ -466,6 +529,66 @@ const getUserOwnLocale = async (url, store, tenant, userId) => {
 
   return response;
 };
+
+/**
+ * getLocaleConfigurationsEntries
+ * return a promise that retrieves the tenant's locale-settings then
+ * loads the translations and dispatches the timezone and currency.
+ * @param {string} okapiUrl
+ * @param {redux store} store
+ * @param {string} tenant
+ *
+ * @returns {Promise}
+ */
+export async function getLocaleConfigurationsEntries(okapiUrl, store, tenant) {
+  const query = [
+    'module==ORG',
+    'configName == localeSettings',
+    '(cql.allRecords=1 NOT userId="" NOT code="")'
+  ].join(' AND ');
+
+  const res = await fetchAndDispatchLocale(
+    `${okapiUrl}/configurations/entries?query=(${query})`,
+    store,
+    tenant
+  );
+
+  return res;
+}
+
+/**
+ * getUserLocaleConfigurationsEntries
+ * return a promise that retrieves the user's locale-settings then
+ * loads the translations and dispatches the timezone and currency.
+ * @param {*} okapiUrl
+ * @param {*} store
+ * @param {*} tenant
+ *
+ * @returns {Promise}
+ */
+export async function getUserLocaleConfigurationsEntries(okapiUrl, store, tenant, userId) {
+  const query = Object.entries(userLocaleConfig)
+    .map(([k, v]) => `"${k}"=="${v}"`)
+    .join(' AND ');
+
+  const res = await fetchAndDispatchLocale(
+    `${okapiUrl}/configurations/entries?query=(${query} and userId=="${userId}")`,
+    store,
+    tenant
+  );
+
+  return res;
+}
+
+// This function is used to support the deprecated mod-configuration API.
+// It is only used when the new mod-settings API returns empty settings.
+const getLocalesPromises = (url, store, tenant, userId) => {
+  return Promise.all([
+    getLocaleConfigurationsEntries(url, store, tenant),
+    getUserLocaleConfigurationsEntries(url, store, tenant, userId),
+  ]);
+};
+
 
 /**
  * Applies locale settings by loading translations and dispatching actions to update timezone and currency.
@@ -520,7 +643,7 @@ export const getFullLocale = (languageRegion, numberingSystem) => {
  */
 const processLocaleSettings = async (store, tenantLocaleData, userLocaleData) => {
   const tenantLocaleSettings = tenantLocaleData;
-  const userLocaleSettings = userLocaleData?.items[0]?.value;
+  const userLocaleSettings = userLocaleData?.items?.[0]?.value;
 
   const locale = userLocaleSettings?.locale || tenantLocaleSettings?.locale;
   const numberingSystem = userLocaleSettings?.numberingSystem || tenantLocaleSettings?.numberingSystem;
@@ -561,20 +684,65 @@ export async function loadResources(store, tenant, userId) {
   const hasReadConfigPerm = canReadConfig(store);
   let hasSetting = false;
 
-  // canReadSetting: mod-settings
-  // hasReadConfigPerm: mod-configuration (legacy)
-  if (canReadSettings(store)) {
-    const responses = await Promise.allSettled([
+  let responses = [];
+  let tenantLocaleData;
+  let userLocaleData;
+
+  let isLocaleApiMissing = true;
+
+  if (canReadLocale(store)) {
+    // usually we'd check whether an interface is present here
+    // but interface discovery happens later in this function
+    // and it's asynchronous via redux so we can't just move a function call to be at the beginning
+    // so let's attempt to fetch locale from that API first
+    responses = await Promise.allSettled([
       getTenantLocale(okapiUrl, store, tenant),
       getUserOwnLocale(okapiUrl, store, tenant, userId),
     ]);
-    const [tenantLocaleData, userLocaleData] = await Promise.all(responses.map(res => res.value?.json?.()));
-    hasSetting = tenantLocaleData || userLocaleData?.items[0].value;
 
-    if (hasSetting) {
-      await processLocaleSettings(store, tenantLocaleData, userLocaleData);
-      promises.push(responses.map(res => res?.value));
+    // if locale API call failed - we're assuming that it's due to a missing interface
+    if (responses[0].value.ok) {
+      isLocaleApiMissing = false;
+      [tenantLocaleData, userLocaleData] = await Promise.all(responses.map(res => res.value?.json?.()));
+      hasSetting = tenantLocaleData || userLocaleData?.items[0]?.value;
     }
+  }
+
+  // fallback to mod-settings
+  if (canReadSettings(store) && isLocaleApiMissing) {
+    // canReadSetting: mod-settings
+    // hasReadConfigPerm: mod-configuration (legacy)
+    responses = await Promise.allSettled([
+      getTenantLocaleSettingsEntries(okapiUrl, store, tenant),
+      getUserOwnLocale(okapiUrl, store, tenant, userId),
+    ]);
+
+    [tenantLocaleData, userLocaleData] = await Promise.all(responses.map(res => res.value?.json?.()));
+    /* Locale API returns an object with locale data
+          but mod-settings/settings/entries returns shape:
+          {
+            items: [{
+              value: {
+                ...locale data
+              }
+            }]
+          }
+
+          so we need to get this data here to pass to `processLocaleSettings`
+      */
+    tenantLocaleData = tenantLocaleData.items?.[0]?.value;
+    hasSetting = tenantLocaleData || userLocaleData?.items[0]?.value;
+  }
+
+  if (hasSetting) {
+    await processLocaleSettings(store, tenantLocaleData, userLocaleData);
+    promises.push(responses.map(res => res?.value));
+  }
+
+
+  // only read from legacy mod-config if we haven't already read from mod-settings
+  if (hasReadConfigPerm && !hasSetting) {
+    promises.push(getLocalesPromises(okapiUrl, store, tenant, userId));
   }
 
   // tenant's locale, plugin, bindings, and user's locale are all stored
@@ -597,6 +765,7 @@ export async function loadResources(store, tenant, userId) {
 
   return result.flat();
 }
+
 
 /**
  * spreadUserWithPerms
