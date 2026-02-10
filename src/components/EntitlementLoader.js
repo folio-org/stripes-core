@@ -173,6 +173,10 @@ const EntitlementLoader = ({ children }) => {
     const controller = new AbortController();
     const signal = controller.signal;
     if (okapi?.discoveryUrl) {
+      // ENABLE MOD FED DEBUGGING
+      localStorage.setItem('FEDERATION_DEBUG', 'true');
+
+
       // fetches the list of registered apps/metadata,
       // loads icons and translations, then module code,
       // ultimately stores the result in the modules state to pass down into the modules context.
