@@ -23,7 +23,7 @@ export const preloadModules = async (stripes, remotes) => {
   try {
     const loaderArray = [];
     remotes.forEach(remote => {
-      const { name, location } = remote;
+      const { name } = remote;
       loaderArray.push(loadRemote(name)
         .then((module) => {
           remote.getModule = () => module.default;
@@ -173,14 +173,6 @@ const EntitlementLoader = ({ children }) => {
     const controller = new AbortController();
     const signal = controller.signal;
     if (okapi?.discoveryUrl) {
-      // ENABLE MOD FED DEBUGGING
-      localStorage.setItem('FEDERATION_DEBUG', 'true');
-
-      const fetchMFStats = async () => {
-        const stats = await fetch(`${location.protocol}//${location.host}/mf-stats.json`).then((response) => response.json());
-        stripes.logger.log('core', 'Module Federation Stats:', stats);
-      };
-
       // fetches the list of registered apps/metadata,
       // loads icons and translations, then module code,
       // ultimately stores the result in the modules state to pass down into the modules context.
@@ -197,7 +189,6 @@ const EntitlementLoader = ({ children }) => {
 
         // if the signal is aborted, avoid all subsequent fetches, state updates...
         if (!signal.aborted) {
-          fetchMFStats();
           try {
             // load module assets (translations, icons)...
             remotesWithLoadedAssets = await loadAllModuleAssets(stripes, remotes);
