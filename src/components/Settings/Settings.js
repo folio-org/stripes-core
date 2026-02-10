@@ -32,7 +32,7 @@ import AppIcon from '../AppIcon';
 import { packageName } from '../../constants';
 import RouteErrorBoundary from '../RouteErrorBoundary';
 import { ModuleHierarchyProvider } from '../ModuleHierarchy';
-import ReleaseNotesLink from '../ReleaseNotesLink';
+import ReleaseNotesLink, { RELEASE_NOTES_LINK_ATTRS } from '../ReleaseNotesLink';
 
 import css from './Settings.css';
 
@@ -61,11 +61,9 @@ const Settings = ({ stripes }) => {
       .map((m) => {
         try {
           const connect = connectFor(m.module, stripes.epics, stripes.logger);
-          const module = m.getModule();
-
           return {
             module: m,
-            Component: connect(module),
+            Component: connect(m.getModule()),
             moduleStripes: stripes.clone({ connect }),
           };
         } catch (error) {
@@ -141,8 +139,10 @@ const Settings = ({ stripes }) => {
               activeLink={activeLink}
               className={css.navListSection}
             >
-              <NavListItem>
-                <ReleaseNotesLink label={intl.formatMessage({ id: 'stripes-core.releaseNotes.settings' })} />
+              <NavListItem {...RELEASE_NOTES_LINK_ATTRS}>
+                <ReleaseNotesLink>
+                  {intl.formatMessage({ id: 'stripes-core.releaseNotes.settings' })}
+                </ReleaseNotesLink>
               </NavListItem>
               <NavListItem to="/settings/about">
                 <FormattedMessage id="stripes-core.front.about" />
