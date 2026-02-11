@@ -18,7 +18,7 @@ export const loadEntitlement = async (discoveryUrl, signal) => {
       // it's present...)
       registry.discovery = registryData?.discovery.filter((entry) => entry.name !== stripesHubAPI.HOST_APP_NAME);
 
-      await localforage.setItem(stripesHubAPI.REMOTE_LIST_KEY, registry.discovery);
+      // await localforage.setItem(stripesHubAPI.REMOTE_LIST_KEY, registry.discovery);
     } catch (e) {
       if (e.name !== 'AbortError') {
         console.error('Discovery fetch error:', e); // eslint-disable-line no-console

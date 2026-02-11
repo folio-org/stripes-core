@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { registerRemotes, loadRemote } from '@module-federation/runtime';
+import { getInstance } from '@module-federation/runtime';
 import { useStripes } from '../StripesContext';
 import { ModulesContext, useModules, modulesInitialState } from '../ModulesContext';
 import { loadEntitlement } from './loadEntitlement';
@@ -24,7 +24,7 @@ export const preloadModules = async (stripes, remotes) => {
     const loaderArray = [];
     remotes.forEach(remote => {
       const { name } = remote;
-      loaderArray.push(loadRemote(name)
+      loaderArray.push(getInstance().loadRemote(name)
         .then((module) => {
           remote.getModule = () => module.default;
         })
@@ -203,7 +203,8 @@ const EntitlementLoader = ({ children }) => {
           const remotesToRegister = remotes.map(remote => ({
             name: remote.name, entry: remote.location
           }));
-          registerRemotes(remotesToRegister);
+
+          getInstance().registerRemotes(remotesToRegister);
 
           try {
             // load module code - this loads each module only once and up `getModule` so that it can be used sychronously.
