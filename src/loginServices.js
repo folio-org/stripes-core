@@ -1167,7 +1167,7 @@ export async function requestLogin(okapiUrl, store, tenant, data) {
     mode: 'cors',
   });
 
-  await processOkapiSession(store, tenant, resp);
+  return processOkapiSession(store, tenant, resp);
 }
 
 /**

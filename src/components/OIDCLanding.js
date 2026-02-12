@@ -30,7 +30,7 @@ import OIDCLandingError from './OIDCLandingError';
  */
 const OIDCLanding = () => {
   const intl = useIntl();
-  const { okapi, store } = useStripes();
+  const { okapi, store, handleRotation } = useStripes();
 
   const atDefaultExpiration = Date.now() + (60 * 1000);
   const rtDefaultExpiration = Date.now() + (2 * 60 * 1000);
@@ -43,10 +43,7 @@ const OIDCLanding = () => {
    */
   const initSession = (tokenData) => {
     if (tokenData) {
-      setTokenExpiry({
-        atExpires: tokenData.accessTokenExpiration ? new Date(tokenData.accessTokenExpiration).getTime() : atDefaultExpiration,
-        rtExpires: tokenData.refreshTokenExpiration ? new Date(tokenData.refreshTokenExpiration).getTime() : rtDefaultExpiration,
-      })
+      handleRotation(tokenData)
         .then(() => {
           return storeLogoutTenant(okapi.tenant);
         })

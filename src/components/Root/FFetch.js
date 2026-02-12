@@ -1,5 +1,3 @@
-/* eslint-disable import/prefer-default-export */
-
 /**
  * TLDR: override global `fetch` and `XMLHttpRequest` to perform RTR for
  * FOLIO API requests.
@@ -26,172 +24,38 @@
  *
  */
 
-import ms from 'ms';
-import { v4 as uuidv4 } from 'uuid';
-import {
-  setRtrTimeout,
-  setRtrFlsTimeout,
-  setRtrFlsWarningTimeout,
-} from '../../okapiActions';
 
-import { getTokenExpiry } from '../../loginServices';
+import { RTR_LOCK_KEY, rotateAndReplay } from './rotateAndReplay';
+
+import { getTokenExpiry, setTokenExpiry } from '../../loginServices';
 import {
-  getPromise,
-  isAuthenticationRequest,
   isFolioApiRequest,
   isLogoutRequest,
-  isValidSessionCheckRequest,
-  rtr,
 } from './token-util';
 import {
   RTRError,
 } from './Errors';
 import {
-  RTR_AT_EXPIRY_IF_UNKNOWN,
-  RTR_AT_TTL_FRACTION,
   RTR_ERROR_EVENT,
-  RTR_FLS_TIMEOUT_EVENT,
-  RTR_TIME_MARGIN_IN_MS,
-  RTR_FLS_WARNING_EVENT,
-  RTR_RT_EXPIRY_IF_UNKNOWN,
-  SESSION_ACTIVE_WINDOW_ID,
-  RTR_ACTIVE_WINDOW_MSG,
-  RTR_ACTIVE_WINDOW_MSG_CHANNEL
 } from './constants';
 import FXHR from './FXHR';
-
-
 
 const OKAPI_FETCH_OPTIONS = {
   credentials: 'include',
   mode: 'cors',
 };
 
-const RTR_LOCK_KEY = '@folio/stripes-core::RTR_LOCK_KEY';
-
-/**
- * queueRotateReplay
- * 1. queue the original request
- * 2. rotate tokens
- * 3. replay the original request now that tokens are fresh
- *
- * @param {*} fetchfx fetch function to execute
- * @param {*} config rotation configuration
- * @param {*} error failed request { response, resource, options }
- *
- * @returns response of the replayed request
- */
-const queueRotateReplay = async (fetchfx, config, error) => {
-  console.log('rtr', 'queueRotateReplay...');
-
-  const replayQueuedRequest = async () => {
-    console.log('rtr', 'replaying ...', error.resource);
-    const response = await fetchfx.apply(global, [error.resource, config.options(error.options)]);
-    return response;
-  };
-
-  /**
-   * rotateTokens
-   * 1. getTokens: maybe another request has already rotated
-   * 2. rotate: race the rotation request with a rejecting timeout
-   * 3. callback: store updated token details
-   * 4. replay: replay the original request
-   *
-   * @returns promise response from the original request
-   */
-  const rotateTokens = async () => {
-    console.log('rtr', 'locked ...');
-    try {
-      //
-      // 1. if rotation completed elsewhere, we don't need to rotate!
-      // maybe another tab rotated, maybe it happened while awaiting the lock.
-      if (await config.isValidToken()) {
-        console.log('rtr', 'reusing token supplied by another request');
-        return replayQueuedRequest();
-      }
-
-      //
-      // 2. rotate: race the rotation-request with a timeout; default 30s
-      const refreshTimeout = new Promise((_res, rej) => {
-        const timeout = config.refreshTimeout || ms('30s');
-        setTimeout(() => {
-          rej(new Error(`Token refresh timed out after ${ms(timeout)}`));
-        }, timeout);
-      });
-
-      console.log('===> rotating ...');
-      const t = await Promise.race([
-        refreshTimeout,
-        config.rotate()
-      ]);
-      console.log('<=== rotated!');
-
-      //
-      // 3. callback
-      config.onSuccess(t);
-      console.log('rtr', 'rotated ...');
-
-      //
-      // 4. replay the original request
-      return replayQueuedRequest();
-    } catch (err) {
-      console.error('caught an RTR error!', err);
-      config.onFailure(err);
-
-      // return the original response
-      return Promise.reject(error);
-    }
-  };
-
-  // rotation config
-  const shouldRotate = config.shouldRotate ?? (() => Promise.resolve(true));
-  const statusCodes = config.statusCodes || [401];
-
-  // skip rotation if:
-  // 1. we don't have a failed response to work with
-  // 2. the response status code does not indicate an authn failure
-  // 3. the original request asked to ignore rtr
-  // 4. we were asked not to rotate
-  if (
-    !error.response ||
-    !statusCodes.includes(error.response.status) ||
-    error.options?.rtrIgnore ||
-    !await shouldRotate()
-  ) {
-    return Promise.reject(error);
-  }
-
-  // pause users requests, giving us time to complete RTR in another window,
-  // proving that when simulateous requests fire, they correctly lock each
-  // other out, and when the second returns, it reuses the token from the first
-  // if (error.resource.match(/users/)) {
-  //   console.log('===> users waiting')
-  //   await new Promise((res, rej) => {
-  //     setTimeout(res, 5000);
-  //   });
-  //   console.log('<=== users waited')
-  // }
-
-  // lock, then rotate
-  if (typeof navigator !== 'undefined' && navigator.locks) {
-    return navigator.locks.request(RTR_LOCK_KEY, rotateTokens);
-  } else {
-    return rotateTokens();
-  }
-};
-
-
 export class FFetch {
-  constructor({ logger, store, rtrConfig, okapi }) {
+  constructor({ logger, store, okapi, onRotate }) {
     this.logger = logger;
     this.store = store;
-    this.rtrConfig = rtrConfig;
     this.okapi = okapi;
     this.focusEventSet = false;
     this.rtrScheduled = false; // Track if RTR has been scheduled in this tab
-    this.bc = new BroadcastChannel(RTR_ACTIVE_WINDOW_MSG_CHANNEL);
+    // this.bc = new BroadcastChannel(RTR_ACTIVE_WINDOW_MSG_CHANNEL);
     // this.setWindowIdMessageEvent();
     // this.setDocumentFocusHandler();
+    this.onRotate = onRotate;
   }
 
   /**
@@ -216,7 +80,7 @@ export class FFetch {
     statusCodes: [400, 401],
 
     // this doesn't work. binding weirdness?
-    logger: this.logger,
+    // logger: this.logger,
 
     // timeout in milliseconds
     // optional; defaults to 30s
@@ -256,8 +120,8 @@ export class FFetch {
         const json = await res.json();
         if (json.accessTokenExpiration && json.refreshTokenExpiration) {
           return {
-            accessToken: new Date(json.accessTokenExpiration).getTime(),
-            refreshToken: new Date(json.refreshTokenExpiration).getTime(),
+            accessTokenExpiration: json.accessTokenExpiration,
+            refreshTokenExpiration: json.refreshTokenExpiration,
           };
         }
       }
@@ -266,10 +130,11 @@ export class FFetch {
     },
 
     // return true if a valid token is available
-    isValidToken: () => {
+    isValidToken: async () => {
       try {
-        const { accessToken } = JSON.parse(localStorage.getItem(RTR_LOCK_KEY));
-        return accessToken > Date.now();
+        const expiry = await getTokenExpiry();
+        console.log(`isValidToken ? ${expiry?.atExpires} > ${Date.now()} ? ${!!(expiry?.atExpires > Date.now())}`)
+        return !!(expiry?.atExpires > Date.now());
       } catch (err) {
         console.error({ err });
       }
@@ -278,13 +143,12 @@ export class FFetch {
     },
 
     // store token on success; void
-    onSuccess: (newTokens) => {
-      localStorage.setItem(RTR_LOCK_KEY, JSON.stringify(newTokens));
-      console.log({ newTokens });
+    onSuccess: async (newTokens) => {
+      await this.onRotate(newTokens);
     },
 
     // what to do, what to do; void
-    onFailure: (error) => {
+    onFailure: async (error) => {
       console.error('Session expired', error);
       // window.dispatchEvent(new Event(RTR_ERROR_EVENT, { detail: error }));
       window.dispatchEvent(new Event(RTR_ERROR_EVENT, { detail: 'Session expired' }));
@@ -294,10 +158,20 @@ export class FFetch {
   ffetch = async (resource, options = {}) => {
     try {
       console.log(`fetching ${resource}`);
-      let response = await this.nativeFetch.apply(global, [resource, options && { ...options, ...OKAPI_FETCH_OPTIONS }]);
+
+      // readers/writer lock pattern: don't fetch while rotation is in-progress
+      // https://developer.mozilla.org/en-US/docs/Web/API/LockManager/request
+      let response = await navigator.locks.request(RTR_LOCK_KEY, { mode: 'shared' }, async () => {
+        const fr = await this.nativeFetch.apply(global, [resource, options && { ...options, ...OKAPI_FETCH_OPTIONS }]);
+        return fr;
+      });
 
       if (!response?.ok) {
-        response = await queueRotateReplay(this.nativeFetch, this.rotationConfig, { response, resource, options });
+        console.log({ logger: this.logger })
+        response = await rotateAndReplay(
+          this.nativeFetch,
+          { ...this.rotationConfig, logger: this.logger },
+          { response, resource, options });
       }
 
       return response;

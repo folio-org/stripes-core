@@ -23,6 +23,9 @@ export default (deps) => {
       this.FFetchContext.logger?.log('rtr', 'capture XHR send');
       if (this.shouldEnsureToken) {
         try {
+          // if (! await tokenIsValid) {
+          //   await rotate
+          // }
           await getPromise(logger);
           super.send(payload);
         } catch (err) {

@@ -43,6 +43,9 @@ const Logout = () => {
   useEffect(
     () => {
       if (stripes.okapi.isAuthenticated) {
+        stripes.sessionTimeoutTimer.cancel();
+        stripes.sessionTimeoutWarningTimer.cancel();
+
         // returns a promise, which we ignore
         logout(stripes.okapi.url, stripes.store, queryClient)
           .then(setDidLogout(true));

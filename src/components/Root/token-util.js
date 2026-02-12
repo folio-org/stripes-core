@@ -210,10 +210,20 @@ export const isFolioApiRequest = (resource, oUrl) => {
 export const isRotating = () => {
   const rotationTimestamp = localStorage.getItem(RTR_IS_ROTATING);
   if (rotationTimestamp) {
-    if (Date.now() - rotationTimestamp < RTR_MAX_AGE) {
-      return true;
+    try {
+      const intTimestamp = Number.parseInt(rotationTimestamp, 10);
+      if (Date.now() - intTimestamp < RTR_MAX_AGE) {
+        return true;
+      }
+      console.warn({ rotationTimestamp })
+      console.warn('rotation request is stale', new Date(intTimestamp).toISOString()); // eslint-disable-line no-console
+      console.warn('     current timestamp is', new Date().toISOString()); // eslint-disable-line no-console
+
+    } catch (e) {
+      console.warn(`could not parse ${rotationTimestamp} as an integer!`); // eslint-disable-line no-console
     }
-    console.warn('rotation request is stale'); // eslint-disable-line no-console
+    // console.warn('rotation request is stale', new Date(rotationTimestamp).toISOString()); // eslint-disable-line no-console
+    // console.warn('     current timestamp is', new Date().toISOString()); // eslint-disable-line no-console
     localStorage.removeItem(RTR_IS_ROTATING);
   }
 
@@ -292,6 +302,7 @@ export const rtr = (fetchfx, logger, callback, okapi) => {
   logger.log('rtr', '**     rotation beginning...');
 
   localStorage.setItem(RTR_IS_ROTATING, `${Date.now()}`);
+  console.log('set IS_ROTATING, about to call fetchfx', { thetype: typeof fetchfx })
   return fetchfx.apply(global, [`${okapi.url}/authn/refresh`, {
     headers: {
       'content-type': 'application/json',
@@ -302,6 +313,7 @@ export const rtr = (fetchfx, logger, callback, okapi) => {
     mode: 'cors',
   }])
     .then(res => {
+      logger.log('rtr', '**     fetch completed!');
       if (res.ok) {
         return res.json();
       }
@@ -317,7 +329,7 @@ export const rtr = (fetchfx, logger, callback, okapi) => {
         });
     })
     .then(json => {
-      logger.log('rtr', '**     success!');
+      logger.log('rtr', '**     fetch success!');
       callback(json);
       const te = {
         atExpires: new Date(json.accessTokenExpiration).getTime(),
@@ -351,6 +363,7 @@ export const rtr = (fetchfx, logger, callback, okapi) => {
  */
 const rotationPromise = async (logger) => {
   logger.log('rtr', 'rotation pending!');
+  console.trace();
   return new Promise((res) => {
     const rotationHandler = () => {
       if (localStorage.getItem(RTR_IS_ROTATING) === null) {
