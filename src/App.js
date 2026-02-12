@@ -104,6 +104,7 @@ export default class StripesCore extends Component {
       try {
         const modules = await getModules();
 
+        const folioConfig = await localforage.getItem(stripesHubAPI.FOLIO_CONFIG_KEY);
         const discoveryUrl = await localforage.getItem(stripesHubAPI.DISCOVERY_URL_KEY);
         const hostLocation = await localforage.getItem(stripesHubAPI.HOST_LOCATION_KEY);
         const remotesList = await localforage.getItem(stripesHubAPI.REMOTE_LIST_KEY);
@@ -114,6 +115,7 @@ export default class StripesCore extends Component {
           actionNames,
           modules,
           stripesHub: {
+            folioConfig,
             discoveryUrl,
             hostLocation,
             remotesList,
