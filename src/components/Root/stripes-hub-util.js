@@ -2,14 +2,16 @@
 /**
  * If StripesHub is present in localstorage, override config values as StripesHub is now the source of truth.
  * 
- * @param {object} okapi the classic Okapi config object from stripes.config.js.
- * @param {object} config the classic Stripes config object from stripes.config.js.
+ * @param {object} okapi the Okapi config object from stripes.config.js.
+ * @param {object} config the Stripes config object from stripes.config.js.
+ * @param {object} branding the branding config from stripes.config.js.
  * @param {object} stripesHub the config object from StripesHub.
  * @returns 
  */
-export const getStripesHubConfig = (okapi, config, stripesHub) => {
+export const getStripesHubConfig = (okapi, config, branding, stripesHub) => {
   let stripesConfig = config;
   let stripesOkapi = okapi;
+  let stripesBranding = branding;
 
   if (stripesHub) {
     // Pass URLs from FOLIO config into Okapi config.
@@ -24,7 +26,9 @@ export const getStripesHubConfig = (okapi, config, stripesHub) => {
     delete stripesConfig.discoveryUrl;
     delete stripesConfig.gatewayUrl;
     delete stripesConfig.authnUrl;
+
+    stripesBranding = stripesHub.folioConfig.branding ? { ...branding, ...stripesHub.folioConfig.branding } : branding;
   }
 
-  return { stripesOkapi, stripesConfig };
+  return { stripesOkapi, stripesConfig, stripesBranding };
 };

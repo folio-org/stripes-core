@@ -7,4 +7,5 @@ export default {
   DISCOVERY_URL_KEY: 'discoveryUrl',
   HOST_APP_NAME: 'folio_stripes',
   FOLIO_CONFIG_KEY: 'folio_config',
+  BRANDING_CONFIG_KEY: 'branding_config',
 };

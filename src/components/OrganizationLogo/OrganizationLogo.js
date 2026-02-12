@@ -1,8 +1,9 @@
 import React from 'react';
-import { branding } from 'stripes-config';
+import { useStripes } from '../../StripesContext';
 import styles from './OrganizationLogo.css';
 
 const OrganizationLogo = () => {
+  const { branding } = useStripes(); 
   return (
     branding &&
       <div className={styles.logo}>

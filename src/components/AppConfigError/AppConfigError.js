@@ -1,4 +1,4 @@
-import { branding } from 'stripes-config';
+import { useStripes } from '../../StripesContext';
 
 import {
   Row,
@@ -19,6 +19,7 @@ import styles from './AppConfigError.css';
  * @returns English-only error message
  */
 const AppConfigError = () => {
+  const { branding } = useStripes();
   return (
     <main>
       <div className={styles.wrapper} style={branding?.style?.login ?? {}}>

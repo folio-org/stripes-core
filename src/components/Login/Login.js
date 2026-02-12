@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import { Field, Form } from 'react-final-form';
 
-import { branding } from 'stripes-config';
+import { useStripes } from '../../StripesContext';
 
 import {
   TextField,
@@ -41,6 +41,7 @@ class Login extends Component {
       onSubmit,
     } = this.props;
 
+    const { branding } = useStripes();
     const cookieMessage = navigator.cookieEnabled ?
       '' :
       (

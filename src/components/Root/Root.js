@@ -9,7 +9,7 @@ import { QueryClientProvider } from 'react-query';
 import { ApolloProvider } from '@apollo/client';
 
 import { ErrorBoundary } from '@folio/stripes-components';
-import { metadata, icons as configIcons } from 'stripes-config';
+import { branding, metadata, icons as configIcons } from 'stripes-config';
 
 import { ConnectContext } from '@folio/stripes-connect';
 import initialReducers from '../../initialReducers';
@@ -183,7 +183,7 @@ class Root extends Component {
     config.rtr = configureRtr(stripesHub?.folioConfig?.rtr || this.props.config.rtr);
 
     // if we have a stripesHub configuration, pass it to stripes...
-    const { stripesOkapi, stripesConfig } = getStripesHubConfig(okapi, config, stripesHub);
+    const { stripesOkapi, stripesConfig, stripesBranding } = getStripesHubConfig(okapi, config, branding, stripesHub);
 
     const stripes = new Stripes({
       logger,
@@ -191,6 +191,7 @@ class Root extends Component {
       epics,
       config: stripesConfig,
       okapi: stripesOkapi,
+      branding: stripesBranding,
       withOkapi: this.withOkapi,
       setToken: (val) => { store.dispatch(setOkapiToken(val)); },
       setIsAuthenticated: (val) => { store.dispatch(setIsAuthenticated(val)); },
