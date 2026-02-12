@@ -1,11 +1,10 @@
-import { useStripes } from '../../StripesContext';
-
 import {
   Row,
   Col,
   Headline,
 } from '@folio/stripes-components';
 
+import { useStripes } from '../../StripesContext';
 import OrganizationLogo from '../OrganizationLogo';
 import styles from './AppConfigError.css';
 

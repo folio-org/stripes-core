@@ -1,19 +1,20 @@
 
 import { getStripesHubConfig } from './stripes-hub-util';
 
+const okapi = { url: 'https://okapi.example.com' };
+const config = { name: 'test' };
+const branding = {
+  logo: {
+    src: './default.png',
+    alt: 'Default'
+  },
+  favicon: {
+    src: './default-favicon.png',
+  }
+};
+
 describe('StripesHubUtil', () => {
   it('returns the correct config when StripesHub is present', () => {
-    const okapi = { url: 'https://okapi.example.com' };
-    const config = { name: 'test' };
-    const branding = {
-      logo: {
-        src: './default.png',
-        alt: 'Default'
-      },
-      favicon: {
-          src: './default-favicon.png',
-        }
-    };
     const stripesHub = {
       folioConfig: {
         name: 'StripesHub',
@@ -43,9 +44,6 @@ describe('StripesHubUtil', () => {
   });
 
   it('returns the original config when StripesHub is not present', () => {
-    const okapi = { url: 'https://okapi.example.com' };
-    const config = { name: 'test' };
-
     const result = getStripesHubConfig(okapi, config, branding, null);
     expect(result.stripesOkapi.url).toBe('https://okapi.example.com');
     expect(result.stripesConfig.name).toBe('test');

@@ -3,8 +3,6 @@ import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import { Field, Form } from 'react-final-form';
 
-import { useStripes } from '../../StripesContext';
-
 import {
   TextField,
   Button,
@@ -13,6 +11,7 @@ import {
   Headline,
 } from '@folio/stripes-components';
 
+import { useStripes } from '../../StripesContext';
 import SSOLogin from '../SSOLogin';
 import OrganizationLogo from '../OrganizationLogo';
 import AuthErrorsContainer from '../AuthErrorsContainer';
