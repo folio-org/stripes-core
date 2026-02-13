@@ -1,15 +1,20 @@
 import ms from 'ms';
 
+import { RTRError } from './Errors';
+
 export const RTR_LOCK_KEY = '@folio/stripes-core::RTR_LOCK_KEY';
 
 /**
  * rotateAndReplay
  * rotateAndReplay is called when a response has a 4xx code and if it looks
- * like an authentication problem, we rotate the tokens, replay the original
- * request, and return that response.
+ * like an authentication problem, rotate the tokens, replay the original
+ * request, and resolve with that response. If rotation does not happen (there
+ * are many possible reasons, detailed below), reject with the original response.
+ * If there are any errors related to rotation itself, report them via a callback
+ * and then reject with the original response.
  *
- * 1. inspect the response and the config to determine if rotation is needed
- *    skip it if any of the following are true:
+ * 1. inspect the response and the config to determine if rotation is needed.
+ *    reject if any of the following are true:
  *    * we have a response but its code is not one we handle
  *    * the original request was configured with an `ignoreRtr` option
  *    * the config's shouldRotate() function returned false
@@ -34,7 +39,8 @@ export const RTR_LOCK_KEY = '@folio/stripes-core::RTR_LOCK_KEY';
  * @param {*} config rotation configuration
  * @param {*} error failed request { response, resource, options }
  *
- * @returns response of the replayed request
+ * @returns On successful rotation, resolve with the response of the original
+ * request. Otherwise, reject
  */
 export const rotateAndReplay = async (fetchfx, config, error) => {
   config.logger.log('rtr', 'queueRotateReplay...', config);
@@ -89,7 +95,7 @@ export const rotateAndReplay = async (fetchfx, config, error) => {
       const refreshTimeout = new Promise((_res, rej) => {
         const timeout = config.refreshTimeout || ms('30s');
         setTimeout(() => {
-          rej(new Error(`Token refresh timed out after ${ms(timeout)}`));
+          rej(new RTRError(`Token refresh timed out after ${ms(timeout)}`));
         }, timeout);
       });
 
@@ -109,11 +115,16 @@ export const rotateAndReplay = async (fetchfx, config, error) => {
       // 4. replay the original request
       return replayRequest();
     } catch (err) {
+      // Ruhroh, Raggy, rotation railed!
+      // Report the failure via the provided callback. Reject with the original
+      // response if available, allowing it to bubble to the caller. Otherwise,
+      // rethrow, i.e. reject with the object we just caught.
       config.logger.log('rtr', 'RTR error!', err);
       await config.onFailure(err);
-
-      // return the original response
-      return Promise.reject(error);
+      if (error.response) {
+        return Promise.reject(error);
+      }
+      return Promise.reject(err);
     }
   };
 
@@ -121,10 +132,10 @@ export const rotateAndReplay = async (fetchfx, config, error) => {
   const shouldRotate = await config.shouldRotate ?? (() => Promise.resolve(true));
   const statusCodes = config.statusCodes || [401];
 
-  // skip rotation if:
-  // 1. we have a failed response but its status code does not indicate an authn failure
-  // 3. the original request asked to ignore rtr
-  // 4. we were asked not to rotate
+  // skip rotation, allowing certain errors to bubble back to the caller:
+  // 1. the status code in the given error-response does not indicate an authn failure
+  // 2. options in the original request asked to ignore rtr
+  // 3. config function determined we should not rotate
   if ((error.response && !statusCodes.includes(error.response.status)) ||
     error.options?.rtrIgnore ||
     !await shouldRotate()

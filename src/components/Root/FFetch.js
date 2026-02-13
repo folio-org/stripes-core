@@ -67,6 +67,16 @@ export class FFetch {
     global.XMLHttpRequest = FXHR(this);
   };
 
+  /**
+   * rotationConfig
+   * This config object is passed to rotateAndReplay, providing callbacks
+   * (rotate, onSuccess, onFailure) and config'y values like the list
+   * of status-codes that indicate an authentication failure that could be
+   * fixed after rotation. Probably, this WHOLE object should be lifted up
+   * a level and provided by Root to FFetch instead of configured here
+   * since there we have access to stripes.config.js values that may be
+   * useful, e.g. configuring how long to wait for rotation to timeout.
+   */
   rotationConfig = {
     // statuscodes to intercept
     // optional; defaults to 401
@@ -86,7 +96,7 @@ export class FFetch {
     },
 
     // alternative to status code inspection? ugh, have to read the body :(
-    // shouldRefresh: async (response) => {
+    // shouldRotate: async (response) => {
     //   const cr = response.clone();
     //   const text = await cr.text();
     //   return response.status === 400 && text.startsWith('Token missing, access requires permission');
@@ -109,33 +119,40 @@ export class FFetch {
       //   setTimeout(res, ms('5s'))
       // });
 
-      if (res.ok) {
-        const json = await res.json();
-        if (json.accessTokenExpiration && json.refreshTokenExpiration) {
-          return {
-            accessTokenExpiration: json.accessTokenExpiration,
-            refreshTokenExpiration: json.refreshTokenExpiration,
-          };
-        }
-      }
+      try {
+        if (res.ok) {
+          const json = await res.json();
+          if (json.accessTokenExpiration && json.refreshTokenExpiration) {
+            return {
+              accessTokenExpiration: json.accessTokenExpiration,
+              refreshTokenExpiration: json.refreshTokenExpiration,
+            };
+          }
 
-      throw new Error('Rotation failure!');
+          throw new RTRError('accessTokenExpiration and/or refreshTokenExpiration were not available');
+        }
+
+        throw new RTRError('Rotation response was not ok');
+      } catch (err) {
+        console.error(err); // eslint-disable-line no-console
+        throw new RTRError('Rotation failure!', { cause: err });
+      }
     },
 
     // return true if a valid token is available
     isValidToken: async () => {
       try {
         const expiry = await getTokenExpiry();
-        console.log(`isValidToken ? ${expiry?.atExpires} > ${Date.now()} ? ${!!(expiry?.atExpires > Date.now())}`);
+        this.logger.log('rtr', `isValidToken ? ${expiry?.atExpires} > ${Date.now()} ? ${!!(expiry?.atExpires > Date.now())}`);
         return !!(expiry?.atExpires > Date.now());
       } catch (err) {
-        console.error({ err });
+        // swallow the error
+        this.logger.log('rtrv', { err });
       }
-      console.log('no token, or it is not valid');
       return false;
     },
 
-    // store token on success; void
+    // rotation succeeded: call the success-callback
     onSuccess: async (newTokens) => {
       await this.onRotate(newTokens);
     },
@@ -144,13 +161,21 @@ export class FFetch {
     onFailure: async (error) => {
       console.error('Session expired', error);
       // window.dispatchEvent(new Event(RTR_ERROR_EVENT, { detail: error }));
-      window.dispatchEvent(new Event(RTR_ERROR_EVENT, { detail: 'Session expired' }));
+      window.dispatchEvent(new Event(RTR_ERROR_EVENT));
     },
   };
 
   /**
    * ffetch
-   * If
+   * ffetch (FOLIO-fetch) provides an RTR-wrapper around fetch requests for
+   * FOLIO API requests. It pauses fetching while rotation is in-flight, and
+   * if a response is not successful (!response.ok), it invokes RTR. RTR will
+   * inspect the response, rotate if necessary, then replay and return the
+   * original request, or it
+   *
+   * see if the failure was due to authentication (in which case it'll rotate
+   * and replay the request).
+   *
    * @param {object} resource a fetchable resource
    * @param {object} options fetch options
    * @returns Promise
@@ -158,17 +183,22 @@ export class FFetch {
   ffetch = async (resource, options = {}) => {
     if (isFolioApiRequest(resource, this.okapi.url)) {
       try {
-        console.log(`fetching ${resource}`);
+        let response;
 
         // readers/writer lock pattern: don't fetch while rotation is in-progress
         // https://developer.mozilla.org/en-US/docs/Web/API/LockManager/request
-        let response = await navigator.locks.request(RTR_LOCK_KEY, { mode: 'shared' }, async () => {
-          const fr = await this.nativeFetch.apply(global, [resource, options && { ...options, ...OKAPI_FETCH_OPTIONS }]);
-          return fr;
-        });
+        // with a fallback for old (er, incomplete?) envs that don't support
+        // navigator.locks (👋 jsdom)
+        if (navigator?.locks?.request) {
+          response = await navigator.locks.request(RTR_LOCK_KEY, { mode: 'shared' }, async () => {
+            const fr = await this.nativeFetch.apply(global, [resource, options && { ...options, ...OKAPI_FETCH_OPTIONS }]);
+            return fr;
+          });
+        } else {
+          response = await this.nativeFetch.apply(global, [resource, options && { ...options, ...OKAPI_FETCH_OPTIONS }]);
+        }
 
         if (!response?.ok) {
-          console.log({ logger: this.logger });
           response = await rotateAndReplay(
             this.nativeFetch,
             { ...this.rotationConfig, logger: this.logger },
@@ -178,17 +208,23 @@ export class FFetch {
 
         return response;
       } catch (err) {
-        console.log({ err });
+        // we can end up here for three reasons:
+        // 1. the original request itself failed
+        // 2. rotation failed
+        // 3. rotation was unnecessary and it rejected with the original reponse
+        //
+        // For #3, we just want to return that response, allowing it to bubble
+        // to the original caller to deal with as they choose. For the others,
+        // this is a legit error so we re-throw it rather than returning it.
         if (err.response) {
           return err.response;
         }
-        // oh we're in a baaaad state; fetch failed, and rotation failed and
-        // did not return the original failed response!?!
-        throw new Error('sad panda');
+
+        throw err;
       }
     }
 
     // default: pass requests through to the network
-    return Promise.resolve(this.nativeFetch.apply(global, [resource, options]));
+    return this.nativeFetch.apply(global, [resource, options]);
   };
 }
