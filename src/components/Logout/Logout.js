@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router';
 import { FormattedMessage } from 'react-intl';
 import { useQueryClient } from 'react-query';
-import { branding } from 'stripes-config';
 
 import {
   Button,
@@ -34,7 +33,7 @@ import styles from './Logout.css';
  *    the "reason" key in the query string provides additional details
  */
 const Logout = () => {
-  const stripes = useStripes();
+  const { branding, okapi, sessionTimeoutTimer, sessionTimeoutWarningTimer, store } = useStripes();
   const [didLogout, setDidLogout] = useState(false);
   const location = useLocation();
   const queryClient = useQueryClient();
@@ -59,12 +58,12 @@ const Logout = () => {
 
   useEffect(
     () => {
-      if (stripes.okapi.isAuthenticated) {
-        stripes.sessionTimeoutTimer.cancel();
-        stripes.sessionTimeoutWarningTimer.cancel();
+      if (okapi.isAuthenticated) {
+        sessionTimeoutTimer.cancel();
+        sessionTimeoutWarningTimer.cancel();
 
         // returns a promise, which we ignore
-        logout(stripes.okapi.url, stripes.store, queryClient)
+        logout(okapi.url, store, queryClient)
           .then(setDidLogout(true));
       } else {
         setDidLogout(true);

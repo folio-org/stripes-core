@@ -9,7 +9,7 @@ import { QueryClientProvider } from 'react-query';
 import { ApolloProvider } from '@apollo/client';
 
 import { ErrorBoundary } from '@folio/stripes-components';
-import { metadata, icons as configIcons } from 'stripes-config';
+import { branding, metadata, icons as configIcons } from 'stripes-config';
 
 import { ConnectContext } from '@folio/stripes-connect';
 import initialReducers from '../../initialReducers';
@@ -31,6 +31,7 @@ import {
   rotationHandler,
   ResetTimer
 } from './token-util';
+import { getStripesHubConfig } from './stripes-hub-util';
 import { modulesInitialState } from '../../ModulesContext';
 import {
   RTR_FLS_TIMEOUT_EVENT,
@@ -204,25 +205,25 @@ class Root extends Component {
       return (<SystemSkeleton />);
     }
 
-    // make sure RTR is configured
+    // make sure RTR is configured, either from StripesHub or stripes.config.js.
     // gross: this overwrites whatever is currently stored at config.rtr
     // gross: technically, this may be different than what is configured
     //   in the constructor since the constructor only runs once but
     //   render runs when props change. realistically, that'll never happen
     //   since config values are read only once from a static file at build
     //   time, but still, props are props so technically it's possible.
-    config.rtr = configureRtr(this.props.config.rtr);
+    config.rtr = configureRtr(stripesHub?.folioConfig?.rtr || this.props.config.rtr);
 
-    // if we have a stripesHub discoveryUrl, pass it to stripes...
-
-    const stripesOkapi = stripesHub?.discoveryUrl ? { ...okapi, discoveryUrl: stripesHub.discoveryUrl } : okapi;
+    // if we have a stripesHub configuration, pass it to stripes...
+    const { stripesOkapi, stripesConfig, stripesBranding } = getStripesHubConfig(okapi, config, branding, stripesHub);
 
     const stripes = new Stripes({
       logger,
       store,
       epics,
-      config,
+      config: stripesConfig,
       okapi: stripesOkapi,
+      branding: stripesBranding,
       withOkapi: this.withOkapi,
       setToken: (val) => { store.dispatch(setOkapiToken(val)); },
       setIsAuthenticated: (val) => { store.dispatch(setIsAuthenticated(val)); },

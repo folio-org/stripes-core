@@ -1,11 +1,10 @@
-import { branding } from 'stripes-config';
-
 import {
   Row,
   Col,
   Headline,
 } from '@folio/stripes-components';
 
+import { useStripes } from '../../StripesContext';
 import OrganizationLogo from '../OrganizationLogo';
 import styles from './AppConfigError.css';
 
@@ -19,6 +18,7 @@ import styles from './AppConfigError.css';
  * @returns English-only error message
  */
 const AppConfigError = () => {
+  const { branding } = useStripes();
   return (
     <main>
       <div className={styles.wrapper} style={branding?.style?.login ?? {}}>

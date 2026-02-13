@@ -39,7 +39,7 @@ export const loadEntitlement = async (discoveryUrl, signal) => {
     remote.origin = url.origin;
     const segments = url.href.split('/');
     segments.pop();
-    const hrefWithoutFilename = segments.join('/')
+    const hrefWithoutFilename = segments.join('/');
     remote.assetPath = hrefWithoutFilename;
   });
   return Promise.resolve(registry?.discovery);
