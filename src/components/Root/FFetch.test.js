@@ -146,7 +146,7 @@ describe('FFetch behavior and rotation helpers', () => {
 
     it('isValidToken returns true when token expiry is in future and false otherwise', async () => {
       const { getTokenExpiry } = require('../../loginServices');
-      const ff = new FFetch({ logger: {}, okapi: { url: okapiUrl, tenant: 't' }, onRotate: jest.fn() });
+      const ff = new FFetch({ logger: { log: jest.fn() }, okapi: { url: okapiUrl, tenant: 't' }, onRotate: jest.fn() });
 
       getTokenExpiry.mockResolvedValueOnce({ atExpires: Date.now() + 10000 });
       await expect(ff.rotationConfig.isValidToken()).resolves.toBe(true);
