@@ -10,15 +10,15 @@ jest.mock('../../loginServices', () => ({
 
 jest.mock('./token-util', () => ({
   configureRtr: jest.fn().mockReturnValue({ rtr: true }),
-  rotationHandler: jest.fn().mockReturnValue(() => {}),
+  rotationHandler: jest.fn().mockReturnValue(() => { }),
   ResetTimer: class {
     constructor(callback, logger) {
       this.callback = callback;
       this.logger = logger;
     }
 
-    reset() {}
-    cancel() {}
+    reset() { }
+    clear() { }
   },
 }));
 jest.mock('../SystemSkeleton', () => () => <div data-testid="system-skeleton">SystemSkeleton</div>);

@@ -131,9 +131,9 @@ export const rotationHandler = (handleSaveTokens, timeoutTimer, warningTimer, rt
 
 /**
  * ResetTimer
- * A resettable timer. On reset, it cancels the existing timer and sets a new
+ * A resettable timer. On reset, it clear the existing timer and sets a new
  * one. This is useful when an RT is implemented as a sliding window. After
- * each rotation, the old end-of-session timer needs to be cancelled and a
+ * each rotation, the old end-of-session timer needs to be cleared and a
  * new one configured.
  *
  * It accepts a callback in the constructor. The reset function accepts an
@@ -142,7 +142,7 @@ export const rotationHandler = (handleSaveTokens, timeoutTimer, warningTimer, rt
  * @param {*} callback function to call when the timer pings
  * @param {*} logger logs on the rtr channel
  * @throws TypeError on any unexpected/unparseable argument
- * @returns  { reset(interval), cancel() }
+ * @returns  { reset(interval), clear() }
  */
 export class ResetTimer {
   #id = null; // id of the timer
@@ -163,7 +163,7 @@ export class ResetTimer {
     if (typeof timeout !== 'number') throw new TypeError('Expected `interval` to be a number');
 
     if (this.#id) {
-      this.#logger?.log('rtr', `ResetTimer: cancelling ${this.#id}`);
+      this.#logger?.log('rtr', `ResetTimer: clearing ${this.#id}`);
       clearTimeout(this.#id);
     }
 
@@ -171,8 +171,8 @@ export class ResetTimer {
     this.#logger?.log(`ResetTimer: setting ${this.#id}`);
   };
 
-  cancel = () => {
-    this.#logger?.log('rtr', `ResetTimer: cancelling ${this.#id}`);
+  clear = () => {
+    this.#logger?.log('rtr', `ResetTimer: clearing ${this.#id}`);
     clearTimeout(this.#id);
     this.#id = null;
   };

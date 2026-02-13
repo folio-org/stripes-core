@@ -119,13 +119,13 @@ describe('ResetTimer', () => {
     });
   });
 
-  describe('cancel', () => {
+  describe('clear', () => {
     it('cancels callback', async () => {
       const callback = jest.fn();
       const logger = { log: jest.fn() };
       const rt = new ResetTimer(callback, logger);
       rt.reset(100);
-      rt.cancel();
+      rt.clear();
       await new Promise((res, _rej) => {
         setTimeout(res, 200);
       });

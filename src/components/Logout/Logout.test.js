@@ -16,7 +16,7 @@ jest.mock('../../loginServices', () => ({
   logout: jest.fn(() => Promise.resolve()),
 }));
 
-const mockBranding = { branding : { logo: { src: './test.png' }, favicon: { src: './test-icon.png' } } };
+const mockBranding = { branding: { logo: { src: './test.png' }, favicon: { src: './test-icon.png' } } };
 
 describe('Logout', () => {
   describe('Direct logout', () => {
@@ -38,8 +38,8 @@ describe('Logout', () => {
       mockUseStripes.mockReturnValue({
         branding: mockBranding,
         okapi: { isAuthenticated: true },
-        sessionTimeoutTimer: { cancel: jest.fn() },
-        sessionTimeoutWarningTimer: { cancel: jest.fn() },
+        sessionTimeoutTimer: { clear: jest.fn() },
+        sessionTimeoutWarningTimer: { clear: jest.fn() },
       });
 
       render(<Logout />);
@@ -69,8 +69,8 @@ describe('Logout', () => {
         mockUseStripes.mockReturnValue({
           branding: mockBranding,
           okapi: { isAuthenticated: true },
-          sessionTimeoutTimer: { cancel: jest.fn() },
-          sessionTimeoutWarningTimer: { cancel: jest.fn() },
+          sessionTimeoutTimer: { clear: jest.fn() },
+          sessionTimeoutWarningTimer: { clear: jest.fn() },
         });
 
         render(<Logout />);

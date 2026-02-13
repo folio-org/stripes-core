@@ -59,8 +59,8 @@ const Logout = () => {
   useEffect(
     () => {
       if (okapi.isAuthenticated) {
-        sessionTimeoutTimer.cancel();
-        sessionTimeoutWarningTimer.cancel();
+        sessionTimeoutTimer.clear();
+        sessionTimeoutWarningTimer.clear();
 
         // returns a promise, which we ignore
         logout(okapi.url, store, queryClient)
