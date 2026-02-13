@@ -17,6 +17,7 @@ import { loadEntitlement } from './loadEntitlement';
  * @param {array} remotes
  * @returns {app: [], plugin: [], settings: [], handler: []}
  */
+
 export const preloadModules = async (stripes, remotes) => {
   const modules = { app: [], plugin: [], settings: [], handler: [] };
 
@@ -208,7 +209,7 @@ const EntitlementLoader = ({ children }) => {
 
           try {
             // load module code - this loads each module only once and up `getModule` so that it can be used sychronously.
-            cachedModules = await preloadModules(stripes, remotesWithLoadedAssets);
+            cachedModules = await preloadModules(stripes, remotesWithLoadedAssets, remotesToRegister);
           } catch (e) {
             handleRemoteModuleError(stripes, `error loading remote modules: ${e}`);
           }
