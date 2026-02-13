@@ -163,16 +163,16 @@ export class ResetTimer {
     if (typeof timeout !== 'number') throw new TypeError('Expected `interval` to be a number');
 
     if (this.#id) {
-      this.#logger.log('rtr', `ResetTimer: cancelling ${this.#id}`);
+      this.#logger?.log('rtr', `ResetTimer: cancelling ${this.#id}`);
+      clearTimeout(this.#id);
     }
 
-    clearTimeout(this.#id);
     this.#id = setTimeout(this.#callback, timeout);
-    this.#logger.log(`ResetTimer: setting ${this.#id}`);
+    this.#logger?.log(`ResetTimer: setting ${this.#id}`);
   };
 
   cancel = () => {
-    this.#logger.log('rtr', `ResetTimer: cancelling ${this.#id}`);
+    this.#logger?.log('rtr', `ResetTimer: cancelling ${this.#id}`);
     clearTimeout(this.#id);
     this.#id = null;
   };

@@ -8,7 +8,19 @@ jest.mock('../../loginServices', () => ({
   checkOkapiSession: jest.fn(),
 }));
 
-jest.mock('./token-util', () => ({ configureRtr: jest.fn().mockReturnValue({ rtr: true }) }));
+jest.mock('./token-util', () => ({
+  configureRtr: jest.fn().mockReturnValue({ rtr: true }),
+  rotationHandler: jest.fn().mockReturnValue(() => {}),
+  ResetTimer: class {
+    constructor(callback, logger) {
+      this.callback = callback;
+      this.logger = logger;
+    }
+
+    reset() {}
+    cancel() {}
+  },
+}));
 jest.mock('../SystemSkeleton', () => () => <div data-testid="system-skeleton">SystemSkeleton</div>);
 jest.mock('../../createApolloClient', () => jest.fn().mockReturnValue({}));
 jest.mock('../../createReactQueryClient', () => jest.fn().mockReturnValue({}));

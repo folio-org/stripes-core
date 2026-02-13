@@ -48,8 +48,9 @@ const Logout = () => {
     };
 
     const params = new URLSearchParams(location.search);
-    messageId = messages[params.get('reason')];
+    messageId = messages[params.get('reason')] || messages[LOGOUT_TIMEOUT.INACTIVITY];
   }
+
 
   if (!messageId) {
     messageId = 'stripes-core.logoutComplete';

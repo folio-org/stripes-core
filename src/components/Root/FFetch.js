@@ -126,7 +126,7 @@ export class FFetch {
     isValidToken: async () => {
       try {
         const expiry = await getTokenExpiry();
-        console.log(`isValidToken ? ${expiry?.atExpires} > ${Date.now()} ? ${!!(expiry?.atExpires > Date.now())}`)
+        console.log(`isValidToken ? ${expiry?.atExpires} > ${Date.now()} ? ${!!(expiry?.atExpires > Date.now())}`);
         return !!(expiry?.atExpires > Date.now());
       } catch (err) {
         console.error({ err });
@@ -168,11 +168,12 @@ export class FFetch {
         });
 
         if (!response?.ok) {
-          console.log({ logger: this.logger })
+          console.log({ logger: this.logger });
           response = await rotateAndReplay(
             this.nativeFetch,
             { ...this.rotationConfig, logger: this.logger },
-            { response, resource, options });
+            { response, resource, options }
+          );
         }
 
         return response;

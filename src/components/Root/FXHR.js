@@ -1,4 +1,6 @@
-import { getPromise, isFolioApiRequest } from './token-util';
+import { getTokenExpiry } from '../../loginServices';
+import { rotateAndReplay } from './rotateAndReplay';
+import { isFolioApiRequest } from './token-util';
 import {
   RTR_ERROR_EVENT,
 } from './constants';
@@ -23,10 +25,13 @@ export default (deps) => {
       this.FFetchContext.logger?.log('rtr', 'capture XHR send');
       if (this.shouldEnsureToken) {
         try {
-          // if (! await tokenIsValid) {
-          //   await rotate
-          // }
-          await getPromise(logger);
+          const expiry = await getTokenExpiry();
+          if (expiry?.atExpires < Date.now()) {
+            await rotateAndReplay(
+              this.FFetchContext.nativeFetch,
+              { ...this.FFetchContext.rotationConfig, logger: this.FFetchContext.logger },
+            );
+          }
           super.send(payload);
         } catch (err) {
           if (err instanceof RTRError) {

@@ -20,7 +20,7 @@ describe('Logout', () => {
   describe('Direct logout', () => {
     beforeEach(() => {
       const mockUseLocation = useLocation;
-      mockUseLocation.mockReturnValue({ pathName: '/logout' });
+      mockUseLocation.mockReturnValue({ pathname: '/logout' });
     });
 
     it('if not authenticated, renders a logout message', async () => {
@@ -33,7 +33,11 @@ describe('Logout', () => {
 
     it('if authenticated, calls logout then renders a logout message', async () => {
       const mockUseStripes = useStripes;
-      mockUseStripes.mockReturnValue({ okapi: { isAuthenticated: true } });
+      mockUseStripes.mockReturnValue({
+        okapi: { isAuthenticated: true },
+        sessionTimeoutTimer: { cancel: jest.fn() },
+        sessionTimeoutWarningTimer: { cancel: jest.fn() },
+      });
 
       render(<Logout />);
       expect(logout).toHaveBeenCalled();
@@ -53,13 +57,17 @@ describe('Logout', () => {
   describe('Timeout logout', () => {
     beforeEach(() => {
       const mockUseLocation = useLocation;
-      mockUseLocation.mockReturnValue({ pathName: '/logout-timeout' });
+      mockUseLocation.mockReturnValue({ pathname: '/logout-timeout' });
     });
 
     describe('if authenticated', () => {
       it('calls logout then renders a timeout message', async () => {
         const mockUseStripes = useStripes;
-        mockUseStripes.mockReturnValue({ okapi: { isAuthenticated: true } });
+        mockUseStripes.mockReturnValue({
+          okapi: { isAuthenticated: true },
+          sessionTimeoutTimer: { cancel: jest.fn() },
+          sessionTimeoutWarningTimer: { cancel: jest.fn() },
+        });
 
         render(<Logout />);
         expect(logout).toHaveBeenCalled();

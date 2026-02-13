@@ -1,4 +1,4 @@
-import React, { Component, Fragment, createRef } from 'react';
+import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { combineReducers } from 'redux';
 import { connect } from 'react-redux';
@@ -7,7 +7,6 @@ import { IntlProvider } from 'react-intl';
 import queryString from 'query-string';
 import { QueryClientProvider } from 'react-query';
 import { ApolloProvider } from '@apollo/client';
-import ms from 'ms';
 
 import { ErrorBoundary } from '@folio/stripes-components';
 import { metadata, icons as configIcons } from 'stripes-config';
@@ -52,7 +51,7 @@ class Root extends Component {
   constructor(...args) {
     super(...args);
 
-    const { okapi, store } = this.props;
+    const { okapi } = this.props;
 
     this.reducers = { ...initialReducers };
     this.epics = {};
