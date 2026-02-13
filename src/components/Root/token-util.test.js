@@ -74,6 +74,10 @@ describe('configureRtr', () => {
 describe('ResetTimer', () => {
   it('validates callback', () => {
     const t = () => {
+      // lint, oy, yer not helping
+      // this test validates that the constructor throws on invalid input
+      // so, no, I do not care that this value is unused. 🙄
+      // eslint-disable-next-line no-unused-vars
       const rt = new ResetTimer('not a function');
     };
     expect(t).toThrow(TypeError);

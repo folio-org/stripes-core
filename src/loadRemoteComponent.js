@@ -33,7 +33,7 @@ export default async function loadRemoteComponent(remoteUrl, remoteName) {
     const Module = await injectScript(remoteUrl, remoteName);
     return Module;
   } catch (error) {
-    console.error(error);
+    console.error(error); // eslint-disable-line no-console
     throw error;
   }
 }

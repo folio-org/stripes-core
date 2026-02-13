@@ -80,7 +80,7 @@ describe('FXHR', () => {
       atExpires: Date.now() - (10 * 60 * 1000),
       rtExpires: Date.now() + (10 * 60 * 1000),
     });
-    console.log({ rotateAndReplay })
+    console.log({ rotateAndReplay });
     testXHR.addEventListener('abort', mockHandler);
     testXHR.open('POST', 'okapiUrl');
     await testXHR.send(new ArrayBuffer(8));

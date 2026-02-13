@@ -7,7 +7,6 @@ import {
 
 import {
   requestUserWithPerms,
-  setTokenExpiry,
   storeLogoutTenant,
 } from '../loginServices';
 import { useStripes } from '../StripesContext';

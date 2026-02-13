@@ -157,10 +157,9 @@ export class FFetch {
       await this.onRotate(newTokens);
     },
 
-    // what to do, what to do; void
+    // 😱 what to do, what to do? log the error, emit RTR_ERROR_EVENT
     onFailure: async (error) => {
-      console.error('Session expired', error);
-      // window.dispatchEvent(new Event(RTR_ERROR_EVENT, { detail: error }));
+      console.error('Session expired', error); // eslint-disable-line no-console
       window.dispatchEvent(new Event(RTR_ERROR_EVENT));
     },
   };
