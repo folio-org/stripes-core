@@ -13,7 +13,8 @@ import { loadEntitlement } from './loadEntitlement';
  */
 const handleRemoteModuleError = (stripes, errorMsg) => {
   stripes.logger.log('core', errorMsg);
-  throw new Error(errorMsg);
+  // Leaving this as non-fatal for now.
+  // throw new Error(errorMsg);
 };
 
 /**
