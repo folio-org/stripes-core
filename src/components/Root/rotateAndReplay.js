@@ -57,7 +57,7 @@ export const rotateAndReplay = async (fetchfx, config, error) => {
   const replayRequest = async () => {
     if (error.resource) {
       config.logger.log('rtr', 'replaying ...', error.resource);
-      const response = await fetchfx.apply(global, [error.resource, config.options(error.options)]);
+      const response = await fetchfx.apply(globalThis, [error.resource, config.options(error.options)]);
       return response;
     }
 
@@ -122,9 +122,9 @@ export const rotateAndReplay = async (fetchfx, config, error) => {
       config.logger.log('rtr', 'RTR error!', err);
       await config.onFailure(err);
       if (error.response) {
-        return Promise.reject(error);
+        throw error;
       }
-      return Promise.reject(err);
+      throw err;
     }
   };
 
@@ -140,7 +140,7 @@ export const rotateAndReplay = async (fetchfx, config, error) => {
     error.options?.rtrIgnore ||
     !await shouldRotate()
   ) {
-    return Promise.reject(error);
+    throw error;
   }
 
   // pause users requests, giving us time to complete RTR in another window,

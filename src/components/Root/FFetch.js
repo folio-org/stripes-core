@@ -55,16 +55,16 @@ export class FFetch {
    * save a reference to fetch, and then reassign the global :scream:
    */
   replaceFetch = () => {
-    this.nativeFetch = global.fetch;
-    global.fetch = this.ffetch;
+    this.nativeFetch = globalThis.fetch;
+    globalThis.fetch = this.ffetch;
   };
 
   /**
    * save a reference to XMLHttpRequest, and then reassign the global :scream:
    */
   replaceXMLHttpRequest = () => {
-    this.NativeXHR = global.XMLHttpRequest;
-    global.XMLHttpRequest = FXHR(this);
+    this.NativeXHR = globalThis.XMLHttpRequest;
+    globalThis.XMLHttpRequest = FXHR(this);
   };
 
   /**
@@ -104,7 +104,7 @@ export class FFetch {
 
     // handle rotation
     rotate: async () => {
-      const res = await this.nativeFetch.apply(global, [`${this.okapi.url}/authn/refresh`, {
+      const res = await this.nativeFetch.apply(globalThis, [`${this.okapi.url}/authn/refresh`, {
         headers: {
           'content-type': 'application/json',
           'x-okapi-tenant': this.okapi.tenant,
@@ -143,8 +143,8 @@ export class FFetch {
     isValidToken: async () => {
       try {
         const expiry = await getTokenExpiry();
-        this.logger.log('rtr', `isValidToken ? ${expiry?.atExpires} > ${Date.now()} ? ${!!(expiry?.atExpires > Date.now())}`);
-        return !!(expiry?.atExpires > Date.now());
+        this.logger.log('rtr', `isValidToken ? ${expiry?.atExpires} > ${Date.now()} ? ${expiry?.atExpires > Date.now()}`);
+        return expiry?.atExpires > Date.now();
       } catch (err) {
         // swallow the error
         this.logger.log('rtrv', { err });
@@ -160,7 +160,7 @@ export class FFetch {
     // 😱 what to do, what to do? log the error, emit RTR_ERROR_EVENT
     onFailure: async (error) => {
       console.error('Session expired', error); // eslint-disable-line no-console
-      window.dispatchEvent(new Event(RTR_ERROR_EVENT));
+      globalThis.dispatchEvent(new Event(RTR_ERROR_EVENT));
     },
   };
 
@@ -190,11 +190,11 @@ export class FFetch {
         // navigator.locks (👋 jsdom)
         if (navigator?.locks?.request) {
           response = await navigator.locks.request(RTR_LOCK_KEY, { mode: 'shared' }, async () => {
-            const fr = await this.nativeFetch.apply(global, [resource, options && { ...options, ...OKAPI_FETCH_OPTIONS }]);
+            const fr = await this.nativeFetch.apply(globalThis, [resource, options && { ...options, ...OKAPI_FETCH_OPTIONS }]);
             return fr;
           });
         } else {
-          response = await this.nativeFetch.apply(global, [resource, options && { ...options, ...OKAPI_FETCH_OPTIONS }]);
+          response = await this.nativeFetch.apply(globalThis, [resource, options && { ...options, ...OKAPI_FETCH_OPTIONS }]);
         }
 
         if (!response?.ok) {
@@ -224,6 +224,6 @@ export class FFetch {
     }
 
     // default: pass requests through to the network
-    return this.nativeFetch.apply(global, [resource, options]);
+    return this.nativeFetch.apply(globalThis, [resource, options]);
   };
 }

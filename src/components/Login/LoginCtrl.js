@@ -31,6 +31,10 @@ class LoginCtrl extends Component {
     location: PropTypes.shape({
       pathname: PropTypes.string.isRequired,
     }).isRequired,
+    stripes: PropTypes.shape({
+      handleRotation: PropTypes.func,
+    }).isRequired,
+
   };
 
   static contextType = ConnectContext;

@@ -84,13 +84,13 @@ class Root extends Component {
     // pings when the session ends
     this.sessionTimeoutTimer = new ResetTimer(() => {
       this.props.logger?.log('rtr-fls', 'emitting RTR_FLS_TIMEOUT_EVENT');
-      window.dispatchEvent(new Event(RTR_FLS_TIMEOUT_EVENT));
+      globalThis.dispatchEvent(new Event(RTR_FLS_TIMEOUT_EVENT));
     });
 
     // pings when we need to show a "session is ending!" countdown-banner
     this.sessionTimeoutWarningTimer = new ResetTimer(() => {
       this.props.logger?.log('rtr-fls', 'emitting RTR_FLS_WARNING_EVENT');
-      window.dispatchEvent(new Event(RTR_FLS_WARNING_EVENT));
+      globalThis.dispatchEvent(new Event(RTR_FLS_WARNING_EVENT));
     });
 
     // configure the rotation handler:
