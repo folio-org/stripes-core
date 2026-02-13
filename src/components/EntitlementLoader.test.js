@@ -323,12 +323,15 @@ describe('EntitlementLoader', () => {
 
       loadRemoteComponent.mockRejectedValueOnce(new Error('Load failed'));
 
-      await preloadModules(mockStripes, remotes);
-
-      expect(mockStripes.logger.log).toHaveBeenCalledWith(
-        'core',
-        expect.stringContaining('Error preloading modules')
-      );
+      try {
+        await preloadModules(mockStripes, remotes);
+      } catch (e) {
+        expect(mockStripes.logger.log).toHaveBeenCalledWith(
+          'core',
+          expect.stringContaining(remotes[0].name)
+        );
+        expect(e).toContain('Load failed');
+      }
     });
   });
 

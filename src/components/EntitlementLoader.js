@@ -6,6 +6,18 @@ import loadRemoteComponent from '../loadRemoteComponent';
 import { loadEntitlement } from './loadEntitlement';
 
 /**
+ * handleRemoteModuleError
+ * @param {*} stripes
+ * @param {*} errorMsg
+ * logs error to stripes and throws the error.
+ */
+const handleRemoteModuleError = (stripes, errorMsg) => {
+  stripes.logger.log('core', errorMsg);
+  // Leaving this as non-fatal for now.
+  // throw new Error(errorMsg);
+};
+
+/**
  * preloadModules
  * Loads each module code and sets up its getModule function.
  * Map the list of applications to a hash keyed by acts-as type (app, plugin,
@@ -23,14 +35,24 @@ export const preloadModules = async (stripes, remotes) => {
     const loaderArray = [];
     remotes.forEach(remote => {
       const { name, location } = remote;
-      loaderArray.push(loadRemoteComponent(location, name)
-        .then((module) => {
-          remote.getModule = () => module.default;
-        })
-        .catch((e) => { throw new Error(`Error loading code for remote module: ${name}: ${e}`); }));
+      loaderArray.push(loadRemoteComponent(location, name));
     });
 
-    await Promise.all(loaderArray);
+    const loadFailures = [];
+    const remoteResults = await Promise.allSettled(loaderArray);
+    remoteResults.forEach((r, i) => {
+      if (r.status !== 'rejected') {
+        remotes[i].getModule = () => r.value.default;
+      } else {
+        loadFailures.push({ name: remotes[i].name, reason: r.reason });
+        stripes.logger.log('core', `Error loading remote module '${remotes[i].name}' from ${remotes[i].location}: ${r.reason}`);
+      }
+    });
+
+    if (loadFailures.length) {
+      const errorMsg = loadFailures.map(f => `- ${f.name} : ${f.reason}`).join('\n');
+      throw (errorMsg);
+    }
 
     // once the all the code for the modules are loaded, populate the `modules` structure based on `actsAs` keys.
     remotes.forEach((remote) => {
@@ -38,7 +60,7 @@ export const preloadModules = async (stripes, remotes) => {
       actsAs.forEach(type => modules[type].push({ ...remote }));
     });
   } catch (e) {
-    stripes.logger.log('core', `Error preloading modules from entitlement response: ${e}`);
+    throw (e.message || e);
   }
 
   return modules;
@@ -139,20 +161,8 @@ export const loadModuleAssets = async (stripes, module) => {
  * @returns Promise
  */
 const loadAllModuleAssets = async (stripes, remotes) => {
-  return Promise.all(remotes.map((r) => loadModuleAssets(stripes, r)));
+  return Promise.allSettled(remotes.map((r) => loadModuleAssets(stripes, r)));
 };
-
-/**
- * handleRemoteModuleError
- * @param {*} stripes
- * @param {*} errorMsg
- * logs error to stripes and throws the error.
- */
-const handleRemoteModuleError = (stripes, errorMsg) => {
-  stripes.logger.log('core', errorMsg);
-  throw new Error(errorMsg);
-};
-
 
 /**
  * Entitlement Loader
@@ -184,22 +194,35 @@ const EntitlementLoader = ({ children }) => {
         }
 
         let cachedModules = modulesInitialState;
-        let remotesWithLoadedAssets = [];
+        const remotesWithLoadedAssets = [];
+        const loadFailures = [];
 
         // if the signal is aborted, avoid all subsequent fetches, state updates...
         if (!signal.aborted) {
           try {
             // load module assets (translations, icons)...
-            remotesWithLoadedAssets = await loadAllModuleAssets(stripes, remotes);
+            const assetResults = await loadAllModuleAssets(stripes, remotes);
+            assetResults.forEach((r, i) => {
+              if (r.status === 'fulfilled') {
+                remotesWithLoadedAssets.push(r.value);
+              } else {
+                loadFailures.push({ name: remotes[i].name, reason: r.reason });
+              }
+            });
+
+            if (loadFailures.length) {
+              const errorMsg = loadFailures.map(f => `- ${f.name}`).join('\n');
+              throw (errorMsg);
+            }
           } catch (e) {
-            handleRemoteModuleError(stripes, `Error loading remote module assets (icons, translations, sounds): ${e}`);
+            handleRemoteModuleError(stripes, `Error loading remote module assets (icons, translations, sounds):\n   ${e}`);
           }
 
           try {
             // load module code - this loads each module only once and up `getModule` so that it can be used sychronously.
             cachedModules = await preloadModules(stripes, remotesWithLoadedAssets);
           } catch (e) {
-            handleRemoteModuleError(stripes, `error loading remote modules: ${e}`);
+            handleRemoteModuleError(stripes, `Error preloading modules:\n${e.message || e}`);
           }
 
           setRemoteModules(cachedModules);
