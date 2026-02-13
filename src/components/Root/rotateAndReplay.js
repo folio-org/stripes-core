@@ -102,7 +102,7 @@ export const rotateAndReplay = async (fetchfx, config, error) => {
       // 4. replay the original request
       return replayRequest();
     } catch (err) {
-      console.error('caught an RTR error!', err);
+      config.logger.log('rtr', 'RTR error!', err);
       await config.onFailure(err);
 
       // return the original response

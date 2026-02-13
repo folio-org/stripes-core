@@ -18,20 +18,24 @@ import enhanceReducer from '../../enhanceReducer';
 import createApolloClient from '../../createApolloClient';
 import createReactQueryClient from '../../createReactQueryClient';
 import { addIcon, setSinglePlugin, setBindings, setIsAuthenticated, setOkapiToken, setTimezone, setCurrency, updateCurrentUser, setTranslations } from '../../okapiActions';
-import { loadTranslations, checkOkapiSession, setTokenExpiry } from '../../loginServices';
+import {
+  checkOkapiSession,
+  loadTranslations,
+  setTokenExpiry,
+} from '../../loginServices';
 import { getQueryResourceKey, getCurrentModule } from '../../locationService';
 import Stripes from '../../Stripes';
 import RootWithIntl from '../../RootWithIntl';
 import SystemSkeleton from '../SystemSkeleton';
-import { configureRtr } from './token-util';
+import {
+  configureRtr,
+  rotationHandler,
+  ResetTimer
+} from './token-util';
 import { modulesInitialState } from '../../ModulesContext';
 import {
-  RTR_AT_EXPIRY_IF_UNKNOWN,
-  RTR_ERROR_EVENT,
   RTR_FLS_TIMEOUT_EVENT,
   RTR_FLS_WARNING_EVENT,
-  RTR_RT_EXPIRY_IF_UNKNOWN,
-  RTR_TIME_MARGIN_IN_MS,
 } from './constants';
 
 import './Root.css';
@@ -42,71 +46,6 @@ if (!metadata) {
   // eslint-disable-next-line no-console
   console.error('No metadata harvested from package files, so you will not get app icons. Probably the stripes-core in your Stripes CLI is too old. Try `yarn global upgrade @folio/stripes-cli`');
 }
-
-export const setFlstTimers = async (expiry, timeoutTimer, warningTimer, rtrConfig, logger) => {
-  const atExpires = new Date(expiry.accessTokenExpiration).getTime();
-  const rtExpires = new Date(expiry.refreshTokenExpiration).getTime();
-  await setTokenExpiry({ atExpires, rtExpires });
-
-  // FLST timeout: session will end
-  const rtTimeoutInterval = rtExpires - Date.now();
-  timeoutTimer.reset(rtTimeoutInterval - RTR_TIME_MARGIN_IN_MS);
-
-  const rtWarningInterval = rtTimeoutInterval - ms(rtrConfig.fixedLengthSessionWarningTTL);
-  warningTimer.reset(rtWarningInterval - RTR_TIME_MARGIN_IN_MS);
-};
-
-/**
- * rotationHandler
- * Return a function to call on rotation: it accepts the new expiration data,
- * stores it, and then resets the end-of-session and end-of-session-warning
- * timers.
- *
- * @param {*} timeoutTimer
- * @param {*} warningTimer
- * @param {*} rtrConfig
- * @returns
- */
-export const rotationHandler = (timeoutTimer, warningTimer, rtrConfig) => {
-  return async (expiry) => {
-    const atExpires = new Date(expiry.accessTokenExpiration).getTime();
-    const rtExpires = new Date(expiry.refreshTokenExpiration).getTime();
-    await setTokenExpiry({ atExpires, rtExpires });
-
-    const rtTimeoutInterval = rtExpires - Date.now();
-    timeoutTimer.reset(rtTimeoutInterval - RTR_TIME_MARGIN_IN_MS);
-
-    const rtWarningInterval = rtTimeoutInterval - ms(rtrConfig.fixedLengthSessionWarningTTL);
-    warningTimer.reset(rtWarningInterval - RTR_TIME_MARGIN_IN_MS);
-  };
-};
-
-export const selfCancelingTimer = (handler) => {
-  if (typeof handler !== 'function') throw new TypeError('Expected `handler` to be a function')
-
-  let id = null;
-
-  const reset = (interval) => {
-    const timeout = (typeof interval === 'string') ? ms(interval) : interval;
-    if (typeof timeout !== 'number') throw new TypeError('Expected `interval` to be a number')
-
-    if (id) {
-      console.log(`ResetTimer: canceling ${id}`)
-    }
-
-    clearTimeout(id);
-    id = setTimeout(handler, timeout);
-    console.log(`ResetTimer: setting ${id}`)
-  };
-
-  const cancel = () => {
-    console.log(`ResetTimer: canceling ${id}`)
-    clearTimeout(id);
-    id = null;
-  };
-
-  return { cancel, reset };
-};
 
 
 class Root extends Component {
@@ -142,23 +81,30 @@ class Root extends Component {
     // * see SessionEventContainer for RTR handling
     const rtrConfig = configureRtr(this.props.config.rtr);
 
-    this.timeoutTimer = selfCancelingTimer(() => {
+    // pings when the session ends
+    this.sessionTimeoutTimer = new ResetTimer(() => {
       this.props.logger?.log('rtr-fls', 'emitting RTR_FLS_TIMEOUT_EVENT');
       window.dispatchEvent(new Event(RTR_FLS_TIMEOUT_EVENT));
     });
 
-    this.warningTimer = selfCancelingTimer(() => {
+    // pings when we need to show a "session is ending!" countdown-banner
+    this.sessionTimeoutWarningTimer = new ResetTimer(() => {
       this.props.logger?.log('rtr-fls', 'emitting RTR_FLS_WARNING_EVENT');
       window.dispatchEvent(new Event(RTR_FLS_WARNING_EVENT));
     });
 
-    this.rotationHandler = rotationHandler(this.timeoutTimer, this.warningTimer, rtrConfig);
+    // configure the rotation handler:
+    this.handleRotation = rotationHandler(
+      setTokenExpiry,
+      this.sessionTimeoutTimer,
+      this.sessionTimeoutWarningTimer,
+      rtrConfig
+    );
 
     this.ffetch = new FFetch({
       logger: this.props.logger,
-      store,
       okapi,
-      onRotate: this.rotationHandler,
+      onRotate: this.handleRotation,
     });
     this.ffetch.replaceFetch();
     this.ffetch.replaceXMLHttpRequest();
@@ -304,9 +250,9 @@ class Root extends Component {
       },
       connect(X) { return X; },
       stripesHub,
-      handleRotation: this.rotationHandler,
-      sessionTimeoutTimer: this.timeoutTimer,
-      sessionTimeoutWarningTimer: this.warningTimer,
+      handleRotation: this.handleRotation,
+      sessionTimeoutTimer: this.sessionTimeoutTimer,
+      sessionTimeoutWarningTimer: this.sessionTimeoutWarningTimer,
     });
 
     return (

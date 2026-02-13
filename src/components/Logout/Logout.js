@@ -15,6 +15,7 @@ import {
 import OrganizationLogo from '../OrganizationLogo';
 import { useStripes } from '../../StripesContext';
 import {
+  LOGOUT_TIMEOUT,
   getUnauthorizedPathFromSession,
   logout,
   removeUnauthorizedPathFromSession,
@@ -30,7 +31,7 @@ import styles from './Logout.css';
  *
  * /logout: a user chose to end the session
  * /logout-timeout: stripes redirects to this location due to idle-session timeout
- *
+ *    the "reason" key in the query string provides additional details
  */
 const Logout = () => {
   const stripes = useStripes();
@@ -38,7 +39,22 @@ const Logout = () => {
   const location = useLocation();
   const queryClient = useQueryClient();
 
-  const messageId = location.pathName === '/logout-timeout' ? 'stripes-core.rtr.idleSession.sessionExpiredSoSad' : 'stripes-core.logoutComplete';
+  let messageId = null;
+  if (location.pathname === '/logout-timeout') {
+    const messages = {
+      [LOGOUT_TIMEOUT.ERROR]: 'stripes-core.rtr.error',
+      [LOGOUT_TIMEOUT.EXPIRED]: 'stripes-core.rtr.expired',
+      [LOGOUT_TIMEOUT.INACTIVITY]: 'stripes-core.rtr.idleSession.sessionExpiredSoSad',
+    };
+
+    const params = new URLSearchParams(location.search);
+    messageId = messages[params.get('reason')];
+  }
+
+  if (!messageId) {
+    messageId = 'stripes-core.logoutComplete';
+  }
+
 
   useEffect(
     () => {

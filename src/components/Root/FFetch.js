@@ -27,10 +27,9 @@
 
 import { RTR_LOCK_KEY, rotateAndReplay } from './rotateAndReplay';
 
-import { getTokenExpiry, setTokenExpiry } from '../../loginServices';
+import { getTokenExpiry } from '../../loginServices';
 import {
   isFolioApiRequest,
-  isLogoutRequest,
 } from './token-util';
 import {
   RTRError,
@@ -46,15 +45,9 @@ const OKAPI_FETCH_OPTIONS = {
 };
 
 export class FFetch {
-  constructor({ logger, store, okapi, onRotate }) {
+  constructor({ logger, okapi, onRotate }) {
     this.logger = logger;
-    this.store = store;
     this.okapi = okapi;
-    this.focusEventSet = false;
-    this.rtrScheduled = false; // Track if RTR has been scheduled in this tab
-    // this.bc = new BroadcastChannel(RTR_ACTIVE_WINDOW_MSG_CHANNEL);
-    // this.setWindowIdMessageEvent();
-    // this.setDocumentFocusHandler();
     this.onRotate = onRotate;
   }
 
@@ -155,34 +148,46 @@ export class FFetch {
     },
   };
 
+  /**
+   * ffetch
+   * If
+   * @param {object} resource a fetchable resource
+   * @param {object} options fetch options
+   * @returns Promise
+   */
   ffetch = async (resource, options = {}) => {
-    try {
-      console.log(`fetching ${resource}`);
+    if (isFolioApiRequest(resource, this.okapi.url)) {
+      try {
+        console.log(`fetching ${resource}`);
 
-      // readers/writer lock pattern: don't fetch while rotation is in-progress
-      // https://developer.mozilla.org/en-US/docs/Web/API/LockManager/request
-      let response = await navigator.locks.request(RTR_LOCK_KEY, { mode: 'shared' }, async () => {
-        const fr = await this.nativeFetch.apply(global, [resource, options && { ...options, ...OKAPI_FETCH_OPTIONS }]);
-        return fr;
-      });
+        // readers/writer lock pattern: don't fetch while rotation is in-progress
+        // https://developer.mozilla.org/en-US/docs/Web/API/LockManager/request
+        let response = await navigator.locks.request(RTR_LOCK_KEY, { mode: 'shared' }, async () => {
+          const fr = await this.nativeFetch.apply(global, [resource, options && { ...options, ...OKAPI_FETCH_OPTIONS }]);
+          return fr;
+        });
 
-      if (!response?.ok) {
-        console.log({ logger: this.logger })
-        response = await rotateAndReplay(
-          this.nativeFetch,
-          { ...this.rotationConfig, logger: this.logger },
-          { response, resource, options });
+        if (!response?.ok) {
+          console.log({ logger: this.logger })
+          response = await rotateAndReplay(
+            this.nativeFetch,
+            { ...this.rotationConfig, logger: this.logger },
+            { response, resource, options });
+        }
+
+        return response;
+      } catch (err) {
+        console.log({ err });
+        if (err.response) {
+          return err.response;
+        }
+        // oh we're in a baaaad state; fetch failed, and rotation failed and
+        // did not return the original failed response!?!
+        throw new Error('sad panda');
       }
-
-      return response;
-    } catch (err) {
-      console.log({ err });
-      if (err.response) {
-        return err.response;
-      }
-      // oh we're in a baaaad state; fetch failed, and rotation failed and
-      // did not return the original failed response!?!
-      throw new Error('sad panda');
     }
+
+    // default: pass requests through to the network
+    return Promise.resolve(this.nativeFetch.apply(global, [resource, options]));
   };
 }

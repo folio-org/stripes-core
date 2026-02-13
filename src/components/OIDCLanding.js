@@ -32,9 +32,6 @@ const OIDCLanding = () => {
   const intl = useIntl();
   const { okapi, store, handleRotation } = useStripes();
 
-  const atDefaultExpiration = Date.now() + (60 * 1000);
-  const rtDefaultExpiration = Date.now() + (2 * 60 * 1000);
-
   /**
    * initSession
    * Callback for useExchangeCode to execute after exchanging the OTP

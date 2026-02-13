@@ -4,7 +4,11 @@ import PropTypes from 'prop-types';
 import createInactivityTimer from 'inactivity-timer';
 import ms from 'ms';
 
-import { SESSION_NAME, setUnauthorizedPathToSession } from '../../loginServices';
+import {
+  LOGOUT_TIMEOUT,
+  SESSION_NAME,
+  setUnauthorizedPathToSession
+} from '../../loginServices';
 import KeepWorkingModal from './KeepWorkingModal';
 import { useStripes } from '../../StripesContext';
 import {
@@ -27,14 +31,14 @@ import { eventsPortal } from '../../constants';
 export const thisWindowRtrError = (_e, stripes, history) => {
   console.warn('rtr error; logging out'); // eslint-disable-line no-console
   setUnauthorizedPathToSession();
-  history.push('/logout-timeout');
+  history.push(`/logout-timeout?reason=${LOGOUT_TIMEOUT.ERROR}`);
 };
 
 // idle session timeout in this window: logout
 export const thisWindowRtrIstTimeout = (_e, stripes, history) => {
   stripes.logger.log('rtr', 'idle session timeout; logging out');
   setUnauthorizedPathToSession();
-  history.push('/logout-timeout');
+  history.push(`/logout-timeout?reason=${LOGOUT_TIMEOUT.INACTIVITY}`);
 };
 
 // fixed-length session warning in this window: logout
@@ -47,7 +51,7 @@ export const thisWindowRtrFlsWarning = (_e, stripes, setIsFlsVisible) => {
 export const thisWindowRtrFlsTimeout = (_e, stripes, history) => {
   stripes.logger.log('rtr', 'fixed-length session timeout; logging out');
   setUnauthorizedPathToSession();
-  history.push('/logout');
+  history.push(`/logout-timeout?reason=${LOGOUT_TIMEOUT.EXPIRED}`);
 };
 
 // localstorage change in another window: logout?

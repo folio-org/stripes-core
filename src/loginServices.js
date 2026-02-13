@@ -65,6 +65,12 @@ export const supportedLocales = [
   'zh-TW',  // chinese, taiwan
 ];
 
+export const LOGOUT_TIMEOUT = {
+  ERROR: 'error',
+  EXPIRED: 'expired',
+  INACTIVITY: 'inactivity',
+};
+
 // export supported numbering systems, i.e. the systems tenants may chose
 // for numeral display
 export const supportedNumberingSystems = [
