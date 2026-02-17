@@ -76,12 +76,6 @@ export const rotateAndReplay = async (fetchfx, config, error) => {
   const rotateTokens = async () => {
     config.logger.log('rtr', 'locked ...');
     try {
-      // config.logger.log('rtr', '===> rtr waiting')
-      // await new Promise((res, rej) => {
-      //   setTimeout(res, 5000);
-      // });
-      // config.logger.log('rtr', '<=== rtr waited')
-
       //
       // 1. if rotation completed elsewhere, we don't need to rotate!
       // maybe another tab rotated, maybe it happened while awaiting the lock.
@@ -142,17 +136,6 @@ export const rotateAndReplay = async (fetchfx, config, error) => {
   ) {
     throw error;
   }
-
-  // pause users requests, giving us time to complete RTR in another window,
-  // proving that when simulateous requests fire, they correctly lock each
-  // other out, and when the second returns, it reuses the token from the first
-  // if (error.resource.match(/users/)) {
-  //   config.logger.log('===> users waiting')
-  //   await new Promise((res, rej) => {
-  //     setTimeout(res, 5000);
-  //   });
-  //   config.logger.log('<=== users waited')
-  // }
 
   // lock, then rotate
   // default lock-mode is exclusive, preventing others from entering the lock

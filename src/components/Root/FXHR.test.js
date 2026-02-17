@@ -5,7 +5,6 @@ import FXHR from './FXHR';
 
 jest.mock('./token-util', () => ({
   ...(jest.requireActual('./token-util')),
-  // rtr: jest.fn(() => new Promise()),
 }));
 
 jest.mock('./rotateAndReplay', () => ({
@@ -24,8 +23,6 @@ const sendSpy = jest.spyOn(XMLHttpRequest.prototype, 'send').mockImplementation(
 const aelSpy = jest.spyOn(XMLHttpRequest.prototype, 'addEventListener').mockImplementation();
 
 const mockHandler = jest.fn(() => { });
-
-// const rotateSpy = jest.spyOn('rotateAndReplay').mockImplementation(() => Promise.resolve());
 
 describe('FXHR', () => {
   let FakeXHR;

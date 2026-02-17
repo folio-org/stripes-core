@@ -82,9 +82,6 @@ export class FFetch {
     // optional; defaults to 401
     statusCodes: [400, 401],
 
-    // this doesn't work. binding weirdness?
-    // logger: this.logger,
-
     // timeout in milliseconds
     // optional; defaults to 30s
     // refreshTimeout: ms('30s'),
@@ -113,11 +110,6 @@ export class FFetch {
         credentials: 'include',
         mode: 'cors',
       }]);
-
-      // so we can test the promise race
-      // await new Promise((res, rej) => {
-      //   setTimeout(res, ms('5s'))
-      // });
 
       try {
         if (res.ok) {
