@@ -3,7 +3,7 @@
  * FOLIO API requests.
  *
  * RTR Primers:
- * @see https://authjs.dev/guides/basics/refresh-token-rotation
+ * @see https://authjs.dev/guides/refresh-token-rotation
  * @see https://auth0.com/docs/secure/tokens/refresh-tokens/refresh-token-rotation
  *
  * Our AT and RT live in HTTP-only cookies, so the JS code doesn't have access
