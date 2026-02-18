@@ -493,29 +493,6 @@ const getTenantLocale = async (url, store, tenant) => {
 
 
 /**
- * Retrieves the tenant's locale setting from the mod-settings.
- *
- * Constructs a query based on preset scope and tenant locale configuration constants, then
- * fetches the locale data by making an HTTP request to the settings entries endpoint.
- *
- * @param {string} url - The base URL for the settings API endpoint.
- * @param {Object} store - The store object used to manage application state.
- * @param {string} tenant - The tenant name for which the locale settings are being requested.
- * @returns {Promise} A promise that resolves with the locale configuration data.
- */
-const getTenantLocaleSettingsEntries = async (url, store, tenant) => {
-  const query = `scope=="${settings.SCOPE}" and key=="${tenantLocaleConfig.KEY}"`;
-
-  const response = await fetchLocale(
-    `${url}/settings/entries?query=(${query})`,
-    store,
-    tenant
-  );
-
-  return response;
-};
-
-/**
  * Retrieves the user's own locale setting from the mod-settings.
  *
  * This function constructs a query string to filter settings entries based on the provided userId,
@@ -698,8 +675,6 @@ export async function loadResources(store, tenant, userId) {
   let tenantLocaleData;
   let userLocaleData;
 
-  let isLocaleApiMissing = true;
-
   if (canReadLocale(store)) {
     // usually we'd check whether an interface is present here
     // but interface discovery happens later in this function
@@ -710,38 +685,10 @@ export async function loadResources(store, tenant, userId) {
       getUserOwnLocale(okapiUrl, store, tenant, userId),
     ]);
 
-    // if locale API call failed - we're assuming that it's due to a missing interface
     if (responses[0].value.ok) {
-      isLocaleApiMissing = false;
       [tenantLocaleData, userLocaleData] = await Promise.all(responses.map(res => res.value?.json?.()));
-      hasSetting = tenantLocaleData || userLocaleData?.items[0]?.value;
+      hasSetting = tenantLocaleData.locale || userLocaleData?.items[0]?.value;
     }
-  }
-
-  // fallback to mod-settings
-  if (canReadSettings(store) && isLocaleApiMissing) {
-    // canReadSetting: mod-settings
-    // hasReadConfigPerm: mod-configuration (legacy)
-    responses = await Promise.allSettled([
-      getTenantLocaleSettingsEntries(okapiUrl, store, tenant),
-      getUserOwnLocale(okapiUrl, store, tenant, userId),
-    ]);
-
-    [tenantLocaleData, userLocaleData] = await Promise.all(responses.map(res => res.value?.json?.()));
-    /* Locale API returns an object with locale data
-          but mod-settings/settings/entries returns shape:
-          {
-            items: [{
-              value: {
-                ...locale data
-              }
-            }]
-          }
-
-          so we need to get this data here to pass to `processLocaleSettings`
-      */
-    tenantLocaleData = tenantLocaleData.items?.[0]?.value;
-    hasSetting = tenantLocaleData || userLocaleData?.items[0]?.value;
   }
 
   if (hasSetting) {
