@@ -86,9 +86,10 @@ export const rotateAndReplay = async (fetchfx, config, error) => {
 
       //
       // 2. rotate: race the rotation-request with a timeout; default 30s
+      let rejectId = null;
       const refreshTimeout = new Promise((_res, rej) => {
         const timeout = config.refreshTimeout || ms('30s');
-        setTimeout(() => {
+        rejectId = setTimeout(() => {
           rej(new RTRError(`Token refresh timed out after ${ms(timeout)}`));
         }, timeout);
       });
@@ -98,6 +99,7 @@ export const rotateAndReplay = async (fetchfx, config, error) => {
         refreshTimeout,
         config.rotate()
       ]);
+      clearTimeout(rejectId);
       config.logger.log('rtr', '<=== rotated!');
 
       //
