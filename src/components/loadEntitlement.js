@@ -4,7 +4,7 @@ import { stripesHubAPI } from '../constants';
 export const loadEntitlement = async (discoveryUrl, signal) => {
   let registry = {};
   const discovery = await localforage.getItem(stripesHubAPI.REMOTE_LIST_KEY);
-  if (discovery) {
+  if (discovery && discovery.length !== 0) {
     registry = { discovery };
   } else if (discoveryUrl) {
     try {
@@ -18,7 +18,7 @@ export const loadEntitlement = async (discoveryUrl, signal) => {
       // it's present...)
       registry.discovery = registryData?.discovery.filter((entry) => entry.name !== stripesHubAPI.HOST_APP_NAME);
 
-      await localforage.setItem(stripesHubAPI.REMOTE_LIST_KEY, registry.discovery);
+      // await localforage.setItem(stripesHubAPI.REMOTE_LIST_KEY, registry.discovery);
     } catch (e) {
       if (e.name !== 'AbortError') {
         console.error('Discovery fetch error:', e); // eslint-disable-line no-console

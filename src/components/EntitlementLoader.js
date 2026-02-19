@@ -1,9 +1,10 @@
 import { useEffect, useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
+import { getInstance } from '@module-federation/runtime';
 import { useStripes } from '../StripesContext';
 import { ModulesContext, useModules, modulesInitialState } from '../ModulesContext';
-import loadRemoteComponent from '../loadRemoteComponent';
 import { loadEntitlement } from './loadEntitlement';
+
 
 /**
  * preloadModules
@@ -16,14 +17,15 @@ import { loadEntitlement } from './loadEntitlement';
  * @param {array} remotes
  * @returns {app: [], plugin: [], settings: [], handler: []}
  */
+
 export const preloadModules = async (stripes, remotes) => {
   const modules = { app: [], plugin: [], settings: [], handler: [] };
 
   try {
     const loaderArray = [];
     remotes.forEach(remote => {
-      const { name, location } = remote;
-      loaderArray.push(loadRemoteComponent(location, name)
+      const { name } = remote;
+      loaderArray.push(getInstance().loadRemote(`${name}/MainEntry`)
         .then((module) => {
           remote.getModule = () => module.default;
         })
@@ -172,6 +174,10 @@ const EntitlementLoader = ({ children }) => {
     const controller = new AbortController();
     const signal = controller.signal;
     if (okapi?.discoveryUrl) {
+      // ENABLE MOD FED DEBUGGING
+      localStorage.setItem('FEDERATION_DEBUG', 'true');
+
+
       // fetches the list of registered apps/metadata,
       // loads icons and translations, then module code,
       // ultimately stores the result in the modules state to pass down into the modules context.
@@ -195,9 +201,15 @@ const EntitlementLoader = ({ children }) => {
             handleRemoteModuleError(stripes, `Error loading remote module assets (icons, translations, sounds): ${e}`);
           }
 
+          const remotesToRegister = remotes.map(remote => ({
+            name: remote.name, entry: remote.location
+          }));
+
+          getInstance().registerRemotes(remotesToRegister);
+
           try {
             // load module code - this loads each module only once and up `getModule` so that it can be used sychronously.
-            cachedModules = await preloadModules(stripes, remotesWithLoadedAssets);
+            cachedModules = await preloadModules(stripes, remotesWithLoadedAssets, remotesToRegister);
           } catch (e) {
             handleRemoteModuleError(stripes, `error loading remote modules: ${e}`);
           }
@@ -205,6 +217,7 @@ const EntitlementLoader = ({ children }) => {
           setRemoteModules(cachedModules);
         }
       };
+
       fetchRegistry();
     }
     return () => {
