@@ -25,7 +25,7 @@ export const preloadModules = async (stripes, remotes) => {
     const loaderArray = [];
     remotes.forEach(remote => {
       const { name } = remote;
-      loaderArray.push(getInstance().loadRemote(name)
+      loaderArray.push(getInstance().loadRemote(`${name}/MainEntry`)
         .then((module) => {
           remote.getModule = () => module.default;
         })
