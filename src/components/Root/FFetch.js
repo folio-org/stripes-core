@@ -78,27 +78,37 @@ export class FFetch {
    * useful, e.g. configuring how long to wait for rotation to timeout.
    */
   rotationConfig = {
-    // statuscodes to intercept
-    // optional; defaults to 401
-    statusCodes: [400, 401],
+    // statusCodes
+    // list of response status-codes to intercept
+    // optional; defaults to [401]
 
+    // refreshTimeout
     // timeout in milliseconds
     // optional; defaults to 30s
-    // refreshTimeout: ms('30s'),
 
-    // fetch options
-    // configure request options with the token attached, headers munged, etc
+    // options
+    // function that receives the original request options and returns the
+    // options-object that will be used on the replayed request.
     options: (options = {}) => {
       return { ...options, ...OKAPI_FETCH_OPTIONS };
     },
 
-    // alternative to status code inspection? ugh, have to read the body :(
-    // shouldRotate: async (response) => {
-    //   const cr = response.clone();
-    //   const text = await cr.text();
-    //   return response.status === 400 && text.startsWith('Token missing, access requires permission');
-    // },
+    // shouldRotate
+    // alternative to status code inspection when a response is present:
+    // deal with Okapi's non-standard 400 response for missing/invalid tokens
+    // by cloning the response and inspecting the body text.
+    // optional; defaults to a function that resolves to false, i.e. do not force rotation
+    shouldRotate: async (response) => {
+      if (response) {
+        const cr = response.clone();
+        const text = await cr.text();
+        return response.status === 400 && text.startsWith('Token missing, access requires permission');
+      }
 
+      return false;
+    },
+
+    // rotate
     // handle rotation
     rotate: async () => {
       const res = await this.nativeFetch.apply(globalThis, [`${this.okapi.url}/authn/refresh`, {
@@ -131,6 +141,7 @@ export class FFetch {
       }
     },
 
+    // isValidToken
     // return true if a valid token is available
     isValidToken: async () => {
       try {
@@ -144,12 +155,15 @@ export class FFetch {
       return false;
     },
 
+    // onSuccess
     // rotation succeeded: call the success-callback
     onSuccess: async (newTokens) => {
       await this.onRotate(newTokens);
     },
 
-    // 😱 what to do, what to do? log the error, emit RTR_ERROR_EVENT
+    // onFailure
+    // 😱 what to do, what to do? log the error, emit RTR_ERROR_EVENT, which
+    // has a listener in SessionEventContainer that will terminate the session.
     onFailure: async (error) => {
       console.error('Session expired', error); // eslint-disable-line no-console
       globalThis.dispatchEvent(new Event(RTR_ERROR_EVENT));

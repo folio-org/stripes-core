@@ -90,7 +90,7 @@ describe('FFetch behavior and rotation helpers', () => {
       expect(res).toBe(failResp);
     });
 
-    it('seamlessly handles rotation when a fetch fails with 401', async () => {
+    it('seamlessly handles rotation when a fetch returns with { ok: false }', async () => {
       const { rotateAndReplay } = require('./rotateAndReplay');
 
       const authnFailResp = { ok: false, status: 401, body: 'ruhroh' };
@@ -125,6 +125,26 @@ describe('FFetch behavior and rotation helpers', () => {
   });
 
   describe('rotationConfig helpers', () => {
+    describe('shouldRotate', () => {
+      it('without a response, returns false', async () => {
+        const ff = new FFetch({ logger: {}, okapi: { url: okapiUrl, tenant: 't' }, onRotate: jest.fn() });
+        const shouldRotate = await ff.rotationConfig.shouldRotate();
+        expect(shouldRotate).toBe(false);
+      });
+
+      it('given a 400 with okapi\'s special error text, returns true', async () => {
+        const ff = new FFetch({ logger: {}, okapi: { url: okapiUrl, tenant: 't' }, onRotate: jest.fn() });
+        const shouldRotate = await ff.rotationConfig.shouldRotate(new Response('Token missing, access requires permission', { status: 400 }));
+        expect(shouldRotate).toBe(true);
+      });
+
+      it('given a 400 with generic text, returns false', async () => {
+        const ff = new FFetch({ logger: {}, okapi: { url: okapiUrl, tenant: 't' }, onRotate: jest.fn() });
+        const shouldRotate = await ff.rotationConfig.shouldRotate(new Response('Nobody here but us chickens', { status: 400 }));
+        expect(shouldRotate).toBe(false);
+      });
+    });
+
     it('rotate() performs a refresh and returns parsed expirations on success', async () => {
       const accessISO = new Date(Date.now() + 10000).toISOString();
       const refreshISO = new Date(Date.now() + 20000).toISOString();
@@ -137,9 +157,16 @@ describe('FFetch behavior and rotation helpers', () => {
       expect(res).toEqual({ accessTokenExpiration: accessISO, refreshTokenExpiration: refreshISO });
     });
 
-    it('rotate() throws when refresh response is not ok or missing fields', async () => {
+    it('rotate() throws when refresh response is not ok', async () => {
       const ff = new FFetch({ logger: {}, okapi: { url: okapiUrl, tenant: 't' }, onRotate: jest.fn() });
       ff.nativeFetch = jest.fn().mockResolvedValueOnce({ ok: false });
+
+      await expect(ff.rotationConfig.rotate()).rejects.toThrow('Rotation failure!');
+    });
+
+    it('rotate() throws when refresh response is missing fields', async () => {
+      const ff = new FFetch({ logger: {}, okapi: { url: okapiUrl, tenant: 't' }, onRotate: jest.fn() });
+      ff.nativeFetch = jest.fn().mockResolvedValueOnce({ ok: true, json: async () => ({ foo: 'bar' }) });
 
       await expect(ff.rotationConfig.rotate()).rejects.toThrow('Rotation failure!');
     });
