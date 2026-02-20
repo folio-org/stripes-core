@@ -71,6 +71,7 @@ const AuthnLogin = ({ handleRotation, stripes }) => {
 };
 
 AuthnLogin.propTypes = {
+  handleRotation: PropTypes.func.isRequired,
   stripes: PropTypes.object
 };
 

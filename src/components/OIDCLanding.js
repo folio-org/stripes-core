@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { useIntl } from 'react-intl';
 
 import {
@@ -70,4 +71,7 @@ const OIDCLanding = ({ handleRotation }) => {
   );
 };
 
+OIDCLanding.propTypes = {
+  handleRotation: PropTypes.func.isRequired,
+};
 export default OIDCLanding;

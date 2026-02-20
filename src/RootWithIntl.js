@@ -224,6 +224,19 @@ const RootWithIntl = ({
 };
 
 RootWithIntl.propTypes = {
+  disableAuth: PropTypes.bool.isRequired,
+  handleRotation: PropTypes.func.isRequired,
+  isAuthenticated: PropTypes.bool,
+  history: PropTypes.shape({}),
+  queryClient: PropTypes.object.isRequired,
+  sessionTimeoutTimer: PropTypes.shape({
+    clear: PropTypes.func.isRequired,
+    reset: PropTypes.func.isRequired,
+  }).isRequired,
+  sessionTimeoutWarningTimer: PropTypes.shape({
+    clear: PropTypes.func.isRequired,
+    reset: PropTypes.func.isRequired,
+  }).isRequired,
   stripes: PropTypes.shape({
     clone: PropTypes.func.isRequired,
     config: PropTypes.object,
@@ -233,10 +246,6 @@ RootWithIntl.propTypes = {
     store: PropTypes.object.isRequired
   }).isRequired,
   token: PropTypes.string,
-  isAuthenticated: PropTypes.bool,
-  disableAuth: PropTypes.bool.isRequired,
-  history: PropTypes.shape({}),
-  queryClient: PropTypes.object.isRequired,
 };
 
 export default RootWithIntl;

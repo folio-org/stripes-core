@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import { useLocation } from 'react-router';
 import { FormattedMessage } from 'react-intl';
 import { useQueryClient } from 'react-query';
@@ -109,6 +110,17 @@ const Logout = ({ sessionTimeoutTimer, sessionTimeoutWarningTimer }) => {
       </div>
     </main>
   );
+};
+
+Logout.propTypes = {
+  sessionTimeoutTimer: PropTypes.shape({
+    clear: PropTypes.func.isRequired,
+    reset: PropTypes.func.isRequired,
+  }).isRequired,
+  sessionTimeoutWarningTimer: PropTypes.shape({
+    clear: PropTypes.func.isRequired,
+    reset: PropTypes.func.isRequired,
+  }).isRequired,
 };
 
 export default Logout;
