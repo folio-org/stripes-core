@@ -15,100 +15,165 @@ describe('rotateAndReplay', () => {
     jest.clearAllMocks();
   });
 
-  test('replays request when token is already valid (no rotation)', async () => {
-    const fetchfx = jest.fn().mockResolvedValue('replayed-response');
-    const config = {
-      logger: makeLogger(),
-      isValidToken: jest.fn().mockResolvedValue(true),
-      options: jest.fn((opts) => opts),
-      // shouldRotate intentionally provided as a function (see implementation)
-      shouldRotate: async () => true,
-    };
+  describe('with an error response', () => {
+    describe('resolves', () => {
+      test('short-circuits to replay when token is already valid', async () => {
+        const fetchfx = jest.fn().mockResolvedValue('replayed-response');
+        const config = {
+          logger: makeLogger(),
+          isValidToken: jest.fn().mockResolvedValue(true),
+          rotate: jest.fn(),
+          onSuccess: jest.fn(),
+          onFailure: jest.fn(),
 
-    const error = { resource: '/foo', options: { some: 'opt' } };
+          options: jest.fn((opts) => opts),
+          // shouldRotate intentionally provided as a function (see implementation)
+          shouldRotate: async () => true,
+        };
 
-    const res = await rotateAndReplay(fetchfx, config, error);
-    expect(res).toBe('replayed-response');
-    expect(fetchfx).toHaveBeenCalledWith('/foo', { some: 'opt' });
-    expect(config.isValidToken).toHaveBeenCalled();
+        const error = { resource: '/foo', options: { some: 'opt' } };
+
+        const res = await rotateAndReplay(fetchfx, config, error);
+        expect(res).toBe('replayed-response');
+        expect(fetchfx).toHaveBeenCalledWith('/foo', { some: 'opt' });
+        expect(config.isValidToken).toHaveBeenCalled();
+        expect(config.rotate).not.toHaveBeenCalled();
+        expect(config.onSuccess).not.toHaveBeenCalled();
+        expect(config.onFailure).not.toHaveBeenCalled();
+      });
+
+      test('`config.shouldRotate()` forces rotation then replays and returns the new response', async () => {
+        const fetchfx = jest.fn().mockResolvedValue('after-rotate-response');
+        const rotateResult = { token: 'abc' };
+        const config = {
+          logger: makeLogger(),
+          isValidToken: jest.fn().mockResolvedValue(false),
+          rotate: jest.fn().mockResolvedValue(rotateResult),
+          onSuccess: jest.fn().mockResolvedValue(undefined),
+          onFailure: jest.fn().mockResolvedValue(undefined),
+          options: jest.fn((opts) => opts),
+          shouldRotate: async () => true,
+        };
+
+        const error = { resource: '/bar', options: { foo: 'bar' } };
+
+        const res = await rotateAndReplay(fetchfx, config, error);
+        expect(res).toBe('after-rotate-response');
+        expect(config.rotate).toHaveBeenCalled();
+        expect(config.onSuccess).toHaveBeenCalledWith(rotateResult);
+        expect(fetchfx).toHaveBeenCalledWith('/bar', { foo: 'bar' });
+      });
+
+      test('matched default error code causes rotation then replays and returns the new response', async () => {
+        const fetchfx = jest.fn().mockResolvedValue('after-rotate-response');
+        const rotateResult = { token: 'abc' };
+        const config = {
+          logger: makeLogger(),
+          isValidToken: jest.fn().mockResolvedValue(false),
+          rotate: jest.fn().mockResolvedValue(rotateResult),
+          onSuccess: jest.fn().mockResolvedValue(undefined),
+          onFailure: jest.fn().mockResolvedValue(undefined),
+          options: jest.fn((opts) => opts),
+        };
+
+        const error = { resource: '/bar', options: { foo: 'bar' }, response: { status: 401 } };
+
+        const res = await rotateAndReplay(fetchfx, config, error);
+        expect(res).toBe('after-rotate-response');
+        expect(config.rotate).toHaveBeenCalled();
+        expect(config.onSuccess).toHaveBeenCalledWith(rotateResult);
+        expect(fetchfx).toHaveBeenCalledWith('/bar', { foo: 'bar' });
+      });
+
+      test('matched custom error code causes rotation then replays and returns the new response', async () => {
+        const fetchfx = jest.fn().mockResolvedValue('after-rotate-response');
+        const rotateResult = { token: 'abc' };
+        const config = {
+          logger: makeLogger(),
+          isValidToken: jest.fn().mockResolvedValue(false),
+          rotate: jest.fn().mockResolvedValue(rotateResult),
+          onSuccess: jest.fn().mockResolvedValue(undefined),
+          onFailure: jest.fn().mockResolvedValue(undefined),
+          options: jest.fn((opts) => opts),
+          statusCodes: [666],
+        };
+
+        const error = { resource: '/bar', options: { foo: 'bar' }, response: { status: 666 } };
+
+        const res = await rotateAndReplay(fetchfx, config, error);
+        expect(res).toBe('after-rotate-response');
+        expect(config.rotate).toHaveBeenCalled();
+        expect(config.onSuccess).toHaveBeenCalledWith(rotateResult);
+        expect(fetchfx).toHaveBeenCalledWith('/bar', { foo: 'bar' });
+      });
+    });
+
+    describe('rejects', () => {
+      test('calls onFailure and rejects with the original error when rotation fails', async () => {
+        const fetchfx = jest.fn();
+        const rotateErr = new Error('rotate failed');
+        const config = {
+          logger: makeLogger(),
+          isValidToken: jest.fn().mockResolvedValue(false),
+          rotate: jest.fn().mockRejectedValue(rotateErr),
+          onSuccess: jest.fn().mockResolvedValue(undefined),
+          onFailure: jest.fn().mockResolvedValue(undefined),
+          options: jest.fn((opts) => opts),
+          shouldRotate: async () => true,
+        };
+
+        const originalError = { resource: '/baz', options: {}, response: { status: 401 } };
+
+        await expect(rotateAndReplay(fetchfx, config, originalError)).rejects.toBe(originalError);
+        expect(config.onFailure).toHaveBeenCalled();
+        expect(fetchfx).not.toHaveBeenCalled();
+      });
+
+      test('with the original reponse if the response status does not match', async () => {
+        const fetchfx = jest.fn();
+        const config = {
+          logger: makeLogger(),
+          options: jest.fn((opts) => opts),
+        };
+
+        const err = { response: { status: 403 }, options: {} };
+        await expect(rotateAndReplay(fetchfx, config, err)).rejects.toBe(err);
+      });
+
+      test('with the original reseponse if the request\'s rtrIgnore option is true', async () => {
+        const fetchfx = jest.fn();
+        const config = {
+          logger: makeLogger(),
+          options: jest.fn((opts) => opts),
+        };
+
+        const err = { response: { status: 404 }, options: { rtrIgnore: true } };
+        await expect(rotateAndReplay(fetchfx, config, err)).rejects.toBe(err);
+      });
+    });
   });
 
-  test('performs rotation then replays when rotate resolves', async () => {
-    const fetchfx = jest.fn().mockResolvedValue('after-rotate-response');
-    const rotateResult = { token: 'abc' };
-    const config = {
-      logger: makeLogger(),
-      isValidToken: jest.fn().mockResolvedValue(false),
-      rotate: jest.fn().mockResolvedValue(rotateResult),
-      onSuccess: jest.fn().mockResolvedValue(undefined),
-      onFailure: jest.fn().mockResolvedValue(undefined),
-      options: jest.fn((opts) => opts),
-      shouldRotate: async () => true,
-    };
+  describe('without an error response (XHR)', () => {
+    // effectively, this is just a test of whether `shouldRotate` forces
+    // rotation when no error response is present, e.g. in an XHR
+    test('shouldRotate forces rotation then returns undefined', async () => {
+      const fetchfx = jest.fn().mockResolvedValue('after-rotate-response');
+      const rotateResult = { token: 'abc' };
+      const config = {
+        logger: makeLogger(),
+        isValidToken: jest.fn().mockResolvedValue(false),
+        rotate: jest.fn().mockResolvedValue(rotateResult),
+        onSuccess: jest.fn().mockResolvedValue(undefined),
+        onFailure: jest.fn().mockResolvedValue(undefined),
+        options: jest.fn((opts) => opts),
+        shouldRotate: async () => true,
+      };
 
-    const error = { resource: '/bar', options: { foo: 'bar' } };
-
-    const res = await rotateAndReplay(fetchfx, config, error);
-    expect(res).toBe('after-rotate-response');
-    expect(config.rotate).toHaveBeenCalled();
-    expect(config.onSuccess).toHaveBeenCalledWith(rotateResult);
-    expect(fetchfx).toHaveBeenCalledWith('/bar', { foo: 'bar' });
-  });
-
-  test('calls onFailure and rejects original error when rotation fails', async () => {
-    const fetchfx = jest.fn();
-    const rotateErr = new Error('rotate failed');
-    const config = {
-      logger: makeLogger(),
-      isValidToken: jest.fn().mockResolvedValue(false),
-      rotate: jest.fn().mockRejectedValue(rotateErr),
-      onSuccess: jest.fn().mockResolvedValue(undefined),
-      onFailure: jest.fn().mockResolvedValue(undefined),
-      options: jest.fn((opts) => opts),
-      shouldRotate: async () => true,
-    };
-
-    const originalError = { resource: '/baz', options: {}, response: { status: 401 } };
-
-    await expect(rotateAndReplay(fetchfx, config, originalError)).rejects.toBe(originalError);
-    expect(config.onFailure).toHaveBeenCalled();
-    expect(fetchfx).not.toHaveBeenCalled();
-  });
-
-  test('rejects when response status not in configured statusCodes', async () => {
-    const fetchfx = jest.fn();
-    const config = {
-      logger: makeLogger(),
-      options: jest.fn((opts) => opts),
-      shouldRotate: async () => true,
-    };
-
-    const err = { response: { status: 403 }, options: {} };
-    await expect(rotateAndReplay(fetchfx, config, err)).rejects.toBe(err);
-  });
-
-  test('rejects when rtrIgnore option is true', async () => {
-    const fetchfx = jest.fn();
-    const config = {
-      logger: makeLogger(),
-      options: jest.fn((opts) => opts),
-      shouldRotate: async () => true,
-    };
-
-    const err = { response: { status: 401 }, options: { rtrIgnore: true } };
-    await expect(rotateAndReplay(fetchfx, config, err)).rejects.toBe(err);
-  });
-
-  test('rejects when shouldRotate returns false', async () => {
-    const fetchfx = jest.fn();
-    const config = {
-      logger: makeLogger(),
-      options: jest.fn((opts) => opts),
-      shouldRotate: async () => false,
-    };
-
-    const err = { response: { status: 401 }, options: {} };
-    await expect(rotateAndReplay(fetchfx, config, err)).rejects.toBe(err);
+      const res = await rotateAndReplay(fetchfx, config);
+      expect(config.rotate).toHaveBeenCalled();
+      expect(config.onSuccess).toHaveBeenCalledWith(rotateResult);
+      expect(res).toBeUndefined();
+    });
   });
 
   test('uses navigator.locks.request when available', async () => {

@@ -55,7 +55,7 @@ export const rotateAndReplay = async (fetchfx, config, error) => {
    * @returns Promise
    */
   const replayRequest = async () => {
-    if (error.resource) {
+    if (error?.resource) {
       config.logger.log('rtr', 'replaying ...', error.resource);
       const response = await fetchfx.apply(globalThis, [error.resource, config.options(error.options)]);
       return response;
@@ -125,18 +125,21 @@ export const rotateAndReplay = async (fetchfx, config, error) => {
   };
 
   // rotation config
-  const shouldRotate = await config.shouldRotate ?? (() => Promise.resolve(true));
+  const shouldRotate = config.shouldRotate ?? (() => Promise.resolve(false));
   const statusCodes = config.statusCodes || [401];
 
-  // skip rotation, allowing certain errors to bubble back to the caller:
-  // 1. the status code in the given error-response does not indicate an authn failure
-  // 2. options in the original request asked to ignore rtr
-  // 3. config function determined we should not rotate
-  if ((error.response && !statusCodes.includes(error.response.status)) ||
-    error.options?.rtrIgnore ||
-    !await shouldRotate()
-  ) {
-    throw error;
+
+  // shouldRotate() forces rotation when it returns true. If false,
+  // investigate the error response, allowing the error to bubble back to
+  // the caller when:
+  // 1. the response does not indicate an authn failure
+  // 2. the original request had an `rtrIgnore` option
+  if (!await shouldRotate()) {
+    if ((error?.response && !statusCodes.includes(error.response.status)) ||
+      error?.options?.rtrIgnore
+    ) {
+      throw error;
+    }
   }
 
   // lock, then rotate
