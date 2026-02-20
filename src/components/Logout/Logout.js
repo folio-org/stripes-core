@@ -32,7 +32,7 @@ import styles from './Logout.css';
  *
  */
 const Logout = () => {
-  const { branding, okapi, store } = useStripes();
+  const { config, branding, okapi, store } = useStripes();
   const [didLogout, setDidLogout] = useState(false);
   const location = useLocation();
   const queryClient = useQueryClient();
@@ -43,7 +43,7 @@ const Logout = () => {
     () => {
       if (okapi.isAuthenticated) {
         // returns a promise, which we ignore
-        logout(okapi.url, store, queryClient)
+        logout(okapi.url, store, queryClient, config)
           .then(setDidLogout(true));
       } else {
         setDidLogout(true);

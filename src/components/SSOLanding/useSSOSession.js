@@ -40,7 +40,7 @@ const useSSOSession = () => {
   const tenant = getTenant(params, token, store);
 
   useEffect(() => {
-    requestUserWithPerms(store.getState().okapi.url, store, tenant, token)
+    requestUserWithPerms(store.getState().okapi, store, tenant, token)
       .then(() => {
         if (store.getState()?.okapi?.authFailure) {
           return Promise.reject(new Error('SSO Failed'));

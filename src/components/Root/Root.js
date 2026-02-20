@@ -9,7 +9,7 @@ import { QueryClientProvider } from 'react-query';
 import { ApolloProvider } from '@apollo/client';
 
 import { ErrorBoundary } from '@folio/stripes-components';
-import { branding, metadata, icons as configIcons } from 'stripes-config';
+import { metadata, icons as configIcons } from 'stripes-config';
 
 import { ConnectContext } from '@folio/stripes-connect';
 import initialReducers from '../../initialReducers';
@@ -23,7 +23,6 @@ import Stripes from '../../Stripes';
 import RootWithIntl from '../../RootWithIntl';
 import SystemSkeleton from '../SystemSkeleton';
 import { configureRtr } from './token-util';
-import { getStripesHubConfig } from './stripes-hub-util';
 import { modulesInitialState } from '../../ModulesContext';
 
 import './Root.css';
@@ -79,8 +78,8 @@ class Root extends Component {
   }
 
   componentDidMount() {
-    const { okapi, store, defaultTranslations } = this.props;
-    if (this.withOkapi) checkOkapiSession(okapi.url, store, okapi.tenant);
+    const { config, okapi, store, defaultTranslations } = this.props;
+    if (this.withOkapi) checkOkapiSession(okapi.url, store, okapi.tenant, config);
     const locale = this.props.config.locale ?? 'en-US';
     // TODO: remove this after we load locale and translations at start from a public endpoint
     loadTranslations(store, locale, defaultTranslations);
@@ -139,6 +138,7 @@ class Root extends Component {
       store,
       epics,
       config,
+      branding,
       okapi,
       actionNames,
       token,
@@ -180,18 +180,20 @@ class Root extends Component {
     //   render runs when props change. realistically, that'll never happen
     //   since config values are read only once from a static file at build
     //   time, but still, props are props so technically it's possible.
-    config.rtr = configureRtr(stripesHub?.folioConfig?.rtr || this.props.config.rtr);
+    config.rtr = configureRtr(this.props.config.rtr);
 
     // if we have a stripesHub configuration, pass it to stripes...
-    const { stripesOkapi, stripesConfig, stripesBranding } = getStripesHubConfig(okapi, config, branding, stripesHub);
+    okapi.discoveryUrl = stripesHub.discoveryUrl;
+    okapi.hostLocation = stripesHub.hostLocation;
+    okapi.remotesList = stripesHub.remotesList;
 
     const stripes = new Stripes({
       logger,
       store,
       epics,
-      config: stripesConfig,
-      okapi: stripesOkapi,
-      branding: stripesBranding,
+      config,
+      okapi,
+      branding,
       withOkapi: this.withOkapi,
       setToken: (val) => { store.dispatch(setOkapiToken(val)); },
       setIsAuthenticated: (val) => { store.dispatch(setIsAuthenticated(val)); },
@@ -278,6 +280,7 @@ Root.propTypes = {
   plugins: PropTypes.object,
   bindings: PropTypes.object,
   config: PropTypes.object,
+  branding: PropTypes.object,
   okapi: PropTypes.shape({
     url: PropTypes.string,
     tenant: PropTypes.string,

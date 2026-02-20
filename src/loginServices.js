@@ -1,5 +1,5 @@
 import localforage from 'localforage';
-import { config, okapi, translations } from 'stripes-config';
+import { translations } from 'stripes-config';
 import rtlDetect from 'rtl-detect';
 import moment from 'moment';
 import { loadDayJSLocale } from '@folio/stripes-components';
@@ -639,7 +639,7 @@ const getLocalesPromise = (url, store, tenant, userId) => {
  * It also checks if the okapi instance is not in "withoutOkapi" mode, it fetches module information using discoverServices.
  * Finally, it returns a flattened array of all the results from the promises.
  */
-export async function loadResources(store, tenant, userId) {
+export async function loadResources(store, tenant, userId, config) {
   const promises = [];
   const okapiUrl = store.getState()?.okapi.url;
   const hasReadConfigPerm = canReadConfig(store);
@@ -679,7 +679,7 @@ export async function loadResources(store, tenant, userId) {
   }
 
   if (!store.getState().okapi.withoutOkapi) {
-    promises.push(discoverServices(store));
+    promises.push(discoverServices(store, config));
   }
 
   const result = await Promise.all(promises);
@@ -770,10 +770,12 @@ export const getLogoutTenant = () => {
  *
  * @param {string} okapiUrl
  * @param {object} redux store
+ * @param {object} queryClient react-query client, if available; used to clear react-query cache on logout
+ * @param {object} config configuration object
  *
  * @returns {Promise}
  */
-export async function logout(okapiUrl, store, queryClient) {
+export async function logout(okapiUrl, store, queryClient, config) {
   // check the private-storage sentinel: if logout has already started
   // in this window, we don't want to start it again.
   if (sessionStorage.getItem(IS_LOGGING_OUT)) {
@@ -854,7 +856,7 @@ export async function logout(okapiUrl, store, queryClient) {
  *
  * @returns {Promise} resolving to { user, tenant, perms, isAuthenticated, tokenExpiration }
  */
-export async function createOkapiSession(store, tenant, token, data) {
+export async function createOkapiSession(store, tenant, token, data, config) {
   // clear any auth-n errors
   store.dispatch(setAuthError(null));
 
@@ -932,7 +934,7 @@ export async function createOkapiSession(store, tenant, token, data) {
   store.dispatch(setIsAuthenticated(true));
   store.dispatch(setSessionData(okapiSess));
 
-  await loadResources(store, sessionTenant, user.id);
+  await loadResources(store, sessionTenant, user.id, config);
 }
 
 /**
@@ -1033,13 +1035,13 @@ export async function handleLoginError(dispatch, resp) {
  *
  * @returns {Promise} resolving to login response body or undefined on error
  */
-export async function processOkapiSession(store, tenant, resp, ssoToken) {
+export async function processOkapiSession(store, tenant, resp, ssoToken, config) {
   const { dispatch } = store;
 
   if (resp.ok) {
     const json = await resp.json();
     const token = resp.headers.get('X-Okapi-Token') || json.access_token || ssoToken;
-    await createOkapiSession(store, tenant, token, json);
+    await createOkapiSession(store, tenant, token, json, config);
     store.dispatch(setOkapiReady());
     return json;
   } else {
@@ -1069,7 +1071,7 @@ export async function processOkapiSession(store, tenant, resp, ssoToken) {
  *
  * @returns {Promise}
  */
-export async function validateUser(okapiUrl, store, tenant, session, handleError) {
+export async function validateUser(okapiUrl, store, tenant, session, handleError, config) {
   try {
     const { token, tenant: sessionTenant = tenant } = session;
     const usersPath = store.getState()?.okapi?.authnUrl ? 'users-keycloak' : 'bl-users';
@@ -1108,7 +1110,7 @@ export async function validateUser(okapiUrl, store, tenant, session, handleError
         tokenExpiration: session.tokenExpiration
       }));
 
-      return loadResources(store, sessionTenant, user.id);
+      return loadResources(store, sessionTenant, user.id, config);
     } else {
       const text = await resp.text();
       throw text;
@@ -1133,10 +1135,10 @@ export async function validateUser(okapiUrl, store, tenant, session, handleError
  * @param {redux store} store
  * @param {string} tenant
  */
-export async function checkOkapiSession(okapiUrl, store, tenant) {
+export async function checkOkapiSession(okapiUrl, store, tenant, config) {
   const sess = await getOkapiSession();
-  const handleError = () => logout(okapiUrl, store);
-  const res = sess?.user?.id ? await validateUser(okapiUrl, store, tenant, sess, handleError) : null;
+  const handleError = () => logout(okapiUrl, store, config);
+  const res = sess?.user?.id ? await validateUser(okapiUrl, store, tenant, sess, handleError, config) : null;
   // check whether SSO is enabled if either
   // 1. res is null (when we are starting a new session)
   // 2. login-saml interface is present (when we are resuming an existing session)
@@ -1173,17 +1175,17 @@ export async function requestLogin(okapiUrl, store, tenant, data) {
 /**
  * fetchUserWithPerms
  * retrieve currently-authenticated user data, e.g. after switching affiliations, and we want permissions for the current tenant
- * @param {string} okapiUrl
+ * @param {object} okapi
  * @param {string} tenant
  * @param {string} token
  * @param {boolean} rtrIgnore
  *
  * @returns {Promise} Promise resolving to the response of the request
  */
-async function fetchUserWithPerms(okapiUrl, tenant, token, rtrIgnore = false) {
+async function fetchUserWithPerms(okapi, tenant, token, rtrIgnore = false) {
   const usersPath = okapi.authnUrl ? 'users-keycloak' : 'bl-users';
   const res = await fetch(
-    `${okapiUrl}/${usersPath}/_self?expandPermissions=true&fullPermissions=true`,
+    `${okapiUrl.url}/${usersPath}/_self?expandPermissions=true&fullPermissions=true`,
     {
       headers: getHeaders(tenant, token),
       rtrIgnore,
@@ -1212,10 +1214,10 @@ async function fetchUserWithPerms(okapiUrl, tenant, token, rtrIgnore = false) {
  * @returns {Promise} Promise resolving to the response-body (JSON) of the request
  */
 
-export async function fetchOverriddenUserWithPerms(okapiUrl, tenant, token, rtrIgnore = false) {
+export async function fetchOverriddenUserWithPerms(okapi, tenant, token, rtrIgnore = false) {
   const usersPath = okapi.authnUrl ? 'users-keycloak' : 'bl-users';
   const res = await fetch(
-    `${okapiUrl}/${usersPath}/_self?expandPermissions=true&fullPermissions=true&overrideUser=true`,
+    `${okapiUrl.url}/${usersPath}/_self?expandPermissions=true&fullPermissions=true&overrideUser=true`,
     {
       headers: getHeaders(tenant, token),
       rtrIgnore,
@@ -1228,17 +1230,17 @@ export async function fetchOverriddenUserWithPerms(okapiUrl, tenant, token, rtrI
 /**
  * requestUserWithPerms
  * retrieve currently-authenticated user, then process the result to begin a session.
- * @param {string} okapiUrl
+ * @param {object} okapi
  * @param {redux store} store
  * @param {string} tenant
  * @param {string} token
  *
  * @returns {Promise} Promise resolving to the response-body (JSON) of the request
  */
-export async function requestUserWithPerms(okapiUrl, store, tenant, token) {
-  const resp = await fetchOverriddenUserWithPerms(okapiUrl, tenant, token, !token);
+export async function requestUserWithPerms(okapi, store, tenant, token, config) {
+  const resp = await fetchOverriddenUserWithPerms(okapi, tenant, token, !token);
   if (resp.ok) {
-    const sessionData = await processOkapiSession(store, tenant, resp, token);
+    const sessionData = await processOkapiSession(store, tenant, resp, token, config);
     return sessionData;
   } else {
     const error = await resp.json();
@@ -1296,7 +1298,7 @@ export async function updateUser(store, data) {
  */
 export async function updateTenant(okapiConfig, tenant) {
   const okapiSess = await getOkapiSession();
-  const userWithPermsResponse = await fetchUserWithPerms(okapiConfig.url, tenant, okapiConfig.token, false);
+  const userWithPermsResponse = await fetchUserWithPerms(okapiConfig, tenant, okapiConfig.token, false);
   const userWithPerms = await userWithPermsResponse.json();
   await localforage.setItem(SESSION_NAME, { ...okapiSess, tenant, ...spreadUserWithPerms(userWithPerms) });
 }

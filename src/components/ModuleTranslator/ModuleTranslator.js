@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 
+import { withStripes } from '../../StripesContext';
 import { getModules } from '../../entitlementService';
 import {
   ModulesContext,
@@ -12,6 +13,7 @@ class ModuleTranslator extends React.Component {
   static propTypes = {
     children: PropTypes.node,
     intl: PropTypes.object,
+    stripes: PropTypes.object,
   }
 
   constructor(props) {
@@ -24,7 +26,8 @@ class ModuleTranslator extends React.Component {
 
   async componentDidMount() {
     try {
-      const moduleData = await getModules();
+      const { stripes } = this.props;
+      const moduleData = await getModules(stripes.config);
       const modules = this.translateModules(moduleData);
 
       this.setState({ modules });
@@ -60,4 +63,4 @@ class ModuleTranslator extends React.Component {
   }
 }
 
-export default injectIntl(ModuleTranslator);
+export default withStripes(injectIntl(ModuleTranslator));

@@ -1,6 +1,6 @@
 import React, { Component, StrictMode } from 'react';
 import PropTypes from 'prop-types';
-import { okapi as okapiConfig, config } from 'stripes-config';
+import { okapi as okapiConfig, branding, config } from 'stripes-config';
 import merge from 'lodash/merge';
 import localforage from 'localforage';
 import AppConfigError from './components/AppConfigError';
@@ -15,12 +15,13 @@ import { modulesInitialState } from './ModulesContext';
 import css from './components/SessionEventContainer/style.css';
 
 import Root from './components/Root';
+import { getStripesHubConfig, getOverrideConfig } from './components/Root/stripes-hub-util';
 import { eventsPortal, stripesHubAPI } from './constants';
 import { getLoginTenant } from './loginServices';
 
 
-const StrictWrapper = ({ children }) => {
-  if (config.disableStrictMode) {
+const StrictWrapper = ({ children }, config) => {
+  if (config?.disableStrictMode) {
     return children;
   }
 
@@ -74,14 +75,18 @@ export default class StripesCore extends Component {
     super(props);
 
     if (isStorageEnabled()) {
-      const parsedTenant = getLoginTenant(okapiConfig, config);
+      const stripesHubConfig = getStripesHubConfig();
+      const { stripesOkapi, stripesConfig, stripesBranding } = getOverrideConfig(okapiConfig, config, branding, stripesHubConfig);
+      const parsedTenant = getLoginTenant(okapiConfig, stripesConfig);
 
-      const okapi = (typeof okapiConfig === 'object' && Object.keys(okapiConfig).length > 0)
-        ? { ...okapiConfig, ...parsedTenant } : { withoutOkapi: true };
+      const okapi = (typeof stripesOkapi === 'object' && Object.keys(stripesOkapi).length > 0)
+        ? { ...stripesOkapi, ...parsedTenant } : { withoutOkapi: true };
 
       const initialState = merge({}, { okapi }, props.initialState);
 
-      this.logger = configureLogger(config);
+      this.config = stripesConfig;
+      this.branding = stripesBranding;
+      this.logger = configureLogger(stripesConfig);
       this.epics = configureEpics(connectErrorEpic);
       this.store = configureStore(initialState, this.logger, this.epics);
 
@@ -91,6 +96,8 @@ export default class StripesCore extends Component {
         modules: modulesInitialState,
       };
     } else {
+      this.config = config;
+      this.branding = branding;
       this.state = {
         isStorageEnabled: false,
         actionNames: [],
@@ -102,10 +109,8 @@ export default class StripesCore extends Component {
   async componentDidMount() {
     if (this.state.isStorageEnabled) {
       try {
-        const modules = await getModules();
+        const modules = await getModules(this.config);
 
-        const folioConfig = await localforage.getItem(stripesHubAPI.FOLIO_CONFIG_KEY);
-        const brandingConfig = await localforage.getItem(stripesHubAPI.BRANDING_CONFIG_KEY);
         const discoveryUrl = await localforage.getItem(stripesHubAPI.DISCOVERY_URL_KEY);
         const hostLocation = await localforage.getItem(stripesHubAPI.HOST_LOCATION_KEY);
         const remotesList = await localforage.getItem(stripesHubAPI.REMOTE_LIST_KEY);
@@ -116,8 +121,6 @@ export default class StripesCore extends Component {
           actionNames,
           modules,
           stripesHub: {
-            folioConfig,
-            brandingConfig,
             discoveryUrl,
             hostLocation,
             remotesList,
@@ -151,7 +154,7 @@ export default class StripesCore extends Component {
     const { initialState, ...props } = this.props;
 
     return (
-      <StrictWrapper>
+      <StrictWrapper config={this.config}>
         <div
           id={eventsPortal}
           className={css.eventsContainer}
@@ -160,7 +163,8 @@ export default class StripesCore extends Component {
           store={this.store}
           epics={this.epics}
           logger={this.logger}
-          config={config}
+          config={this.config}
+          branding={this.branding}
           actionNames={actionNames}
           modules={modules}
           disableAuth={(config?.disableAuth) || false}

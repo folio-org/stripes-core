@@ -9,8 +9,8 @@
  *   import calls that cannot be called during render.
  *
  */
-export async function getModules() {
-  const { config, modules } = await import('stripes-config');
+export async function getModules(config) {
+  const { modules } = await import('stripes-config');
 
   // monolithic builds define sync getModule() methods; lazy builds define
   // async getDynamicModule() methods and therefore need to have their modules

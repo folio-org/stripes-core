@@ -30,7 +30,7 @@ import OIDCLandingError from './OIDCLandingError';
  */
 const OIDCLanding = () => {
   const intl = useIntl();
-  const { okapi, store } = useStripes();
+  const { config, okapi, store } = useStripes();
 
   const atDefaultExpiration = Date.now() + (60 * 1000);
   const rtDefaultExpiration = Date.now() + (2 * 60 * 1000);
@@ -51,7 +51,7 @@ const OIDCLanding = () => {
           return storeLogoutTenant(okapi.tenant);
         })
         .then(() => {
-          return requestUserWithPerms(okapi.url, store, okapi.tenant);
+          return requestUserWithPerms(okapi, store, okapi.tenant, config);
         });
     }
   };
