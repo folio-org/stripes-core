@@ -134,7 +134,7 @@ export const rotateAndReplay = async (fetchfx, config, error) => {
   // the caller when:
   // 1. the response does not indicate an authn failure
   // 2. the original request had an `rtrIgnore` option
-  if (!await shouldRotate()) {
+  if (!await shouldRotate(error?.response)) {
     if ((error?.response && !statusCodes.includes(error.response.status)) ||
       error?.options?.rtrIgnore
     ) {

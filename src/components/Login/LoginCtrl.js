@@ -18,23 +18,20 @@ import Login from './Login';
 class LoginCtrl extends Component {
   static propTypes = {
     authFailure: PropTypes.arrayOf(PropTypes.object),
-    ssoEnabled: PropTypes.bool,
-    okapiUrl: PropTypes.string.isRequired,
     autoLogin: PropTypes.shape({
       username: PropTypes.string.isRequired,
       password: PropTypes.string.isRequired,
     }),
     clearAuthErrors: PropTypes.func.isRequired,
+    handleRotation: PropTypes.func.isRequired,
     history: PropTypes.shape({
       push: PropTypes.func.isRequired,
     }).isRequired,
     location: PropTypes.shape({
       pathname: PropTypes.string.isRequired,
     }).isRequired,
-    stripes: PropTypes.shape({
-      handleRotation: PropTypes.func,
-    }).isRequired,
-
+    okapiUrl: PropTypes.string.isRequired,
+    ssoEnabled: PropTypes.bool,
   };
 
   static contextType = ConnectContext;
@@ -65,7 +62,7 @@ class LoginCtrl extends Component {
   handleSubmit = async (data) => {
     try {
       const json = await requestLogin(this.props.okapiUrl, this.context.store, this.tenant, data);
-      await this.props.stripes.handleRotation(json.tokenExpiration);
+      await this.props.handleRotation(json.tokenExpiration);
       if (matchPath(this.props.location.pathname, '/login')) {
         this.props.history.push('/');
       }

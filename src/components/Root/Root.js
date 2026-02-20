@@ -85,13 +85,13 @@ class Root extends Component {
     this.sessionTimeoutTimer = new ResetTimer(() => {
       this.props.logger?.log('rtr-fls', 'emitting RTR_FLS_TIMEOUT_EVENT');
       globalThis.dispatchEvent(new Event(RTR_FLS_TIMEOUT_EVENT));
-    });
+    }, this.props.logger);
 
     // pings when we need to show a "session is ending!" countdown-banner
     this.sessionTimeoutWarningTimer = new ResetTimer(() => {
       this.props.logger?.log('rtr-fls', 'emitting RTR_FLS_WARNING_EVENT');
       globalThis.dispatchEvent(new Event(RTR_FLS_WARNING_EVENT));
-    });
+    }, this.props.logger);
 
     // configure the rotation handler:
     this.handleRotation = rotationHandler(
@@ -110,9 +110,21 @@ class Root extends Component {
     this.ffetch.replaceXMLHttpRequest();
   }
 
-  componentDidMount() {
+  /**
+   * check for an existing session in storage and initialize end-of-session
+   * timers if found.
+   */
+  async componentDidMount() {
     const { okapi, store, defaultTranslations } = this.props;
-    if (this.withOkapi) checkOkapiSession(okapi.url, store, okapi.tenant);
+    if (this.withOkapi) {
+      // check for an existing session in storage. if found, initialize the
+      // end-of-session timers. for new sessions, this happens in LoginCtrl
+      // after a successful login.
+      const sess = await checkOkapiSession(okapi.url, store, okapi.tenant);
+      if (sess?.tokenExpiration) {
+        await this.handleRotation(sess.tokenExpiration);
+      }
+    }
     const locale = this.props.config.locale ?? 'en-US';
     // TODO: remove this after we load locale and translations at start from a public endpoint
     loadTranslations(store, locale, defaultTranslations);
@@ -250,9 +262,6 @@ class Root extends Component {
       },
       connect(X) { return X; },
       stripesHub,
-      handleRotation: this.handleRotation,
-      sessionTimeoutTimer: this.sessionTimeoutTimer,
-      sessionTimeoutWarningTimer: this.sessionTimeoutWarningTimer,
     });
 
     return (
@@ -278,6 +287,9 @@ class Root extends Component {
                   disableAuth={disableAuth}
                   history={history}
                   queryClient={this.reactQueryClient}
+                  handleRotation={this.handleRotation}
+                  sessionTimeoutTimer={this.sessionTimeoutTimer}
+                  sessionTimeoutWarningTimer={this.sessionTimeoutWarningTimer}
                 />
               </IntlProvider>
             </QueryClientProvider>

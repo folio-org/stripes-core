@@ -32,8 +32,8 @@ import styles from './Logout.css';
  * /logout-timeout: stripes redirects to this location due to idle-session timeout
  *    the "reason" key in the query string provides additional details
  */
-const Logout = () => {
-  const { branding, okapi, sessionTimeoutTimer, sessionTimeoutWarningTimer, store } = useStripes();
+const Logout = ({ sessionTimeoutTimer, sessionTimeoutWarningTimer }) => {
+  const { branding, okapi, store } = useStripes();
   const [didLogout, setDidLogout] = useState(false);
   const location = useLocation();
   const queryClient = useQueryClient();

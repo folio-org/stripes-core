@@ -45,7 +45,17 @@ import { CalloutContext } from './CalloutContext';
 import AuthnLogin from './components/AuthnLogin';
 import EntitlementLoader from './components/EntitlementLoader';
 
-const RootWithIntl = ({ stripes, token = '', isAuthenticated = false, disableAuth, history = {}, queryClient }) => {
+const RootWithIntl = ({
+  disableAuth,
+  handleRotation,
+  history = {},
+  isAuthenticated = false,
+  queryClient,
+  sessionTimeoutTimer,
+  sessionTimeoutWarningTimer,
+  stripes,
+  token = ''
+}) => {
   const connect = connectFor('@folio/core', stripes.epics, stripes.logger);
   const connectedStripes = stripes.clone({ connect });
 
@@ -116,12 +126,15 @@ const RootWithIntl = ({ stripes, token = '', isAuthenticated = false, disableAut
                                       name="oidcRedirect"
                                       path="/oidc-landing"
                                       key="oidc-landing"
-                                      component={<OIDCRedirect stripes={stripes} />}
+                                      component={<OIDCRedirect handleRotation={handleRotation} stripes={connectedStripes} />}
                                     />
                                     <TitledRoute
                                       name="logoutTimeout"
                                       path="/logout-timeout"
-                                      component={<Logout />}
+                                      component={<Logout
+                                        sessionTimeoutTimer={sessionTimeoutTimer}
+                                        sessionTimeoutWarningTimer={sessionTimeoutWarningTimer}
+                                      />}
                                     />
                                     <TitledRoute
                                       name="settings"
@@ -131,7 +144,10 @@ const RootWithIntl = ({ stripes, token = '', isAuthenticated = false, disableAut
                                     <TitledRoute
                                       name="logout"
                                       path="/logout"
-                                      component={<Logout />}
+                                      component={<Logout
+                                        sessionTimeoutTimer={sessionTimeoutTimer}
+                                        sessionTimeoutWarningTimer={sessionTimeoutWarningTimer}
+                                      />}
                                     />
                                     <ModuleRoutes stripes={connectedStripes} />
                                   </Switch>
@@ -192,7 +208,7 @@ const RootWithIntl = ({ stripes, token = '', isAuthenticated = false, disableAut
                         <TitledRoute
                           name="login"
                           path="*"
-                          component={<AuthnLogin stripes={connectedStripes} />}
+                          component={<AuthnLogin handleRotation={handleRotation} stripes={connectedStripes} />}
                         />
                       </Switch>
                     }

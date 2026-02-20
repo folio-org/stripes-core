@@ -27,9 +27,9 @@ import OIDCLandingError from './OIDCLandingError';
  *
  * @see RootWithIntl
  */
-const OIDCLanding = () => {
+const OIDCLanding = ({ handleRotation }) => {
   const intl = useIntl();
-  const { okapi, store, handleRotation } = useStripes();
+  const { okapi, store } = useStripes();
 
   /**
    * initSession

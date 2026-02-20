@@ -1150,6 +1150,8 @@ export async function checkOkapiSession(okapiUrl, store, tenant) {
     await getSSOEnabled(okapiUrl, store, tenant);
   }
   store.dispatch(setOkapiReady());
+
+  return sess && res ? sess : null;
 }
 
 /**

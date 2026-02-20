@@ -29,7 +29,7 @@ export default (deps) => {
           if (expiry?.atExpires < Date.now()) {
             await rotateAndReplay(
               this.FFetchContext.nativeFetch,
-              { ...this.FFetchContext.rotationConfig, logger: this.FFetchContext.logger },
+              { ...this.FFetchContext.rotationConfig, logger: this.FFetchContext.logger, shouldRotate: async () => Promise.resolve(true) },
             );
           }
           super.send(payload);

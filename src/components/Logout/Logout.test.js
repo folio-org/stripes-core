@@ -29,7 +29,7 @@ describe('Logout', () => {
       const mockUseStripes = useStripes;
       mockUseStripes.mockReturnValue({ okapi: { isAuthenticated: false }, branding: mockBranding });
 
-      render(<Logout />);
+      render(<Logout sessionTimeoutTimer={{ clear: jest.fn() }} sessionTimeoutWarningTimer={{ clear: jest.fn() }} />);
       screen.getByText('stripes-core.logoutComplete');
     });
 
@@ -38,11 +38,9 @@ describe('Logout', () => {
       mockUseStripes.mockReturnValue({
         branding: mockBranding,
         okapi: { isAuthenticated: true },
-        sessionTimeoutTimer: { clear: jest.fn() },
-        sessionTimeoutWarningTimer: { clear: jest.fn() },
       });
 
-      render(<Logout />);
+      render(<Logout sessionTimeoutTimer={{ clear: jest.fn() }} sessionTimeoutWarningTimer={{ clear: jest.fn() }} />);
       expect(logout).toHaveBeenCalled();
       screen.getByText('stripes-core.logoutComplete');
     });
@@ -51,7 +49,7 @@ describe('Logout', () => {
       const mockUseStripes = useStripes;
       mockUseStripes.mockReturnValue({ okapi: { isAuthenticated: false }, branding: mockBranding });
 
-      render(<Logout />);
+      render(<Logout sessionTimeoutTimer={{ clear: jest.fn() }} sessionTimeoutWarningTimer={{ clear: jest.fn() }} />);
       const button = screen.getByRole('button');
       expect(button).toHaveAttribute('href', '/');
     });
@@ -69,11 +67,9 @@ describe('Logout', () => {
         mockUseStripes.mockReturnValue({
           branding: mockBranding,
           okapi: { isAuthenticated: true },
-          sessionTimeoutTimer: { clear: jest.fn() },
-          sessionTimeoutWarningTimer: { clear: jest.fn() },
         });
 
-        render(<Logout />);
+        render(<Logout sessionTimeoutTimer={{ clear: jest.fn() }} sessionTimeoutWarningTimer={{ clear: jest.fn() }} />);
         expect(logout).toHaveBeenCalled();
         screen.getByText('stripes-core.rtr.idleSession.sessionExpiredSoSad');
       });
@@ -85,7 +81,7 @@ describe('Logout', () => {
         const mockUseStripes = useStripes;
         mockUseStripes.mockReturnValue({ okapi: { isAuthenticated: false }, branding: mockBranding });
 
-        render(<Logout />);
+        render(<Logout sessionTimeoutTimer={{ clear: jest.fn() }} sessionTimeoutWarningTimer={{ clear: jest.fn() }} />);
 
         expect(screen.getByRole('button')).toHaveAttribute('href', previousPath);
       });
@@ -97,7 +93,7 @@ describe('Logout', () => {
         const mockUseStripes = useStripes;
         mockUseStripes.mockReturnValue({ okapi: { isAuthenticated: false }, branding: mockBranding });
 
-        render(<Logout />);
+        render(<Logout sessionTimeoutTimer={{ clear: jest.fn() }} sessionTimeoutWarningTimer={{ clear: jest.fn() }} />);
 
         await user.click(screen.getByRole('button'));
         expect(getUnauthorizedPathFromSession()).toBeFalsy();
@@ -109,7 +105,7 @@ describe('Logout', () => {
         const mockUseStripes = useStripes;
         mockUseStripes.mockReturnValue({ okapi: { isAuthenticated: false }, branding: mockBranding });
 
-        render(<Logout />);
+        render(<Logout sessionTimeoutTimer={{ clear: jest.fn() }} sessionTimeoutWarningTimer={{ clear: jest.fn() }} />);
         screen.getByText('stripes-core.rtr.idleSession.sessionExpiredSoSad');
       });
     });
