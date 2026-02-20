@@ -36,14 +36,23 @@ const store = {
       token: '123',
     },
   }),
-  dispatch: () => {},
-  subscribe: () => {},
-  replaceReducer: () => {},
+  dispatch: () => { },
+  subscribe: () => { },
+  replaceReducer: () => { },
 };
 
 describe('RootWithIntl', () => {
   it('renders login without one of (isAuthenticated, token, disableAuth)', async () => {
-    const stripes = new Stripes({ epics: {}, logger: {}, bindings: {}, config: {}, store, discovery: { isFinished: false } });
+    const stripes = new Stripes({
+      bindings: {},
+      config: {},
+      discovery: { isFinished: false },
+      epics: {},
+      logger: {},
+      okapi: {},
+      plugins: {},
+      store,
+    });
     await render(<Harness><RootWithIntl stripes={stripes} history={defaultHistory} isAuthenticated={false} /></Harness>);
 
     expect(screen.getByText(/<AuthnLogin>/)).toBeInTheDocument();
@@ -52,7 +61,16 @@ describe('RootWithIntl', () => {
 
   describe('renders MainNav', () => {
     it('given isAuthenticated', async () => {
-      const stripes = new Stripes({ epics: {}, logger: {}, bindings: {}, config: {}, store, discovery: { isFinished: false } });
+      const stripes = new Stripes({
+        bindings: {},
+        config: {},
+        discovery: { isFinished: false },
+        epics: {},
+        logger: {},
+        okapi: {},
+        plugins: {},
+        store,
+      });
       await render(<Harness><RootWithIntl stripes={stripes} history={defaultHistory} isAuthenticated /></Harness>);
 
       expect(screen.queryByText(/<AuthnLogin>/)).toBeNull();
@@ -60,7 +78,16 @@ describe('RootWithIntl', () => {
     });
 
     it('given token', async () => {
-      const stripes = new Stripes({ epics: {}, logger: {}, bindings: {}, config: {}, store, discovery: { isFinished: false } });
+      const stripes = new Stripes({
+        bindings: {},
+        config: {},
+        discovery: { isFinished: true },
+        epics: {},
+        logger: {},
+        okapi: {},
+        plugins: {},
+        store,
+      });
       await render(<Harness><RootWithIntl stripes={stripes} history={defaultHistory} token /></Harness>);
 
       expect(screen.queryByText(/<AuthnLogin>/)).toBeNull();
@@ -68,7 +95,16 @@ describe('RootWithIntl', () => {
     });
 
     it('given disableAuth', async () => {
-      const stripes = new Stripes({ epics: {}, logger: {}, bindings: {}, config: {}, store, discovery: { isFinished: false } });
+      const stripes = new Stripes({
+        bindings: {},
+        config: {},
+        discovery: { isFinished: false },
+        epics: {},
+        logger: {},
+        okapi: {},
+        plugins: {},
+        store,
+      });
       await render(<Harness><RootWithIntl stripes={stripes} history={defaultHistory} disableAuth /></Harness>);
 
       expect(screen.queryByText(/<AuthnLogin>/)).toBeNull();
@@ -78,7 +114,16 @@ describe('RootWithIntl', () => {
 
   describe('renders ModuleContainer', () => {
     it('if config.okapi is not an object', async () => {
-      const stripes = new Stripes({ epics: {}, logger: {}, bindings: {}, config: {}, store, discovery: { isFinished: true } });
+      const stripes = new Stripes({
+        bindings: {},
+        config: {},
+        discovery: { isFinished: true },
+        epics: {},
+        logger: {},
+        okapi: {},
+        plugins: {},
+        store,
+      });
       await render(<Harness><RootWithIntl stripes={stripes} history={defaultHistory} isAuthenticated /></Harness>);
 
       expect(screen.queryByText(/<Login>/)).toBeNull();
@@ -87,7 +132,16 @@ describe('RootWithIntl', () => {
     });
 
     it('if discovery is finished', async () => {
-      const stripes = new Stripes({ epics: {}, logger: {}, bindings: {}, config: {}, store, okapi: {}, discovery: { isFinished: true } });
+      const stripes = new Stripes({
+        bindings: {},
+        config: {},
+        discovery: { isFinished: true },
+        epics: {},
+        logger: {},
+        okapi: {},
+        plugins: {},
+        store,
+      });
       await render(<Harness><RootWithIntl stripes={stripes} history={defaultHistory} isAuthenticated /></Harness>);
 
       expect(screen.queryByText(/<Login>/)).toBeNull();
@@ -97,14 +151,32 @@ describe('RootWithIntl', () => {
   });
 
   it('renders StaleBundleWarning', async () => {
-    const stripes = new Stripes({ epics: {}, logger: {}, bindings: {}, config: { staleBundleWarning: {} }, store, okapi: {}, discovery: { isFinished: true } });
+    const stripes = new Stripes({
+      bindings: {},
+      config: { staleBundleWarning: {} },
+      discovery: { isFinished: true },
+      epics: {},
+      logger: {},
+      okapi: {},
+      plugins: {},
+      store,
+    });
     await render(<Harness><RootWithIntl stripes={stripes} history={defaultHistory} isAuthenticated /></Harness>);
 
     expect(screen.getByText(/<StaleBundleWarning>/)).toBeInTheDocument();
   });
 
   it('renders SessionEventContainer', async () => {
-    const stripes = new Stripes({ epics: {}, logger: {}, bindings: {}, config: { useSecureTokens: true }, store, okapi: {}, discovery: { isFinished: true } });
+    const stripes = new Stripes({
+      bindings: {},
+      config: { useSecureTokens: true },
+      discovery: { isFinished: true },
+      epics: {},
+      logger: {},
+      okapi: {},
+      plugins: {},
+      store,
+    });
     await render(<Harness><RootWithIntl stripes={stripes} history={defaultHistory} isAuthenticated /></Harness>);
 
     expect(screen.getByText(/<SessionEventContainer>/)).toBeInTheDocument();

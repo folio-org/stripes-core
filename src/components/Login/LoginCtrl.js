@@ -18,19 +18,20 @@ import Login from './Login';
 class LoginCtrl extends Component {
   static propTypes = {
     authFailure: PropTypes.arrayOf(PropTypes.object),
-    ssoEnabled: PropTypes.bool,
-    okapiUrl: PropTypes.string.isRequired,
     autoLogin: PropTypes.shape({
       username: PropTypes.string.isRequired,
       password: PropTypes.string.isRequired,
     }),
     clearAuthErrors: PropTypes.func.isRequired,
+    handleRotation: PropTypes.func.isRequired,
     history: PropTypes.shape({
       push: PropTypes.func.isRequired,
     }).isRequired,
     location: PropTypes.shape({
       pathname: PropTypes.string.isRequired,
     }).isRequired,
+    okapiUrl: PropTypes.string.isRequired,
+    ssoEnabled: PropTypes.bool,
   };
 
   static contextType = ConnectContext;
@@ -48,22 +49,27 @@ class LoginCtrl extends Component {
     this.props.clearAuthErrors();
   }
 
-  handleSuccessfulLogin = () => {
-    if (matchPath(this.props.location.pathname, '/login')) {
-      this.props.history.push('/');
+  /**
+   * handleSubmit
+   * 1 Submit the API request via requestLogin, which will process a successful
+   *   response and initialize the session, and return the response JSON.
+   * 2 Grab token-expiration data and configure end-of-session timers.
+   * 3 Update location, if necessary
+   * 4 Store the tenant we logged in with, for use in logout API requests
+   *
+   * @param {object} data { username, password }
+   */
+  handleSubmit = async (data) => {
+    try {
+      const json = await requestLogin(this.props.okapiUrl, this.context.store, this.tenant, data);
+      await this.props.handleRotation(json.tokenExpiration);
+      if (matchPath(this.props.location.pathname, '/login')) {
+        this.props.history.push('/');
+      }
+      storeLogoutTenant(this.tenant);
+    } catch (e) {
+      console.error(e); // eslint-disable-line no-console
     }
-
-    // need to store tenant id in localStorage for logout purposes
-    // `logout` function in loginServices.js provides details about this.
-    storeLogoutTenant(this.tenant);
-  }
-
-  handleSubmit = (data) => {
-    return requestLogin(this.props.okapiUrl, this.context.store, this.tenant, data)
-      .then(this.handleSuccessfulLogin)
-      .catch(e => {
-        console.error(e); // eslint-disable-line no-console
-      });
   }
 
   handleSSOLogin = () => {

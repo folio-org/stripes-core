@@ -65,6 +65,12 @@ export const supportedLocales = [
   'zh-TW',  // chinese, taiwan
 ];
 
+export const LOGOUT_TIMEOUT = {
+  ERROR: 'error',
+  EXPIRED: 'expired',
+  INACTIVITY: 'inactivity',
+};
+
 // export supported numbering systems, i.e. the systems tenants may chose
 // for numeral display
 export const supportedNumberingSystems = [
@@ -1144,6 +1150,8 @@ export async function checkOkapiSession(okapiUrl, store, tenant) {
     await getSSOEnabled(okapiUrl, store, tenant);
   }
   store.dispatch(setOkapiReady());
+
+  return sess && res ? sess : null;
 }
 
 /**
@@ -1167,7 +1175,7 @@ export async function requestLogin(okapiUrl, store, tenant, data) {
     mode: 'cors',
   });
 
-  await processOkapiSession(store, tenant, resp);
+  return processOkapiSession(store, tenant, resp);
 }
 
 /**
