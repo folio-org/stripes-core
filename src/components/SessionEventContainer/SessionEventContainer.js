@@ -41,7 +41,7 @@ export const thisWindowRtrIstTimeout = (_e, stripes, history) => {
   history.push(`/logout-timeout?reason=${LOGOUT_TIMEOUT.INACTIVITY}`);
 };
 
-// fixed-length session warning in this window: logout
+// fixed-length session warning in this window: show banner
 export const thisWindowRtrFlsWarning = (_e, stripes, setIsFlsVisible) => {
   stripes.logger.log('rtr', 'fixed-length session warning');
   setIsFlsVisible(true);
@@ -96,7 +96,7 @@ export const otherWindowActivity = (_m, stripes, timers, setIsVisible) => {
 
 // activity in this window: ping idle-timers and BroadcastChannel
 // if the "Keep working?" modal is visible, however, ignore all activity;
-// then that is showing, only clicking its "confirm" button should
+// when that is showing, only clicking its "confirm" button should
 // constitute activity.
 export const thisWindowActivity = (_e, stripes, timers, broadcastChannel) => {
   const state = stripes.store.getState();
