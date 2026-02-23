@@ -168,7 +168,7 @@ export class ResetTimer {
     }
 
     this.#id = setTimeout(this.#callback, timeout);
-    this.#logger?.log(`ResetTimer: setting ${this.#id}`);
+    this.#logger?.log('rtr', `ResetTimer: setting ${this.#id}`);
   };
 
   clear = () => {
