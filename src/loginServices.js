@@ -232,24 +232,6 @@ function canReadConfig(store) {
 }
 
 /**
- * Checks if the current user has sufficient permissions to read from mod-settings.
- *
- * This function verifies that the user has the required permission to access the settings entries,
- * and that the user also has at least one permission to manage their settings preferences.
- *
- * @param {Object} store - The store containing application state.
- * @returns {boolean} True if the user possesses the required permissions for reading settings, false otherwise.
- */
-const canReadSettings = (store) => {
-  const perms = store.getState().okapi.currentPerms;
-
-  return (
-    perms?.['mod-settings.entries.collection.get']
-    && (perms?.['mod-settings.global.read.stripes-core.prefs.manage'] || perms?.['mod-settings.owner.read.stripes-core.prefs.manage'])
-  );
-};
-
-/**
  * Checks if the current user has sufficient permissions to use locale API.
  *
  * This function verifies that the user has the required permission to access the locale API
@@ -452,24 +434,6 @@ export async function getBindings(okapiUrl, store, tenant) {
 
   return response;
 }
-
-/**
- * Fetch the locale data from the provided URL.
- *
- * @param {string} url - The URL from which to fetch locale data.
- * @param {object} store - The store providing state access to retrieve the OKAPI token.
- * @param {string} tenant - The tenant name for which the locale settings are being requested.
- * @returns {Promise} A promise that resolves to the fetch API's response.
- */
-const fetchLocale = async (url, store, tenant) => {
-  const res = await fetch(url, {
-    headers: getHeaders(tenant, store.getState().okapi.token),
-    credentials: 'include',
-    mode: 'cors',
-  });
-
-  return res;
-};
 
 /**
  * Retrieves the tenant's locale setting from the mod-settings locale API.
