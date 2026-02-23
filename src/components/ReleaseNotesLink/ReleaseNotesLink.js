@@ -4,23 +4,24 @@ import { Icon } from '@folio/stripes-components';
 
 import css from './ReleaseNotesLink.css';
 
-const ReleaseNotesLink = ({ label }) => {
+export const RELEASE_NOTES_LINK_ATTRS = {
+  href: 'https://folio-org.atlassian.net/wiki/spaces/REL/overview#Release-notes',
+  target: '_blank',
+  rel: 'noopener noreferrer',
+};
+
+const ReleaseNotesLink = ({ children }) => {
   return (
-    <a
-      href="https://folio-org.atlassian.net/wiki/spaces/REL/overview#Release-notes"
-      target="_blank"
-      rel="noopener noreferrer"
-      className={css.ReleaseNotesLink}
-    >
-      {label}
+    <span className={css.ReleaseNotesLink}>
+      {children}
 
       <Icon icon="external-link" />
-    </a>
+    </span>
   );
 };
 
 ReleaseNotesLink.propTypes = {
-  label: PropTypes.oneOfType([
+  children: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.node,
   ]).isRequired,

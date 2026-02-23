@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import { Field, Form } from 'react-final-form';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { branding } from 'stripes-config';
 
 import {
   Button,
@@ -21,7 +20,7 @@ import SelectAndDispatchTenant from '../SelectAndDispatchTenant';
 import styles from '../Login/Login.css';
 
 const ForgotUserNameForm = ({ errors = [], isValid, onSubmit }) => {
-  const { okapi } = useStripes();
+  const { branding, okapi } = useStripes();
   const intl = useIntl();
   const forgotUsernamePlaceholder = intl.formatMessage({ id: 'stripes-core.placeholder.forgotUsername' });
 

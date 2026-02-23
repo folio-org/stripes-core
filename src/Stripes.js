@@ -15,6 +15,15 @@ export const stripesShape = PropTypes.shape({
     PropTypes.string,
   ).isRequired,
   bindings: PropTypes.object,
+  branding: PropTypes.shape({
+    logo: PropTypes.shape({
+      src: PropTypes.string,
+      alt: PropTypes.string,
+    }),
+    favicon: PropTypes.shape({
+      src: PropTypes.string,
+    }),
+  }),
   config: PropTypes.shape({
     disableAuth: PropTypes.bool,
     hasAllPerms: PropTypes.bool,

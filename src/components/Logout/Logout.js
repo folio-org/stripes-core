@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router';
 import { FormattedMessage } from 'react-intl';
 import { useQueryClient } from 'react-query';
-import { branding } from 'stripes-config';
 
 import {
   Button,
@@ -33,7 +32,7 @@ import styles from './Logout.css';
  *
  */
 const Logout = () => {
-  const stripes = useStripes();
+  const { branding, okapi, store } = useStripes();
   const [didLogout, setDidLogout] = useState(false);
   const location = useLocation();
   const queryClient = useQueryClient();
@@ -42,9 +41,9 @@ const Logout = () => {
 
   useEffect(
     () => {
-      if (stripes.okapi.isAuthenticated) {
+      if (okapi.isAuthenticated) {
         // returns a promise, which we ignore
-        logout(stripes.okapi.url, stripes.store, queryClient)
+        logout(okapi.url, store, queryClient)
           .then(setDidLogout(true));
       } else {
         setDidLogout(true);

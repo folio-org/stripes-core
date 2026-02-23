@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useIntl } from 'react-intl';
 
-import { branding } from 'stripes-config';
 import { Icon } from '@folio/stripes-components';
 
 import css from './MainNav.css';
@@ -30,7 +29,7 @@ const MainNav = () => {
   }, [apps]);
 
   return (
-    <header className={css.navRoot} style={branding?.style?.mainNav ?? {}}>
+    <header className={css.navRoot} style={stripes.branding?.style?.mainNav ?? {}}>
       <div className={css.startSection}>
         <SkipLink />
         <CurrentAppGroup selectedApp={selectedApp} config={stripes.config} />
