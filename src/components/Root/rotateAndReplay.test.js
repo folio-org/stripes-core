@@ -3,6 +3,14 @@ import { rotateAndReplay, RTR_LOCK_KEY } from './rotateAndReplay';
 describe('rotateAndReplay', () => {
   const makeLogger = () => ({ log: jest.fn() });
 
+  beforeEach(() => {
+    // ensure navigator exists but without locks by default
+    // @ts-ignore
+    if (!global.navigator) global.navigator = {};
+    // @ts-ignore
+    delete global.navigator.locks;
+  });
+
   afterEach(() => {
     // clean up navigator if tests set it
     try {
