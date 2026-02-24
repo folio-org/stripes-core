@@ -205,7 +205,7 @@ const EntitlementLoader = ({ children }) => {
 
           try {
             // load module code - this loads each module only once and up `getModule` so that it can be used sychronously.
-            cachedModules = await preloadModules(stripes, remotesWithLoadedAssets, remotesToRegister);
+            cachedModules = await preloadModules(stripes, remotesWithLoadedAssets);
           } catch (e) {
             handleRemoteModuleError(stripes, `error loading remote modules: ${e}`);
           }
