@@ -4,7 +4,7 @@ import { stripesHubAPI } from '../constants';
 export const loadEntitlement = async (discoveryUrl, signal) => {
   let registry = {};
   const discovery = await localforage.getItem(stripesHubAPI.REMOTE_LIST_KEY);
-  if (discovery && discovery.length !== 0) {
+  if (discovery) {
     registry = { discovery };
   } else if (discoveryUrl) {
     try {

@@ -13,6 +13,7 @@ import { loadEntitlement } from './loadEntitlement';
  * settings, handler) where the value of each is an array of corresponding
  * applications.
  *
+ *
  * @param {object} stripes
  * @param {array} remotes
  * @returns {app: [], plugin: [], settings: [], handler: []}
@@ -25,6 +26,9 @@ export const preloadModules = async (stripes, remotes) => {
     const loaderArray = [];
     remotes.forEach(remote => {
       const { name } = remote;
+
+      // 'MainEntry' is the name of the remote module's exposed entry point from
+      // stripes-webpack. https://github.com/folio-org/stripes-webpack/blob/main/webpack.config.federate.remote.js#L147
       loaderArray.push(getInstance().loadRemote(`${name}/MainEntry`)
         .then((module) => {
           remote.getModule = () => module.default;
@@ -201,6 +205,7 @@ const EntitlementLoader = ({ children }) => {
             name: remote.name, entry: remote.location
           }));
 
+          // register the dynamically provided remotes with the module federation runtime.
           getInstance().registerRemotes(remotesToRegister);
 
           try {
