@@ -126,7 +126,7 @@ const RootWithIntl = ({
                                       name="oidcRedirect"
                                       path="/oidc-landing"
                                       key="oidc-landing"
-                                      component={<OIDCRedirect handleRotation={handleRotation} stripes={connectedStripes} />}
+                                      component={<OIDCRedirect stripes={connectedStripes} />}
                                     />
                                     <TitledRoute
                                       name="logoutTimeout"
@@ -177,7 +177,7 @@ const RootWithIntl = ({
                           name="oidcLanding"
                           exact
                           path="/oidc-landing"
-                          component={<CookiesProvider><OIDCLanding stripes={stripes} /></CookiesProvider>}
+                          component={<CookiesProvider><OIDCLanding handleRotation={handleRotation} stripes={stripes} /></CookiesProvider>}
                           key="oidc-landing"
                         />
                         <TitledRoute
