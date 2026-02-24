@@ -39,6 +39,7 @@
 * FOLIO Landing Page > Display text to link to FOLIO release notes. Refs STCOR-1017.
 * Settings > System Information > Add a link to Release Notes. Refs STCOR-1018.
 * Read Stripes Hub stripes-config data from localforage if available. Refs STCOR-1039.
+* Depenency correction: `react-intl` bumped to v7 in STCOR-945, but we missed the peer. Refs STCOR-1041.
 * Use GET mod-settings `/locale` API to get tenant language & locale settings. Refs STCOR-1027.
 
 ## [11.0.0](https://github.com/folio-org/stripes-core/tree/v11.0.0) (2025-02-24)
