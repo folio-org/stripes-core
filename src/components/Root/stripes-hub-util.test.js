@@ -1,5 +1,5 @@
 
-import { getStripesHubConfig } from './stripes-hub-util';
+import { getOverrideConfig } from './stripes-hub-util';
 
 const okapi = { url: 'https://okapi.example.com' };
 const config = { name: 'test' };
@@ -32,7 +32,7 @@ describe('StripesHubUtil', () => {
       }
     };
 
-    const result = getStripesHubConfig(okapi, config, branding, stripesHub);
+    const result = getOverrideConfig(okapi, config, branding, stripesHub);
     expect(result.stripesOkapi.url).toBe('https://stripes-hub.example.com');
     expect(result.stripesConfig.name).toBe('StripesHub');
     expect(result.stripesBranding.logo.src).toBe('./logo.png');
@@ -44,7 +44,7 @@ describe('StripesHubUtil', () => {
   });
 
   it('returns the original config when StripesHub is not present', () => {
-    const result = getStripesHubConfig(okapi, config, branding, null);
+    const result = getOverrideConfig(okapi, config, branding, null);
     expect(result.stripesOkapi.url).toBe('https://okapi.example.com');
     expect(result.stripesConfig.name).toBe('test');
     expect(result.stripesBranding.logo.src).toBe('./default.png');

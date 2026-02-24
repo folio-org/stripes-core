@@ -1185,7 +1185,7 @@ export async function requestLogin(okapiUrl, store, tenant, data) {
 async function fetchUserWithPerms(okapi, tenant, token, rtrIgnore = false) {
   const usersPath = okapi.authnUrl ? 'users-keycloak' : 'bl-users';
   const res = await fetch(
-    `${okapiUrl.url}/${usersPath}/_self?expandPermissions=true&fullPermissions=true`,
+    `${okapi.url}/${usersPath}/_self?expandPermissions=true&fullPermissions=true`,
     {
       headers: getHeaders(tenant, token),
       rtrIgnore,
@@ -1206,7 +1206,7 @@ async function fetchUserWithPerms(okapi, tenant, token, rtrIgnore = false) {
  * Response looks like this, {originalTenantId: "Member tenant", permissions: {permissions: [...memberTenantPermissions]}, ...rest}.
  * Now, we can set the originalTenantId to the session with fetched permissions and servicePoints.
  * Compare with fetchUserWithPerms, which only fetches data from the current tenant, which is called during an established session when switching tenants.
- * @param {string} okapiUrl
+ * @param {object} okapi
  * @param {redux store} store
  * @param {string} tenant
  * @param {string} token
@@ -1217,7 +1217,7 @@ async function fetchUserWithPerms(okapi, tenant, token, rtrIgnore = false) {
 export async function fetchOverriddenUserWithPerms(okapi, tenant, token, rtrIgnore = false) {
   const usersPath = okapi.authnUrl ? 'users-keycloak' : 'bl-users';
   const res = await fetch(
-    `${okapiUrl.url}/${usersPath}/_self?expandPermissions=true&fullPermissions=true&overrideUser=true`,
+    `${okapi.url}/${usersPath}/_self?expandPermissions=true&fullPermissions=true&overrideUser=true`,
     {
       headers: getHeaders(tenant, token),
       rtrIgnore,

@@ -1,5 +1,4 @@
 import { some } from 'lodash';
-import { useStripes } from './StripesContext';
 
 function getHeaders(tenant, token) {
   return {

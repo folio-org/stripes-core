@@ -38,6 +38,14 @@ const mockFetchCleanUp = () => {
   delete global.fetch;
 };
 
+const CONFIG = {
+  tenantOptions: {
+    diku: {
+      name: 'diku', clientId: 'diku-application'
+    }
+  }
+};
+
 describe('discoverServices', () => {
   afterEach(() => {
     mockFetchCleanUp();
@@ -57,9 +65,9 @@ describe('discoverServices', () => {
 
       const version = '1.2.3';
       mockFetchSuccess(version);
-      discoverServices(store);
+      discoverServices(store, CONFIG);
 
-      await discoverServices(store);
+      await discoverServices(store, CONFIG);
       expect(store.dispatch).toHaveBeenCalledWith({ type: 'DISCOVERY_OKAPI', version });
     });
   });
@@ -73,9 +81,9 @@ describe('discoverServices', () => {
     };
 
     mockFetchError();
-    discoverServices(store);
+    discoverServices(store, CONFIG);
 
-    await discoverServices(store);
+    await discoverServices(store, CONFIG);
     expect(store.dispatch).toHaveBeenCalledWith({ type: 'DISCOVERY_FAILURE', code: 400 });
   });
 
@@ -90,9 +98,9 @@ describe('discoverServices', () => {
     const message = 'boom';
 
     mockFetchFail(message);
-    discoverServices(store);
+    discoverServices(store, CONFIG);
 
-    await discoverServices(store);
+    await discoverServices(store, CONFIG);
     expect(store.dispatch).toHaveBeenCalledWith({ type: 'DISCOVERY_FAILURE', message });
   });
 });

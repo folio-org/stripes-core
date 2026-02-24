@@ -20,8 +20,8 @@ import { eventsPortal, stripesHubAPI } from './constants';
 import { getLoginTenant } from './loginServices';
 
 
-const StrictWrapper = ({ children }, config) => {
-  if (config?.disableStrictMode) {
+const StrictWrapper = ({ children }, stripesConfig) => {
+  if (stripesConfig?.disableStrictMode) {
     return children;
   }
 
