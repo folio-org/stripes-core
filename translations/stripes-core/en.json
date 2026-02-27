@@ -39,6 +39,8 @@
   "button.forgotUsername": "Forgot username?",
   "button.continue": "Continue",
   "button.redirect.login": "Continue to FOLIO",
+  "entitlementLoader.assetError": "Error loading remote module assets (icons, translations, sounds)",
+  "entitlementLoader.moduleError": "Error preloading modules:",
   "label.confirmDeleteEntry": "<strong>{name}</strong> will be <strong>removed</strong>",
   "label.editEntry": "Edit {entry}",
   "label.createEntry": "Create {entry}",
@@ -56,7 +58,6 @@
   "untitled": "Untitled",
   "label.congratulations": "Congratulations!",
   "label.changed.password": "You've successfully changed your password.",
-
   "about.paneTitle": "Software versions",
   "about.userInterface": "User interface",
   "about.foundation": "Foundation",
@@ -84,7 +85,6 @@
   "about.pluginModuleCount": "{count, number} plugin {count, plural, one {module} other {modules}}",
   "about.applicationCount": "{count} applications",
   "about.applicationsVersionsTitle": "Applications/modules/interfaces",
-
   "loggedInAs": "Logged in as {firstName} {lastName}",
   "currentServicePoint": "Service point: {name}",
   "currentServicePointNotSelected": "Service point: None",
@@ -106,7 +106,6 @@
   "tenantChoose": "Select your tenant/library",
   "tenantLibrary": "Tenant/Library",
   "help": "Help",
-
   "mainnav.showAllApplicationsButtonLabel": "Apps",
   "mainnav.showAllApplicationsButtonAriaLabel": "All applications",
   "mainnav.currentAppAriaLabel": "Current open application: {appName} (Click to go home)",
@@ -115,10 +114,8 @@
   "mainnav.appContextMenu": "Application context dropdown",
   "mainnav.myProfileAriaLabel": "{tenantName} {servicePointName} profile",
   "mainnav.skipMainNavigation": "Skip to main content",
-
   "mainnav.profileDropdown.locale": "Locale",
   "mainnav.profileDropdown.permissions": "Permissions",
-
   "errors.default.error": "Wrong username or wrong password or account blocked.",
   "errors.username.incorrect": "This FOLIO account cannot be located. Please contact your FOLIO systems administrator.",
   "errors.password.incorrect": "Bad credentials",
@@ -150,34 +147,27 @@
   "errors.password.compromised.invalid": "The password must not be commonly-used, expected or compromised",
   "errors.saml.missingToken": "No <code>code</code> query parameter.",
   "errors.oidc": "Error: server is forbidden, unreachable, or unavailable.",
-
   "createResetPassword.header": "Choose a password",
   "createResetPassword.newPassword": "New Password",
   "createResetPassword.confirmPassword": "Confirm Password",
   "createResetPassword.ruleTemplate": "Must {description}",
-
   "placeholder.field.forgotPassword": "Enter username, email or phone",
   "placeholder.forgotUsername": "Enter email or phone",
-
   "routeErrorBoundary.sub": "An error occurred on this page and it could not be loaded.",
   "routeErrorBoundary.goToAppHomeLabel": "Return to home",
   "routeErrorBoundary.goToModuleHomeLabel": "Return to {name} landing page",
   "routeErrorBoundary.goToModuleSettingsHomeLabel": "Return to {name} settings",
-
   "stale.warning": "The application has changed on the server and needs to be refreshed.",
   "stale.reload": "Click here to reload.",
-
   "rtr.idleSession.modalHeader": "Your session will expire soon!",
   "rtr.idleSession.timeRemaining": "Time remaining",
   "rtr.idleSession.keepWorking": "Keep working",
   "rtr.idleSession.sessionExpiredSoSad": "Your session expired due to inactivity.",
   "rtr.idleSession.logInAgain": "Log in again",
   "rtr.fixedLengthSession.timeRemaining": "Your session will end soon! Time remaining:",
-
   "oidc.validatingAuthenticationToken": "Validating authentication token...",
   "oidc.initializingSession": "Initializing session...",
   "oidc.otp.missingCode": "The query parameter 'code' is missing.",
-
   "releaseNotes.front": "FOLIO release notes",
   "releaseNotes.settings": "Release notes"
 }

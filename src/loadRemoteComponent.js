@@ -9,17 +9,21 @@ function injectScript(remoteUrl, remoteName) {
     const script = document.createElement('script');
     script.src = remoteUrl;
     script.onload = async () => {
-      const container = window[remoteName];
+      try {
+        const container = window[remoteName];
 
-      // eslint-disable-next-line no-undef
-      await __webpack_init_sharing__('default');
+        // eslint-disable-next-line no-undef
+        await __webpack_init_sharing__('default');
 
-      // eslint-disable-next-line no-undef
-      await container.init(__webpack_share_scopes__.default);
+        // eslint-disable-next-line no-undef
+        await container.init(__webpack_share_scopes__.default);
 
-      const factory = await container.get('./MainEntry');
-      const Module = await factory();
-      resolve(Module);
+        const factory = await container.get('./MainEntry');
+        const Module = await factory();
+        resolve(Module);
+      } catch (e) {
+        reject(new Error(`Remote module loaded but failed to initialize ${remoteUrl}`));
+      }
     };
     script.onerror = () => {
       reject(new Error(`Failed to load remote script from ${remoteUrl}`));
