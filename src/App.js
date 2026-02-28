@@ -1,6 +1,6 @@
 import React, { Component, StrictMode } from 'react';
 import PropTypes from 'prop-types';
-import { okapi as okapiConfig, branding, config } from 'stripes-config';
+import { okapi as localOkapi, branding as localBranding, config as localConfig } from 'stripes-config';
 import merge from 'lodash/merge';
 import localforage from 'localforage';
 import AppConfigError from './components/AppConfigError';
@@ -15,12 +15,11 @@ import { modulesInitialState } from './ModulesContext';
 import css from './components/SessionEventContainer/style.css';
 
 import Root from './components/Root';
-import { getStripesHubConfig, getOverrideConfig } from './components/Root/stripes-hub-util';
 import { eventsPortal, stripesHubAPI } from './constants';
 import { getLoginTenant } from './loginServices';
 
 
-const StrictWrapper = ({ children }, stripesConfig) => {
+const StrictWrapper = ({ children, stripesConfig }) => {
   if (stripesConfig?.disableStrictMode) {
     return children;
   }
@@ -61,8 +60,58 @@ export const isStorageEnabled = () => {
   return isEnabled;
 };
 
+export const getStripesHubConfig = () => {
+  try {
+    const folioConfig = JSON.parse(localStorage.getItem(stripesHubAPI.FOLIO_CONFIG_KEY) || '{}');
+    const brandingConfig = JSON.parse(localStorage.getItem(stripesHubAPI.BRANDING_CONFIG_KEY) || '{}');
+    return { folioConfig, brandingConfig };
+  } catch (error) {
+    // If there was an error parsing the config from StripesHub, return empty objects so that we fall back to stripes.config.js values.
+    return { folioConfig: {}, brandingConfig: {} };
+  }
+};
+
+/**
+ * If StripesHub is present in localstorage, override config values as StripesHub is now the source of truth.
+ *
+ * @param {object} theLocalOkapi the Okapi config object from stripes.config.js.
+ * @param {object} theLocalConfig the Stripes config object from stripes.config.js.
+ * @param {object} theLocalBranding the branding config from stripes.config.js.
+ * @param {object} stripesHub the config object from StripesHub.
+ * @returns Updated config object with values from Stripes Hub if available, or default to stripes.config.js
+ */
+export const getOverrideConfig = (theLocalOkapi, theLocalConfig, theLocalBranding, stripesHub) => {
+  let stripesConfig = {};
+  let stripesOkapi = {};
+  let stripesBranding = {};
+
+  // If folioConfig is present in StripesHub, use it to override values from stripes.config.js.
+  // Otherwise, use values from stripes.config.js.
+  if (stripesHub && stripesHub.folioConfig) {
+    // Pass URLs from FOLIO config into Okapi config.
+    stripesOkapi.url = stripesHub.folioConfig.gatewayUrl;
+    stripesOkapi.authnUrl = stripesHub.folioConfig.authnUrl;
+
+    // Pass all FOLIO config values from StripesHub config into Stripes config.
+    stripesConfig = stripesHub.folioConfig;
+
+    // Remove URLs that StripesHub consolidates into FOLIO config, but classic Stripes expects to find in Okapi config.
+    delete stripesConfig.gatewayUrl;
+    delete stripesConfig.authnUrl;
+
+    stripesBranding = stripesHub.brandingConfig;
+  } else {
+    stripesOkapi = theLocalOkapi;
+    stripesConfig = theLocalConfig;
+    stripesBranding = theLocalBranding;
+  }
+
+  return { stripesOkapi, stripesConfig, stripesBranding };
+};
+
 StrictWrapper.propTypes = {
   children: PropTypes.node.isRequired,
+  stripesConfig: PropTypes.object.isRequired,
 };
 
 export default class StripesCore extends Component {
@@ -76,8 +125,8 @@ export default class StripesCore extends Component {
 
     if (isStorageEnabled()) {
       const stripesHubConfig = getStripesHubConfig();
-      const { stripesOkapi, stripesConfig, stripesBranding } = getOverrideConfig(okapiConfig, config, branding, stripesHubConfig);
-      const parsedTenant = getLoginTenant(okapiConfig, stripesConfig);
+      const { stripesOkapi, stripesConfig, stripesBranding } = getOverrideConfig(localOkapi, localConfig, localBranding, stripesHubConfig);
+      const parsedTenant = getLoginTenant(localOkapi, stripesConfig);
 
       const okapi = (typeof stripesOkapi === 'object' && Object.keys(stripesOkapi).length > 0)
         ? { ...stripesOkapi, ...parsedTenant } : { withoutOkapi: true };
@@ -96,8 +145,8 @@ export default class StripesCore extends Component {
         modules: modulesInitialState,
       };
     } else {
-      this.config = config;
-      this.branding = branding;
+      this.config = localConfig;
+      this.branding = localBranding;
       this.state = {
         isStorageEnabled: false,
         actionNames: [],
@@ -167,7 +216,7 @@ export default class StripesCore extends Component {
           branding={this.branding}
           actionNames={actionNames}
           modules={modules}
-          disableAuth={(config?.disableAuth) || false}
+          disableAuth={(this.config?.disableAuth) || false}
           stripesHub={stripesHub}
           {...props}
         />
