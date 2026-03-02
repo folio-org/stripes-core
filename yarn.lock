@@ -2553,6 +2553,33 @@
   resolved "https://registry.yarnpkg.com/@miragejs/pretender-node-polyfill/-/pretender-node-polyfill-0.1.2.tgz#d26b6b7483fb70cd62189d05c95d2f67153e43f2"
   integrity sha512-M/BexG/p05C5lFfMunxo/QcgIJnMT2vDVCd00wNqK2ImZONIlEETZwWJu1QtLxtmYlSHlCFl3JNzp0tLe7OJ5g==
 
+"@module-federation/error-codes@2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@module-federation/error-codes/-/error-codes-2.0.1.tgz#a1e70eeeeba1e9ef619a8fa17214e930ea0d91dc"
+  integrity sha512-2bJF/ft+qL9L6Zvq2t/G9/f/0wFL73cM8/NJ04uyYz9BjIgvx28K5qu8/6+IwgEEKATG7vOhBBVj6wH3S+5ASA==
+
+"@module-federation/runtime-core@2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@module-federation/runtime-core/-/runtime-core-2.0.1.tgz#17bf9e067c598870b5673c129228a3229b9f4577"
+  integrity sha512-gOuCPSHoQGUGwlxfSTMInFX+QvLxdEWegGGMiLdU5vqbXuva4E9M+kXBBO7/0MkcBPMmVs0wOJGm0XOLeV2f1Q==
+  dependencies:
+    "@module-federation/error-codes" "2.0.1"
+    "@module-federation/sdk" "2.0.1"
+
+"@module-federation/runtime@^2.0.0":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@module-federation/runtime/-/runtime-2.0.1.tgz#dbfc8e5e93a16d0ee40c0320cb8627ad0196e35b"
+  integrity sha512-UQ72P5Oo40dS6vdhHetwTtIsbGciEr+bjoYvDgh1WLPfFlTYd8zo9cLfqaf3juuPfV3cMVARAVPmh16lQYpUGA==
+  dependencies:
+    "@module-federation/error-codes" "2.0.1"
+    "@module-federation/runtime-core" "2.0.1"
+    "@module-federation/sdk" "2.0.1"
+
+"@module-federation/sdk@2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@module-federation/sdk/-/sdk-2.0.1.tgz#0b83d13a63887bb1956d27913088945c85ab409a"
+  integrity sha512-32PwudojGjog51cwpTali7D6ud82oVgsyvOx9JjAzhvXBX96YI4mRsursuWcthDxmigJP9ZvUTXDuRUEDh1OQA==
+
 "@nicolo-ribaudo/eslint-scope-5-internals@5.1.1-v1":
   version "5.1.1-v1"
   resolved "https://registry.yarnpkg.com/@nicolo-ribaudo/eslint-scope-5-internals/-/eslint-scope-5-internals-5.1.1-v1.tgz#dbf733a965ca47b1973177dc0bb6c889edcfb129"

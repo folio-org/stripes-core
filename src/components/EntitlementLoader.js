@@ -37,6 +37,7 @@ const handleRemoteModuleError = (stripes, errorMsg, sendMessage, calloutMessage)
  * settings, handler) where the value of each is an array of corresponding
  * applications.
  *
+ *
  * @param {object} stripes
  * @param {array} remotes
  * @returns {app: [], plugin: [], settings: [], handler: []}
@@ -245,11 +246,12 @@ const EntitlementLoader = ({ children }) => {
             name: remote.name, entry: remote.location
           }));
 
+          // register the dynamically provided remotes with the module federation runtime.
           getInstance().registerRemotes(remotesToRegister);
 
           try {
             // load module code - this loads each module only once and up `getModule` so that it can be used sychronously.
-            cachedModules = await preloadModules(stripes, remotesWithLoadedAssets, remotesToRegister);
+            cachedModules = await preloadModules(stripes, remotesWithLoadedAssets);
           } catch (e) {
             handleRemoteModuleError(stripes, `Error preloading modules:\n${e.message || e}`, callout?.sendCallout, e.options?.calloutMessage || e.message || e);
           }

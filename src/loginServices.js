@@ -313,14 +313,14 @@ export async function loadTranslations(store, locale, defaultTranslations = {}) 
   const res = await fetch(translationUrl.href)
     .then((response) => {
       if (response.ok) {
-        return response.json().then((stripesTranslations) => {
+        response.json().then((stripesTranslations) => {
           store.dispatch(setTranslations(Object.assign(stripesTranslations, defaultTranslations)));
           store.dispatch(setLocale(locale));
         });
-      } else {
-        return Promise.reject(new Error(`Could not load translations from ${translationsUrl}`));
       }
     });
+
+  return res;
 }
 
 /**
