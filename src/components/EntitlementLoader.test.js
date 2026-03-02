@@ -330,7 +330,7 @@ describe('EntitlementLoader', () => {
           'core',
           expect.stringContaining(remotes[0].name)
         );
-        expect(e).toContain('Load failed');
+        expect(e.message).toContain('Load failed');
       }
     });
   });
