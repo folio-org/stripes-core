@@ -1,10 +1,34 @@
 import { useEffect, useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { getInstance } from '@module-federation/runtime';
+import { FormattedMessage } from 'react-intl';
 import { useStripes } from '../StripesContext';
+import { useCallout } from '../CalloutContext';
 import { ModulesContext, useModules, modulesInitialState } from '../ModulesContext';
 import { loadEntitlement } from './loadEntitlement';
 
+// class for carrying formatted callout error messages.
+class RemoteModuleLoadingError extends Error {
+  constructor(arg, options) {
+    super(arg, options);
+    this.options = options;
+  }
+}
+
+/**
+ * handleRemoteModuleError
+ * @param {*} stripes
+ * @param {*} errorMsg
+ * logs error to stripes and throws the error.
+ */
+const handleRemoteModuleError = (stripes, errorMsg, sendMessage, calloutMessage) => {
+  stripes.logger.log('core', errorMsg);
+  // Leaving this as non-fatal for now.
+  if (sendMessage) {
+    sendMessage({ type: 'warning', message: calloutMessage });
+  }
+  // throw new Error(errorMsg);
+};
 
 /**
  * preloadModules
@@ -21,27 +45,41 @@ import { loadEntitlement } from './loadEntitlement';
 export const preloadModules = async (stripes, remotes) => {
   const modules = { app: [], plugin: [], settings: [], handler: [] };
 
-  try {
-    const loaderArray = [];
-    remotes.forEach(remote => {
-      const { name } = remote;
-      loaderArray.push(getInstance().loadRemote(`${name}/MainEntry`)
-        .then((module) => {
-          remote.getModule = () => module.default;
-        })
-        .catch((e) => { throw new Error(`Error loading code for remote module: ${name}: ${e}`); }));
-    });
+  const loaderArray = [];
+  remotes.forEach(remote => {
+    const { name } = remote;
+    loaderArray.push(getInstance().loadRemote(`${name}/MainEntry`));
+  });
 
-    await Promise.all(loaderArray);
+  const loadFailures = [];
+  const remoteResults = await Promise.allSettled(loaderArray);
+  remoteResults.forEach((r, i) => {
+    if (r.status === 'fulfilled') {
+      remotes[i].getModule = () => r.value.default;
+    } else {
+      loadFailures.push({ name: remotes[i].name, reason: r.reason });
+      stripes.logger.log('core', `Error loading remote module '${remotes[i].name}' from ${remotes[i].location}: ${r.reason}`);
+    }
+  });
 
-    // once the all the code for the modules are loaded, populate the `modules` structure based on `actsAs` keys.
-    remotes.forEach((remote) => {
-      const { actsAs } = remote;
-      actsAs.forEach(type => modules[type].push({ ...remote }));
-    });
-  } catch (e) {
-    stripes.logger.log('core', `Error preloading modules from entitlement response: ${e}`);
+  if (loadFailures.length) {
+    const errorMsg = loadFailures.map(f => `- ${f.name} : ${f.reason}`).join('\n');
+    const calloutMessage = (
+      <div>
+        <FormattedMessage id="stripes-core.entitlementLoader.moduleError" />
+        <ul>
+          {loadFailures.map(f => (<li>{f.name}: {f.reason.message}</li>))}
+        </ul>
+      </div>
+    );
+    throw new RemoteModuleLoadingError(errorMsg, { calloutMessage });
   }
+
+  // once the all the code for the modules are loaded, populate the `modules` structure based on `actsAs` keys.
+  remotes.forEach((remote) => {
+    const { actsAs } = remote;
+    actsAs.forEach(type => modules[type].push({ ...remote }));
+  });
 
   return modules;
 };
@@ -141,20 +179,8 @@ export const loadModuleAssets = async (stripes, module) => {
  * @returns Promise
  */
 const loadAllModuleAssets = async (stripes, remotes) => {
-  return Promise.all(remotes.map((r) => loadModuleAssets(stripes, r)));
+  return Promise.allSettled(remotes.map((r) => loadModuleAssets(stripes, r)));
 };
-
-/**
- * handleRemoteModuleError
- * @param {*} stripes
- * @param {*} errorMsg
- * logs error to stripes and throws the error.
- */
-const handleRemoteModuleError = (stripes, errorMsg) => {
-  stripes.logger.log('core', errorMsg);
-  throw new Error(errorMsg);
-};
-
 
 /**
  * Entitlement Loader
@@ -165,6 +191,7 @@ const handleRemoteModuleError = (stripes, errorMsg) => {
 const EntitlementLoader = ({ children }) => {
   const stripes = useStripes();
   const configModules = useModules();
+  const callout = useCallout();
   const [remoteModules, setRemoteModules] = useState(modulesInitialState);
 
   // fetching data in useEffect onMount using an AbortController. The cleanup function will abort the first call if the component is unmounted
@@ -186,15 +213,32 @@ const EntitlementLoader = ({ children }) => {
         }
 
         let cachedModules = modulesInitialState;
-        let remotesWithLoadedAssets = [];
+        const remotesWithLoadedAssets = [];
+        const loadFailures = [];
 
         // if the signal is aborted, avoid all subsequent fetches, state updates...
         if (!signal.aborted) {
-          try {
-            // load module assets (translations, icons)...
-            remotesWithLoadedAssets = await loadAllModuleAssets(stripes, remotes);
-          } catch (e) {
-            handleRemoteModuleError(stripes, `Error loading remote module assets (icons, translations, sounds): ${e}`);
+          // load module assets (translations, icons)...
+          const assetResults = await loadAllModuleAssets(stripes, remotes);
+          assetResults.forEach((r, i) => {
+            if (r.status === 'fulfilled') {
+              remotesWithLoadedAssets.push(r.value);
+            } else {
+              loadFailures.push({ name: remotes[i].name, reason: r.reason });
+            }
+          });
+
+          if (loadFailures.length) {
+            const errorMsg = loadFailures.map(f => `- ${f.name}`).join('\n');
+            const calloutMessage = (
+              <div>
+                <FormattedMessage id="stripes-core.entitlementLoader.assetError" />
+                <ul>
+                  {loadFailures.map(f => (<li>{f.name}</li>))}
+                </ul>
+              </div>
+            );
+            handleRemoteModuleError(stripes, `Error loading remote module assets (icons, translations, sounds):\n   ${errorMsg}`, callout?.sendCallout, calloutMessage);
           }
 
           const remotesToRegister = remotes.map(remote => ({
@@ -207,7 +251,7 @@ const EntitlementLoader = ({ children }) => {
             // load module code - this loads each module only once and up `getModule` so that it can be used sychronously.
             cachedModules = await preloadModules(stripes, remotesWithLoadedAssets, remotesToRegister);
           } catch (e) {
-            handleRemoteModuleError(stripes, `error loading remote modules: ${e}`);
+            handleRemoteModuleError(stripes, `Error preloading modules:\n${e.message || e}`, callout?.sendCallout, e.options?.calloutMessage || e.message || e);
           }
 
           setRemoteModules(cachedModules);
