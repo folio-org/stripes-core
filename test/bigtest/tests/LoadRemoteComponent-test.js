@@ -1,10 +1,10 @@
 import { beforeEach, it, afterEach, describe } from 'mocha';
 import { expect } from 'chai';
-import { createServer, Response } from 'miragejs';
+import { createServer } from 'miragejs';
 
 import loadRemoteComponent from '../../../src/loadRemoteComponent';
 
-describe.only('loadRemoteComponent', () => {
+describe('loadRemoteComponent', () => {
   let server;
   const mockRemoteUrl = '/example/testRemote/remoteEntry.js';
   const mockErrorUrl = 'https://example.com/nonexistent/remoteEntry.js';
