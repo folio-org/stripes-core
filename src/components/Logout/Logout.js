@@ -116,11 +116,11 @@ Logout.propTypes = {
   sessionTimeoutTimer: PropTypes.shape({
     clear: PropTypes.func.isRequired,
     reset: PropTypes.func.isRequired,
-  }).isRequired,
+  }),
   sessionTimeoutWarningTimer: PropTypes.shape({
     clear: PropTypes.func.isRequired,
     reset: PropTypes.func.isRequired,
-  }).isRequired,
+  }),
 };
 
 export default Logout;

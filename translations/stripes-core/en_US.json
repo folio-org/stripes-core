@@ -89,7 +89,7 @@
     "mainnav.applicationListLabel": "Application List",
     "entitlementLoader.assetError": "Error loading remote module assets (icons, translations, sounds)",
     "entitlementLoader.moduleError": "Error preloading modules",
-    "errors.default.error": "Sorry, the information entered does not match our records.",
+    "errors.default.error": "Wrong username or wrong password or account blocked.",
     "errors.username.incorrect": "This FOLIO account cannot be located. Please contact your FOLIO systems administrator.",
     "errors.password.incorrect": "Bad credentials",
     "errors.user.blocked": "For security purposes, your account has been locked. Please try again or contact your FOLIO System Administrator.",
