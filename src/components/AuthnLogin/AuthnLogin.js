@@ -10,7 +10,7 @@ import {
   getOIDCRedirectUri,
 } from '../../loginServices';
 
-const AuthnLogin = ({ stripes }) => {
+const AuthnLogin = ({ handleRotation, stripes }) => {
   const { config, okapi } = stripes;
   // If config.tenantOptions is not defined, default to classic okapi.tenant and okapi.clientId
   const { tenantOptions = [{ name: okapi.tenant, clientId: okapi.clientId }] } = config;
@@ -65,11 +65,13 @@ const AuthnLogin = ({ stripes }) => {
 
   return <Login
     autoLogin={config.autoLogin}
+    handleRotation={handleRotation}
     stripes={stripes}
   />;
 };
 
 AuthnLogin.propTypes = {
+  handleRotation: PropTypes.func.isRequired,
   stripes: PropTypes.object
 };
 

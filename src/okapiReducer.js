@@ -3,9 +3,6 @@ export const OKAPI_REDUCER_ACTIONS = {
   CHECK_SSO: 'CHECK_SSO',
   CLEAR_CURRENT_USER: 'CLEAR_CURRENT_USER',
   CLEAR_OKAPI_TOKEN: 'CLEAR_OKAPI_TOKEN',
-  CLEAR_RTR_FLS_TIMEOUT: 'CLEAR_RTR_FLS_TIMEOUT',
-  CLEAR_RTR_FLS_WARNING_TIMEOUT: 'CLEAR_RTR_FLS_WARNING_TIMEOUT',
-  CLEAR_RTR_TIMEOUT: 'CLEAR_RTR_TIMEOUT',
   OKAPI_READY: 'OKAPI_READY',
   SERVER_DOWN: 'SERVER_DOWN',
   SET_AUTH_FAILURE: 'SET_AUTH_FAILURE',
@@ -19,9 +16,6 @@ export const OKAPI_REDUCER_ACTIONS = {
   SET_OKAPI_TENANT: 'SET_OKAPI_TENANT',
   SET_OKAPI_TOKEN: 'SET_OKAPI_TOKEN',
   SET_PLUGINS: 'SET_PLUGINS',
-  SET_RTR_FLS_TIMEOUT: 'SET_RTR_FLS_TIMEOUT',
-  SET_RTR_FLS_WARNING_TIMEOUT: 'SET_RTR_FLS_WARNING_TIMEOUT',
-  SET_RTR_TIMEOUT: 'SET_RTR_TIMEOUT',
   SET_SESSION_DATA: 'SET_SESSION_DATA',
   SET_SINGLE_PLUGIN: 'SET_SINGLE_PLUGIN',
   SET_TIMEZONE: 'SET_TIMEZONE',
@@ -47,15 +41,9 @@ export default function okapiReducer(state = {}, action) {
       const newState = {
         isAuthenticated: action.isAuthenticated,
       };
-      // if we're logging out, clear the RTR timeouts and related values
+      // hide the IST modal on logout
       if (!action.isAuthenticated) {
-        clearTimeout(state.rtrTimeout);
-        clearTimeout(state.rtrFlsWarningTimeout);
-        clearTimeout(state.rtrFlsTimeout);
         newState.rtrModalIsVisible = false;
-        newState.rtrTimeout = undefined;
-        newState.rtrFlsWarningTimeout = undefined;
-        newState.rtrFlsTimeout = undefined;
       }
 
       return { ...state, ...newState };
@@ -98,38 +86,6 @@ export default function okapiReducer(state = {}, action) {
       return Object.assign({}, state, { serverDown: true });
     case OKAPI_REDUCER_ACTIONS.UPDATE_CURRENT_USER:
       return { ...state, currentUser: { ...state.currentUser, ...action.data } };
-
-    // clear existing AT rotation timeout and set a new one
-    case OKAPI_REDUCER_ACTIONS.SET_RTR_TIMEOUT: {
-      clearTimeout(state.rtrTimeout);
-      return { ...state, rtrTimeout: action.rtrTimeout };
-    }
-
-    case OKAPI_REDUCER_ACTIONS.CLEAR_RTR_TIMEOUT: {
-      clearTimeout(state.rtrTimeout);
-      return { ...state, rtrTimeout: undefined };
-    }
-
-    // clear existing FLS warning timeout and set a new one
-    case OKAPI_REDUCER_ACTIONS.SET_RTR_FLS_WARNING_TIMEOUT: {
-      clearTimeout(state.rtrFlsWarningTimeout);
-      return { ...state, rtrFlsWarningTimeout: action.rtrFlsWarningTimeout };
-    }
-
-    case OKAPI_REDUCER_ACTIONS.CLEAR_RTR_FLS_WARNING_TIMEOUT: {
-      clearTimeout(state.rtrFlsWarningTimeout);
-      return { ...state, rtrFlsWarningTimeout: undefined };
-    }
-
-    // clear existing FLS timeout and set a new one
-    case OKAPI_REDUCER_ACTIONS.SET_RTR_FLS_TIMEOUT: {
-      clearTimeout(state.rtrFlsTimeout);
-      return { ...state, rtrFlsTimeout: action.rtrFlsTimeout };
-    }
-    case OKAPI_REDUCER_ACTIONS.CLEAR_RTR_FLS_TIMEOUT: {
-      clearTimeout(state.rtrFlsTimeout);
-      return { ...state, rtrFlsTimeout: undefined };
-    }
 
     case OKAPI_REDUCER_ACTIONS.TOGGLE_RTR_MODAL: {
       return { ...state, rtrModalIsVisible: action.isVisible };

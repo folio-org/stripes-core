@@ -75,7 +75,7 @@ describe('SessionEventContainer event listeners', () => {
 
     thisWindowRtrError(null, { okapi: { url: 'http' } }, history);
     expect(setUnauthorizedPathToSession).toHaveBeenCalled();
-    expect(history.push).toHaveBeenCalledWith('/logout-timeout');
+    expect(history.push).toHaveBeenCalledWith('/logout-timeout?reason=error');
   });
 
   it('thisWindowRtrIstTimeout', async () => {
@@ -92,7 +92,7 @@ describe('SessionEventContainer event listeners', () => {
     const history = { push: jest.fn() };
 
     thisWindowRtrIstTimeout(null, s, history);
-    expect(history.push).toHaveBeenCalledWith('/logout-timeout');
+    expect(history.push).toHaveBeenCalledWith('/logout-timeout?reason=inactivity');
   });
 
   describe('otherWindowStorage', () => {

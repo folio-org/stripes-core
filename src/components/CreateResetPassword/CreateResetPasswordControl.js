@@ -124,6 +124,10 @@ class CreateResetPasswordControl extends Component {
         'x-okapi-tenant': getTenant(stripes, location),
       },
       ...(body && { body: JSON.stringify(body) }),
+      // this endpoint will return a 401 if the reset-token is expired/invalid.
+      // RTR will see the 401 and think the AT has expired and try to rotate,
+      // but of course that would not help us here. so: hands off, RTR.
+      rtrIgnore: true,
     })
       .then((response) => {
         if (this._isMounted) {

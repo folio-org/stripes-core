@@ -17,14 +17,26 @@ import enhanceReducer from '../../enhanceReducer';
 import createApolloClient from '../../createApolloClient';
 import createReactQueryClient from '../../createReactQueryClient';
 import { addIcon, setSinglePlugin, setBindings, setIsAuthenticated, setOkapiToken, setTimezone, setCurrency, updateCurrentUser, setTranslations } from '../../okapiActions';
-import { loadTranslations, checkOkapiSession } from '../../loginServices';
+import {
+  checkOkapiSession,
+  loadTranslations,
+  setTokenExpiry,
+} from '../../loginServices';
 import { getQueryResourceKey, getCurrentModule } from '../../locationService';
 import Stripes from '../../Stripes';
 import RootWithIntl from '../../RootWithIntl';
 import SystemSkeleton from '../SystemSkeleton';
-import { configureRtr } from './token-util';
+import {
+  configureRtr,
+  rotationHandler,
+  ResetTimer
+} from './token-util';
 import { getStripesHubConfig } from './stripes-hub-util';
 import { modulesInitialState } from '../../ModulesContext';
+import {
+  RTR_FLS_TIMEOUT_EVENT,
+  RTR_FLS_WARNING_EVENT,
+} from './constants';
 
 import './Root.css';
 
@@ -35,11 +47,12 @@ if (!metadata) {
   console.error('No metadata harvested from package files, so you will not get app icons. Probably the stripes-core in your Stripes CLI is too old. Try `yarn global upgrade @folio/stripes-cli`');
 }
 
+
 class Root extends Component {
   constructor(...args) {
     super(...args);
 
-    const { okapi, store } = this.props;
+    const { okapi } = this.props;
 
     this.reducers = { ...initialReducers };
     this.epics = {};
@@ -68,19 +81,50 @@ class Root extends Component {
     // * see SessionEventContainer for RTR handling
     const rtrConfig = configureRtr(this.props.config.rtr);
 
+    // pings when the session ends
+    this.sessionTimeoutTimer = new ResetTimer(() => {
+      this.props.logger?.log('rtr-fls', 'emitting RTR_FLS_TIMEOUT_EVENT');
+      globalThis.dispatchEvent(new Event(RTR_FLS_TIMEOUT_EVENT));
+    }, this.props.logger);
+
+    // pings when we need to show a "session is ending!" countdown-banner
+    this.sessionTimeoutWarningTimer = new ResetTimer(() => {
+      this.props.logger?.log('rtr-fls', 'emitting RTR_FLS_WARNING_EVENT');
+      globalThis.dispatchEvent(new Event(RTR_FLS_WARNING_EVENT));
+    }, this.props.logger);
+
+    // configure the rotation handler:
+    this.handleRotation = rotationHandler(
+      setTokenExpiry,
+      this.sessionTimeoutTimer,
+      this.sessionTimeoutWarningTimer,
+      rtrConfig
+    );
+
     this.ffetch = new FFetch({
       logger: this.props.logger,
-      store,
-      rtrConfig,
-      okapi
+      okapi,
+      onRotate: this.handleRotation,
     });
     this.ffetch.replaceFetch();
     this.ffetch.replaceXMLHttpRequest();
   }
 
-  componentDidMount() {
+  /**
+   * check for an existing session in storage and initialize end-of-session
+   * timers if found.
+   */
+  async componentDidMount() {
     const { okapi, store, defaultTranslations } = this.props;
-    if (this.withOkapi) checkOkapiSession(okapi.url, store, okapi.tenant);
+    if (this.withOkapi) {
+      // check for an existing session in storage. if found, initialize the
+      // end-of-session timers. for new sessions, this happens in LoginCtrl
+      // after a successful login.
+      const sess = await checkOkapiSession(okapi.url, store, okapi.tenant);
+      if (sess?.tokenExpiration) {
+        await this.handleRotation(sess.tokenExpiration);
+      }
+    }
     const locale = this.props.config.locale ?? 'en-US';
     // TODO: remove this after we load locale and translations at start from a public endpoint
     loadTranslations(store, locale, defaultTranslations);
@@ -243,6 +287,9 @@ class Root extends Component {
                   disableAuth={disableAuth}
                   history={history}
                   queryClient={this.reactQueryClient}
+                  handleRotation={this.handleRotation}
+                  sessionTimeoutTimer={this.sessionTimeoutTimer}
+                  sessionTimeoutWarningTimer={this.sessionTimeoutWarningTimer}
                 />
               </IntlProvider>
             </QueryClientProvider>

@@ -151,45 +151,6 @@ function setTokenExpiration(tokenExpiration) {
   };
 }
 
-function setRtrTimeout(rtrTimeout) {
-  return {
-    type: OKAPI_REDUCER_ACTIONS.SET_RTR_TIMEOUT,
-    rtrTimeout,
-  };
-}
-
-function clearRtrTimeout() {
-  return {
-    type: OKAPI_REDUCER_ACTIONS.CLEAR_RTR_TIMEOUT,
-  };
-}
-
-function setRtrFlsWarningTimeout(rtrFlsWarningTimeout) {
-  return {
-    type: OKAPI_REDUCER_ACTIONS.SET_RTR_FLS_WARNING_TIMEOUT,
-    rtrFlsWarningTimeout,
-  };
-}
-
-function clearRtrFlsWarningTimeout() {
-  return {
-    type: OKAPI_REDUCER_ACTIONS.CLEAR_RTR_FLS_WARNING_TIMEOUT,
-  };
-}
-
-function setRtrFlsTimeout(rtrFlsTimeout) {
-  return {
-    type: OKAPI_REDUCER_ACTIONS.SET_RTR_FLS_TIMEOUT,
-    rtrFlsTimeout,
-  };
-}
-
-function clearRtrFlsTimeout() {
-  return {
-    type: OKAPI_REDUCER_ACTIONS.CLEAR_RTR_FLS_TIMEOUT,
-  };
-}
-
 function toggleRtrModal(isVisible) {
   return {
     type: OKAPI_REDUCER_ACTIONS.TOGGLE_RTR_MODAL,
@@ -210,9 +171,6 @@ export {
   checkSSO,
   clearCurrentUser,
   clearOkapiToken,
-  clearRtrFlsTimeout,
-  clearRtrFlsWarningTimeout,
-  clearRtrTimeout,
   setAuthError,
   setBindings,
   setCurrency,
@@ -224,9 +182,6 @@ export {
   setOkapiReady,
   setOkapiToken,
   setPlugins,
-  setRtrFlsTimeout,
-  setRtrFlsWarningTimeout,
-  setRtrTimeout,
   setServerDown,
   setSessionData,
   setSinglePlugin,

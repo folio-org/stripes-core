@@ -3,9 +3,6 @@ import {
   checkSSO,
   clearCurrentUser,
   clearOkapiToken,
-  clearRtrFlsTimeout,
-  clearRtrFlsWarningTimeout,
-  clearRtrTimeout,
   setAuthError,
   setBindings,
   setCurrency,
@@ -18,9 +15,6 @@ import {
   setOkapiTenant,
   setOkapiToken,
   setPlugins,
-  setRtrFlsTimeout,
-  setRtrFlsWarningTimeout,
-  setRtrTimeout,
   setServerDown,
   setSessionData,
   setSinglePlugin,
@@ -45,18 +39,10 @@ describe('okapiReducer', () => {
     it('if isAuthenticated is false, clears rtr state', () => {
       const state = {
         rtrModalIsVisible: true,
-        rtrTimeout: 123,
-        rtrFlsTimeout: 123,
-        rtrFlsWarningTimeout: 123,
       };
-      const ct = jest.spyOn(window, 'clearTimeout');
       const o = okapiReducer(state, setIsAuthenticated(false));
       expect(o.isAuthenticated).toBe(false);
       expect(o.rtrModalIsVisible).toBe(false);
-      expect(o.rtrTimeout).toBe(undefined);
-      expect(o.rtrFlsTimeout).toBe(undefined);
-      expect(o.rtrFlsWarningTimeout).toBe(undefined);
-      expect(ct).toHaveBeenCalled();
     });
   });
 
@@ -126,91 +112,10 @@ describe('okapiReducer', () => {
     });
   });
 
-  it('SET_RTR_TIMEOUT', () => {
-    const ct = jest.spyOn(window, 'clearTimeout');
-
-    const state = {
-      rtrTimeout: 991,
-    };
-
-    const newState = { rtrTimeout: 997 };
-
-    const o = okapiReducer(state, setRtrTimeout(newState.rtrTimeout));
-    expect(o).toMatchObject(newState);
-
-    expect(ct).toHaveBeenCalledWith(state.rtrTimeout);
-  });
-
-  it('CLEAR_RTR_TIMEOUT', () => {
-    const ct = jest.spyOn(window, 'clearTimeout');
-
-    const state = {
-      rtrTimeout: 991,
-    };
-
-    const o = okapiReducer(state, clearRtrTimeout());
-    expect(o.rtrTimeout).toBe(undefined);
-    expect(ct).toHaveBeenCalledWith(state.rtrTimeout);
-  });
-
   it('TOGGLE_RTR_MODAL', () => {
     const rtrModalIsVisible = true;
     const o = okapiReducer({}, toggleRtrModal(true));
     expect(o).toMatchObject({ rtrModalIsVisible });
-  });
-
-  it('SET_RTR_FLS_TIMEOUT', () => {
-    const ct = jest.spyOn(window, 'clearTimeout');
-
-    const state = {
-      rtrFlsTimeout: 991,
-    };
-
-    const newState = { rtrFlsTimeout: 997 };
-
-    const o = okapiReducer(state, setRtrFlsTimeout(newState.rtrFlsTimeout));
-    expect(o).toMatchObject(newState);
-
-    expect(ct).toHaveBeenCalledWith(state.rtrFlsTimeout);
-  });
-
-  it('CLEAR_RTR_FLS_TIMEOUT', () => {
-    const ct = jest.spyOn(window, 'clearTimeout');
-
-    const state = {
-      rtrFlsTimeout: 991,
-    };
-
-    const o = okapiReducer(state, clearRtrFlsTimeout());
-    expect(o.rtrFlsTimeout).toBe(undefined);
-    expect(ct).toHaveBeenCalledWith(state.rtrFlsTimeout);
-  });
-
-  it('SET_RTR_FLS_WARNING_TIMEOUT', () => {
-    const ct = jest.spyOn(window, 'clearTimeout');
-
-    const state = {
-      rtrFlsWarningTimeout: 991,
-    };
-
-    const newState = { rtrFlsWarningTimeout: 997 };
-
-    const o = okapiReducer(state, setRtrFlsWarningTimeout(newState.rtrFlsWarningTimeout));
-    expect(o).toMatchObject(newState);
-
-    expect(ct).toHaveBeenCalledWith(state.rtrFlsWarningTimeout);
-  });
-
-  it('CLEAR_RTR_FLS_WARNING_TIMEOUT', () => {
-    const ct = jest.spyOn(window, 'clearTimeout');
-
-    const state = {
-      rtrFlsWarningTimeout: 991,
-    };
-
-    const o = okapiReducer(state, clearRtrFlsWarningTimeout());
-    expect(o.rtrFlsWarningTimeout).toBe(undefined);
-    expect(ct).toHaveBeenCalledWith(state.rtrFlsWarningTimeout);
   });
 
   it('SET_OKAPI_TENANT', () => {
