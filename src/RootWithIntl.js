@@ -41,7 +41,7 @@ import {
 } from './components';
 import StaleBundleWarning from './components/StaleBundleWarning';
 import { StripesContext } from './StripesContext';
-import { CalloutContext } from './CalloutContext';
+import { CalloutProvider } from './CalloutContext';
 import AuthnLogin from './components/AuthnLogin';
 import EntitlementLoader from './components/EntitlementLoader';
 
@@ -53,7 +53,9 @@ const RootWithIntl = ({ stripes, token = '', isAuthenticated = false, disableAut
   const [, setForceRenderFlag] = useState(false);
 
   const setCalloutDomRef = (ref) => {
-    setCallout(ref);
+    if (ref) {
+      setCallout(ref);
+    }
   };
 
   // Listen for SessionReady events and trigger re-render
@@ -71,7 +73,7 @@ const RootWithIntl = ({ stripes, token = '', isAuthenticated = false, disableAut
 
   return (
     <StripesContext.Provider value={connectedStripes}>
-      <CalloutContext.Provider value={callout}>
+      <CalloutProvider value={callout}>
         <ModuleTranslator>
           <EntitlementLoader>
             <TitleManager>
@@ -202,7 +204,7 @@ const RootWithIntl = ({ stripes, token = '', isAuthenticated = false, disableAut
             </TitleManager>
           </EntitlementLoader>
         </ModuleTranslator>
-      </CalloutContext.Provider>
+      </CalloutProvider>
     </StripesContext.Provider>
   );
 };
