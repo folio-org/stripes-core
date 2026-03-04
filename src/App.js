@@ -1,6 +1,7 @@
 import React, { Component, StrictMode } from 'react';
 import PropTypes from 'prop-types';
 import { okapi as localOkapi, branding as localBranding, config as localConfig } from 'stripes-config';
+import isEmpty from 'lodash/isEmpty';
 import merge from 'lodash/merge';
 import localforage from 'localforage';
 import AppConfigError from './components/AppConfigError';
@@ -87,7 +88,7 @@ export const getOverrideConfig = (theLocalOkapi, theLocalConfig, theLocalBrandin
 
   // If folioConfig is present in StripesHub, use it to override values from stripes.config.js.
   // Otherwise, use values from stripes.config.js.
-  if (stripesHub && stripesHub.folioConfig) {
+  if (stripesHub && !isEmpty(stripesHub.folioConfig)) {
     // Pass URLs from FOLIO config into Okapi config.
     stripesOkapi.url = stripesHub.folioConfig.gatewayUrl;
     stripesOkapi.authnUrl = stripesHub.folioConfig.authnUrl;
