@@ -19,8 +19,8 @@ import { eventsPortal, stripesHubAPI } from './constants';
 import { getLoginTenant } from './loginServices';
 
 
-const StrictWrapper = ({ children, stripesConfig }) => {
-  if (stripesConfig?.disableStrictMode) {
+const StrictWrapper = ({ children, config }) => {
+  if (config?.disableStrictMode) {
     return children;
   }
 
@@ -111,7 +111,7 @@ export const getOverrideConfig = (theLocalOkapi, theLocalConfig, theLocalBrandin
 
 StrictWrapper.propTypes = {
   children: PropTypes.node.isRequired,
-  stripesConfig: PropTypes.object.isRequired,
+  config: PropTypes.object.isRequired,
 };
 
 export default class StripesCore extends Component {
