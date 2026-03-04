@@ -22,24 +22,24 @@ export default function configure() {
   });
 
   this.get('_/proxy/tenants/:id/modules', [{
-    id : 'mod-users-42.0.0-EXAMPLE.12345',
-    name : 'users',
-    provides : [{
-      id : 'users',
-      version : '42.0',
-      handlers : []
+    id: 'mod-users-42.0.0-EXAMPLE.12345',
+    name: 'users',
+    provides: [{
+      id: 'users',
+      version: '42.0',
+      handlers: []
     }, {
-      id : 'custom-fields',
-      version : '2.0',
-      interfaceType : 'multiple',
-      handlers : [{
-        methods : ['GET'],
-        pathPattern : '/custom-fields',
-        permissionsRequired : []
+      id: 'custom-fields',
+      version: '2.0',
+      interfaceType: 'multiple',
+      handlers: [{
+        methods: ['GET'],
+        pathPattern: '/custom-fields',
+        permissionsRequired: []
       }]
     }],
-    permissionSets : [],
-    launchDescriptor : {}
+    permissionSets: [],
+    launchDescriptor: {}
   }]);
 
   this.get('/service-worker.js', {
@@ -100,10 +100,14 @@ export default function configure() {
           lastName: 'User',
           firstName: 'Test',
           email: 'user@folio.org',
-        }
+        },
       },
       permissions: {
         permissions: []
+      },
+      tokenExpiration: {
+        accessTokenExpiration: Date.now() + (10 * 60 * 1000),
+        refreshTokenExpiration: Date.now() + (10 * 60 * 1000),
       }
     });
   });
@@ -135,6 +139,7 @@ export default function configure() {
       { customFields }
     );
   });
+
 
   // hot-reload passthrough
   this.pretender.get('/:rand.hot-update.json', this.pretender.passthrough);

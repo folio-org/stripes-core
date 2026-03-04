@@ -1,26 +1,11 @@
-import { RTRError, UnexpectedResourceError } from './Errors';
+import { UnexpectedResourceError } from './Errors';
 import {
+  ResetTimer,
   configureRtr,
-  getPromise,
-  isAuthenticationRequest,
   isFolioApiRequest,
-  isLogoutRequest,
-  isRotating,
-  isValidSessionCheckRequest,
   resourceMapper,
-  rtr,
-  RTR_IS_ROTATING,
-  RTR_MAX_AGE,
+  rotationHandler,
 } from './token-util';
-import {
-  RTR_SUCCESS_EVENT,
-  RTR_ERROR_EVENT,
-} from './constants';
-
-const okapi = {
-  tenant: 'diku',
-  url: 'http://test'
-};
 
 describe('isFolioApiRequest', () => {
   it('accepts requests whose origin matches okapi\'s', () => {
@@ -37,76 +22,6 @@ describe('isFolioApiRequest', () => {
   it('rejects invalid resource input', () => {
     const req = { 'ken': 'not kenough' };
     expect(isFolioApiRequest(req, 'https://sorry-dude.edu')).toBe(false);
-  });
-});
-
-
-describe('isAuthenticationRequest', () => {
-  it('accepts login endpoints', () => {
-    expect(isAuthenticationRequest('/authn/token', '')).toBe(true);
-    expect(isAuthenticationRequest('/bl-users/login-with-expiry', '')).toBe(true);
-  });
-
-  it('rejects _self endpoints (should go through RTR queue)', () => {
-    // _self endpoints are NOT authentication requests - they should go through
-    // the normal RTR queue so they wait for any in-progress rotation to complete.
-    // This prevents 401 errors when the _self request is in-flight during RTR.
-    expect(isAuthenticationRequest('/bl-users/_self', '')).toBe(false);
-    expect(isAuthenticationRequest('/users-keycloak/_self', '')).toBe(false);
-    expect(isAuthenticationRequest('/users-keycloak/_self?expandPermissions=true', '')).toBe(false);
-  });
-
-  it('rejects unknown endpoints', () => {
-    const path = '/maybe/oppie/would/have/been/happier/in/malibu';
-
-    expect(isAuthenticationRequest(path, '')).toBe(false);
-  });
-
-  it('rejects invalid input', () => {
-    const path = { wat: '/if/you/need/to/go/to/church/is/that/a/critical/mass' };
-    expect(isAuthenticationRequest(path, '')).toBe(false);
-  });
-});
-
-describe('isValidSessionCheckRequest', () => {
-  it('accepts _self endpoints', () => {
-    expect(isValidSessionCheckRequest('/bl-users/_self', '')).toBe(true);
-    expect(isValidSessionCheckRequest('/users-keycloak/_self', '')).toBe(true);
-    expect(isValidSessionCheckRequest('/users-keycloak/_self?expandPermissions=true', '')).toBe(true);
-  });
-
-  it('rejects login endpoints', () => {
-    expect(isValidSessionCheckRequest('/authn/token', '')).toBe(false);
-    expect(isValidSessionCheckRequest('/bl-users/login-with-expiry', '')).toBe(false);
-  });
-
-  it('rejects unknown endpoints', () => {
-    const path = '/maybe/oppie/would/have/been/happier/in/malibu';
-    expect(isValidSessionCheckRequest(path, '')).toBe(false);
-  });
-
-  it('rejects invalid input', () => {
-    const path = { wat: '/if/you/need/to/go/to/church/is/that/a/critical/mass' };
-    expect(isValidSessionCheckRequest(path, '')).toBe(false);
-  });
-});
-
-describe('isLogoutRequest', () => {
-  it('accepts logout endpoints', () => {
-    const path = '/authn/logout';
-
-    expect(isLogoutRequest(path, '')).toBe(true);
-  });
-
-  it('rejects unknown endpoints', () => {
-    const path = '/maybe/oppie/would/have/been/happier/in/malibu';
-
-    expect(isLogoutRequest(path, '')).toBe(false);
-  });
-
-  it('rejects invalid input', () => {
-    const path = { wat: '/maybe/oppie/would/have/been/happier/in/malibu' };
-    expect(isLogoutRequest(path, '')).toBe(false);
   });
 });
 
@@ -138,319 +53,6 @@ describe('resourceMapper', () => {
   });
 });
 
-describe('rtr', () => {
-  beforeEach(() => {
-    localStorage.removeItem(RTR_IS_ROTATING);
-  });
-
-  afterEach(() => {
-    localStorage.removeItem(RTR_IS_ROTATING);
-  });
-
-  it('rotates', async () => {
-    const logger = {
-      log: console.log,
-    };
-    const fetchfx = {
-      apply: () => Promise.resolve({
-        ok: true,
-        json: () => Promise.resolve({
-          accessTokenExpiration: '2023-11-17T10:39:15.000Z',
-          refreshTokenExpiration: '2023-11-27T10:39:15.000Z'
-        }),
-      })
-    };
-
-    const callback = jest.fn();
-
-    let ex = null;
-    // const callback = () => { console.log('HOLA!!!')}; // jest.fn();
-    try {
-      await rtr(fetchfx, logger, callback, okapi);
-      expect(callback).toHaveBeenCalled();
-    } catch (e) {
-      ex = e;
-    }
-
-    expect(ex).toBe(null);
-  });
-
-  describe('handles simultaneous rotation', () => {
-    beforeEach(() => {
-      localStorage.setItem(RTR_IS_ROTATING, Date.now());
-    });
-    afterEach(() => {
-      localStorage.removeItem(RTR_IS_ROTATING);
-    });
-
-    it('same window (RTR_SUCCESS_EVENT)', async () => {
-      const logger = {
-        log: jest.fn(),
-      };
-      const nativeFetch = {
-        apply: () => Promise.resolve({
-          ok: true,
-          json: () => Promise.resolve({
-            accessTokenExpiration: '2023-11-17T10:39:15.000Z',
-            refreshTokenExpiration: '2023-11-27T10:39:15.000Z'
-          }),
-        })
-      };
-
-      setTimeout(() => {
-        window.dispatchEvent(new Event(RTR_SUCCESS_EVENT));
-      }, 500);
-
-      setTimeout(() => {
-        localStorage.removeItem(RTR_IS_ROTATING);
-        window.dispatchEvent(new Event(RTR_SUCCESS_EVENT));
-      }, 1000);
-
-      let ex = null;
-      try {
-        await rtr(nativeFetch, logger, jest.fn(), okapi);
-      } catch (e) {
-        ex = e;
-      }
-
-      expect(ex).toBe(null);
-      // expect(window.removeEventListener).toHaveBeenCalled();
-    }, 25000); // timeout must be longer than token-util's RTR_MAX_AGE
-
-    it('multiple window (storage event)', async () => {
-      const logger = {
-        log: jest.fn(),
-      };
-      const nativeFetch = {
-        apply: () => Promise.resolve({
-          ok: true,
-          json: () => Promise.resolve({
-            accessTokenExpiration: '2023-11-17T10:39:15.000Z',
-            refreshTokenExpiration: '2023-11-27T10:39:15.000Z'
-          }),
-        })
-      };
-
-      setTimeout(() => {
-        window.dispatchEvent(new Event('storage'));
-      }, 500);
-
-      setTimeout(() => {
-        localStorage.removeItem(RTR_IS_ROTATING);
-        window.dispatchEvent(new Event('storage'));
-      }, 1000);
-
-      let ex = null;
-      try {
-        await rtr(nativeFetch, logger, jest.fn(), okapi);
-      } catch (e) {
-        ex = e;
-      }
-
-      expect(ex).toBe(null);
-      // expect(window.removeEventListener).toHaveBeenCalledWith('monkey')
-    }, 25000); // timeout must be longer than token-util's RTR_MAX_AGE
-  });
-
-  it('on known error, throws error', async () => {
-    jest.spyOn(window, 'dispatchEvent');
-    jest.spyOn(console, 'error');
-
-    const errors = [{ message: 'Actually I love my Birkenstocks', code: 'Chacos are nice, too. Also Tevas' }];
-    const logger = {
-      log: jest.fn(),
-    };
-
-    const nativeFetch = {
-      apply: () => Promise.resolve({
-        ok: false,
-        json: () => Promise.resolve({
-          errors,
-        }),
-      })
-    };
-
-    let ex = null;
-    try {
-      await rtr(nativeFetch, logger, jest.fn(), okapi);
-    } catch (e) {
-      ex = e;
-    }
-
-    expect(console.error).toHaveBeenCalledWith('RTR_ERROR_EVENT', expect.any(RTRError));
-    expect(window.dispatchEvent).toHaveBeenCalledWith(expect.any(Event));
-    expect(ex).toBe(null);
-  });
-
-
-  it('on unknown error, throws generic error', async () => {
-    jest.spyOn(window, 'dispatchEvent');
-    jest.spyOn(console, 'error');
-
-    const error = 'I love my Birkenstocks. Chacos are nice, too. Also Tevas';
-    const logger = {
-      log: jest.fn(),
-    };
-    const nativeFetch = {
-      apply: () => Promise.resolve({
-        ok: false,
-        json: () => Promise.resolve({
-          error,
-        }),
-      })
-    };
-
-    let ex = null;
-    try {
-      await rtr(nativeFetch, logger, jest.fn(), okapi);
-    } catch (e) {
-      ex = e;
-    }
-
-    expect(console.error).toHaveBeenCalledWith('RTR_ERROR_EVENT', expect.any(RTRError));
-    expect(window.dispatchEvent).toHaveBeenCalledWith(expect.any(Event));
-    expect(ex).toBe(null);
-  });
-
-  it('should remove RTR_IS_ROTATING from localStorage before dispatching RTR_SUCCESS_EVENT', async () => {
-    const logger = {
-      log: jest.fn(),
-    };
-    const fetchfx = {
-      apply: () => Promise.resolve({
-        ok: true,
-        json: () => Promise.resolve({
-          accessTokenExpiration: '2023-11-17T10:39:15.000Z',
-          refreshTokenExpiration: '2023-11-27T10:39:15.000Z'
-        }),
-      })
-    };
-
-    const mockRemoveItem = jest.spyOn(Storage.prototype, 'removeItem');
-    const mockDispatchEvent = jest.spyOn(window, 'dispatchEvent');
-
-    let removalBeforeDispatch = false;
-    mockDispatchEvent.mockImplementation((event) => {
-      if (event.type === RTR_SUCCESS_EVENT) {
-        removalBeforeDispatch = mockRemoveItem.mock.calls.some(call => call[0] === RTR_IS_ROTATING);
-      }
-      return true;
-    });
-
-    await rtr(fetchfx, logger, jest.fn(), okapi);
-
-    expect(removalBeforeDispatch).toBe(true);
-    expect(mockRemoveItem).toHaveBeenCalledWith(RTR_IS_ROTATING);
-    expect(mockDispatchEvent).toHaveBeenCalledWith(
-      expect.objectContaining({ type: RTR_SUCCESS_EVENT })
-    );
-
-    mockRemoveItem.mockRestore();
-    mockDispatchEvent.mockRestore();
-  });
-
-  it('should remove RTR_IS_ROTATING from localStorage before dispatching RTR_ERROR_EVENT on error', async () => {
-    const logger = {
-      log: jest.fn(),
-    };
-    const errors = [{ message: 'Token refresh failed', code: 'AUTH_ERROR' }];
-    const fetchfx = {
-      apply: () => Promise.resolve({
-        ok: false,
-        json: () => Promise.resolve({
-          errors,
-        }),
-      })
-    };
-
-    const mockRemoveItem = jest.spyOn(Storage.prototype, 'removeItem');
-    const mockDispatchEvent = jest.spyOn(window, 'dispatchEvent');
-    jest.spyOn(console, 'error');
-
-    let removalBeforeDispatch = false;
-    mockDispatchEvent.mockImplementation((event) => {
-      if (event.type === RTR_ERROR_EVENT) {
-        removalBeforeDispatch = mockRemoveItem.mock.calls.some(call => call[0] === RTR_IS_ROTATING);
-      }
-      return true;
-    });
-
-    await rtr(fetchfx, logger, jest.fn(), okapi);
-
-    expect(removalBeforeDispatch).toBe(true);
-    expect(mockRemoveItem).toHaveBeenCalledWith(RTR_IS_ROTATING);
-    expect(mockDispatchEvent).toHaveBeenCalledWith(
-      expect.objectContaining({ type: RTR_ERROR_EVENT })
-    );
-
-    mockRemoveItem.mockRestore();
-    mockDispatchEvent.mockRestore();
-  });
-});
-
-describe('isRotating', () => {
-  afterEach(() => {
-    localStorage.removeItem(RTR_IS_ROTATING);
-  });
-
-  const logger = {
-    log: jest.fn(),
-  };
-
-  it('returns true if key is present and not stale', () => {
-    localStorage.setItem(RTR_IS_ROTATING, Date.now());
-    expect(isRotating(logger)).toBe(true);
-  });
-
-  it('returns false if key is present but expired', () => {
-    localStorage.setItem(RTR_IS_ROTATING, Date.now() - (RTR_MAX_AGE + 1000));
-    expect(isRotating(logger)).toBe(false);
-  });
-
-  it('returns false if key is absent', () => {
-    expect(isRotating(logger)).toBe(false);
-  });
-});
-
-describe('getPromise', () => {
-  describe('when isRotating is true', () => {
-    beforeEach(() => {
-      localStorage.setItem(RTR_IS_ROTATING, Date.now());
-    });
-    afterEach(() => {
-      localStorage.removeItem(RTR_IS_ROTATING);
-    });
-
-    it('waits until localStorage\'s RTR_IS_ROTATING flag is cleared', async () => {
-      let res = null;
-      const logger = { log: jest.fn() };
-      const p = getPromise(logger);
-      localStorage.removeItem(RTR_IS_ROTATING);
-      window.dispatchEvent(new Event(RTR_SUCCESS_EVENT));
-
-      await p.then(() => {
-        res = true;
-      });
-      expect(res).toBeTruthy();
-    });
-  });
-
-  describe('when isRotating is false', () => {
-    beforeEach(() => {
-      localStorage.removeItem(RTR_IS_ROTATING);
-    });
-
-    it('receives a resolved promise', async () => {
-      let res = null;
-      await getPromise()
-        .then(() => {
-          res = true;
-        });
-      expect(res).toBeTruthy();
-    });
-  });
-});
-
 describe('configureRtr', () => {
   it('sets idleSessionTTL and idleModalTTL', () => {
     const res = configureRtr({});
@@ -466,5 +68,84 @@ describe('configureRtr', () => {
 
     expect(res.idleSessionTTL).toBe('5m');
     expect(res.idleModalTTL).toBe('5m');
+  });
+});
+
+describe('ResetTimer', () => {
+  it('validates callback', () => {
+    const t = () => {
+      // lint, oy, yer not helping
+      // this test validates that the constructor throws on invalid input
+      // so, no, I do not care that this value is unused. 🙄
+      // eslint-disable-next-line no-unused-vars
+      const rt = new ResetTimer('not a function');
+    };
+    expect(t).toThrow(TypeError);
+  });
+
+  describe('reset', () => {
+    it('validates interval', () => {
+      const t = () => {
+        const rt = new ResetTimer(() => { });
+        rt.reset('whoops');
+      };
+      expect(t).toThrow(TypeError);
+    });
+
+    it('calls callback', async () => {
+      const callback = jest.fn();
+      const rt = new ResetTimer(callback);
+      rt.reset(1);
+      await new Promise((res, _rej) => {
+        setTimeout(res, 5);
+      });
+      expect(callback).toHaveBeenCalled();
+    });
+
+    it('resets existing timer', async () => {
+      const callback = jest.fn();
+      const logger = { log: jest.fn() };
+      const rt = new ResetTimer(callback, logger);
+      rt.reset(10);
+      rt.reset(20);
+      await new Promise((res, _rej) => {
+        setTimeout(res, 100);
+      });
+      expect(callback).toHaveBeenCalled();
+      // what jackass writes test that evaluate the logger for sideffects??
+      // a jackass who wants 100% test coverage, that's who
+      // 3 calls: 1 in the reset, 2 in the second
+      expect(logger.log).toHaveBeenCalledTimes(3);
+    });
+  });
+
+  describe('clear', () => {
+    it('cancels callback', async () => {
+      const callback = jest.fn();
+      const logger = { log: jest.fn() };
+      const rt = new ResetTimer(callback, logger);
+      rt.reset(100);
+      rt.clear();
+      await new Promise((res, _rej) => {
+        setTimeout(res, 200);
+      });
+      expect(callback).not.toHaveBeenCalled();
+      expect(logger.log).toHaveBeenCalledTimes(2);
+    });
+  });
+});
+
+describe('rotationHandler', () => {
+  const hst = jest.fn(async () => { });
+  const tt = { reset: jest.fn() };
+  const wt = { reset: jest.fn() };
+
+  const rt = rotationHandler(hst, tt, wt, { fixedLengthSessionWarningTTL: 1 });
+
+  it('calls dem callbacks', async () => {
+    await rt({ accessTokenExpiration: 1, refreshTokenExpiration: 2 });
+    expect(hst).toHaveBeenCalled();
+    expect(tt.reset).toHaveBeenCalled();
+    expect(wt.reset).toHaveBeenCalled();
   });
 });

@@ -2,7 +2,6 @@ import {
   checkSSO,
   clearCurrentUser,
   clearOkapiToken,
-  clearRtrTimeout,
   setAuthError,
   setBindings,
   setCurrency,
@@ -14,7 +13,6 @@ import {
   setOkapiReady,
   setOkapiToken,
   setPlugins,
-  setRtrTimeout,
   setServerDown,
   setSessionData,
   setSinglePlugin,
@@ -41,12 +39,6 @@ describe('clearCurrentUser', () => {
 describe('clearOkapiToken', () => {
   it('returns an action with a type', () => {
     expect(clearOkapiToken()).toHaveProperty('type');
-  });
-});
-
-describe('clearRtrTimeout', () => {
-  it('returns an action with a type', () => {
-    expect(clearRtrTimeout()).toHaveProperty('type');
   });
 });
 
@@ -122,12 +114,6 @@ describe('setOkapiToken', () => {
 describe('setPlugins', () => {
   it('sets plugins', () => {
     expect(setPlugins('plugins').plugins).toBe('plugins');
-  });
-});
-
-describe('setRtrTimeout', () => {
-  it('sets rtrTimeout', () => {
-    expect(setRtrTimeout('rtrTimeout').rtrTimeout).toBe('rtrTimeout');
   });
 });
 
