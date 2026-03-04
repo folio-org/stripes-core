@@ -226,10 +226,10 @@ function fetchModules(store) {
  * (e.g. not attempting to fetch loan information for a
  * non-circulating library that doesn't provide the circ interface)
  */
-export function discoverServices(store, config) {
+export function discoverServices(store) {
   const promises = [];
 
-  if (config.tenantOptions) {
+  if (store.getState().config.tenantOptions) {
     promises.push(fetchApplicationDetails(store));
     promises.push(fetchGatewayVersion(store));
   } else {

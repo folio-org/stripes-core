@@ -38,11 +38,9 @@ const mockFetchCleanUp = () => {
   delete global.fetch;
 };
 
-const CONFIG = {
-  tenantOptions: {
-    diku: {
-      name: 'diku', clientId: 'diku-application'
-    }
+const TENANT_OPTIONS = {
+  diku: {
+    name: 'diku', clientId: 'diku-application'
   }
 };
 
@@ -59,15 +57,18 @@ describe('discoverServices', () => {
             url: 'https://url.com',
             token: 'frodo'
           },
+          config: {
+            tenantOptions: TENANT_OPTIONS,
+          }
         }),
         dispatch: jest.fn(),
       };
 
       const version = '1.2.3';
       mockFetchSuccess(version);
-      discoverServices(store, CONFIG);
+      discoverServices(store);
 
-      await discoverServices(store, CONFIG);
+      await discoverServices(store);
       expect(store.dispatch).toHaveBeenCalledWith({ type: 'DISCOVERY_OKAPI', version });
     });
   });
@@ -76,14 +77,17 @@ describe('discoverServices', () => {
     const store = {
       getState: () => ({
         okapi: { url: 'https://url.com' },
+        config: {
+          tenantOptions: TENANT_OPTIONS,
+        }
       }),
       dispatch: jest.fn(),
     };
 
     mockFetchError();
-    discoverServices(store, CONFIG);
+    discoverServices(store);
 
-    await discoverServices(store, CONFIG);
+    await discoverServices(store);
     expect(store.dispatch).toHaveBeenCalledWith({ type: 'DISCOVERY_FAILURE', code: 400 });
   });
 
@@ -91,6 +95,9 @@ describe('discoverServices', () => {
     const store = {
       getState: () => ({
         okapi: { url: 'https://url.com' },
+        config: {
+          tenantOptions: TENANT_OPTIONS,
+        }
       }),
       dispatch: jest.fn(),
     };
@@ -98,9 +105,9 @@ describe('discoverServices', () => {
     const message = 'boom';
 
     mockFetchFail(message);
-    discoverServices(store, CONFIG);
+    discoverServices(store);
 
-    await discoverServices(store, CONFIG);
+    await discoverServices(store);
     expect(store.dispatch).toHaveBeenCalledWith({ type: 'DISCOVERY_FAILURE', message });
   });
 });

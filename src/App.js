@@ -131,7 +131,7 @@ export default class StripesCore extends Component {
       const okapi = (typeof stripesOkapi === 'object' && Object.keys(stripesOkapi).length > 0)
         ? { ...stripesOkapi, ...parsedTenant } : { withoutOkapi: true };
 
-      const initialState = merge({}, { okapi }, props.initialState);
+      const initialState = merge({}, { okapi, config: stripesConfig }, props.initialState);
 
       this.config = stripesConfig;
       this.branding = stripesBranding;

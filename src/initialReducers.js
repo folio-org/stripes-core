@@ -4,6 +4,7 @@ import { discoveryReducer } from './discoverServices';
 
 const reducers = {
   // TODO: here's where you'd pull in a reducer to handle Okapi actions like auth
+  config: (state = {}) => state,
   okapi: okapiReducer,
   discovery: discoveryReducer,
   form,

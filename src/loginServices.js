@@ -629,9 +629,10 @@ const processLocaleSettings = async (store, tenantLocaleData, userLocaleData) =>
  * It also checks if the okapi instance is not in "withoutOkapi" mode, it fetches module information using discoverServices.
  * Finally, it returns a flattened array of all the results from the promises.
  */
-export async function loadResources(store, tenant, userId, config) {
+export async function loadResources(store, tenant, userId) {
   const promises = [];
-  const okapiUrl = store.getState()?.okapi.url;
+  const { okapi } = store.getState();
+  const okapiUrl = okapi.url;
   const hasReadConfigPerm = canReadConfig(store);
   let hasSetting = false;
 
@@ -670,16 +671,14 @@ export async function loadResources(store, tenant, userId, config) {
   // in mod-configuration so we can only retrieve them if the user has
   // read-permission for configuration entries.
   if (hasReadConfigPerm) {
-    const okapiObject = store.getState()?.okapi;
-
     promises.push(
-      getPlugins(okapiObject.url, store, tenant),
-      getBindings(okapiObject.url, store, tenant)
+      getPlugins(okapiUrl, store, tenant),
+      getBindings(okapiUrl, store, tenant)
     );
   }
 
-  if (!store.getState().okapi.withoutOkapi) {
-    promises.push(discoverServices(store, config));
+  if (!okapi.withoutOkapi) {
+    promises.push(discoverServices(store));
   }
 
   const result = await Promise.all(promises);
@@ -772,11 +771,10 @@ export const getLogoutTenant = () => {
  * @param {string} okapiUrl
  * @param {object} redux store
  * @param {object} queryClient react-query client, if available; used to clear react-query cache on logout
- * @param {object} config configuration object
  *
  * @returns {Promise}
  */
-export async function logout(okapiUrl, store, queryClient, config) {
+export async function logout(okapiUrl, store, queryClient) {
   // check the private-storage sentinel: if logout has already started
   // in this window, we don't want to start it again.
   if (sessionStorage.getItem(IS_LOGGING_OUT)) {
@@ -829,6 +827,8 @@ export async function logout(okapiUrl, store, queryClient, config) {
     console.error('error during logout', e); // eslint-disable-line no-console
   }
 
+  const { config } = store.getState();
+
   // clear the console unless config asks to preserve it
   if (!config.preserveConsole) {
     console.clear(); // eslint-disable-line no-console
@@ -857,7 +857,7 @@ export async function logout(okapiUrl, store, queryClient, config) {
  *
  * @returns {Promise} resolving to { user, tenant, perms, isAuthenticated, tokenExpiration }
  */
-export async function createOkapiSession(store, tenant, token, data, config) {
+export async function createOkapiSession(store, tenant, token, data) {
   // clear any auth-n errors
   store.dispatch(setAuthError(null));
 
@@ -935,7 +935,7 @@ export async function createOkapiSession(store, tenant, token, data, config) {
   store.dispatch(setIsAuthenticated(true));
   store.dispatch(setSessionData(okapiSess));
 
-  await loadResources(store, sessionTenant, user.id, config);
+  await loadResources(store, sessionTenant, user.id);
 }
 
 /**
@@ -1036,13 +1036,13 @@ export async function handleLoginError(dispatch, resp) {
  *
  * @returns {Promise} resolving to login response body or undefined on error
  */
-export async function processOkapiSession(store, tenant, resp, ssoToken, config) {
+export async function processOkapiSession(store, tenant, resp, ssoToken) {
   const { dispatch } = store;
 
   if (resp.ok) {
     const json = await resp.json();
     const token = resp.headers.get('X-Okapi-Token') || json.access_token || ssoToken;
-    await createOkapiSession(store, tenant, token, json, config);
+    await createOkapiSession(store, tenant, token, json);
     store.dispatch(setOkapiReady());
     return json;
   } else {
@@ -1072,7 +1072,7 @@ export async function processOkapiSession(store, tenant, resp, ssoToken, config)
  *
  * @returns {Promise}
  */
-export async function validateUser(okapiUrl, store, tenant, session, handleError, config) {
+export async function validateUser(okapiUrl, store, tenant, session, handleError) {
   try {
     const { token, tenant: sessionTenant = tenant } = session;
     const usersPath = store.getState()?.okapi?.authnUrl ? 'users-keycloak' : 'bl-users';
@@ -1111,7 +1111,7 @@ export async function validateUser(okapiUrl, store, tenant, session, handleError
         tokenExpiration: session.tokenExpiration
       }));
 
-      return loadResources(store, sessionTenant, user.id, config);
+      return loadResources(store, sessionTenant, user.id);
     } else {
       const text = await resp.text();
       throw text;
@@ -1136,10 +1136,10 @@ export async function validateUser(okapiUrl, store, tenant, session, handleError
  * @param {redux store} store
  * @param {string} tenant
  */
-export async function checkOkapiSession(okapiUrl, store, tenant, config) {
+export async function checkOkapiSession(okapiUrl, store, tenant) {
   const sess = await getOkapiSession();
-  const handleError = () => logout(okapiUrl, store, config);
-  const res = sess?.user?.id ? await validateUser(okapiUrl, store, tenant, sess, handleError, config) : null;
+  const handleError = () => logout(okapiUrl, store);
+  const res = sess?.user?.id ? await validateUser(okapiUrl, store, tenant, sess, handleError) : null;
   // check whether SSO is enabled if either
   // 1. res is null (when we are starting a new session)
   // 2. login-saml interface is present (when we are resuming an existing session)
@@ -1238,10 +1238,10 @@ export async function fetchOverriddenUserWithPerms(okapi, tenant, token, rtrIgno
  *
  * @returns {Promise} Promise resolving to the response-body (JSON) of the request
  */
-export async function requestUserWithPerms(okapi, store, tenant, token, config) {
+export async function requestUserWithPerms(okapi, store, tenant, token) {
   const resp = await fetchOverriddenUserWithPerms(okapi, tenant, token, !token);
   if (resp.ok) {
-    const sessionData = await processOkapiSession(store, tenant, resp, token, config);
+    const sessionData = await processOkapiSession(store, tenant, resp, token);
     return sessionData;
   } else {
     const error = await resp.json();
