@@ -131,7 +131,7 @@ describe('useTenantPreferences', () => {
         await renderedHook.result.current.setTenantPreference({ scope: 'test.manage', key: 'testPref', value: { pref: 25 } });
       });
 
-      it.skip('uses "post" method', async () => {
+      it('uses "post" method', async () => {
         await waitFor(() => expect(mockPost).toHaveBeenCalled());
       });
     });
