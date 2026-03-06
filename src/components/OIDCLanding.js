@@ -30,7 +30,7 @@ import OIDCLandingError from './OIDCLandingError';
  */
 const OIDCLanding = ({ handleRotation }) => {
   const intl = useIntl();
-  const { config, okapi, store } = useStripes();
+  const { okapi, store } = useStripes();
 
   /**
    * initSession

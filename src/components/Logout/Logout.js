@@ -34,7 +34,7 @@ import styles from './Logout.css';
  *    the "reason" key in the query string provides additional details
  */
 const Logout = ({ sessionTimeoutTimer, sessionTimeoutWarningTimer }) => {
-  const { config, branding, okapi, store } = useStripes();
+  const { branding, okapi, store } = useStripes();
   const [didLogout, setDidLogout] = useState(false);
   const location = useLocation();
   const queryClient = useQueryClient();
