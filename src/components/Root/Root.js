@@ -228,7 +228,7 @@ class Root extends Component {
 
     // if we have a stripesHub configuration, pass it to stripes...
     okapi.discoveryUrl = stripesHub.discoveryUrl;
-    okapi.hostLocation = stripesHub.hostLocation;
+    okapi.hostUrl = stripesHub.hostUrl;
     okapi.remotesList = stripesHub.remotesList;
 
     const stripes = new Stripes({

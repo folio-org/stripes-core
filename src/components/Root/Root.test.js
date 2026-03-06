@@ -51,7 +51,7 @@ jest.mock('../../RootWithIntl', () => {
 
 const STRIPES_HUB_CONFIG = {
   discoveryUrl: 'http://okapi/discover',
-  hostLocation: 'http://localhost',
+  hostUrl: 'http://localhost',
   remotesList: [],
 };
 

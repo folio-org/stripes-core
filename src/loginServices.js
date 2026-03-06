@@ -30,7 +30,7 @@ import processBadResponse from './processBadResponse';
 import {
   RTR_TIMEOUT_EVENT
 } from './components/Root/constants';
-import { settings } from './constants';
+import { settings, stripesHubAPI } from './constants';
 
 // export supported locales, i.e. the languages we provide translations for
 export const supportedLocales = [
@@ -310,7 +310,8 @@ export async function loadTranslations(store, locale, defaultTranslations = {}) 
 
   // if stripes-core is served from a different origin (module-federation) then
   // we need to fetch translations from that origin as well rather than the current location.
-  let translationOrigin = await localforage.getItem('hostLocation');
+  let translationOrigin = await localforage.getItem(stripesHubAPI.HOST_URL_KEY);
+
   if (!translationOrigin) {
     translationOrigin = window.location.origin;
   }

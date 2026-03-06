@@ -71,7 +71,7 @@ jest.mock('./discoverServices', () => ({
 const mockStripesHubAPI = stripesHubAPI;
 jest.mock('localforage', () => ({
   getItem: jest.fn((str) => {
-    if (str === mockStripesHubAPI.HOST_LOCATION_KEY) {
+    if (str === mockStripesHubAPI.HOST_URL_KEY) {
       return Promise.resolve(null);
     }
     return Promise.resolve({ user: {} });
@@ -205,13 +205,13 @@ describe('loadTranslations', () => {
     });
   });
 
-  describe('when localforage contains a hostLocation', () => {
-    it('fetches using the hostLocation from localforage', async () => {
-      const hostLocation = 'http://my-app-here';
+  describe('when localforage contains a hostUrl', () => {
+    it('fetches using the hostUrl from localforage', async () => {
+      const hostUrl = 'http://my-app-here';
       const locale = 'cs-CZ';
-      localforage.getItem.mockResolvedValueOnce(hostLocation);
+      localforage.getItem.mockResolvedValueOnce(hostUrl);
       await loadTranslations(store, locale, { cs: 'cs-CZ' });
-      expect(global.fetch).toHaveBeenCalledWith(`${hostLocation}/cs-CZ`);
+      expect(global.fetch).toHaveBeenCalledWith(`${hostUrl}/cs-CZ`);
     });
   });
 });
