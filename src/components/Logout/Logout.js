@@ -64,7 +64,7 @@ const Logout = ({ sessionTimeoutTimer, sessionTimeoutWarningTimer }) => {
         sessionTimeoutWarningTimer.clear();
 
         // returns a promise, which we ignore
-        logout(okapi.url, store, queryClient, config)
+        logout(okapi.url, store, queryClient)
           .then(setDidLogout(true));
       } else {
         setDidLogout(true);
