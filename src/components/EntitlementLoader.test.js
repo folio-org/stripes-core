@@ -5,7 +5,6 @@ import { getInstance } from '@module-federation/runtime';
 import EntitlementLoader, { preloadModules, loadModuleAssets } from './EntitlementLoader';
 import { StripesContext } from '../StripesContext';
 import { ModulesContext, useModules, modulesInitialState as mockModuleInitialState } from '../ModulesContext';
-import loadRemoteComponent from '../loadRemoteComponent';
 import { loadEntitlement } from './loadEntitlement';
 
 jest.mock('stripes-config');
