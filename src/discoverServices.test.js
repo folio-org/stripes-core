@@ -38,6 +38,12 @@ const mockFetchCleanUp = () => {
   delete global.fetch;
 };
 
+const TENANT_OPTIONS = {
+  diku: {
+    name: 'diku', clientId: 'diku-application'
+  }
+};
+
 describe('discoverServices', () => {
   afterEach(() => {
     mockFetchCleanUp();
@@ -51,6 +57,9 @@ describe('discoverServices', () => {
             url: 'https://url.com',
             token: 'frodo'
           },
+          config: {
+            tenantOptions: TENANT_OPTIONS,
+          }
         }),
         dispatch: jest.fn(),
       };
@@ -68,6 +77,9 @@ describe('discoverServices', () => {
     const store = {
       getState: () => ({
         okapi: { url: 'https://url.com' },
+        config: {
+          tenantOptions: TENANT_OPTIONS,
+        }
       }),
       dispatch: jest.fn(),
     };
@@ -83,6 +95,9 @@ describe('discoverServices', () => {
     const store = {
       getState: () => ({
         okapi: { url: 'https://url.com' },
+        config: {
+          tenantOptions: TENANT_OPTIONS,
+        }
       }),
       dispatch: jest.fn(),
     };

@@ -38,7 +38,7 @@
 * Define a permission-set containing values necessary for session-init API requests. Refs STCOR-1031.
 * FOLIO Landing Page > Display text to link to FOLIO release notes. Refs STCOR-1017.
 * Settings > System Information > Add a link to Release Notes. Refs STCOR-1018.
-* Read Stripes Hub stripes-config data from localforage if available. Refs STCOR-1039.
+* Read Stripes Hub stripes-config data from localStorage if available. Refs STCOR-1039.
 * Depenency correction: `react-intl` bumped to v7 in STCOR-945, but we missed the peer. Refs STCOR-1041.
 * Use GET mod-settings `/locale` API to get tenant language & locale settings. Refs STCOR-1027.
 * Granular error messaging for mod-fed errors. Refs STCOR-1037.

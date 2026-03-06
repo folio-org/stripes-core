@@ -3,7 +3,6 @@ import { userEvent } from '@folio/jest-config-stripes/testing-library/user-event
 
 import { useStripes } from '../../StripesContext';
 import PreLoginLanding, { sortedTenantOptions } from './PreLoginLanding';
-import OrganizationLogo from '../OrganizationLogo';
 
 jest.mock('react-router', () => ({
   Redirect: jest.fn(),
