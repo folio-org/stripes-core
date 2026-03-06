@@ -212,7 +212,7 @@ export class FFetch {
           response = await rotateAndReplay(
             this.nativeFetch,
             { ...this.rotationConfig, logger: this.logger },
-            { response, reusableResource, options }
+            { response, resource: reusableResource, options }
           );
         }
 
