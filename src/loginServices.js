@@ -807,6 +807,13 @@ export async function logout(okapiUrl, store, queryClient) {
   }
 
   try {
+    const { config } = store.getState();
+
+    // clear the console unless config asks to preserve it
+    if (!config.preserveConsole) {
+      console.clear(); // eslint-disable-line no-console
+    }
+
     // clear private-storage
     //
     // set the private-storage sentinel to indicate logout is in-progress
@@ -834,12 +841,6 @@ export async function logout(okapiUrl, store, queryClient) {
     console.error('error during logout', e); // eslint-disable-line no-console
   }
 
-  const { config } = store.getState();
-
-  // clear the console unless config asks to preserve it
-  if (!config.preserveConsole) {
-    console.clear(); // eslint-disable-line no-console
-  }
   // clear the storage sentinel
   sessionStorage.removeItem(IS_LOGGING_OUT);
 }

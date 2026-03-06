@@ -67,6 +67,7 @@ export const getStripesHubConfig = () => {
     const brandingConfig = JSON.parse(localStorage.getItem(stripesHubAPI.BRANDING_CONFIG_KEY) || '{}');
     return { folioConfig, brandingConfig };
   } catch (error) {
+    console.error('Failed to parse StripesHub config from localStorage:', error); // eslint-disable-line no-console
     // If there was an error parsing the config from StripesHub, return empty objects so that we fall back to stripes.config.js values.
     return { folioConfig: {}, brandingConfig: {} };
   }
