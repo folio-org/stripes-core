@@ -116,6 +116,7 @@ class Root extends Component {
    */
   async componentDidMount() {
     const { okapi, store, defaultTranslations } = this.props;
+
     if (this.withOkapi) {
       // check for an existing session in storage. if found, initialize the
       // end-of-session timers. for new sessions, this happens in LoginCtrl
@@ -125,9 +126,14 @@ class Root extends Component {
         await this.handleRotation(sess.tokenExpiration);
       }
     }
-    const locale = this.props.config.locale ?? 'en-US';
-    // TODO: remove this after we load locale and translations at start from a public endpoint
-    loadTranslations(store, locale, defaultTranslations);
+
+    // checkOkapiSession triggers loadTranslations for authenticated sessions
+    const { locale: currentLocale, translations } = store.getState().okapi;
+    if (!translations) {
+      const locale = currentLocale || this.props.config.locale || 'en-US';
+      // TODO: remove this after we load locale and translations at start from a public endpoint
+      await loadTranslations(store, locale, defaultTranslations);
+    }
     this.updateQueryResourceStateKey();
   }
 
