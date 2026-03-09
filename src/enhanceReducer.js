@@ -18,7 +18,6 @@ function enhanceReducer(reducer) {
         return {
           config: {},
           okapi: {},
-          discovery: {},
         };
       default:
         return reducer(state, action);
