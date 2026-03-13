@@ -824,6 +824,8 @@ export async function logout(okapiUrl, store, queryClient) {
     localStorage.removeItem(SESSION_NAME);
     localStorage.removeItem(RTR_TIMEOUT_EVENT);
     localStorage.removeItem(TENANT_LOCAL_STORAGE_KEY);
+    localStorage.removeItem(stripesHubAPI.FOLIO_CONFIG_KEY);
+    localStorage.removeItem(stripesHubAPI.BRANDING_CONFIG_KEY);
 
     store.dispatch(setIsAuthenticated(false));
     store.dispatch(clearCurrentUser());
@@ -837,6 +839,9 @@ export async function logout(okapiUrl, store, queryClient) {
     // clear shared storage
     await localforage.removeItem(SESSION_NAME);
     await localforage.removeItem('loginResponse');
+    await localforage.removeItem(stripesHubAPI.DISCOVERY_URL_KEY);
+    await localforage.removeItem(stripesHubAPI.HOST_URL_KEY);
+    await localforage.removeItem(stripesHubAPI.REMOTE_LIST_KEY)
   } catch (e) {
     console.error('error during logout', e); // eslint-disable-line no-console
   }
