@@ -12,13 +12,12 @@ describe('getModules', () => {
       getModule: () => ({ module }),
     };
     jest.mock('stripes-config', () => ({
-      config: { isLazy: false },
       modules: {
         app: [m],
       },
     }), { virtual: true });
 
-    const modules = await getModules();
+    const modules = await getModules({ isLazy: false });
     expect(modules.app).toHaveLength(1);
     expect(modules.app[0].getModule().module).toBe(module);
   });
@@ -29,13 +28,12 @@ describe('getModules', () => {
       getDynamicModule: () => Promise.resolve({ default: { module } }),
     };
     jest.mock('stripes-config', () => ({
-      config: { isLazy: true },
       modules: {
         app: [m],
       },
     }), { virtual: true });
 
-    const modules = await getModules();
+    const modules = await getModules({ isLazy: true });
     expect(modules.app).toHaveLength(1);
     expect(typeof modules.app[0].getModule).toBe('function');
     expect(modules.app[0].getModule().module).toBe(module);

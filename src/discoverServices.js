@@ -1,5 +1,4 @@
 import { some } from 'lodash';
-import { config } from 'stripes-config';
 
 function getHeaders(tenant, token) {
   return {
@@ -229,7 +228,8 @@ function fetchModules(store) {
  */
 export function discoverServices(store) {
   const promises = [];
-  if (config.tenantOptions) {
+
+  if (store.getState().config.tenantOptions) {
     promises.push(fetchApplicationDetails(store));
     promises.push(fetchGatewayVersion(store));
   } else {

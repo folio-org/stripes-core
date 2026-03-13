@@ -24,6 +24,7 @@ describe('enhanceReducer', () => {
     state = enhanceReducer(reducer)(state, { type: 'DESTROY_STORE' });
     expect(state.monkey).toBeUndefined();
     expect(state.okapi).toMatchObject({});
+    expect(state.config).toMatchObject({});
     expect(state.discovery).toBeUndefined();
   });
 
