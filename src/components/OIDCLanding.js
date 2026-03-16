@@ -45,7 +45,7 @@ const OIDCLanding = ({ handleRotation }) => {
           return storeLogoutTenant(okapi.tenant);
         })
         .then(() => {
-          return requestUserWithPerms(okapi.url, store, okapi.tenant);
+          return requestUserWithPerms(okapi, store, okapi.tenant, '');
         });
     }
   };

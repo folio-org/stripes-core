@@ -1,7 +1,9 @@
 import { IntlProvider } from 'react-intl';
 
 import { render, waitFor } from '@folio/jest-config-stripes/testing-library/react';
+import { createMemoryHistory } from 'history';
 
+import Harness from '../../../test/jest/helpers/harness';
 import ModuleTranslator from './ModuleTranslator';
 import { ModulesContext } from '../../ModulesContext';
 import { getModules } from '../../entitlementService';
@@ -9,6 +11,13 @@ import { getModules } from '../../entitlementService';
 jest.mock('../../entitlementService', () => ({
   getModules: jest.fn(),
 }));
+
+const stripes = {
+  config: {},
+  hasPerm: jest.fn(),
+};
+
+const history = createMemoryHistory();
 
 const defaultMessages = {
   'app.label': 'App Label',
@@ -20,25 +29,27 @@ const renderWithIntl = ({
   ui,
   messages = defaultMessages,
 } = {}) => render(
-  <ModuleTranslator>
-    <ModulesContext.Consumer>
-      {({ app, plugin, settings, handler }) => (
-        <IntlProvider
-          locale="en"
-          messages={messages}
-        >
-          {ui || (
-            <div>
-              <div data-testid="app-name">{app[0]?.displayName}</div>
-              <div data-testid="plugin-name">{plugin[0]?.displayName}</div>
-              <div data-testid="settings-name">{settings[0]?.displayName}</div>
-              <div data-testid="handler-name">{handler[0]?.displayName}</div>
-            </div>
-          )}
-        </IntlProvider>
-      )}
-    </ModulesContext.Consumer>
-  </ModuleTranslator>
+  <Harness history={history} stripes={stripes}>
+    <ModuleTranslator>
+      <ModulesContext.Consumer>
+        {({ app, plugin, settings, handler }) => (
+          <IntlProvider
+            locale="en"
+            messages={messages}
+          >
+            {ui || (
+              <div>
+                <div data-testid="app-name">{app[0]?.displayName}</div>
+                <div data-testid="plugin-name">{plugin[0]?.displayName}</div>
+                <div data-testid="settings-name">{settings[0]?.displayName}</div>
+                <div data-testid="handler-name">{handler[0]?.displayName}</div>
+              </div>
+            )}
+          </IntlProvider>
+        )}
+      </ModulesContext.Consumer>
+    </ModuleTranslator>
+  </Harness>
 );
 
 describe('ModuleTranslator', () => {
