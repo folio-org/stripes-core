@@ -49,6 +49,12 @@ jest.mock('../../RootWithIntl', () => {
   );
 });
 
+const STRIPES_HUB_CONFIG = {
+  discoveryUrl: 'http://okapi/discover',
+  hostUrl: 'http://localhost',
+  remotesList: [],
+};
+
 const makeStore = (stateOverrides = {}) => {
   const state = {
     okapi: {
@@ -92,6 +98,7 @@ const getRootComponent = (props = {}) => (
     defaultTranslations={{}}
     modules={{ app: [] }}
     history={{ location: { pathname: '/', search: '' } }}
+    stripesHub={STRIPES_HUB_CONFIG}
     {...props}
   />
 );

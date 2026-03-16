@@ -1,5 +1,5 @@
 import localforage from 'localforage';
-import { config, okapi, translations } from 'stripes-config';
+import { translations } from 'stripes-config';
 import rtlDetect from 'rtl-detect';
 import moment from 'moment';
 import { loadDayJSLocale } from '@folio/stripes-components';
@@ -30,7 +30,7 @@ import processBadResponse from './processBadResponse';
 import {
   RTR_TIMEOUT_EVENT
 } from './components/Root/constants';
-import { settings } from './constants';
+import { settings, stripesHubAPI } from './constants';
 
 // export supported locales, i.e. the languages we provide translations for
 export const supportedLocales = [
@@ -310,7 +310,8 @@ export async function loadTranslations(store, locale, defaultTranslations = {}) 
 
   // if stripes-core is served from a different origin (module-federation) then
   // we need to fetch translations from that origin as well rather than the current location.
-  let translationOrigin = await localforage.getItem('hostLocation');
+  let translationOrigin = await localforage.getItem(stripesHubAPI.HOST_URL_KEY);
+
   if (!translationOrigin) {
     translationOrigin = window.location.origin;
   }
@@ -637,7 +638,8 @@ const processLocaleSettings = async (store, tenantLocaleData, userLocaleData) =>
  */
 export async function loadResources(store, tenant, userId) {
   const promises = [];
-  const okapiUrl = store.getState()?.okapi.url;
+  const { okapi } = store.getState();
+  const okapiUrl = okapi.url;
   const hasReadConfigPerm = canReadConfig(store);
   let hasSetting = false;
 
@@ -676,15 +678,13 @@ export async function loadResources(store, tenant, userId) {
   // in mod-configuration so we can only retrieve them if the user has
   // read-permission for configuration entries.
   if (hasReadConfigPerm) {
-    const okapiObject = store.getState()?.okapi;
-
     promises.push(
-      getPlugins(okapiObject.url, store, tenant),
-      getBindings(okapiObject.url, store, tenant)
+      getPlugins(okapiUrl, store, tenant),
+      getBindings(okapiUrl, store, tenant)
     );
   }
 
-  if (!store.getState().okapi.withoutOkapi) {
+  if (!okapi.withoutOkapi) {
     promises.push(discoverServices(store));
   }
 
@@ -777,6 +777,7 @@ export const getLogoutTenant = () => {
  *
  * @param {string} okapiUrl
  * @param {object} redux store
+ * @param {object} queryClient react-query client, if available; used to clear react-query cache on logout
  *
  * @returns {Promise}
  */
@@ -806,6 +807,13 @@ export async function logout(okapiUrl, store, queryClient) {
   }
 
   try {
+    const { config } = store.getState();
+
+    // clear the console unless config asks to preserve it
+    if (!config.preserveConsole) {
+      console.clear(); // eslint-disable-line no-console
+    }
+
     // clear private-storage
     //
     // set the private-storage sentinel to indicate logout is in-progress
@@ -816,6 +824,8 @@ export async function logout(okapiUrl, store, queryClient) {
     localStorage.removeItem(SESSION_NAME);
     localStorage.removeItem(RTR_TIMEOUT_EVENT);
     localStorage.removeItem(TENANT_LOCAL_STORAGE_KEY);
+    localStorage.removeItem(stripesHubAPI.FOLIO_CONFIG_KEY);
+    localStorage.removeItem(stripesHubAPI.BRANDING_CONFIG_KEY);
 
     store.dispatch(setIsAuthenticated(false));
     store.dispatch(clearCurrentUser());
@@ -829,14 +839,13 @@ export async function logout(okapiUrl, store, queryClient) {
     // clear shared storage
     await localforage.removeItem(SESSION_NAME);
     await localforage.removeItem('loginResponse');
+    await localforage.removeItem(stripesHubAPI.DISCOVERY_URL_KEY);
+    await localforage.removeItem(stripesHubAPI.HOST_URL_KEY);
+    await localforage.removeItem(stripesHubAPI.REMOTE_LIST_KEY)
   } catch (e) {
     console.error('error during logout', e); // eslint-disable-line no-console
   }
 
-  // clear the console unless config asks to preserve it
-  if (!config.preserveConsole) {
-    console.clear(); // eslint-disable-line no-console
-  }
   // clear the storage sentinel
   sessionStorage.removeItem(IS_LOGGING_OUT);
 }
@@ -1182,17 +1191,17 @@ export async function requestLogin(okapiUrl, store, tenant, data) {
 /**
  * fetchUserWithPerms
  * retrieve currently-authenticated user data, e.g. after switching affiliations, and we want permissions for the current tenant
- * @param {string} okapiUrl
+ * @param {object} okapi
  * @param {string} tenant
  * @param {string} token
  * @param {boolean} rtrIgnore
  *
  * @returns {Promise} Promise resolving to the response of the request
  */
-async function fetchUserWithPerms(okapiUrl, tenant, token, rtrIgnore = false) {
+async function fetchUserWithPerms(okapi, tenant, token, rtrIgnore = false) {
   const usersPath = okapi.authnUrl ? 'users-keycloak' : 'bl-users';
   const res = await fetch(
-    `${okapiUrl}/${usersPath}/_self?expandPermissions=true&fullPermissions=true`,
+    `${okapi.url}/${usersPath}/_self?expandPermissions=true&fullPermissions=true`,
     {
       headers: getHeaders(tenant, token),
       rtrIgnore,
@@ -1213,7 +1222,7 @@ async function fetchUserWithPerms(okapiUrl, tenant, token, rtrIgnore = false) {
  * Response looks like this, {originalTenantId: "Member tenant", permissions: {permissions: [...memberTenantPermissions]}, ...rest}.
  * Now, we can set the originalTenantId to the session with fetched permissions and servicePoints.
  * Compare with fetchUserWithPerms, which only fetches data from the current tenant, which is called during an established session when switching tenants.
- * @param {string} okapiUrl
+ * @param {object} okapi
  * @param {redux store} store
  * @param {string} tenant
  * @param {string} token
@@ -1221,10 +1230,10 @@ async function fetchUserWithPerms(okapiUrl, tenant, token, rtrIgnore = false) {
  * @returns {Promise} Promise resolving to the response-body (JSON) of the request
  */
 
-export async function fetchOverriddenUserWithPerms(okapiUrl, tenant, token, rtrIgnore = false) {
+export async function fetchOverriddenUserWithPerms(okapi, tenant, token, rtrIgnore = false) {
   const usersPath = okapi.authnUrl ? 'users-keycloak' : 'bl-users';
   const res = await fetch(
-    `${okapiUrl}/${usersPath}/_self?expandPermissions=true&fullPermissions=true&overrideUser=true`,
+    `${okapi.url}/${usersPath}/_self?expandPermissions=true&fullPermissions=true&overrideUser=true`,
     {
       headers: getHeaders(tenant, token),
       rtrIgnore,
@@ -1237,15 +1246,15 @@ export async function fetchOverriddenUserWithPerms(okapiUrl, tenant, token, rtrI
 /**
  * requestUserWithPerms
  * retrieve currently-authenticated user, then process the result to begin a session.
- * @param {string} okapiUrl
+ * @param {object} okapi
  * @param {redux store} store
  * @param {string} tenant
  * @param {string} token
  *
  * @returns {Promise} Promise resolving to the response-body (JSON) of the request
  */
-export async function requestUserWithPerms(okapiUrl, store, tenant, token) {
-  const resp = await fetchOverriddenUserWithPerms(okapiUrl, tenant, token, !token);
+export async function requestUserWithPerms(okapi, store, tenant, token) {
+  const resp = await fetchOverriddenUserWithPerms(okapi, tenant, token, !token);
   if (resp.ok) {
     const sessionData = await processOkapiSession(store, tenant, resp, token);
     return sessionData;
@@ -1305,7 +1314,7 @@ export async function updateUser(store, data) {
  */
 export async function updateTenant(okapiConfig, tenant) {
   const okapiSess = await getOkapiSession();
-  const userWithPermsResponse = await fetchUserWithPerms(okapiConfig.url, tenant, okapiConfig.token, false);
+  const userWithPermsResponse = await fetchUserWithPerms(okapiConfig, tenant, okapiConfig.token, false);
   const userWithPerms = await userWithPermsResponse.json();
   await localforage.setItem(SESSION_NAME, { ...okapiSess, tenant, ...spreadUserWithPerms(userWithPerms) });
 }
