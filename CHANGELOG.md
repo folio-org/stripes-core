@@ -38,11 +38,13 @@
 * Define a permission-set containing values necessary for session-init API requests. Refs STCOR-1031.
 * FOLIO Landing Page > Display text to link to FOLIO release notes. Refs STCOR-1017.
 * Settings > System Information > Add a link to Release Notes. Refs STCOR-1018.
-* Read Stripes Hub stripes-config data from localforage if available. Refs STCOR-1039.
+* Read Stripes Hub stripes-config data from localStorage if available. Refs STCOR-1039.
 * Depenency correction: `react-intl` bumped to v7 in STCOR-945, but we missed the peer. Refs STCOR-1041.
 * Use GET mod-settings `/locale` API to get tenant language & locale settings. Refs STCOR-1027.
 * Granular error messaging for mod-fed errors. Refs STCOR-1037.
 * Rewrite RTR to catch 400s/401s and replay them after rotation. Refs STCOR-1012.
+* RTR must handle fetches with non-string arguments. Refs STCOR-1042.
+* Only load translations once. Refs STCOR-1043.
 * Migrate to non-webpack module-federation libraries. Refs STCOR-1040.
 
 ## [11.0.0](https://github.com/folio-org/stripes-core/tree/v11.0.0) (2025-02-24)

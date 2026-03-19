@@ -26,13 +26,6 @@ jest.mock('react-redux', () => ({
   useDispatch: jest.fn(),
 }));
 
-jest.mock('stripes-config', () => ({
-  config: {
-    useSecureTokens: true,
-  },
-}),
-{ virtual: true });
-
 jest.mock('');
 
 jest.mock('../../loginServices', () => ({
@@ -54,6 +47,9 @@ describe('SSOLanding', () => {
         okapi: {
           url: 'okapiUrl',
           tenant: 'okapiTenant'
+        },
+        config: {
+          useSecureTokens: true,
         }
       })
     });
@@ -73,7 +69,7 @@ describe('SSOLanding', () => {
 
     renderHook(() => useSSOSession());
 
-    expect(requestUserWithPerms).toHaveBeenCalledWith(store.getState().okapi.url, store, store.getState().okapi.tenant, ssoTokenValue);
+    expect(requestUserWithPerms).toHaveBeenCalledWith(store.getState().okapi, store, store.getState().okapi.tenant, ssoTokenValue);
   });
 
   it('should request user session when RTR is disabled with token from cookies', () => {
@@ -84,7 +80,7 @@ describe('SSOLanding', () => {
 
     renderHook(() => useSSOSession());
 
-    expect(requestUserWithPerms).toHaveBeenCalledWith(store.getState().okapi.url, store, 'okapiTenant', ssoTokenValue);
+    expect(requestUserWithPerms).toHaveBeenCalledWith(store.getState().okapi, store, 'okapiTenant', ssoTokenValue);
   });
 
   it('should request user session when RTR is disabled and right tenant from ssoToken', () => {
@@ -98,7 +94,7 @@ describe('SSOLanding', () => {
 
     renderHook(() => useSSOSession());
 
-    expect(requestUserWithPerms).toHaveBeenCalledWith(store.getState().okapi.url, store, okapiTenant, ssoTokenValue);
+    expect(requestUserWithPerms).toHaveBeenCalledWith(store.getState().okapi, store, okapiTenant, ssoTokenValue);
   });
 
   it('should request user session when RTR is enabled and right tenant from query params', () => {
@@ -110,7 +106,7 @@ describe('SSOLanding', () => {
 
     renderHook(() => useSSOSession());
 
-    expect(requestUserWithPerms).toHaveBeenCalledWith(store.getState().okapi.url, store, queryTenant, undefined);
+    expect(requestUserWithPerms).toHaveBeenCalledWith(store.getState().okapi, store, queryTenant, undefined);
   });
 
   it('should display error when session request failed', async () => {

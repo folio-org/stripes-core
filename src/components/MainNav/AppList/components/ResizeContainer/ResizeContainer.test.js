@@ -296,7 +296,7 @@ describe('ResizeContainer (Jest)', () => {
 
       // Spy on cacheWidthsOfItems to capture state and cache when it's called
       const originalCache = ref.current.cacheWidthsOfItems;
-      ref.current.cacheWidthsOfItems = function(...args) {
+      ref.current.cacheWidthsOfItems = function (...args) {
         hiddenItemsWhenMeasuring = [...this.state.hiddenItems];
         cacheBeforeMeasuring = { ...this.cachedItemWidths };
 
