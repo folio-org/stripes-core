@@ -35,10 +35,6 @@ jest.mock('./AboutUIDependencies', () => () => 'AboutUIDependencies');
 jest.mock('./AboutUIModuleDetails', () => () => 'AboutUIModuleDetails');
 jest.mock('./WarningBanner', () => () => 'WarningBanner');
 
-jest.mock('stripes-config', () => ({
-  config: { tenantOptions: true },
-}));
-
 // set query retries to false. otherwise, react-query will thoughtfully
 // (but unhelpfully, in the context of testing) retry a failed query
 // several times causing the test to timeout when what we really want
@@ -92,6 +88,9 @@ describe('About', () => {
           bat: '2.0',
         },
         isFinished: true,
+      },
+      config: {
+        tenantOptions: true,
       }
     };
 

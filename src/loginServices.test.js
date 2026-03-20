@@ -56,6 +56,9 @@ import {
   updateCurrentUser,
 } from './okapiActions';
 
+import {
+  RTR_TIMEOUT_EVENT
+} from './components/Root/constants';
 import { defaultErrors, stripesHubAPI } from './constants';
 
 jest.mock('./loginServices', () => ({
@@ -71,7 +74,7 @@ jest.mock('./discoverServices', () => ({
 const mockStripesHubAPI = stripesHubAPI;
 jest.mock('localforage', () => ({
   getItem: jest.fn((str) => {
-    if (str === mockStripesHubAPI.HOST_LOCATION_KEY) {
+    if (str === mockStripesHubAPI.HOST_URL_KEY) {
       return Promise.resolve(null);
     }
     return Promise.resolve({ user: {} });
@@ -81,17 +84,11 @@ jest.mock('localforage', () => ({
 }));
 
 jest.mock('stripes-config', () => ({
-  config: {
-    tenantOptions: {
-      romulus: { name: 'romulus', clientId: 'romulus-application' },
-      remus: { name: 'remus', clientId: 'remus-application' },
-    }
-  },
-  okapi: {
-    authnUrl: 'https://authn.url',
-  },
   translations: { cs_CZ: 'cs-CZ', cs: 'cs-CZ', fr: 'fr', ar: 'ar', en_US: 'en-US', en_GB: 'en-GB' }
 }));
+
+const TENANT_LOCAL_STORAGE_KEY = 'tenant';
+const OKAPI = { authnUrl: 'https://authn.url', url: 'http://okapi-url' };
 
 // fetch success: resolve promise with ok == true and $data in json()
 const mockFetchSuccess = (data) => {
@@ -124,6 +121,12 @@ describe('createOkapiSession', () => {
         okapi: {
           currentPerms: [],
           url: 'okapiUrl'
+        },
+        config: {
+          tenantOptions: {
+            romulus: { name: 'romulus', clientId: 'romulus-application' },
+            remus: { name: 'remus', clientId: 'remus-application' },
+          }
         }
       }),
     };
@@ -206,13 +209,13 @@ describe('loadTranslations', () => {
     });
   });
 
-  describe('when localforage contains a hostLocation', () => {
-    it('fetches using the hostLocation from localforage', async () => {
-      const hostLocation = 'http://my-app-here';
+  describe('when localforage contains a hostUrl', () => {
+    it('fetches using the hostUrl from localforage', async () => {
+      const hostUrl = 'http://my-app-here';
       const locale = 'cs-CZ';
-      localforage.getItem.mockResolvedValueOnce(hostLocation);
+      localforage.getItem.mockResolvedValueOnce(hostUrl);
       await loadTranslations(store, locale, { cs: 'cs-CZ' });
-      expect(global.fetch).toHaveBeenCalledWith(`${hostLocation}/cs-CZ`);
+      expect(global.fetch).toHaveBeenCalledWith(`${hostUrl}/cs-CZ`);
     });
   });
 });
@@ -384,7 +387,7 @@ describe('validateUser', () => {
 
     mockFetchSuccess(data);
 
-    await validateUser('url', store, tenant, session);
+    await validateUser('url', store, tenant, session, null);
 
     const updatedSession = {
       user: { ...session.user, ...data.user },
@@ -575,7 +578,7 @@ describe('logout', () => {
       window.sessionStorage.setItem(IS_LOGGING_OUT, 'true');
 
       let res;
-      await logout('', store)
+      await logout('', store, null)
         .then(() => {
           res = true;
         });
@@ -585,7 +588,11 @@ describe('logout', () => {
   });
 
   describe('when logout has not started in this window', () => {
+    beforeEach(() => {
+      jest.spyOn(Storage.prototype, 'removeItem');
+    });
     afterEach(() => {
+      Storage.prototype.removeItem.mockRestore();
       mockFetchCleanUp();
     });
 
@@ -593,12 +600,12 @@ describe('logout', () => {
       global.fetch = jest.fn().mockImplementation(() => Promise.resolve());
       const store = {
         dispatch: jest.fn(),
-        getState: jest.fn(),
+        getState: jest.fn().mockReturnValue({ config: { preserveConsole: false } }),
       };
       window.sessionStorage.clear();
 
       let res;
-      await logout('', store)
+      await logout('', store, null)
         .then(() => {
           res = true;
         });
@@ -610,17 +617,61 @@ describe('logout', () => {
       expect(store.dispatch).toHaveBeenCalledWith(clearOkapiToken());
     });
 
+    it('clears localStorage', async () => {
+      global.fetch = jest.fn().mockImplementation(() => Promise.resolve());
+      const store = {
+        dispatch: jest.fn(),
+        getState: jest.fn().mockReturnValue({ config: { preserveConsole: false } }),
+      };
+      window.sessionStorage.clear();
+
+      let res;
+      await logout('', store, null)
+        .then(() => {
+          res = true;
+        });
+      expect(res).toBe(true);
+
+      expect(localStorage.removeItem).toHaveBeenCalledWith(SESSION_NAME);
+      expect(localStorage.removeItem).toHaveBeenCalledWith(RTR_TIMEOUT_EVENT);
+      expect(localStorage.removeItem).toHaveBeenCalledWith(TENANT_LOCAL_STORAGE_KEY);
+      expect(localStorage.removeItem).toHaveBeenCalledWith(stripesHubAPI.FOLIO_CONFIG_KEY);
+      expect(localStorage.removeItem).toHaveBeenCalledWith(stripesHubAPI.BRANDING_CONFIG_KEY);
+    });
+
+    it('clears localforage', async () => {
+      global.fetch = jest.fn().mockImplementation(() => Promise.resolve());
+      const store = {
+        dispatch: jest.fn(),
+        getState: jest.fn().mockReturnValue({ config: { preserveConsole: false } }),
+      };
+      window.sessionStorage.clear();
+
+      let res;
+      await logout('', store, null)
+        .then(() => {
+          res = true;
+        });
+      expect(res).toBe(true);
+
+      expect(localforage.removeItem).toHaveBeenCalledWith(SESSION_NAME);
+      expect(localforage.removeItem).toHaveBeenCalledWith('loginResponse');
+      expect(localforage.removeItem).toHaveBeenCalledWith(stripesHubAPI.DISCOVERY_URL_KEY);
+      expect(localforage.removeItem).toHaveBeenCalledWith(stripesHubAPI.HOST_URL_KEY);
+      expect(localforage.removeItem).toHaveBeenCalledWith(stripesHubAPI.REMOTE_LIST_KEY);
+    });
+
     it('calls fetch() when other window is not logging out', async () => {
       global.fetch = jest.fn().mockImplementation(() => Promise.resolve());
       localStorage.setItem(SESSION_NAME, 'true');
       const store = {
         dispatch: jest.fn(),
-        getState: jest.fn(),
+        getState: jest.fn().mockReturnValue({ config: { preserveConsole: false } }),
       };
       window.sessionStorage.clear();
 
       let res;
-      await logout('', store)
+      await logout('', store, null)
         .then(() => {
           res = true;
         });
@@ -634,11 +685,12 @@ describe('logout', () => {
       localStorage.clear();
       const store = {
         dispatch: jest.fn(),
+        getState: jest.fn().mockReturnValue({ config: { preserveConsole: false } }),
       };
       window.sessionStorage.clear();
 
       let res;
-      await logout('', store)
+      await logout('', store, null)
         .then(() => {
           res = true;
         });
@@ -657,6 +709,7 @@ describe('logout', () => {
       global.fetch = jest.fn().mockImplementation(() => Promise.resolve());
       const store = {
         dispatch: jest.fn(),
+        getState: jest.fn().mockReturnValue({ okapi: { tenant: 'diku' }, config: { preserveConsole: false } }),
       };
       const rqc = {
         removeQueries: jest.fn(),
@@ -868,7 +921,7 @@ describe('unauthorizedPath functions', () => {
       };
 
       await requestUserWithPerms(
-        'http://okapi-url',
+        OKAPI,
         mockStore,
         'test-tenant',
         'token'
@@ -906,7 +959,7 @@ describe('unauthorizedPath functions', () => {
         })));
       fetchOverriddenUserWithPerms.mockResolvedValue(mockResponse);
 
-      await expect(requestUserWithPerms('okapiUrl', mockStore, 'tenant', true)).rejects.toEqual('Reject message');
+      await expect(requestUserWithPerms('okapiUrl', mockStore, 'tenant', 'token')).rejects.toEqual('Reject message');
       mockFetchCleanUp();
     });
   });
