@@ -36,8 +36,6 @@ export const getPeerDependencyDisagreements = (hostPeerDependencies, remoteStats
 
     if (remoteDependency.requiredVersion && !remoteRange) {
       reason = `${dependencyName}: remote requiredVersion '${remoteDependency.requiredVersion}' is not a valid semver range`;
-    } else if (remoteRange && !intersects(hostRange, remoteRange)) {
-      reason = `${dependencyName}: stripes-core requires ${hostRequiredVersion}, remote requires ${remoteDependency.requiredVersion}`;
     } else if (resolvedVersion && !satisfies(resolvedVersion, hostRange, { includePrerelease: true })) {
       reason = `${dependencyName}: stripes-core requires ${hostRequiredVersion}, remote resolves ${resolvedVersion}`;
     }
@@ -65,7 +63,10 @@ export const validateRemotePeerDependencies = async (
     const response = await fetch(statsUrl, { signal });
 
     if (!response.ok) {
-      throw new Error(`Could not load ${statsUrl}`);
+      return {
+        remote,
+        disagreements: [],
+      };
     }
 
     const remoteStats = await response.json();
@@ -87,17 +88,13 @@ export const validateRemotePeerDependencies = async (
     }
   });
 
-  if ((disagreements.length || validationFailures.length) && !signal?.aborted) {
+  if (disagreements.length && !signal?.aborted) {
     const incompatibilityMessages = disagreements.map(({ remote, disagreements: remoteDisagreements }) => (
       `- ${remote.name}: ${remoteDisagreements.map(disagreement => disagreement.reason).join('; ')}`
     ));
-    const validationFailureMessages = validationFailures.map(({ remote, reason }) => (
-      `- ${remote.name}: ${reason.message || reason}`
-    ));
     const errorMsg = [
-      'Remote module dependency validation issues detected:',
+      'Remote module dependency incompatibilities detected:',
       ...incompatibilityMessages,
-      ...validationFailureMessages,
     ].join('\n');
     console.error(errorMsg); // eslint-disable-line no-console
   }
