@@ -2,7 +2,11 @@ import React from 'react';
 import { render, screen, waitFor } from '@folio/jest-config-stripes/testing-library/react';
 import { okapi } from 'stripes-config';
 import { getInstance } from '@module-federation/runtime';
-import EntitlementLoader, { preloadModules, loadModuleAssets } from './EntitlementLoader';
+import EntitlementLoader, {
+  loadModuleAssets,
+  preloadModules,
+} from './EntitlementLoader';
+import { getPeerDependencyDisagreements } from './remoteDependencyValidation';
 import { StripesContext } from '../StripesContext';
 import { ModulesContext, useModules, modulesInitialState as mockModuleInitialState } from '../ModulesContext';
 import { loadEntitlement } from './loadEntitlement';
@@ -13,9 +17,11 @@ jest.mock('./loadEntitlement', () => ({
 }));
 
 const mockLoadRemote = jest.fn(() => Promise.resolve({ default: {} }));
+const mockRegisterRemotes = jest.fn();
+const mockConsoleError = jest.spyOn(console, 'error').mockImplementation(() => { });
 jest.mock('@module-federation/runtime', () => ({
   getInstance: jest.fn(() => ({
-    registerRemotes: jest.fn(),
+    registerRemotes: mockRegisterRemotes,
     loadRemote: mockLoadRemote,
   }))
 }));
@@ -86,12 +92,33 @@ describe('EntitlementLoader', () => {
       {
         name: 'plugin_module',
         location: 'http://localhost:3001/remoteEntry.js',
+        assetPath: 'http://localhost:3001',
         id: 'plugin_module-4.0.0',
         host: 'localhost',
         port: 3001,
         module: 'plugin-module',
         displayName: 'pluginModule.label',
         actsAs: ['plugin'],
+      },
+    ],
+  };
+
+  const mockMfStats = {
+    shared: [
+      {
+        name: 'react',
+        requiredVersion: '^18.2.0',
+        version: '18.3.1',
+      },
+      {
+        name: 'react-router',
+        requiredVersion: '^5.2.0',
+        version: '5.3.4',
+      },
+      {
+        name: 'react-router-dom',
+        requiredVersion: '^5.2.0',
+        version: '5.3.4',
       },
     ],
   };
@@ -145,7 +172,7 @@ describe('EntitlementLoader', () => {
 
   beforeEach(() => {
     global.fetch = jest.fn();
-    loadEntitlement.mockResolvedValueOnce(mockRemotes);
+    loadEntitlement.mockResolvedValue(mockRemotes);
     getInstance().loadRemote.mockResolvedValue({ default: {} });
   });
 
@@ -154,6 +181,7 @@ describe('EntitlementLoader', () => {
   });
 
   afterAll(() => {
+    mockConsoleError.mockRestore();
     jest.restoreAllMocks();
   });
 
@@ -167,14 +195,18 @@ describe('EntitlementLoader', () => {
     beforeEach(() => {
       capturedModules = null;
       okapi.discoveryUrl = 'http://localhost:8000/entitlement';
-      global.fetch = jest.fn();
-      // two modules in mock, two calls to fetch translations...
-      global.fetch.mockResolvedValueOnce({
-        ok: true,
-        json: jest.fn().mockResolvedValueOnce(translations)
-      }).mockResolvedValueOnce({
-        ok: true,
-        json: jest.fn().mockResolvedValueOnce(translations)
+      global.fetch = jest.fn((url) => {
+        if (url.endsWith('/mf-stats.json')) {
+          return Promise.resolve({
+            ok: true,
+            json: jest.fn().mockResolvedValue(mockMfStats),
+          });
+        }
+
+        return Promise.resolve({
+          ok: true,
+          json: jest.fn().mockResolvedValue(translations),
+        });
       });
     });
 
@@ -224,6 +256,54 @@ describe('EntitlementLoader', () => {
           expect(mockStripes.logger.log).toHaveBeenCalled();
         });
       }
+    });
+
+    it('logs peer dependency disagreements and still loads the remote module', async () => {
+      global.fetch = jest.fn((url) => {
+        if (url === 'http://localhost:3001/mf-stats.json') {
+          return Promise.resolve({
+            ok: true,
+            json: jest.fn().mockResolvedValue({
+              shared: mockMfStats.shared.map((dependency) => {
+                if (dependency.name === 'react-router') {
+                  return {
+                    ...dependency,
+                    requiredVersion: '^6.0.0',
+                    version: '6.30.1',
+                  };
+                }
+
+                return dependency;
+              }),
+            }),
+          });
+        }
+
+        if (url.endsWith('/mf-stats.json')) {
+          return Promise.resolve({
+            ok: true,
+            json: jest.fn().mockResolvedValue(mockMfStats),
+          });
+        }
+
+        return Promise.resolve({
+          ok: true,
+          json: jest.fn().mockResolvedValue(translations),
+        });
+      });
+
+      render(<TestHarness testStripes={{ ...mockStripes, okapi: { discoveryUrl: 'testdiscoveryUrl' } }} />);
+
+      await waitFor(() => {
+        expect(mockRegisterRemotes).toHaveBeenCalledWith([
+          { name: 'app_module', entry: 'http://localhost:3000/remoteEntry.js' },
+          { name: 'plugin_module', entry: 'http://localhost:3001/remoteEntry.js' },
+        ]);
+        expect(mockConsoleError).toHaveBeenCalledWith(
+          expect.stringContaining('plugin_module')
+        );
+        expect(screen.getByText('plugin_module')).toBeInTheDocument();
+      });
     });
   });
 
@@ -428,6 +508,34 @@ describe('EntitlementLoader', () => {
       const remotes = await actualLoadEntitlement('okapi:3000');
       expect(fetch).toHaveBeenCalledWith('okapi:3000', { signal: undefined });
       expect(remotes).toEqual(mockRemotes);
+    });
+  });
+
+  describe('getPeerDependencyDisagreements', () => {
+    it('detects mismatched remote shared dependency ranges', () => {
+      const disagreements = getPeerDependencyDisagreements(
+        {
+          react: '^18.2.0',
+          'react-router': '^5.2.0',
+        },
+        {
+          shared: [
+            {
+              name: 'react',
+              requiredVersion: '^18.3.0',
+              version: '18.3.1',
+            },
+            {
+              name: 'react-router',
+              requiredVersion: '^6.0.0',
+              version: '6.30.1',
+            },
+          ],
+        }
+      );
+
+      expect(disagreements).toHaveLength(1);
+      expect(disagreements[0].reason).toContain('react-router');
     });
   });
 });

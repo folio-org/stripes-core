@@ -6,6 +6,7 @@ import { useStripes } from '../StripesContext';
 import { useCallout } from '../CalloutContext';
 import { ModulesContext, useModules, modulesInitialState } from '../ModulesContext';
 import { loadEntitlement } from './loadEntitlement';
+import { validateRemotePeerDependencies } from './remoteDependencyValidation';
 
 // class for carrying formatted callout error messages.
 class RemoteModuleLoadingError extends Error {
@@ -212,18 +213,26 @@ const EntitlementLoader = ({ children }) => {
         }
 
         let cachedModules = modulesInitialState;
+        const validatedRemotes = remotes || [];
         const remotesWithLoadedAssets = [];
         const loadFailures = [];
 
         // if the signal is aborted, avoid all subsequent fetches, state updates...
         if (!signal.aborted) {
+          if (!validatedRemotes.length) {
+            setRemoteModules(cachedModules);
+            return;
+          }
+
+          await validateRemotePeerDependencies(validatedRemotes, signal);
+
           // load module assets (translations, icons)...
-          const assetResults = await loadAllModuleAssets(stripes, remotes);
+          const assetResults = await loadAllModuleAssets(stripes, validatedRemotes);
           assetResults.forEach((r, i) => {
             if (r.status === 'fulfilled') {
               remotesWithLoadedAssets.push(r.value);
             } else {
-              loadFailures.push({ name: remotes[i].name, reason: r.reason });
+              loadFailures.push({ name: validatedRemotes[i].name, reason: r.reason });
             }
           });
 
@@ -240,7 +249,7 @@ const EntitlementLoader = ({ children }) => {
             handleRemoteModuleError(stripes, `Error loading remote module assets (icons, translations, sounds):\n   ${errorMsg}`, callout?.sendCallout, calloutMessage);
           }
 
-          const remotesToRegister = remotes.map(remote => ({
+          const remotesToRegister = remotesWithLoadedAssets.map(remote => ({
             name: remote.name, entry: remote.location
           }));
 
