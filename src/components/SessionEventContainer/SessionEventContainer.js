@@ -23,6 +23,20 @@ import { toggleRtrModal } from '../../okapiActions';
 import FixedLengthSessionWarning from './FixedLengthSessionWarning';
 import { eventsPortal } from '../../constants';
 
+/**
+ * setUnauthorizedTenantPathToSession
+ * Helper function to set both the unauthorized tenant and path in session storage.
+ * Used when logging out due to an RTR event or inactivity timeout, since both values are needed to restore the user's session after they log back in.
+ *
+ * @param {string} tenant - Tenant to set in session storage
+ * @param {string} [path] - Path to set in session storage
+ * @returns {void}
+ */
+const setUnauthorizedTenantPathToSession = (tenant, path) => {
+  setUnauthorizedTenantToSession(tenant);
+  setUnauthorizedPathToSession(path);
+};
+
 //
 // event listeners
 // exported only to expose them for tests
@@ -31,16 +45,14 @@ import { eventsPortal } from '../../constants';
 // RTR error in this window: logout
 export const thisWindowRtrError = (_e, stripes, history) => {
   console.warn('rtr error; logging out'); // eslint-disable-line no-console
-  setUnauthorizedPathToSession();
-  setUnauthorizedTenantToSession(stripes.okapi.tenant);
+  setUnauthorizedTenantPathToSession(stripes.okapi.tenant);
   history.push(`/logout-timeout?reason=${LOGOUT_TIMEOUT.ERROR}`);
 };
 
 // idle session timeout in this window: logout
 export const thisWindowRtrIstTimeout = (_e, stripes, history) => {
   stripes.logger.log('rtr', 'idle session timeout; logging out');
-  setUnauthorizedPathToSession();
-  setUnauthorizedTenantToSession(stripes.okapi.tenant);
+  setUnauthorizedTenantPathToSession(stripes.okapi.tenant);
   history.push(`/logout-timeout?reason=${LOGOUT_TIMEOUT.INACTIVITY}`);
 };
 
@@ -53,8 +65,7 @@ export const thisWindowRtrFlsWarning = (_e, stripes, setIsFlsVisible) => {
 // fixed-length session timeout in this window: logout
 export const thisWindowRtrFlsTimeout = (_e, stripes, history) => {
   stripes.logger.log('rtr', 'fixed-length session timeout; logging out');
-  setUnauthorizedPathToSession();
-  setUnauthorizedTenantToSession(stripes.okapi.tenant);
+  setUnauthorizedTenantPathToSession(stripes.okapi.tenant);
   history.push(`/logout-timeout?reason=${LOGOUT_TIMEOUT.EXPIRED}`);
 };
 
@@ -65,13 +76,11 @@ export const thisWindowRtrFlsTimeout = (_e, stripes, history) => {
 export const otherWindowStorage = (e, stripes, history) => {
   if (e.key === RTR_TIMEOUT_EVENT) {
     stripes.logger.log('rtr', 'idle session timeout; logging out');
-    setUnauthorizedPathToSession();
-    setUnauthorizedTenantToSession(stripes.okapi.tenant);
+    setUnauthorizedTenantPathToSession(stripes.okapi.tenant);
     history.push('/logout-timeout');
   } else if (!localStorage.getItem(SESSION_NAME)) {
     stripes.logger.log('rtr', 'external localstorage change; logging out');
-    setUnauthorizedPathToSession();
-    setUnauthorizedTenantToSession(stripes.okapi.tenant);
+    setUnauthorizedTenantPathToSession(stripes.okapi.tenant);
     history.push('/logout');
   }
   return Promise.resolve();
