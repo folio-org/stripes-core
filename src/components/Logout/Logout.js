@@ -19,7 +19,6 @@ import {
   getUnauthorizedPathFromSession,
   logout,
   removeUnauthorizedPathFromSession,
-  setUnauthorizedTenantToSession,
 } from '../../loginServices';
 
 import styles from './Logout.css';
@@ -40,9 +39,6 @@ const Logout = ({ sessionTimeoutTimer, sessionTimeoutWarningTimer }) => {
   const location = useLocation();
   const queryClient = useQueryClient();
 
-  const params = new URLSearchParams(location.search);
-  const reason = params.get('reason');
-
   let messageId = null;
   if (location.pathname === '/logout-timeout') {
     const messages = {
@@ -51,7 +47,8 @@ const Logout = ({ sessionTimeoutTimer, sessionTimeoutWarningTimer }) => {
       [LOGOUT_TIMEOUT.INACTIVITY]: 'stripes-core.rtr.idleSession.sessionExpiredSoSad',
     };
 
-    messageId = messages[reason] || messages[LOGOUT_TIMEOUT.INACTIVITY];
+    const params = new URLSearchParams(location.search);
+    messageId = messages[params.get('reason')] || messages[LOGOUT_TIMEOUT.INACTIVITY];
   }
 
 
@@ -68,21 +65,6 @@ const Logout = ({ sessionTimeoutTimer, sessionTimeoutWarningTimer }) => {
 
         // returns a promise, which we ignore
         logout(okapi.url, store, queryClient)
-          .then((res) => {
-            // True when the logout was forced by a session timeout or expiry.
-            // Both the last-active tenant and the pre-logout URL must be preserved so
-            // that after re-login the user is returned to their exact previous location.
-            const preserveTenant = new Set([LOGOUT_TIMEOUT.EXPIRED, LOGOUT_TIMEOUT.INACTIVITY]).has(reason);
-
-            // On forced logout (timeout/expiry): preserve the last-active tenant and
-            // URL so that after re-login the user is returned to their previous context.
-            // On voluntary logout: clear both so the next user starts fresh.
-            if (preserveTenant) {
-              setUnauthorizedTenantToSession(okapi.tenant);
-            }
-
-            return res;
-          })
           .then(setDidLogout(true));
       } else {
         setDidLogout(true);

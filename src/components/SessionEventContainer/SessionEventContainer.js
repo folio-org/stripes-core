@@ -7,7 +7,8 @@ import ms from 'ms';
 import {
   LOGOUT_TIMEOUT,
   SESSION_NAME,
-  setUnauthorizedPathToSession
+  setUnauthorizedPathToSession,
+  setUnauthorizedTenantToSession
 } from '../../loginServices';
 import KeepWorkingModal from './KeepWorkingModal';
 import { useStripes } from '../../StripesContext';
@@ -31,6 +32,7 @@ import { eventsPortal } from '../../constants';
 export const thisWindowRtrError = (_e, stripes, history) => {
   console.warn('rtr error; logging out'); // eslint-disable-line no-console
   setUnauthorizedPathToSession();
+  setUnauthorizedTenantToSession(stripes.okapi.tenant);
   history.push(`/logout-timeout?reason=${LOGOUT_TIMEOUT.ERROR}`);
 };
 
@@ -38,6 +40,7 @@ export const thisWindowRtrError = (_e, stripes, history) => {
 export const thisWindowRtrIstTimeout = (_e, stripes, history) => {
   stripes.logger.log('rtr', 'idle session timeout; logging out');
   setUnauthorizedPathToSession();
+  setUnauthorizedTenantToSession(stripes.okapi.tenant);
   history.push(`/logout-timeout?reason=${LOGOUT_TIMEOUT.INACTIVITY}`);
 };
 
@@ -51,6 +54,7 @@ export const thisWindowRtrFlsWarning = (_e, stripes, setIsFlsVisible) => {
 export const thisWindowRtrFlsTimeout = (_e, stripes, history) => {
   stripes.logger.log('rtr', 'fixed-length session timeout; logging out');
   setUnauthorizedPathToSession();
+  setUnauthorizedTenantToSession(stripes.okapi.tenant);
   history.push(`/logout-timeout?reason=${LOGOUT_TIMEOUT.EXPIRED}`);
 };
 
@@ -62,10 +66,12 @@ export const otherWindowStorage = (e, stripes, history) => {
   if (e.key === RTR_TIMEOUT_EVENT) {
     stripes.logger.log('rtr', 'idle session timeout; logging out');
     setUnauthorizedPathToSession();
+    setUnauthorizedTenantToSession(stripes.okapi.tenant);
     history.push('/logout-timeout');
   } else if (!localStorage.getItem(SESSION_NAME)) {
     stripes.logger.log('rtr', 'external localstorage change; logging out');
     setUnauthorizedPathToSession();
+    setUnauthorizedTenantToSession(stripes.okapi.tenant);
     history.push('/logout');
   }
   return Promise.resolve();
