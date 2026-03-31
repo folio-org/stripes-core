@@ -1,17 +1,24 @@
 import React from 'react';
 import { render, screen, waitFor } from '@folio/jest-config-stripes/testing-library/react';
 import { okapi } from 'stripes-config';
+import { getInstance } from '@module-federation/runtime';
 import EntitlementLoader, { preloadModules, loadModuleAssets } from './EntitlementLoader';
 import { StripesContext } from '../StripesContext';
 import { ModulesContext, useModules, modulesInitialState as mockModuleInitialState } from '../ModulesContext';
-import loadRemoteComponent from '../loadRemoteComponent';
 import { loadEntitlement } from './loadEntitlement';
 
 jest.mock('stripes-config');
 jest.mock('./loadEntitlement', () => ({
   loadEntitlement: jest.fn()
 }));
-jest.mock('../loadRemoteComponent');
+
+const mockLoadRemote = jest.fn(() => Promise.resolve({ default: {} }));
+jest.mock('@module-federation/runtime', () => ({
+  getInstance: jest.fn(() => ({
+    registerRemotes: jest.fn(),
+    loadRemote: mockLoadRemote,
+  }))
+}));
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -139,7 +146,7 @@ describe('EntitlementLoader', () => {
   beforeEach(() => {
     global.fetch = jest.fn();
     loadEntitlement.mockResolvedValueOnce(mockRemotes);
-    loadRemoteComponent.mockResolvedValue({ default: {} });
+    getInstance().loadRemote.mockResolvedValue({ default: {} });
   });
 
   afterEach(() => {
@@ -290,7 +297,7 @@ describe('EntitlementLoader', () => {
 
       const result = await preloadModules(mockStripes, remotes);
 
-      expect(loadRemoteComponent).toHaveBeenCalledTimes(2);
+      expect(mockLoadRemote).toHaveBeenCalledTimes(2);
       expect(result).toHaveProperty('app');
       expect(result).toHaveProperty('plugin');
       expect(result.app.length).toBe(1);
@@ -321,7 +328,7 @@ describe('EntitlementLoader', () => {
         },
       ];
 
-      loadRemoteComponent.mockRejectedValueOnce(new Error('Load failed'));
+      getInstance().loadRemote.mockRejectedValueOnce(new Error('Load failed'));
 
       try {
         await preloadModules(mockStripes, remotes);

@@ -59,7 +59,7 @@ jest.mock('../StripesContext', () => ({
       tenant: 't',
     },
     logger: {
-      log: () => {},
+      log: () => { },
     }
   }),
 }));

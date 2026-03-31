@@ -1,10 +1,10 @@
 import { useEffect, useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
+import { getInstance } from '@module-federation/runtime';
 import { FormattedMessage } from 'react-intl';
 import { useStripes } from '../StripesContext';
 import { useCallout } from '../CalloutContext';
 import { ModulesContext, useModules, modulesInitialState } from '../ModulesContext';
-import loadRemoteComponent from '../loadRemoteComponent';
 import { loadEntitlement } from './loadEntitlement';
 
 // class for carrying formatted callout error messages.
@@ -46,8 +46,8 @@ export const preloadModules = async (stripes, remotes) => {
 
   const loaderArray = [];
   remotes.forEach(remote => {
-    const { name, location } = remote;
-    loaderArray.push(loadRemoteComponent(location, name));
+    const { name } = remote;
+    loaderArray.push(getInstance().loadRemote(`${name}/MainEntry`));
   });
 
   const loadFailures = [];
@@ -240,6 +240,13 @@ const EntitlementLoader = ({ children }) => {
             handleRemoteModuleError(stripes, `Error loading remote module assets (icons, translations, sounds):\n   ${errorMsg}`, callout?.sendCallout, calloutMessage);
           }
 
+          const remotesToRegister = remotes.map(remote => ({
+            name: remote.name, entry: remote.location
+          }));
+
+          // register the dynamically provided remotes with the module federation runtime.
+          getInstance().registerRemotes(remotesToRegister);
+
           try {
             // load module code - this loads each module only once and up `getModule` so that it can be used sychronously.
             cachedModules = await preloadModules(stripes, remotesWithLoadedAssets);
@@ -250,6 +257,7 @@ const EntitlementLoader = ({ children }) => {
           setRemoteModules(cachedModules);
         }
       };
+
       fetchRegistry();
     }
     return () => {
