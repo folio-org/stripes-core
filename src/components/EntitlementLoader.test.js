@@ -6,10 +6,14 @@ import EntitlementLoader, { preloadModules, loadModuleAssets } from './Entitleme
 import { StripesContext } from '../StripesContext';
 import { ModulesContext, useModules, modulesInitialState as mockModuleInitialState } from '../ModulesContext';
 import { loadEntitlement } from './loadEntitlement';
+import { validateRemoteDependencies } from './remoteDependencyValidation';
 
 jest.mock('stripes-config');
 jest.mock('./loadEntitlement', () => ({
   loadEntitlement: jest.fn()
+}));
+jest.mock('./remoteDependencyValidation', () => ({
+  validateRemoteDependencies: jest.fn(() => Promise.resolve()),
 }));
 
 const mockLoadRemote = jest.fn(() => Promise.resolve({ default: {} }));
@@ -184,6 +188,7 @@ describe('EntitlementLoader', () => {
 
       await waitFor(() => {
         expect(loadEntitlement).toHaveBeenCalledWith(discoveryUrl, new AbortController().signal);
+        expect(validateRemoteDependencies).toHaveBeenCalled();
       });
     });
 
