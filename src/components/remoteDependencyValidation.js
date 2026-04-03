@@ -11,7 +11,7 @@ const validateManifestDependency = (remoteName, dependency) => {
   }
 
   if (!satisfies(version, requiredVersion, { includePrerelease: true })) {
-    return `[${remoteName}] '${pkgName}' version '${version}' does not satisfy requiredVersion '${requiredVersion}'`;
+    return `[${remoteName}] '${pkgName}' version '${version}' does not satisfy host's required version: '${requiredVersion}'`;
   }
 
   return null;
