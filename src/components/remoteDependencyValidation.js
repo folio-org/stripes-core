@@ -2,6 +2,14 @@ import satisfies from 'semver/functions/satisfies';
 
 const isAbortError = (error) => error?.name === 'AbortError';
 
+export const formatManifestFetchFailure = (remoteName, manifestUrl, status) => {
+  return `[${remoteName}] failed to fetch manifest '${manifestUrl}' (${status})`;
+};
+
+export const formatDependencyMismatch = (remoteName, pkgName, version, requiredVersion) => {
+  return `[${remoteName}] '${pkgName}' version '${version}' does not satisfy host's required version: '${requiredVersion}'`;
+};
+
 const validateManifestDependency = (remoteName, dependency) => {
   const pkgName = dependency?.name || dependency?.id || 'unknown-package';
   const { version, requiredVersion } = dependency || {};
@@ -11,7 +19,7 @@ const validateManifestDependency = (remoteName, dependency) => {
   }
 
   if (!satisfies(version, requiredVersion, { includePrerelease: true })) {
-    return `[${remoteName}] '${pkgName}' version '${version}' does not satisfy host's required version: '${requiredVersion}'`;
+    return formatDependencyMismatch(remoteName, pkgName, version, requiredVersion);
   }
 
   return null;
@@ -32,7 +40,7 @@ export const validateRemoteDependencies = async (remotes = [], signal) => {
       const response = await fetch(manifestUrl, { signal });
 
       if (!response.ok) {
-        failures.push(`[${remoteName}] failed to fetch manifest '${manifestUrl}' (${response.status})`);
+        failures.push(formatManifestFetchFailure(remoteName, manifestUrl, response.status));
         return;
       }
 

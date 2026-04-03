@@ -1,4 +1,4 @@
-import { validateRemoteDependencies } from './remoteDependencyValidation';
+import { validateRemoteDependencies, formatManifestFetchFailure, formatDependencyMismatch } from './remoteDependencyValidation';
 
 describe('remoteDependencyValidation', () => {
   let consoleWarnSpy;
@@ -44,7 +44,7 @@ describe('remoteDependencyValidation', () => {
       await expect(validateRemoteDependencies([
         { name: 'folio_bulk_edit', assetPath: 'http://localhost:3000' },
       ])).resolves.toBeUndefined();
-      expect(consoleWarnSpy).toHaveBeenCalledWith(expect.stringContaining("version '18.3.1' does not satisfy requiredVersion '^19.0.0'"));
+      expect(consoleWarnSpy).toHaveBeenCalledWith(expect.stringContaining(formatDependencyMismatch('folio_bulk_edit', 'react', '18.3.1', '^19.0.0')));
     });
 
     it('warns when manifest cannot be fetched', async () => {
@@ -56,7 +56,7 @@ describe('remoteDependencyValidation', () => {
       await expect(validateRemoteDependencies([
         { name: 'folio_bulk_edit', assetPath: 'http://localhost:3000' },
       ])).resolves.toBeUndefined();
-      expect(consoleWarnSpy).toHaveBeenCalledWith(expect.stringContaining("failed to fetch manifest 'http://localhost:3000/mf-manifest.json' (404)"));
+      expect(consoleWarnSpy).toHaveBeenCalledWith(expect.stringContaining(formatManifestFetchFailure('folio_bulk_edit', 'http://localhost:3000/mf-manifest.json', 404)));
     });
 
     it('returns without error when aborted', async () => {
