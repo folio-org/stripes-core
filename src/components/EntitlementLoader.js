@@ -6,7 +6,7 @@ import { useStripes } from '../StripesContext';
 import { useCallout } from '../CalloutContext';
 import { ModulesContext, useModules, modulesInitialState } from '../ModulesContext';
 import { loadEntitlement } from './loadEntitlement';
-import { validateRemoteDependencies } from './remoteDependencyValidation';
+import { logRemoteDependencyViolations } from './remoteDependencyValidation';
 
 // class for carrying formatted callout error messages.
 class RemoteModuleLoadingError extends Error {
@@ -218,7 +218,7 @@ const EntitlementLoader = ({ children }) => {
 
         // if the signal is aborted, avoid all subsequent fetches, state updates...
         if (!signal.aborted) {
-          validateRemoteDependencies(signal, remotes);
+          logRemoteDependencyViolations(signal, remotes);
 
           // load module assets (translations, icons)...
           const assetResults = await loadAllModuleAssets(stripes, remotes);

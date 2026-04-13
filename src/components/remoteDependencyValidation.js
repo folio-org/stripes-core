@@ -52,15 +52,16 @@ const validateManifestDependency = (remoteName, dependency) => {
 };
 
 /**
- * Validate remote modules for dependency compatibility against the host.
+ * Check remote modules for dependency compatibility against the host.
  * Fetches each remote's `mf-manifest.json` and checks shared dependency version ranges.
- * Any incompatibilities (required ranges from host that do not satisfy the remote's version) are collected and logged as a warning.
+ * Any incompatibilities (required ranges from host that do not satisfy the remote's version)
+ * are collected and logged as a warning.
  *
  * @param {AbortSignal} [signal] - AbortSignal to cancel network requests.
  * @param {Array<Object>} [remotes=[]] - Array of remote objects; each should include at least `name` and `assetPath`.
  * @returns {Promise<void>} Resolves when validation completes or is aborted.
  */
-export const validateRemoteDependencies = async (signal, remotes = []) => {
+export const logRemoteDependencyViolations = async (signal, remotes = []) => {
   if (signal?.aborted || !Array.isArray(remotes) || !remotes.length) {
     return;
   }
