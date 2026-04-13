@@ -18,8 +18,8 @@ describe('remoteDependencyValidation', () => {
   describe('validateRemoteDependencies', () => {
     it('returns without error when remotes are missing, empty, or not an array', async () => {
       await expect(validateRemoteDependencies()).resolves.toBeUndefined();
-      await expect(validateRemoteDependencies([])).resolves.toBeUndefined();
-      await expect(validateRemoteDependencies({ name: 'not-an-array' })).resolves.toBeUndefined();
+      await expect(validateRemoteDependencies(undefined, [])).resolves.toBeUndefined();
+      await expect(validateRemoteDependencies(undefined, { name: 'not-an-array' })).resolves.toBeUndefined();
 
       expect(global.fetch).not.toHaveBeenCalled();
       expect(consoleWarnSpy).not.toHaveBeenCalled();
@@ -36,7 +36,7 @@ describe('remoteDependencyValidation', () => {
         }),
       });
 
-      await expect(validateRemoteDependencies([defaultRemote])).resolves.toBeUndefined();
+      await expect(validateRemoteDependencies(undefined, [defaultRemote])).resolves.toBeUndefined();
       expect(consoleWarnSpy).not.toHaveBeenCalled();
     });
 
@@ -50,7 +50,7 @@ describe('remoteDependencyValidation', () => {
         }),
       });
 
-      await expect(validateRemoteDependencies([defaultRemote])).resolves.toBeUndefined();
+      await expect(validateRemoteDependencies(undefined, [defaultRemote])).resolves.toBeUndefined();
       expect(consoleWarnSpy).toHaveBeenCalledWith(expect.stringContaining(formatDependencyMismatch('folio_bulk_edit', 'react', '18.3.1', '^19.0.0')));
     });
 
@@ -64,7 +64,7 @@ describe('remoteDependencyValidation', () => {
         }),
       });
 
-      await expect(validateRemoteDependencies([defaultRemote])).resolves.toBeUndefined();
+      await expect(validateRemoteDependencies(undefined, [defaultRemote])).resolves.toBeUndefined();
       expect(consoleWarnSpy).toHaveBeenCalledWith(expect.stringContaining(formatDependencyMismatch('folio_bulk_edit', 'react-dom', '18.3.1', '^19.0.0')));
     });
 
@@ -78,7 +78,7 @@ describe('remoteDependencyValidation', () => {
         }),
       });
 
-      await expect(validateRemoteDependencies([defaultRemote])).resolves.toBeUndefined();
+      await expect(validateRemoteDependencies(undefined, [defaultRemote])).resolves.toBeUndefined();
       expect(consoleWarnSpy).toHaveBeenCalledWith(expect.stringContaining(formatDependencyMismatch('folio_bulk_edit', 'unknown-package', '18.3.1', '^19.0.0')));
     });
 
@@ -93,7 +93,7 @@ describe('remoteDependencyValidation', () => {
         }),
       });
 
-      await expect(validateRemoteDependencies([defaultRemote])).resolves.toBeUndefined();
+      await expect(validateRemoteDependencies(undefined, [defaultRemote])).resolves.toBeUndefined();
       expect(consoleWarnSpy).not.toHaveBeenCalled();
     });
 
@@ -105,7 +105,7 @@ describe('remoteDependencyValidation', () => {
         }),
       });
 
-      await expect(validateRemoteDependencies([defaultRemote])).resolves.toBeUndefined();
+      await expect(validateRemoteDependencies(undefined, [defaultRemote])).resolves.toBeUndefined();
       expect(consoleWarnSpy).not.toHaveBeenCalled();
     });
 
@@ -115,7 +115,7 @@ describe('remoteDependencyValidation', () => {
         status: 404,
       });
 
-      await expect(validateRemoteDependencies([defaultRemote])).resolves.toBeUndefined();
+      await expect(validateRemoteDependencies(undefined, [defaultRemote])).resolves.toBeUndefined();
       expect(consoleWarnSpy).toHaveBeenCalledWith(expect.stringContaining(formatManifestFetchFailure('folio_bulk_edit', 'http://localhost:3000/mf-manifest.json', 404)));
     });
 
@@ -125,21 +125,21 @@ describe('remoteDependencyValidation', () => {
         status: 500,
       });
 
-      await expect(validateRemoteDependencies([{ assetPath: 'http://localhost:3000' }])).resolves.toBeUndefined();
+      await expect(validateRemoteDependencies(undefined, [{ assetPath: 'http://localhost:3000' }])).resolves.toBeUndefined();
       expect(consoleWarnSpy).toHaveBeenCalledWith(expect.stringContaining(formatManifestFetchFailure('unknown-remote', 'http://localhost:3000/mf-manifest.json', 500)));
     });
 
     it('warns with thrown error message when manifest request throws non-abort error', async () => {
       global.fetch.mockRejectedValueOnce(new Error('network exploded'));
 
-      await expect(validateRemoteDependencies([defaultRemote])).resolves.toBeUndefined();
+      await expect(validateRemoteDependencies(undefined, [defaultRemote])).resolves.toBeUndefined();
       expect(consoleWarnSpy).toHaveBeenCalledWith(expect.stringContaining('[folio_bulk_edit] network exploded'));
     });
 
     it('returns without warning when fetch throws AbortError', async () => {
       global.fetch.mockRejectedValueOnce({ name: 'AbortError', message: 'aborted' });
 
-      await expect(validateRemoteDependencies([defaultRemote])).resolves.toBeUndefined();
+      await expect(validateRemoteDependencies(undefined, [defaultRemote])).resolves.toBeUndefined();
       expect(consoleWarnSpy).not.toHaveBeenCalled();
     });
 
@@ -151,14 +151,14 @@ describe('remoteDependencyValidation', () => {
         return Promise.resolve({ ok: false, status: 404 });
       });
 
-      await expect(validateRemoteDependencies([defaultRemote], signal)).resolves.toBeUndefined();
+      await expect(validateRemoteDependencies(signal, [defaultRemote])).resolves.toBeUndefined();
       expect(consoleWarnSpy).not.toHaveBeenCalled();
     });
 
     it('returns without error when aborted', async () => {
       const signal = { aborted: true };
 
-      await expect(validateRemoteDependencies([defaultRemote], signal)).resolves.toBeUndefined();
+      await expect(validateRemoteDependencies(signal, [defaultRemote])).resolves.toBeUndefined();
       expect(global.fetch).not.toHaveBeenCalled();
     });
 
@@ -177,7 +177,7 @@ describe('remoteDependencyValidation', () => {
           }),
         });
 
-      await expect(validateRemoteDependencies([
+      await expect(validateRemoteDependencies(undefined, [
         { name: 'remote_a', assetPath: 'http://localhost:3000' },
         { name: 'remote_b', assetPath: 'http://localhost:3001' },
       ])).resolves.toBeUndefined();

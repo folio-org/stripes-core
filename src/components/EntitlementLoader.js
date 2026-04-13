@@ -213,13 +213,12 @@ const EntitlementLoader = ({ children }) => {
         }
 
         let cachedModules = modulesInitialState;
-        const validatedRemotes = remotes || [];
         const remotesWithLoadedAssets = [];
         const loadFailures = [];
 
         // if the signal is aborted, avoid all subsequent fetches, state updates...
         if (!signal.aborted) {
-          validateRemoteDependencies(validatedRemotes, signal);
+          validateRemoteDependencies(signal, remotes);
 
           // load module assets (translations, icons)...
           const assetResults = await loadAllModuleAssets(stripes, remotes);
