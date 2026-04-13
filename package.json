@@ -133,6 +133,7 @@
     "regenerator-runtime": "^0.13.10",
     "rtl-detect": "^1.0.2",
     "rxjs": "^6.6.3",
+    "semver": "^7.7.2",
     "use-deep-compare": "^1.1.0"
   },
   "peerDependencies": {
