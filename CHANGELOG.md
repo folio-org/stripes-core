@@ -1,6 +1,6 @@
 # Change history for stripes-core
 
-## [11.1.0](https://github.com/folio-org/stripes-core/tree/v11.0.0) (2026-04-14)
+## [11.1.0](https://github.com/folio-org/stripes-core/tree/v11.1.0) (2026-04-14)
 
 * CSS Support for printing of results lists content. Refs STCOR-956.
 * Improve useModuleInfo hook. Refs STCOR-955.
