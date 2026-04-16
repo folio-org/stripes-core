@@ -60,6 +60,7 @@ export const supportedLocales = [
   'ru',     // russian
   'sv',     // swedish
   'tr',     // turkish
+  'uk',     // ukranian
   'ur',     // urdu
   'zh-CN',  // chinese, china
   'zh-TW',  // chinese, taiwan
