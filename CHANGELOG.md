@@ -1,6 +1,12 @@
 # Change history for stripes-core
 
+## [11.1.1](https://github.com/folio-org/stripes-core/tree/v11.1.1) (2026-04-20)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v11.1.0...v11.1.1)
+
+* Add `uk` українська (Ukrainian) locale. Refs STCOR-1046.
+
 ## [11.1.0](https://github.com/folio-org/stripes-core/tree/v11.1.0) (2026-04-14)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v11.0.0...v11.1.0)
 
 * CSS Support for printing of results lists content. Refs STCOR-956.
 * Improve useModuleInfo hook. Refs STCOR-955.
