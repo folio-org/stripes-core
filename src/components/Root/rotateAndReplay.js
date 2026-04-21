@@ -3,6 +3,26 @@ import ms from 'ms';
 import { RTRError } from './Errors';
 
 export const RTR_LOCK_KEY = '@folio/stripes-core::RTR_LOCK_KEY';
+const RTR_RETRY_DELAY = ms('1s');
+const RTR_MAX_ATTEMPTS = 2;
+
+const getErrorMessages = (err) => {
+  const directMessage = err?.message || '';
+  const causeMessage = err?.cause?.message || '';
+  return `${directMessage} ${causeMessage}`.toLowerCase();
+};
+
+// Retry only short-lived transport/timeout failures; do not retry semantic authn failures.
+export const isRecoverableRTRError = (err) => {
+  const messages = getErrorMessages(err);
+
+  return messages.includes('timed out') ||
+    messages.includes('failed to fetch') ||
+    messages.includes('network request failed') ||
+    messages.includes('networkerror') ||
+    messages.includes('fetch failed') ||
+    messages.includes('load failed');
+};
 
 /**
  * rotateAndReplay
@@ -75,7 +95,7 @@ export const rotateAndReplay = async (fetchfx, config, error) => {
    */
   const rotateTokens = async () => {
     config.logger.log('rtr', 'locked ...');
-    try {
+    for (let attempt = 1; attempt <= RTR_MAX_ATTEMPTS; attempt++) {
       //
       // 1. if rotation completed elsewhere, we don't need to rotate!
       // maybe another tab rotated, maybe it happened while awaiting the lock.
@@ -84,44 +104,60 @@ export const rotateAndReplay = async (fetchfx, config, error) => {
         return replayRequest();
       }
 
-      //
-      // 2. rotate: race the rotation-request with a timeout; default 30s
+      const timeout = config.refreshTimeout || ms('30s');
       let rejectId = null;
-      const refreshTimeout = new Promise((_res, rej) => {
-        const timeout = config.refreshTimeout || ms('30s');
-        rejectId = setTimeout(() => {
-          rej(new RTRError(`Token refresh timed out after ${ms(timeout)}`));
-        }, timeout);
-      });
 
-      config.logger.log('rtr', '===> rotating ...');
-      const t = await Promise.race([
-        refreshTimeout,
-        config.rotate()
-      ]);
-      clearTimeout(rejectId);
-      config.logger.log('rtr', '<=== rotated!');
+      try {
+        //
+        // 2. rotate: race the rotation-request with a timeout; default 30s
+        const refreshTimeout = new Promise((_res, rej) => {
+          rejectId = setTimeout(() => {
+            rej(new RTRError(`Token refresh timed out after ${ms(timeout)}`));
+          }, timeout);
+        });
 
-      //
-      // 3. callback
-      await config.onSuccess(t);
-      config.logger.log('rtr', 'stored updated expiry ...');
+        config.logger.log('rtr', `===> rotating (attempt ${attempt}/${RTR_MAX_ATTEMPTS}) ...`);
+        const t = await Promise.race([
+          refreshTimeout,
+          config.rotate()
+        ]);
+        config.logger.log('rtr', '<=== rotated!');
 
-      //
-      // 4. replay the original request
-      return replayRequest();
-    } catch (err) {
-      // Ruhroh, Raggy, rotation railed!
-      // Report the failure via the provided callback. Reject with the original
-      // response if available, allowing it to bubble to the caller. Otherwise,
-      // rethrow, i.e. reject with the object we just caught.
-      config.logger.log('rtr', 'RTR error!', err);
-      await config.onFailure(err);
-      if (error.response) {
-        throw error;
+        //
+        // 3. callback
+        await config.onSuccess(t);
+        config.logger.log('rtr', 'stored updated expiry ...');
+
+        //
+        // 4. replay the original request
+        return replayRequest();
+      } catch (err) {
+        const shouldRetry = attempt < RTR_MAX_ATTEMPTS && isRecoverableRTRError(err);
+
+        if (shouldRetry) {
+          config.logger.log('rtr', 'recoverable RTR error, retrying once ...', err);
+          await new Promise((resolve) => setTimeout(resolve, RTR_RETRY_DELAY));
+          continue;
+        }
+
+        // Ruhroh, Raggy, rotation railed!
+        // Report the failure via the provided callback. Reject with the original
+        // response if available, allowing it to bubble to the caller. Otherwise,
+        // rethrow, i.e. reject with the object we just caught.
+        config.logger.log('rtr', 'RTR error!', err);
+        await config.onFailure(err);
+        if (error?.response) {
+          throw error;
+        }
+        throw err;
+      } finally {
+        if (rejectId) {
+          clearTimeout(rejectId);
+        }
       }
-      throw err;
     }
+
+    return Promise.resolve();
   };
 
   // rotation config

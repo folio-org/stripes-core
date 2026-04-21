@@ -84,5 +84,6 @@ describe('FXHR', () => {
     expect(openSpy.mock.calls).toHaveLength(1);
     expect(aelSpy.mock.calls).toHaveLength(1);
     expect(rotateAndReplay).toHaveBeenCalled();
+    expect(rotateAndReplay.mock.calls[0][2]).toEqual({ options: {} });
   });
 });

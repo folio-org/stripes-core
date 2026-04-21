@@ -137,6 +137,51 @@ describe('rotateAndReplay', () => {
         expect(fetchfx).not.toHaveBeenCalled();
       });
 
+      test('retries once on recoverable rotation errors, then succeeds without onFailure', async () => {
+        jest.useFakeTimers();
+        const fetchfx = jest.fn().mockResolvedValue('after-retry-response');
+        const config = {
+          logger: makeLogger(),
+          isValidToken: jest.fn().mockResolvedValue(false),
+          rotate: jest.fn()
+            .mockRejectedValueOnce(new Error('Failed to fetch'))
+            .mockResolvedValueOnce({ token: 'new-token' }),
+          onSuccess: jest.fn().mockResolvedValue(undefined),
+          onFailure: jest.fn().mockResolvedValue(undefined),
+          options: jest.fn((opts) => opts),
+          shouldRotate: async () => true,
+        };
+
+        const originalError = { resource: '/retry', options: {}, response: { status: 401 } };
+        const pending = rotateAndReplay(fetchfx, config, originalError);
+
+        await jest.advanceTimersByTimeAsync(1000);
+
+        await expect(pending).resolves.toBe('after-retry-response');
+        expect(config.rotate).toHaveBeenCalledTimes(2);
+        expect(config.onFailure).not.toHaveBeenCalled();
+        jest.useRealTimers();
+      });
+
+      test('always clears timeout even when onSuccess throws', async () => {
+        const clearTimeoutSpy = jest.spyOn(global, 'clearTimeout');
+        const fetchfx = jest.fn();
+        const config = {
+          logger: makeLogger(),
+          isValidToken: jest.fn().mockResolvedValue(false),
+          rotate: jest.fn().mockResolvedValue({ token: 'abc' }),
+          onSuccess: jest.fn().mockRejectedValue(new Error('onSuccess failed')),
+          onFailure: jest.fn().mockResolvedValue(undefined),
+          options: jest.fn((opts) => opts),
+          shouldRotate: async () => true,
+        };
+
+        const originalError = { resource: '/baz', options: {}, response: { status: 401 } };
+        await expect(rotateAndReplay(fetchfx, config, originalError)).rejects.toBe(originalError);
+        expect(clearTimeoutSpy).toHaveBeenCalled();
+        clearTimeoutSpy.mockRestore();
+      });
+
       test('with the original reponse if the response status does not match', async () => {
         const fetchfx = jest.fn();
         const config = {
