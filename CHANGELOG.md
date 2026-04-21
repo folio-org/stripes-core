@@ -1,5 +1,9 @@
 # Change history for stripes-core
 
+## 11.1.2 IN PROGRESS
+
+* Export AuthenticatedError component. Refs STCOR-1047.
+
 ## 11.1.0 IN PROGRESS
 
 * CSS Support for printing of results lists content. Refs STCOR-956.
