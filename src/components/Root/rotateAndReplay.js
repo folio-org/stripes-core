@@ -6,34 +6,48 @@ export const RTR_LOCK_KEY = '@folio/stripes-core::RTR_LOCK_KEY';
 
 /**
  * rotateAndReplay
- * rotateAndReplay is called when a response has a 4xx code and if it looks
- * like an authentication problem, rotate the tokens, replay the original
- * request, and resolve with that response. If rotation does not happen (there
- * are many possible reasons, detailed below), reject with the original response.
- * If there are any errors related to rotation itself, report them via a callback
- * and then reject with the original response.
  *
- * 1. inspect the response and the config to determine if rotation is needed.
+ * IN SUMMARY
+ *
+ * rotateAndReplay is called when a request in FFetch returns a non-ok response.
+ * Here, we inspect the request-options and response in detail and if it looks
+ * like the problem was an expired (and therefore absent) AT cookie, rotate the
+ * tokens and then replay the original request, returning the new response. If
+ * the initial inspection fails (maybe we got a 404, which is a problem of
+ * course but not an RTR problem), reject with the original response so it can
+ * bubble back to the caller. If rotation itself fails, report the failure via
+ * the config callback and then reject with the original response (if
+ * available) or the rotation error.
+ *
+ * IN DETAIL
+ *
+ * 1. 🧐 inspect the response and the config to determine if rotation is needed.
  *    reject if any of the following are true:
  *    * we have a response but its code is not one we handle
  *    * the original request was configured with an `ignoreRtr` option
  *    * the config's shouldRotate() function returned false
- * 2. get an exclusive, browser-level lock, to avoid multiple tabs/windows
+ * 2. 🔒 get an exclusive, browser-level lock, to avoid multiple tabs/windows
  *    attempting to rotate simultaneously. the lock takes an async function
- *    and releases when the promise settles. within that promise, rotate.
+ *    and releases when the promise settles. within the lock's promise, rotate.
  *    if the rotation succeeds, replay the request and return the response.
  *
- * Inside the lock, the rotation process looks like this:
- * 1. Check storage to see if the token is still expired. When several requests
- *    fire together and then fail together, they'll queue up due to the browser
- *    lock. Once the first promise resolves, we can use its tokens for the
- *    remaining queued requests. This means that failed requests become
- *    single-threaded since they're all stuck here, waiting for the lock. Alas.
- * 2. Race a rejecting promise against the rotation request. We don't want
+ * Inside the lock's promise, rotation looks like this:
+ * 1. 👀 Inspect storage to see if the token is still expired. When several
+ *    requests fire together and then fail together, they'll queue up to enter
+ *    the lock and then proceed through it single-file. Although several
+ *    requests may be queued, only the first one in the queue needs to perform
+ *    rotation; the others can short-circuit straight to replay. Note, however,
+ *    that deleting the AT cookie without updating the expiration-data in
+ *    storage will lead to this check returning a stale response. In that
+ *    situation, even the first request through the lock will also trigger the
+ *    short-circuit to replay, but the replay will fail with a 401. Thus we
+ *    check the replay's status here, and if it indicates an authentication
+ *    failure we eject from the short-circuit and continue with rotation.
+ * 2. 🔄 Race a rejecting promise against the rotation request. We don't want
  *    to wait forever!
- * 3. Storage callback: update the token-expiration data in storage (so the
+ * 3. 💾 Storage callback: update the token-expiration data in storage (so the
  *    next queued request can retrieve it in Step 1).
- * 4. Replay the original request and return its response.
+ * 4. 🔂 Replay the original request and return its response.
  *
  * @param {*} fetchfx fetch function to execute
  * @param {*} config rotation configuration
@@ -44,6 +58,10 @@ export const RTR_LOCK_KEY = '@folio/stripes-core::RTR_LOCK_KEY';
  */
 export const rotateAndReplay = async (fetchfx, config, error) => {
   config.logger.log('rtr', 'queueRotateReplay...', config);
+
+  // rotation config
+  const shouldRotate = config.shouldRotate ?? (() => Promise.resolve(false));
+  const statusCodes = config.statusCodes || [401];
 
   /**
    * replayRequest
@@ -66,7 +84,7 @@ export const rotateAndReplay = async (fetchfx, config, error) => {
 
   /**
    * rotateTokens
-   * 1. getTokens: maybe another request has already rotated
+   * 1. inspect: maybe another request has already rotated
    * 2. rotate: race the rotation request with a rejecting timeout
    * 3. callback: store updated token details
    * 4. replay: replay the original request
@@ -77,15 +95,22 @@ export const rotateAndReplay = async (fetchfx, config, error) => {
     config.logger.log('rtr', 'locked ...');
     try {
       //
-      // 1. if rotation completed elsewhere, we don't need to rotate!
-      // maybe another tab rotated, maybe it happened while awaiting the lock.
+      // 1. 👀 If rotation completed elsewhere, we don't need to rotate!
+      // Maybe another tab rotated, maybe it happened while awaiting the lock.
+      // If this short-circuit-to-replay fails, however, that means our
+      // assumption that rotation completed elsewhere was wrong and we need to
+      // proceed with rotation.
       if (await config.isValidToken()) {
         config.logger.log('rtr', 'reusing token supplied by another request');
-        return replayRequest();
+        const replayResponse = await replayRequest();
+        if (!statusCodes.includes(replayResponse.status)) {
+          return replayResponse;
+        }
+        config.logger.log('rtr', 'replay failed; forcing rotate ...');
       }
 
       //
-      // 2. rotate: race the rotation-request with a timeout; default 30s
+      // 2. 🔄 rotate: race the rotation-request with a timeout; default 30s
       let rejectId = null;
       const refreshTimeout = new Promise((_res, rej) => {
         const timeout = config.refreshTimeout || ms('30s');
@@ -103,15 +128,15 @@ export const rotateAndReplay = async (fetchfx, config, error) => {
       config.logger.log('rtr', '<=== rotated!');
 
       //
-      // 3. callback
+      // 3. 💾 callback: save new token-expiration value
       await config.onSuccess(t);
       config.logger.log('rtr', 'stored updated expiry ...');
 
       //
-      // 4. replay the original request
+      // 4. 🔂 replay the original request
       return replayRequest();
     } catch (err) {
-      // Ruhroh, Raggy, rotation railed!
+      // 💥 Ruhroh, Raggy, rotation railed!
       // Report the failure via the provided callback. Reject with the original
       // response if available, allowing it to bubble to the caller. Otherwise,
       // rethrow, i.e. reject with the object we just caught.
@@ -124,12 +149,7 @@ export const rotateAndReplay = async (fetchfx, config, error) => {
     }
   };
 
-  // rotation config
-  const shouldRotate = config.shouldRotate ?? (() => Promise.resolve(false));
-  const statusCodes = config.statusCodes || [401];
-
-
-  // shouldRotate() forces rotation when it returns true. If false,
+  // 🧐 shouldRotate() forces rotation when it returns true. If false,
   // investigate the error response, allowing the error to bubble back to
   // the caller when:
   // 1. the response does not indicate an authn failure
@@ -142,7 +162,7 @@ export const rotateAndReplay = async (fetchfx, config, error) => {
     }
   }
 
-  // lock, then rotate
+  // 🔒 lock, then rotate
   // default lock-mode is exclusive, preventing others from entering the lock
   // until this lock resolves (writer/readers pattern)
   if (navigator?.locks?.request) {

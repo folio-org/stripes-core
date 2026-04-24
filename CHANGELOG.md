@@ -3,6 +3,7 @@
 ## 11.1.2 IN PROGRESS
 
 * Export AuthenticatedError component. Refs STCOR-1047.
+* Recover from AT cookie deletion during RTR. Refs STCOR-1048.
 
 ## 11.1.0 IN PROGRESS
 
