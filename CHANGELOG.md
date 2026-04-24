@@ -3,6 +3,7 @@
 ## 11.1.2 IN PROGRESS
 
 * Export AuthenticatedError component. Refs STCOR-1047.
+* Test-logic only belongs in tests, Refs STCOR-1050.
 
 ## 11.1.0 IN PROGRESS
 
