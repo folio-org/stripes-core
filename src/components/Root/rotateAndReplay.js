@@ -32,21 +32,19 @@ export const RTR_LOCK_KEY = '@folio/stripes-core::RTR_LOCK_KEY';
  *    if the rotation succeeds, replay the request and return the response.
  *
  * Inside the lock's promise, rotation looks like this:
- * 1. 👀 Inspect storage to see if the token is still expired. When several
- *    requests fire together and then fail together, they'll queue up to enter
- *    the lock and then proceed through it single-file. Although several
- *    requests may be queued, only the first one in the queue needs to perform
- *    rotation; the others can short-circuit straight to replay. Note, however,
- *    that deleting the AT cookie without updating the expiration-data in
- *    storage will lead to this check returning a stale response. In that
- *    situation, even the first request through the lock will also trigger the
- *    short-circuit to replay, but the replay will fail with a 401. Thus we
- *    check the replay's status here, and if it indicates an authentication
- *    failure we eject from the short-circuit and continue with rotation.
+ * 1. 👀 Immediately attempt to replay the request and observe the response.
+ *    Multiple requests may fail simultaneously across multiple tabs, and all
+ *    of them will be queued up to go through this lock single-file. In fact,
+ *    only the first request needs to rotate. Once that first request travels
+ *    through, performs rotation, and is replayed, the remaining requests in
+ *    the queue can short-circuit the process, abandoning the queue and
+ *    returning the replayed response without rotation. This means the first
+ *    request through the queue suffers a performance penalty (an extra failed
+ *    replay), but subsequent requests sail through more quickly. Feels like an
+ *    okay tradeoff.
  * 2. 🔄 Race a rejecting promise against the rotation request. We don't want
  *    to wait forever!
- * 3. 💾 Storage callback: update the token-expiration data in storage (so the
- *    next queued request can retrieve it in Step 1).
+ * 3. 💾 Storage callback: update the token-expiration data in storage.
  * 4. 🔂 Replay the original request and return its response.
  *
  * @param {*} fetchfx fetch function to execute
@@ -66,9 +64,8 @@ export const rotateAndReplay = async (fetchfx, config, error) => {
   /**
    * replayRequest
    * replay the error'ed request, if there is one. unlike FFetch which traps
-   * and replays failed requests, FXHR simply checks for a valid token and
-   * rotates if it does not have one. (Its send() method is void, so we don't
-   * have an error-response to inspect.)
+   * and replays failed requests, FXHR checks for a valid token and invokes
+   * rotation if it does not have one prior to calling `super.send()`.
    *
    * @returns Promise
    */
@@ -78,8 +75,6 @@ export const rotateAndReplay = async (fetchfx, config, error) => {
       const response = await fetchfx.apply(globalThis, [error.resource, config.options(error.options)]);
       return response;
     }
-
-    return Promise.resolve();
   };
 
   /**
@@ -96,18 +91,14 @@ export const rotateAndReplay = async (fetchfx, config, error) => {
     try {
       //
       // 1. 👀 If rotation completed elsewhere, we don't need to rotate!
-      // Maybe another tab rotated, maybe it happened while awaiting the lock.
-      // If this short-circuit-to-replay fails, however, that means our
-      // assumption that rotation completed elsewhere was wrong and we need to
-      // proceed with rotation.
-      if (await config.isValidToken()) {
-        config.logger.log('rtr', 'reusing token supplied by another request');
-        const replayResponse = await replayRequest();
-        if (!statusCodes.includes(replayResponse.status)) {
-          return replayResponse;
-        }
-        config.logger.log('rtr', 'replay failed; forcing rotate ...');
+      // Replay the request and inspect the response. If it's good, we're good.
+      // If it looks like an authentication failure, however, proceed to rotate.
+      config.logger.log('rtr', 'reusing token supplied by another request');
+      const replayResponse = await replayRequest();
+      if (replayResponse && !statusCodes.includes(replayResponse?.status)) {
+        return replayResponse;
       }
+      config.logger.log('rtr', 'replay failed; forcing rotate ...');
 
       //
       // 2. 🔄 rotate: race the rotation-request with a timeout; default 30s
@@ -142,7 +133,7 @@ export const rotateAndReplay = async (fetchfx, config, error) => {
       // rethrow, i.e. reject with the object we just caught.
       config.logger.log('rtr', 'RTR error!', err);
       await config.onFailure(err);
-      if (error.response) {
+      if (error?.response) {
         throw error;
       }
       throw err;

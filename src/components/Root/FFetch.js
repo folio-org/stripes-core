@@ -141,20 +141,6 @@ export class FFetch {
       }
     },
 
-    // isValidToken
-    // return true if a valid token is available
-    isValidToken: async () => {
-      try {
-        const expiry = await getTokenExpiry();
-        this.logger.log('rtr', `isValidToken ? ${expiry?.atExpires} > ${Date.now()} ? ${expiry?.atExpires > Date.now()}`);
-        return expiry?.atExpires > Date.now();
-      } catch (err) {
-        // swallow the error
-        this.logger.log('rtrv', { err });
-      }
-      return false;
-    },
-
     // onSuccess
     // rotation succeeded: call the success-callback
     onSuccess: async (newTokens) => {

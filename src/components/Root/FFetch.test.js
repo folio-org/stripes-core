@@ -171,20 +171,6 @@ describe('FFetch behavior and rotation helpers', () => {
       await expect(ff.rotationConfig.rotate()).rejects.toThrow('Rotation failure!');
     });
 
-    it('isValidToken returns true when token expiry is in future and false otherwise', async () => {
-      const { getTokenExpiry } = require('../../loginServices');
-      const ff = new FFetch({ logger: { log: jest.fn() }, okapi: { url: okapiUrl, tenant: 't' }, onRotate: jest.fn() });
-
-      getTokenExpiry.mockResolvedValueOnce({ atExpires: Date.now() + 10000 });
-      await expect(ff.rotationConfig.isValidToken()).resolves.toBe(true);
-
-      getTokenExpiry.mockResolvedValueOnce({ atExpires: Date.now() - 10000 });
-      await expect(ff.rotationConfig.isValidToken()).resolves.toBe(false);
-
-      getTokenExpiry.mockRejectedValueOnce(new Error('no storage'));
-      await expect(ff.rotationConfig.isValidToken()).resolves.toBe(false);
-    });
-
     it('replaceXMLHttpRequest sets global.XMLHttpRequest and preserves the original', () => {
       const dummy = function OldXhr() { };
       global.XMLHttpRequest = dummy;
