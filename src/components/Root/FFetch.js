@@ -95,14 +95,18 @@ export class FFetch {
 
     // shouldRotate
     // alternative to status code inspection when a response is present:
-    // deal with Okapi's non-standard 400 response for missing/invalid tokens
+    // deal with Okapi's non-standard 400 response for missing/invalid tokens,
+    // as well as /users-keycloak's 404 response for missing token
     // by cloning the response and inspecting the body text.
     // optional; defaults to a function that resolves to false, i.e. do not force rotation
     shouldRotate: async (response) => {
       if (response) {
         const cr = response.clone();
         const text = await cr.text();
-        return response.status === 400 && text.startsWith('Token missing, access requires permission');
+        return (
+          (response.status === 400 && text.startsWith('Token missing, access requires permission')) ||
+          (response.status === 404 && response.url?.includes('/users-keycloak/'))
+        );
       }
 
       return false;
