@@ -3,6 +3,7 @@
 ## 11.1.2 IN PROGRESS
 
 * Export AuthenticatedError component. Refs STCOR-1047.
+* Add case for `users-keycloak`'s 404 status to rotate keys on failure. STCOR-1054.
 
 ## 11.1.0 IN PROGRESS
 
