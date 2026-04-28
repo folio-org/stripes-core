@@ -17,19 +17,25 @@ describe('FFetch behavior and rotation helpers', () => {
   const okapiUrl = 'http://okapi';
 
   beforeEach(() => {
-    originalFetch = global.fetch;
+    originalFetch = globalThis.fetch;
     mockFetch = jest.fn();
-    global.fetch = mockFetch;
+    globalThis.fetch = mockFetch;
 
-    // ensure navigator exists but without locks by default
-    // @ts-ignore
-    if (!global.navigator) global.navigator = {};
-    // @ts-ignore
-    delete global.navigator.locks;
+    // polyfill navigator.locks for jsdom
+    if (!globalThis.navigator) globalThis.navigator = {};
+    if (!globalThis.navigator.locks) {
+      globalThis.navigator.locks = {
+        request: async (...av) => {
+          if (av.length === 3) return av[2]();
+          if (av.length === 2) return av[1]();
+          throw new Error('Cannot call navigator.locks.request without a function to execute!')
+        },
+      };
+    }
   });
 
   afterEach(() => {
-    global.fetch = originalFetch;
+    globalThis.fetch = originalFetch;
     jest.resetAllMocks();
   });
 
@@ -38,7 +44,7 @@ describe('FFetch behavior and rotation helpers', () => {
     const ff = new FFetch({ logger: {}, okapi: { url: okapiUrl, tenant: 't' }, onRotate: jest.fn() });
     ff.replaceFetch();
 
-    const res = await global.fetch('https://example.com/foo');
+    const res = await globalThis.fetch('https://example.com/foo');
 
     expect(mockFetch).toHaveBeenCalledTimes(1);
     expect(res).toBe('non-okapi-success');
@@ -51,7 +57,7 @@ describe('FFetch behavior and rotation helpers', () => {
     const ff = new FFetch({ logger: {}, okapi: { url: okapiUrl, tenant: 't' }, onRotate: jest.fn() });
     ff.replaceFetch();
 
-    const res = await global.fetch(`${okapiUrl}/resource`);
+    const res = await globalThis.fetch(`${okapiUrl}/resource`);
 
     expect(mockFetch).toHaveBeenCalledTimes(1);
     expect(res).toBe(expected);
@@ -61,13 +67,13 @@ describe('FFetch behavior and rotation helpers', () => {
     // provide LockManager
     const lockCb = jest.fn((key, opts, cb) => cb());
     // @ts-ignore
-    global.navigator.locks = { request: lockCb };
+    globalThis.navigator.locks = { request: lockCb };
 
     mockFetch.mockResolvedValueOnce({ ok: true });
     const ff = new FFetch({ logger: {}, okapi: { url: okapiUrl, tenant: 't' }, onRotate: jest.fn() });
     ff.replaceFetch();
 
-    const res = await global.fetch(`${okapiUrl}/locked`);
+    const res = await globalThis.fetch(`${okapiUrl}/locked`);
 
     expect(lockCb).toHaveBeenCalled();
     expect(res).toEqual({ ok: true });
@@ -86,7 +92,7 @@ describe('FFetch behavior and rotation helpers', () => {
       const ff = new FFetch({ logger: console, okapi: { url: okapiUrl, tenant: 't' }, onRotate: jest.fn() });
       ff.replaceFetch();
 
-      const res = await global.fetch(`${okapiUrl}/explode`);
+      const res = await globalThis.fetch(`${okapiUrl}/explode`);
       expect(res).toBe(failResp);
     });
 
@@ -103,7 +109,7 @@ describe('FFetch behavior and rotation helpers', () => {
       const ff = new FFetch({ logger: console, okapi: { url: okapiUrl, tenant: 't' }, onRotate: jest.fn() });
       ff.replaceFetch();
 
-      const res = await global.fetch(`${okapiUrl}/explode`);
+      const res = await globalThis.fetch(`${okapiUrl}/explode`);
       expect(res).toBe(successResp);
     });
 
@@ -120,7 +126,7 @@ describe('FFetch behavior and rotation helpers', () => {
       const ff = new FFetch({ logger: console, okapi: { url: okapiUrl, tenant: 't' }, onRotate: jest.fn() });
       ff.replaceFetch();
 
-      await expect(global.fetch(`${okapiUrl}/explode`)).rejects.toThrow(rotationError);
+      await expect(globalThis.fetch(`${okapiUrl}/explode`)).rejects.toThrow(rotationError);
     });
   });
 
@@ -187,16 +193,16 @@ describe('FFetch behavior and rotation helpers', () => {
 
     it('replaceXMLHttpRequest sets global.XMLHttpRequest and preserves the original', () => {
       const dummy = function OldXhr() { };
-      global.XMLHttpRequest = dummy;
+      globalThis.XMLHttpRequest = dummy;
 
       const ff = new FFetch({ logger: {}, okapi: { url: okapiUrl, tenant: 't' }, onRotate: jest.fn() });
       ff.replaceXMLHttpRequest();
 
       expect(ff.NativeXHR).toBe(dummy);
-      expect(global.XMLHttpRequest).not.toBe(dummy);
+      expect(globalThis.XMLHttpRequest).not.toBe(dummy);
 
       // restore to avoid side effects
-      global.XMLHttpRequest = dummy;
+      globalThis.XMLHttpRequest = dummy;
     });
 
     it('rotationConfig.options merges OKAPI_FETCH_OPTIONS into options', () => {
