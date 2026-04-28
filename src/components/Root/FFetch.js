@@ -105,7 +105,8 @@ export class FFetch {
         const text = await cr.text();
         return (
           (response.status === 400 && text.startsWith('Token missing, access requires permission')) ||
-          (response.status === 404 && response.url?.includes('/users-keycloak/'))
+          (response.status === 404 && response.url?.includes('/users-keycloak/_self')) ||
+          (response.status === 404 && response.url?.includes('/bl-users/_self'))
         );
       }
 
