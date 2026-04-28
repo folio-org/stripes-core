@@ -4,11 +4,17 @@ describe('rotateAndReplay', () => {
   const makeLogger = () => ({ log: jest.fn() });
 
   beforeEach(() => {
-    // ensure navigator exists but without locks by default
-    // @ts-ignore
-    if (!global.navigator) global.navigator = {};
-    // @ts-ignore
-    delete global.navigator.locks;
+    // polyfill navigator.locks for jsdom
+    if (!globalThis.navigator) globalThis.navigator = {};
+    if (!globalThis.navigator.locks) {
+      globalThis.navigator.locks = {
+        request: async (...av) => {
+          if (av.length === 3) return av[2]();
+          if (av.length === 2) return av[1]();
+          throw new Error('Cannot call navigator.locks.request without a function to execute!')
+        },
+      };
+    }
   });
 
   afterEach(() => {
