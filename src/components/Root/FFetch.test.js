@@ -81,7 +81,7 @@ describe('FFetch behavior and rotation helpers', () => {
 
       // the fetch will fail, then rotation will reject with the same response
       mockFetch.mockResolvedValueOnce(failResp);
-      rotateAndReplay.mockRejectedValueOnce({ response: failResp });
+      rotateAndReplay.mockResolvedValueOnce(failResp);
 
       const ff = new FFetch({ logger: console, okapi: { url: okapiUrl, tenant: 't' }, onRotate: jest.fn() });
       ff.replaceFetch();

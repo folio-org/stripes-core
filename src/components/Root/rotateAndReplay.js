@@ -91,11 +91,12 @@ export const rotateAndReplay = async (fetchfx, config, error) => {
     try {
       //
       // 1. 👀 If rotation completed elsewhere, we don't need to rotate!
-      // Replay the request and inspect the response. If it's good, we're good.
-      // If it looks like an authentication failure, however, proceed to rotate.
+      // Replay the request and inspect the response for success. If it's ok,
+      // we're done and can return that response. If it's not 2xx/ok, rotate
+      // and then replay again.
       config.logger.log('rtr', 'reusing token supplied by another request');
       const replayResponse = await replayRequest();
-      if (replayResponse && !statusCodes.includes(replayResponse?.status)) {
+      if (replayResponse?.ok) {
         return replayResponse;
       }
       config.logger.log('rtr', 'replay failed; forcing rotate ...');
@@ -140,16 +141,17 @@ export const rotateAndReplay = async (fetchfx, config, error) => {
     }
   };
 
-  // 🧐 shouldRotate() forces rotation when it returns true. If false,
-  // investigate the error response, allowing the error to bubble back to
-  // the caller when:
-  // 1. the response does not indicate an authn failure
+  // 🧐 shouldRotate() forces rotation when it returns true.
+  // here, we check the converse: what are reasons we should NOT rotate?
+  // 1. the response status does not indicate an authn failure
   // 2. the original request had an `rtrIgnore` option
+  // if rotation is not necessary, give the response right back and let it
+  // bubble back to its origin
   if (!await shouldRotate(error?.response)) {
     if ((error?.response && !statusCodes.includes(error.response.status)) ||
       error?.options?.rtrIgnore
     ) {
-      throw error;
+      return error.response;
     }
   }
 
