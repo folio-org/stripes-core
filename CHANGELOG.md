@@ -1,5 +1,10 @@
 # Change history for stripes-core
 
+## IN PROGRESS
+
+* Export AuthenticatedError component. Refs STCOR-1047.
+* Test-logic only belongs in tests, Refs STCOR-1050.
+
 ## [11.1.1](https://github.com/folio-org/stripes-core/tree/v11.1.1) (2026-04-20)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v11.1.0...v11.1.1)
 
