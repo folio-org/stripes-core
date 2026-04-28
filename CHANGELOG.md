@@ -2,6 +2,7 @@
 
 ## IN PROGRESS
 
+* Add case for `users-keycloak`'s 404 status to rotate keys on failure. STCOR-1054.
 * Test-logic only belongs in tests, Refs STCOR-1050.
 
 ## [11.1.5](https://github.com/folio-org/stripes-core/tree/v11.1.5) (2026-06-03)
