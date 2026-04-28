@@ -197,16 +197,10 @@ export class FFetch {
 
         // readers/writer lock pattern: don't fetch while rotation is in-progress
         // https://developer.mozilla.org/en-US/docs/Web/API/LockManager/request
-        // with a fallback for old (er, incomplete?) envs that don't support
-        // navigator.locks (👋 jsdom)
-        if (navigator?.locks?.request) {
-          response = await navigator.locks.request(RTR_LOCK_KEY, { mode: 'shared' }, async () => {
-            const fr = await this.nativeFetch.apply(globalThis, [resource, options && { ...options, ...OKAPI_FETCH_OPTIONS }]);
-            return fr;
-          });
-        } else {
-          response = await this.nativeFetch.apply(globalThis, [resource, options && { ...options, ...OKAPI_FETCH_OPTIONS }]);
-        }
+        response = await navigator.locks.request(RTR_LOCK_KEY, { mode: 'shared' }, async () => {
+          const fr = await this.nativeFetch.apply(globalThis, [resource, options && { ...options, ...OKAPI_FETCH_OPTIONS }]);
+          return fr;
+        });
 
         if (!response?.ok) {
           response = await rotateAndReplay(

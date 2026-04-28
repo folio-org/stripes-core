@@ -1,5 +1,9 @@
 # Change history for stripes-core
 
+## IN PROGRESS
+
+* Test-logic only belongs in tests, Refs STCOR-1050.
+
 ## [11.1.5](https://github.com/folio-org/stripes-core/tree/v11.1.5) (2026-06-03)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v11.1.4...v11.1.5)
 
