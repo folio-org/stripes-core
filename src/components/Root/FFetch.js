@@ -27,7 +27,6 @@
 
 import { RTR_LOCK_KEY, rotateAndReplay } from './rotateAndReplay';
 
-import { getTokenExpiry } from '../../loginServices';
 import {
   isFolioApiRequest,
 } from './token-util';
@@ -146,20 +145,6 @@ export class FFetch {
       }
     },
 
-    // isValidToken
-    // return true if a valid token is available
-    isValidToken: async () => {
-      try {
-        const expiry = await getTokenExpiry();
-        this.logger.log('rtr', `isValidToken ? ${expiry?.atExpires} > ${Date.now()} ? ${expiry?.atExpires > Date.now()}`);
-        return expiry?.atExpires > Date.now();
-      } catch (err) {
-        // swallow the error
-        this.logger.log('rtrv', { err });
-      }
-      return false;
-    },
-
     // onSuccess
     // rotation succeeded: call the success-callback
     onSuccess: async (newTokens) => {
@@ -180,11 +165,8 @@ export class FFetch {
    * ffetch (FOLIO-fetch) provides an RTR-wrapper around fetch requests for
    * FOLIO API requests. It pauses fetching while rotation is in-flight, and
    * if a response is not successful (!response.ok), it invokes RTR. RTR will
-   * inspect the response, rotate if necessary, then replay and return the
-   * original request, or it
-   *
-   * see if the failure was due to authentication (in which case it'll rotate
-   * and replay the request).
+   * inspect the response, rotate if necessary, then replay the request and
+   * return its response.
    *
    * @param {object} resource a fetchable resource
    * @param {object} options fetch options
@@ -192,45 +174,29 @@ export class FFetch {
    */
   ffetch = async (resource, options = {}) => {
     if (isFolioApiRequest(resource, this.okapi.url)) {
-      try {
-        let response;
-        // a fetch() resource can be either a string (which can be copied)
-        // or a Request object (which can only be consumed once, and needs
-        // to be cloned before it is used the first time in case this fetch
-        // triggers rotation and it needs to be replayed.
-        const reusableResource = resource instanceof Request ? resource.clone() : resource;
+      let response;
+      // a fetch() resource can be either a string (which can be copied)
+      // or a Request object (which can only be consumed once, and needs
+      // to be cloned before it is used the first time in case this fetch
+      // triggers rotation and it needs to be replayed.
+      const reusableResource = resource instanceof Request ? resource.clone() : resource;
 
-        // readers/writer lock pattern: don't fetch while rotation is in-progress
-        // https://developer.mozilla.org/en-US/docs/Web/API/LockManager/request
-        response = await navigator.locks.request(RTR_LOCK_KEY, { mode: 'shared' }, async () => {
-          const fr = await this.nativeFetch.apply(globalThis, [resource, options && { ...options, ...OKAPI_FETCH_OPTIONS }]);
-          return fr;
-        });
+      // readers/writer lock pattern: don't fetch while rotation is in-progress
+      // https://developer.mozilla.org/en-US/docs/Web/API/LockManager/request
+      response = await navigator.locks.request(RTR_LOCK_KEY, { mode: 'shared' }, async () => {
+        const fr = await this.nativeFetch.apply(globalThis, [resource, options && { ...options, ...OKAPI_FETCH_OPTIONS }]);
+        return fr;
+      });
 
-        if (!response?.ok) {
-          response = await rotateAndReplay(
-            this.nativeFetch,
-            { ...this.rotationConfig, logger: this.logger },
-            { response, resource: reusableResource, options }
-          );
-        }
-
-        return response;
-      } catch (err) {
-        // we can end up here for three reasons:
-        // 1. the original request itself failed
-        // 2. rotation failed
-        // 3. rotation was unnecessary and it rejected with the original reponse
-        //
-        // For #3, we just want to return that response, allowing it to bubble
-        // to the original caller to deal with as they choose. For the others,
-        // this is a legit error so we re-throw it rather than returning it.
-        if (err.response) {
-          return err.response;
-        }
-
-        throw err;
+      if (!response?.ok) {
+        response = await rotateAndReplay(
+          this.nativeFetch,
+          { ...this.rotationConfig, logger: this.logger },
+          { response, resource: reusableResource, options }
+        );
       }
+
+      return response;
     }
 
     // default: pass requests through to the network

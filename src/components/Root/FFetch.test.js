@@ -28,7 +28,7 @@ describe('FFetch behavior and rotation helpers', () => {
         request: async (...av) => {
           if (av.length === 3) return av[2]();
           if (av.length === 2) return av[1]();
-          throw new Error('Cannot call navigator.locks.request without a function to execute!')
+          throw new Error('Cannot call navigator.locks.request without a function to execute!');
         },
       };
     }
@@ -87,7 +87,7 @@ describe('FFetch behavior and rotation helpers', () => {
 
       // the fetch will fail, then rotation will reject with the same response
       mockFetch.mockResolvedValueOnce(failResp);
-      rotateAndReplay.mockRejectedValueOnce({ response: failResp });
+      rotateAndReplay.mockResolvedValueOnce(failResp);
 
       const ff = new FFetch({ logger: console, okapi: { url: okapiUrl, tenant: 't' }, onRotate: jest.fn() });
       ff.replaceFetch();
@@ -177,20 +177,6 @@ describe('FFetch behavior and rotation helpers', () => {
       await expect(ff.rotationConfig.rotate()).rejects.toThrow('Rotation failure!');
     });
 
-    it('isValidToken returns true when token expiry is in future and false otherwise', async () => {
-      const { getTokenExpiry } = require('../../loginServices');
-      const ff = new FFetch({ logger: { log: jest.fn() }, okapi: { url: okapiUrl, tenant: 't' }, onRotate: jest.fn() });
-
-      getTokenExpiry.mockResolvedValueOnce({ atExpires: Date.now() + 10000 });
-      await expect(ff.rotationConfig.isValidToken()).resolves.toBe(true);
-
-      getTokenExpiry.mockResolvedValueOnce({ atExpires: Date.now() - 10000 });
-      await expect(ff.rotationConfig.isValidToken()).resolves.toBe(false);
-
-      getTokenExpiry.mockRejectedValueOnce(new Error('no storage'));
-      await expect(ff.rotationConfig.isValidToken()).resolves.toBe(false);
-    });
-
     it('replaceXMLHttpRequest sets global.XMLHttpRequest and preserves the original', () => {
       const dummy = function OldXhr() { };
       globalThis.XMLHttpRequest = dummy;
@@ -226,7 +212,7 @@ describe('FFetch behavior and rotation helpers', () => {
 
     it('rotationConfig.onFailure dispatches an RTR error event', async () => {
       const ff = new FFetch({ logger: {}, okapi: { url: okapiUrl, tenant: 't' }, onRotate: jest.fn() });
-      const spy = jest.spyOn(window, 'dispatchEvent');
+      const spy = jest.spyOn(globalThis, 'dispatchEvent');
 
       await ff.rotationConfig.onFailure(new Error('boom'));
 
