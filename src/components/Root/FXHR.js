@@ -1,10 +1,5 @@
-import { getTokenExpiry } from '../../loginServices';
 import { rotateAndReplay } from './rotateAndReplay';
 import { isFolioApiRequest } from './token-util';
-import {
-  RTR_ERROR_EVENT,
-} from './constants';
-import { RTRError } from './Errors';
 
 export default (deps) => {
   return class FXHRClass extends XMLHttpRequest {
@@ -20,30 +15,37 @@ export default (deps) => {
       super.open(method, url);
     }
 
-    send = async (payload) => {
-      const { logger } = this.FFetchContext;
-      this.FFetchContext.logger?.log('rtr', 'capture XHR send');
-      if (this.shouldEnsureToken) {
-        try {
-          const expiry = await getTokenExpiry();
-          if (expiry?.atExpires < Date.now()) {
-            await rotateAndReplay(
-              this.FFetchContext.nativeFetch,
-              { ...this.FFetchContext.rotationConfig, logger: this.FFetchContext.logger, shouldRotate: async () => Promise.resolve(true) },
-            );
-          }
-          super.send(payload);
-        } catch (err) {
-          if (err instanceof RTRError) {
-            console.error('RTR failure while attempting XHR', err); // eslint-disable-line no-console
-            window.dispatchEvent(new Event(RTR_ERROR_EVENT, { detail: err }));
-          }
-          throw err;
-        }
+    /**
+     * Capture failure-to-launch errors that are the result of calling send()
+     * with an expired AT and attempt to re-launch. Pass all other errors up
+     * to the superclass.
+     * @param {ProgressEvent} e https://developer.mozilla.org/en-US/docs/Web/API/ProgressEvent
+     */
+    onerror = (e) => {
+      // if no data was loaded, this is a FOLIO API request, and we have not
+      // already restarted, one possibility is that the AT was expired. Rotate
+      // and try again.
+      if (e.loaded === 0 && this.shouldEnsureToken && !this.didRestart) {
+        this.FFetchContext.logger?.log('rtr', 'XHR rotateAndReplay');
+        rotateAndReplay(
+          this.FFetchContext.nativeFetch,
+          { ...this.FFetchContext.rotationConfig, logger: this.FFetchContext.logger, shouldRotate: async () => true },
+        )
+          .then(() => {
+            this.didRestart = true;
+            this.send(this.payload);
+          });
       } else {
-        logger.log('rtr', 'request passed through, sending XHR...');
-        super.send(payload);
+        super.onerror(e);
       }
+    }
+
+    send = (payload) => {
+      // cache in case we need to conduct RTR and restart
+      this.payload = payload;
+
+      this.FFetchContext.logger?.log('rtr', 'capture XHR send');
+      super.send(payload);
     };
   };
 };

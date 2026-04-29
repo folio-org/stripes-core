@@ -1,6 +1,4 @@
-// import { rtr } from './token-util';
 import { rotateAndReplay } from './rotateAndReplay';
-import { getTokenExpiry } from '../../loginServices';
 import FXHR from './FXHR';
 
 jest.mock('./token-util', () => ({
@@ -10,12 +8,6 @@ jest.mock('./token-util', () => ({
 jest.mock('./rotateAndReplay', () => ({
   ...(jest.requireActual('./rotateAndReplay')),
   rotateAndReplay: jest.fn(() => Promise.resolve()),
-}));
-
-jest.mock('../../loginServices', () => ({
-  ...(jest.requireActual('../../loginServices')),
-  setTokenExpiry: jest.fn(() => Promise.resolve()),
-  getTokenExpiry: jest.fn(() => Promise.resolve())
 }));
 
 const openSpy = jest.spyOn(XMLHttpRequest.prototype, 'open').mockImplementation();
@@ -29,7 +21,7 @@ describe('FXHR', () => {
   let testXHR;
   beforeEach(() => {
     jest.clearAllMocks();
-    FakeXHR = FXHR({ tokenExpiration: { atExpires: Date.now(), rtExpires: Date.now() + 5000 }, logger: { log: () => { } }, okapi: { url: 'okapiUrl' } });
+    FakeXHR = FXHR({ logger: { log: () => { } }, okapi: { url: 'okapiUrl' } });
     testXHR = new FakeXHR();
   });
 
@@ -59,11 +51,6 @@ describe('FXHR', () => {
   });
 
   it('Does not rotate if token is valid', () => {
-    getTokenExpiry.mockResolvedValue({
-      atExpires: Date.now() + (10 * 60 * 1000),
-      rtExpires: Date.now() + (10 * 60 * 1000),
-    });
-
     testXHR.addEventListener('abort', mockHandler);
     testXHR.open('POST', 'okapiUrl');
     testXHR.send(new ArrayBuffer(8));
@@ -72,17 +59,16 @@ describe('FXHR', () => {
     expect(rotateAndReplay).not.toHaveBeenCalled();
   });
 
-  it('Rotates if token is expired', async () => {
-    getTokenExpiry.mockResolvedValue({
-      atExpires: Date.now() - (10 * 60 * 1000),
-      rtExpires: Date.now() + (10 * 60 * 1000),
-    });
+  it('onerror rotates and calls send when an error is received before any data is loaded', () => {
     console.log({ rotateAndReplay });
     testXHR.addEventListener('abort', mockHandler);
     testXHR.open('POST', 'okapiUrl');
-    await testXHR.send(new ArrayBuffer(8));
+    testXHR.send(new ArrayBuffer(8));
+    testXHR.onerror({ loaded: 0 });
     expect(openSpy.mock.calls).toHaveLength(1);
     expect(aelSpy.mock.calls).toHaveLength(1);
     expect(rotateAndReplay).toHaveBeenCalled();
+    // logging shows send() is called twice, but sendSpy only counts one call.
+    // I don't understand that.
   });
 });
