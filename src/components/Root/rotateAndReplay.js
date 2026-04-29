@@ -77,7 +77,7 @@ export const rotateAndReplay = async (fetchfx, config, error) => {
     }
 
     // XHR does not have a request to replay
-    return null;
+    return undefined;
   };
 
   /**
