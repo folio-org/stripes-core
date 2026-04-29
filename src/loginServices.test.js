@@ -8,13 +8,17 @@ import {
   getOkapiSession,
   getTokenExpiry,
   getUnauthorizedPathFromSession,
+  getUnauthorizedTenantFromSession,
   handleLoginError,
   loadTranslations,
   logout,
   processOkapiSession,
   removeUnauthorizedPathFromSession,
+  removeUnauthorizedTenantFromSession,
+  consumeUnauthorizedTenantFromSession,
   setTokenExpiry,
   setUnauthorizedPathToSession,
+  setUnauthorizedTenantToSession,
   spreadUserWithPerms,
   supportedLocales,
   supportedNumberingSystems,
@@ -153,6 +157,67 @@ describe('createOkapiSession', () => {
     expect(store.dispatch).toHaveBeenCalledWith(setAuthError(null));
     expect(store.dispatch).toHaveBeenCalledWith(setLoginData(data));
     expect(store.dispatch).toHaveBeenCalledWith(setCurrentPerms(permissionsMap));
+
+    mockFetchCleanUp();
+  });
+
+  it('uses preservedSessionTenant when provided', async () => {
+    const store = {
+      dispatch: jest.fn(),
+      getState: () => ({
+        okapi: {
+          currentPerms: [],
+          url: 'okapiUrl'
+        },
+        config: {
+          tenantOptions: {
+            romulus: { name: 'romulus', clientId: 'romulus-application' },
+          }
+        }
+      }),
+    };
+
+    const data = {
+      user: { id: 'user-id' },
+      permissions: { permissions: [] },
+      tenant: 'home-tenant',
+      originalTenantId: 'consortia-tenant',
+    };
+
+    mockFetchSuccess([]);
+
+    await createOkapiSession(store, 'request-tenant', 'token', data, { preservedSessionTenant: 'preserved-tenant' });
+
+    expect(store.dispatch).toHaveBeenCalledWith(
+      expect.objectContaining({ session: expect.objectContaining({ tenant: 'preserved-tenant' }) })
+    );
+
+    mockFetchCleanUp();
+  });
+
+  it('falls back to originalTenantId when no preservedSessionTenant', async () => {
+    const store = {
+      dispatch: jest.fn(),
+      getState: () => ({
+        okapi: { currentPerms: [], url: 'okapiUrl' },
+        config: { tenantOptions: {} }
+      }),
+    };
+
+    const data = {
+      user: { id: 'user-id' },
+      permissions: { permissions: [] },
+      originalTenantId: 'consortia-tenant',
+      tenant: 'home-tenant',
+    };
+
+    mockFetchSuccess([]);
+
+    await createOkapiSession(store, 'request-tenant', 'token', data);
+
+    expect(store.dispatch).toHaveBeenCalledWith(
+      expect.objectContaining({ session: expect.objectContaining({ tenant: 'consortia-tenant' }) })
+    );
 
     mockFetchCleanUp();
   });
@@ -790,6 +855,56 @@ describe('getBindings', () => {
     await getBindings('url', store, 'tenant');
     expect(store.dispatch).toHaveBeenCalledWith(setBindings(value));
     mockFetchCleanUp();
+  });
+});
+
+describe('unauthorizedTenant functions', () => {
+  beforeEach(() => {
+    window.sessionStorage.clear();
+  });
+
+  afterEach(() => {
+    window.sessionStorage.clear();
+  });
+
+  describe('setUnauthorizedTenantToSession', () => {
+    it('stores the given value', () => {
+      const value = 'diku';
+      setUnauthorizedTenantToSession(value);
+      expect(getUnauthorizedTenantFromSession()).toBe(value);
+    });
+  });
+
+  describe('getUnauthorizedTenantFromSession', () => {
+    it('retrieves the stored value', () => {
+      const value = 'diku';
+      setUnauthorizedTenantToSession(value);
+      expect(getUnauthorizedTenantFromSession()).toBe(value);
+    });
+
+    it('returns null when nothing is stored', () => {
+      expect(getUnauthorizedTenantFromSession()).toBeNull();
+    });
+  });
+
+  describe('removeUnauthorizedTenantFromSession', () => {
+    it('clears the stored value', () => {
+      setUnauthorizedTenantToSession('diku');
+      removeUnauthorizedTenantFromSession();
+      expect(getUnauthorizedTenantFromSession()).toBeNull();
+    });
+  });
+
+  describe('consumeUnauthorizedTenantFromSession', () => {
+    it('returns the stored value and clears it atomically', () => {
+      setUnauthorizedTenantToSession('diku');
+      expect(consumeUnauthorizedTenantFromSession()).toBe('diku');
+      expect(getUnauthorizedTenantFromSession()).toBeNull();
+    });
+
+    it('returns null when nothing is stored', () => {
+      expect(consumeUnauthorizedTenantFromSession()).toBeNull();
+    });
   });
 });
 
