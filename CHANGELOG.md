@@ -5,6 +5,7 @@
 * Export AuthenticatedError component. Refs STCOR-1047.
 * Add case for `users-keycloak`'s 404 status to rotate keys on failure. STCOR-1054.
 * Test-logic only belongs in tests, Refs STCOR-1050.
+* Adopt FFetch's rotation logic in FXHR for consistency. Refs STCOR-1055.
 
 ## [11.1.1](https://github.com/folio-org/stripes-core/tree/v11.1.1) (2026-04-20)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v11.1.0...v11.1.1)
