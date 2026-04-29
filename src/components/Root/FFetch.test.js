@@ -28,7 +28,7 @@ describe('FFetch behavior and rotation helpers', () => {
         request: async (...av) => {
           if (av.length === 3) return av[2]();
           if (av.length === 2) return av[1]();
-          throw new Error('Cannot call navigator.locks.request without a function to execute!')
+          throw new Error('Cannot call navigator.locks.request without a function to execute!');
         },
       };
     }
@@ -212,7 +212,7 @@ describe('FFetch behavior and rotation helpers', () => {
 
     it('rotationConfig.onFailure dispatches an RTR error event', async () => {
       const ff = new FFetch({ logger: {}, okapi: { url: okapiUrl, tenant: 't' }, onRotate: jest.fn() });
-      const spy = jest.spyOn(window, 'dispatchEvent');
+      const spy = jest.spyOn(globalThis, 'dispatchEvent');
 
       await ff.rotationConfig.onFailure(new Error('boom'));
 

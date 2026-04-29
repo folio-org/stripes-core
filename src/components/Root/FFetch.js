@@ -27,7 +27,6 @@
 
 import { RTR_LOCK_KEY, rotateAndReplay } from './rotateAndReplay';
 
-import { getTokenExpiry } from '../../loginServices';
 import {
   isFolioApiRequest,
 } from './token-util';

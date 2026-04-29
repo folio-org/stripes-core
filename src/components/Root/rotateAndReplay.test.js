@@ -11,7 +11,7 @@ describe('rotateAndReplay', () => {
         request: async (...av) => {
           if (av.length === 3) return av[2]();
           if (av.length === 2) return av[1]();
-          throw new Error('Cannot call navigator.locks.request without a function to execute!')
+          throw new Error('Cannot call navigator.locks.request without a function to execute!');
         },
       };
     }
@@ -32,7 +32,7 @@ describe('rotateAndReplay', () => {
   describe('with an error response', () => {
     describe('resolves', () => {
       test('short-circuits to replay when token is already valid', async () => {
-        const expected = { ok: true, body: 'replayed-response' }
+        const expected = { ok: true, body: 'replayed-response' };
         const fetchfx = jest.fn().mockResolvedValue(expected);
         const config = {
           logger: makeLogger(),
