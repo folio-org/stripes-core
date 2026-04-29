@@ -245,9 +245,10 @@ export const isRotating = () => {
  * @param {@folio/stripes/logger} logger
  * @param {function} callback
  * @param {object} okapi
+ * @param {boolean} checkActiveWindow
  * @returns void
  */
-export const rtr = (fetchfx, logger, callback, okapi) => {
+export const rtr = (fetchfx, logger, callback, okapi, checkActiveWindow = true) => {
   logger.log('rtr', '** RTR ...');
 
   /**
@@ -260,7 +261,7 @@ export const rtr = (fetchfx, logger, callback, okapi) => {
   const thisWindowId = window.stripesRTRWindowId;
   const activeWindowId = sessionStorage.getItem(SESSION_ACTIVE_WINDOW_ID);
 
-  if (activeWindowId && thisWindowId !== activeWindowId) {
+  if (checkActiveWindow && activeWindowId && thisWindowId !== activeWindowId) {
     return new Promise(() => {
       logger.log('rtr', `Skipping rotation because this window (${thisWindowId}) is not the active window (${activeWindowId})`);
       // skip and schedule future rotations via the callback;

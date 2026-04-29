@@ -365,9 +365,25 @@ export class FFetch {
         return getPromise(this.logger)
           .then(() => {
             this.logger.log('rtrv', 'post-rtr session check fetch', resource);
-            return this.nativeFetch.apply(global, [resource, options && { ...options, ...OKAPI_FETCH_OPTIONS }]);
+            return this.nativeFetch.apply(global, [resource, options && { ...options }]);
           })
-          .then(res => {
+          .then(async (res) => {
+            if (res.status === 404) {
+              this.logger.log('rtr', 'session check returned 404; rotating tokens and replaying request');
+              const { okapi } = this.store.getState();
+              // rotate tokens without active window check since a new tab may have not received focus yet.
+              await rtr(this.nativeFetch, this.logger, this.rotateCallback, okapi, false);
+              const replayRes = await this.nativeFetch.apply(global, [resource, options && { ...options, ...OKAPI_FETCH_OPTIONS }]);
+
+              if (replayRes.ok && !this.rtrScheduled) {
+                this.logger.log('rtr', 'session check replay succeeded, scheduling RTR (first time)');
+                this.rotateCallback();
+                this.rtrScheduled = true;
+              }
+
+              return replayRes;
+            }
+
             // On first successful session check, trigger rotateCallback to ensure
             // RTR is scheduled (only once per tab)
             if (res.ok && !this.rtrScheduled) {
