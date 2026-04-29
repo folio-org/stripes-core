@@ -365,7 +365,7 @@ export class FFetch {
         return getPromise(this.logger)
           .then(() => {
             this.logger.log('rtrv', 'post-rtr session check fetch', resource);
-            return this.nativeFetch.apply(global, [resource, options && { ...options }]);
+            return this.nativeFetch.apply(global, [resource, options && { ...options, ...OKAPI_FETCH_OPTIONS }]);
           })
           .then(async (res) => {
             if (res.status === 404) {
