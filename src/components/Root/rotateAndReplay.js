@@ -158,9 +158,5 @@ export const rotateAndReplay = async (fetchfx, config, error) => {
   // 🔒 lock, then rotate
   // default lock-mode is exclusive, preventing others from entering the lock
   // until this lock resolves (writer/readers pattern)
-  if (navigator?.locks?.request) {
-    return navigator.locks.request(RTR_LOCK_KEY, rotateTokens);
-  } else {
-    return rotateTokens();
-  }
+  return navigator.locks.request(RTR_LOCK_KEY, rotateTokens);
 };

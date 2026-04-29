@@ -95,14 +95,19 @@ export class FFetch {
 
     // shouldRotate
     // alternative to status code inspection when a response is present:
-    // deal with Okapi's non-standard 400 response for missing/invalid tokens
+    // deal with Okapi's non-standard 400 response for missing/invalid tokens,
+    // as well as /users-keycloak's 404 response for missing token
     // by cloning the response and inspecting the body text.
     // optional; defaults to a function that resolves to false, i.e. do not force rotation
     shouldRotate: async (response) => {
       if (response) {
         const cr = response.clone();
         const text = await cr.text();
-        return response.status === 400 && text.startsWith('Token missing, access requires permission');
+        return (
+          (response.status === 400 && text.startsWith('Token missing, access requires permission')) ||
+          (response.status === 404 && response.url?.includes('/users-keycloak/_self')) ||
+          (response.status === 404 && response.url?.includes('/bl-users/_self'))
+        );
       }
 
       return false;
@@ -179,16 +184,10 @@ export class FFetch {
 
       // readers/writer lock pattern: don't fetch while rotation is in-progress
       // https://developer.mozilla.org/en-US/docs/Web/API/LockManager/request
-      // with a fallback for old (er, incomplete?) envs that don't support
-      // navigator.locks (👋 jsdom)
-      if (navigator?.locks?.request) {
-        response = await navigator.locks.request(RTR_LOCK_KEY, { mode: 'shared' }, async () => {
-          const fr = await this.nativeFetch.apply(globalThis, [resource, options && { ...options, ...OKAPI_FETCH_OPTIONS }]);
-          return fr;
-        });
-      } else {
-        response = await this.nativeFetch.apply(globalThis, [resource, options && { ...options, ...OKAPI_FETCH_OPTIONS }]);
-      }
+      response = await navigator.locks.request(RTR_LOCK_KEY, { mode: 'shared' }, async () => {
+        const fr = await this.nativeFetch.apply(globalThis, [resource, options && { ...options, ...OKAPI_FETCH_OPTIONS }]);
+        return fr;
+      });
 
       if (!response?.ok) {
         response = await rotateAndReplay(
