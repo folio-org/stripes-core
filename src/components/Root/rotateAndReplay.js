@@ -4,8 +4,14 @@ import { RTRError } from './Errors';
 
 export const RTR_LOCK_KEY = '@folio/stripes-core::RTR_LOCK_KEY';
 
+/**
+ * Resources that **can be cloned usually **need to be cloned because they
+ * can only be consumed once, e.g. Request and Response objects.
+ * @param {object} resource
+ * @returns a clone of the resource when it implements clone(), or the resource itself
+ */
 export const reusableResource = (resource) => {
-  return (resource instanceof Request || resource instanceof URL) ? resource.clone() : resource;
+  return (resource.clone) ? resource.clone() : resource;
 };
 
 /**
@@ -81,6 +87,7 @@ export const rotateAndReplay = async (fetchfx, config, error) => {
 
   // rotation config defaults
   const shouldRotate = config.shouldRotate ?? (() => Promise.resolve(false));
+  const ignoreRotate = config.ignoreRotate ?? (() => false);
   const statusCodes = config.statusCodes || [401];
 
   /**
@@ -102,7 +109,7 @@ export const rotateAndReplay = async (fetchfx, config, error) => {
       // and then replay again.
       config.logger.log('rtr', 'reusing token supplied by another request');
       const resourceClone = reusableResource(error.resource);
-      const replayedResponse = await replayRequest(fetchfx, resourceClone, error?.options, config);
+      const replayedResponse = await replayRequest(fetchfx, resourceClone, error.options, config);
       if (replayedResponse?.ok) {
         return replayedResponse;
       }
@@ -141,12 +148,18 @@ export const rotateAndReplay = async (fetchfx, config, error) => {
       // rethrow, i.e. reject with the object we just caught.
       config.logger.log('rtr', 'RTR error!', err);
       await config.onFailure(err);
-      throw new RTRError('RUHRO, RTR Error');
+      // if we already have an RTRError, throw it. if we don't, wrap and throw
+      // to make sure any catch clause is able to usefully interpret this
+      if (err instanceof RTRError) {
+        throw err;
+      }
+
+      throw new RTRError('RUHRO, RTR Error', { cause: err });
     }
   };
 
   // 🧐 ignoreRotate() prevents rotation when it returns true.
-  if (!await shouldRotate(error.options)) {
+  if (ignoreRotate(error.options)) {
     return error.response;
   }
 
@@ -159,6 +172,7 @@ export const rotateAndReplay = async (fetchfx, config, error) => {
     return navigator.locks.request(RTR_LOCK_KEY, rotateTokens);
   }
 
+  // 😢 awww nobody wanted to rotate; just give back the response we started with
   return error.response;
 };
 

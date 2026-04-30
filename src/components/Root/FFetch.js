@@ -84,14 +84,7 @@ export class FFetch {
     // refreshTimeout
     // timeout in milliseconds
     // optional; defaults to 30s
-    /*
-        // options
-        // function that receives the original request options and returns the
-        // options-object that will be used on the replayed request.
-        options: (options = {}) => {
-          return { ...options, ...OKAPI_FETCH_OPTIONS };
-        },
-    */
+
     // shouldRotate
     // alternative to status code inspection when a response is present:
     // deal with Okapi's non-standard 400 response for missing/invalid tokens,
@@ -112,12 +105,15 @@ export class FFetch {
       return false;
     },
 
+    // ignoreRotate
+    // return true to prevent rotation. this will override ignoreRotate and
+    // status-code inspection
     ignoreRotate: (options = {}) => {
       return options.rtrIgnore;
     },
 
     // rotate
-    // handle rotation
+    // handle rotation by calling the rotation endpoint
     rotate: async () => {
       const res = await this.nativeFetch.apply(globalThis, [`${this.okapi.url}/authn/refresh`, {
         headers: {
