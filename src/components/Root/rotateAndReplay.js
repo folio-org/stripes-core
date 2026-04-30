@@ -69,10 +69,10 @@ export const rotateAndReplay = async (fetchfx, config, error) => {
    *
    * @returns Promise
    */
-  const replayRequest = async () => {
-    if (error?.resource) {
-      config.logger.log('rtr', 'replaying ...', error.resource);
-      const response = await fetchfx.apply(globalThis, [error.resource, config.options(error.options)]);
+  const replayRequest = async (res) => {
+    if (res) {
+      config.logger.log('rtr', 'replaying ...', res);
+      const response = await fetchfx.apply(globalThis, [res, config.options(error.options)]);
       return response;
     }
 
@@ -98,7 +98,9 @@ export const rotateAndReplay = async (fetchfx, config, error) => {
       // we're done and can return that response. If it's not 2xx/ok, rotate
       // and then replay again.
       config.logger.log('rtr', 'reusing token supplied by another request');
-      const replayResponse = await replayRequest();
+      const { resource } = error;
+      const reusableResource = resource instanceof Request || resource instanceof URL ? resource.clone() : resource;
+      const replayResponse = await replayRequest(reusableResource);
       if (replayResponse?.ok) {
         return replayResponse;
       }
@@ -129,7 +131,7 @@ export const rotateAndReplay = async (fetchfx, config, error) => {
 
       //
       // 4. 🔂 replay the original request
-      return replayRequest();
+      return replayRequest(error.resource);
     } catch (err) {
       // 💥 Ruhroh, Raggy, rotation railed!
       // Report the failure via the provided callback. Reject with the original
