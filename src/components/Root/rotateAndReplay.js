@@ -4,6 +4,28 @@ import { RTRError } from './Errors';
 
 export const RTR_LOCK_KEY = '@folio/stripes-core::RTR_LOCK_KEY';
 
+export const reusableResource = (resource) => {
+  return (resource instanceof Request || resource instanceof URL) ? resource.clone() : resource;
+};
+
+/**
+ * replayRequest
+ * replay the error'ed request, if there is one. unlike FFetch which traps
+ * and replays failed requests, FXHR checks for a valid token and invokes
+ * rotation if it does not have one prior to calling `super.send()`.
+ *
+ * @returns Promise
+ */
+export const replayRequest = async (fetchfx, resource, options, config) => {
+  if (resource) {
+    config.logger.log('rtr', 'replaying ...');
+    return fetchfx.apply(globalThis, [resource, options ?? {}]);
+  }
+
+  // XHR does not have a request to replay
+  return undefined;
+};
+
 /**
  * rotateAndReplay
  *
@@ -57,28 +79,9 @@ export const RTR_LOCK_KEY = '@folio/stripes-core::RTR_LOCK_KEY';
 export const rotateAndReplay = async (fetchfx, config, error) => {
   config.logger.log('rtr', 'queueRotateReplay...', config);
 
-  // rotation config
+  // rotation config defaults
   const shouldRotate = config.shouldRotate ?? (() => Promise.resolve(false));
   const statusCodes = config.statusCodes || [401];
-
-  /**
-   * replayRequest
-   * replay the error'ed request, if there is one. unlike FFetch which traps
-   * and replays failed requests, FXHR checks for a valid token and invokes
-   * rotation if it does not have one prior to calling `super.send()`.
-   *
-   * @returns Promise
-   */
-  const replayRequest = async () => {
-    if (error?.resource) {
-      config.logger.log('rtr', 'replaying ...', error.resource);
-      const response = await fetchfx.apply(globalThis, [error.resource, config.options(error.options)]);
-      return response;
-    }
-
-    // XHR does not have a request to replay
-    return undefined;
-  };
 
   /**
    * rotateTokens
@@ -98,9 +101,10 @@ export const rotateAndReplay = async (fetchfx, config, error) => {
       // we're done and can return that response. If it's not 2xx/ok, rotate
       // and then replay again.
       config.logger.log('rtr', 'reusing token supplied by another request');
-      const replayResponse = await replayRequest();
-      if (replayResponse?.ok) {
-        return replayResponse;
+      const resourceClone = reusableResource(error.resource);
+      const replayedResponse = await replayRequest(fetchfx, resourceClone, error?.options, config);
+      if (replayedResponse?.ok) {
+        return replayedResponse;
       }
       config.logger.log('rtr', 'replay failed; forcing rotate ...');
 
@@ -129,7 +133,7 @@ export const rotateAndReplay = async (fetchfx, config, error) => {
 
       //
       // 4. 🔂 replay the original request
-      return replayRequest();
+      return replayRequest(fetchfx, error.resource, error.options, config);
     } catch (err) {
       // 💥 Ruhroh, Raggy, rotation railed!
       // Report the failure via the provided callback. Reject with the original
@@ -137,29 +141,57 @@ export const rotateAndReplay = async (fetchfx, config, error) => {
       // rethrow, i.e. reject with the object we just caught.
       config.logger.log('rtr', 'RTR error!', err);
       await config.onFailure(err);
-      if (error?.response) {
-        throw error;
-      }
-      throw err;
+      throw new RTRError('RUHRO, RTR Error');
     }
   };
 
-  // 🧐 shouldRotate() forces rotation when it returns true.
-  // here, we check the converse: what are reasons we should NOT rotate?
-  // 1. the response status does not indicate an authn failure
-  // 2. the original request had an `rtrIgnore` option
-  // if rotation is not necessary, give the response right back and let it
-  // bubble back to its origin
-  if (!await shouldRotate(error?.response)) {
-    if ((error?.response && !statusCodes.includes(error.response.status)) ||
-      error?.options?.rtrIgnore
-    ) {
-      return error.response;
-    }
+  // 🧐 ignoreRotate() prevents rotation when it returns true.
+  if (!await shouldRotate(error.options)) {
+    return error.response;
   }
 
-  // 🔒 lock, then rotate
-  // default lock-mode is exclusive, preventing others from entering the lock
-  // until this lock resolves (writer/readers pattern)
-  return navigator.locks.request(RTR_LOCK_KEY, rotateTokens);
+  // 🧐 shouldRotate() forces rotation when it returns true.
+  // we also check status codes
+  if (await shouldRotate(error?.response) || statusCodes.includes(error.response.status)) {
+    // 🔒 lock, then rotate
+    // default lock-mode is exclusive, preventing others from entering the lock
+    // until this lock resolves (writer/readers pattern)
+    return navigator.locks.request(RTR_LOCK_KEY, rotateTokens);
+  }
+
+  return error.response;
+};
+
+
+/**
+ *
+ * @param {*} fetchfx
+ * @param {*} resource
+ * @param {*} options
+ * @param {*} config
+ * @returns
+ */
+export const fetchWithRotate = async (fetchfx, resource, options, config) => {
+  let response;
+  // a fetch() resource can be either a string (which can be copied)
+  // or a Request object (which can only be consumed once, and needs
+  // to be cloned before it is used the first time in case this fetch
+  // triggers rotation and it needs to be replayed.
+  const resourceClone = reusableResource(resource);
+
+  // readers/writer lock pattern: don't fetch while rotation is in-progress
+  // https://developer.mozilla.org/en-US/docs/Web/API/LockManager/request
+  response = await navigator.locks.request(RTR_LOCK_KEY, { mode: 'shared' }, async () => {
+    return fetchfx.apply(globalThis, [resource, options]);
+  });
+
+  if (!response?.ok) {
+    response = await rotateAndReplay(
+      fetchfx,
+      config,
+      { response, resource: resourceClone, options }
+    );
+  }
+
+  return response;
 };

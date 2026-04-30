@@ -25,7 +25,7 @@
  */
 
 
-import { RTR_LOCK_KEY, rotateAndReplay } from './rotateAndReplay';
+import { fetchWithRotate } from './rotateAndReplay';
 
 import {
   isFolioApiRequest,
@@ -84,14 +84,14 @@ export class FFetch {
     // refreshTimeout
     // timeout in milliseconds
     // optional; defaults to 30s
-
-    // options
-    // function that receives the original request options and returns the
-    // options-object that will be used on the replayed request.
-    options: (options = {}) => {
-      return { ...options, ...OKAPI_FETCH_OPTIONS };
-    },
-
+    /*
+        // options
+        // function that receives the original request options and returns the
+        // options-object that will be used on the replayed request.
+        options: (options = {}) => {
+          return { ...options, ...OKAPI_FETCH_OPTIONS };
+        },
+    */
     // shouldRotate
     // alternative to status code inspection when a response is present:
     // deal with Okapi's non-standard 400 response for missing/invalid tokens,
@@ -110,6 +110,10 @@ export class FFetch {
       }
 
       return false;
+    },
+
+    ignoreRotate: (options = {}) => {
+      return options.rtrIgnore;
     },
 
     // rotate
@@ -174,29 +178,12 @@ export class FFetch {
    */
   ffetch = async (resource, options = {}) => {
     if (isFolioApiRequest(resource, this.okapi.url)) {
-      let response;
-      // a fetch() resource can be either a string (which can be copied)
-      // or a Request object (which can only be consumed once, and needs
-      // to be cloned before it is used the first time in case this fetch
-      // triggers rotation and it needs to be replayed.
-      const reusableResource = resource instanceof Request ? resource.clone() : resource;
-
-      // readers/writer lock pattern: don't fetch while rotation is in-progress
-      // https://developer.mozilla.org/en-US/docs/Web/API/LockManager/request
-      response = await navigator.locks.request(RTR_LOCK_KEY, { mode: 'shared' }, async () => {
-        const fr = await this.nativeFetch.apply(globalThis, [resource, options && { ...options, ...OKAPI_FETCH_OPTIONS }]);
-        return fr;
-      });
-
-      if (!response?.ok) {
-        response = await rotateAndReplay(
-          this.nativeFetch,
-          { ...this.rotationConfig, logger: this.logger },
-          { response, resource: reusableResource, options }
-        );
-      }
-
-      return response;
+      return fetchWithRotate(
+        this.nativeFetch,
+        resource,
+        { ...options, ...OKAPI_FETCH_OPTIONS },
+        { ...this.rotationConfig, logger: this.logger }
+      );
     }
 
     // default: pass requests through to the network
