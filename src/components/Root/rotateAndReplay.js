@@ -144,22 +144,15 @@ export const rotateAndReplay = async (fetchfx, config, error) => {
     }
   };
 
-  // 🧐 shouldRotate() forces rotation when it returns true.
-  // here, we check the converse: what are reasons we should NOT rotate?
-  // 1. the response status does not indicate an authn failure
-  // 2. the original request had an `rtrIgnore` option
-  // if rotation is not necessary, give the response right back and let it
-  // bubble back to its origin
-  if (!await shouldRotate(error?.response)) {
-    if ((error?.response && !statusCodes.includes(error.response.status)) ||
-      error?.options?.rtrIgnore
-    ) {
-      return error.response;
-    }
+  // 🧐 are we certain we need to rotate? check these two conditions:
+  // 1. shouldRotate() asked for rotation
+  // 2. the response status indicates we need rotation
+  if (await shouldRotate(error?.response) || statusCodes.includes(error?.response?.status)) {
+    // 🔒 lock, then rotate
+    // default lock-mode is exclusive, preventing others from entering the lock
+    // until this lock resolves (writer/readers pattern)
+    return navigator.locks.request(RTR_LOCK_KEY, rotateTokens);
   }
 
-  // 🔒 lock, then rotate
-  // default lock-mode is exclusive, preventing others from entering the lock
-  // until this lock resolves (writer/readers pattern)
-  return navigator.locks.request(RTR_LOCK_KEY, rotateTokens);
+  return error?.response;
 };
