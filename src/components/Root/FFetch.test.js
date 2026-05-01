@@ -183,7 +183,7 @@ describe('FFetch behavior and rotation helpers', () => {
 
         it('given a 422 somewhere other than /authn/logout', async () => {
           const ff = new FFetch({ logger: {}, okapi: { url: '/somewhere/safe', tenant: 't' }, onRotate: jest.fn() });
-          const shouldRotate = await ff.rotationConfig.shouldRotate(new Response('Nobody here but us chickens', { status: 404 }));
+          const shouldRotate = await ff.rotationConfig.shouldRotate(new Response('Nobody here but us chickens', { status: 422 }));
           expect(shouldRotate).toBe(false);
         });
       });
