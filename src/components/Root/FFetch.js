@@ -189,6 +189,10 @@ export class FFetch {
         return fr;
       });
 
+      if (options?.rtrIgnore) {
+        return response;
+      }
+
       if (!response?.ok) {
         response = await rotateAndReplay(
           this.nativeFetch,
