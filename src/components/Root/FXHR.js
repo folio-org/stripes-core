@@ -6,31 +6,79 @@ import {
 import { RTRError } from './Errors';
 
 export default (deps) => {
+  /**
+   * FXHRClass
+   * XMLHttpRequest wrapper that mirrors FFetch's reactive RTR behavior.
+   *
+   * For Okapi requests, it captures the outgoing request shape, sends it,
+   * inspects terminal responses for auth failure (401 and Okapi token-missing
+   * 400), rotates tokens once, and then replays the original request. For
+   * non-Okapi requests, it passes through untouched.
+   *
+   * Consumer callbacks remain compatible with native XHR semantics by routing
+   * readystatechange through an internal interceptor and invoking the assigned
+   * callback with XHR-style this binding.
+   */
   return class FXHRClass extends XMLHttpRequest {
     constructor() {
       super();
+
+      /**
+       * Sentinels controlling whether auth-failure handling should run and
+       * whether rotation has already been attempted for the current request.
+       */
       this.shouldEnsureToken = false;
       this.hasRetriedAuth = false;
-      this.isReplaying = false;
-      this.requestMethod = null;
-      this.requestUrl = null;
+
+      /**
+       * Captured request details used to replay the original XHR after
+       * successful token rotation.
+       */
       this.requestOpenArgs = null;
       this.requestPayload = null;
       this.requestHeaders = [];
       this.requestWithCredentials = false;
+
+      /**
+       * Application callback passthrough and shared RTR dependencies.
+       */
       this.userOnReadyStateChange = null;
       this.FFetchContext = deps;
 
-      // Always route readystatechange through the wrapper so auth failures can
-      // be handled before consumer callbacks are invoked.
+      /**
+       * Always route readystatechange through the wrapper so auth failures can
+       * be handled before consumer callbacks are invoked.
+       */
       super.onreadystatechange = this.handleInternalReadyStateChange;
     }
 
+    /**
+     * Preserve user-provided callback while keeping internal interception in place.
+     */
+    set onreadystatechange(handler) {
+      this.userOnReadyStateChange = handler;
+    }
+
+    /**
+     * Expose assigned callback for compatibility with native XHR usage patterns.
+     */
+    get onreadystatechange() {
+      return this.userOnReadyStateChange;
+    }
+
+    /**
+     * Invoke the user callback with native XHR-style this binding.
+     */
+    invokeUserOnReadyStateChange = (event) => {
+      this.userOnReadyStateChange?.call(this, event);
+    }
+
+    /**
+     * Capture request metadata needed for potential replay.
+     */
     open = (method, url, ...rest) => {
       this.FFetchContext.logger?.log('rtr', 'capture XHR.open');
       this.shouldEnsureToken = isFolioApiRequest(url, this.FFetchContext.okapi.url);
-      this.requestMethod = method;
-      this.requestUrl = url;
       this.requestOpenArgs = [method, url, ...rest];
       this.requestHeaders = [];
       this.requestWithCredentials = false;
@@ -38,11 +86,17 @@ export default (deps) => {
       super.open(method, url, ...rest);
     }
 
+    /**
+     * Persist outgoing headers so replay can reproduce the original request.
+     */
     setRequestHeader = (header, value) => {
       this.requestHeaders.push([header, value]);
       super.setRequestHeader(header, value);
     }
 
+    /**
+     * Match auth failures handled by fetch wrapper: 401 and Okapi token-missing 400.
+     */
     isAuthFailureResponse = () => {
       if (this.status === 401) {
         return true;
@@ -55,19 +109,16 @@ export default (deps) => {
       return false;
     }
 
+    /**
+     * Reissue the original request one time after rotation succeeds.
+     */
     replayRequest = () => {
       if (!this.requestOpenArgs) {
         return false;
       }
 
-      this.isReplaying = true;
       super.open(...this.requestOpenArgs);
-      try {
-        this.withCredentials = this.requestWithCredentials;
-      } catch (_err) {
-        // In test harnesses that mock open(), XHR state transitions may not
-        // occur; ignore state errors so replay can continue.
-      }
+      this.withCredentials = this.requestWithCredentials;
       this.requestHeaders.forEach(([header, value]) => {
         super.setRequestHeader(header, value);
       });
@@ -76,6 +127,9 @@ export default (deps) => {
       return true;
     }
 
+    /**
+     * Rotate tokens on auth failure, then replay or surface the original failure.
+     */
     handleAuthFailure = async (event) => {
       this.hasRetriedAuth = true;
 
@@ -87,7 +141,7 @@ export default (deps) => {
 
         const replayed = this.replayRequest();
         if (!replayed) {
-          this.userOnReadyStateChange?.call(this, event);
+          this.invokeUserOnReadyStateChange(event);
         }
       } catch (err) {
         if (err instanceof RTRError) {
@@ -95,21 +149,20 @@ export default (deps) => {
           window.dispatchEvent(new Event(RTR_ERROR_EVENT, { detail: err }));
         }
 
-        // Surface the original failed response to the XHR consumer when
-        // rotation cannot recover the request.
-        this.userOnReadyStateChange?.call(this, event);
+        /**
+         * Surface the original failed response to the XHR consumer when
+         * rotation cannot recover the request.
+         */
+        this.invokeUserOnReadyStateChange(event);
       }
     }
 
+    /**
+     * Intercept DONE responses, trigger RTR when needed, then forward callbacks.
+     */
     handleInternalReadyStateChange = (event) => {
       if (this.readyState !== this.DONE) {
-        this.userOnReadyStateChange?.call(this, event);
-        return;
-      }
-
-      if (this.isReplaying) {
-        this.isReplaying = false;
-        this.userOnReadyStateChange?.call(this, event);
+        this.invokeUserOnReadyStateChange(event);
         return;
       }
 
@@ -119,29 +172,23 @@ export default (deps) => {
         return;
       }
 
-      this.userOnReadyStateChange?.call(this, event);
+      this.invokeUserOnReadyStateChange(event);
     }
 
-    set onreadystatechange(handler) {
-      this.userOnReadyStateChange = handler;
-    }
-
-    get onreadystatechange() {
-      return this.userOnReadyStateChange;
-    }
-
+    /**
+     * Capture replay inputs before first send, then pass through to native XHR.
+     */
     send = (payload) => {
       const { logger } = this.FFetchContext;
       this.FFetchContext.logger?.log('rtr', 'capture XHR send');
       this.requestPayload = payload;
       this.requestWithCredentials = this.withCredentials;
 
-      if (this.shouldEnsureToken) {
-        super.send(payload);
-      } else {
+      if (!this.shouldEnsureToken) {
         logger.log('rtr', 'request passed through, sending XHR...');
-        super.send(payload);
       }
+
+      super.send(payload);
     };
   };
 };
