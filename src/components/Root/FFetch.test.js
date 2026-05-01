@@ -63,6 +63,22 @@ describe('FFetch behavior and rotation helpers', () => {
     expect(res).toBe(expected);
   });
 
+  it('ignores rotation in requests with options containing "rtrIgnore: true "', async () => {
+    const { rotateAndReplay } = require('./rotateAndReplay');
+    const failResp = { ok: false, status: 401, body: 'ruhroh, "the island of missing trees" was, um, missing' };
+
+    mockFetch.mockResolvedValueOnce(failResp);
+    rotateAndReplay.mockResolvedValueOnce(failResp);
+
+    const ff = new FFetch({ logger: console, okapi: { url: okapiUrl, tenant: 't' }, onRotate: jest.fn() });
+    ff.replaceFetch();
+
+    const res = await globalThis.fetch(`${okapiUrl}/as/the/token/turns`, { rtrIgnore: true });
+    expect(res).toBe(failResp);
+    expect(mockFetch).toHaveBeenCalledTimes(1);
+    expect(rotateAndReplay).not.toHaveBeenCalled();
+  });
+
   it('uses navigator.locks.request when available', async () => {
     // provide LockManager
     const lockCb = jest.fn((key, opts, cb) => cb());
