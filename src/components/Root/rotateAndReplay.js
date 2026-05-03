@@ -163,5 +163,5 @@ export const rotateAndReplay = async (fetchfx, config, original) => {
     return navigator.locks.request(RTR_LOCK_KEY, rotateTokens);
   }
 
-  return error?.response;
+  return original?.response;
 };
