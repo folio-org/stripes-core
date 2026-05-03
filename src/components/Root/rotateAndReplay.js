@@ -5,6 +5,34 @@ import { RTRError } from './Errors';
 export const RTR_LOCK_KEY = '@folio/stripes-core::RTR_LOCK_KEY';
 
 /**
+ * replayRequest
+ * replay the original request, if there is one. unlike FFetch which traps
+ * and replays failed requests, FXHR checks for a valid token and invokes
+ * rotation if it does not have one prior to calling `super.send()`.
+ *
+ * Clone the request if necessary rather than consuming it, allowing it
+ * to be used (or cloned) again later.
+ *
+ * @param {*} fetchfx fetch function to execute
+ * @param {*} config rotation configuration
+ * @param {*} original failed request { response, resource, options }
+ *
+ * @returns Promise response of the replayed request, or undefined
+ */
+export const replayRequest = async (fetchfx, config, original) => {
+  if (original?.resource) {
+    config.logger.log('rtr', 'replaying ...');
+    const { resource } = original;
+    const reusableResource = resource instanceof Request ? resource.clone() : resource;
+    const response = await fetchfx.apply(globalThis, [reusableResource, config.options(original.options)]);
+    return response;
+  }
+
+  // XHR does not have a request to replay
+  return undefined;
+};
+
+/**
  * rotateAndReplay
  *
  * IN SUMMARY
@@ -49,36 +77,17 @@ export const RTR_LOCK_KEY = '@folio/stripes-core::RTR_LOCK_KEY';
  *
  * @param {*} fetchfx fetch function to execute
  * @param {*} config rotation configuration
- * @param {*} error failed request { response, resource, options }
+ * @param {*} original failed request { response, resource, options }
  *
  * @returns On successful rotation, resolve with the response of the original
  * request. Otherwise, reject
  */
-export const rotateAndReplay = async (fetchfx, config, error) => {
+export const rotateAndReplay = async (fetchfx, config, original) => {
   config.logger.log('rtr', 'queueRotateReplay...', config);
 
   // rotation config
   const shouldRotate = config.shouldRotate ?? (() => Promise.resolve(false));
   const statusCodes = config.statusCodes || [401];
-
-  /**
-   * replayRequest
-   * replay the error'ed request, if there is one. unlike FFetch which traps
-   * and replays failed requests, FXHR checks for a valid token and invokes
-   * rotation if it does not have one prior to calling `super.send()`.
-   *
-   * @returns Promise
-   */
-  const replayRequest = async (res) => {
-    if (res) {
-      config.logger.log('rtr', 'replaying ...', res);
-      const response = await fetchfx.apply(globalThis, [res, config.options(error.options)]);
-      return response;
-    }
-
-    // XHR does not have a request to replay
-    return undefined;
-  };
 
   /**
    * rotateTokens
@@ -98,11 +107,9 @@ export const rotateAndReplay = async (fetchfx, config, error) => {
       // we're done and can return that response. If it's not 2xx/ok, rotate
       // and then replay again.
       config.logger.log('rtr', 'reusing token supplied by another request');
-      const { resource } = error;
-      const reusableResource = resource instanceof Request || resource instanceof URL ? resource.clone() : resource;
-      const replayResponse = await replayRequest(reusableResource);
-      if (replayResponse?.ok) {
-        return replayResponse;
+      const replayedResponse = await replayRequest(fetchfx, config, original);
+      if (replayedResponse?.ok) {
+        return replayedResponse;
       }
       config.logger.log('rtr', 'replay failed; forcing rotate ...');
 
@@ -131,7 +138,7 @@ export const rotateAndReplay = async (fetchfx, config, error) => {
 
       //
       // 4. 🔂 replay the original request
-      return replayRequest(error.resource);
+      return replayRequest(fetchfx, config, original);
     } catch (err) {
       // 💥 Ruhroh, Raggy, rotation railed!
       // Report the failure via the provided callback. Reject with the original
@@ -139,8 +146,8 @@ export const rotateAndReplay = async (fetchfx, config, error) => {
       // rethrow, i.e. reject with the object we just caught.
       config.logger.log('rtr', 'RTR error!', err);
       await config.onFailure(err);
-      if (error?.response) {
-        throw error;
+      if (original?.response) {
+        throw original;
       }
       throw err;
     }
@@ -152,11 +159,11 @@ export const rotateAndReplay = async (fetchfx, config, error) => {
   // 2. the original request had an `rtrIgnore` option
   // if rotation is not necessary, give the response right back and let it
   // bubble back to its origin
-  if (!await shouldRotate(error?.response)) {
-    if ((error?.response && !statusCodes.includes(error.response.status)) ||
-      error?.options?.rtrIgnore
+  if (!await shouldRotate(original?.response)) {
+    if ((original?.response && !statusCodes.includes(original.response.status)) ||
+      original?.options?.rtrIgnore
     ) {
-      return error.response;
+      return original.response;
     }
   }
 
