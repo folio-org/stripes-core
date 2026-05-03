@@ -63,6 +63,22 @@ describe('FFetch behavior and rotation helpers', () => {
     expect(res).toBe(expected);
   });
 
+  it('ignores rotation in requests with options containing "rtrIgnore: true "', async () => {
+    const { rotateAndReplay } = require('./rotateAndReplay');
+    const failResp = { ok: false, status: 401, body: 'ruhroh, "the island of missing trees" was, um, missing' };
+
+    mockFetch.mockResolvedValueOnce(failResp);
+    rotateAndReplay.mockResolvedValueOnce(failResp);
+
+    const ff = new FFetch({ logger: console, okapi: { url: okapiUrl, tenant: 't' }, onRotate: jest.fn() });
+    ff.replaceFetch();
+
+    const res = await globalThis.fetch(`${okapiUrl}/as/the/token/turns`, { rtrIgnore: true });
+    expect(res).toBe(failResp);
+    expect(mockFetch).toHaveBeenCalledTimes(1);
+    expect(rotateAndReplay).not.toHaveBeenCalled();
+  });
+
   it('uses navigator.locks.request when available', async () => {
     // provide LockManager
     const lockCb = jest.fn((key, opts, cb) => cb());
@@ -132,22 +148,60 @@ describe('FFetch behavior and rotation helpers', () => {
 
   describe('rotationConfig helpers', () => {
     describe('shouldRotate', () => {
-      it('without a response, returns false', async () => {
-        const ff = new FFetch({ logger: {}, okapi: { url: okapiUrl, tenant: 't' }, onRotate: jest.fn() });
-        const shouldRotate = await ff.rotationConfig.shouldRotate();
-        expect(shouldRotate).toBe(false);
+      describe('returns true', () => {
+        it('given a 400 with okapi\'s special error text, returns true', async () => {
+          const res = new Response('Token missing, access requires permission', { status: 400 })
+          const ff = new FFetch({ logger: {}, okapi: { url: '/users-keycloak/_self', tenant: 't' }, onRotate: jest.fn() });
+          const shouldRotate = await ff.rotationConfig.shouldRotate(res);
+          expect(shouldRotate).toBe(true);
+        });
+
+        it('given a 404 at /users-keycloak/_self', async () => {
+          const res = new Response('whateva', { status: 404, url: '/users-keycloak/_self' });
+          const ff = new FFetch({ logger: {}, okapi: { url: '/bl-users/_self', tenant: 't' }, onRotate: jest.fn() });
+          const shouldRotate = await ff.rotationConfig.shouldRotate(res);
+          expect(shouldRotate).toBe(true);
+        });
+
+        it('given a 404 at /bl-users/_self', async () => {
+          const res = new Response('whateva', { status: 404, url: '/bl-users/_self' });
+          const ff = new FFetch({ logger: {}, okapi: { url: '/bl-users/_self', tenant: 't' }, onRotate: jest.fn() });
+          const shouldRotate = await ff.rotationConfig.shouldRotate(res);
+          expect(shouldRotate).toBe(true);
+        });
+
+        it('given a 422 at /authn/logout', async () => {
+          const res = new Response('whateva', { status: 422, url: '/authn/logout' });
+          const ff = new FFetch({ logger: {}, okapi: { url: '/bl-users/_self', tenant: 't' }, onRotate: jest.fn() });
+          const shouldRotate = await ff.rotationConfig.shouldRotate(res);
+          expect(shouldRotate).toBe(true);
+        });
       });
 
-      it('given a 400 with okapi\'s special error text, returns true', async () => {
-        const ff = new FFetch({ logger: {}, okapi: { url: okapiUrl, tenant: 't' }, onRotate: jest.fn() });
-        const shouldRotate = await ff.rotationConfig.shouldRotate(new Response('Token missing, access requires permission', { status: 400 }));
-        expect(shouldRotate).toBe(true);
-      });
+      describe('returns false', () => {
+        it('without a response to investigate', async () => {
+          const ff = new FFetch({ logger: {}, okapi: { url: okapiUrl, tenant: 't' }, onRotate: jest.fn() });
+          const shouldRotate = await ff.rotationConfig.shouldRotate();
+          expect(shouldRotate).toBe(false);
+        });
 
-      it('given a 400 with generic text, returns false', async () => {
-        const ff = new FFetch({ logger: {}, okapi: { url: okapiUrl, tenant: 't' }, onRotate: jest.fn() });
-        const shouldRotate = await ff.rotationConfig.shouldRotate(new Response('Nobody here but us chickens', { status: 400 }));
-        expect(shouldRotate).toBe(false);
+        it('given a 400 without okapi\'s specific text', async () => {
+          const ff = new FFetch({ logger: {}, okapi: { url: okapiUrl, tenant: 't' }, onRotate: jest.fn() });
+          const shouldRotate = await ff.rotationConfig.shouldRotate(new Response('Nobody here but us chickens', { status: 400 }));
+          expect(shouldRotate).toBe(false);
+        });
+
+        it('given a 404 somewhere other than /users-keycloak/_self or /bl-users/_self', async () => {
+          const ff = new FFetch({ logger: {}, okapi: { url: '/somewhere/safe', tenant: 't' }, onRotate: jest.fn() });
+          const shouldRotate = await ff.rotationConfig.shouldRotate(new Response('Nobody here but us chickens', { status: 404 }));
+          expect(shouldRotate).toBe(false);
+        });
+
+        it('given a 422 somewhere other than /authn/logout', async () => {
+          const ff = new FFetch({ logger: {}, okapi: { url: '/somewhere/safe', tenant: 't' }, onRotate: jest.fn() });
+          const shouldRotate = await ff.rotationConfig.shouldRotate(new Response('Nobody here but us chickens', { status: 422 }));
+          expect(shouldRotate).toBe(false);
+        });
       });
     });
 

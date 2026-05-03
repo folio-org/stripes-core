@@ -38,7 +38,7 @@ import {
 } from './constants';
 import FXHR from './FXHR';
 
-const OKAPI_FETCH_OPTIONS = {
+const FOLIO_FETCH_OPTIONS = {
   credentials: 'include',
   mode: 'cors',
 };
@@ -89,7 +89,7 @@ export class FFetch {
     // function that receives the original request options and returns the
     // options-object that will be used on the replayed request.
     options: (options = {}) => {
-      return { ...options, ...OKAPI_FETCH_OPTIONS };
+      return { ...options, ...FOLIO_FETCH_OPTIONS };
     },
 
     // shouldRotate
@@ -105,7 +105,8 @@ export class FFetch {
         return (
           (response.status === 400 && text.startsWith('Token missing, access requires permission')) ||
           (response.status === 404 && response.url?.includes('/users-keycloak/_self')) ||
-          (response.status === 404 && response.url?.includes('/bl-users/_self'))
+          (response.status === 404 && response.url?.includes('/bl-users/_self')) ||
+          (response.status === 422 && response.url?.includes('/authn/logout'))
         );
       }
 
@@ -184,9 +185,13 @@ export class FFetch {
       // readers/writer lock pattern: don't fetch while rotation is in-progress
       // https://developer.mozilla.org/en-US/docs/Web/API/LockManager/request
       response = await navigator.locks.request(RTR_LOCK_KEY, { mode: 'shared' }, async () => {
-        const fr = await this.nativeFetch.apply(globalThis, [resource, options && { ...options, ...OKAPI_FETCH_OPTIONS }]);
+        const fr = await this.nativeFetch.apply(globalThis, [resource, options && { ...options, ...FOLIO_FETCH_OPTIONS }]);
         return fr;
       });
+
+      if (options?.rtrIgnore) {
+        return response;
+      }
 
       if (!response?.ok) {
         response = await rotateAndReplay(
