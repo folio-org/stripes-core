@@ -134,6 +134,10 @@ export default (deps) => {
       this.hasRetriedAuth = true;
 
       try {
+        /**  rotateAndReplay is implemented to work with fetch requests, including original requests and response in
+        *   its parameters, but this is not applicable to XHR requests, so we do not send the third
+        *   parameter so this function only performs rotation within the lock implementation.
+        */
         await rotateAndReplay(
           this.FFetchContext.nativeFetch,
           { ...this.FFetchContext.rotationConfig, logger: this.FFetchContext.logger, shouldRotate: async () => true },
