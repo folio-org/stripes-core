@@ -180,7 +180,7 @@ export class FFetch {
       // or a Request object (which can only be consumed once, and needs
       // to be cloned before it is used the first time in case this fetch
       // triggers rotation and it needs to be replayed.
-      const reusableResource = resource instanceof Request ? resource.clone() : resource;
+      const reusableResource = resource instanceof Request || resource instanceof URL ? resource.clone() : resource;
 
       // readers/writer lock pattern: don't fetch while rotation is in-progress
       // https://developer.mozilla.org/en-US/docs/Web/API/LockManager/request
