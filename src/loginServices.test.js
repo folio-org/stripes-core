@@ -10,7 +10,6 @@ import {
   getUnauthorizedPathFromSession,
   handleLoginError,
   loadTranslations,
-  logout,
   processOkapiSession,
   removeUnauthorizedPathFromSession,
   setTokenExpiry,
@@ -21,8 +20,6 @@ import {
   updateTenant,
   updateUser,
   validateUser,
-  IS_LOGGING_OUT,
-  SESSION_NAME,
   requestLogin,
   requestUserWithPerms,
   fetchOverriddenUserWithPerms,
@@ -36,8 +33,6 @@ import {
 import { discoverServices } from './discoverServices';
 
 import {
-  clearCurrentUser,
-  clearOkapiToken,
   setCurrentPerms,
   setLocale,
   setTimezone,
@@ -56,9 +51,6 @@ import {
   updateCurrentUser,
 } from './okapiActions';
 
-import {
-  RTR_TIMEOUT_EVENT
-} from './components/Root/constants';
 import { defaultErrors, stripesHubAPI } from './constants';
 
 jest.mock('./loginServices', () => ({
@@ -87,7 +79,6 @@ jest.mock('stripes-config', () => ({
   translations: { cs_CZ: 'cs-CZ', cs: 'cs-CZ', fr: 'fr', ar: 'ar', en_US: 'en-US', en_GB: 'en-GB' }
 }));
 
-const TENANT_LOCAL_STORAGE_KEY = 'tenant';
 const OKAPI = { authnUrl: 'https://authn.url', url: 'http://okapi-url' };
 
 // fetch success: resolve promise with ok == true and $data in json()
@@ -564,165 +555,6 @@ describe('localforage wrappers', () => {
       };
       const res = await setTokenExpiry(te);
       expect(res).toMatchObject({ ...storage, tokenExpiration: te });
-    });
-  });
-});
-
-describe('logout', () => {
-  describe('when logout has started in this window', () => {
-    it('returns immediately', async () => {
-      const store = {
-        dispatch: jest.fn(),
-      };
-      window.sessionStorage.clear();
-      window.sessionStorage.setItem(IS_LOGGING_OUT, 'true');
-
-      let res;
-      await logout('', store, null)
-        .then(() => {
-          res = true;
-        });
-      expect(res).toBe(true);
-      expect(store.dispatch).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('when logout has not started in this window', () => {
-    beforeEach(() => {
-      jest.spyOn(Storage.prototype, 'removeItem');
-    });
-    afterEach(() => {
-      Storage.prototype.removeItem.mockRestore();
-      mockFetchCleanUp();
-    });
-
-    it('clears the redux store', async () => {
-      global.fetch = jest.fn().mockImplementation(() => Promise.resolve());
-      const store = {
-        dispatch: jest.fn(),
-        getState: jest.fn().mockReturnValue({ config: { preserveConsole: false } }),
-      };
-      window.sessionStorage.clear();
-
-      let res;
-      await logout('', store, null)
-        .then(() => {
-          res = true;
-        });
-      expect(res).toBe(true);
-
-      // expect(setItemSpy).toHaveBeenCalled();
-      expect(store.dispatch).toHaveBeenCalledWith(setIsAuthenticated(false));
-      expect(store.dispatch).toHaveBeenCalledWith(clearCurrentUser());
-      expect(store.dispatch).toHaveBeenCalledWith(clearOkapiToken());
-    });
-
-    it('clears localStorage', async () => {
-      global.fetch = jest.fn().mockImplementation(() => Promise.resolve());
-      const store = {
-        dispatch: jest.fn(),
-        getState: jest.fn().mockReturnValue({ config: { preserveConsole: false } }),
-      };
-      window.sessionStorage.clear();
-
-      let res;
-      await logout('', store, null)
-        .then(() => {
-          res = true;
-        });
-      expect(res).toBe(true);
-
-      expect(localStorage.removeItem).toHaveBeenCalledWith(SESSION_NAME);
-      expect(localStorage.removeItem).toHaveBeenCalledWith(RTR_TIMEOUT_EVENT);
-      expect(localStorage.removeItem).toHaveBeenCalledWith(TENANT_LOCAL_STORAGE_KEY);
-      expect(localStorage.removeItem).toHaveBeenCalledWith(stripesHubAPI.FOLIO_CONFIG_KEY);
-      expect(localStorage.removeItem).toHaveBeenCalledWith(stripesHubAPI.BRANDING_CONFIG_KEY);
-    });
-
-    it('clears localforage', async () => {
-      global.fetch = jest.fn().mockImplementation(() => Promise.resolve());
-      const store = {
-        dispatch: jest.fn(),
-        getState: jest.fn().mockReturnValue({ config: { preserveConsole: false } }),
-      };
-      window.sessionStorage.clear();
-
-      let res;
-      await logout('', store, null)
-        .then(() => {
-          res = true;
-        });
-      expect(res).toBe(true);
-
-      expect(localforage.removeItem).toHaveBeenCalledWith(SESSION_NAME);
-      expect(localforage.removeItem).toHaveBeenCalledWith('loginResponse');
-      expect(localforage.removeItem).toHaveBeenCalledWith(stripesHubAPI.DISCOVERY_URL_KEY);
-      expect(localforage.removeItem).toHaveBeenCalledWith(stripesHubAPI.HOST_URL_KEY);
-      expect(localforage.removeItem).toHaveBeenCalledWith(stripesHubAPI.REMOTE_LIST_KEY);
-    });
-
-    it('calls fetch() when other window is not logging out', async () => {
-      global.fetch = jest.fn().mockImplementation(() => Promise.resolve());
-      localStorage.setItem(SESSION_NAME, 'true');
-      const store = {
-        dispatch: jest.fn(),
-        getState: jest.fn().mockReturnValue({ config: { preserveConsole: false } }),
-      };
-      window.sessionStorage.clear();
-
-      let res;
-      await logout('', store, null)
-        .then(() => {
-          res = true;
-        });
-
-      expect(res).toBe(true);
-      expect(global.fetch).toHaveBeenCalled();
-    });
-
-    it('does not call fetch() when other window is logging out', async () => {
-      global.fetch = jest.fn().mockImplementation(() => Promise.resolve());
-      localStorage.clear();
-      const store = {
-        dispatch: jest.fn(),
-        getState: jest.fn().mockReturnValue({ config: { preserveConsole: false } }),
-      };
-      window.sessionStorage.clear();
-
-      let res;
-      await logout('', store, null)
-        .then(() => {
-          res = true;
-        });
-
-      expect(res).toBe(true);
-      expect(global.fetch).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('react-query client', () => {
-    afterEach(() => {
-      mockFetchCleanUp();
-    });
-
-    it('calls removeQueries given valid client', async () => {
-      global.fetch = jest.fn().mockImplementation(() => Promise.resolve());
-      const store = {
-        dispatch: jest.fn(),
-        getState: jest.fn().mockReturnValue({ okapi: { tenant: 'diku' }, config: { preserveConsole: false } }),
-      };
-      const rqc = {
-        removeQueries: jest.fn(),
-      };
-
-      let res;
-      await logout('', store, rqc)
-        .then(() => {
-          res = true;
-        });
-
-      expect(res).toBe(true);
-      expect(rqc.removeQueries).toHaveBeenCalled();
     });
   });
 });

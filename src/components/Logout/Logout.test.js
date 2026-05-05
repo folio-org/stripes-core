@@ -1,19 +1,22 @@
-import { render, screen } from '@folio/jest-config-stripes/testing-library/react';
+import { act, render, screen, waitFor } from '@folio/jest-config-stripes/testing-library/react';
 import { userEvent } from '@folio/jest-config-stripes/testing-library/user-event';
 import { useLocation } from 'react-router';
 
 import Logout from './Logout';
+import { useLogoutMutation } from './useLogoutMutation';
 import { useStripes } from '../../StripesContext';
-import { getUnauthorizedPathFromSession, logout, setUnauthorizedPathToSession } from '../../loginServices';
+import { getUnauthorizedPathFromSession, setUnauthorizedPathToSession } from '../../loginServices';
 
 jest.mock('../OrganizationLogo');
 jest.mock('../../StripesContext');
+jest.mock('./useLogoutMutation');
 jest.mock('react-router');
 jest.mock('react-query');
 
 jest.mock('../../loginServices', () => ({
   ...jest.requireActual('../../loginServices'),
   logout: jest.fn(() => Promise.resolve()),
+  getLogoutTenant: jest.fn(() => ({ tenantId: 'tenant' })),
 }));
 
 const mockBranding = { branding: { logo: { src: './test.png' }, favicon: { src: './test-icon.png' } } };
@@ -40,9 +43,17 @@ describe('Logout', () => {
         okapi: { isAuthenticated: true },
       });
 
-      render(<Logout sessionTimeoutTimer={{ clear: jest.fn() }} sessionTimeoutWarningTimer={{ clear: jest.fn() }} />);
-      expect(logout).toHaveBeenCalled();
-      screen.getByText('stripes-core.logoutComplete');
+      const mockUseLogoutMutation = useLogoutMutation;
+      const mutateAsync = jest.fn(() => Promise.resolve());
+      mockUseLogoutMutation.mockReturnValue({ mutateAsync });
+
+      act(() => {
+        render(<Logout sessionTimeoutTimer={{ clear: jest.fn() }} sessionTimeoutWarningTimer={{ clear: jest.fn() }} />);
+      });
+      waitFor(() => {
+        expect(mutateAsync).toHaveBeenCalled();
+        screen.getByText('stripes-core.logoutComplete');
+      });
     });
 
     it('"log in again" href points to "/"', async () => {
@@ -69,9 +80,17 @@ describe('Logout', () => {
           okapi: { isAuthenticated: true },
         });
 
-        render(<Logout sessionTimeoutTimer={{ clear: jest.fn() }} sessionTimeoutWarningTimer={{ clear: jest.fn() }} />);
-        expect(logout).toHaveBeenCalled();
-        screen.getByText('stripes-core.rtr.idleSession.sessionExpiredSoSad');
+        const mockUseLogoutMutation = useLogoutMutation;
+        const mutateAsync = jest.fn(() => Promise.resolve());
+        mockUseLogoutMutation.mockReturnValue({ mutateAsync });
+
+        act(() => {
+          render(<Logout sessionTimeoutTimer={{ clear: jest.fn() }} sessionTimeoutWarningTimer={{ clear: jest.fn() }} />);
+        });
+        await waitFor(() => {
+          expect(mutateAsync).toHaveBeenCalled();
+          screen.getByText('stripes-core.rtr.idleSession.sessionExpiredSoSad');
+        });
       });
 
       it('"login in again" href points to pre-timeout location', () => {

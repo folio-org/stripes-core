@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useLocation } from 'react-router';
 import { FormattedMessage } from 'react-intl';
-import { useQueryClient } from 'react-query';
 
 import {
   Button,
@@ -15,13 +14,14 @@ import {
 import OrganizationLogo from '../OrganizationLogo';
 import { useStripes } from '../../StripesContext';
 import {
+  INIT,
   LOGOUT_TIMEOUT,
   getUnauthorizedPathFromSession,
-  logout,
   removeUnauthorizedPathFromSession,
 } from '../../loginServices';
 
 import styles from './Logout.css';
+import { clearSessionStorage, useLogoutMutation } from './useLogoutMutation';
 
 /**
  * Logout
@@ -34,48 +34,41 @@ import styles from './Logout.css';
  *    the "reason" key in the query string provides additional details
  */
 const Logout = ({ sessionTimeoutTimer, sessionTimeoutWarningTimer }) => {
-  const { branding, okapi, store } = useStripes();
+  const { branding, okapi } = useStripes();
   const [didLogout, setDidLogout] = useState(false);
   const location = useLocation();
-  const queryClient = useQueryClient();
+  const logoutMutation = useLogoutMutation(sessionTimeoutTimer, sessionTimeoutWarningTimer);
 
   let messageId = null;
-  if (location.pathname === '/logout-timeout') {
-    const messages = {
-      [LOGOUT_TIMEOUT.ERROR]: 'stripes-core.rtr.error',
-      [LOGOUT_TIMEOUT.EXPIRED]: 'stripes-core.rtr.expired',
-      [LOGOUT_TIMEOUT.INACTIVITY]: 'stripes-core.rtr.idleSession.sessionExpiredSoSad',
-    };
+  const messages = {
+    [LOGOUT_TIMEOUT.ERROR]: 'stripes-core.rtr.error',
+    [LOGOUT_TIMEOUT.EXPIRED]: 'stripes-core.rtr.expired',
+    [LOGOUT_TIMEOUT.INACTIVITY]: 'stripes-core.rtr.idleSession.sessionExpiredSoSad',
+    [INIT.ERROR]: 'stripes-core.init.error',
+  };
 
-    const params = new URLSearchParams(location.search);
-    messageId = messages[params.get('reason')] || messages[LOGOUT_TIMEOUT.INACTIVITY];
+  const params = new URLSearchParams(location.search);
+  messageId = messages[params.get('reason')];
+
+  if (!messageId && location.pathname === '/logout-timeout') {
+    messageId = messages[LOGOUT_TIMEOUT.INACTIVITY];
   }
-
 
   if (!messageId) {
     messageId = 'stripes-core.logoutComplete';
   }
 
+  useEffect(() => {
+    if (okapi.isAuthenticated) {
+      logoutMutation.mutateAsync(clearSessionStorage)
+        .then(() => setDidLogout(true));
+    } else {
+      setDidLogout(true);
+    }
 
-  useEffect(
-    () => {
-      if (okapi.isAuthenticated) {
-        sessionTimeoutTimer.clear();
-        sessionTimeoutWarningTimer.clear();
-
-        // returns a promise, which we ignore
-        logout(okapi.url, store, queryClient)
-          .then(setDidLogout(true));
-      } else {
-        setDidLogout(true);
-      }
-    },
-    // no dependencies because we only want to start the logout process once.
-    // we don't care about changes to stripes; certainly it'll be updated as
-    // part of the logout process
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
-  );
+    // yes, ignore the logoutMutation dependency; just logout once, on-load.
+    // WHAT IS THE CORRECT WAY TO DO THIS???
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleClick = (_e) => {
     removeUnauthorizedPathFromSession();
