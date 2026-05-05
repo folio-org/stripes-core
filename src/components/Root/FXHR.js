@@ -34,10 +34,10 @@ export default (deps) => {
        * Captured request details used to replay the original XHR after
        * successful token rotation.
        */
-      this.requestOpenArgs = null;
-      this.requestPayload = null;
-      this.requestHeaders = [];
-      this.requestWithCredentials = false;
+      this.originalRequestOpenArgs = null;
+      this.originalRequestPayload = null;
+      this.originalRequestHeaders = [];
+      this.originalRequestWithCredentials = false;
 
       /**
        * Application callback passthrough and shared RTR dependencies.
@@ -79,9 +79,10 @@ export default (deps) => {
     open = (method, url, ...rest) => {
       this.FFetchContext.logger?.log('rtr', 'capture XHR.open');
       this.shouldEnsureToken = isFolioApiRequest(url, this.FFetchContext.okapi.url);
-      this.requestOpenArgs = [method, url, ...rest];
-      this.requestHeaders = [];
-      this.requestWithCredentials = false;
+      this.originalRequestOpenArgs = [method, url, ...rest];
+      this.originalRequestHeaders = [];
+      this.originalRequestPayload = null;
+      this.originalRequestWithCredentials = false;
       this.hasRetriedAuth = false;
       super.open(method, url, ...rest);
     }
@@ -90,7 +91,7 @@ export default (deps) => {
      * Persist outgoing headers so replay can reproduce the original request.
      */
     setRequestHeader = (header, value) => {
-      this.requestHeaders.push([header, value]);
+      this.originalRequestHeaders.push([header, value]);
       super.setRequestHeader(header, value);
     }
 
@@ -113,16 +114,16 @@ export default (deps) => {
      * Reissue the original request one time after rotation succeeds.
      */
     replayRequest = () => {
-      if (!this.requestOpenArgs) {
+      if (!this.originalRequestOpenArgs) {
         return false;
       }
 
-      super.open(...this.requestOpenArgs);
-      this.withCredentials = this.requestWithCredentials;
-      this.requestHeaders.forEach(([header, value]) => {
+      super.open(...this.originalRequestOpenArgs);
+      super.withCredentials = this.originalRequestWithCredentials;
+      this.originalRequestHeaders.forEach(([header, value]) => {
         super.setRequestHeader(header, value);
       });
-      super.send(this.requestPayload);
+      super.send(this.originalRequestPayload);
 
       return true;
     }
@@ -185,8 +186,8 @@ export default (deps) => {
     send = (payload) => {
       const { logger } = this.FFetchContext;
       this.FFetchContext.logger?.log('rtr', 'capture XHR send');
-      this.requestPayload = payload;
-      this.requestWithCredentials = this.withCredentials;
+      this.originalRequestPayload = payload;
+      this.originalRequestWithCredentials = this.withCredentials;
 
       if (!this.shouldEnsureToken) {
         logger.log('rtr', 'request passed through, sending XHR...');
