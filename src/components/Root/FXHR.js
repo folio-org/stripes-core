@@ -70,7 +70,7 @@ export default (deps) => {
      * Invoke the user callback with native XHR-style this binding.
      */
     invokeUserOnReadyStateChange = (event) => {
-      this.userOnReadyStateChange?.call(this, event);
+      this.userOnReadyStateChange?.(this, event);
     }
 
     /**
