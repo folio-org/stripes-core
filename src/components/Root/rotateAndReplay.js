@@ -5,68 +5,93 @@ import { RTRError } from './Errors';
 export const RTR_LOCK_KEY = '@folio/stripes-core::RTR_LOCK_KEY';
 
 /**
- * rotateAndReplay
- * rotateAndReplay is called when a response has a 4xx code and if it looks
- * like an authentication problem, rotate the tokens, replay the original
- * request, and resolve with that response. If rotation does not happen (there
- * are many possible reasons, detailed below), reject with the original response.
- * If there are any errors related to rotation itself, report them via a callback
- * and then reject with the original response.
+ * replayRequest
+ * replay the original request, if there is one. unlike FFetch which traps
+ * and replays failed requests, FXHR checks for a valid token and invokes
+ * rotation if it does not have one prior to calling `super.send()`.
  *
- * 1. inspect the response and the config to determine if rotation is needed.
+ * Clone the request if necessary rather than consuming it, allowing it
+ * to be used (or cloned) again later.
+ *
+ * @param {*} fetchfx fetch function to execute
+ * @param {*} config rotation configuration
+ * @param {*} original failed request { response, resource, options }
+ *
+ * @returns Promise response of the replayed request, or undefined
+ */
+export const replayRequest = async (fetchfx, config, original) => {
+  if (original?.resource) {
+    config.logger.log('rtr', 'replaying ...');
+    const { resource } = original;
+    const reusableResource = resource instanceof Request ? resource.clone() : resource;
+    const response = await fetchfx.apply(globalThis, [reusableResource, config.options(original.options)]);
+    return response;
+  }
+
+  // XHR does not have a request to replay
+  return undefined;
+};
+
+/**
+ * rotateAndReplay
+ *
+ * IN SUMMARY
+ *
+ * rotateAndReplay is called when a request in FFetch returns a non-ok response.
+ * Here, we inspect the request-options and response in detail and if it looks
+ * like the problem was an expired (and therefore absent) AT cookie, rotate the
+ * tokens and then replay the original request, returning the new response. If
+ * the initial inspection fails (maybe we got a 404, which is a problem of
+ * course but not an RTR problem), reject with the original response so it can
+ * bubble back to the caller. If rotation itself fails, report the failure via
+ * the config callback and then reject with the original response (if
+ * available) or the rotation error.
+ *
+ * IN DETAIL
+ *
+ * 1. 🧐 inspect the response and the config to determine if rotation is needed.
  *    reject if any of the following are true:
  *    * we have a response but its code is not one we handle
  *    * the original request was configured with an `ignoreRtr` option
  *    * the config's shouldRotate() function returned false
- * 2. get an exclusive, browser-level lock, to avoid multiple tabs/windows
+ * 2. 🔒 get an exclusive, browser-level lock, to avoid multiple tabs/windows
  *    attempting to rotate simultaneously. the lock takes an async function
- *    and releases when the promise settles. within that promise, rotate.
+ *    and releases when the promise settles. within the lock's promise, rotate.
  *    if the rotation succeeds, replay the request and return the response.
  *
- * Inside the lock, the rotation process looks like this:
- * 1. Check storage to see if the token is still expired. When several requests
- *    fire together and then fail together, they'll queue up due to the browser
- *    lock. Once the first promise resolves, we can use its tokens for the
- *    remaining queued requests. This means that failed requests become
- *    single-threaded since they're all stuck here, waiting for the lock. Alas.
- * 2. Race a rejecting promise against the rotation request. We don't want
+ * Inside the lock's promise, rotation looks like this:
+ * 1. 👀 Immediately attempt to replay the request and observe the response.
+ *    Multiple requests may fail simultaneously across multiple tabs, and all
+ *    of them will be queued up to go through this lock single-file. In fact,
+ *    only the first request needs to rotate. Once that first request travels
+ *    through, performs rotation, and is replayed, the remaining requests in
+ *    the queue can short-circuit the process, abandoning the queue and
+ *    returning the replayed response without rotation. This means the first
+ *    request through the queue suffers a performance penalty (an extra failed
+ *    replay), but subsequent requests sail through more quickly. Feels like an
+ *    okay tradeoff.
+ * 2. 🔄 Race a rejecting promise against the rotation request. We don't want
  *    to wait forever!
- * 3. Storage callback: update the token-expiration data in storage (so the
- *    next queued request can retrieve it in Step 1).
- * 4. Replay the original request and return its response.
+ * 3. 💾 Storage callback: update the token-expiration data in storage.
+ * 4. 🔂 Replay the original request and return its response.
  *
  * @param {*} fetchfx fetch function to execute
  * @param {*} config rotation configuration
- * @param {*} error failed request { response, resource, options }
+ * @param {*} original failed request { response, resource, options }
  *
  * @returns On successful rotation, resolve with the response of the original
  * request. Otherwise, reject
  */
-export const rotateAndReplay = async (fetchfx, config, error) => {
+export const rotateAndReplay = async (fetchfx, config, original) => {
   config.logger.log('rtr', 'queueRotateReplay...', config);
 
-  /**
-   * replayRequest
-   * replay the error'ed request, if there is one. unlike FFetch which traps
-   * and replays failed requests, FXHR simply checks for a valid token and
-   * rotates if it does not have one. (Its send() method is void, so we don't
-   * have an error-response to inspect.)
-   *
-   * @returns Promise
-   */
-  const replayRequest = async () => {
-    if (error?.resource) {
-      config.logger.log('rtr', 'replaying ...', error.resource);
-      const response = await fetchfx.apply(globalThis, [error.resource, config.options(error.options)]);
-      return response;
-    }
-
-    return Promise.resolve();
-  };
+  // rotation config
+  const shouldRotate = config.shouldRotate ?? (() => Promise.resolve(false));
+  const statusCodes = config.statusCodes || [401];
 
   /**
    * rotateTokens
-   * 1. getTokens: maybe another request has already rotated
+   * 1. inspect: maybe another request has already rotated
    * 2. rotate: race the rotation request with a rejecting timeout
    * 3. callback: store updated token details
    * 4. replay: replay the original request
@@ -77,15 +102,19 @@ export const rotateAndReplay = async (fetchfx, config, error) => {
     config.logger.log('rtr', 'locked ...');
     try {
       //
-      // 1. if rotation completed elsewhere, we don't need to rotate!
-      // maybe another tab rotated, maybe it happened while awaiting the lock.
-      if (await config.isValidToken()) {
-        config.logger.log('rtr', 'reusing token supplied by another request');
-        return replayRequest();
+      // 1. 👀 If rotation completed elsewhere, we don't need to rotate!
+      // Replay the request and inspect the response for success. If it's ok,
+      // we're done and can return that response. If it's not 2xx/ok, rotate
+      // and then replay again.
+      config.logger.log('rtr', 'reusing token supplied by another request');
+      const replayedResponse = await replayRequest(fetchfx, config, original);
+      if (replayedResponse?.ok) {
+        return replayedResponse;
       }
+      config.logger.log('rtr', 'replay failed; forcing rotate ...');
 
       //
-      // 2. rotate: race the rotation-request with a timeout; default 30s
+      // 2. 🔄 rotate: race the rotation-request with a timeout; default 30s
       let rejectId = null;
       const refreshTimeout = new Promise((_res, rej) => {
         const timeout = config.refreshTimeout || ms('30s');
@@ -103,47 +132,36 @@ export const rotateAndReplay = async (fetchfx, config, error) => {
       config.logger.log('rtr', '<=== rotated!');
 
       //
-      // 3. callback
+      // 3. 💾 callback: save new token-expiration value
       await config.onSuccess(t);
       config.logger.log('rtr', 'stored updated expiry ...');
 
       //
-      // 4. replay the original request
-      return replayRequest();
+      // 4. 🔂 replay the original request
+      return replayRequest(fetchfx, config, original);
     } catch (err) {
-      // Ruhroh, Raggy, rotation railed!
+      // 💥 Ruhroh, Raggy, rotation railed!
       // Report the failure via the provided callback. Reject with the original
       // response if available, allowing it to bubble to the caller. Otherwise,
       // rethrow, i.e. reject with the object we just caught.
       config.logger.log('rtr', 'RTR error!', err);
       await config.onFailure(err);
-      if (error.response) {
-        throw error;
+      if (original?.response) {
+        throw original;
       }
       throw err;
     }
   };
 
-  // rotation config
-  const shouldRotate = config.shouldRotate ?? (() => Promise.resolve(false));
-  const statusCodes = config.statusCodes || [401];
-
-
-  // shouldRotate() forces rotation when it returns true. If false,
-  // investigate the error response, allowing the error to bubble back to
-  // the caller when:
-  // 1. the response does not indicate an authn failure
-  // 2. the original request had an `rtrIgnore` option
-  if (!await shouldRotate(error?.response)) {
-    if ((error?.response && !statusCodes.includes(error.response.status)) ||
-      error?.options?.rtrIgnore
-    ) {
-      throw error;
-    }
+  // 🧐 are we certain we need to rotate? check these two conditions:
+  // 1. shouldRotate() asked for rotation
+  // 2. the response status indicates we need rotation
+  if (await shouldRotate(original?.response) || statusCodes.includes(original?.response?.status)) {
+    // 🔒 lock, then rotate
+    // default lock-mode is exclusive, preventing others from entering the lock
+    // until this lock resolves (writer/readers pattern)
+    return navigator.locks.request(RTR_LOCK_KEY, rotateTokens);
   }
 
-  // lock, then rotate
-  // default lock-mode is exclusive, preventing others from entering the lock
-  // until this lock resolves (writer/readers pattern)
-  return navigator.locks.request(RTR_LOCK_KEY, rotateTokens);
+  return original?.response;
 };

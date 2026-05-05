@@ -3,10 +3,14 @@
 ## IN PROGRESS
 
 * Export AuthenticatedError component. Refs STCOR-1047.
-* Add case for `users-keycloak`'s 404 status to rotate keys on failure. STCOR-1054.
 * Test-logic only belongs in tests, Refs STCOR-1050.
-* Adopt FFetch's rotation logic in FXHR for consistency. Refs STCOR-1055.
-
+* Add case for `users-keycloak`'s 404 status to rotate keys on failure. STCOR-1054.
+* Recover from AT cookie deletion during RTR. Refs STCOR-1048.
+* Completely avoid rotation-related work given a request with `options.rtrIgnore`. Refs STCOR-1059.
+* Add case for `authn/logout`'s 422 status to rotate keys on failure. STCOR-1058.
+* Clone requests before replaying them, allowing multiple replays. Refs STCOR-1060.
+* Adopt FFetch's rotation logic flow in FXHR for consistency. Refs STCOR-1055.
+ 
 ## [11.1.1](https://github.com/folio-org/stripes-core/tree/v11.1.1) (2026-04-20)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v11.1.0...v11.1.1)
 
