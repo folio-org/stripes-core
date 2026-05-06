@@ -25,8 +25,6 @@ import {
 } from './okapiActions';
 import processBadResponse from './processBadResponse';
 
-import {
-} from './components/Root/constants';
 import { settings, stripesHubAPI } from './constants';
 
 // export supported locales, i.e. the languages we provide translations for
