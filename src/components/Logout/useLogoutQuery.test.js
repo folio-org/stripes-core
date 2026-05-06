@@ -1,11 +1,12 @@
 import localforage from 'localforage';
-import { renderHook, act } from '@folio/jest-config-stripes/testing-library/react';
+import { renderHook, act, waitFor } from '@folio/jest-config-stripes/testing-library/react';
 import {
   QueryClient,
   QueryClientProvider,
 } from 'react-query';
 
-import { clearSessionStorage, useLogoutMutation } from './useLogoutMutation';
+import { clearSessionStorage, useLogoutQuery } from './useLogoutQuery';
+import { useStripes } from '../../StripesContext';
 import {
   clearCurrentUser,
   clearOkapiToken,
@@ -138,24 +139,26 @@ jest.mock('../../useOkapiKy', () => ({
   }))
 }));
 
-jest.mock('../../StripesContext', () => ({
-  useStripes: () => ({
-    user: {
-      user: {
-        id: 'test-user'
-      }
-    },
-    okapi: {
-      tenant: 't',
-    },
-    logger: {
-      log: () => { },
-    },
-    store: {
-      getState: () => ({}),
-    },
-  }),
-}));
+jest.mock('../../StripesContext');
+
+// , () => ({
+//   useStripes: () => ({
+//     user: {
+//       user: {
+//         id: 'test-user'
+//       }
+//     },
+//     okapi: {
+//       tenant: 't',
+//     },
+//     logger: {
+//       log: () => { },
+//     },
+//     store: {
+//       getState: () => ({}),
+//     },
+//   }),
+// }));
 
 const queryClient = new QueryClient();
 // eslint-disable-next-line react/prop-types
@@ -165,64 +168,81 @@ const wrapper = ({ children }) => (
   </QueryClientProvider>
 );
 
-describe('useLogoutMutation', () => {
-  let renderedHook;
-  const timeoutTimer = jest.fn();
-  const timeoutWarningTimer = jest.fn();
-
-  beforeAll(async () => {
-    renderedHook = renderHook(() => useLogoutMutation(timeoutTimer, timeoutWarningTimer), { wrapper });
-  });
-
-  it('calls /authn/logout when localStorage is populated', async () => {
-    jest.spyOn(Storage.prototype, 'getItem').mockReturnValue(true);
-    const logoutFn = jest.fn();
-    await act(async () => {
-      await renderedHook.result.current.mutateAsync(logoutFn);
-    });
-
-    expect(mockPost).toHaveBeenCalled();
-    Storage.prototype.getItem.mockRestore();
-    mockPost.mockReset();
-  });
-
-  it('does not call /authn/logout when localStorage has been cleared', async () => {
-    jest.spyOn(Storage.prototype, 'getItem').mockReturnValue(false);
-    const logoutFn = jest.fn();
-    await act(async () => {
-      await renderedHook.result.current.mutateAsync(logoutFn);
-    });
-
-    expect(mockPost).not.toHaveBeenCalled();
-    Storage.prototype.getItem.mockRestore();
-  });
-
-  describe('always calls the given logout function', () => {
-    it('when localStorage is populated', async () => {
+describe('useLogoutQuery', () => {
+  describe('when storage-flag is present', () => {
+    beforeEach(() => {
       jest.spyOn(Storage.prototype, 'getItem').mockReturnValue(true);
-
-      const logoutFn = jest.fn();
-      await act(async () => {
-        await renderedHook.result.current.mutateAsync(logoutFn);
+      const mockUseStripes = useStripes;
+      mockUseStripes.mockReturnValue({
+        config: {},
+        okapi: { isAuthenticated: true },
+        store: {
+          dispatch: jest.fn(),
+          getState: jest.fn().mockReturnValue({ config: { preserveConsole: false } }),
+        }
       });
+    });
 
-      expect(logoutFn).toHaveBeenCalled();
-
+    afterEach(() => {
       Storage.prototype.getItem.mockRestore();
       mockPost.mockReset();
     });
 
-    it('when localStorage has been cleared', async () => {
-      jest.spyOn(Storage.prototype, 'getItem').mockReturnValue(false);
+    it('makes /authn/logout API call', async () => {
+      renderHook(() => useLogoutQuery([]), { wrapper });
 
-      const logoutFn = jest.fn();
-      await act(async () => {
-        await renderedHook.result.current.mutateAsync(logoutFn);
+      await waitFor(async () => {
+        expect(mockPost).toHaveBeenCalled();
+      });
+    });
+
+    it('clears storage', async () => {
+      const timer = { clear: jest.fn() };
+      renderHook(() => useLogoutQuery([timer]), { wrapper });
+
+      await waitFor(async () => {
+        expect(timer.clear).toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('when storage-flag is absent', () => {
+    beforeEach(() => {
+      jest.spyOn(Storage.prototype, 'getItem').mockReturnValue(false);
+      const mockUseStripes = useStripes;
+      mockUseStripes.mockReturnValue({
+        config: {},
+        okapi: { isAuthenticated: true },
+        store: {
+          dispatch: jest.fn(),
+          getState: jest.fn().mockReturnValue({ config: { preserveConsole: true } }),
+        }
+      });
+    });
+
+    afterEach(() => {
+      Storage.prototype.getItem.mockRestore();
+      mockPost.mockReset();
+    });
+
+    it('skips /authn/logout API call', async () => {
+      act(() => {
+        renderHook(() => useLogoutQuery([]), { wrapper });
+      });
+      await waitFor(async () => {
+        expect(mockPost).not.toHaveBeenCalled();
+      });
+    });
+
+    it('clears storage', async () => {
+      const timer = { clear: jest.fn() };
+      act(() => {
+        renderHook(() => useLogoutQuery([timer]), { wrapper });
       });
 
-      expect(logoutFn).toHaveBeenCalled();
-
-      Storage.prototype.getItem.mockRestore();
+      await waitFor(async () => {
+        expect(timer.clear).toHaveBeenCalled();
+      });
     });
   });
 });

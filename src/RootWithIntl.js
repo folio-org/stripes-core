@@ -98,15 +98,7 @@ const RootWithIntl = ({
                     {isAuthenticated || token || disableAuth ?
                       <Switch>
                         <TitledRoute
-                          name="logoutTimeout"
-                          path="/logout-timeout"
-                          component={<Logout
-                            sessionTimeoutTimer={sessionTimeoutTimer}
-                            sessionTimeoutWarningTimer={sessionTimeoutWarningTimer}
-                          />}
-                        />
-                        <TitledRoute
-                          name="logoutTimeout"
+                          name="logout"
                           path="/logout"
                           component={<Logout
                             sessionTimeoutTimer={sessionTimeoutTimer}
@@ -204,11 +196,6 @@ const RootWithIntl = ({
                         <TitledRoute
                           name="logout"
                           path="/logout"
-                          component={<Logout />}
-                        />
-                        <TitledRoute
-                          name="logoutTimeout"
-                          path="/logout-timeout"
                           component={<Logout />}
                         />
                         <TitledRoute

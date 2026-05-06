@@ -63,13 +63,11 @@ export const supportedLocales = [
   'zh-TW',  // chinese, taiwan
 ];
 
-export const LOGOUT_TIMEOUT = {
-  ERROR: 'logout-error',
-  EXPIRED: 'session-expired',
-  INACTIVITY: 'session-inactivity',
-};
-export const INIT = {
-  ERROR: 'init-error',
+export const LOGOUT_MESSAGES = {
+  ERROR: 'logout-error', // RTR failure
+  EXPIRED: 'session-expired', // fixed-length session end-of-session (FLST)
+  INACTIVITY: 'session-inactivity', // idle session timeout (IST)
+  INIT_ERROR: 'init-error', // stripes init failure
 };
 
 // export supported numbering systems, i.e. the systems tenants may chose
@@ -1059,7 +1057,7 @@ export async function validateUser(okapiUrl, store, tenant, session, handleError
  */
 export async function checkOkapiSession(okapiUrl, store, tenant, history) {
   const sess = await getOkapiSession();
-  const handleError = () => history.push(`/logout?reason=${INIT.ERROR}`);
+  const handleError = () => history.push(`/logout?reason=${LOGOUT_MESSAGES.INIT_ERROR}`);
   const res = sess?.user?.id ? await validateUser(okapiUrl, store, tenant, sess, handleError) : null;
   // check whether SSO is enabled if either
   // 1. res is null (when we are starting a new session)
