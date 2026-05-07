@@ -36,7 +36,8 @@ const Logout = ({ sessionTimeoutTimer, sessionTimeoutWarningTimer }) => {
   // that is, useMutation returns a function that it expects you to call in an
   // event handler, rather than automatically on-load. so, here we are, calling
   // a query and ignoring its response.
-  useLogoutQuery([sessionTimeoutTimer, sessionTimeoutWarningTimer]);
+  // filter out empty timers (they will be undefined when no session is active)
+  useLogoutQuery([sessionTimeoutTimer, sessionTimeoutWarningTimer].filter(Boolean));
 
   let messageId = null;
   const messages = {
