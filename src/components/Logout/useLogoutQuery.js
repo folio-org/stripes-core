@@ -43,7 +43,7 @@ export async function clearSessionStorage(store, queryClient, timers) {
 
     // make sure timers don't fire after the session has terminated.
     // who remembers UICHKOUT-869?
-    timers.forEach(timer => timer.clear());
+    timers.forEach(timer => timer?.clear());
 
     // clear private-storage, including redux store and react-query
     store.dispatch(setIsAuthenticated(false));
