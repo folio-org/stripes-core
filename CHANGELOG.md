@@ -10,6 +10,7 @@
 * Add case for `authn/logout`'s 422 status to rotate keys on failure. STCOR-1058.
 * Clone requests before replaying them, allowing multiple replays. Refs STCOR-1060.
 * ^^^ yes, but do not call `clone()` on `URL` instances inside requests. Refs STCOR-1062.
+* Consolidate logout functionality; trap errors during logout so storage is always cleared. Refs STCOR-1061.
 
 ## [11.1.1](https://github.com/folio-org/stripes-core/tree/v11.1.1) (2026-04-20)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v11.1.0...v11.1.1)

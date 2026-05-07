@@ -114,13 +114,13 @@ class Root extends Component {
    * timers if found.
    */
   async componentDidMount() {
-    const { okapi, store, defaultTranslations } = this.props;
+    const { okapi, store, defaultTranslations, history } = this.props;
 
     if (this.withOkapi) {
       // check for an existing session in storage. if found, initialize the
       // end-of-session timers. for new sessions, this happens in LoginCtrl
       // after a successful login.
-      const sess = await checkOkapiSession(okapi.url, store, okapi.tenant);
+      const sess = await checkOkapiSession(okapi.url, store, okapi.tenant, history);
       if (sess?.tokenExpiration) {
         await this.handleRotation(sess.tokenExpiration);
       }

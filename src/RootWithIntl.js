@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import {
+  Route,
   Router,
   Switch,
 } from 'react-router-dom';
@@ -95,71 +96,66 @@ const RootWithIntl = ({
                 <Provider store={connectedStripes.store}>
                   <Router history={history}>
                     {isAuthenticated || token || disableAuth ?
-                      <>
-                        <QueryStateUpdater stripes={connectedStripes} queryClient={queryClient} />
-                        <MainContainer>
-                          <AppCtxMenuProvider>
-                            <AppOrderProvider>
-                              <MainNav stripes={connectedStripes} queryClient={queryClient} />
-                              {typeof connectedStripes?.config?.staleBundleWarning === 'object' && <StaleBundleWarning />}
-                              <HandlerManager
-                                event={events.LOGIN}
-                                stripes={connectedStripes}
-                              />
-                              {(typeof connectedStripes.okapi !== 'object' || connectedStripes.discovery.isFinished) && (
-                                <ModuleContainer id="content">
-                                  <OverlayContainer />
-                                  <SessionEventContainer history={history} queryClient={queryClient} />
-                                  <Switch>
-                                    <TitledRoute
-                                      name="home"
-                                      path="/"
-                                      key="root"
-                                      exact
-                                      component={<Front stripes={connectedStripes} />}
-                                    />
-                                    <TitledRoute
-                                      name="ssoRedirect"
-                                      path="/sso-landing"
-                                      key="sso-landing"
-                                      component={<SSORedirect stripes={connectedStripes} />}
-                                    />
-                                    <TitledRoute
-                                      name="oidcRedirect"
-                                      path="/oidc-landing"
-                                      key="oidc-landing"
-                                      component={<OIDCRedirect stripes={connectedStripes} />}
-                                    />
-                                    <TitledRoute
-                                      name="logoutTimeout"
-                                      path="/logout-timeout"
-                                      component={<Logout
-                                        sessionTimeoutTimer={sessionTimeoutTimer}
-                                        sessionTimeoutWarningTimer={sessionTimeoutWarningTimer}
-                                      />}
-                                    />
-                                    <TitledRoute
-                                      name="settings"
-                                      path="/settings"
-                                      component={<Settings stripes={connectedStripes} />}
-                                    />
-                                    <TitledRoute
-                                      name="logout"
-                                      path="/logout"
-                                      component={<Logout
-                                        sessionTimeoutTimer={sessionTimeoutTimer}
-                                        sessionTimeoutWarningTimer={sessionTimeoutWarningTimer}
-                                      />}
-                                    />
-                                    <ModuleRoutes stripes={connectedStripes} />
-                                  </Switch>
-                                </ModuleContainer>
-                              )}
-                            </AppOrderProvider>
-                          </AppCtxMenuProvider>
-                        </MainContainer>
-                        <Callout ref={setCalloutDomRef} />
-                      </> :
+                      <Switch>
+                        <TitledRoute
+                          name="logout"
+                          path="/logout"
+                          component={<Logout
+                            sessionTimeoutTimer={sessionTimeoutTimer}
+                            sessionTimeoutWarningTimer={sessionTimeoutWarningTimer}
+                          />}
+                        />
+                        <Route>
+                          <QueryStateUpdater stripes={connectedStripes} queryClient={queryClient} />
+                          <MainContainer>
+                            <AppCtxMenuProvider>
+                              <AppOrderProvider>
+                                <MainNav stripes={connectedStripes} queryClient={queryClient} />
+                                {typeof connectedStripes?.config?.staleBundleWarning === 'object' && <StaleBundleWarning />}
+                                <HandlerManager
+                                  event={events.LOGIN}
+                                  stripes={connectedStripes}
+                                />
+                                {(typeof connectedStripes.okapi !== 'object' || connectedStripes.discovery.isFinished) && (
+                                  <ModuleContainer id="content">
+                                    <OverlayContainer />
+                                    <SessionEventContainer history={history} queryClient={queryClient} />
+                                    <Switch>
+                                      <TitledRoute
+                                        name="home"
+                                        path="/"
+                                        key="root"
+                                        exact
+                                        component={<Front stripes={connectedStripes} />}
+                                      />
+                                      <TitledRoute
+                                        name="ssoRedirect"
+                                        path="/sso-landing"
+                                        key="sso-landing"
+                                        component={<SSORedirect stripes={connectedStripes} />}
+                                      />
+                                      <TitledRoute
+                                        name="oidcRedirect"
+                                        path="/oidc-landing"
+                                        key="oidc-landing"
+                                        component={<OIDCRedirect stripes={connectedStripes} />}
+                                      />
+                                      <TitledRoute
+                                        name="settings"
+                                        path="/settings"
+                                        component={<Settings stripes={connectedStripes} />}
+                                      />
+                                      <ModuleRoutes stripes={connectedStripes} />
+                                    </Switch>
+                                  </ModuleContainer>
+                                )}
+                              </AppOrderProvider>
+                            </AppCtxMenuProvider>
+                          </MainContainer>
+                          <Callout ref={setCalloutDomRef} />
+                        </Route>
+                      </Switch>
+                      :
                       <Switch>
                         {/* The ? after :token makes that part of the path optional, so that token may optionally
                       be passed in via URL parameter to avoid length restrictions */}
@@ -200,11 +196,6 @@ const RootWithIntl = ({
                         <TitledRoute
                           name="logout"
                           path="/logout"
-                          component={<Logout />}
-                        />
-                        <TitledRoute
-                          name="logoutTimeout"
-                          path="/logout-timeout"
                           component={<Logout />}
                         />
                         <TitledRoute

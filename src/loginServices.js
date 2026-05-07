@@ -2,14 +2,12 @@ import localforage from 'localforage';
 import { translations } from 'stripes-config';
 import rtlDetect from 'rtl-detect';
 import moment from 'moment';
+
 import { loadDayJSLocale } from '@folio/stripes-components';
 
 import { discoverServices } from './discoverServices';
-import { resetStore } from './mainActions';
 
 import {
-  clearCurrentUser,
-  clearOkapiToken,
   setCurrentPerms,
   setLocale,
   setTimezone,
@@ -27,9 +25,6 @@ import {
 } from './okapiActions';
 import processBadResponse from './processBadResponse';
 
-import {
-  RTR_TIMEOUT_EVENT
-} from './components/Root/constants';
 import { settings, stripesHubAPI } from './constants';
 
 // export supported locales, i.e. the languages we provide translations for
@@ -60,16 +55,17 @@ export const supportedLocales = [
   'ru',     // russian
   'sv',     // swedish
   'tr',     // turkish
-  'uk',     // ukranian
+  'uk',     // ukrainian
   'ur',     // urdu
   'zh-CN',  // chinese, china
   'zh-TW',  // chinese, taiwan
 ];
 
-export const LOGOUT_TIMEOUT = {
-  ERROR: 'error',
-  EXPIRED: 'expired',
-  INACTIVITY: 'inactivity',
+export const LOGOUT_MESSAGES = {
+  ERROR: 'logout-error', // RTR failure
+  EXPIRED: 'session-expired', // fixed-length session end-of-session (FLST)
+  INACTIVITY: 'session-inactivity', // idle session timeout (IST)
+  INIT_ERROR: 'init-error', // stripes init failure
 };
 
 // export supported numbering systems, i.e. the systems tenants may chose
@@ -215,7 +211,7 @@ export const tenantLocaleConfig = {
   KEY: 'tenantLocaleSettings',
 };
 
-function getHeaders(tenant, token) {
+export function getHeaders(tenant, token) {
   return {
     'X-Okapi-Tenant': tenant,
     'Content-Type': 'application/json',
@@ -759,99 +755,6 @@ export const getLogoutTenant = () => {
 };
 
 /**
- * logout
- * logout is a multi-part process, but this function is idempotent.
- * 1.  there are server-side things to do, i.e. fetch /authn/logout.
- *     these must only be done once, no matter how many tabs are open
- *     because once the fetch completes the cookies are gone, which
- *     means a repeat request will fail.
- * 2.  there is shared storage to clean out, i.e. storage that is shared
- *     across tabs such as localStorage and localforage. clearing storage
- *     that another tab has already cleared is fine, if pointless.
- * 3.  there is private storage to clean out, i.e. storage that is unique
- *     to the current tab/window. this storage _must_ be cleared in each
- *     instance of stripes (i.e. in each separate tab/window) because the
- *     instances running in other tabs do not have access to it.
- * What does all this mean? It means some things we need to check on and
- * maybe do (the server-side things), some we can do (the shared storage)
- * and some we must do (the private storage).
- *
- * @param {string} okapiUrl
- * @param {object} redux store
- * @param {object} queryClient react-query client, if available; used to clear react-query cache on logout
- *
- * @returns {Promise}
- */
-export async function logout(okapiUrl, store, queryClient) {
-  // check the private-storage sentinel: if logout has already started
-  // in this window, we don't want to start it again.
-  if (sessionStorage.getItem(IS_LOGGING_OUT)) {
-    return;
-  }
-
-  // check the shared-storage sentinel: if logout has already started
-  // in another window, we don't want to invoke shared functions again
-  // (like calling /authn/logout, which can only be called once)
-  // BUT we DO want to clear private storage such as session storage
-  // and redux, which are not shared across tabs/windows.
-  if (localStorage.getItem(SESSION_NAME)) {
-    await fetch(`${okapiUrl}/authn/logout`, {
-      method: 'POST',
-      mode: 'cors',
-      credentials: 'include',
-      // Since the tenant in the x-okapi-token and the x-okapi-tenant header
-      // on logout should match, switching affiliations updates
-      // store.okapi.tenant, leading to mismatched tenant names from the token.
-      // Use the tenant name stored during login to ensure they match.
-      headers: getHeaders(getLogoutTenant()?.tenantId || store.getState()?.okapi?.tenant),
-    });
-  }
-
-  try {
-    const { config } = store.getState();
-
-    // clear the console unless config asks to preserve it
-    if (!config.preserveConsole) {
-      console.clear(); // eslint-disable-line no-console
-    }
-
-    // clear private-storage
-    //
-    // set the private-storage sentinel to indicate logout is in-progress
-    sessionStorage.setItem(IS_LOGGING_OUT, 'true');
-
-    // localStorage events emit across tabs so we can use it like a
-    // BroadcastChannel to communicate with all tabs/windows
-    localStorage.removeItem(SESSION_NAME);
-    localStorage.removeItem(RTR_TIMEOUT_EVENT);
-    localStorage.removeItem(TENANT_LOCAL_STORAGE_KEY);
-    localStorage.removeItem(stripesHubAPI.FOLIO_CONFIG_KEY);
-    localStorage.removeItem(stripesHubAPI.BRANDING_CONFIG_KEY);
-
-    store.dispatch(setIsAuthenticated(false));
-    store.dispatch(clearCurrentUser());
-    store.dispatch(clearOkapiToken());
-    store.dispatch(resetStore());
-
-    // clear react-query cache
-    if (queryClient) {
-      queryClient.removeQueries();
-    }
-    // clear shared storage
-    await localforage.removeItem(SESSION_NAME);
-    await localforage.removeItem('loginResponse');
-    await localforage.removeItem(stripesHubAPI.DISCOVERY_URL_KEY);
-    await localforage.removeItem(stripesHubAPI.HOST_URL_KEY);
-    await localforage.removeItem(stripesHubAPI.REMOTE_LIST_KEY)
-  } catch (e) {
-    console.error('error during logout', e); // eslint-disable-line no-console
-  }
-
-  // clear the storage sentinel
-  sessionStorage.removeItem(IS_LOGGING_OUT);
-}
-
-/**
  * createOkapiSession
  * Remap the given data into a session object shaped like:
  * {
@@ -1071,8 +974,8 @@ export async function processOkapiSession(store, tenant, resp, ssoToken) {
  * fetch from .../_self and dispatch the results, allowing any changes to authz
  * since that session data was persisted to take effect immediately.
  *
- * If the fetch succeeds, dispatch the result to update the session.
- * Otherwise, call logout() to purge redux and storage because either:
+ * If the fetch succeeds, dispatch the result to update the session. Otherwise,
+ * call the error-handler. It will purge redux and storage because either:
  *   1. the session data was corrupt. yikes!
  *   2. the session data was valid but cookies were missing. yikes!
  * Either way, our belief that a session is active has been proven wrong, so
@@ -1150,9 +1053,9 @@ export async function validateUser(okapiUrl, store, tenant, session, handleError
  * @param {redux store} store
  * @param {string} tenant
  */
-export async function checkOkapiSession(okapiUrl, store, tenant) {
+export async function checkOkapiSession(okapiUrl, store, tenant, history) {
   const sess = await getOkapiSession();
-  const handleError = () => logout(okapiUrl, store);
+  const handleError = () => history.push(`/logout?reason=${LOGOUT_MESSAGES.INIT_ERROR}`);
   const res = sess?.user?.id ? await validateUser(okapiUrl, store, tenant, sess, handleError) : null;
   // check whether SSO is enabled if either
   // 1. res is null (when we are starting a new session)

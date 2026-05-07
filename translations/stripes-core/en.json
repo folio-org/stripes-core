@@ -159,6 +159,10 @@
   "routeErrorBoundary.goToModuleSettingsHomeLabel": "Return to {name} settings",
   "stale.warning": "The application has changed on the server and needs to be refreshed.",
   "stale.reload": "Click here to reload.",
+
+  "rtr.error": "ERROR! Your session could not be continued.",
+  "rtr.expired": "Your session expired.",
+  "init.error": "Sorry, there was an error during initialization. Please try again.",
   "rtr.idleSession.modalHeader": "Your session will expire soon!",
   "rtr.idleSession.timeRemaining": "Time remaining",
   "rtr.idleSession.keepWorking": "Keep working",
