@@ -8,6 +8,11 @@ import Redirect from '../Redirect';
 import Login from '../Login';
 import PreLoginLanding from '../PreLoginLanding';
 
+import {
+  setUnauthorizedTenantToSession,
+  getUnauthorizedPathFromSession,
+} from '../../loginServices';
+
 import AuthnLogin from './AuthnLogin';
 
 jest.mock('react-router-dom', () => ({
@@ -18,19 +23,31 @@ jest.mock('../Redirect', () => () => '<redirect>');
 jest.mock('../Login', () => () => '<login>');
 jest.mock('../PreLoginLanding', () => () => '<preloginlanding>');
 
+jest.mock('../../loginServices', () => ({
+  ...jest.requireActual('../../loginServices'),
+  setUnauthorizedTenantToSession: jest.fn(),
+  getUnauthorizedPathFromSession: jest.fn(),
+  setUnauthorizedPathToSession: jest.fn(),
+  getOIDCRedirectUri: jest.fn().mockReturnValue('encoded-redirect-uri'),
+}));
+
 const store = {
   getState: () => ({
     okapi: {
       token: '123',
     },
   }),
-  dispatch: () => {},
+  dispatch: jest.fn(),
   subscribe: () => {},
   replaceReducer: () => {},
 };
 
 describe('RootWithIntl', () => {
   describe('AuthnLogin', () => {
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+
     it('handles legacy login', () => {
       const stripes = { okapi: {}, config: {}, store };
       render(<AuthnLogin stripes={stripes} />);
@@ -70,6 +87,49 @@ describe('RootWithIntl', () => {
         render(<AuthnLogin stripes={stripes} />);
 
         expect(screen.getByText(/<preloginlanding>/)).toBeInTheDocument();
+      });
+    });
+
+    describe('setTenant', () => {
+      it('saves tenant to session when authnUrl is set and no unauthorized path is stored', () => {
+        getUnauthorizedPathFromSession.mockReturnValue(null);
+
+        const stripes = {
+          okapi: { authnUrl: 'https://barbie.com' },
+          config: {
+            tenantOptions: {
+              diku: { name: 'diku', clientId: 'diku-application' }
+            }
+          },
+          store
+        };
+        render(<AuthnLogin stripes={stripes} />);
+
+        expect(setUnauthorizedTenantToSession).toHaveBeenCalledWith('diku');
+      });
+
+      it('does not overwrite session tenant when an unauthorized path is already stored', () => {
+        getUnauthorizedPathFromSession.mockReturnValue('/some-path');
+
+        const stripes = {
+          okapi: { authnUrl: 'https://barbie.com' },
+          config: {
+            tenantOptions: {
+              diku: { name: 'diku', clientId: 'diku-application' }
+            }
+          },
+          store
+        };
+        render(<AuthnLogin stripes={stripes} />);
+
+        expect(setUnauthorizedTenantToSession).not.toHaveBeenCalled();
+      });
+
+      it('does not save tenant to session for legacy login (no authnUrl)', () => {
+        const stripes = { okapi: {}, config: {}, store };
+        render(<AuthnLogin stripes={stripes} />);
+
+        expect(setUnauthorizedTenantToSession).not.toHaveBeenCalled();
       });
     });
   });

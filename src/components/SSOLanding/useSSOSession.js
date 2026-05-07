@@ -5,8 +5,11 @@ import { useCookies } from 'react-cookie';
 import queryString from 'query-string';
 
 import { defaultErrors } from '../../constants';
+import {
+  consumeUnauthorizedTenantFromSession,
+  requestUserWithPerms,
+} from '../../loginServices';
 import { setAuthError } from '../../okapiActions';
-import { requestUserWithPerms } from '../../loginServices';
 
 const getParams = (location) => {
   const search = location.search;
@@ -40,7 +43,11 @@ const useSSOSession = () => {
   const tenant = getTenant(params, token, store);
 
   useEffect(() => {
-    requestUserWithPerms(store.getState().okapi, store, tenant, token)
+    const options = {
+      preservedSessionTenant: consumeUnauthorizedTenantFromSession(),
+    };
+
+    requestUserWithPerms(store.getState().okapi, store, tenant, token, options)
       .then(() => {
         if (store.getState()?.okapi?.authFailure) {
           return Promise.reject(new Error('SSO Failed'));
