@@ -1,23 +1,14 @@
-import { withRouter, Redirect, useLocation } from 'react-router';
+import { useRef } from 'react';
+import { withRouter, Redirect } from 'react-router';
+import { useLocation } from 'react-router-dom';
 import queryString from 'query-string';
+
 import { useStripes } from '../StripesContext';
 import {
   AUTOMATIC_LOGOUT_LOCATION,
   getUnauthorizedPathFromSession,
   removeUnauthorizedPathFromSession
 } from '../loginServices';
-
-// Setting at top of component since value should be retained during re-renders
-// but will be correctly re-fetched when redirected from Keycloak login page.
-// The empty try/catch is necessary because, by setting this at the top of
-// the component, it is automatically executed even before <App /> renders.
-// IOW, even though we check for session-storage in App, we still have to
-// protect the call here.
-let unauthorizedPath = null;
-try {
-  unauthorizedPath = getUnauthorizedPathFromSession();
-} catch (e) { // eslint-disable-line no-empty
-}
 
 /**
  * OIDCRedirect authenticated route handler for /oidc-landing.
@@ -41,12 +32,18 @@ try {
  *
  * @see RootWithIntl
  * @see AuthnLogin
+ * @see useLogoutMutation
  *
  * @returns {Redirect}
  */
 const OIDCRedirect = () => {
   const location = useLocation();
   const stripes = useStripes();
+  const unauthorizedPathRef = useRef();
+
+  if (!unauthorizedPathRef.current) {
+    unauthorizedPathRef.current = getUnauthorizedPathFromSession();
+  }
 
   const getParams = () => {
     const search = location.search;
@@ -56,13 +53,13 @@ const OIDCRedirect = () => {
 
   const getUrl = () => {
     if (stripes.okapi.authnUrl) {
-      if (unauthorizedPath) {
+      if (unauthorizedPathRef.current) {
         removeUnauthorizedPathFromSession();
 
-        if (unauthorizedPath === AUTOMATIC_LOGOUT_LOCATION) {
+        if (unauthorizedPathRef.current === AUTOMATIC_LOGOUT_LOCATION) {
           return 'logout';
         }
-        return unauthorizedPath;
+        return unauthorizedPathRef.current;
       }
     }
 
