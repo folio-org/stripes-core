@@ -68,6 +68,9 @@ export const LOGOUT_MESSAGES = {
   INIT_ERROR: 'init-error', // stripes init failure
 };
 
+
+export const AUTOMATIC_LOGOUT_LOCATION = '💀';
+
 // export supported numbering systems, i.e. the systems tenants may chose
 // for numeral display
 export const supportedNumberingSystems = [

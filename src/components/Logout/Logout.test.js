@@ -3,7 +3,7 @@ import { userEvent } from '@folio/jest-config-stripes/testing-library/user-event
 import { useLocation } from 'react-router';
 
 import Logout from './Logout';
-import { useLogoutQuery } from './useLogoutQuery';
+import { useLogoutMutation } from './useLogoutMutation';
 import { useStripes } from '../../StripesContext';
 import {
   LOGOUT_MESSAGES,
@@ -11,7 +11,7 @@ import {
   setUnauthorizedPathToSession
 } from '../../loginServices';
 
-jest.mock('./useLogoutQuery');
+jest.mock('./useLogoutMutation');
 jest.mock('../OrganizationLogo');
 jest.mock('../../StripesContext');
 jest.mock('react-router');
@@ -40,21 +40,22 @@ describe('Logout', () => {
       screen.getByText('stripes-core.logoutComplete');
     });
 
-    it('if authenticated, calls useLogoutQuery and renders loading dots ...', async () => {
+    it('if authenticated, calls mutate and renders loading dots ...', async () => {
       const mockUseStripes = useStripes;
       mockUseStripes.mockReturnValue({
         branding: mockBranding,
         okapi: { isAuthenticated: true },
       });
 
-      const mockUseLogoutQuery = useLogoutQuery;
-      mockUseLogoutQuery.mockReturnValue({});
+      const mockUseLogoutMutation = useLogoutMutation;
+      const mutate = jest.fn();
+      mockUseLogoutMutation.mockReturnValue({ mutate });
 
       act(() => {
         render(<Logout sessionTimeoutTimer={{ clear: jest.fn() }} sessionTimeoutWarningTimer={{ clear: jest.fn() }} />);
       });
       waitFor(() => {
-        expect(mockUseLogoutQuery).toHaveBeenCalled();
+        expect(mockUseLogoutMutation.mutate).toHaveBeenCalled();
         screen.getByText('LoadingView');
       });
     });
@@ -86,21 +87,22 @@ describe('Logout', () => {
       screen.getByText('stripes-core.rtr.idleSession.sessionExpiredSoSad');
     });
 
-    it('if authenticated, calls useLogoutQuery and renders waiting dots ...', async () => {
+    it('if authenticated, calls mutate and renders waiting dots ...', async () => {
       const mockUseStripes = useStripes;
       mockUseStripes.mockReturnValue({
         branding: mockBranding,
         okapi: { isAuthenticated: true },
       });
 
-      const mockUseLogoutQuery = useLogoutQuery;
-      mockUseLogoutQuery.mockReturnValue({});
+      const mockUseLogoutMutation = useLogoutMutation;
+      const mutate = jest.fn();
+      mockUseLogoutMutation.mockReturnValue({ mutate });
 
       act(() => {
         render(<Logout sessionTimeoutTimer={{ clear: jest.fn() }} sessionTimeoutWarningTimer={{ clear: jest.fn() }} />);
       });
       await waitFor(async () => {
-        expect(mockUseLogoutQuery).toHaveBeenCalled();
+        expect(mutate).toHaveBeenCalled();
         screen.getByText('LoadingView');
       });
     });

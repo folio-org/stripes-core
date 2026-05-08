@@ -1,4 +1,5 @@
-import { useQuery, useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
+import { useHistory } from 'react-router-dom';
 import localforage from 'localforage';
 
 import { useStripes } from '../../StripesContext';
@@ -10,8 +11,10 @@ import {
 import { resetStore } from '../../mainActions';
 import { stripesHubAPI } from '../../constants';
 import {
+  AUTOMATIC_LOGOUT_LOCATION,
   getLogoutTenant,
   SESSION_NAME,
+  setUnauthorizedPathToSession,
   TENANT_LOCAL_STORAGE_KEY,
 } from '../../loginServices';
 import {
@@ -50,6 +53,7 @@ export async function clearSessionStorage(store, queryClient, timers) {
     store.dispatch(clearCurrentUser());
     store.dispatch(clearOkapiToken());
     store.dispatch(resetStore());
+
     if (queryClient) {
       queryClient.removeQueries();
     }
@@ -74,7 +78,7 @@ export async function clearSessionStorage(store, queryClient, timers) {
 }
 
 /**
- * useLogoutQuery
+ * useLogoutMutation
  * logout is basically a two-part process:
  * 1. Terminate the session on the server side by making an API call to
  *    /authn/logout, destroying the server's session and the browser's cookies.
@@ -90,12 +94,25 @@ export async function clearSessionStorage(store, queryClient, timers) {
  * logout API, but also proceeds to clear storage regardless of the success or
  * failure of that call.
  *
- * @param {Array} timers
- * @returns
+ * If cookies are missing, the API call will fail, preventing the Keycloak
+ * session from being terminated. This puts Stripes and Keycloak out of sync,
+ * no bueno. In order to actually terminate the Keycloak session, we clear
+ * browser storage, push a special "return-to" value in session storage, and
+ * then redirect to root, prompting Stripes to redirect to Keycloak (since
+ * other session data has already been cleared), which will then immediately
+ * redirect back to Stripes (remember, the Keycloak session is still active).
+ * Finding the special value in the "return-to" session key, Stripes will
+ * redirect to `/logout`, beginning the logout process for a second time BUT!
+ * hopefully this time with valid cookies, allowing the API call to succeed.
+ * Whew. Fun, huh?
+ *
+ * @param {Array} timers array of IST, FLST ResetTimers
+ * @returns { mutation }
  */
-export const useLogoutQuery = (timers) => {
+export const useLogoutMutation = (timers) => {
   const queryClient = useQueryClient();
   const { store, okapi } = useStripes();
+  const history = useHistory();
 
   // The tenant in x-okapi-header needs to match that provided in the AT for
   // the API call to succeed. Switching affiliations in an ECS environment
@@ -104,26 +121,35 @@ export const useLogoutQuery = (timers) => {
   // fallback to stripes.okapi.tenant.
   const ky = useOkapiKy({ tenant: getLogoutTenant()?.tenantId || okapi?.tenant });
 
-  const logoutQuery = useQuery({
-    queryKey: ['@folio/stripes-core', 'authn/logout'],
-    queryFn: async () => {
+  return useMutation({
+    mutationFn: async () => {
       // check the shared-storage sentinel: if logout has already started
       // in another window, there is no value in running this query again
       // because the second time (now that cookies were destroyed) it is
       // guaranteed to return 4xx. if we run it accidentally, trap any errors
       // to make sure we can still proceed with clearing storage.
+      let didFailLogout = false;
       if (localStorage.getItem(SESSION_NAME)) {
         try {
           await ky.post('authn/logout');
         } catch (err) {
-          console.log({ err }); // eslint-disable-line no-console
+          console.log('uhoh, logout request failed!', err); // eslint-disable-line no-console
+          didFailLogout = true;
         }
       }
 
+      // sessionStorage, redux-storage, react-query, etc are NOT shared across
+      // tabs/windows, so the clear-storage call always executes
       await clearSessionStorage(store, queryClient, timers);
+
+      // if the /authn/logout API call fails, store a special "return to"
+      // sentinel and then redirect to root in order to kick off the
+      // stripes->keycloak->stripes->logout process.
+      if (didFailLogout) {
+        setUnauthorizedPathToSession(AUTOMATIC_LOGOUT_LOCATION);
+        history.push('/');
+      }
     },
     retry: false,
   });
-
-  return { logoutQuery };
 };

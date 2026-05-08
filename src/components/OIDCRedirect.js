@@ -1,7 +1,11 @@
 import { withRouter, Redirect, useLocation } from 'react-router';
 import queryString from 'query-string';
 import { useStripes } from '../StripesContext';
-import { getUnauthorizedPathFromSession, removeUnauthorizedPathFromSession } from '../loginServices';
+import {
+  AUTOMATIC_LOGOUT_LOCATION,
+  getUnauthorizedPathFromSession,
+  removeUnauthorizedPathFromSession
+} from '../loginServices';
 
 // Setting at top of component since value should be retained during re-renders
 // but will be correctly re-fetched when redirected from Keycloak login page.
@@ -17,6 +21,17 @@ try {
 
 /**
  * OIDCRedirect authenticated route handler for /oidc-landing.
+ * Call getUnauthorizedPathFromSession() to retrieve a value saved on logout
+ * if the logout was due to an idle-session-timeout. This allows users to pick
+ * up exactly where they were working.
+ *
+ * Note the special sentinel value AUTOMATIC_LOGOUT_LOCATION, which is used
+ * to redirect to /logout instead. See /src/components/Logout/useLogoutMutation
+ * for details. If the Stripes and Keycloak sessions get out of sync where
+ * the Stripes session has been destroyed but the Keycloak session is still
+ * active, they can be synced -- and both destroyed -- by redirecting to
+ * Keycloak, which will immediately return to Stripes, allowing both sessions
+ * to be destroyed.
  *
  * Read unauthorized_path from session storage if keycloak authn provided
  * if `fwd` provided into redirect url, it causes strange behavior - infinite login requests
@@ -43,6 +58,10 @@ const OIDCRedirect = () => {
     if (stripes.okapi.authnUrl) {
       if (unauthorizedPath) {
         removeUnauthorizedPathFromSession();
+
+        if (unauthorizedPath === AUTOMATIC_LOGOUT_LOCATION) {
+          return 'logout';
+        }
         return unauthorizedPath;
       }
     }

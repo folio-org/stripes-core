@@ -1,11 +1,11 @@
 import localforage from 'localforage';
-import { renderHook, act, waitFor } from '@folio/jest-config-stripes/testing-library/react';
+import { renderHook, waitFor } from '@folio/jest-config-stripes/testing-library/react';
 import {
   QueryClient,
   QueryClientProvider,
 } from 'react-query';
 
-import { clearSessionStorage, useLogoutQuery } from './useLogoutQuery';
+import { clearSessionStorage, useLogoutMutation } from './useLogoutMutation';
 import { useStripes } from '../../StripesContext';
 import {
   clearCurrentUser,
@@ -141,25 +141,6 @@ jest.mock('../../useOkapiKy', () => ({
 
 jest.mock('../../StripesContext');
 
-// , () => ({
-//   useStripes: () => ({
-//     user: {
-//       user: {
-//         id: 'test-user'
-//       }
-//     },
-//     okapi: {
-//       tenant: 't',
-//     },
-//     logger: {
-//       log: () => { },
-//     },
-//     store: {
-//       getState: () => ({}),
-//     },
-//   }),
-// }));
-
 const queryClient = new QueryClient();
 // eslint-disable-next-line react/prop-types
 const wrapper = ({ children }) => (
@@ -168,7 +149,7 @@ const wrapper = ({ children }) => (
   </QueryClientProvider>
 );
 
-describe('useLogoutQuery', () => {
+describe('useLogoutMutation', () => {
   describe('when storage-flag is present', () => {
     beforeEach(() => {
       jest.spyOn(Storage.prototype, 'getItem').mockReturnValue(true);
@@ -189,7 +170,8 @@ describe('useLogoutQuery', () => {
     });
 
     it('makes /authn/logout API call', async () => {
-      renderHook(() => useLogoutQuery([]), { wrapper });
+      const hook = renderHook(() => useLogoutMutation([]), { wrapper });
+      hook.result.current.mutate();
 
       await waitFor(async () => {
         expect(mockPost).toHaveBeenCalled();
@@ -198,7 +180,8 @@ describe('useLogoutQuery', () => {
 
     it('clears storage', async () => {
       const timer = { clear: jest.fn() };
-      renderHook(() => useLogoutQuery([timer]), { wrapper });
+      const hook = renderHook(() => useLogoutMutation([timer]), { wrapper });
+      hook.result.current.mutate();
 
       await waitFor(async () => {
         expect(timer.clear).toHaveBeenCalled();
@@ -226,9 +209,8 @@ describe('useLogoutQuery', () => {
     });
 
     it('skips /authn/logout API call', async () => {
-      act(() => {
-        renderHook(() => useLogoutQuery([]), { wrapper });
-      });
+      const hook = renderHook(() => useLogoutMutation([]), { wrapper });
+      hook.result.current.mutate();
       await waitFor(async () => {
         expect(mockPost).not.toHaveBeenCalled();
       });
@@ -236,9 +218,8 @@ describe('useLogoutQuery', () => {
 
     it('clears storage', async () => {
       const timer = { clear: jest.fn() };
-      act(() => {
-        renderHook(() => useLogoutQuery([timer]), { wrapper });
-      });
+      const hook = renderHook(() => useLogoutMutation([timer]), { wrapper });
+      hook.result.current.mutate();
 
       await waitFor(async () => {
         expect(timer.clear).toHaveBeenCalled();

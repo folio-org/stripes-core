@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useLocation } from 'react-router';
 import { FormattedMessage } from 'react-intl';
@@ -17,7 +18,7 @@ import {
   getUnauthorizedPathFromSession,
   removeUnauthorizedPathFromSession,
 } from '../../loginServices';
-import { useLogoutQuery } from './useLogoutQuery';
+import { useLogoutMutation } from './useLogoutMutation';
 
 import styles from './Logout.css';
 
@@ -30,14 +31,7 @@ import styles from './Logout.css';
 const Logout = ({ sessionTimeoutTimer, sessionTimeoutWarningTimer }) => {
   const { branding, okapi } = useStripes();
   const location = useLocation();
-
-  // abuse useQuery to run once on-load, which AFAICT is impossible to do
-  // with useMutation in useEffect with a properly defined dependency array.
-  // that is, useMutation returns a function that it expects you to call in an
-  // event handler, rather than automatically on-load. so, here we are, calling
-  // a query and ignoring its response.
-  // filter out empty timers (they will be undefined when no session is active)
-  useLogoutQuery([sessionTimeoutTimer, sessionTimeoutWarningTimer].filter(Boolean));
+  const logoutMutation = useLogoutMutation([sessionTimeoutTimer, sessionTimeoutWarningTimer]);
 
   let messageId = null;
   const messages = {
@@ -54,6 +48,16 @@ const Logout = ({ sessionTimeoutTimer, sessionTimeoutWarningTimer }) => {
   if (!messageId) {
     messageId = 'stripes-core.logoutComplete';
   }
+
+  useEffect(() => {
+    if (okapi.isAuthenticated) {
+      logoutMutation.mutate();
+    }
+
+    // yes, ignore the logoutMutation dependency; just logout once, on-load.
+    // WHAT IS THE CORRECT WAY TO DO THIS???
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
 
   const handleClick = (_e) => {
     removeUnauthorizedPathFromSession();
