@@ -147,6 +147,14 @@ class Root extends Component {
     return !this.withOkapi || nextProps.okapiReady || nextProps.serverDown;
   }
 
+  componentWillUnmount() {
+    // clean up timers and pending requests on unmount
+    this.ffetch.destroy('Root component unmounted, aborting pending requests');
+    this.ffetch.restoreFetch();
+    this.ffetch.restoreXMLHttpRequest();
+    this.ffetch = null;
+  }
+
   updateQueryResourceStateKey = () => {
     const { modules, history } = this.props;
     const appModule = getCurrentModule(modules, history.location);

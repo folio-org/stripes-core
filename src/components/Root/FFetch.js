@@ -48,6 +48,11 @@ export class FFetch {
     this.logger = logger;
     this.okapi = okapi;
     this.onRotate = onRotate;
+    this.abortController = new AbortController();
+  }
+
+  destroy = (reason) => {
+    this.abortController.abort(reason);
   }
 
   /**
@@ -64,6 +69,16 @@ export class FFetch {
   replaceXMLHttpRequest = () => {
     this.NativeXHR = globalThis.XMLHttpRequest;
     globalThis.XMLHttpRequest = FXHR(this);
+  };
+
+  restoreFetch = () => {
+    globalThis.fetch = this.nativeFetch;
+    this.nativeFetch = null;
+  };
+
+  restoreXMLHttpRequest = () => {
+    globalThis.XMLHttpRequest = this.NativeXHR;
+    this.NativeXHR = null;
   };
 
   /**
@@ -185,7 +200,7 @@ export class FFetch {
       // readers/writer lock pattern: don't fetch while rotation is in-progress
       // https://developer.mozilla.org/en-US/docs/Web/API/LockManager/request
       response = await navigator.locks.request(RTR_LOCK_KEY, { mode: 'shared' }, async () => {
-        const fr = await this.nativeFetch.apply(globalThis, [resource, options && { ...options, ...FOLIO_FETCH_OPTIONS }]);
+        const fr = await this.nativeFetch.apply(globalThis, [resource, options && { signal: this.abortController.signal, ...options, ...FOLIO_FETCH_OPTIONS }]);
         return fr;
       });
 
@@ -193,12 +208,15 @@ export class FFetch {
         return response;
       }
 
-      if (!response?.ok) {
+      if (!response?.ok && this.abortController.signal.aborted !== true) {
         response = await rotateAndReplay(
           this.nativeFetch,
           { ...this.rotationConfig, logger: this.logger },
           { response, resource: reusableResource, options }
         );
+      } else if (this.abortController.signal.aborted === true) {
+        console.log('rtr', 'Fetch aborted by signal before RTR check - is react set to strict mode?', this.abortController.signal.reason);
+        return Promise.resolve();
       }
 
       return response;
