@@ -94,17 +94,27 @@ export async function clearSessionStorage(store, queryClient, timers) {
  * logout API, but also proceeds to clear storage regardless of the success or
  * failure of that call.
  *
- * If cookies are missing, the API call will fail, preventing the Keycloak
+ * If cookies are missing**, the API call will fail, preventing the Keycloak
  * session from being terminated. This puts Stripes and Keycloak out of sync,
- * no bueno. In order to actually terminate the Keycloak session, we clear
+ * no bueno.
+ *
+ * In order to actually terminate the Keycloak session, we clear
  * browser storage, push a special "return-to" value in session storage, and
  * then redirect to root, prompting Stripes to redirect to Keycloak (since
  * other session data has already been cleared), which will then immediately
  * redirect back to Stripes (remember, the Keycloak session is still active).
  * Finding the special value in the "return-to" session key, Stripes will
- * redirect to `/logout`, beginning the logout process for a second time BUT!
- * hopefully this time with valid cookies, allowing the API call to succeed.
- * Whew. Fun, huh?
+ * redirect to `/logout`, beginning the logout process for a second time, but
+ * this time with the sessions in sync (both active) allowing both to be
+ * terminated.
+ *
+ * ** It's easy to end up in this situation. For example, sign in, do some
+ *    work, and then close the tab without clicking the 'logout' button. At
+ *    this point, the session will be persisted to local-storage and the
+ *    browser will cache cookies until they expire. Once the cookies expire,
+ *    however, the session will continue to perist; since no tabs are open,
+ *    there is no Stripe process running its timers to clean up the session,
+ *    storage, and cookies, when they expire.
  *
  * @param {Array} timers array of IST, FLST ResetTimers
  * @returns { mutation }
@@ -133,7 +143,7 @@ export const useLogoutMutation = (timers) => {
         try {
           await ky.post('authn/logout');
         } catch (err) {
-          console.log('uhoh, logout request failed!', err); // eslint-disable-line no-console
+          console.error('uhoh, logout request failed!', err); // eslint-disable-line no-console
           didFailLogout = true;
         }
       }

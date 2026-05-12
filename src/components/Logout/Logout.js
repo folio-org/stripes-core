@@ -55,7 +55,8 @@ const Logout = ({ sessionTimeoutTimer, sessionTimeoutWarningTimer }) => {
     }
 
     // yes, ignore the logoutMutation dependency; just logout once, on-load.
-    // WHAT IS THE CORRECT WAY TO DO THIS???
+    // Is there a way to do this without ignoring dependencies?
+    // I haven't found it.
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
 
