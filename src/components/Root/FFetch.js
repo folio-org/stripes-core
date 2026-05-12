@@ -51,9 +51,8 @@ export class FFetch {
   }
 
   destroy = () => {
-    // this.abortController.abort(reason);
-    // unclog any exclusive locks that might be in-flight to avoid RTR deadlocks.
-    this.logger.log('rtr', 'cleaning up after ffetch');
+    // restore replaced globals.
+    this.logger?.log?.('rtr', 'cleaning up after ffetch');
     this.restoreFetch();
     this.restoreXMLHttpRequest();
   }
@@ -75,13 +74,17 @@ export class FFetch {
   };
 
   restoreFetch = () => {
-    globalThis.fetch = this.nativeFetch;
-    this.nativeFetch = null;
+    if (globalThis.fetch === this.ffetch) {
+      globalThis.fetch = this.nativeFetch;
+      this.nativeFetch = null;
+    }
   };
 
   restoreXMLHttpRequest = () => {
-    globalThis.XMLHttpRequest = this.NativeXHR;
-    this.NativeXHR = null;
+    if (globalThis.XMLHttpRequest === this.FXHR) {
+      globalThis.XMLHttpRequest = this.NativeXHR;
+      this.NativeXHR = null;
+    }
   };
 
   /**
