@@ -148,11 +148,11 @@ class Root extends Component {
   }
 
   componentWillUnmount() {
-    // clean up timers and pending requests on unmount
-    this.ffetch.destroy('Root component unmounted, aborting pending requests');
-    this.ffetch.restoreFetch();
-    this.ffetch.restoreXMLHttpRequest();
+    // clean up ffetch so that any pending rotation-related work is stopped.
+    this.ffetch.destroy();
     this.ffetch = null;
+    this.sessionTimeoutTimer.clear();
+    this.sessionTimeoutWarningTimer.clear();
   }
 
   updateQueryResourceStateKey = () => {
