@@ -48,6 +48,7 @@ export class FFetch {
     this.logger = logger;
     this.okapi = okapi;
     this.onRotate = onRotate;
+    this.FXHR = FXHR(this);
   }
 
   destroy = () => {
@@ -70,7 +71,7 @@ export class FFetch {
    */
   replaceXMLHttpRequest = () => {
     this.NativeXHR = globalThis.XMLHttpRequest;
-    globalThis.XMLHttpRequest = FXHR(this);
+    globalThis.XMLHttpRequest = this.FXHR;
   };
 
   restoreFetch = () => {
