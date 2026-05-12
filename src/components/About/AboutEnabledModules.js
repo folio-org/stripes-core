@@ -16,17 +16,19 @@ class AboutEnabledModules extends React.Component {
   static propTypes = {
     resources: PropTypes.shape({
       enabledModules: PropTypes.shape({
-        records: PropTypes.arrayOf(PropTypes.object),
+        records: PropTypes.arrayOf(PropTypes.shape({ id: PropTypes.string })),
       }),
     }),
-    availableModules: PropTypes.object,
+    // prop-types cannot be calculated because the keys are set at runtime.
+    // keys are module-names, values are human-readable strings.
+    availableModules: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     tenantid: PropTypes.string.isRequired, // eslint-disable-line react/no-unused-prop-types
   };
 
   render() {
     const em = {};
-    _.each((this.props.resources.enabledModules || {}).records || [], (m) => { em[m.id] = true; });
-    const items = Object.keys(this.props.availableModules).sort();
+    _.each(this.props.resources.enabledModules?.records || [], (m) => { em[m.id] = true; });
+    const items = Object.keys(this.props.availableModules).sort((a, b) => a.localeCompare(b));
     const itemFormatter = (key) => {
       let style = {};
       if (!em[key]) {
