@@ -5,7 +5,7 @@ import { modulesInitialState } from '../../ModulesContext';
 
 jest.mock('../../loginServices', () => ({
   loadTranslations: jest.fn(),
-  checkOkapiSession: jest.fn(),
+  checkOkapiSession: jest.fn(() => Promise.resolve()),
 }));
 
 jest.mock('./token-util', () => ({
@@ -89,7 +89,7 @@ const makeStore = (stateOverrides = {}) => {
 const getRootComponent = (props = {}) => (
   <Root
     store={makeStore()}
-    logger={{}}
+    logger={{ log: jest.fn() }}
     epics={{ add: jest.fn() }}
     config={{ locale: 'en-US', rtr: { enabled: true } }}
     okapi={{ url: 'http://okapi', tenant: 'diku', withoutOkapi: false }}

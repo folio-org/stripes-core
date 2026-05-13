@@ -67,8 +67,8 @@ const Settings = ({ stripes }) => {
             moduleStripes: stripes.clone({ connect }),
           };
         } catch (error) {
-          console.error(error); // eslint-disable-line
-          throw Error(error);
+          console.error(error); // eslint-disable-line no-console
+          throw new Error(error);
         }
       });
   }, [stripes, modules.settings]);

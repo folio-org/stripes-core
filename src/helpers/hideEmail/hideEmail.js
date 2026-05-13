@@ -15,9 +15,9 @@ const replacer = (string, pattern1, pattern2) => (
  */
 const hideEmail = email => (
   email
-    .replace(/(^.{2})(.+?)(?=@)/g, replacer)
-    .replace(/(^.+@.)(.+?)(?=\.)/g, replacer)
-    .replace(/(\.)(.+?)(?=$)/g, replacer)
+    .replaceAll(/(^.{2})(.+?)(?=@)/g, replacer)
+    .replaceAll(/(^.+@.)(.+?)(?=\.)/g, replacer)
+    .replaceAll(/(\.)(.+?)(?=$)/g, replacer)
 );
 
 export default hideEmail;

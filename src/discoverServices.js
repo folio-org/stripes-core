@@ -230,11 +230,15 @@ export function discoverServices(store) {
   const promises = [];
 
   if (store.getState().config.tenantOptions) {
-    promises.push(fetchApplicationDetails(store));
-    promises.push(fetchGatewayVersion(store));
+    promises.push(
+      fetchApplicationDetails(store),
+      fetchGatewayVersion(store),
+    );
   } else {
-    promises.push(fetchOkapiVersion(store));
-    promises.push(fetchModules(store));
+    promises.push(
+      fetchOkapiVersion(store),
+      fetchModules(store),
+    );
   }
 
   return Promise.all(promises).then(() => {
@@ -273,24 +277,25 @@ export function discoveryReducer(state = {}, action) {
         },
       };
     case 'DISCOVERY_OKAPI':
-      return Object.assign({}, state, { okapi: action.version });
+      return { ...state, okapi: action.version };
     case 'DISCOVERY_FAILURE':
-      return Object.assign({}, state, { failure: action });
+      return { ...state, failure: action };
     case 'DISCOVERY_SUCCESS': {
       const modules = { ...state.modules };
       for (const entry of action.data) {
         modules[entry.id] = entry.name;
       }
-      return Object.assign({}, state, { modules });
+      return { ...state, modules };
     }
     case 'DISCOVERY_INTERFACES': {
       const interfaces = {};
       for (const entry of action.data.provides || []) {
         interfaces[entry.id] = entry.version;
       }
-      return Object.assign({}, state, {
+      return {
+        ...state,
         interfaces: Object.assign(state.interfaces || {}, interfaces),
-      });
+      };
     }
     case 'DISCOVERY_PERMISSION_DISPLAY_NAMES': {
       const permissions = {};
@@ -301,7 +306,8 @@ export function discoveryReducer(state = {}, action) {
     }
     case 'DISCOVERY_PROVIDERS': {
       if (action.data.provides?.length > 0) {
-        return Object.assign({}, state, {
+        return {
+          ...state,
           interfaceProviders: [
             ...(state.interfaceProviders ?? []),
             {
@@ -309,13 +315,13 @@ export function discoveryReducer(state = {}, action) {
               provides: action.data.provides.map(i => ({ id: i.id, version: i.version, handlers: i.handlers })),
             },
           ]
-        });
+        };
       }
 
       return state;
     }
     case 'DISCOVERY_FINISHED': {
-      return Object.assign({}, state, { isFinished: true });
+      return { ...state, isFinished: true };
     }
     default:
       return state;
@@ -328,13 +334,13 @@ function isSingleVersionCompatible(got, wanted) {
 
   if (gmajor !== wmajor) return false;
 
-  const gmint = parseInt(gminor, 10);
-  const wmint = parseInt(wminor, 10);
+  const gmint = Number.parseInt(gminor, 10);
+  const wmint = Number.parseInt(wminor, 10);
   if (gmint < wmint) return false;
   if (gmint > wmint) return true;
 
-  const gpint = parseInt(gpatch || '0', 10);
-  const wpint = parseInt(wpatch || '0', 10);
+  const gpint = Number.parseInt(gpatch || '0', 10);
+  const wpint = Number.parseInt(wpatch || '0', 10);
   return gpint >= wpint;
 }
 
