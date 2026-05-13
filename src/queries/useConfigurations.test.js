@@ -93,7 +93,7 @@ describe('Given useConfigurations', () => {
       // so we convert isLoading from being truthy to being errory
       await waitFor(() => {
         if (result.current.isLoading) {
-          throw Error('kaboom');
+          throw new Error('kaboom');
         }
       });
 

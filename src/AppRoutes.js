@@ -30,7 +30,7 @@ const AppRoutes = ({ modules, stripes }) => {
         ModuleComponent = connect(module.getModule());
       } catch (error) {
         console.error(error); // eslint-disable-line
-        throw Error(error);
+        throw new Error(error);
       }
 
       const moduleStripes = stripes.clone({ connect });
