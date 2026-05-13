@@ -48,6 +48,14 @@ export class FFetch {
     this.logger = logger;
     this.okapi = okapi;
     this.onRotate = onRotate;
+    this.FXHR = FXHR(this);
+  }
+
+  destroy = () => {
+    // restore replaced globals.
+    this.logger?.log?.('rtr', 'cleaning up after ffetch');
+    this.restoreFetch();
+    this.restoreXMLHttpRequest();
   }
 
   /**
@@ -63,7 +71,21 @@ export class FFetch {
    */
   replaceXMLHttpRequest = () => {
     this.NativeXHR = globalThis.XMLHttpRequest;
-    globalThis.XMLHttpRequest = FXHR(this);
+    globalThis.XMLHttpRequest = this.FXHR;
+  };
+
+  restoreFetch = () => {
+    if (globalThis.fetch === this.ffetch) {
+      globalThis.fetch = this.nativeFetch;
+      this.nativeFetch = null;
+    }
+  };
+
+  restoreXMLHttpRequest = () => {
+    if (globalThis.XMLHttpRequest === this.FXHR) {
+      globalThis.XMLHttpRequest = this.NativeXHR;
+      this.NativeXHR = null;
+    }
   };
 
   /**

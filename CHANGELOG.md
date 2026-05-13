@@ -10,6 +10,7 @@
 * Clone requests before replaying them, allowing multiple replays. Refs STCOR-1060.
 * ^^^ yes, but do not call `clone()` on `URL` instances inside requests. Refs STCOR-1062.
 * Adopt FFetch's rotation logic flow in FXHR for consistency. Refs STCOR-1055.
+* Add cleanup logic for FFetch and use it in unmount lifecycle of Root. Refs STCOR-1064.
 
 ## [11.1.5](https://github.com/folio-org/stripes-core/tree/v11.1.5) (2026-06-03)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v11.1.4...v11.1.5)
