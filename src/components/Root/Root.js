@@ -147,6 +147,14 @@ class Root extends Component {
     return !this.withOkapi || nextProps.okapiReady || nextProps.serverDown;
   }
 
+  componentWillUnmount() {
+    // clean up ffetch so that any pending rotation-related work is stopped.
+    this.ffetch.destroy();
+    this.ffetch = null;
+    this.sessionTimeoutTimer.clear();
+    this.sessionTimeoutWarningTimer.clear();
+  }
+
   updateQueryResourceStateKey = () => {
     const { modules, history } = this.props;
     const appModule = getCurrentModule(modules, history.location);
