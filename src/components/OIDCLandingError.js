@@ -10,9 +10,25 @@ import {
 
 import OrganizationLogo from './OrganizationLogo';
 
-const OIDCLandingError = ({ error }) => {
-  const message = error?.errors?.[0]?.message || error;
+export const parseError = (error) => {
+  // do we have JSON from an error API response?
+  if (error?.errors?.[0]?.message) {
+    return error.errors[0].message;
+  }
 
+  // if not, do we have an Error object?
+  if (typeof error?.message === 'string') {
+    return error.message;
+  }
+
+  if (typeof error === 'string') {
+    return error;
+  }
+
+  return undefined;
+};
+
+const OIDCLandingError = ({ error }) => {
   return (
     <main data-test-saml-error>
       <Row center="xs">
@@ -27,7 +43,7 @@ const OIDCLandingError = ({ error }) => {
       </Row>
       <Row center="xs">
         <Col xs={12}>
-          <Headline>{message}</Headline>
+          <Headline>{parseError(error)}</Headline>
         </Col>
       </Row>
       <Row center="xs">
@@ -41,12 +57,19 @@ const OIDCLandingError = ({ error }) => {
 
 OIDCLandingError.propTypes = {
   error: PropTypes.oneOfType([
+    // API error response
     PropTypes.shape({
       errors: PropTypes.arrayOf(PropTypes.shape({
         message: PropTypes.string
       }))
     }),
-    PropTypes.string])
+    // some kinda Error object
+    PropTypes.shape({
+      message: PropTypes.string
+    }),
+    // boring ol' string
+    PropTypes.string,
+  ])
 };
 export default OIDCLandingError;
 
