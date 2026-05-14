@@ -1,16 +1,11 @@
-import { act, render, renderHook, screen, waitFor } from '@folio/jest-config-stripes/testing-library/react';
-import { createMemoryHistory } from 'history';
+import { act, renderHook, waitFor } from '@folio/jest-config-stripes/testing-library/react';
 import {
   QueryClient,
   QueryClientProvider,
 } from 'react-query';
 
-import Harness from '../../test/jest/helpers/harness';
 import useOkapiKy from '../useOkapiKy';
-import OIDCLanding from './OIDCLanding';
 import useExchangeCode from './useExchangeCode';
-import { useStripes } from '../StripesContext';
-
 
 jest.mock('./OrganizationLogo', () => (() => <div>OrganizationLogo</div>));
 jest.mock('../useOkapiKy');

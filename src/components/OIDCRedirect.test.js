@@ -1,6 +1,5 @@
 import React from 'react';
 import { render, screen } from '@folio/jest-config-stripes/testing-library/react';
-import { useLocation } from 'react-router-dom';
 
 import OIDCRedirect from './OIDCRedirect';
 import { useStripes } from '../StripesContext';

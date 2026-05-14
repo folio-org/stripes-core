@@ -150,7 +150,7 @@ describe('FFetch behavior and rotation helpers', () => {
     describe('shouldRotate', () => {
       describe('returns true', () => {
         it('given a 400 with okapi\'s special error text, returns true', async () => {
-          const res = new Response('Token missing, access requires permission', { status: 400 })
+          const res = new Response('Token missing, access requires permission', { status: 400 });
           const ff = new FFetch({ logger: {}, okapi: { url: '/users-keycloak/_self', tenant: 't' }, onRotate: jest.fn() });
           const shouldRotate = await ff.rotationConfig.shouldRotate(res);
           expect(shouldRotate).toBe(true);
