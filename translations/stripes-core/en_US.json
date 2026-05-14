@@ -164,5 +164,8 @@
     "logoutComplete": "You have logged out.",
     "errors.oidc": "Error: server is forbidden, unreachable, or unavailable.",
     "title.logoutTimeout": "Inactivity log out",
-    "help": "Help"
+    "help": "Help",
+    "init.error": "Sorry, there was an error during initialization. Please try again.",
+    "rtr.error": "ERROR! Your session could not be continued.",
+    "rtr.expired": "Your session expired."
 }
