@@ -54,8 +54,8 @@ describe('Logout', () => {
       act(() => {
         render(<Logout sessionTimeoutTimer={{ clear: jest.fn() }} sessionTimeoutWarningTimer={{ clear: jest.fn() }} />);
       });
-      waitFor(() => {
-        expect(mockUseLogoutMutation.mutate).toHaveBeenCalled();
+      await waitFor(() => {
+        expect(mutate).toHaveBeenCalled();
         screen.getByText('LoadingView');
       });
     });

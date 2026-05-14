@@ -24,7 +24,7 @@ import styles from './Logout.css';
 
 /**
  * Logout
- * call useLogoutQuery() to terminate the session server-side, remove cookies,
+ * call useLogoutMutation() to terminate the session server-side, remove cookies,
  * and clear all browser storage and react storage such as redux, react-query,
  * and session timers.
  */

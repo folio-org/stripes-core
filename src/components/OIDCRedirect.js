@@ -57,7 +57,7 @@ const OIDCRedirect = () => {
         removeUnauthorizedPathFromSession();
 
         if (unauthorizedPathRef.current === AUTOMATIC_LOGOUT_LOCATION) {
-          return 'logout';
+          return '/logout';
         }
         return unauthorizedPathRef.current;
       }

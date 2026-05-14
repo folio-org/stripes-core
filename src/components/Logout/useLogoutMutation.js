@@ -23,7 +23,7 @@ import {
 import useOkapiKy from '../../useOkapiKy';
 
 /**
- * clearSessionStorage
+ * clearSession
  * Clear shared storage (localStorage, localForage) that is shared across
  * tabs, and clear private storage (sessionStorage, redux, react-query,
  * session timers) that is unique per-tab and therefore must be cleared
@@ -35,7 +35,7 @@ import useOkapiKy from '../../useOkapiKy';
  *
  * @returns {Promise}
  */
-export async function clearSessionStorage(store, queryClient, timers) {
+export async function clearSession(store, queryClient, timers) {
   try {
     const { config } = store.getState();
 
@@ -150,7 +150,7 @@ export const useLogoutMutation = (timers) => {
 
       // sessionStorage, redux-storage, react-query, etc are NOT shared across
       // tabs/windows, so the clear-storage call always executes
-      await clearSessionStorage(store, queryClient, timers);
+      await clearSession(store, queryClient, timers);
 
       // if the /authn/logout API call fails, store a special "return to"
       // sentinel and then redirect to root in order to kick off the

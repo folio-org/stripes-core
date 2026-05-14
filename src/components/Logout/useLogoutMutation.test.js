@@ -5,7 +5,7 @@ import {
   QueryClientProvider,
 } from 'react-query';
 
-import { clearSessionStorage, useLogoutMutation } from './useLogoutMutation';
+import { clearSession, useLogoutMutation } from './useLogoutMutation';
 import { useStripes } from '../../StripesContext';
 import {
   clearCurrentUser,
@@ -41,7 +41,7 @@ jest.mock('localforage', () => ({
 }));
 
 
-describe('clearSessionStorage', () => {
+describe('clearSession', () => {
   beforeEach(() => {
     jest.spyOn(Storage.prototype, 'removeItem');
   });
@@ -59,7 +59,7 @@ describe('clearSessionStorage', () => {
     globalThis.sessionStorage.clear();
 
     const sessionTimer = { clear: jest.fn() };
-    await clearSessionStorage(store, null, [sessionTimer]);
+    await clearSession(store, null, [sessionTimer]);
 
     expect(sessionTimer.clear).toHaveBeenCalled();
   });
@@ -72,7 +72,7 @@ describe('clearSessionStorage', () => {
     };
     globalThis.sessionStorage.clear();
 
-    await clearSessionStorage(store, null, []);
+    await clearSession(store, null, []);
 
     expect(store.dispatch).toHaveBeenCalledWith(setIsAuthenticated(false));
     expect(store.dispatch).toHaveBeenCalledWith(clearCurrentUser());
@@ -88,7 +88,7 @@ describe('clearSessionStorage', () => {
     };
     globalThis.sessionStorage.clear();
 
-    await clearSessionStorage(store, null, []);
+    await clearSession(store, null, []);
 
     expect(localStorage.removeItem).toHaveBeenCalledWith(SESSION_NAME);
     expect(localStorage.removeItem).toHaveBeenCalledWith(RTR_TIMEOUT_EVENT);
@@ -105,7 +105,7 @@ describe('clearSessionStorage', () => {
     };
     globalThis.sessionStorage.clear();
 
-    await clearSessionStorage(store, null, []);
+    await clearSession(store, null, []);
 
     expect(localforage.removeItem).toHaveBeenCalledWith(SESSION_NAME);
     expect(localforage.removeItem).toHaveBeenCalledWith('loginResponse');
@@ -123,7 +123,7 @@ describe('clearSessionStorage', () => {
       removeQueries: jest.fn(),
     };
 
-    await clearSessionStorage(store, rqc, []);
+    await clearSession(store, rqc, []);
 
     expect(rqc.removeQueries).toHaveBeenCalled();
   });

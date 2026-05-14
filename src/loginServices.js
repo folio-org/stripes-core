@@ -1047,14 +1047,18 @@ export async function validateUser(okapiUrl, store, tenant, session, handleError
  * checkOkapiSession
  *
  * 1. Pull the session from local storage; if it contains a user id,
- *    validate it by fetching /_self to verify that it is still active,
- *    dispatching load-resources actions.
+ *    call validateUser() to make an API call to _self in order to verify
+ *    the session is still active, load resources, and return session data.
+ *    If the API call fails in any way, validateUser() will call the given
+ *    errorHandler(), redirecting to /logout to terminate the session and
+ *    returning nothing.
  * 2. Check if SSO (SAML) is enabled, dispatching check-sso actions
  * 3. dispatch set-okapi-ready.
  *
- * @param {string} okapiUrl
- * @param {redux store} store
- * @param {string} tenant
+ * @param {string} okapiUrl API gateway URL
+ * @param {object} store redux store
+ * @param {string} tenant tenant for API requests
+ * @param {object} history react-router history object
  */
 export async function checkOkapiSession(okapiUrl, store, tenant, history) {
   const sess = await getOkapiSession();

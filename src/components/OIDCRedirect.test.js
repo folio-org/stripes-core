@@ -42,7 +42,7 @@ describe('OIDCRedirect', () => {
     setUnauthorizedPathToSession(AUTOMATIC_LOGOUT_LOCATION);
     render(<OIDCRedirect />);
 
-    expect(screen.getByRole('button')).toHaveAttribute('href', 'logout');
+    expect(screen.getByRole('button')).toHaveAttribute('href', '/logout');
   });
 
   it('redirects to URL\'s ?fwd param when available', () => {
