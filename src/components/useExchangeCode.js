@@ -8,12 +8,27 @@ import {
 } from '../loginServices';
 import { useStripes } from '../StripesContext';
 
+/**
+ * useExchangeCode
+ * Pull Keycloak's OTP off the URL and pass it in an API request to /authn/token,
+ * receiving cookies in response. Throw if the OTP is missing or if there are
+ * any problems with the exchange.
+ *
+ * The initSession callback is async but not awaited, which feels suspicious.
+ * It updates redux state, and much of the rest of Stripes reacts to redux
+ * changes rather than API responses. It works, but this reliance on side-
+ * effects can be opaque since the side-effects are not always co-located with
+ * the promises that kick them off.
+ *
+ * @param {} initSession
+ * @returns
+ */
 const useExchangeCode = (initSession = noop) => {
   const stripes = useStripes();
   const ky = useOkapiKy();
   const intl = useIntl();
 
-  const urlParams = new URLSearchParams(window.location.search);
+  const urlParams = new URLSearchParams(globalThis.location.search);
   const code = urlParams.get('code');
   const { tenant, clientId } = getLoginTenant(stripes.okapi, stripes.config);
 
@@ -25,7 +40,7 @@ const useExchangeCode = (initSession = noop) => {
           const json = await ky('authn/token', {
             searchParams: {
               code,
-              'redirect-uri': `${window.location.protocol}//${window.location.host}/oidc-landing?tenant=${tenant}&client_id=${clientId}`,
+              'redirect-uri': `${globalThis.location.protocol}//${globalThis.location.host}/oidc-landing?tenant=${tenant}&client_id=${clientId}`,
             }
           }).json();
 
