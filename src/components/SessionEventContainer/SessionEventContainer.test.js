@@ -11,6 +11,7 @@ import SessionEventContainer, {
 } from './SessionEventContainer';
 import {
   setUnauthorizedPathToSession,
+  LOGOUT_MESSAGES,
   SESSION_NAME,
 } from '../../loginServices';
 import { RTR_TIMEOUT_EVENT } from '../Root/constants';
@@ -51,12 +52,10 @@ describe('SessionEventContainer', () => {
     await waitFor(() => {
       screen.getByText('KeepWorkingModal', { timeout: ms(stripes.config.rtr.idleModalTTL) });
     });
-
-    // expect(stripes.store.dispatch).toHaveBeenCalledWith(expect.any(String));
   });
 
   it('Dispatches logout when modal timer expires', async () => {
-    const dispatchEvent = jest.spyOn(window, 'dispatchEvent').mockImplementation(() => { });
+    const dispatchEvent = jest.spyOn(globalThis, 'dispatchEvent').mockImplementation(() => { });
     render(<Harness stripes={stripes}><SessionEventContainer /></Harness>);
 
     await waitFor(() => {
@@ -75,7 +74,7 @@ describe('SessionEventContainer event listeners', () => {
 
     thisWindowRtrError(null, { okapi: { url: 'http' } }, history);
     expect(setUnauthorizedPathToSession).toHaveBeenCalled();
-    expect(history.push).toHaveBeenCalledWith('/logout-timeout?reason=error');
+    expect(history.push).toHaveBeenCalledWith(`/logout?reason=${LOGOUT_MESSAGES.ERROR}`);
   });
 
   it('thisWindowRtrIstTimeout', async () => {
@@ -92,7 +91,7 @@ describe('SessionEventContainer event listeners', () => {
     const history = { push: jest.fn() };
 
     thisWindowRtrIstTimeout(null, s, history);
-    expect(history.push).toHaveBeenCalledWith('/logout-timeout?reason=inactivity');
+    expect(history.push).toHaveBeenCalledWith(`/logout?reason=${LOGOUT_MESSAGES.INACTIVITY}`);
   });
 
   describe('otherWindowStorage', () => {
@@ -114,7 +113,7 @@ describe('SessionEventContainer event listeners', () => {
       const history = { push: jest.fn() };
 
       otherWindowStorage(e, s, history);
-      expect(history.push).toHaveBeenCalledWith('/logout-timeout');
+      expect(history.push).toHaveBeenCalledWith(`/logout?reason=${LOGOUT_MESSAGES.INACTIVITY}`);
     });
 
     it('logout', async () => {

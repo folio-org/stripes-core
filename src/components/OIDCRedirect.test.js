@@ -1,40 +1,53 @@
 import React from 'react';
 import { render, screen } from '@folio/jest-config-stripes/testing-library/react';
+
 import OIDCRedirect from './OIDCRedirect';
 import { useStripes } from '../StripesContext';
+import { AUTOMATIC_LOGOUT_LOCATION, setUnauthorizedPathToSession } from '../loginServices';
 
 jest.mock('react-router', () => ({
   ...jest.requireActual('react-router'),
-  Redirect: () => <div>internalredirect</div>,
-  withRouter: Component => Component,
-  useLocation: () => ({
-    search: '?fwd=/dashboard',
+  Redirect: jest.fn(({ children, to }) => {
+    return (
+      <a href={to} role="button">
+        <span>
+          {children}
+        </span>
+      </a>
+    );
   }),
+  withRouter: (Component) => Component,
+}));
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useLocation: jest.fn(() => ({ search: '?fwd=dashboard' })),
 }));
 
 jest.mock('../StripesContext');
 
 describe('OIDCRedirect', () => {
-  beforeAll(() => {
-    sessionStorage.setItem(
-      'unauthorized_path',
-      '/example'
-    );
-  });
-
-  afterAll(() => sessionStorage.removeItem('unauthorized_path'));
-
-  it('redirects to value from session storage under unauthorized_path key', () => {
+  it('redirects to value from session storage when available', () => {
+    const path = '/example';
     useStripes.mockReturnValue({ okapi: { authnUrl: 'http://example.com/authn' } });
+    setUnauthorizedPathToSession(path);
     render(<OIDCRedirect />);
 
-    expect(screen.getByText(/internalredirect/)).toBeInTheDocument();
+    expect(screen.getByRole('button')).toHaveAttribute('href', path);
   });
 
-  it('redirects fwd if no authn provided to stripes okapi config', () => {
-    useStripes.mockReturnValue({ okapi: { } });
+  it('redirects to /logout given logout-error sentinel', () => {
+    useStripes.mockReturnValue({ okapi: { authnUrl: 'http://example.com/authn' } });
+    setUnauthorizedPathToSession(AUTOMATIC_LOGOUT_LOCATION);
     render(<OIDCRedirect />);
 
-    expect(screen.getByText(/internalredirect/)).toBeInTheDocument();
+    expect(screen.getByRole('button')).toHaveAttribute('href', '/logout');
+  });
+
+  it('redirects to URL\'s ?fwd param when available', () => {
+    useStripes.mockReturnValue({ okapi: {} });
+    render(<OIDCRedirect />);
+
+    expect(screen.getByRole('button')).toHaveAttribute('href', 'dashboard');
   });
 });
