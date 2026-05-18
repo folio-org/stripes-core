@@ -143,7 +143,6 @@
     "button.duplicate": "Duplicado",
     "stale.warning": "La aplicación ha cambiado en el servidor y necesita ser actualizada.",
     "stale.reload": "Haga clic aquí para recargar.",
-    "placeholder.forgotPassword": "Enter email or phone",
     "placeholder.forgotUsername": "Introduce email o teléfono",
     "title.cookieEnabled": "Cookies are required to login. Please enable cookies and try again.",
     "logoutPending": "Cierre de sesión en proceso...",
@@ -162,5 +161,16 @@
     "logoutComplete": "You have logged out.",
     "errors.oidc": "Error: server is forbidden, unreachable, or unavailable.",
     "title.logoutTimeout": "Inactivity log out",
-    "help": "Help"
+    "help": "Help",
+    "entitlementLoader.assetError": "Error loading remote module assets (icons, translations, sounds)",
+    "entitlementLoader.moduleError": "Error preloading modules:",
+    "placeholder.field.forgotPassword": "Enter username, email or phone",
+    "rtr.error": "ERROR! Your session could not be continued.",
+    "rtr.expired": "Your session expired.",
+    "init.error": "Sorry, there was an error during initialization. Please try again.",
+    "oidc.validatingAuthenticationToken": "Validating authentication token...",
+    "oidc.initializingSession": "Initializing session...",
+    "oidc.otp.missingCode": "The query parameter 'code' is missing.",
+    "releaseNotes.front": "FOLIO release notes",
+    "releaseNotes.settings": "Release notes"
 }

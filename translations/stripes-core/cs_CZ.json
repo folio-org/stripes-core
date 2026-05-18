@@ -143,7 +143,6 @@
     "button.duplicate": "Duplikovat",
     "stale.warning": "Aplikace se na serveru změnila a je třeba ji obnovit.",
     "stale.reload": "Klikněte zde pro opětovné načtení.",
-    "placeholder.forgotPassword": "Zadejte e-mail nebo telefon",
     "placeholder.forgotUsername": "Zadejte e-mail nebo telefon",
     "title.cookieEnabled": "Pro přihlášení jsou vyžadovány soubory cookie. Povolte soubory cookie a zkuste to znovu prosím.",
     "logoutPending": "Probíhá odhlašování...",
@@ -162,5 +161,16 @@
     "logoutComplete": "Odhlásili jste se.",
     "errors.oidc": "Chyba: server je zakázaný, nedosažitelný nebo nedostupný.",
     "title.logoutTimeout": "Odhlášení kvůli nečinnosti",
-    "help": "Nápověda"
+    "help": "Nápověda",
+    "entitlementLoader.assetError": "Error loading remote module assets (icons, translations, sounds)",
+    "entitlementLoader.moduleError": "Error preloading modules:",
+    "placeholder.field.forgotPassword": "Enter username, email or phone",
+    "rtr.error": "ERROR! Your session could not be continued.",
+    "rtr.expired": "Your session expired.",
+    "init.error": "Sorry, there was an error during initialization. Please try again.",
+    "oidc.validatingAuthenticationToken": "Validating authentication token...",
+    "oidc.initializingSession": "Initializing session...",
+    "oidc.otp.missingCode": "The query parameter 'code' is missing.",
+    "releaseNotes.front": "FOLIO release notes",
+    "releaseNotes.settings": "Release notes"
 }
