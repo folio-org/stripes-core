@@ -141,6 +141,16 @@ export const useLogoutMutation = (timers) => {
       let didFailLogout = false;
       if (localStorage.getItem(SESSION_NAME)) {
         try {
+          // Calling `/authn/logout` without an AT destroys the RT, making it
+          // impossible to then rotate and replay the `/authn/logout` call. 🤦
+          // Why doesn't it just return a 401 like every other endpoint? 🤷
+          // To increase the likelihood that logout succeeds, we thus call
+          // `/authn/refresh` with the hope that it will bless us with active
+          // tokens, allowing us to logout successfully and destroy both the
+          // keycloak and FOLIO sessions, keeping the world in sync.
+          // if either request fails, set the did-fail sentinel in order to
+          // kick off the sync-and-destroy workflow.
+          await ky.post('authn/refresh');
           await ky.post('authn/logout');
         } catch (err) {
           console.error('uhoh, logout request failed!', err); // eslint-disable-line no-console
