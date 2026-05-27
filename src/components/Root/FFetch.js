@@ -24,8 +24,8 @@
  *
  */
 
-
 import { RTR_LOCK_KEY, rotateAndReplay } from './rotateAndReplay';
+import { getTokenExpiry } from '../../loginServices';
 
 import {
   isFolioApiRequest,
@@ -204,22 +204,36 @@ export class FFetch {
       // triggers rotation and it needs to be replayed.
       const reusableResource = resource instanceof Request ? resource.clone() : resource;
 
-      // readers/writer lock pattern: don't fetch while rotation is in-progress
-      // https://developer.mozilla.org/en-US/docs/Web/API/LockManager/request
-      response = await navigator.locks.request(RTR_LOCK_KEY, { mode: 'shared' }, async () => {
-        const fr = await this.nativeFetch.apply(globalThis, [resource, options && { ...options, ...FOLIO_FETCH_OPTIONS }]);
-        return fr;
-      });
 
-      if (options?.rtrIgnore) {
-        return response;
+      // first check and see if the token metadata we have is expired or not.
+      // If it is expired, we'll just skip to rotation instead of trying the request and inviting
+      // handfuls of 401 responses. Setting a true `atExpired` flag will circumvent response inspection
+      // in `shouldRotate`. In case our meta-expiry is out of sync, we'll still catch the problem in an
+      // actual 4xx response.
+
+      const expiry = await getTokenExpiry();
+      let atExpired = false;
+      if (expiry?.atExpires && Date.now() > expiry.atExpires) {
+        this.logger?.log?.('rtrv', 'access token is expired based on metadata, skipping to rotation');
+        atExpired = true;
+      } else {
+        // readers/writer lock pattern: don't fetch while rotation is in-progress
+        // https://developer.mozilla.org/en-US/docs/Web/API/LockManager/request
+        response = await navigator.locks.request(RTR_LOCK_KEY, { mode: 'shared' }, async () => {
+          const fr = await this.nativeFetch.apply(globalThis, [resource, options && { ...options, ...FOLIO_FETCH_OPTIONS }]);
+          return fr;
+        });
+
+        if (options?.rtrIgnore) {
+          return response;
+        }
       }
 
       if (!response?.ok) {
         response = await rotateAndReplay(
           this.nativeFetch,
           { ...this.rotationConfig, logger: this.logger },
-          { response, resource: reusableResource, options }
+          { response, resource: reusableResource, options, atExpired }
         );
       }
 

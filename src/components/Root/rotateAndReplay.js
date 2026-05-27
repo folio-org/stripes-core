@@ -156,7 +156,7 @@ export const rotateAndReplay = async (fetchfx, config, original) => {
   // 🧐 are we certain we need to rotate? check these two conditions:
   // 1. shouldRotate() asked for rotation
   // 2. the response status indicates we need rotation
-  if (await shouldRotate(original?.response) || statusCodes.includes(original?.response?.status)) {
+  if (original.atExpired || await shouldRotate(original?.response) || statusCodes.includes(original?.response?.status)) {
     // 🔒 lock, then rotate
     // default lock-mode is exclusive, preventing others from entering the lock
     // until this lock resolves (writer/readers pattern)
