@@ -214,14 +214,14 @@ export class FFetch {
       // actual 4xx response.
 
       const expiry = await getTokenExpiry();
-      if (Date.now() < (expiry?.atExpires || Infinity)) {
+      // undefined in a comparison always amounts to false since it's NaN, so no expiry means we need to rotate.
+      if (Date.now() < expiry?.atExpires) {
         // readers/writer lock pattern: don't fetch while rotation is in-progress
         // https://developer.mozilla.org/en-US/docs/Web/API/LockManager/request
         response = await navigator.locks.request(RTR_LOCK_KEY, { mode: 'shared' }, async () => {
           const fr = await this.nativeFetch.apply(globalThis, [resource, options && { ...options, ...FOLIO_FETCH_OPTIONS }]);
           return fr;
         });
-
         if (options?.rtrIgnore) {
           return response;
         }

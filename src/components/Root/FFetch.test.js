@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { FFetch } from './FFetch';
 import { RTRError } from './Errors';
+import { getTokenExpiry } from '../../loginServices';
 
 jest.mock('./rotateAndReplay', () => ({
   rotateAndReplay: jest.fn(),
@@ -32,6 +33,8 @@ describe('FFetch behavior and rotation helpers', () => {
         },
       };
     }
+    // set token expiry in the future by default.
+    getTokenExpiry.mockResolvedValueOnce({ atExpires: Date.now() + 1000 });
   });
 
   afterEach(() => {
@@ -53,7 +56,6 @@ describe('FFetch behavior and rotation helpers', () => {
   it('uses native fetch for Okapi requests and returns when ok', async () => {
     const expected = { ok: true, data: 'ok' };
     mockFetch.mockResolvedValueOnce(expected);
-
     const ff = new FFetch({ logger: {}, okapi: { url: okapiUrl, tenant: 't' }, onRotate: jest.fn() });
     ff.replaceFetch();
 
@@ -176,9 +178,21 @@ describe('FFetch behavior and rotation helpers', () => {
           const shouldRotate = await ff.rotationConfig.shouldRotate(res);
           expect(shouldRotate).toBe(true);
         });
+
+        it('given an expired token and no response', async () => {
+          getTokenExpiry.mockReset();
+          getTokenExpiry.mockResolvedValue({ atExpires: Date.now() - 1000 });
+          const ff = new FFetch({ logger: {}, okapi: { url: '/whatever', tenant: 't' }, onRotate: jest.fn() });
+          const shouldRotate = await ff.rotationConfig.shouldRotate();
+          expect(shouldRotate).toBe(true);
+        });
       });
 
       describe('returns false', () => {
+        beforeEach(() => {
+          // will return false if expiry is always valid, i.e. in the future.
+          getTokenExpiry.mockResolvedValueOnce({ atExpires: Date.now() + 1000 });
+        });
         it('without a response to investigate', async () => {
           const ff = new FFetch({ logger: {}, okapi: { url: okapiUrl, tenant: 't' }, onRotate: jest.fn() });
           const shouldRotate = await ff.rotationConfig.shouldRotate();
