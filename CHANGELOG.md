@@ -14,6 +14,7 @@
 * Add cleanup logic for FFetch and use it in unmount lifecycle of Root. Refs STCOR-1064.
 * Show messages from `Error` objects in OIDCLandingError. Refs STCOR-1002.
 * Consolidate logout functionality; trap errors during logout so storage is always cleared. Refs STCOR-1061.
+* Recalculate navbar apps when container width changes. Refs STCOR-1063.
 * Rotate preventively prior to logout. Refs STCOR-1068.
 
 ## [11.1.1](https://github.com/folio-org/stripes-core/tree/v11.1.1) (2026-04-20)

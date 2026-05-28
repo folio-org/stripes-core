@@ -38,6 +38,12 @@ class ResizeContainer extends React.Component {
   componentDidMount() {
     this.initialize();
     window.addEventListener('resize', this.onResize, true);
+
+    // Observe size changes of the wrapper itself so we recompute hidden items
+    if (typeof ResizeObserver !== 'undefined' && this.wrapperRef.current) {
+      this.resizeObserver = new ResizeObserver(this.onResize);
+      this.resizeObserver.observe(this.wrapperRef.current);
+    }
   }
 
   componentDidUpdate(prevProps) {
@@ -76,6 +82,11 @@ class ResizeContainer extends React.Component {
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.onResize, true);
+
+    if (this.resizeObserver) {
+      this.resizeObserver.disconnect();
+      this.resizeObserver = null;
+    }
   }
 
   cacheWidthsOfItems = () => {
@@ -121,7 +132,7 @@ class ResizeContainer extends React.Component {
 
         // Find items that should be hidden
         items.reduce((acc, { id }) => {
-          const itemWidth = this.cachedItemWidths[id];
+          const itemWidth = this.cachedItemWidths[id] || 0;
           const shouldBeHidden = (itemWidth + acc.accWidth + offset) > wrapperWidth;
           const hidden = shouldBeHidden ? acc.hidden.concat(id) : acc.hidden;
 
