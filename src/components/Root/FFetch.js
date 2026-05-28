@@ -215,7 +215,7 @@ export class FFetch {
 
       const expiry = await getTokenExpiry();
       // undefined in a comparison always amounts to false since it's NaN, so no expiry means we need to rotate.
-      if (Date.now() < expiry?.atExpires) {
+      if (Date.now() < expiry?.atExpires || options?.rtrIgnore) {
         // readers/writer lock pattern: don't fetch while rotation is in-progress
         // https://developer.mozilla.org/en-US/docs/Web/API/LockManager/request
         response = await navigator.locks.request(RTR_LOCK_KEY, { mode: 'shared' }, async () => {
