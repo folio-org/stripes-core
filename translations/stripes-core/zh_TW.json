@@ -143,7 +143,6 @@
     "button.duplicate": "複製",
     "stale.warning": "伺服器上的應用程式已更改，需要重新整理。",
     "stale.reload": "點擊此處重新載入。",
-    "placeholder.forgotPassword": "輸入電子郵件或電話",
     "placeholder.forgotUsername": "輸入電子郵件或電話",
     "title.cookieEnabled": "登入需要 Cookie。請啟用Cookie，然後重試。",
     "logoutPending": "Log out in process...",
@@ -162,5 +161,16 @@
     "logoutComplete": "You have logged out.",
     "errors.oidc": "Error: server is forbidden, unreachable, or unavailable.",
     "title.logoutTimeout": "Inactivity log out",
-    "help": "幫助"
+    "help": "幫助",
+    "entitlementLoader.assetError": "Error loading remote module assets (icons, translations, sounds)",
+    "entitlementLoader.moduleError": "Error preloading modules:",
+    "placeholder.field.forgotPassword": "Enter username, email or phone",
+    "rtr.error": "ERROR! Your session could not be continued.",
+    "rtr.expired": "Your session expired.",
+    "init.error": "Sorry, there was an error during initialization. Please try again.",
+    "oidc.validatingAuthenticationToken": "Validating authentication token...",
+    "oidc.initializingSession": "Initializing session...",
+    "oidc.otp.missingCode": "The query parameter 'code' is missing.",
+    "releaseNotes.front": "FOLIO release notes",
+    "releaseNotes.settings": "Release notes"
 }
