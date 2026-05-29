@@ -143,7 +143,6 @@
     "button.duplicate": "Dupliceren",
     "stale.warning": "De applicatie is gewijzigd op de server en moet ververst worden.",
     "stale.reload": "Klik hier om opnieuw te laden.",
-    "placeholder.forgotPassword": "Voer e-mail of telefoonnummer in",
     "placeholder.forgotUsername": "Voer e-mail of telefoonnummer in",
     "title.cookieEnabled": "Cookies zijn vereist om in te loggen. Schakel cookies in en probeer het opnieuw.",
     "logoutPending": "Afmelden in behandeling...",
@@ -162,5 +161,16 @@
     "logoutComplete": "U bent uitgelogd.",
     "errors.oidc": "Fout: server is verboden, onbereikbaar of niet beschikbaar.",
     "title.logoutTimeout": "Inactiviteit uitloggen",
-    "help": "Help"
+    "help": "Help",
+    "entitlementLoader.assetError": "Error loading remote module assets (icons, translations, sounds)",
+    "entitlementLoader.moduleError": "Error preloading modules:",
+    "placeholder.field.forgotPassword": "Enter username, email or phone",
+    "rtr.error": "ERROR! Your session could not be continued.",
+    "rtr.expired": "Your session expired.",
+    "init.error": "Sorry, there was an error during initialization. Please try again.",
+    "oidc.validatingAuthenticationToken": "Validating authentication token...",
+    "oidc.initializingSession": "Initializing session...",
+    "oidc.otp.missingCode": "The query parameter 'code' is missing.",
+    "releaseNotes.front": "FOLIO release notes",
+    "releaseNotes.settings": "Release notes"
 }
