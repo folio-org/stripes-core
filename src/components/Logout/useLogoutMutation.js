@@ -150,8 +150,8 @@ export const useLogoutMutation = (timers) => {
           // keycloak and FOLIO sessions, keeping the world in sync.
           // if either request fails, set the did-fail sentinel in order to
           // kick off the sync-and-destroy workflow.
-          await ky.post('authn/refresh');
-          await ky.post('authn/logout');
+          await ky.post('authn/refresh', { rtrIgnore: true });
+          await ky.post('authn/logout', { rtrIgnore: true });
         } catch (err) {
           console.error('uhoh, logout request failed!', err); // eslint-disable-line no-console
           didFailLogout = true;
