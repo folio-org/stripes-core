@@ -174,8 +174,8 @@ describe('useLogoutMutation', () => {
       hook.result.current.mutate();
 
       await waitFor(async () => {
-        expect(mockPost).toHaveBeenCalledWith('authn/refresh');
-        expect(mockPost).toHaveBeenCalledWith('authn/logout');
+        expect(mockPost).toHaveBeenCalledWith('authn/refresh', { rtrIgnore: true });
+        expect(mockPost).toHaveBeenCalledWith('authn/logout', { rtrIgnore: true });
       });
     });
 
