@@ -1,5 +1,10 @@
 # Change history for stripes-core
 
+## [11.1.3](https://github.com/folio-org/stripes-core/tree/v11.1.3) (2026-06-01)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v11.1.2...v11.1.3)
+
+* Include recent translation updates.
+
 ## [11.1.2](https://github.com/folio-org/stripes-core/tree/v11.1.2) (2026-04-30)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v11.1.1...v11.1.2)
 
