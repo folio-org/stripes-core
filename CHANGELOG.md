@@ -1,6 +1,7 @@
 # Change history for stripes-core
 
-## IN PROGRESS
+## [11.1.4](https://github.com/folio-org/stripes-core/tree/v11.1.4) (2026-06-02)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v11.1.1...v11.1.4)
 
 * Include recent translation updates.
 * Show messages from `Error` objects in OIDCLandingError. Refs STCOR-1002.
