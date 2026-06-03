@@ -169,12 +169,13 @@ describe('useLogoutMutation', () => {
       mockPost.mockReset();
     });
 
-    it('makes /authn/logout API call', async () => {
+    it('makes /authn/rotate and /authn/logout API calls', async () => {
       const hook = renderHook(() => useLogoutMutation([]), { wrapper });
       hook.result.current.mutate();
 
       await waitFor(async () => {
-        expect(mockPost).toHaveBeenCalled();
+        expect(mockPost).toHaveBeenCalledWith('authn/refresh', { rtrIgnore: true });
+        expect(mockPost).toHaveBeenCalledWith('authn/logout', { rtrIgnore: true });
       });
     });
 
@@ -208,7 +209,7 @@ describe('useLogoutMutation', () => {
       mockPost.mockReset();
     });
 
-    it('skips /authn/logout API call', async () => {
+    it('skips API calls', async () => {
       const hook = renderHook(() => useLogoutMutation([]), { wrapper });
       hook.result.current.mutate();
       await waitFor(async () => {

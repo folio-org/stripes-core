@@ -16,6 +16,7 @@
 * Consolidate logout functionality; trap errors during logout so storage is always cleared. Refs STCOR-1061.
 * Recalculate navbar apps when container width changes. Refs STCOR-1063.
 * Inspect local expiry information prior to initial request, avoiding 401's in rtr flow. Refs STCOR-1069.
+* Rotate preventively prior to logout. Refs STCOR-1068.
 
 ## [11.1.1](https://github.com/folio-org/stripes-core/tree/v11.1.1) (2026-04-20)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v11.1.0...v11.1.1)
