@@ -237,7 +237,7 @@ describe('Create/Reset password page', () => {
     });
 
     describe('non-successful submission: invalid link', () => {
-      const confirmation = ChangePasswordConfirmationInteractor();
+      const confirmation = new ChangePasswordConfirmationInteractor();
 
       setupApplication({
         disableAuth: false,
