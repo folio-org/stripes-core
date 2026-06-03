@@ -24,8 +24,8 @@
  *
  */
 
-
 import { RTR_LOCK_KEY, rotateAndReplay } from './rotateAndReplay';
+import { getTokenExpiry } from '../../loginServices';
 
 import {
   isFolioApiRequest,
@@ -119,6 +119,8 @@ export class FFetch {
     // deal with Okapi's non-standard 400 response for missing/invalid tokens,
     // as well as /users-keycloak's 404 response for missing token
     // by cloning the response and inspecting the body text.
+    // If we haven't already determined that we should rotate from the response, we can also check the
+    // token expiry metadata and rotate accordingly.
     // optional; defaults to a function that resolves to false, i.e. do not force rotation
     shouldRotate: async (response) => {
       if (response) {
@@ -132,7 +134,8 @@ export class FFetch {
         );
       }
 
-      return false;
+      const expiry = await getTokenExpiry();
+      return (Date.now() > (expiry?.atExpires || 0));
     },
 
     // rotate
@@ -204,15 +207,24 @@ export class FFetch {
       // triggers rotation and it needs to be replayed.
       const reusableResource = resource instanceof Request ? resource.clone() : resource;
 
-      // readers/writer lock pattern: don't fetch while rotation is in-progress
-      // https://developer.mozilla.org/en-US/docs/Web/API/LockManager/request
-      response = await navigator.locks.request(RTR_LOCK_KEY, { mode: 'shared' }, async () => {
-        const fr = await this.nativeFetch.apply(globalThis, [resource, options && { ...options, ...FOLIO_FETCH_OPTIONS }]);
-        return fr;
-      });
 
-      if (options?.rtrIgnore) {
-        return response;
+      // first check and see if the token metadata we have is expired or not.
+      // If it is expired, we'll just skip to rotateAndReplay instead of trying the request and inviting
+      // handfuls of 401 responses. In case our meta-expiry is out of sync, we'll still catch the problem in an
+      // actual 4xx response.
+
+      const expiry = await getTokenExpiry();
+      // undefined in a comparison always amounts to false since it's NaN, so no expiry means we need to rotate.
+      if (Date.now() < expiry?.atExpires || options?.rtrIgnore) {
+        // readers/writer lock pattern: don't fetch while rotation is in-progress
+        // https://developer.mozilla.org/en-US/docs/Web/API/LockManager/request
+        response = await navigator.locks.request(RTR_LOCK_KEY, { mode: 'shared' }, async () => {
+          const fr = await this.nativeFetch.apply(globalThis, [resource, options && { ...options, ...FOLIO_FETCH_OPTIONS }]);
+          return fr;
+        });
+        if (options?.rtrIgnore) {
+          return response;
+        }
       }
 
       if (!response?.ok) {

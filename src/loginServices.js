@@ -1094,6 +1094,7 @@ export async function requestLogin(okapiUrl, store, tenant, data) {
     headers: { 'X-Okapi-Tenant': tenant, 'Content-Type': 'application/json' },
     method: 'POST',
     mode: 'cors',
+    rtrIgnore: true,
   });
 
   return processOkapiSession(store, tenant, resp);
