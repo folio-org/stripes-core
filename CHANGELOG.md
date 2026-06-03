@@ -11,6 +11,8 @@
 * ^^^ yes, but do not call `clone()` on `URL` instances inside requests. Refs STCOR-1062.
 * Adopt FFetch's rotation logic flow in FXHR for consistency. Refs STCOR-1055.
 * Add cleanup logic for FFetch and use it in unmount lifecycle of Root. Refs STCOR-1064.
+* Consolidate logout functionality; trap errors during logout so storage is always cleared. Refs STCOR-1061.
+* Inspect local expiry information prior to initial request, avoiding 401's in rtr flow. Refs STCOR-1069.
 
 ## [11.1.5](https://github.com/folio-org/stripes-core/tree/v11.1.5) (2026-06-03)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v11.1.4...v11.1.5)
@@ -22,7 +24,6 @@
 
 * Include recent translation updates.
 * Show messages from `Error` objects in OIDCLandingError. Refs STCOR-1002.
-* Consolidate logout functionality; trap errors during logout so storage is always cleared. Refs STCOR-1061.
 
 ## [11.1.2](https://github.com/folio-org/stripes-core/tree/v11.1.2) (2026-04-30)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v11.1.1...v11.1.2)
