@@ -13,6 +13,7 @@
 * Add cleanup logic for FFetch and use it in unmount lifecycle of Root. Refs STCOR-1064.
 * Consolidate logout functionality; trap errors during logout so storage is always cleared. Refs STCOR-1061.
 * Inspect local expiry information prior to initial request, avoiding 401's in rtr flow. Refs STCOR-1069.
+* Rotate preventively prior to logout. Refs STCOR-1068.
 
 ## [11.1.5](https://github.com/folio-org/stripes-core/tree/v11.1.5) (2026-06-03)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v11.1.4...v11.1.5)
