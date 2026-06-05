@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { FFetch } from './FFetch';
 import { RTRError } from './Errors';
+import { getTokenExpiry } from '../../loginServices';
 
 jest.mock('./rotateAndReplay', () => ({
   rotateAndReplay: jest.fn(),
@@ -17,19 +18,27 @@ describe('FFetch behavior and rotation helpers', () => {
   const okapiUrl = 'http://okapi';
 
   beforeEach(() => {
-    originalFetch = global.fetch;
+    originalFetch = globalThis.fetch;
     mockFetch = jest.fn();
-    global.fetch = mockFetch;
+    globalThis.fetch = mockFetch;
 
-    // ensure navigator exists but without locks by default
-    // @ts-ignore
-    if (!global.navigator) global.navigator = {};
-    // @ts-ignore
-    delete global.navigator.locks;
+    // polyfill navigator.locks for jsdom
+    if (!globalThis.navigator) globalThis.navigator = {};
+    if (!globalThis.navigator.locks) {
+      globalThis.navigator.locks = {
+        request: async (...av) => {
+          if (av.length === 3) return av[2]();
+          if (av.length === 2) return av[1]();
+          throw new Error('Cannot call navigator.locks.request without a function to execute!');
+        },
+      };
+    }
+    // set token expiry in the future by default.
+    getTokenExpiry.mockResolvedValueOnce({ atExpires: Date.now() + 1000 });
   });
 
   afterEach(() => {
-    global.fetch = originalFetch;
+    globalThis.fetch = originalFetch;
     jest.resetAllMocks();
   });
 
@@ -38,7 +47,7 @@ describe('FFetch behavior and rotation helpers', () => {
     const ff = new FFetch({ logger: {}, okapi: { url: okapiUrl, tenant: 't' }, onRotate: jest.fn() });
     ff.replaceFetch();
 
-    const res = await global.fetch('https://example.com/foo');
+    const res = await globalThis.fetch('https://example.com/foo');
 
     expect(mockFetch).toHaveBeenCalledTimes(1);
     expect(res).toBe('non-okapi-success');
@@ -47,27 +56,42 @@ describe('FFetch behavior and rotation helpers', () => {
   it('uses native fetch for Okapi requests and returns when ok', async () => {
     const expected = { ok: true, data: 'ok' };
     mockFetch.mockResolvedValueOnce(expected);
-
     const ff = new FFetch({ logger: {}, okapi: { url: okapiUrl, tenant: 't' }, onRotate: jest.fn() });
     ff.replaceFetch();
 
-    const res = await global.fetch(`${okapiUrl}/resource`);
+    const res = await globalThis.fetch(`${okapiUrl}/resource`);
 
     expect(mockFetch).toHaveBeenCalledTimes(1);
     expect(res).toBe(expected);
+  });
+
+  it('ignores rotation in requests with options containing "rtrIgnore: true "', async () => {
+    const { rotateAndReplay } = require('./rotateAndReplay');
+    const failResp = { ok: false, status: 401, body: 'ruhroh, "the island of missing trees" was, um, missing' };
+
+    mockFetch.mockResolvedValueOnce(failResp);
+    rotateAndReplay.mockResolvedValueOnce(failResp);
+
+    const ff = new FFetch({ logger: console, okapi: { url: okapiUrl, tenant: 't' }, onRotate: jest.fn() });
+    ff.replaceFetch();
+
+    const res = await globalThis.fetch(`${okapiUrl}/as/the/token/turns`, { rtrIgnore: true });
+    expect(res).toBe(failResp);
+    expect(mockFetch).toHaveBeenCalledTimes(1);
+    expect(rotateAndReplay).not.toHaveBeenCalled();
   });
 
   it('uses navigator.locks.request when available', async () => {
     // provide LockManager
     const lockCb = jest.fn((key, opts, cb) => cb());
     // @ts-ignore
-    global.navigator.locks = { request: lockCb };
+    globalThis.navigator.locks = { request: lockCb };
 
     mockFetch.mockResolvedValueOnce({ ok: true });
     const ff = new FFetch({ logger: {}, okapi: { url: okapiUrl, tenant: 't' }, onRotate: jest.fn() });
     ff.replaceFetch();
 
-    const res = await global.fetch(`${okapiUrl}/locked`);
+    const res = await globalThis.fetch(`${okapiUrl}/locked`);
 
     expect(lockCb).toHaveBeenCalled();
     expect(res).toEqual({ ok: true });
@@ -81,12 +105,12 @@ describe('FFetch behavior and rotation helpers', () => {
 
       // the fetch will fail, then rotation will reject with the same response
       mockFetch.mockResolvedValueOnce(failResp);
-      rotateAndReplay.mockRejectedValueOnce({ response: failResp });
+      rotateAndReplay.mockResolvedValueOnce(failResp);
 
       const ff = new FFetch({ logger: console, okapi: { url: okapiUrl, tenant: 't' }, onRotate: jest.fn() });
       ff.replaceFetch();
 
-      const res = await global.fetch(`${okapiUrl}/explode`);
+      const res = await globalThis.fetch(`${okapiUrl}/explode`);
       expect(res).toBe(failResp);
     });
 
@@ -103,7 +127,7 @@ describe('FFetch behavior and rotation helpers', () => {
       const ff = new FFetch({ logger: console, okapi: { url: okapiUrl, tenant: 't' }, onRotate: jest.fn() });
       ff.replaceFetch();
 
-      const res = await global.fetch(`${okapiUrl}/explode`);
+      const res = await globalThis.fetch(`${okapiUrl}/explode`);
       expect(res).toBe(successResp);
     });
 
@@ -120,28 +144,78 @@ describe('FFetch behavior and rotation helpers', () => {
       const ff = new FFetch({ logger: console, okapi: { url: okapiUrl, tenant: 't' }, onRotate: jest.fn() });
       ff.replaceFetch();
 
-      await expect(global.fetch(`${okapiUrl}/explode`)).rejects.toThrow(rotationError);
+      await expect(globalThis.fetch(`${okapiUrl}/explode`)).rejects.toThrow(rotationError);
     });
   });
 
   describe('rotationConfig helpers', () => {
     describe('shouldRotate', () => {
-      it('without a response, returns false', async () => {
-        const ff = new FFetch({ logger: {}, okapi: { url: okapiUrl, tenant: 't' }, onRotate: jest.fn() });
-        const shouldRotate = await ff.rotationConfig.shouldRotate();
-        expect(shouldRotate).toBe(false);
+      describe('returns true', () => {
+        it('given a 400 with okapi\'s special error text, returns true', async () => {
+          const res = new Response('Token missing, access requires permission', { status: 400 });
+          const ff = new FFetch({ logger: {}, okapi: { url: '/users-keycloak/_self', tenant: 't' }, onRotate: jest.fn() });
+          const shouldRotate = await ff.rotationConfig.shouldRotate(res);
+          expect(shouldRotate).toBe(true);
+        });
+
+        it('given a 404 at /users-keycloak/_self', async () => {
+          const res = new Response('whateva', { status: 404, url: '/users-keycloak/_self' });
+          const ff = new FFetch({ logger: {}, okapi: { url: '/bl-users/_self', tenant: 't' }, onRotate: jest.fn() });
+          const shouldRotate = await ff.rotationConfig.shouldRotate(res);
+          expect(shouldRotate).toBe(true);
+        });
+
+        it('given a 404 at /bl-users/_self', async () => {
+          const res = new Response('whateva', { status: 404, url: '/bl-users/_self' });
+          const ff = new FFetch({ logger: {}, okapi: { url: '/bl-users/_self', tenant: 't' }, onRotate: jest.fn() });
+          const shouldRotate = await ff.rotationConfig.shouldRotate(res);
+          expect(shouldRotate).toBe(true);
+        });
+
+        it('given a 422 at /authn/logout', async () => {
+          const res = new Response('whateva', { status: 422, url: '/authn/logout' });
+          const ff = new FFetch({ logger: {}, okapi: { url: '/bl-users/_self', tenant: 't' }, onRotate: jest.fn() });
+          const shouldRotate = await ff.rotationConfig.shouldRotate(res);
+          expect(shouldRotate).toBe(true);
+        });
+
+        it('given an expired token and no response', async () => {
+          getTokenExpiry.mockReset();
+          getTokenExpiry.mockResolvedValue({ atExpires: Date.now() - 1000 });
+          const ff = new FFetch({ logger: {}, okapi: { url: '/whatever', tenant: 't' }, onRotate: jest.fn() });
+          const shouldRotate = await ff.rotationConfig.shouldRotate();
+          expect(shouldRotate).toBe(true);
+        });
       });
 
-      it('given a 400 with okapi\'s special error text, returns true', async () => {
-        const ff = new FFetch({ logger: {}, okapi: { url: okapiUrl, tenant: 't' }, onRotate: jest.fn() });
-        const shouldRotate = await ff.rotationConfig.shouldRotate(new Response('Token missing, access requires permission', { status: 400 }));
-        expect(shouldRotate).toBe(true);
-      });
+      describe('returns false', () => {
+        beforeEach(() => {
+          // will return false if expiry is always valid, i.e. in the future.
+          getTokenExpiry.mockResolvedValueOnce({ atExpires: Date.now() + 1000 });
+        });
+        it('without a response to investigate', async () => {
+          const ff = new FFetch({ logger: {}, okapi: { url: okapiUrl, tenant: 't' }, onRotate: jest.fn() });
+          const shouldRotate = await ff.rotationConfig.shouldRotate();
+          expect(shouldRotate).toBe(false);
+        });
 
-      it('given a 400 with generic text, returns false', async () => {
-        const ff = new FFetch({ logger: {}, okapi: { url: okapiUrl, tenant: 't' }, onRotate: jest.fn() });
-        const shouldRotate = await ff.rotationConfig.shouldRotate(new Response('Nobody here but us chickens', { status: 400 }));
-        expect(shouldRotate).toBe(false);
+        it('given a 400 without okapi\'s specific text', async () => {
+          const ff = new FFetch({ logger: {}, okapi: { url: okapiUrl, tenant: 't' }, onRotate: jest.fn() });
+          const shouldRotate = await ff.rotationConfig.shouldRotate(new Response('Nobody here but us chickens', { status: 400 }));
+          expect(shouldRotate).toBe(false);
+        });
+
+        it('given a 404 somewhere other than /users-keycloak/_self or /bl-users/_self', async () => {
+          const ff = new FFetch({ logger: {}, okapi: { url: '/somewhere/safe', tenant: 't' }, onRotate: jest.fn() });
+          const shouldRotate = await ff.rotationConfig.shouldRotate(new Response('Nobody here but us chickens', { status: 404 }));
+          expect(shouldRotate).toBe(false);
+        });
+
+        it('given a 422 somewhere other than /authn/logout', async () => {
+          const ff = new FFetch({ logger: {}, okapi: { url: '/somewhere/safe', tenant: 't' }, onRotate: jest.fn() });
+          const shouldRotate = await ff.rotationConfig.shouldRotate(new Response('Nobody here but us chickens', { status: 422 }));
+          expect(shouldRotate).toBe(false);
+        });
       });
     });
 
@@ -171,32 +245,18 @@ describe('FFetch behavior and rotation helpers', () => {
       await expect(ff.rotationConfig.rotate()).rejects.toThrow('Rotation failure!');
     });
 
-    it('isValidToken returns true when token expiry is in future and false otherwise', async () => {
-      const { getTokenExpiry } = require('../../loginServices');
-      const ff = new FFetch({ logger: { log: jest.fn() }, okapi: { url: okapiUrl, tenant: 't' }, onRotate: jest.fn() });
-
-      getTokenExpiry.mockResolvedValueOnce({ atExpires: Date.now() + 10000 });
-      await expect(ff.rotationConfig.isValidToken()).resolves.toBe(true);
-
-      getTokenExpiry.mockResolvedValueOnce({ atExpires: Date.now() - 10000 });
-      await expect(ff.rotationConfig.isValidToken()).resolves.toBe(false);
-
-      getTokenExpiry.mockRejectedValueOnce(new Error('no storage'));
-      await expect(ff.rotationConfig.isValidToken()).resolves.toBe(false);
-    });
-
     it('replaceXMLHttpRequest sets global.XMLHttpRequest and preserves the original', () => {
       const dummy = function OldXhr() { };
-      global.XMLHttpRequest = dummy;
+      globalThis.XMLHttpRequest = dummy;
 
       const ff = new FFetch({ logger: {}, okapi: { url: okapiUrl, tenant: 't' }, onRotate: jest.fn() });
       ff.replaceXMLHttpRequest();
 
       expect(ff.NativeXHR).toBe(dummy);
-      expect(global.XMLHttpRequest).not.toBe(dummy);
+      expect(globalThis.XMLHttpRequest).not.toBe(dummy);
 
       // restore to avoid side effects
-      global.XMLHttpRequest = dummy;
+      globalThis.XMLHttpRequest = dummy;
     });
 
     it('rotationConfig.options merges OKAPI_FETCH_OPTIONS into options', () => {
@@ -220,7 +280,7 @@ describe('FFetch behavior and rotation helpers', () => {
 
     it('rotationConfig.onFailure dispatches an RTR error event', async () => {
       const ff = new FFetch({ logger: {}, okapi: { url: okapiUrl, tenant: 't' }, onRotate: jest.fn() });
-      const spy = jest.spyOn(window, 'dispatchEvent');
+      const spy = jest.spyOn(globalThis, 'dispatchEvent');
 
       await ff.rotationConfig.onFailure(new Error('boom'));
 

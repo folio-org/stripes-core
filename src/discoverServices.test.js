@@ -49,34 +49,54 @@ describe('discoverServices', () => {
     mockFetchCleanUp();
   });
 
-  describe('fetchOkapiVersion', () => {
-    it('handles success', async () => {
-      const store = {
-        getState: () => ({
-          okapi: {
-            url: 'https://url.com',
-            token: 'frodo'
-          },
-          config: {
-            tenantOptions: TENANT_OPTIONS,
-          }
-        }),
-        dispatch: jest.fn(),
-      };
+  describe('okapi-based discovery', () => {
+    const store = {
+      getState: () => ({
+        okapi: {
+          url: 'https://url.com',
+          token: 'frodo',
+          tenant: 'elevenant'
+        },
+        config: {},
+      }),
+      dispatch: jest.fn(),
+    };
 
+    it('handles success', async () => {
       const version = '1.2.3';
       mockFetchSuccess(version);
-      discoverServices(store);
 
       await discoverServices(store);
       expect(store.dispatch).toHaveBeenCalledWith({ type: 'DISCOVERY_OKAPI', version });
+      jest.clearAllMocks();
+    });
+
+    it('handles errors', async () => {
+      mockFetchError();
+
+      await discoverServices(store);
+      expect(store.dispatch).toHaveBeenCalledWith({ type: 'DISCOVERY_FAILURE', code: 400 });
+      jest.clearAllMocks();
+    });
+
+    it('handles failures', async () => {
+      const message = 'boom';
+
+      mockFetchFail(message);
+
+      await discoverServices(store);
+      expect(store.dispatch).toHaveBeenCalledWith({ type: 'DISCOVERY_FAILURE', message });
+      jest.clearAllMocks();
     });
   });
 
-  it('handles errors', async () => {
+  describe('eureka-based discovery', () => {
     const store = {
       getState: () => ({
-        okapi: { url: 'https://url.com' },
+        okapi: {
+          url: 'https://url.com',
+          token: 'frodo'
+        },
         config: {
           tenantOptions: TENANT_OPTIONS,
         }
@@ -84,31 +104,92 @@ describe('discoverServices', () => {
       dispatch: jest.fn(),
     };
 
-    mockFetchError();
-    discoverServices(store);
+    it('handles success', async () => {
+      const version = '1.2.3';
+      const data = {
+        totalRecords: 123,
+        applicationDescriptors: [{
+          moduleDescriptors: [{ a: 'A' }],
+          uiModuleDescriptors: [{ b: 'B' }],
+          uiModules: [{ c: 'C' }],
+        }],
+      };
 
-    await discoverServices(store);
-    expect(store.dispatch).toHaveBeenCalledWith({ type: 'DISCOVERY_FAILURE', code: 400 });
-  });
+      globalThis.fetch = jest.fn();
+      globalThis.fetch.mockImplementationOnce(() => (
+        Promise.resolve({
+          ok: true,
+          status: 200,
+          json: () => Promise.resolve(data),
+          text: () => Promise.resolve(data),
+          headers: new Map(),
+        })
+      ));
+      globalThis.fetch.mockImplementationOnce(() => (
+        Promise.resolve({
+          ok: true,
+          status: 200,
+          json: () => Promise.resolve(version),
+          text: () => Promise.resolve(version),
+          headers: new Map(),
+        })
+      ));
 
-  it('handles failures', async () => {
-    const store = {
-      getState: () => ({
-        okapi: { url: 'https://url.com' },
-        config: {
-          tenantOptions: TENANT_OPTIONS,
-        }
-      }),
-      dispatch: jest.fn(),
-    };
+      await discoverServices(store);
+      expect(store.dispatch).toHaveBeenCalledWith({ type: 'DISCOVERY_OKAPI', version });
 
-    const message = 'boom';
+      expect(store.dispatch).toHaveBeenCalledWith({ type: 'DISCOVERY_APPLICATIONS', data: data.applicationDescriptors[0] });
 
-    mockFetchFail(message);
-    discoverServices(store);
+      expect(store.dispatch).toHaveBeenCalledWith({ type: 'DISCOVERY_INTERFACES', data: data.applicationDescriptors[0].moduleDescriptors[0] });
+      expect(store.dispatch).toHaveBeenCalledWith({ type: 'DISCOVERY_PERMISSION_DISPLAY_NAMES', data: data.applicationDescriptors[0].moduleDescriptors[0] });
+      expect(store.dispatch).toHaveBeenCalledWith({ type: 'DISCOVERY_PROVIDERS', data: data.applicationDescriptors[0].moduleDescriptors[0] });
+    });
 
-    await discoverServices(store);
-    expect(store.dispatch).toHaveBeenCalledWith({ type: 'DISCOVERY_FAILURE', message });
+    it('throws when no records are present', async () => {
+      const version = '1.2.3';
+      const data = {};
+
+      globalThis.fetch = jest.fn();
+      globalThis.fetch.mockImplementationOnce(() => (
+        Promise.resolve({
+          ok: true,
+          status: 200,
+          json: () => Promise.resolve(data),
+          text: () => Promise.resolve(data),
+          headers: new Map(),
+        })
+      ));
+      globalThis.fetch.mockImplementationOnce(() => (
+        Promise.resolve({
+          ok: true,
+          status: 200,
+          json: () => Promise.resolve(version),
+          text: () => Promise.resolve(version),
+          headers: new Map(),
+        })
+      ));
+
+      await discoverServices(store);
+      expect(store.dispatch).toHaveBeenCalledWith({ type: 'DISCOVERY_OKAPI', version });
+      expect(store.dispatch).toHaveBeenCalledWith({ type: 'DISCOVERY_FAILURE', code: 200 });
+    });
+
+
+    it('handles errors', async () => {
+      mockFetchError();
+
+      await discoverServices(store);
+      expect(store.dispatch).toHaveBeenCalledWith({ type: 'DISCOVERY_FAILURE', code: 400 });
+    });
+
+    it('handles failures', async () => {
+      const message = 'boom';
+
+      mockFetchFail(message);
+
+      await discoverServices(store);
+      expect(store.dispatch).toHaveBeenCalledWith({ type: 'DISCOVERY_FAILURE', message });
+    });
   });
 });
 

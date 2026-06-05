@@ -113,17 +113,20 @@ class Root extends Component {
    * check for an existing session in storage and initialize end-of-session
    * timers if found.
    */
-  async componentDidMount() {
-    const { okapi, store, defaultTranslations } = this.props;
+  componentDidMount() {
+    const { okapi, store, defaultTranslations, history } = this.props;
 
     if (this.withOkapi) {
       // check for an existing session in storage. if found, initialize the
       // end-of-session timers. for new sessions, this happens in LoginCtrl
       // after a successful login.
-      const sess = await checkOkapiSession(okapi.url, store, okapi.tenant);
-      if (sess?.tokenExpiration) {
-        await this.handleRotation(sess.tokenExpiration);
-      }
+      checkOkapiSession(okapi.url, store, okapi.tenant, history)
+        .then(sess => {
+          if (sess?.tokenExpiration) {
+            // unawaited async function stores token expiration data
+            this.handleRotation(sess.tokenExpiration);
+          }
+        });
     }
 
     // checkOkapiSession triggers loadTranslations for authenticated sessions
@@ -131,7 +134,9 @@ class Root extends Component {
     if (!translations) {
       const locale = currentLocale || this.props.config.locale || 'en-US';
       // TODO: remove this after we load locale and translations at start from a public endpoint
-      await loadTranslations(store, locale, defaultTranslations);
+      // unawaited async function; loadTranslations fetches locale JSON files
+      // and saves them to redux
+      loadTranslations(store, locale, defaultTranslations);
     }
     this.updateQueryResourceStateKey();
   }
@@ -145,6 +150,14 @@ class Root extends Component {
   // IMPORTANT: Do not add `modules` or other props to this condition without considering authentication timing.
   shouldComponentUpdate(nextProps) {
     return !this.withOkapi || nextProps.okapiReady || nextProps.serverDown;
+  }
+
+  componentWillUnmount() {
+    // clean up ffetch so that any pending rotation-related work is stopped.
+    this.ffetch.destroy();
+    this.ffetch = null;
+    this.sessionTimeoutTimer.clear();
+    this.sessionTimeoutWarningTimer.clear();
   }
 
   updateQueryResourceStateKey = () => {

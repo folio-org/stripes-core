@@ -38,4 +38,25 @@ describe('AboutEnabledModules', () => {
       expect(screen.getByText(availableModules[i])).toBeInTheDocument();
     });
   });
+
+  it('handles empty enabled records', async () => {
+    const availableModules = {
+      amy: 'angelo',
+      beth: 'baldwin',
+      camilla: 'claude'
+    };
+    const resources = {};
+    const tenantid = 'monkey';
+
+    render(<AboutEnabledModules
+      availableModules={availableModules}
+      resources={resources}
+      tenantid={tenantid}
+    />);
+
+    Object.keys(availableModules).forEach((i) => {
+      expect(screen.getByText(availableModules[i])).toBeInTheDocument();
+      expect(screen.getByText(availableModules[i])).toHaveAttribute('style', 'color: rgb(204, 204, 204);');
+    });
+  });
 });

@@ -6,10 +6,14 @@ import EntitlementLoader, { preloadModules, loadModuleAssets } from './Entitleme
 import { StripesContext } from '../StripesContext';
 import { ModulesContext, useModules, modulesInitialState as mockModuleInitialState } from '../ModulesContext';
 import { loadEntitlement } from './loadEntitlement';
+import { logRemoteDependencyViolations } from './remoteDependencyValidation';
 
 jest.mock('stripes-config');
 jest.mock('./loadEntitlement', () => ({
   loadEntitlement: jest.fn()
+}));
+jest.mock('./remoteDependencyValidation', () => ({
+  logRemoteDependencyViolations: jest.fn(() => Promise.resolve()),
 }));
 
 const mockLoadRemote = jest.fn(() => Promise.resolve({ default: {} }));
@@ -184,6 +188,7 @@ describe('EntitlementLoader', () => {
 
       await waitFor(() => {
         expect(loadEntitlement).toHaveBeenCalledWith(discoveryUrl, new AbortController().signal);
+        expect(logRemoteDependencyViolations).toHaveBeenCalled();
       });
     });
 
@@ -224,6 +229,34 @@ describe('EntitlementLoader', () => {
           expect(mockStripes.logger.log).toHaveBeenCalled();
         });
       }
+    });
+
+    it('handles failures loading module assets (logs and sends callout)', async () => {
+      const discoveryUrl = 'http://localhost:8000/entitlement';
+      okapi.discoveryUrl = discoveryUrl;
+
+      // Override the describe-level fetch queue so this test gets exactly one success + one failure.
+      global.fetch = jest.fn();
+      global.fetch.mockResolvedValueOnce({
+        ok: true,
+        json: jest.fn().mockResolvedValueOnce(translations)
+      }).mockResolvedValueOnce({ ok: false });
+
+      const mockCallout = { sendCallout: jest.fn() };
+      const calloutCtx = require('../CalloutContext');
+      const useCalloutSpy = jest.spyOn(calloutCtx, 'useCallout').mockReturnValue(mockCallout);
+
+      render(<TestHarness testStripes={{ ...mockStripes, okapi: { discoveryUrl } }} />);
+
+      await waitFor(() => {
+        expect(mockStripes.logger.log).toHaveBeenCalledWith(
+          'core',
+          expect.stringContaining('Error loading remote module assets')
+        );
+        expect(mockCallout.sendCallout).toHaveBeenCalled();
+      });
+
+      useCalloutSpy.mockRestore();
     });
   });
 

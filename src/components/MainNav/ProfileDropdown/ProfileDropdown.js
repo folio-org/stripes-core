@@ -182,13 +182,14 @@ class ProfileDropdown extends Component {
      */
     let perms = null;
     if (stripes.config?.showPerms) {
+      const sortedPerms = Object.keys(currentPerms || {}).sort((a, b) => a.localeCompare(b)).join(', ');
       perms = (
         <IntlConsumer>
           {
             intl => {
               const items = [
                 `${intl.formatMessage({ id: 'stripes-core.mainnav.profileDropdown.locale' })}: ${intl.locale}`,
-                `${intl.formatMessage({ id: 'stripes-core.mainnav.profileDropdown.permissions' })}: ${Object.keys(currentPerms || {}).sort().join(', ')}`,
+                `${intl.formatMessage({ id: 'stripes-core.mainnav.profileDropdown.permissions' })}: ${sortedPerms}`,
               ];
 
               return (
@@ -234,7 +235,7 @@ class ProfileDropdown extends Component {
             </NavListItem>
           </NavListSection>
         </NavList>
-        { perms }
+        {perms}
       </div>
     );
   }
@@ -295,7 +296,7 @@ class ProfileDropdown extends Component {
 
     return (
       <>
-        { HandlerComponent && <HandlerComponent stripes={this.props.stripes} /> }
+        {HandlerComponent && <HandlerComponent stripes={this.props.stripes} />}
         <Dropdown
           id="profileDropdown"
           renderTrigger={this.renderProfileTrigger}

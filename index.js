@@ -28,6 +28,7 @@ export { default as IntlConsumer } from './src/components/IntlConsumer';
 export { default as AppIcon } from './src/components/AppIcon';
 export { Route, Switch, Redirect } from './src/components/NestedRouter';
 export {
+  AuthenticatedError,
   ModuleHierarchyContext,
   ModuleHierarchyProvider,
   useModuleHierarchy,

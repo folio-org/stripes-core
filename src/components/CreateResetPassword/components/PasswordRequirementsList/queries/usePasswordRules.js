@@ -28,7 +28,7 @@ const usePasswordRules = (rulesLimit) => {
   const { data } = useQuery(
     ['requirements-list'],
     async () => {
-      return kyInstance.get(`tenant/rules?${queryString.stringify(searchParams)}`).json();
+      return kyInstance.get(`tenant/rules?${queryString.stringify(searchParams)}`, { rtrIgnore: true }).json();
     },
   );
 

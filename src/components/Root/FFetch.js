@@ -24,10 +24,9 @@
  *
  */
 
-
 import { RTR_LOCK_KEY, rotateAndReplay } from './rotateAndReplay';
-
 import { getTokenExpiry } from '../../loginServices';
+
 import {
   isFolioApiRequest,
 } from './token-util';
@@ -39,7 +38,7 @@ import {
 } from './constants';
 import FXHR from './FXHR';
 
-const OKAPI_FETCH_OPTIONS = {
+const FOLIO_FETCH_OPTIONS = {
   credentials: 'include',
   mode: 'cors',
 };
@@ -49,6 +48,14 @@ export class FFetch {
     this.logger = logger;
     this.okapi = okapi;
     this.onRotate = onRotate;
+    this.FXHR = FXHR(this);
+  }
+
+  destroy = () => {
+    // restore replaced globals.
+    this.logger?.log?.('rtr', 'cleaning up after ffetch');
+    this.restoreFetch();
+    this.restoreXMLHttpRequest();
   }
 
   /**
@@ -64,7 +71,21 @@ export class FFetch {
    */
   replaceXMLHttpRequest = () => {
     this.NativeXHR = globalThis.XMLHttpRequest;
-    globalThis.XMLHttpRequest = FXHR(this);
+    globalThis.XMLHttpRequest = this.FXHR;
+  };
+
+  restoreFetch = () => {
+    if (globalThis.fetch === this.ffetch) {
+      globalThis.fetch = this.nativeFetch;
+      this.nativeFetch = null;
+    }
+  };
+
+  restoreXMLHttpRequest = () => {
+    if (globalThis.XMLHttpRequest === this.FXHR) {
+      globalThis.XMLHttpRequest = this.NativeXHR;
+      this.NativeXHR = null;
+    }
   };
 
   /**
@@ -90,22 +111,31 @@ export class FFetch {
     // function that receives the original request options and returns the
     // options-object that will be used on the replayed request.
     options: (options = {}) => {
-      return { ...options, ...OKAPI_FETCH_OPTIONS };
+      return { ...options, ...FOLIO_FETCH_OPTIONS };
     },
 
     // shouldRotate
     // alternative to status code inspection when a response is present:
-    // deal with Okapi's non-standard 400 response for missing/invalid tokens
+    // deal with Okapi's non-standard 400 response for missing/invalid tokens,
+    // as well as /users-keycloak's 404 response for missing token
     // by cloning the response and inspecting the body text.
+    // If we haven't already determined that we should rotate from the response, we can also check the
+    // token expiry metadata and rotate accordingly.
     // optional; defaults to a function that resolves to false, i.e. do not force rotation
     shouldRotate: async (response) => {
       if (response) {
         const cr = response.clone();
         const text = await cr.text();
-        return response.status === 400 && text.startsWith('Token missing, access requires permission');
+        return (
+          (response.status === 400 && text.startsWith('Token missing, access requires permission')) ||
+          (response.status === 404 && response.url?.includes('/users-keycloak/_self')) ||
+          (response.status === 404 && response.url?.includes('/bl-users/_self')) ||
+          (response.status === 422 && response.url?.includes('/authn/logout'))
+        );
       }
 
-      return false;
+      const expiry = await getTokenExpiry();
+      return (Date.now() > (expiry?.atExpires || 0));
     },
 
     // rotate
@@ -141,20 +171,6 @@ export class FFetch {
       }
     },
 
-    // isValidToken
-    // return true if a valid token is available
-    isValidToken: async () => {
-      try {
-        const expiry = await getTokenExpiry();
-        this.logger.log('rtr', `isValidToken ? ${expiry?.atExpires} > ${Date.now()} ? ${expiry?.atExpires > Date.now()}`);
-        return expiry?.atExpires > Date.now();
-      } catch (err) {
-        // swallow the error
-        this.logger.log('rtrv', { err });
-      }
-      return false;
-    },
-
     // onSuccess
     // rotation succeeded: call the success-callback
     onSuccess: async (newTokens) => {
@@ -175,11 +191,8 @@ export class FFetch {
    * ffetch (FOLIO-fetch) provides an RTR-wrapper around fetch requests for
    * FOLIO API requests. It pauses fetching while rotation is in-flight, and
    * if a response is not successful (!response.ok), it invokes RTR. RTR will
-   * inspect the response, rotate if necessary, then replay and return the
-   * original request, or it
-   *
-   * see if the failure was due to authentication (in which case it'll rotate
-   * and replay the request).
+   * inspect the response, rotate if necessary, then replay the request and
+   * return its response.
    *
    * @param {object} resource a fetchable resource
    * @param {object} options fetch options
@@ -187,51 +200,42 @@ export class FFetch {
    */
   ffetch = async (resource, options = {}) => {
     if (isFolioApiRequest(resource, this.okapi.url)) {
-      try {
-        let response;
-        // a fetch() resource can be either a string (which can be copied)
-        // or a Request object (which can only be consumed once, and needs
-        // to be cloned before it is used the first time in case this fetch
-        // triggers rotation and it needs to be replayed.
-        const reusableResource = resource instanceof Request ? resource.clone() : resource;
+      let response;
+      // a fetch() resource can be either a string (which can be copied)
+      // or a Request object (which can only be consumed once, and needs
+      // to be cloned before it is used the first time in case this fetch
+      // triggers rotation and it needs to be replayed.
+      const reusableResource = resource instanceof Request ? resource.clone() : resource;
 
+
+      // first check and see if the token metadata we have is expired or not.
+      // If it is expired, we'll just skip to rotateAndReplay instead of trying the request and inviting
+      // handfuls of 401 responses. In case our meta-expiry is out of sync, we'll still catch the problem in an
+      // actual 4xx response.
+
+      const expiry = await getTokenExpiry();
+      // undefined in a comparison always amounts to false since it's NaN, so no expiry means we need to rotate.
+      if (Date.now() < expiry?.atExpires || options?.rtrIgnore) {
         // readers/writer lock pattern: don't fetch while rotation is in-progress
         // https://developer.mozilla.org/en-US/docs/Web/API/LockManager/request
-        // with a fallback for old (er, incomplete?) envs that don't support
-        // navigator.locks (👋 jsdom)
-        if (navigator?.locks?.request) {
-          response = await navigator.locks.request(RTR_LOCK_KEY, { mode: 'shared' }, async () => {
-            const fr = await this.nativeFetch.apply(globalThis, [resource, options && { ...options, ...OKAPI_FETCH_OPTIONS }]);
-            return fr;
-          });
-        } else {
-          response = await this.nativeFetch.apply(globalThis, [resource, options && { ...options, ...OKAPI_FETCH_OPTIONS }]);
+        response = await navigator.locks.request(RTR_LOCK_KEY, { mode: 'shared' }, async () => {
+          const fr = await this.nativeFetch.apply(globalThis, [resource, options && { ...options, ...FOLIO_FETCH_OPTIONS }]);
+          return fr;
+        });
+        if (options?.rtrIgnore) {
+          return response;
         }
-
-        if (!response?.ok) {
-          response = await rotateAndReplay(
-            this.nativeFetch,
-            { ...this.rotationConfig, logger: this.logger },
-            { response, resource: reusableResource, options }
-          );
-        }
-
-        return response;
-      } catch (err) {
-        // we can end up here for three reasons:
-        // 1. the original request itself failed
-        // 2. rotation failed
-        // 3. rotation was unnecessary and it rejected with the original reponse
-        //
-        // For #3, we just want to return that response, allowing it to bubble
-        // to the original caller to deal with as they choose. For the others,
-        // this is a legit error so we re-throw it rather than returning it.
-        if (err.response) {
-          return err.response;
-        }
-
-        throw err;
       }
+
+      if (!response?.ok) {
+        response = await rotateAndReplay(
+          this.nativeFetch,
+          { ...this.rotationConfig, logger: this.logger },
+          { response, resource: reusableResource, options }
+        );
+      }
+
+      return response;
     }
 
     // default: pass requests through to the network

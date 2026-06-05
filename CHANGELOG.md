@@ -1,6 +1,30 @@
 # Change history for stripes-core
 
-## 11.1.0 IN PROGRESS
+## IN PROGRESS
+
+* Export AuthenticatedError component. Refs STCOR-1047.
+* Test-logic only belongs in tests, Refs STCOR-1050.
+* Add case for `users-keycloak`'s 404 status to rotate keys on failure. STCOR-1054.
+* Recover from AT cookie deletion during RTR. Refs STCOR-1048.
+* Completely avoid rotation-related work given a request with `options.rtrIgnore`. Refs STCOR-1059.
+* Add case for `authn/logout`'s 422 status to rotate keys on failure. STCOR-1058.
+* Clone requests before replaying them, allowing multiple replays. Refs STCOR-1060.
+* ^^^ yes, but do not call `clone()` on `URL` instances inside requests. Refs STCOR-1062.
+* Adopt FFetch's rotation logic flow in FXHR for consistency. Refs STCOR-1055.
+* Add cleanup logic for FFetch and use it in unmount lifecycle of Root. Refs STCOR-1064.
+* Show messages from `Error` objects in OIDCLandingError. Refs STCOR-1002.
+* Consolidate logout functionality; trap errors during logout so storage is always cleared. Refs STCOR-1061.
+* Recalculate navbar apps when container width changes. Refs STCOR-1063.
+* Inspect local expiry information prior to initial request, avoiding 401's in rtr flow. Refs STCOR-1069.
+* Rotate preventively prior to logout. Refs STCOR-1068.
+
+## [11.1.1](https://github.com/folio-org/stripes-core/tree/v11.1.1) (2026-04-20)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v11.1.0...v11.1.1)
+
+* Add `uk` українська (Ukrainian) locale. Refs STCOR-1046.
+
+## [11.1.0](https://github.com/folio-org/stripes-core/tree/v11.1.0) (2026-04-14)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v11.0.0...v11.1.0)
 
 * CSS Support for printing of results lists content. Refs STCOR-956.
 * Improve useModuleInfo hook. Refs STCOR-955.
