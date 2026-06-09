@@ -20,6 +20,11 @@ export const RTR_LOCK_KEY = '@folio/stripes-core::RTR_LOCK_KEY';
  * @returns Promise response of the replayed request, or undefined
  */
 export const replayRequest = async (fetchfx, config, original) => {
+  // there is no value in playing a request that we expect to fail
+  if (config.shouldPreRotate && await config.shouldPreRotate()) {
+    return undefined;
+  }
+
   if (original?.resource) {
     config.logger.log('rtr', 'replaying ...');
     const { resource } = original;
@@ -37,7 +42,12 @@ export const replayRequest = async (fetchfx, config, original) => {
  *
  * IN SUMMARY
  *
- * rotateAndReplay is called when a request in FFetch returns a non-ok response.
+ * rotateAndReplay is called by FFetch in two conditions:
+ * 1. Proactively, BEFORE a request, when we believe tokens are expired and
+ *    therefore that the fetch would return non-ok due to missing credentials.
+ * 2. Reactively, AFTER a request, when we inspect the response and can derive
+ *    from the status code and other fields that it returned non-ok due to
+ *    missing credentials.
  * Here, we inspect the request-options and response in detail and if it looks
  * like the problem was an expired (and therefore absent) AT cookie, rotate the
  * tokens and then replay the original request, returning the new response. If
@@ -111,7 +121,7 @@ export const rotateAndReplay = async (fetchfx, config, original) => {
       if (replayedResponse?.ok) {
         return replayedResponse;
       }
-      config.logger.log('rtr', 'replay failed; forcing rotate ...');
+      config.logger.log('rtr', replayedReponse ? 'replay failed; forcing rotate ...' : 'replay skipped');
 
       //
       // 2. 🔄 rotate: race the rotation-request with a timeout; default 30s
