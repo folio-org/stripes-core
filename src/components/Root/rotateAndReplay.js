@@ -121,7 +121,7 @@ export const rotateAndReplay = async (fetchfx, config, original) => {
       if (replayedResponse?.ok) {
         return replayedResponse;
       }
-      config.logger.log('rtr', 'replay skipped/failed; forcing rotate ...');
+      config.logger.log('rtr', replayedResponse ? 'replay failed; forcing rotate ...' : 'replay skipped');
 
       //
       // 2. 🔄 rotate: race the rotation-request with a timeout; default 30s
