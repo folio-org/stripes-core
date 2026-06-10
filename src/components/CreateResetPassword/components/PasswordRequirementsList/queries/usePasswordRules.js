@@ -8,6 +8,7 @@ const usePasswordRules = (rulesLimit) => {
   const { locale = 'en', tenant, url } = useStripes().okapi;
 
   const kyInstance = ky.create({
+    fetch: globalThis.unauthenticatedFetch,
     prefixUrl: url,
     hooks: {
       beforeRequest: [
@@ -28,7 +29,7 @@ const usePasswordRules = (rulesLimit) => {
   const { data } = useQuery(
     ['requirements-list'],
     async () => {
-      return kyInstance.get(`tenant/rules?${queryString.stringify(searchParams)}`, { rtrIgnore: true }).json();
+      return kyInstance.get(`tenant/rules?${queryString.stringify(searchParams)}`).json();
     },
   );
 

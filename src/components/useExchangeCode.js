@@ -2,7 +2,7 @@ import { useQuery } from 'react-query';
 import { useIntl } from 'react-intl';
 import { noop } from 'lodash';
 
-import useOkapiKy from '../useOkapiKy';
+import { useUnauthenticatedOkapiKy } from '../useOkapiKy';
 import {
   getLoginTenant,
 } from '../loginServices';
@@ -25,7 +25,7 @@ import { useStripes } from '../StripesContext';
  */
 const useExchangeCode = (initSession = noop) => {
   const stripes = useStripes();
-  const ky = useOkapiKy();
+  const ky = useUnauthenticatedOkapiKy();
   const intl = useIntl();
 
   const urlParams = new URLSearchParams(globalThis.location.search);
