@@ -63,7 +63,6 @@ export class FFetch {
    */
   replaceFetch = () => {
     this.nativeFetch = globalThis.fetch;
-    globalThis.unauthenticatedFetch = globalThis.fetch;
     globalThis.fetch = this.ffetch;
   };
 
