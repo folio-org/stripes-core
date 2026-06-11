@@ -68,10 +68,12 @@ export const useUnauthenticatedOkapiKy = ({ tenant, timeout } = {}) => {
     tenant: currentTenant,
     url,
   } = useStripes().okapi;
-
+  console.log('asdf')
   return ky.create({
     ...defaultOptions({ locale, tenant, currentTenant, timeout, defaultTimeout, url }),
-    fetch: globalThis.unauthenticatedFetch,
+    fetch: async (resource, options) => {
+      return await fetch(resource, { ...options, rtrIgnore: true });
+    }
   });
 };
 
