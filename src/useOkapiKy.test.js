@@ -27,11 +27,12 @@ describe('useOkapiKy', () => {
     };
 
     const { result } = renderHook(() => useOkapiKy({ timeout: 30 }));
-    result.current.hooks.beforeRequest[0](r);
 
     expect(result.current.prefixUrl).toBe(okapi.url);
     expect(result.current.timeout).toBe(30);
 
+    // invoke each beforeRequest hook
+    result.current.hooks.beforeRequest.forEach(i => i(r));
     expect(r.headers.set).toHaveBeenCalledWith('Accept-Language', okapi.locale);
     expect(r.headers.set).toHaveBeenCalledWith('X-Okapi-Tenant', okapi.tenant);
   });
@@ -73,9 +74,11 @@ describe('useOkapiKy', () => {
     };
 
     const { result } = renderHook(() => useOkapiKy({ tenant: 'monkey' }));
-    result.current.hooks.beforeRequest[0](r);
+
     expect(result.current.timeout).toBe(okapi.timeout);
 
+    // invoke each beforeRequest hook
+    result.current.hooks.beforeRequest.forEach(i => i(r));
     expect(r.headers.set).toHaveBeenCalledWith('X-Okapi-Tenant', 'monkey');
   });
 
@@ -97,7 +100,8 @@ describe('useOkapiKy', () => {
       };
 
       const { result } = renderHook(() => useOkapiKy({ tenant: '' }));
-      result.current.hooks.beforeRequest[0](r);
+      // invoke each beforeRequest hook
+      result.current.hooks.beforeRequest.forEach(i => i(r));
 
       expect(r.headers.set).toHaveBeenCalledWith('X-Okapi-Tenant', 'tenant');
     });

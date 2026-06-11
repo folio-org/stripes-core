@@ -4,7 +4,7 @@ import {
   QueryClientProvider,
 } from 'react-query';
 
-import useOkapiKy from '../useOkapiKy';
+import { useUnauthenticatedOkapiKy } from '../useOkapiKy';
 import useExchangeCode from './useExchangeCode';
 
 jest.mock('./OrganizationLogo', () => (() => <div>OrganizationLogo</div>));
@@ -47,8 +47,8 @@ describe('useExchangeCode', () => {
     window.location.search = '?code=code';
 
     const err = 'some error';
-    const mockUseOkapiKy = useOkapiKy;
-    mockUseOkapiKy.mockReturnValue(() => {
+    const mockUseUnauthenticatedOkapiKy = useUnauthenticatedOkapiKy;
+    mockUseUnauthenticatedOkapiKy.mockReturnValue(() => {
       // OMG lint, shut up about mocks of third party libraries 🙄
       // eslint-disable-next-line no-throw-literal
       throw {
@@ -74,8 +74,8 @@ describe('useExchangeCode', () => {
     window.location.search = '?code=code';
 
     const err = 'I am nobody; who are you?';
-    const mockUseOkapiKy = useOkapiKy;
-    mockUseOkapiKy.mockReturnValue(() => {
+    const mockUseUnauthenticatedOkapiKy = useUnauthenticatedOkapiKy;
+    mockUseUnauthenticatedOkapiKy.mockReturnValue(() => {
       throw new Error(err);
     });
 
@@ -94,14 +94,16 @@ describe('useExchangeCode', () => {
     window.location.pathname = '/some-path';
     window.location.search = '?code=code';
 
-    const mockUseOkapiKy = useOkapiKy;
-    mockUseOkapiKy.mockReturnValue(() => ({
+    const mockUseUnauthenticatedOkapiKy = useUnauthenticatedOkapiKy;
+    mockUseUnauthenticatedOkapiKy.mockReturnValue(() => ({
       json: () => ({ some: 'object' })
     }));
 
     const callback = jest.fn();
 
-    await act(() => renderHook(() => useExchangeCode(callback), { wrapper }));
-    expect(callback).toHaveBeenCalled();
+    act(() => renderHook(() => useExchangeCode(callback), { wrapper }));
+    await waitFor(() => {
+      expect(callback).toHaveBeenCalled();
+    });
   });
 });
