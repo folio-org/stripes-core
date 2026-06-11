@@ -1,27 +1,9 @@
-import ky from 'ky';
 import { useQuery } from 'react-query';
-import queryString from 'query-string';
 
-import { useStripes } from '../../../../../StripesContext';
+import { useUnauthenticatedOkapiKy } from '../../../../../useOkapiKy';
 
 const usePasswordRules = (rulesLimit) => {
-  const { locale = 'en', tenant, url } = useStripes().okapi;
-
-  const kyInstance = ky.create({
-    fetch: globalThis.unauthenticatedFetch,
-    prefixUrl: url,
-    hooks: {
-      beforeRequest: [
-        request => {
-          request.headers.set('Accept-Language', locale);
-          request.headers.set('X-Okapi-Tenant', tenant);
-        }
-      ]
-    },
-    retry: 0,
-    timeout: 30000,
-  });
-
+  const ky = useUnauthenticatedOkapiKy();
   const searchParams = {
     limit: rulesLimit,
   };
@@ -29,7 +11,7 @@ const usePasswordRules = (rulesLimit) => {
   const { data } = useQuery(
     ['requirements-list'],
     async () => {
-      return kyInstance.get(`tenant/rules?${queryString.stringify(searchParams)}`).json();
+      return ky.get('tenant/rules', { searchParams }).json();
     },
   );
 
