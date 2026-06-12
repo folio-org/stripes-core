@@ -138,6 +138,18 @@ export class FFetch {
       return (Date.now() > (expiry?.atExpires || 0));
     },
 
+    // shouldPreRotate
+    // This is proactive rotation, inspecting current circumstances before
+    // before executing a fetch (rather than reactively inspecting the response
+    // after executing a fetch) to determine whether rotation will be necessary
+    // for a request to succeed. e.g. if we know (er, believe) our token is
+    // expired, there is no reason to fetch and then rotate and then replay;
+    // we can skip the first fetch, jumping straight to rotation.
+    shouldPreRotate: async () => {
+      const expiry = await getTokenExpiry();
+      return (Date.now() > (expiry?.atExpires || 0));
+    },
+
     // rotate
     // handle rotation
     rotate: async () => {

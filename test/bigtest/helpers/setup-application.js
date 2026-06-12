@@ -50,7 +50,13 @@ export default function setupApplication({
           lastName: 'User',
           email: 'user@folio.org',
           addresses: [],
-          servicePoints: []
+          servicePoints: [],
+          tokenExpiration: {
+            accessTokenExpiration: new Date(Date.now() + (10 * 60 * 1000)).toISOString(),
+            refreshTokenExpiration: new Date(Date.now() + (10 * 60 * 1000)).toISOString(),
+            atExpires: Date.now() + (10 * 60 * 1000),
+            rtExpires: Date.now() + (10 * 60 * 1000),
+          },
         }, currentUser),
         currentPerms: permissions,
         isAuthenticated: true,
@@ -88,6 +94,8 @@ export default function setupApplication({
             tokenExpiration: {
               atExpires: Date.now() + (10 * 60 * 1000),
               rtExpires: Date.now() + (10 * 60 * 1000),
+              accessTokenExpiration: new Date(Date.now() + (10 * 60 * 1000)).toISOString(),
+              refreshTokenExpiration: new Date(Date.now() + (10 * 60 * 1000)).toISOString(),
             },
           });
         }

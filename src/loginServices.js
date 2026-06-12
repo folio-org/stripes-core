@@ -869,7 +869,10 @@ export async function createOkapiSession(store, tenant, token, data) {
  */
 export async function getSSOEnabled(okapiUrl, store, tenant) {
   try {
-    const response = await fetch(`${okapiUrl}/saml/check`, { headers: { 'X-Okapi-Tenant': tenant, 'Accept': 'application/json' } });
+    const response = await fetch(`${okapiUrl}/saml/check`, {
+      headers: { 'X-Okapi-Tenant': tenant, 'Accept': 'application/json' },
+      rtrIgnore: true
+    });
     if (response.ok) {
       const json = await response.json();
       store.dispatch(checkSSO(json.active));

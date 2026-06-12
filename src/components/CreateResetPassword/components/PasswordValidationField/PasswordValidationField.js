@@ -1,4 +1,3 @@
-/* eslint-disable consistent-return */
 import React from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
@@ -71,7 +70,7 @@ class PasswordValidationField extends React.Component {
 
   validatePassword = value => {
     if (!this.rules) {
-      return;
+      return undefined;
     }
 
     const {
