@@ -116,7 +116,7 @@ export const rotateAndReplay = async (fetchfx, config, original) => {
       // Replay the request and inspect the response for success. If it's ok,
       // we're done and can return that response. If it's not 2xx/ok, rotate
       // and then replay again.
-      config.logger.log('rtr', 'reusing token supplied by another request');
+      config.logger.log('rtr', 'pre-rotation replay', original?.resource);
       const replayedResponse = await replayRequest(fetchfx, config, original);
       if (replayedResponse?.ok) {
         return replayedResponse;
