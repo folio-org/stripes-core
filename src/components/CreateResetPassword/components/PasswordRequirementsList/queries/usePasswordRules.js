@@ -1,9 +1,9 @@
 import { useQuery } from 'react-query';
 
-import { useUnauthenticatedOkapiKy } from '../../../../../useOkapiKy';
+import { usePublicGatewayKy } from '../../../../../useOkapiKy';
 
 const usePasswordRules = (rulesLimit) => {
-  const ky = useUnauthenticatedOkapiKy();
+  const ky = usePublicGatewayKy();
   const searchParams = {
     limit: rulesLimit,
   };

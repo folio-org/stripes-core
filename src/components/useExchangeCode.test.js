@@ -4,7 +4,7 @@ import {
   QueryClientProvider,
 } from 'react-query';
 
-import { useUnauthenticatedOkapiKy } from '../useOkapiKy';
+import { usePublicGatewayKy } from '../useOkapiKy';
 import useExchangeCode from './useExchangeCode';
 
 jest.mock('./OrganizationLogo', () => (() => <div>OrganizationLogo</div>));
@@ -47,7 +47,7 @@ describe('useExchangeCode', () => {
     window.location.search = '?code=code';
 
     const err = 'some error';
-    const mockUseUnauthenticatedOkapiKy = useUnauthenticatedOkapiKy;
+    const mockUseUnauthenticatedOkapiKy = usePublicGatewayKy;
     mockUseUnauthenticatedOkapiKy.mockReturnValue(() => {
       // OMG lint, shut up about mocks of third party libraries 🙄
       // eslint-disable-next-line no-throw-literal
@@ -74,7 +74,7 @@ describe('useExchangeCode', () => {
     window.location.search = '?code=code';
 
     const err = 'I am nobody; who are you?';
-    const mockUseUnauthenticatedOkapiKy = useUnauthenticatedOkapiKy;
+    const mockUseUnauthenticatedOkapiKy = usePublicGatewayKy;
     mockUseUnauthenticatedOkapiKy.mockReturnValue(() => {
       throw new Error(err);
     });
@@ -94,7 +94,7 @@ describe('useExchangeCode', () => {
     window.location.pathname = '/some-path';
     window.location.search = '?code=code';
 
-    const mockUseUnauthenticatedOkapiKy = useUnauthenticatedOkapiKy;
+    const mockUseUnauthenticatedOkapiKy = usePublicGatewayKy;
     mockUseUnauthenticatedOkapiKy.mockReturnValue(() => ({
       json: () => ({ some: 'object' })
     }));

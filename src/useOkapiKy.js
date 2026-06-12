@@ -59,7 +59,7 @@ export default ({ tenant, timeout } = {}) => {
 };
 
 /**
- * useUnauthenticatedOkapiKy
+ * usePublicGatewayKy
  * Construct a ky instance configured for accessing publicly-available
  * endpoints. It is otherwise identical to `useOkapiKy()`, using the given
  * values or pulling them from stripes.
@@ -68,7 +68,7 @@ export default ({ tenant, timeout } = {}) => {
  * @param {number} timeout API gateway timeout, in milliseconds
  * @returns ky instance
  */
-export const useUnauthenticatedOkapiKy = ({ tenant, timeout } = {}) => {
+export const usePublicGatewayKy = ({ tenant, timeout } = {}) => {
   const {
     locale = 'en',
     tenant: currentTenant,

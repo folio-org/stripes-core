@@ -11,7 +11,7 @@ export { default as stripesConnect } from './src/stripesConnect';
 export { default as Pluggable } from './src/Pluggable';
 export { updateUser, updateTenant, validateUser } from './src/loginServices';
 export { default as coreEvents } from './src/events';
-export { default as useOkapiKy } from './src/useOkapiKy';
+export { default as useOkapiKy, usePublicGatewayKy } from './src/useOkapiKy';
 export { default as withOkapiKy } from './src/withOkapiKy';
 export { default as useCustomFields } from './src/useCustomFields';
 export { default as createReactQueryClient } from './src/createReactQueryClient';
