@@ -52,7 +52,8 @@ describe('Profile dropdown', () => {
       permissions: {
         'ui-myprofile.settings.change-password': true,
       },
-    }
+    },
+    userLoggedIn: true,
   });
 
   beforeEach(function () {

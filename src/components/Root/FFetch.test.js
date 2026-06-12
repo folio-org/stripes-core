@@ -219,6 +219,26 @@ describe('FFetch behavior and rotation helpers', () => {
       });
     });
 
+    describe('shouldPreRotate', () => {
+      it('returns true when the stored AT is expired', async () => {
+        getTokenExpiry.mockReset();
+        getTokenExpiry.mockResolvedValue({ atExpires: Date.now() - 1000 });
+
+        const ff = new FFetch({ logger: {}, okapi: { url: '/users-keycloak/_self', tenant: 't' }, onRotate: jest.fn() });
+        const shouldRotate = await ff.rotationConfig.shouldPreRotate();
+        expect(shouldRotate).toBe(true);
+      });
+
+      it('returns true when the stored AT is valid', async () => {
+        getTokenExpiry.mockReset();
+        getTokenExpiry.mockResolvedValue({ atExpires: Date.now() + 1000 });
+
+        const ff = new FFetch({ logger: {}, okapi: { url: okapiUrl, tenant: 't' }, onRotate: jest.fn() });
+        const shouldRotate = await ff.rotationConfig.shouldPreRotate();
+        expect(shouldRotate).toBe(false);
+      });
+    });
+
     it('rotate() performs a refresh and returns parsed expirations on success', async () => {
       const accessISO = new Date(Date.now() + 10000).toISOString();
       const refreshISO = new Date(Date.now() + 20000).toISOString();
