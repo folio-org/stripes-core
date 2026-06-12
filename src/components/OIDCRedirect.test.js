@@ -36,14 +36,6 @@ describe('OIDCRedirect', () => {
     expect(screen.getByRole('button')).toHaveAttribute('href', path);
   });
 
-  it('redirects to /logout given logout-error sentinel', () => {
-    useStripes.mockReturnValue({ okapi: { authnUrl: 'http://example.com/authn' } });
-    setUnauthorizedPathToSession(AUTOMATIC_LOGOUT_LOCATION);
-    render(<OIDCRedirect />);
-
-    expect(screen.getByRole('button')).toHaveAttribute('href', '/logout');
-  });
-
   it('redirects to URL\'s ?fwd param when available', () => {
     useStripes.mockReturnValue({ okapi: {} });
     render(<OIDCRedirect />);

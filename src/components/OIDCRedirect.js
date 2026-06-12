@@ -5,7 +5,6 @@ import queryString from 'query-string';
 
 import { useStripes } from '../StripesContext';
 import {
-  AUTOMATIC_LOGOUT_LOCATION,
   getUnauthorizedPathFromSession,
   removeUnauthorizedPathFromSession
 } from '../loginServices';
@@ -56,9 +55,6 @@ const OIDCRedirect = () => {
       if (unauthorizedPathRef.current) {
         removeUnauthorizedPathFromSession();
 
-        if (unauthorizedPathRef.current === AUTOMATIC_LOGOUT_LOCATION) {
-          return '/logout';
-        }
         return unauthorizedPathRef.current;
       }
     }

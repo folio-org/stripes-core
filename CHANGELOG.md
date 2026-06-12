@@ -17,6 +17,7 @@
 * Recalculate navbar apps when container width changes. Refs STCOR-1063.
 * Inspect local expiry information prior to initial request, avoiding 401's in rtr flow. Refs STCOR-1069.
 * Rotate preventively prior to logout. Refs STCOR-1068.
+* Reliably handle unsynchronized FOLIO/Keycloak sessions. Refs STCOR-1067.
 
 ## [11.1.1](https://github.com/folio-org/stripes-core/tree/v11.1.1) (2026-04-20)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v11.1.0...v11.1.1)

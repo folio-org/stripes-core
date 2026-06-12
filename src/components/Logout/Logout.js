@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { useLocation } from 'react-router';
+import { useHistory, useLocation } from 'react-router';
 import { FormattedMessage } from 'react-intl';
 
 import {
@@ -21,6 +21,26 @@ import {
 import { useLogoutMutation } from './useLogoutMutation';
 
 import styles from './Logout.css';
+import { SessionSyncError } from '../SessionSyncError';
+
+
+export const parseError = (error) => {
+  // do we have JSON from an error API response?
+  if (error?.errors?.[0]?.message) {
+    return error.errors[0].message;
+  }
+
+  // if not, do we have an Error object?
+  if (typeof error?.message === 'string') {
+    return error.message;
+  }
+
+  if (typeof error === 'string') {
+    return error;
+  }
+
+  return undefined;
+};
 
 /**
  * Logout
@@ -31,6 +51,7 @@ import styles from './Logout.css';
 const Logout = ({ sessionTimeoutTimer, sessionTimeoutWarningTimer }) => {
   const { branding, okapi } = useStripes();
   const location = useLocation();
+  const history = useHistory();
   const logoutMutation = useLogoutMutation([sessionTimeoutTimer, sessionTimeoutWarningTimer]);
 
   let messageId = null;
@@ -49,27 +70,35 @@ const Logout = ({ sessionTimeoutTimer, sessionTimeoutWarningTimer }) => {
     messageId = 'stripes-core.logoutComplete';
   }
 
-  useEffect(() => {
-    if (okapi.isAuthenticated) {
-      logoutMutation.mutate();
-    }
-
-    // yes, ignore the logoutMutation dependency; just logout once, on-load.
-    // Is there a way to do this without ignoring dependencies?
-    // I haven't found it.
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-
   const handleClick = (_e) => {
     removeUnauthorizedPathFromSession();
   };
 
   const redirectTo = getUnauthorizedPathFromSession() || '/';
 
+  const error = parseError(location.state?.error);
+
+  useEffect(() => {
+    logoutMutation.mutate(params.get('reason'), {
+      onError: (err) => {
+        // logout failed. redirect to Keycloak's logout page
+        if (err instanceof SessionSyncError) {
+          globalThis.location.assign(err.resource);
+        }
+      }
+    });
+
+    // yes, ignore the logoutMutation dependency; just logout once, on-load.
+    // Is there a way to do this without ignoring dependencies?
+    // I haven't found it.
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // show a loading spinner while logout is in process ...
   if (okapi.isAuthenticated) {
     return <LoadingView />;
   }
 
+  // ... and show a "session terminated" message when the process is complete
   return (
     <main>
       <div className={styles.wrapper} style={branding.style?.login ?? {}}>
@@ -84,6 +113,13 @@ const Logout = ({ sessionTimeoutTimer, sessionTimeoutWarningTimer }) => {
               <Headline size="large"><FormattedMessage id={messageId} /></Headline>
             </Col>
           </Row>
+          {error &&
+            <Row center="xs">
+              <Col xs={12}>
+                <Headline>{error}</Headline>
+              </Col>
+            </Row>
+          }
           <Row center="xs">
             <Col xs={12}>
               <Button to={redirectTo} onClick={handleClick}><FormattedMessage id="stripes-core.rtr.idleSession.logInAgain" /></Button>

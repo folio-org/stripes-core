@@ -1,11 +1,12 @@
 import localforage from 'localforage';
+import { act } from 'react';
 import { renderHook, waitFor } from '@folio/jest-config-stripes/testing-library/react';
 import {
   QueryClient,
   QueryClientProvider,
 } from 'react-query';
 
-import { clearSession, useLogoutMutation } from './useLogoutMutation';
+import { clearPrivateStorage, clearSharedStorage, useLogoutMutation } from './useLogoutMutation';
 import { useStripes } from '../../StripesContext';
 import {
   clearCurrentUser,
@@ -21,6 +22,7 @@ import {
 import {
   RTR_TIMEOUT_EVENT
 } from '../Root/constants';
+import { SessionSyncError } from '../SessionSyncError';
 
 // restore default fetch impl
 const mockFetchCleanUp = () => {
@@ -41,7 +43,7 @@ jest.mock('localforage', () => ({
 }));
 
 
-describe('clearSession', () => {
+describe('clearPrivateStorage', () => {
   beforeEach(() => {
     jest.spyOn(Storage.prototype, 'removeItem');
   });
@@ -50,7 +52,7 @@ describe('clearSession', () => {
     mockFetchCleanUp();
   });
 
-  it('clears timers', async () => {
+  it('clears timers', () => {
     globalThis.fetch = jest.fn().mockImplementation(() => Promise.resolve());
     const store = {
       dispatch: jest.fn(),
@@ -59,7 +61,7 @@ describe('clearSession', () => {
     globalThis.sessionStorage.clear();
 
     const sessionTimer = { clear: jest.fn() };
-    await clearSession(store, null, [sessionTimer]);
+    clearPrivateStorage(store, null, [sessionTimer]);
 
     expect(sessionTimer.clear).toHaveBeenCalled();
   });
@@ -72,12 +74,36 @@ describe('clearSession', () => {
     };
     globalThis.sessionStorage.clear();
 
-    await clearSession(store, null, []);
+    clearPrivateStorage(store, null, []);
 
     expect(store.dispatch).toHaveBeenCalledWith(setIsAuthenticated(false));
     expect(store.dispatch).toHaveBeenCalledWith(clearCurrentUser());
     expect(store.dispatch).toHaveBeenCalledWith(clearOkapiToken());
     expect(store.dispatch).toHaveBeenCalledWith(resetStore());
+  });
+
+  it('calls queryClient.removeQueries()', async () => {
+    const store = {
+      dispatch: jest.fn(),
+      getState: jest.fn().mockReturnValue({ okapi: { tenant: 'diku' }, config: { preserveConsole: false } }),
+    };
+    const rqc = {
+      removeQueries: jest.fn(),
+    };
+
+    clearPrivateStorage(store, rqc, []);
+
+    expect(rqc.removeQueries).toHaveBeenCalled();
+  });
+});
+
+describe('clearSharedStorage', () => {
+  beforeEach(() => {
+    jest.spyOn(Storage.prototype, 'removeItem');
+  });
+  afterEach(() => {
+    Storage.prototype.removeItem.mockRestore();
+    mockFetchCleanUp();
   });
 
   it('clears localStorage', async () => {
@@ -88,7 +114,7 @@ describe('clearSession', () => {
     };
     globalThis.sessionStorage.clear();
 
-    await clearSession(store, null, []);
+    await clearSharedStorage(store, null, []);
 
     expect(localStorage.removeItem).toHaveBeenCalledWith(SESSION_NAME);
     expect(localStorage.removeItem).toHaveBeenCalledWith(RTR_TIMEOUT_EVENT);
@@ -105,27 +131,13 @@ describe('clearSession', () => {
     };
     globalThis.sessionStorage.clear();
 
-    await clearSession(store, null, []);
+    await clearSharedStorage(store, null, []);
 
     expect(localforage.removeItem).toHaveBeenCalledWith(SESSION_NAME);
     expect(localforage.removeItem).toHaveBeenCalledWith('loginResponse');
     expect(localforage.removeItem).toHaveBeenCalledWith(stripesHubAPI.DISCOVERY_URL_KEY);
     expect(localforage.removeItem).toHaveBeenCalledWith(stripesHubAPI.HOST_URL_KEY);
     expect(localforage.removeItem).toHaveBeenCalledWith(stripesHubAPI.REMOTE_LIST_KEY);
-  });
-
-  it('calls queryClient.removeQueries()', async () => {
-    const store = {
-      dispatch: jest.fn(),
-      getState: jest.fn().mockReturnValue({ okapi: { tenant: 'diku' }, config: { preserveConsole: false } }),
-    };
-    const rqc = {
-      removeQueries: jest.fn(),
-    };
-
-    await clearSession(store, rqc, []);
-
-    expect(rqc.removeQueries).toHaveBeenCalled();
   });
 });
 
@@ -170,6 +182,8 @@ describe('useLogoutMutation', () => {
     });
 
     it('makes /authn/rotate and /authn/logout API calls', async () => {
+      globalThis.fetch = jest.fn().mockImplementation(() => Promise.resolve());
+
       const hook = renderHook(() => useLogoutMutation([]), { wrapper });
       hook.result.current.mutate();
 
@@ -186,6 +200,29 @@ describe('useLogoutMutation', () => {
 
       await waitFor(async () => {
         expect(timer.clear).toHaveBeenCalled();
+      });
+    });
+
+    it('throws an error if API calls fail', async () => {
+      mockPost.mockImplementation(() => { throw new Error('asdf'); });
+      let didCallOnError = false;
+
+      const timer = { clear: jest.fn() };
+      const hook = renderHook(() => useLogoutMutation([timer]), { wrapper });
+      const onError = (av) => {
+        if (av instanceof SessionSyncError) {
+          didCallOnError = true;
+        }
+      };
+
+      act(() => {
+        hook.result.current.mutate(null, { onError });
+      });
+
+      await waitFor(async () => {
+        expect(timer.clear).toHaveBeenCalled();
+        expect(mockPost).toHaveBeenCalled();
+        expect(didCallOnError).toBeTruthy();
       });
     });
   });
@@ -209,11 +246,13 @@ describe('useLogoutMutation', () => {
       mockPost.mockReset();
     });
 
-    it('skips API calls', async () => {
+    it('makes /authn/rotate and /authn/logout API calls', async () => {
       const hook = renderHook(() => useLogoutMutation([]), { wrapper });
       hook.result.current.mutate();
+
       await waitFor(async () => {
-        expect(mockPost).not.toHaveBeenCalled();
+        expect(mockPost).toHaveBeenCalledWith('authn/refresh', { rtrIgnore: true });
+        expect(mockPost).toHaveBeenCalledWith('authn/logout', { rtrIgnore: true });
       });
     });
 
@@ -226,5 +265,27 @@ describe('useLogoutMutation', () => {
         expect(timer.clear).toHaveBeenCalled();
       });
     });
+
+    it('does not throw if API calls fail', async () => {
+      mockPost.mockImplementation(() => { throw new Error('asdf'); });
+      let didCallOnError = false;
+
+      const timer = { clear: jest.fn() };
+      const hook = renderHook(() => useLogoutMutation([timer]), { wrapper });
+      const onError = () => {
+        didCallOnError = true;
+      };
+
+      act(() => {
+        hook.result.current.mutate(null, { onError });
+      });
+
+      await waitFor(async () => {
+        expect(timer.clear).toHaveBeenCalled();
+        expect(mockPost).toHaveBeenCalled();
+        expect(didCallOnError).toBeFalsy();
+      });
+    });
+
   });
 });
