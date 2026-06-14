@@ -286,6 +286,5 @@ describe('useLogoutMutation', () => {
         expect(didCallOnError).toBeFalsy();
       });
     });
-
   });
 });

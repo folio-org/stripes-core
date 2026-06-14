@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { useHistory, useLocation } from 'react-router';
+import { useLocation } from 'react-router';
 import { FormattedMessage } from 'react-intl';
 
 import {
@@ -51,7 +51,6 @@ export const parseError = (error) => {
 const Logout = ({ sessionTimeoutTimer, sessionTimeoutWarningTimer }) => {
   const { branding, okapi } = useStripes();
   const location = useLocation();
-  const history = useHistory();
   const logoutMutation = useLogoutMutation([sessionTimeoutTimer, sessionTimeoutWarningTimer]);
 
   let messageId = null;

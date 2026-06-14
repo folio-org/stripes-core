@@ -3,7 +3,7 @@ import { render, screen } from '@folio/jest-config-stripes/testing-library/react
 
 import OIDCRedirect from './OIDCRedirect';
 import { useStripes } from '../StripesContext';
-import { AUTOMATIC_LOGOUT_LOCATION, setUnauthorizedPathToSession } from '../loginServices';
+import { setUnauthorizedPathToSession } from '../loginServices';
 
 jest.mock('react-router', () => ({
   ...jest.requireActual('react-router'),
@@ -43,3 +43,4 @@ describe('OIDCRedirect', () => {
     expect(screen.getByRole('button')).toHaveAttribute('href', 'dashboard');
   });
 });
+
