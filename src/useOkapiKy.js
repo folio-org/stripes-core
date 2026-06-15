@@ -41,13 +41,17 @@ export default ({ tenant, timeout } = {}) => {
     url,
   } = useStripes().okapi;
 
-  const options = defaultOptions({ locale, tenant, currentTenant, timeout, defaultTimeout, url });
+  const kyOptions = defaultOptions({ locale, tenant, currentTenant, timeout, defaultTimeout, url });
   return ky.create({
-    ...options,
+    ...kyOptions,
     credentials: 'include',
+    // curry options on to fetch since ky <= v0.23.x does not do it for us
+    fetch: (resource, options) => {
+      return fetch(resource, options);
+    },
     hooks: {
       beforeRequest: [
-        ...options.hooks.beforeRequest,
+        ...kyOptions.hooks.beforeRequest,
         (request) => {
           if (token) {
             request.headers.set('X-Okapi-Token', token);
@@ -75,6 +79,7 @@ export const usePublicGatewayKy = ({ tenant, timeout } = {}) => {
     timeout: defaultTimeout = 60000, // Kong has a default timeout of 60 seconds
     url,
   } = useStripes().okapi;
+
   return ky.create({
     ...defaultOptions({ locale, tenant, currentTenant, timeout, defaultTimeout, url }),
     // note that `ky.get(input, options)` DOES NOT directly correspond to

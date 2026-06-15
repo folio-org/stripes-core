@@ -1,111 +1,261 @@
-import { renderHook } from '@folio/jest-config-stripes/testing-library/react';
+import ky from 'ky';
 
+import useOkapiKy, { usePublicGatewayKy } from './useOkapiKy';
 import { useStripes } from './StripesContext';
-import useOkapiKy from './useOkapiKy';
 
-jest.mock('./StripesContext');
 jest.mock('ky', () => ({
-  create: ({ ...av }) => av,
+  __esModule: true,
+  default: {
+    create: jest.fn(),
+  },
 }));
 
+jest.mock('./StripesContext', () => ({
+  useStripes: jest.fn(),
+}));
+
+const mockKyCreate = ky.create;
+const mockUseStripes = useStripes;
+
+const req = {
+  headers: {
+    set: jest.fn(),
+  },
+};
+
 describe('useOkapiKy', () => {
-  it('pulls values from stripes object', async () => {
+  const originalFetch = globalThis.fetch;
+  const fetchMock = jest.fn();
+  beforeEach(() => {
+    globalThis.fetch = fetchMock;
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+    globalThis.fetch = originalFetch;
+  });
+
+  it('supplies default values and reads others from stripes', () => {
+    const okapi = {
+      tenant: 'tenant',
+      url: 'https://whatever.com',
+      token: 'yes, my precious',
+    };
+    mockUseStripes.mockReturnValue({ okapi });
+
+    useOkapiKy();
+
+    // how was ky.create called?
+    expect(mockKyCreate).toHaveBeenCalledWith(expect.objectContaining({
+      credentials: 'include',
+      mode: 'cors',
+      prefixUrl: okapi.url,
+      timeout: 60000,
+    }));
+
+    const args = mockKyCreate.mock.calls[0][0];
+
+    // are hooks in place?
+    args.hooks.beforeRequest.forEach(fx => fx(req));
+    expect(req.headers.set).toHaveBeenCalledWith('Accept-Language', 'en');
+    expect(req.headers.set).toHaveBeenCalledWith('X-Okapi-Tenant', okapi.tenant);
+    expect(req.headers.set).toHaveBeenCalledWith('X-Okapi-Token', okapi.token);
+
+    // are fetch arguments curried onto native fetch?
+    const resource = 'some-url';
+    const options = { key: 'value' };
+    args.fetch(resource, options);
+    expect(fetchMock).toHaveBeenCalledWith(resource, options);
+  });
+
+  it('stripes values override defaults', () => {
     const okapi = {
       locale: 'klingon',
       tenant: 'tenant',
-      timeout: 271828,
+      timeout: 2718,
       url: 'https://whatever.com'
     };
 
-    const mockUseStripes = useStripes;
     mockUseStripes.mockReturnValue({ okapi });
 
-    const r = {
-      headers: {
-        set: jest.fn(),
-      }
-    };
+    useOkapiKy();
 
-    const { result } = renderHook(() => useOkapiKy({ timeout: 30 }));
+    // how was ky.create called?
+    expect(mockKyCreate).toHaveBeenCalledWith(expect.objectContaining({
+      credentials: 'include',
+      mode: 'cors',
+      prefixUrl: okapi.url,
+      timeout: okapi.timeout,
+    }));
 
-    expect(result.current.prefixUrl).toBe(okapi.url);
-    expect(result.current.timeout).toBe(30);
+    // what happens when we exercise ky's hooks?
+    const args = mockKyCreate.mock.calls[0][0];
+    args.hooks.beforeRequest.forEach(fx => fx(req));
 
-    // invoke each beforeRequest hook
-    result.current.hooks.beforeRequest.forEach(i => i(r));
-    expect(r.headers.set).toHaveBeenCalledWith('Accept-Language', okapi.locale);
-    expect(r.headers.set).toHaveBeenCalledWith('X-Okapi-Tenant', okapi.tenant);
+    expect(req.headers.set).toHaveBeenCalledWith('Accept-Language', okapi.locale);
+    expect(req.headers.set).toHaveBeenCalledWith('X-Okapi-Tenant', okapi.tenant);
   });
 
-  it('provides default values if stripes lacks them', async () => {
-    const okapi = {};
-
-    const mockUseStripes = useStripes;
-    mockUseStripes.mockReturnValue({ okapi });
-
-    const r = {
-      headers: {
-        set: jest.fn(),
-      }
-    };
-
-    const { result } = renderHook(() => useOkapiKy());
-    result.current.hooks.beforeRequest[0](r);
-
-    expect(result.current.timeout).toBe(60000);
-
-    expect(r.headers.set).toHaveBeenCalledWith('Accept-Language', 'en');
-  });
-
-  it('overrides tenant', async () => {
+  it('tenant and timeout arguments override stripes', () => {
     const okapi = {
+      locale: 'klingon',
       tenant: 'tenant',
-      timeout: 271828,
+      timeout: 2718,
       url: 'https://whatever.com'
     };
 
-    const mockUseStripes = useStripes;
     mockUseStripes.mockReturnValue({ okapi });
 
-    const r = {
-      headers: {
-        set: jest.fn(),
-      }
-    };
+    const tenant = 'avtenant';
+    const timeout = 662607;
 
-    const { result } = renderHook(() => useOkapiKy({ tenant: 'monkey' }));
+    useOkapiKy({ tenant, timeout });
 
-    expect(result.current.timeout).toBe(okapi.timeout);
+    // how was ky.create called?
+    expect(mockKyCreate).toHaveBeenCalledWith(expect.objectContaining({
+      credentials: 'include',
+      mode: 'cors',
+      prefixUrl: okapi.url,
+      timeout,
+    }));
 
-    // invoke each beforeRequest hook
-    result.current.hooks.beforeRequest.forEach(i => i(r));
-    expect(r.headers.set).toHaveBeenCalledWith('X-Okapi-Tenant', 'monkey');
+    // what happens when we exercise ky's hooks?
+    const args = mockKyCreate.mock.calls[0][0];
+    args.hooks.beforeRequest.forEach(fx => fx(req));
+
+    expect(req.headers.set).toHaveBeenCalledWith('Accept-Language', okapi.locale);
+    expect(req.headers.set).toHaveBeenCalledWith('X-Okapi-Tenant', tenant);
   });
 
-  describe('when tenant param is not null, but an empty value', () => {
-    it('should use okapi tenant id', () => {
+  describe('when tenant param is present but empty', () => {
+    it('tenant is derived from stripes', () => {
       const okapi = {
+        locale: 'klingon',
         tenant: 'tenant',
-        timeout: 271828,
+        timeout: 2718,
         url: 'https://whatever.com'
       };
 
-      const mockUseStripes = useStripes;
       mockUseStripes.mockReturnValue({ okapi });
 
-      const r = {
-        headers: {
-          set: jest.fn(),
-        }
-      };
+      const tenant = '';
+      const timeout = 662607;
 
-      const { result } = renderHook(() => useOkapiKy({ tenant: '' }));
-      // invoke each beforeRequest hook
-      result.current.hooks.beforeRequest.forEach(i => i(r));
+      useOkapiKy({ tenant, timeout });
 
-      expect(r.headers.set).toHaveBeenCalledWith('X-Okapi-Tenant', 'tenant');
+      // what happens when we exercise ky's hooks?
+      const args = mockKyCreate.mock.calls[0][0];
+      args.hooks.beforeRequest.forEach(fx => fx(req));
+
+      expect(req.headers.set).toHaveBeenCalledWith('Accept-Language', okapi.locale);
+      expect(req.headers.set).toHaveBeenCalledWith('X-Okapi-Tenant', okapi.tenant);
     });
   });
 });
 
+describe('usePublicGatewayKy', () => {
+  const originalFetch = globalThis.fetch;
+  const fetchMock = jest.fn();
+  beforeEach(() => {
+    globalThis.fetch = fetchMock;
+  });
 
+  afterEach(() => {
+    jest.clearAllMocks();
+    globalThis.fetch = originalFetch;
+  });
+
+  it('supplies default values, reads others from stripes, includes rtrIgnore', () => {
+    const okapi = {
+      tenant: 'tenant',
+      url: 'https://whatever.com',
+      token: 'yes, my precious',
+    };
+    mockUseStripes.mockReturnValue({ okapi });
+
+    usePublicGatewayKy();
+
+    // how was ky.create called?
+    expect(mockKyCreate).toHaveBeenCalledWith(expect.objectContaining({
+      mode: 'cors',
+      prefixUrl: okapi.url,
+      timeout: 60000,
+    }));
+
+    const args = mockKyCreate.mock.calls[0][0];
+
+    // are hooks in place?
+    args.hooks.beforeRequest.forEach(fx => fx(req));
+    expect(req.headers.set).toHaveBeenCalledWith('Accept-Language', 'en');
+    expect(req.headers.set).toHaveBeenCalledWith('X-Okapi-Tenant', okapi.tenant);
+
+    // are fetch arguments curried onto native fetch?
+    // and is rtrIgnore supplied?
+    const resource = 'some-url';
+    const options = { key: 'value' };
+    args.fetch(resource, options);
+    expect(fetchMock).toHaveBeenCalledWith(
+      resource,
+      expect.objectContaining({ ...options, rtrIgnore: true })
+    );
+  });
+
+  it('stripes values override defaults', () => {
+    const okapi = {
+      locale: 'klingon',
+      tenant: 'tenant',
+      timeout: 2718,
+      url: 'https://whatever.com'
+    };
+
+    mockUseStripes.mockReturnValue({ okapi });
+
+    useOkapiKy();
+
+    // how was ky.create called?
+    expect(mockKyCreate).toHaveBeenCalledWith(expect.objectContaining({
+      credentials: 'include',
+      mode: 'cors',
+      prefixUrl: okapi.url,
+      timeout: okapi.timeout,
+    }));
+
+    // what happens when we exercise ky's hooks?
+    const args = mockKyCreate.mock.calls[0][0];
+    args.hooks.beforeRequest.forEach(fx => fx(req));
+
+    expect(req.headers.set).toHaveBeenCalledWith('Accept-Language', okapi.locale);
+    expect(req.headers.set).toHaveBeenCalledWith('X-Okapi-Tenant', okapi.tenant);
+  });
+
+  it('tenant and timeout arguments override stripes', () => {
+    const okapi = {
+      locale: 'klingon',
+      tenant: 'tenant',
+      timeout: 2718,
+      url: 'https://whatever.com'
+    };
+
+    mockUseStripes.mockReturnValue({ okapi });
+
+    const tenant = 'avtenant';
+    const timeout = 662607;
+
+    useOkapiKy({ tenant, timeout });
+
+    // how was ky.create called?
+    expect(mockKyCreate).toHaveBeenCalledWith(expect.objectContaining({
+      credentials: 'include',
+      mode: 'cors',
+      prefixUrl: okapi.url,
+      timeout,
+    }));
+
+    // what happens when we exercise ky's hooks?
+    const args = mockKyCreate.mock.calls[0][0];
+    args.hooks.beforeRequest.forEach(fx => fx(req));
+
+    expect(req.headers.set).toHaveBeenCalledWith('Accept-Language', okapi.locale);
+    expect(req.headers.set).toHaveBeenCalledWith('X-Okapi-Tenant', tenant);
+  });
+});
