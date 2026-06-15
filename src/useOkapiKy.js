@@ -46,8 +46,9 @@ export default ({ tenant, timeout, rtrIgnore = false } = {}) => {
     ...kyOptions,
     credentials: 'include',
     // curry options on to fetch since ky <= v0.23.x does not do it for us
-    fetch: (resource, options) => {
-      return globalThis.fetch(resource, { ...options, rtrIgnore });
+    // see /src/components/Root/FFetch.js for additional details.
+    fetch: (request, options) => {
+      return globalThis.fetch(request, { ...options, rtrIgnore });
     },
     hooks: {
       beforeRequest: [
@@ -82,22 +83,10 @@ export const usePublicGatewayKy = ({ tenant, timeout } = {}) => {
 
   return ky.create({
     ...defaultOptions({ locale, tenant, currentTenant, timeout, defaultTimeout, url }),
-    // note that `ky.get(input, options)` DOES NOT directly correspond to
-    // a call like `fetch(input, options)`. It ends up being analogous to
-    //   fetch(new Request(input, options), undefined);
-    // Because our globalThis.fetch replacement relies on receiving custom
-    // values via options (namely, `rtrIgnore`, which is used to suppress RTR
-    // checks when calling publicly available routes), we need this hook to
-    // curry ky's options onto fetch's options.
-    //
-    // Newer versions of ky support this, e.g. allowing calls such as
-    //   api.get(resource, { rtrIgnore: true });
-    // but at least as of ky v0.23.0, it does not work this way, and so this
-    // hook is necessary.
-    //
+    // curry options on to fetch since ky <= v0.23.x does not do it for us
     // see /src/components/Root/FFetch.js for additional details.
-    fetch: (resource, options) => {
-      return fetch(resource, { ...options, rtrIgnore: true });
+    fetch: (request, options) => {
+      return fetch(request, { ...options, rtrIgnore: true });
     }
   });
 };

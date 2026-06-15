@@ -156,8 +156,8 @@ export const useLogoutMutation = (timers) => {
         // `/authn/refresh` with the hope that it will bless us with active
         // tokens, allowing us to logout successfully and destroy both the
         // keycloak and FOLIO sessions, keeping the world in sync.
-        await ky.post('authn/refresh', { rtrIgnore: true });
-        await ky.post('authn/logout', { rtrIgnore: true });
+        await ky.post('authn/refresh');
+        await ky.post('authn/logout');
       } catch (err) {
         // if shared storage is present, treat API request failures as errors
         if (localStorage.getItem(SESSION_NAME)) {
