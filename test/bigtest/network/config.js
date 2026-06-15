@@ -91,6 +91,13 @@ export default function configure() {
 
   this.post('/authn/logout', {}, 204);
 
+  this.post('/authn/refresh', () => {
+    return new Response(201, {}, {
+      accessTokenExpiration: new Date(Date.now() + (10 * 60 * 1000)).toISOString(),
+      refreshTokenExpiration: new Date(Date.now() + (10 * 60 * 1000)).toISOString(),
+    });
+  });
+
   this.post('/bl-users/login-with-expiry', () => {
     return new Response(201, {}, {
       user: {
