@@ -32,7 +32,7 @@ const defaultOptions = ({ locale, tenant, currentTenant, timeout, defaultTimeout
  * @param {number} timeout API gateway timeout, in milliseconds
  * @returns ky instance
  */
-export default ({ tenant, timeout } = {}) => {
+export default ({ tenant, timeout, rtrIgnore = false } = {}) => {
   const {
     locale = 'en',
     tenant: currentTenant,
@@ -47,7 +47,7 @@ export default ({ tenant, timeout } = {}) => {
     credentials: 'include',
     // curry options on to fetch since ky <= v0.23.x does not do it for us
     fetch: (resource, options) => {
-      return fetch(resource, options);
+      return globalThis.fetch(resource, { ...options, rtrIgnore });
     },
     hooks: {
       beforeRequest: [

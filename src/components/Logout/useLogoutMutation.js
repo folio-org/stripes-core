@@ -144,7 +144,7 @@ export const useLogoutMutation = (timers) => {
   // fallback to stripes.okapi.tenant.
   const tenant = getLogoutTenant()?.tenantId || okapi?.tenant;
 
-  const ky = useOkapiKy({ tenant });
+  const ky = useOkapiKy({ tenant, rtrIgnore: true });
 
   return useMutation({
     mutationFn: async (reason = undefined) => {

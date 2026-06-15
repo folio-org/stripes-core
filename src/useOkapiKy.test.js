@@ -65,7 +65,7 @@ describe('useOkapiKy', () => {
     const resource = 'some-url';
     const options = { key: 'value' };
     args.fetch(resource, options);
-    expect(fetchMock).toHaveBeenCalledWith(resource, options);
+    expect(fetchMock).toHaveBeenCalledWith(resource, expect.objectContaining({ ...options }));
   });
 
   it('stripes values override defaults', () => {
@@ -96,7 +96,7 @@ describe('useOkapiKy', () => {
     expect(req.headers.set).toHaveBeenCalledWith('X-Okapi-Tenant', okapi.tenant);
   });
 
-  it('tenant and timeout arguments override stripes', () => {
+  it('arguments override stripes', () => {
     const okapi = {
       locale: 'klingon',
       tenant: 'tenant',
@@ -108,8 +108,9 @@ describe('useOkapiKy', () => {
 
     const tenant = 'avtenant';
     const timeout = 662607;
+    const rtrIgnore = true;
 
-    useOkapiKy({ tenant, timeout });
+    useOkapiKy({ tenant, timeout, rtrIgnore });
 
     // how was ky.create called?
     expect(mockKyCreate).toHaveBeenCalledWith(expect.objectContaining({
@@ -125,6 +126,16 @@ describe('useOkapiKy', () => {
 
     expect(req.headers.set).toHaveBeenCalledWith('Accept-Language', okapi.locale);
     expect(req.headers.set).toHaveBeenCalledWith('X-Okapi-Tenant', tenant);
+
+    // are fetch arguments curried onto native fetch?
+    // and is rtrIgnore supplied?
+    const resource = 'some-url';
+    const options = { key: 'value' };
+    args.fetch(resource, options);
+    expect(fetchMock).toHaveBeenCalledWith(
+      resource,
+      expect.objectContaining({ ...options, rtrIgnore })
+    );
   });
 
   describe('when tenant param is present but empty', () => {
