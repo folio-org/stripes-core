@@ -662,7 +662,7 @@ export async function loadResources(store, tenant, userId) {
 
   if (hasSetting) {
     await processLocaleSettings(store, tenantLocaleData, userLocaleData);
-    promises.push(...responses.map(res => res?.value));
+    promises.push(responses.map(res => res?.value));
   }
 
 
