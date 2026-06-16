@@ -5,6 +5,7 @@ import { noop } from 'lodash';
 import { usePublicGatewayKy } from '../useOkapiKy';
 import {
   getLoginTenant,
+  SESSION_NAME,
 } from '../loginServices';
 import { useStripes } from '../StripesContext';
 
@@ -57,6 +58,13 @@ const useExchangeCode = (initSession = noop) => {
 
           return json;
         } catch (fetchError) {
+          console.error(fetchError); // eslint-disable-line no-console
+          // failure
+          //
+          // set SESSION_NAME to prompt the logout-handler to recognize an
+          // active session, thus treating its logout API call failure as an
+          // error and redirecting to keycloak to guarantee session cleanup
+          localStorage.setItem(SESSION_NAME, true);
           // throw json from the error-response, or just rethrow
           if (fetchError?.response?.json) {
             const errorJson = await fetchError.response.json();

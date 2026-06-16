@@ -13,6 +13,8 @@ const defaultValidationHandler = (errors) => {
       <FormattedMessage id={`stripes-smart-components.${errors.pop()}`} />
     );
   }
+
+  return undefined;
 };
 
 class PasswordValidationField extends React.Component {
