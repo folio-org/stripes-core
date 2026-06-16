@@ -38,6 +38,10 @@ describe('Logout', () => {
     });
 
     it('if not authenticated, renders a logout message', async () => {
+      const mockUseLogoutMutation = useLogoutMutation;
+      const mutate = jest.fn();
+      mockUseLogoutMutation.mockReturnValue({ mutate });
+
       const mockUseStripes = useStripes;
       mockUseStripes.mockReturnValue({ okapi: { isAuthenticated: false }, branding: mockBranding });
 
