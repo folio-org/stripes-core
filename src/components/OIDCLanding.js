@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import { useIntl } from 'react-intl';
+import { useHistory } from 'react-router';
 
 import {
   Headline,
@@ -7,6 +8,7 @@ import {
 } from '@folio/stripes-components';
 
 import {
+  LOGOUT_MESSAGES,
   requestUserWithPerms,
   storeLogoutTenant,
 } from '../loginServices';
@@ -15,7 +17,6 @@ import { useStripes } from '../StripesContext';
 import css from './Front.css';
 
 import useExchangeCode from './useExchangeCode';
-import OIDCLandingError from './OIDCLandingError';
 
 /**
  * OIDCLanding: un-authenticated route handler for /oidc-landing.
@@ -31,6 +32,7 @@ import OIDCLandingError from './OIDCLandingError';
 const OIDCLanding = ({ handleRotation }) => {
   const intl = useIntl();
   const { okapi, store } = useStripes();
+  const history = useHistory();
 
   /**
    * initSession
@@ -52,8 +54,11 @@ const OIDCLanding = ({ handleRotation }) => {
 
   const { tokenData, isLoading, error } = useExchangeCode(initSession);
 
+  // an error during token-exchange amounts to an init error: the user's
+  // keycloak session is active but their FOLIO session is not. redirect to
+  // /logout.
   if (error) {
-    return <OIDCLandingError error={error} />;
+    history.push(`/logout?reason=${LOGOUT_MESSAGES.INIT_ERROR}`);
   }
 
   return (
