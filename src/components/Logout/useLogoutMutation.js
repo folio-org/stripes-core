@@ -163,7 +163,7 @@ export const useLogoutMutation = (timers) => {
         if (localStorage.getItem(SESSION_NAME)) {
           console.error('logout failure; session storage was active but the logout API request failed', err); // eslint-disable-line no-console
           const { clientId } = getLoginTenant(okapi, config);
-          const logoutUrl = `${okapi.authnUrl}/realms/${tenant}/protocol/openid-connect/logout?post_logout_redirect_uri=http://localhost:3000/logout?reason=${reason}&client_id=${clientId}`;
+          const logoutUrl = `${okapi.authnUrl}/realms/${tenant}/protocol/openid-connect/logout?post_logout_redirect_uri=${globalThis.location.origin}/logout?reason=${reason}&client_id=${clientId}`;
           throw new SessionSyncError(logoutUrl);
         }
       } finally {
