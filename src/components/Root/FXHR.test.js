@@ -171,7 +171,7 @@ describe('FXHR', () => {
       abortSpy.mockRestore();
     });
 
-    it('when rotation fails, aborts the XHR, surfacing the error in the UI', async () => {
+    it('when rotation fails, aborts the XHR and dispatch RTR_ERROR_EVENT, surfacing the error in the UI.', async () => {
       rotateAndReplay.mockRejectedValueOnce(new RTRError('Rotation failure!'));
 
       testXHR.open('POST', 'okapiUrl/files');
@@ -185,6 +185,7 @@ describe('FXHR', () => {
 
       expect(abortSpy).toHaveBeenCalledTimes(1);
       expect(dispatchSpy).toHaveBeenCalledTimes(1);
+      expect(dispatchSpy.mock.calls[0][0].type).toContain('RTRError');
     });
 
     it('aborts an in-flight Okapi request when RTR_FLS_TIMEOUT_EVENT fires', () => {
