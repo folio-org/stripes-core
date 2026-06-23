@@ -1,5 +1,5 @@
 import { rotateAndReplay } from './rotateAndReplay';
-import { RTR_ERROR_EVENT } from './constants';
+import { RTR_ERROR_EVENT, RTR_FLS_TIMEOUT_EVENT, RTR_TIMEOUT_EVENT } from './constants';
 import { RTRError } from './Errors';
 import FXHR from './FXHR';
 
@@ -152,6 +152,61 @@ describe('FXHR', () => {
 
     expect(rotateAndReplay).toHaveBeenCalledTimes(1);
     expect(mockHandler).toHaveBeenCalledTimes(1);
+  });
+
+  describe('abort on session-timeout events', () => {
+    let abortSpy;
+
+    beforeEach(() => {
+      abortSpy = jest.spyOn(XMLHttpRequest.prototype, 'abort').mockImplementation(() => {});
+    });
+
+    afterEach(() => {
+      abortSpy.mockRestore();
+    });
+
+    it('aborts an in-flight Okapi request when RTR_FLS_TIMEOUT_EVENT fires', () => {
+      testXHR.open('POST', 'okapiUrl/files');
+      testXHR.send(new ArrayBuffer(8));
+
+      window.dispatchEvent(new Event(RTR_FLS_TIMEOUT_EVENT));
+
+      expect(abortSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('aborts an in-flight Okapi request when RTR_TIMEOUT_EVENT fires', () => {
+      testXHR.open('POST', 'okapiUrl/files');
+      testXHR.send(new ArrayBuffer(8));
+
+      window.dispatchEvent(new Event(RTR_TIMEOUT_EVENT));
+
+      expect(abortSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not abort non-Okapi requests when timeout events fire', () => {
+      testXHR.open('POST', 'https://external.example.com/upload');
+      testXHR.send(new ArrayBuffer(8));
+
+      window.dispatchEvent(new Event(RTR_FLS_TIMEOUT_EVENT));
+      window.dispatchEvent(new Event(RTR_TIMEOUT_EVENT));
+
+      expect(abortSpy).not.toHaveBeenCalled();
+    });
+
+    it('removes timeout listeners after request reaches DONE state', () => {
+      testXHR.open('POST', 'okapiUrl/files');
+      testXHR.onreadystatechange = mockHandler;
+      testXHR.send(new ArrayBuffer(8));
+
+      setXhrState(testXHR, { readyState: 4, status: 200, responseText: '{"ok":true}' });
+      testXHR.handleInternalReadyStateChange({});
+
+      // Listeners should have been removed; abort must not be called
+      window.dispatchEvent(new Event(RTR_FLS_TIMEOUT_EVENT));
+      window.dispatchEvent(new Event(RTR_TIMEOUT_EVENT));
+
+      expect(abortSpy).not.toHaveBeenCalled();
+    });
   });
 
   it('dispatches RTR_ERROR_EVENT and surfaces original failure when rotation fails', async () => {

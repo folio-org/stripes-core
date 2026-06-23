@@ -2,6 +2,8 @@ import { rotateAndReplay } from './rotateAndReplay';
 import { isFolioApiRequest } from './token-util';
 import {
   RTR_ERROR_EVENT,
+  RTR_FLS_TIMEOUT_EVENT,
+  RTR_TIMEOUT_EVENT,
 } from './constants';
 import { RTRError } from './Errors';
 
@@ -46,6 +48,12 @@ export default (deps) => {
       this.FFetchContext = deps;
 
       /**
+       * Cleanup function for session-timeout abort listeners; null when no
+       * in-flight Okapi request is active.
+       */
+      this._removeTimeoutListeners = null;
+
+      /**
        * Always route readystatechange through the wrapper so auth failures can
        * be handled before consumer callbacks are invoked.
        */
@@ -70,7 +78,7 @@ export default (deps) => {
      * Invoke the user callback with native XHR-style this binding.
      */
     invokeUserOnReadyStateChange = (event) => {
-      this.userOnReadyStateChange?.(this, event);
+      this.userOnReadyStateChange?.call(this, event);
     }
 
     /**
@@ -151,14 +159,20 @@ export default (deps) => {
       } catch (err) {
         if (err instanceof RTRError) {
           console.error('RTR failure while attempting XHR', err); // eslint-disable-line no-console
+          /* If rotation fails, abort the request. This should
+          * allow the application to handle the error / close the request in its own way
+          * so that any cancel confirmation modals attached to the operation can be circumvented
+          * and our logout navigation can be triggered when the RTR_ERROR_EVENT.
+          */
+          super.abort();
           window.dispatchEvent(new Event(RTR_ERROR_EVENT, { detail: err }));
-        }
-
-        /**
+        } else {
+          /**
          * Surface the original failed response to the XHR consumer when
          * rotation cannot recover the request.
          */
-        this.invokeUserOnReadyStateChange(event);
+          this.invokeUserOnReadyStateChange(event);
+        }
       }
     }
 
@@ -171,6 +185,8 @@ export default (deps) => {
         return;
       }
 
+      this._removeTimeoutListeners?.();
+
       const shouldRetry = this.shouldEnsureToken && !this.hasRetriedAuth && this.isAuthFailureResponse();
       if (shouldRetry) {
         this.handleAuthFailure(event);
@@ -182,6 +198,11 @@ export default (deps) => {
 
     /**
      * Capture replay inputs before first send, then pass through to native XHR.
+     * For Okapi requests, registers window listeners so the XHR is aborted if a
+     * session-terminating timeout event fires while the request is in flight.
+     * This allows the uploading application to receive the abort event, clean up
+     * any navigation guards (e.g. React Router <Prompt>), and let the logout
+     * navigation proceed without entering a confirmation-modal loop.
      */
     send = (payload) => {
       const { logger } = this.FFetchContext;
@@ -191,6 +212,19 @@ export default (deps) => {
 
       if (!this.shouldEnsureToken) {
         logger.log('rtr', 'request passed through, sending XHR...');
+      } else {
+        const abortOnTimeout = () => {
+          this.FFetchContext.logger?.log('rtr', 'aborting in-flight XHR due to session timeout');
+          this._removeTimeoutListeners?.();
+          super.abort();
+        };
+        window.addEventListener(RTR_FLS_TIMEOUT_EVENT, abortOnTimeout);
+        window.addEventListener(RTR_TIMEOUT_EVENT, abortOnTimeout);
+        this._removeTimeoutListeners = () => {
+          window.removeEventListener(RTR_FLS_TIMEOUT_EVENT, abortOnTimeout);
+          window.removeEventListener(RTR_TIMEOUT_EVENT, abortOnTimeout);
+          this._removeTimeoutListeners = null;
+        };
       }
 
       super.send(payload);
