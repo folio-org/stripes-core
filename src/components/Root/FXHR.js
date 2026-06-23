@@ -164,6 +164,7 @@ export default (deps) => {
           * so that any cancel confirmation modals attached to the operation can be circumvented
           * and our logout navigation can be triggered when the RTR_ERROR_EVENT.
           */
+          this._removeTimeoutListeners?.();
           super.abort();
           window.dispatchEvent(new Event(RTR_ERROR_EVENT, { detail: err }));
         } else {

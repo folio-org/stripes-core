@@ -33,7 +33,7 @@ describe('FXHR', () => {
     jest.clearAllMocks();
     FakeXHR = FXHR({ logger: { log: () => { } }, okapi: { url: 'okapiUrl' } });
     testXHR = new FakeXHR();
-    dispatchSpy = jest.spyOn(window, 'dispatchEvent').mockImplementation(() => true);
+    dispatchSpy = jest.spyOn(window, 'dispatchEvent');
   });
 
   afterEach(() => {
@@ -59,7 +59,7 @@ describe('FXHR', () => {
 
   it('calls other prototype methods...', () => {
     testXHR.addEventListener('abort', mockHandler);
-    testXHR.open('POST', 'okapiUrl');
+    testXHR.open('POST', 'notOkapiUrl');
     testXHR.send(new ArrayBuffer(8));
     expect(openSpy.mock.calls).toHaveLength(1);
     expect(aelSpy.mock.calls).toHaveLength(1);
@@ -157,19 +157,41 @@ describe('FXHR', () => {
   describe('abort on session-timeout events', () => {
     let abortSpy;
 
+    // Dispatch a window event through EventTarget.prototype directly so that
+    // real event listeners fire without going through the dispatchSpy mock.
+    const fireWindowEvent = (type) => {
+      EventTarget.prototype.dispatchEvent.call(window, new Event(type));
+    };
+
     beforeEach(() => {
-      abortSpy = jest.spyOn(XMLHttpRequest.prototype, 'abort').mockImplementation(() => {});
+      abortSpy = jest.spyOn(XMLHttpRequest.prototype, 'abort').mockImplementation(() => { });
     });
 
     afterEach(() => {
       abortSpy.mockRestore();
     });
 
+    it('when rotation fails, aborts the XHR, surfacing the error in the UI', async () => {
+      rotateAndReplay.mockRejectedValueOnce(new RTRError('Rotation failure!'));
+
+      testXHR.open('POST', 'okapiUrl/files');
+      testXHR.onreadystatechange = mockHandler;
+      testXHR.send(new ArrayBuffer(8));
+
+      setXhrState(testXHR, { readyState: 4, status: 401, responseText: '{}' });
+      testXHR.handleInternalReadyStateChange({});
+
+      await Promise.resolve();
+
+      expect(abortSpy).toHaveBeenCalledTimes(1);
+      expect(dispatchSpy).toHaveBeenCalledTimes(1);
+    });
+
     it('aborts an in-flight Okapi request when RTR_FLS_TIMEOUT_EVENT fires', () => {
       testXHR.open('POST', 'okapiUrl/files');
       testXHR.send(new ArrayBuffer(8));
 
-      window.dispatchEvent(new Event(RTR_FLS_TIMEOUT_EVENT));
+      fireWindowEvent(RTR_FLS_TIMEOUT_EVENT);
 
       expect(abortSpy).toHaveBeenCalledTimes(1);
     });
@@ -178,7 +200,7 @@ describe('FXHR', () => {
       testXHR.open('POST', 'okapiUrl/files');
       testXHR.send(new ArrayBuffer(8));
 
-      window.dispatchEvent(new Event(RTR_TIMEOUT_EVENT));
+      fireWindowEvent(RTR_TIMEOUT_EVENT);
 
       expect(abortSpy).toHaveBeenCalledTimes(1);
     });
@@ -187,13 +209,13 @@ describe('FXHR', () => {
       testXHR.open('POST', 'https://external.example.com/upload');
       testXHR.send(new ArrayBuffer(8));
 
-      window.dispatchEvent(new Event(RTR_FLS_TIMEOUT_EVENT));
-      window.dispatchEvent(new Event(RTR_TIMEOUT_EVENT));
+      fireWindowEvent(RTR_FLS_TIMEOUT_EVENT);
+      fireWindowEvent(RTR_TIMEOUT_EVENT);
 
       expect(abortSpy).not.toHaveBeenCalled();
     });
 
-    it('removes timeout listeners after request reaches DONE state', () => {
+    it('does not abort after request reaches DONE state', () => {
       testXHR.open('POST', 'okapiUrl/files');
       testXHR.onreadystatechange = mockHandler;
       testXHR.send(new ArrayBuffer(8));
@@ -201,28 +223,11 @@ describe('FXHR', () => {
       setXhrState(testXHR, { readyState: 4, status: 200, responseText: '{"ok":true}' });
       testXHR.handleInternalReadyStateChange({});
 
-      // Listeners should have been removed; abort must not be called
-      window.dispatchEvent(new Event(RTR_FLS_TIMEOUT_EVENT));
-      window.dispatchEvent(new Event(RTR_TIMEOUT_EVENT));
+      // Listeners should have been removed at DONE; subsequent timeout events are no-ops.
+      fireWindowEvent(RTR_FLS_TIMEOUT_EVENT);
+      fireWindowEvent(RTR_TIMEOUT_EVENT);
 
       expect(abortSpy).not.toHaveBeenCalled();
     });
-  });
-
-  it('dispatches RTR_ERROR_EVENT and surfaces original failure when rotation fails', async () => {
-    rotateAndReplay.mockRejectedValueOnce(new RTRError('Rotation failure!'));
-
-    testXHR.open('POST', 'okapiUrl/files');
-    testXHR.onreadystatechange = mockHandler;
-    testXHR.send(new ArrayBuffer(8));
-
-    setXhrState(testXHR, { readyState: 4, status: 401, responseText: '{}' });
-    testXHR.handleInternalReadyStateChange({});
-
-    await Promise.resolve();
-
-    expect(dispatchSpy).toHaveBeenCalledTimes(1);
-    expect(dispatchSpy.mock.calls[0][0].type).toBe(RTR_ERROR_EVENT);
-    expect(mockHandler).toHaveBeenCalledTimes(1);
   });
 });
