@@ -1,5 +1,5 @@
 import { rotateAndReplay } from './rotateAndReplay';
-import { RTR_ERROR_EVENT, RTR_FLS_TIMEOUT_EVENT, RTR_TIMEOUT_EVENT } from './constants';
+import { RTR_FLS_TIMEOUT_EVENT, RTR_TIMEOUT_EVENT } from './constants';
 import { RTRError } from './Errors';
 import FXHR from './FXHR';
 
