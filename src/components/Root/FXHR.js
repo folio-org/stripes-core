@@ -244,8 +244,10 @@ export default (deps) => {
             globalThis.dispatchEvent(new Event(e.type));
           }, 0);
         };
+
         globalThis.addEventListener(RTR_FLS_TIMEOUT_EVENT, abortOnTimeout);
         globalThis.addEventListener(RTR_TIMEOUT_EVENT, abortOnTimeout);
+
         this._removeTimeoutListeners = () => {
           globalThis.removeEventListener(RTR_FLS_TIMEOUT_EVENT, abortOnTimeout);
           globalThis.removeEventListener(RTR_TIMEOUT_EVENT, abortOnTimeout);
