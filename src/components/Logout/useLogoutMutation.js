@@ -1,5 +1,4 @@
 import { useMutation, useQueryClient } from 'react-query';
-import { useHistory } from 'react-router-dom';
 import localforage from 'localforage';
 
 import { useStripes } from '../../StripesContext';
@@ -11,56 +10,29 @@ import {
 import { resetStore } from '../../mainActions';
 import { stripesHubAPI } from '../../constants';
 import {
-  AUTOMATIC_LOGOUT_LOCATION,
+  getLoginTenant,
   getLogoutTenant,
   SESSION_NAME,
-  setUnauthorizedPathToSession,
   TENANT_LOCAL_STORAGE_KEY,
 } from '../../loginServices';
 import {
   RTR_TIMEOUT_EVENT
 } from '../Root/constants';
 import useOkapiKy from '../../useOkapiKy';
+import { SessionSyncError } from '../SessionSyncError';
 
 /**
- * clearSession
+ * clearSharedStorage
  * Clear shared storage (localStorage, localForage) that is shared across
- * tabs, and clear private storage (sessionStorage, redux, react-query,
- * session timers) that is unique per-tab and therefore must be cleared
- * in each instance of stripes, i.e. in each tab.
- *
- * @param {object} redux store
- * @param {object} queryClient react-query client
- * @param {array} timers FLST and IST timers
- *
- * @returns {Promise}
+ * tabs.
  */
-export async function clearSession(store, queryClient, timers) {
+export const clearSharedStorage = async () => {
+  // localStorage
+  // IndexedDB / localForage
   try {
-    const { config } = store.getState();
-
-    // clear the console unless config asks to preserve it
-    if (!config.preserveConsole) {
-      console.clear(); // eslint-disable-line no-console
-    }
-
-    // make sure timers don't fire after the session has terminated.
-    // who remembers UICHKOUT-869?
-    timers.forEach(timer => timer?.clear());
-
-    // clear private-storage, including redux store and react-query
-    store.dispatch(setIsAuthenticated(false));
-    store.dispatch(clearCurrentUser());
-    store.dispatch(clearOkapiToken());
-    store.dispatch(resetStore());
-
-    if (queryClient) {
-      queryClient.removeQueries();
-    }
-
     // clear shared storage
     // localStorage events emit across tabs so we can use it like a
-    // BroadcastChannel to communicate with all tabs/windows
+    // BroadcastChannel to communicate with all tabs/windows.
     localStorage.removeItem(SESSION_NAME);
     localStorage.removeItem(RTR_TIMEOUT_EVENT);
     localStorage.removeItem(TENANT_LOCAL_STORAGE_KEY);
@@ -73,101 +45,130 @@ export async function clearSession(store, queryClient, timers) {
     await localforage.removeItem(stripesHubAPI.HOST_URL_KEY);
     await localforage.removeItem(stripesHubAPI.REMOTE_LIST_KEY);
   } catch (e) {
+    console.error('logout error during logout', e); // eslint-disable-line no-console
+  }
+};
+
+/**
+ * clearPrivateStorage
+ * Clear tab-specific storage (sessionStorage, redux, react-query,
+ * session timers) that is unique per-tab and therefore must be cleared
+ * in each instance of stripes, i.e. in each tab.
+ *
+ * @param {object} store redux store
+ * @param {object} queryClient react-query client
+ * @param {array} timers FLST and IST timers
+ */
+export const clearPrivateStorage = (store, queryClient, timers) => {
+  try {
+    // clear the console unless config asks to preserve it
+    const { config } = store.getState();
+    if (!config.preserveConsole) {
+      console.clear(); // eslint-disable-line no-console
+    }
+
+    // clear private-storage, including redux store and react-query
+    store.dispatch(setIsAuthenticated(false));
+    store.dispatch(clearCurrentUser());
+    store.dispatch(clearOkapiToken());
+    store.dispatch(resetStore());
+
+    if (queryClient) {
+      queryClient.removeQueries();
+    }
+
+    // make sure timers don't fire after the session has terminated.
+    // who remembers UICHKOUT-869?
+    timers.forEach(timer => timer?.clear());
+
+    sessionStorage.clear();
+  } catch (e) {
     console.error('error during logout', e); // eslint-disable-line no-console
   }
-}
+};
 
 /**
  * useLogoutMutation
- * logout is basically a two-part process:
- * 1. Terminate the session on the server side by making an API call to
- *    /authn/logout, destroying the server's session and the browser's cookies.
- *    This API call will fail if attempted multiple times because the first
- *    call will destroy the cookies, guaranteeing subsequent calls will fail.
- * 2. Clear storage on the browser side. There are two parts to this:
- *    a. Clear shared storage (localStorage, localforage). Clearing shared
- *       storage across all tabs is fine, if pointless.
- *    b. Clear private storage (sessionStorage, redux, query-client, timers).
- *       Private storage **must be cleared in every single tab.
+ * This function always does two things:
+ * 1. it calls /authn/logout, expecting to destroy cookies, causing both the
+ *    API Gateway (Kong or Okapi) and Authentication Server (Keycloak) sessions
+ *    to be destroyed
+ * 2. it clears shared (localStorage) and private storage (sessionStorage,
+ *    redux, react-query)
  *
- * This function takes some minor precautions to avoid repeated calling the
- * logout API, but also proceeds to clear storage regardless of the success or
- * failure of that call.
+ * The API call may or may not return 2xx. Whether a non-2xx response is treated
+ * as an error depends on the state of storage when this function is invoked:
+ *  _____________________________________
+ * |                 | shared  | private |
+ * |                 | storage | storage |
+ * |-------------------------------------|
+ * | 1 normal logout |    X    |   ?     |
+ * |   primary tab   |         |         |
+ * |-------------------------------------|
+ * | 2 normal logout |         |   X     |
+ * |   secondary tab |         |         |
+ * |-------------------------------------|
+ * | 3 no session    |         |         |
+ *  -------------------------------------
  *
- * If cookies are missing**, the API call will fail, preventing the Keycloak
- * session from being terminated. This puts Stripes and Keycloak out of sync,
- * no bueno.
+ * #1 describes the simplest "normal" circumstance: a user with a single tab
+ * open clicks the "logout" button or an IST or FLST timer fires. In this
+ * situation, the data in shared storage indicate a session is active; Stripes
+ * expects a cookie to be present and therefore that the API request will
+ * succeed. If the request fails, this indicates cookies were missing and that
+ * FOLIO and Keycloak are out of sync; Stripes will redirect to Keycloak's
+ * logout page to make sure its session is destroyed.
  *
- * In order to actually terminate the Keycloak session, we clear
- * browser storage, push a special "return-to" value in session storage, and
- * then redirect to root, prompting Stripes to redirect to Keycloak (since
- * other session data has already been cleared), which will then immediately
- * redirect back to Stripes (remember, the Keycloak session is still active).
- * Finding the special value in the "return-to" session key, Stripes will
- * redirect to `/logout`, beginning the logout process for a second time, but
- * this time with the sessions in sync (both active) allowing both to be
- * terminated.
+ * #2 describes the situation when multiple tabs are open, "normal" logout has
+ * proceeded in the primary tab, and Stripes arrives here with data in private
+ * storage only. Given the primary tab destroyed the cookie, the API request is
+ * guaranteed to fail, but because shared storage has also been removed, this is
+ * expected and will not be treated as an error.
  *
- * ** It's easy to end up in this situation. For example, sign in, do some
- *    work, and then close the tab without clicking the 'logout' button. At
- *    this point, the session will be persisted to local-storage and the
- *    browser will cache cookies until they expire. Once the cookies expire,
- *    however, the session will continue to perist; since no tabs are open,
- *    there is no Stripe process running its timers to clean up the session,
- *    storage, and cookies, when they expire.
+ * #3 describes this situation when a user with no active session visits the
+ * /logout route in the UI, e.g. by reloading the logout page. As in #2, because
+ * shared storage has already been removed, the API request failure is expected
+ * and this is not treated as an error.
  *
  * @param {Array} timers array of IST, FLST ResetTimers
  * @returns { mutation }
  */
 export const useLogoutMutation = (timers) => {
   const queryClient = useQueryClient();
-  const { store, okapi } = useStripes();
-  const history = useHistory();
+  const { store, okapi, config } = useStripes();
 
   // The tenant in x-okapi-header needs to match that provided in the AT for
   // the API call to succeed. Switching affiliations in an ECS environment
   // changes the tenant stored in stripes.okapi.tenant, so we look for the
   // tenant first in getLogoutTenant (where ECS envs store it on login) and
   // fallback to stripes.okapi.tenant.
-  const ky = useOkapiKy({ tenant: getLogoutTenant()?.tenantId || okapi?.tenant });
+  const tenant = getLogoutTenant()?.tenantId || okapi?.tenant;
+
+  const ky = useOkapiKy({ tenant, rtrIgnore: true });
 
   return useMutation({
-    mutationFn: async () => {
-      // check the shared-storage sentinel: if logout has already started
-      // in another window, there is no value in running this query again
-      // because the second time (now that cookies were destroyed) it is
-      // guaranteed to return 4xx. if we run it accidentally, trap any errors
-      // to make sure we can still proceed with clearing storage.
-      let didFailLogout = false;
-      if (localStorage.getItem(SESSION_NAME)) {
-        try {
-          // Calling `/authn/logout` without an AT destroys the RT, making it
-          // impossible to then rotate and replay the `/authn/logout` call. 🤦
-          // Why doesn't it just return a 401 like every other endpoint? 🤷
-          // To increase the likelihood that logout succeeds, we thus call
-          // `/authn/refresh` with the hope that it will bless us with active
-          // tokens, allowing us to logout successfully and destroy both the
-          // keycloak and FOLIO sessions, keeping the world in sync.
-          // if either request fails, set the did-fail sentinel in order to
-          // kick off the sync-and-destroy workflow.
-          await ky.post('authn/refresh', { rtrIgnore: true });
-          await ky.post('authn/logout', { rtrIgnore: true });
-        } catch (err) {
-          console.error('uhoh, logout request failed!', err); // eslint-disable-line no-console
-          didFailLogout = true;
+    mutationFn: async (reason = undefined) => {
+      try {
+        // Calling `/authn/logout` without an AT destroys the RT, making it
+        // impossible to then rotate and replay the `/authn/logout` call. 🤦
+        // Why doesn't it just return a 401 like every other endpoint? 🤷
+        // To increase the likelihood that logout succeeds, we thus call
+        // `/authn/refresh` with the hope that it will bless us with active
+        // tokens, allowing us to logout successfully and destroy both the
+        // keycloak and FOLIO sessions, keeping the world in sync.
+        await ky.post('authn/refresh');
+        await ky.post('authn/logout');
+      } catch (err) {
+        // if shared storage is present, treat API request failures as errors
+        if (localStorage.getItem(SESSION_NAME)) {
+          console.error('logout failure; session storage was active but the logout API request failed', err); // eslint-disable-line no-console
+          const { clientId } = getLoginTenant(okapi, config);
+          const logoutUrl = `${okapi.authnUrl}/realms/${tenant}/protocol/openid-connect/logout?post_logout_redirect_uri=${globalThis.location.origin}/logout?reason=${reason}&client_id=${clientId}`;
+          throw new SessionSyncError(logoutUrl);
         }
-      }
-
-      // sessionStorage, redux-storage, react-query, etc are NOT shared across
-      // tabs/windows, so the clear-storage call always executes
-      await clearSession(store, queryClient, timers);
-
-      // if the /authn/logout API call fails, store a special "return to"
-      // sentinel and then redirect to root in order to kick off the
-      // stripes->keycloak->stripes->logout process.
-      if (didFailLogout) {
-        setUnauthorizedPathToSession(AUTOMATIC_LOGOUT_LOCATION);
-        history.push('/');
+      } finally {
+        await clearSharedStorage();
+        clearPrivateStorage(store, queryClient, timers);
       }
     },
     retry: false,
