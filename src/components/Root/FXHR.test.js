@@ -164,10 +164,12 @@ describe('FXHR', () => {
     };
 
     beforeEach(() => {
+      jest.useFakeTimers();
       abortSpy = jest.spyOn(XMLHttpRequest.prototype, 'abort').mockImplementation(() => { });
     });
 
     afterEach(() => {
+      jest.useRealTimers();
       abortSpy.mockRestore();
     });
 
@@ -182,8 +184,10 @@ describe('FXHR', () => {
       testXHR.handleInternalReadyStateChange({});
 
       await Promise.resolve();
+      jest.runAllTimers();
 
       expect(abortSpy).toHaveBeenCalledTimes(1);
+
       expect(dispatchSpy).toHaveBeenCalledTimes(1);
       expect(dispatchSpy.mock.calls[0][0].type).toContain('RTRError');
     });
