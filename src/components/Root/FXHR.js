@@ -159,15 +159,29 @@ export default (deps) => {
       } catch (err) {
         if (err instanceof RTRError) {
           console.error('RTR failure while attempting XHR', err); // eslint-disable-line no-console
+
           /* If rotation fails, abort the request. This should
           * allow the application to handle the error / close the request in its own way
           * so that any cancel confirmation modals attached to the operation can be circumvented
           * and our logout navigation can be triggered when the RTR_ERROR_EVENT.
           */
           this._removeTimeoutListeners?.();
+
+          // fire the change with the current 'DONE but error' state.
+          this.invokeUserOnReadyStateChange(event);
+
+          // Abort sets the readystate of the XHR to 0. It will fire a
+          // readystatechange event, but application code may not expect the readystate to be 0 if they're
+          // only set up for completion/post-creation states.
           super.abort();
-          window.dispatchEvent(new Event(RTR_ERROR_EVENT, { detail: err }));
+
+          // Wait for app updates to settle before dispatching the event so that any navigation blockers
+          // can be removed before the app navigates to the logout page.
+          setTimeout(() => {
+            globalThis.dispatchEvent(new Event(RTR_ERROR_EVENT, { detail: err }));
+          }, 0);
         } else {
+
           /**
          * Surface the original failed response to the XHR consumer when
          * rotation cannot recover the request.
@@ -186,6 +200,7 @@ export default (deps) => {
         return;
       }
 
+      // remove our listeners for session timeout events.
       this._removeTimeoutListeners?.();
 
       const shouldRetry = this.shouldEnsureToken && !this.hasRetriedAuth && this.isAuthFailureResponse();
@@ -201,7 +216,7 @@ export default (deps) => {
      * Capture replay inputs before first send, then pass through to native XHR.
      * For Okapi requests, registers window listeners so the XHR is aborted if a
      * session-terminating timeout event fires while the request is in flight.
-     * This allows the uploading application to receive the abort event, clean up
+     * This allows the uploading application to process the aborted XHR state - (readyState == 0), clean up
      * any navigation guards (e.g. React Router <Prompt>), and let the logout
      * navigation proceed without entering a confirmation-modal loop.
      */
@@ -214,16 +229,26 @@ export default (deps) => {
       if (!this.shouldEnsureToken) {
         logger.log('rtr', 'request passed through, sending XHR...');
       } else {
-        const abortOnTimeout = () => {
+        const abortOnTimeout = (e) => {
           this.FFetchContext.logger?.log('rtr', 'aborting in-flight XHR due to session timeout');
           this._removeTimeoutListeners?.();
+
+          // Abort sets the readystate of the XHR to 0. It will fire a
+          // readystatechange event, but application code may not expect the readystate to be 0 if they're
+          // only set up for completion/post-creation states (1 - 4).
           super.abort();
+
+          // Wait for app updates to settle before dispatching the event so that any state-based
+          // navigation blockers can be removed before the app navigates to the logout page.
+          setTimeout(() => {
+            globalThis.dispatchEvent(new Event(e.type));
+          }, 0);
         };
-        window.addEventListener(RTR_FLS_TIMEOUT_EVENT, abortOnTimeout);
-        window.addEventListener(RTR_TIMEOUT_EVENT, abortOnTimeout);
+        globalThis.addEventListener(RTR_FLS_TIMEOUT_EVENT, abortOnTimeout);
+        globalThis.addEventListener(RTR_TIMEOUT_EVENT, abortOnTimeout);
         this._removeTimeoutListeners = () => {
-          window.removeEventListener(RTR_FLS_TIMEOUT_EVENT, abortOnTimeout);
-          window.removeEventListener(RTR_TIMEOUT_EVENT, abortOnTimeout);
+          globalThis.removeEventListener(RTR_FLS_TIMEOUT_EVENT, abortOnTimeout);
+          globalThis.removeEventListener(RTR_TIMEOUT_EVENT, abortOnTimeout);
           this._removeTimeoutListeners = null;
         };
       }
