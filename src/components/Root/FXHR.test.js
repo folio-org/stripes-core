@@ -154,7 +154,7 @@ describe('FXHR', () => {
     expect(mockHandler).toHaveBeenCalledTimes(1);
   });
 
-  describe('abort on session-timeout events', () => {
+  describe('abort on session-timeout events, rotation failures', () => {
     let abortSpy;
 
     // Dispatch a window event through EventTarget.prototype directly so that
