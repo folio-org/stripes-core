@@ -1,3 +1,4 @@
+import { RTRError } from './Errors';
 import { rotateAndReplay, RTR_LOCK_KEY } from './rotateAndReplay';
 
 describe('rotateAndReplay', () => {
@@ -29,7 +30,7 @@ describe('rotateAndReplay', () => {
     jest.clearAllMocks();
   });
 
-  describe('with an error response', () => {
+  describe('with an original response', () => {
     describe('resolves', () => {
       test('short-circuits to replay when token is already valid', async () => {
         const expected = { ok: true, body: 'replayed-response' };
@@ -146,9 +147,9 @@ describe('rotateAndReplay', () => {
     });
 
     describe('rejects', () => {
-      test('when rotation fails, calls onFailure and rejects with the original error when rotation fails', async () => {
+      test('when rotation itself fails, calls onFailure and rejects with the original error', async () => {
         const fetchfx = jest.fn().mockResolvedValueOnce({ status: 401 });
-        const rotateErr = new Error('rotate failed');
+        const rotateErr = new RTRError('rotate failed');
         const config = {
           logger: makeLogger(),
           rotate: jest.fn().mockRejectedValue(rotateErr),
@@ -162,6 +163,25 @@ describe('rotateAndReplay', () => {
 
         await expect(rotateAndReplay(fetchfx, config, originalError)).rejects.toBe(originalError);
         expect(config.onFailure).toHaveBeenCalled();
+        expect(fetchfx).toHaveBeenCalledWith(originalError.resource, originalError.options);
+      });
+
+      test('when replay fails, rejects with the original error', async () => {
+        const fetchfx = jest.fn().mockRejectedValue({ status: 401 });
+
+        const config = {
+          logger: makeLogger(),
+          rotate: jest.fn().mockResolvedValue(undefined),
+          onSuccess: jest.fn().mockResolvedValue(undefined),
+          onFailure: jest.fn().mockResolvedValue(undefined),
+          options: jest.fn((opts) => opts),
+          shouldRotate: async () => true,
+        };
+
+        const originalError = { resource: '/baz', options: {}, response: { status: 401 } };
+
+        await expect(rotateAndReplay(fetchfx, config, originalError)).rejects.toBe(originalError);
+        expect(config.onFailure).not.toHaveBeenCalled();
         expect(fetchfx).toHaveBeenCalledWith(originalError.resource, originalError.options);
       });
     });
