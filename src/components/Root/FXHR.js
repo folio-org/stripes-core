@@ -167,12 +167,17 @@ export default (deps) => {
           */
           this._removeTimeoutListeners?.();
 
-          // fire the change with the current 'DONE but error' state.
+          this.rtrAbortReason = err.message || 'RTR failure while attempting XHR';
+
+          // Since the XHR has completed but failed at this point, it will have a readyState of 4,
+          // indicating that the operation is done. We need to invoke the application's listener
+          // so that any state with an active download can be cleared and we can navigate to
+          // the logout page without being blocked by hopeful confirmation modals.
           this.invokeUserOnReadyStateChange(event);
 
           // Abort sets the readystate of the XHR to 0. It will fire a
-          // readystatechange event, but application code may not expect the readystate to be 0 if they're
-          // only set up for completion/post-creation states.
+          // readystatechange event for this, but it's unlikely that applications
+          // will be expecting it.
           super.abort();
 
           // Wait for app updates to settle before dispatching the event so that any navigation blockers
@@ -198,6 +203,11 @@ export default (deps) => {
       if (this.readyState !== this.DONE) {
         this.invokeUserOnReadyStateChange(event);
         return;
+      } else if (this.readyState === 0) {
+        // catch aborted XHRs.
+        if (this.rtrAbortReason) {
+          throw (new RTRError(`XHR aborted: ${this.rtrAbortReason}`))
+        }
       }
 
       // remove our listeners for session timeout events.
@@ -232,6 +242,7 @@ export default (deps) => {
         const abortOnTimeout = (e) => {
           this.FFetchContext.logger?.log('rtr', 'aborting in-flight XHR due to session timeout');
           this._removeTimeoutListeners?.();
+          this.rtrAbortReason = e.type;
 
           // Abort sets the readystate of the XHR to 0. It will fire a
           // readystatechange event, but application code may not expect the readystate to be 0 if they're
@@ -248,6 +259,7 @@ export default (deps) => {
         globalThis.addEventListener(RTR_FLS_TIMEOUT_EVENT, abortOnTimeout);
         globalThis.addEventListener(RTR_TIMEOUT_EVENT, abortOnTimeout);
 
+        this.rtrAbortReason = null;
         this._removeTimeoutListeners = () => {
           globalThis.removeEventListener(RTR_FLS_TIMEOUT_EVENT, abortOnTimeout);
           globalThis.removeEventListener(RTR_TIMEOUT_EVENT, abortOnTimeout);
