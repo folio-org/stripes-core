@@ -53,6 +53,16 @@
         "visible": false
       },
       {
+        "permissionName": "mod-settings.users.read.stripes-core.prefs.manage",
+        "displayName": "UI: read another user's central preferences, such as order of links in the main navigation.",
+        "visible": false
+      },
+      {
+        "permissionName": "mod-settings.users.write.stripes-core.prefs.manage",
+        "displayName": "UI: update another user's central preferences, such as order of links in the main navigation.",
+        "visible": false
+      },
+      {
         "permissionName": "mod-settings.global.read.stripes-core.prefs.manage",
         "displayName": "UI: read the tenant's preferences",
         "visible": false
