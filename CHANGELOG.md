@@ -15,6 +15,7 @@
 * Inspect local expiry information prior to initial request, avoiding 401's in rtr flow. Refs STCOR-1069.
 * Rotate preventively prior to logout. Refs STCOR-1068.
 * Reliably handle unsynchronized FOLIO/Keycloak sessions. Refs STCOR-1067.
+* During rotation, allow non-rotation errors to bubble. Refs STCOR-1080.
 
 ## [11.1.5](https://github.com/folio-org/stripes-core/tree/v11.1.5) (2026-06-03)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v11.1.4...v11.1.5)
