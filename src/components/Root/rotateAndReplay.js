@@ -151,11 +151,14 @@ export const rotateAndReplay = async (fetchfx, config, original) => {
       return replayRequest(fetchfx, config, original);
     } catch (err) {
       // 💥 Ruhroh, Raggy, rotation railed!
-      // Report the failure via the provided callback. Reject with the original
-      // response if available, allowing it to bubble to the caller. Otherwise,
-      // rethrow, i.e. reject with the object we just caught.
-      config.logger.log('rtr', 'RTR error!', err);
-      await config.onFailure(err);
+      // If this is a rotation-specific error then report the failure via the
+      // provided callback (e.g. failure in the rotation callback, timeout,
+      // failure in the rotation-success handler). Otherwise, reject with the
+      // original response or with this error.
+      if (err instanceof RTRError) {
+        config.logger.log('rtr', 'RTR error!', err);
+        await config.onFailure(err);
+      }
       if (original?.response) {
         throw original;
       }
