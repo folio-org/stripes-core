@@ -5,7 +5,8 @@
   "license": "Apache-2.0",
   "repository": "folio-org/stripes-core",
   "sideEffects": [
-    "*.css"
+    "*.css",
+    "**/Root/Root.js"
   ],
   "publishConfig": {
     "registry": "https://repository.folio.org/repository/npm-folio/"

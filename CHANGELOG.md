@@ -18,6 +18,7 @@
 * Inspect local expiry information prior to initial request, avoiding 401's in rtr flow. Refs STCOR-1069.
 * Rotate preventively prior to logout. Refs STCOR-1068.
 * Reliably handle unsynchronized FOLIO/Keycloak sessions. Refs STCOR-1067.
+* Declare `Root.js` as having side-effects to avoid improperly optimizing it away in `webpack` >= 5.108.0. Refs STCOR-1081.
 * Supply `mod-settings` permissions for managing others' settings. Refs STCOR-1072.
 
 ## [11.1.1](https://github.com/folio-org/stripes-core/tree/v11.1.1) (2026-04-20)
