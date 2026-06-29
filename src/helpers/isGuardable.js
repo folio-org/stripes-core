@@ -8,11 +8,11 @@
  * @param {string} route the destination route
  * @returns {boolean} true if a route may be guarded; false otherwise
  */
-const isGuardable = route => {
+const isGuardable = (route) => {
   const obligatoryRoutes = ['/logout'];
 
   // if the given route matches an obligator route, it cannot be guarded
-  return !(obligatoryRoutes.some(i => route.startsWith(i)));
+  return !obligatoryRoutes.includes(route);
 };
 
 export default isGuardable;
