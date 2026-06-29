@@ -153,17 +153,17 @@ export class FFetch {
     // rotate
     // handle rotation
     rotate: async () => {
-      const res = await this.nativeFetch.apply(globalThis, [`${this.okapi.url}/authn/refresh`, {
-        headers: {
-          'content-type': 'application/json',
-          'x-okapi-tenant': this.okapi.tenant,
-        },
-        method: 'POST',
-        credentials: 'include',
-        mode: 'cors',
-      }]);
-
       try {
+        const res = await this.nativeFetch.apply(globalThis, [`${this.okapi.url}/authn/refresh`, {
+          headers: {
+            'content-type': 'application/json',
+            'x-okapi-tenant': this.okapi.tenant,
+          },
+          method: 'POST',
+          credentials: 'include',
+          mode: 'cors',
+        }]);
+
         if (res.ok) {
           const json = await res.json();
           if (json.accessTokenExpiration && json.refreshTokenExpiration) {
@@ -186,7 +186,12 @@ export class FFetch {
     // onSuccess
     // rotation succeeded: call the success-callback
     onSuccess: async (newTokens) => {
-      await this.onRotate(newTokens);
+      try {
+        await this.onRotate(newTokens);
+      } catch (err) {
+        console.error(err); // eslint-disable-line no-console
+        throw new RTRError('Rotation failure; could not save!', { cause: err });
+      }
     },
 
     // onFailure
