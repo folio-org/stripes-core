@@ -156,6 +156,23 @@ export const getOIDCRedirectUri = (tenant, clientId) => {
 };
 
 /**
+ * removeUnauthorizedTenantFromSession, setUnauthorizedTenantToSession, getUnauthorizedTenantFromSession
+ * remove/set/get unauthorized_tenant to/from session storage.
+ * Used to restore tenant on returning from login if user accessed a bookmarked
+ * URL while unauthenticated and was redirected to login, and when a session times out, forcing the user to re-authenticate.
+ */
+const UNAUTHORIZED_TENANT = 'unauthorized_tenant';
+export const removeUnauthorizedTenantFromSession = () => sessionStorage.removeItem(UNAUTHORIZED_TENANT);
+export const setUnauthorizedTenantToSession = (tenant) => sessionStorage.setItem(UNAUTHORIZED_TENANT, tenant);
+export const getUnauthorizedTenantFromSession = () => sessionStorage.getItem(UNAUTHORIZED_TENANT);
+/** Read and atomically clear the saved tenant; returns null when absent. */
+export const consumeUnauthorizedTenantFromSession = () => {
+  const tenant = sessionStorage.getItem(UNAUTHORIZED_TENANT);
+  sessionStorage.removeItem(UNAUTHORIZED_TENANT);
+  return tenant;
+};
+
+/**
  * getLoginTenant
  * Retrieve tenant and clientId values. In order of preference, look here:
  *
@@ -755,6 +772,36 @@ export const getLogoutTenant = () => {
 };
 
 /**
+ * Resolve the session tenant with clear priority
+ * @param {string} defaultTenant - The tenant used for the API request
+ * @param {object} apiResponse - Response from login/user API
+ * @param {string} [preservedTenant] - Tenant to preserve from navigation
+ *
+ * @returns {string} The resolved session tenant
+ */
+const resolveSessionTenant = (defaultTenant, apiResponse, preservedTenant) => {
+  // Priority: Preserved > API (consortia) > API (non-consortia) > Default
+  return (
+    // 1. Explicitly preserved from navigation context
+    preservedTenant
+    // 2. User's original/home tenant (consortia mode)
+    || apiResponse.originalTenantId
+    // 3. User's tenant (non-consortia mode)
+    || apiResponse.tenant
+    // 4. Fallback to default tenant
+    || defaultTenant
+  );
+};
+
+/**
+ * @typedef {object} OkapiSessionOptions
+ * @property {string} [preservedSessionTenant] Tenant to use for session instead of tenant from
+ *   response; used when we want to preserve the session-tenant across logins, e.g. when switching
+ *   affiliations in a consortia environment, where the login response may include a different tenant
+ *   value representing the tenant of the authenticated user rather than the tenant of the session.
+ */
+
+/**
  * createOkapiSession
  * Remap the given data into a session object shaped like:
  * {
@@ -771,10 +818,11 @@ export const getLogoutTenant = () => {
  * @param {string} tenant tenant name
  * @param {string} token access token [deprecated; prefer folioAccessToken cookie]
  * @param {*} data response from call to _self
+ * @param {OkapiSessionOptions} options
  *
  * @returns {Promise} resolving to { user, tenant, perms, isAuthenticated, tokenExpiration }
  */
-export async function createOkapiSession(store, tenant, token, data) {
+export async function createOkapiSession(store, tenant, token, data, options = {}) {
   // clear any auth-n errors
   store.dispatch(setAuthError(null));
 
@@ -798,12 +846,15 @@ export async function createOkapiSession(store, tenant, token, data) {
   /* @ See the comments for fetchOverriddenUserWithPerms.
   * There are consortia(multi-tenant) and non-consortia modes/envs.
   * We don't want to care if it is consortia or non-consortia modes, just use fetchOverriderUserWithPerms on login to initiate the session.
-  * 1. In consortia mode, fetchOverriderUserWithPerms returns originalTenantId.
-  * 2. In non-consortia mode, fetchOverriderUserWithPerms won't response with originalTenantId,
+  * 1. Check if options.preservedSessionTenant is provided, which is used to preserve the session tenant across logins,
+  *    e.g. when switching affiliations in a consortia environment, where the login response may include a different tenant value
+  *    representing the tenant of the authenticated user rather than the tenant of the session.
+  * 2. In consortia mode, fetchOverriderUserWithPerms returns originalTenantId.
+  * 3. In non-consortia mode, fetchOverriderUserWithPerms won't response with originalTenantId,
   * instead `tenant` field will be provided.
-  * 3. As a fallback use default tenant.
+  * 4. As a fallback use default tenant.
   */
-  const sessionTenant = data.originalTenantId || data.tenant || tenant;
+  const sessionTenant = resolveSessionTenant(tenant, data, options.preservedSessionTenant);
   const okapiSess = {
     token,
     isAuthenticated: true,
@@ -953,16 +1004,19 @@ export async function handleLoginError(dispatch, resp) {
  * @param {redux store} store
  * @param {string} tenant
  * @param {Response} resp HTTP response
+ * @param {string} ssoToken token from SSO login, if applicable
+ * @param {OkapiSessionOptions} options
  *
  * @returns {Promise} resolving to login response body or undefined on error
  */
-export async function processOkapiSession(store, tenant, resp, ssoToken) {
+export async function processOkapiSession(store, tenant, resp, ssoToken, options = {}) {
   const { dispatch } = store;
+  const { preservedSessionTenant } = options;
 
   if (resp.ok) {
     const json = await resp.json();
     const token = resp.headers.get('X-Okapi-Token') || json.access_token || ssoToken;
-    await createOkapiSession(store, tenant, token, json);
+    await createOkapiSession(store, tenant, token, json, { preservedSessionTenant });
     store.dispatch(setOkapiReady());
     return json;
   } else {
@@ -1083,10 +1137,13 @@ export async function checkOkapiSession(okapiUrl, store, tenant, history) {
  * @param {redux store} store
  * @param {string} tenant
  * @param {object} data
+ * @param {OkapiSessionOptions} options
  *
  * @returns {Promise}
  */
-export async function requestLogin(okapiUrl, store, tenant, data) {
+export async function requestLogin(okapiUrl, store, tenant, data, options = {}) {
+  const { preservedSessionTenant } = options;
+
   const loginPath = 'login-with-expiry';
   const resp = await fetch(`${okapiUrl}/bl-users/${loginPath}?expandPermissions=true&fullPermissions=true`, {
     body: JSON.stringify(data),
@@ -1097,7 +1154,7 @@ export async function requestLogin(okapiUrl, store, tenant, data) {
     rtrIgnore: true,
   });
 
-  return processOkapiSession(store, tenant, resp);
+  return processOkapiSession(store, tenant, resp, null, { preservedSessionTenant });
 }
 
 /**
@@ -1162,13 +1219,14 @@ export async function fetchOverriddenUserWithPerms(okapi, tenant, token, rtrIgno
  * @param {redux store} store
  * @param {string} tenant
  * @param {string} token
+ * @param {OkapiSessionOptions} options
  *
  * @returns {Promise} Promise resolving to the response-body (JSON) of the request
  */
-export async function requestUserWithPerms(okapi, store, tenant, token) {
+export async function requestUserWithPerms(okapi, store, tenant, token, options = {}) {
   const resp = await fetchOverriddenUserWithPerms(okapi, tenant, token, !token);
   if (resp.ok) {
-    const sessionData = await processOkapiSession(store, tenant, resp, token);
+    const sessionData = await processOkapiSession(store, tenant, resp, token, options);
     return sessionData;
   } else {
     const error = await resp.json();

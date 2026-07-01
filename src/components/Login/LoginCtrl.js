@@ -8,6 +8,7 @@ import {
 
 import { ConnectContext } from '@folio/stripes-connect';
 import {
+  consumeUnauthorizedTenantFromSession,
   requestLogin,
   requestSSOLogin,
   storeLogoutTenant,
@@ -61,7 +62,11 @@ class LoginCtrl extends Component {
    */
   handleSubmit = async (data) => {
     try {
-      const json = await requestLogin(this.props.okapiUrl, this.context.store, this.tenant, data);
+      const options = {
+        preservedSessionTenant: consumeUnauthorizedTenantFromSession(),
+      };
+
+      const json = await requestLogin(this.props.okapiUrl, this.context.store, this.tenant, data, options);
       await this.props.handleRotation(json.tokenExpiration);
       if (matchPath(this.props.location.pathname, '/login')) {
         this.props.history.push('/');

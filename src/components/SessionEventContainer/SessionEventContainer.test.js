@@ -7,10 +7,12 @@ import SessionEventContainer, {
   otherWindowStorage,
   thisWindowActivity,
   thisWindowRtrError,
+  thisWindowRtrFlsTimeout,
   thisWindowRtrIstTimeout,
 } from './SessionEventContainer';
 import {
   setUnauthorizedPathToSession,
+  setUnauthorizedTenantToSession,
   LOGOUT_MESSAGES,
   SESSION_NAME,
 } from '../../loginServices';
@@ -69,10 +71,11 @@ describe('SessionEventContainer event listeners', () => {
   it('thisWindowRtrError', async () => {
     const history = { push: jest.fn() };
 
-    const setUnauthorizedPathToSessionMock = setUnauthorizedPathToSession;
-    setUnauthorizedPathToSessionMock.mockReturnValue(null);
+    setUnauthorizedPathToSession.mockReturnValue(null);
+    setUnauthorizedTenantToSession.mockReturnValue(null);
 
-    thisWindowRtrError(null, { okapi: { url: 'http' } }, history);
+    thisWindowRtrError(null, { okapi: { url: 'http', tenant: 'test-tenant' } }, history);
+    expect(setUnauthorizedTenantToSession).toHaveBeenCalledWith('test-tenant');
     expect(setUnauthorizedPathToSession).toHaveBeenCalled();
     expect(history.push).toHaveBeenCalledWith(`/logout?reason=${LOGOUT_MESSAGES.ERROR}`);
   });
@@ -80,7 +83,8 @@ describe('SessionEventContainer event listeners', () => {
   it('thisWindowRtrIstTimeout', async () => {
     const s = {
       okapi: {
-        url: 'http'
+        url: 'http',
+        tenant: 'test-tenant',
       },
       store: {},
       logger: {
@@ -91,7 +95,27 @@ describe('SessionEventContainer event listeners', () => {
     const history = { push: jest.fn() };
 
     thisWindowRtrIstTimeout(null, s, history);
+    expect(setUnauthorizedTenantToSession).toHaveBeenCalledWith('test-tenant');
     expect(history.push).toHaveBeenCalledWith(`/logout?reason=${LOGOUT_MESSAGES.INACTIVITY}`);
+  });
+
+  it('thisWindowRtrFlsTimeout', async () => {
+    const s = {
+      okapi: {
+        url: 'http',
+        tenant: 'test-tenant',
+      },
+      store: {},
+      logger: {
+        log: jest.fn(),
+      }
+    };
+
+    const history = { push: jest.fn() };
+
+    thisWindowRtrFlsTimeout(null, s, history);
+    expect(setUnauthorizedTenantToSession).toHaveBeenCalledWith('test-tenant');
+    expect(history.push).toHaveBeenCalledWith(`/logout?reason=${LOGOUT_MESSAGES.EXPIRED}`);
   });
 
   describe('otherWindowStorage', () => {
@@ -103,7 +127,8 @@ describe('SessionEventContainer event listeners', () => {
       const e = { key: RTR_TIMEOUT_EVENT };
       const s = {
         okapi: {
-          url: 'http'
+          url: 'http',
+          tenant: 'test-tenant',
         },
         store: {},
         logger: {
@@ -113,6 +138,7 @@ describe('SessionEventContainer event listeners', () => {
       const history = { push: jest.fn() };
 
       otherWindowStorage(e, s, history);
+      expect(setUnauthorizedTenantToSession).toHaveBeenCalledWith('test-tenant');
       expect(history.push).toHaveBeenCalledWith(`/logout?reason=${LOGOUT_MESSAGES.INACTIVITY}`);
     });
 
@@ -120,7 +146,7 @@ describe('SessionEventContainer event listeners', () => {
       const e = { key: '' };
       const s = {
         okapi: {
-          url: 'http'
+          url: 'http',
         },
         store: {},
         logger: {

@@ -21,6 +21,7 @@
 * Declare `Root.js` as having side-effects to avoid improperly optimizing it away in `webpack` >= 5.108.0. Refs STCOR-1081.
 * During rotation, allow non-rotation errors to bubble. Refs STCOR-1080.
 * Supply `isGuardable()` for globally determining whether a route can be guarded. Refs STCOR-1082.
+* Init the session in the last active tenant on logout by timeouts. Refs STCOR-891.
 
 ## [11.1.1](https://github.com/folio-org/stripes-core/tree/v11.1.1) (2026-04-20)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v11.1.0...v11.1.1)

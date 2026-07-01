@@ -8,6 +8,8 @@ import { setOkapiTenant } from '../../okapiActions';
 import {
   setUnauthorizedPathToSession,
   getOIDCRedirectUri,
+  setUnauthorizedTenantToSession,
+  getUnauthorizedPathFromSession,
 } from '../../loginServices';
 
 const AuthnLogin = ({ handleRotation, stripes }) => {
@@ -18,6 +20,18 @@ const AuthnLogin = ({ handleRotation, stripes }) => {
 
   const setTenant = (tenant, clientId) => {
     stripes.store.dispatch(setOkapiTenant({ tenant, clientId }));
+
+    /**
+     * When a user selects a tenant from the dropdown, we want to cache that tenant in session storage
+     * so that if they are redirected to the login page due to an inactivity timeout, we can pre-select that tenant for them.
+     * We also want to cache it if they are redirected due to an RTR error, since that can occur even if the user is active.
+     *
+     * It should be set together with URL path caching in setUnauthorizedPathToSession, since both are needed to restore the user's session after a timeout or error.
+    */
+    if (okapi.authnUrl && !getUnauthorizedPathFromSession()) {
+      // Only set the tenant in session if there isn't already an unauthorized path stored, to avoid overwriting the tenant for a user who is being redirected due to a timeout or error.
+      setUnauthorizedTenantToSession(tenant);
+    }
   };
 
   useLayoutEffect(() => {

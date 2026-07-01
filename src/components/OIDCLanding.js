@@ -8,6 +8,7 @@ import {
 } from '@folio/stripes-components';
 
 import {
+  consumeUnauthorizedTenantFromSession,
   LOGOUT_MESSAGES,
   requestUserWithPerms,
   storeLogoutTenant,
@@ -47,7 +48,11 @@ const OIDCLanding = ({ handleRotation }) => {
           return storeLogoutTenant(okapi.tenant);
         })
         .then(() => {
-          return requestUserWithPerms(okapi, store, okapi.tenant, '');
+          const options = {
+            preservedSessionTenant: consumeUnauthorizedTenantFromSession(),
+          };
+
+          return requestUserWithPerms(okapi, store, okapi.tenant, '', options);
         });
     }
   };
