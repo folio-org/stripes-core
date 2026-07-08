@@ -2,6 +2,7 @@ import React, {
   useRef,
   useEffect,
   useMemo,
+  useCallback,
   Suspense,
 } from 'react';
 import {
@@ -121,7 +122,7 @@ const Settings = ({ stripes }) => {
         <Pane
           defaultWidth="20%"
           paneTitle={<FormattedMessage id="stripes-core.settings" />}
-          paneTitleRef={paneTitleRef.current}
+          paneTitleRef={paneTitleRef}
           id="settings-nav-pane"
         >
           <NavList aria-label={intl.formatMessage({ id: 'stripes-core.settings' })}>
