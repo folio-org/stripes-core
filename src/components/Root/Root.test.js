@@ -5,7 +5,7 @@ import { modulesInitialState } from '../../ModulesContext';
 
 jest.mock('../../loginServices', () => ({
   loadTranslations: jest.fn(),
-  checkOkapiSession: jest.fn(),
+  checkOkapiSession: jest.fn(() => Promise.resolve()),
 }));
 
 jest.mock('./token-util', () => ({
