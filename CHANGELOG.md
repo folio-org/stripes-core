@@ -1,6 +1,7 @@
 # Change history for stripes-core
 
-## IN PROGRESS
+## [11.1.6](https://github.com/folio-org/stripes-core/tree/v11.1.6) (2026-07-09)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v11.1.5...v11.1.6)
 
 * Test-logic only belongs in tests, Refs STCOR-1050.
 * Add case for `users-keycloak`'s 404 status to rotate keys on failure. STCOR-1054.
