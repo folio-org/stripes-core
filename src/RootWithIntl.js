@@ -41,6 +41,7 @@ import {
   QueryStateUpdater
 } from './components';
 import StaleBundleWarning from './components/StaleBundleWarning';
+import EntitlementChangeBanner from './components/EntitlementChangeBanner';
 import { StripesContext } from './StripesContext';
 import { CalloutProvider } from './CalloutContext';
 import AuthnLogin from './components/AuthnLogin';
@@ -112,6 +113,7 @@ const RootWithIntl = ({
                               <AppOrderProvider>
                                 <MainNav stripes={connectedStripes} queryClient={queryClient} />
                                 {typeof connectedStripes?.config?.staleBundleWarning === 'object' && <StaleBundleWarning />}
+                                <EntitlementChangeBanner />
                                 <HandlerManager
                                   event={events.LOGIN}
                                   stripes={connectedStripes}
