@@ -15,7 +15,12 @@ import useOkapiKy from '../../useOkapiKy';
  */
 const useForgotPasswordMutation = () => {
   const stripes = useStripes();
-  const ky = useOkapiKy();
+  // this endpoint is called by an unauthenticated user, i.e. there is no
+  // valid AT/RT pair yet. Without rtrIgnore, FFetch sees the missing token
+  // expiry and jumps straight to RTR (POST /authn/refresh) instead of
+  // sending the actual request, and that rotation attempt necessarily
+  // fails since there is no session to refresh.
+  const ky = useOkapiKy({ rtrIgnore: true });
 
   const pathPrefix = stripes.okapi.authnUrl ? 'users-keycloak' : 'bl-users';
 
