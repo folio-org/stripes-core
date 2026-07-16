@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { withRouter } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
@@ -19,6 +19,16 @@ const CheckEmailStatusPage = (props) => {
       },
     },
   } = props;
+
+  // Render the live region empty on the first paint and populate it once the
+  // page has mounted so screen readers detect the content mutation and
+  // announce the status message, rather than potentially missing it because
+  // the region and its content were inserted into the DOM at the same time.
+  const [isAnnounceReady, setIsAnnounceReady] = useState(false);
+
+  useEffect(() => {
+    setIsAnnounceReady(true);
+  }, []);
 
   const isEmail = validateEmail(userEmail);
   const labelNamespace = 'stripes-core.label';
@@ -49,11 +59,15 @@ const CheckEmailStatusPage = (props) => {
           weight="regular"
           faded
           data-test-p-notification
+          role="status"
+          aria-live="polite"
         >
-          <FormattedMessage
-            id={notificationText}
-            values={userEmailMessage}
-          />
+          {isAnnounceReady && (
+            <FormattedMessage
+              id={notificationText}
+              values={userEmailMessage}
+            />
+          )}
         </Headline>
         <Headline
           size="x-large"
