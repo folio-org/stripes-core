@@ -96,6 +96,8 @@ const RootWithIntl = ({
               >
                 <Provider store={connectedStripes.store}>
                   <Router history={history}>
+                    <OverlayContainer />
+                    <Callout ref={setCalloutDomRef} />
                     {isAuthenticated || token || disableAuth ?
                       <Switch>
                         <TitledRoute
@@ -120,7 +122,6 @@ const RootWithIntl = ({
                                 />
                                 {(typeof connectedStripes.okapi !== 'object' || connectedStripes.discovery.isFinished) && (
                                   <ModuleContainer id="content">
-                                    <OverlayContainer />
                                     <SessionEventContainer history={history} queryClient={queryClient} />
                                     <Switch>
                                       <TitledRoute
@@ -154,7 +155,6 @@ const RootWithIntl = ({
                               </AppOrderProvider>
                             </AppCtxMenuProvider>
                           </MainContainer>
-                          <Callout ref={setCalloutDomRef} />
                         </Route>
                       </Switch>
                       :

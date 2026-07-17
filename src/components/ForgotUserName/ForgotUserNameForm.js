@@ -19,7 +19,7 @@ import SelectAndDispatchTenant from '../SelectAndDispatchTenant';
 
 import styles from '../Login/Login.css';
 
-const ForgotUserNameForm = ({ errors = [], isValid, onSubmit }) => {
+const ForgotUserNameForm = ({ isValid, onSubmit }) => {
   const { branding, okapi } = useStripes();
   const intl = useIntl();
   const forgotUsernamePlaceholder = intl.formatMessage({ id: 'stripes-core.placeholder.forgotUsername' });
@@ -62,7 +62,10 @@ const ForgotUserNameForm = ({ errors = [], isValid, onSubmit }) => {
                           bottom="xs"
                         >
                           <Col xs={6}>
-                            <FieldLabel htmlFor="input-email-or-phone">
+                            <FieldLabel
+                              htmlFor="input-email-or-phone" 
+                              required
+                            >
                               {forgotUsernamePlaceholder}
                             </FieldLabel>
                           </Col>
@@ -106,7 +109,7 @@ const ForgotUserNameForm = ({ errors = [], isValid, onSubmit }) => {
                       </div>
                     </Col>
                   </Row>
-                  <Row center="xs">
+                  {/* <Row center="xs">
                     <Col xs={6}>
                       <div className={styles.authErrorsWrapper}>
                         <AuthErrorsContainer
@@ -118,7 +121,7 @@ const ForgotUserNameForm = ({ errors = [], isValid, onSubmit }) => {
                         />
                       </div>
                     </Col>
-                  </Row>
+                  </Row> */}
                 </form>
               </Row>
             </div>
@@ -130,7 +133,7 @@ const ForgotUserNameForm = ({ errors = [], isValid, onSubmit }) => {
 };
 
 ForgotUserNameForm.propTypes = {
-  errors: PropTypes.arrayOf(PropTypes.object),
+  // errors: PropTypes.arrayOf(PropTypes.object),
   isValid: PropTypes.bool.isRequired,
   onSubmit: PropTypes.func.isRequired,
 };

@@ -80,9 +80,16 @@ jest.mock('@folio/stripes-components', () => ({
       <span>{value || children}</span>
     </>
   )),
-  Label: jest.fn(({ children, ...rest }) => (
-    <span {...rest}>{children}</span>
-  )),
+  Label: jest.fn(({ children, tagName = 'label', required, readOnly, ...rest }) => {
+    const Element = tagName;
+
+    return (
+      <Element {...rest}>
+        {children}
+        {required && <span aria-hidden>*</span>}
+      </Element>
+    );
+  }),
   List: jest.fn(({ items, itemFormatter = (item, i) => (<li key={i}>{item}</li>) }) => (
     <ul>
       [{items?.map((item, i) => itemFormatter(item, i))}]

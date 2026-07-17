@@ -2,29 +2,31 @@ import React, { useState } from 'react';
 import {
   Redirect,
 } from 'react-router-dom';
+import { useIntl } from 'react-intl';
 
-import processBadResponse from '../../processBadResponse';
-import { defaultErrors } from '../../constants';
 import ForgotPasswordForm from './ForgotPasswordForm';
 import useForgotPasswordMutation from './useForgotPasswordMutation';
+import { useCallout } from '../../CalloutContext';
 
 const ForgotPassword = () => {
+  const callout = useCallout();
+  const intl = useIntl();
+
   const [userEmail, setUserEmail] = useState(null);
-  const [authFailure, setAuthFailure] = useState([]);
   const sendReminderMutation = useForgotPasswordMutation();
 
   const onSubmit = async (values) => {
     setUserEmail(null);
-    setAuthFailure([]);
     const { userInput } = values;
-    const { FORGOTTEN_PASSWORD_CLIENT_ERROR } = defaultErrors;
 
     try {
       await sendReminderMutation.mutateAsync(userInput);
       setUserEmail(userInput);
     } catch (error) {
-      const res = await processBadResponse(undefined, error.response, FORGOTTEN_PASSWORD_CLIENT_ERROR);
-      setAuthFailure(res);
+      callout.sendCallout({
+        type: 'error',
+        message: intl.formatMessage({ id: 'stripes-core.errors.default.server.error' }),
+      });
     }
   };
 
@@ -34,7 +36,6 @@ const ForgotPassword = () => {
 
   return (
     <ForgotPasswordForm
-      errors={authFailure}
       onSubmit={onSubmit}
     />
   );

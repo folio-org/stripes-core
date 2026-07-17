@@ -18,6 +18,7 @@
 * Inspect local expiry information prior to initial request, avoiding 401's in rtr flow. Refs STCOR-1069.
 * Rotate preventively prior to logout. Refs STCOR-1068.
 * Reliably handle unsynchronized FOLIO/Keycloak sessions. Refs STCOR-1067.
+* Indicate required fields on the Forgot username and Forgot password pages. Replace the banner with a toast message on these pages. Refs UIU-3607.
 * Declare `Root.js` as having side-effects to avoid improperly optimizing it away in `webpack` >= 5.108.0. Refs STCOR-1081.
 * During rotation, allow non-rotation errors to bubble. Refs STCOR-1080.
 * Supply `isGuardable()` for globally determining whether a route can be guarded. Refs STCOR-1082.

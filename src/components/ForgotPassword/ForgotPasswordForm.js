@@ -18,7 +18,7 @@ import { useStripes } from '../../StripesContext';
 import SelectAndDispatchTenant from '../SelectAndDispatchTenant';
 import styles from '../Login/Login.css';
 
-const ForgotPasswordForm = ({ errors = [], onSubmit }) => {
+const ForgotPasswordForm = ({ onSubmit }) => {
   const { branding, okapi } = useStripes();
   const intl = useIntl();
   const forgotPasswordPlaceholder = intl.formatMessage({ id: 'stripes-core.placeholder.field.forgotPassword' });
@@ -61,7 +61,10 @@ const ForgotPasswordForm = ({ errors = [], onSubmit }) => {
                           bottom="xs"
                         >
                           <Col xs={8}>
-                            <FieldLabel htmlFor="input-email-or-phone">
+                            <FieldLabel 
+                              htmlFor="input-email-or-phone"
+                              required
+                            >
                               {forgotPasswordPlaceholder}
                             </FieldLabel>
                           </Col>
@@ -84,6 +87,13 @@ const ForgotPasswordForm = ({ errors = [], onSubmit }) => {
                           required
                           value=""
                           placeholder={forgotPasswordPlaceholder}
+                          // error={errors.length
+                          //   ? (
+                          //     <FormattedMessage
+                          //       id="stripes-core.errors.default.server.error"
+                          //     />
+                          //   )
+                          //   : undefined}
                         />
                       </Col>
                     </Row>
@@ -105,13 +115,13 @@ const ForgotPasswordForm = ({ errors = [], onSubmit }) => {
                       </div>
                     </Col>
                   </Row>
-                  <Row center="xs">
+                  {/* <Row center="xs">
                     <Col xs={6}>
                       <div className={styles.authErrorsWrapper}>
                         <AuthErrorsContainer errors={errors} />
                       </div>
                     </Col>
-                  </Row>
+                  </Row> */}
                 </form>
               </Row>
             </div>
@@ -124,7 +134,7 @@ const ForgotPasswordForm = ({ errors = [], onSubmit }) => {
 
 ForgotPasswordForm.propTypes = {
   onSubmit: PropTypes.func.isRequired,
-  errors: PropTypes.arrayOf(PropTypes.object),
+  // errors: PropTypes.arrayOf(PropTypes.object),
 };
 
 export default ForgotPasswordForm;

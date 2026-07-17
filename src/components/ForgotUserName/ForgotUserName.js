@@ -2,33 +2,42 @@ import React, { useState } from 'react';
 import {
   Redirect,
 } from 'react-router-dom';
+import { useIntl } from 'react-intl';
 
-import processBadResponse from '../../processBadResponse';
-import { defaultErrors } from '../../constants';
+// import processBadResponse from '../../processBadResponse';
+// import { defaultErrors } from '../../constants';
 import ForgotUserNameForm from './ForgotUserNameForm';
 import useForgotUsernameMutation from './useForgotUsernameMutation';
 import { validateForgotUsernameForm as isValidUsername } from '../../validators';
+import { useCallout } from '../../CalloutContext';
 
 const ForgotUserName = () => {
+  const callout = useCallout();
+  const intl = useIntl();
+
   const [userEmail, setUserEmail] = useState(null);
   const [isValidInput, setIsValidInput] = useState(true);
-  const [authFailure, setAuthFailure] = useState([]);
+  // const [authFailure, setAuthFailure] = useState([]);
   const sendReminderMutation = useForgotUsernameMutation();
 
   const handleSubmit = async (values) => {
     setUserEmail(null);
-    setAuthFailure([]);
+    // setAuthFailure([]);
     const { userInput } = values;
-    const { FORGOTTEN_USERNAME_CLIENT_ERROR } = defaultErrors;
+    // const { FORGOTTEN_USERNAME_CLIENT_ERROR } = defaultErrors;
 
     if (isValidUsername(userInput)) {
       try {
         await sendReminderMutation.mutateAsync(userInput);
         setUserEmail(userInput);
       } catch (error) {
-        const res = await processBadResponse(undefined, error.response, FORGOTTEN_USERNAME_CLIENT_ERROR);
+        callout.sendCallout({
+          type: 'error',
+          message: intl.formatMessage({ id: 'stripes-core.errors.default.server.error' }),
+        });
+        // const res = await processBadResponse(undefined, error.response, FORGOTTEN_USERNAME_CLIENT_ERROR);
         setIsValidInput(true);
-        setAuthFailure(res);
+        // setAuthFailure(res);
       }
     } else {
       setIsValidInput(false);
@@ -42,7 +51,7 @@ const ForgotUserName = () => {
   return (
     <ForgotUserNameForm
       isValid={isValidInput}
-      errors={authFailure}
+      // errors={authFailure}
       onSubmit={handleSubmit}
     />
   );
