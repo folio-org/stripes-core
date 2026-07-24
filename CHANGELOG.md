@@ -24,6 +24,7 @@
 * Supply `mod-settings` permissions for managing others' settings. Refs STCOR-1072.
 * `<Settings>` - properly assign `paneTitleRef` for focus management. Refs STCOR-1083.
 * Supply `<EntitlementChangeBanner>` to indicate entitlement changes. Refs STCOR-780.
+* Refactor from `<HotKeys>` to `<CommandList>`. Refs STCOR-997.
 
 ## [11.1.1](https://github.com/folio-org/stripes-core/tree/v11.1.1) (2026-04-20)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v11.1.0...v11.1.1)
