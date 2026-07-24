@@ -37,6 +37,9 @@ jest.mock('@folio/stripes-components', () => ({
     <span {...rest}>{children}</span>
   )),
   Col: jest.fn(({ children }) => <div className="col">{children}</div>),
+  CommandList: jest.fn(({ children }) => (
+    <>{children}</>
+  )),
   ConfirmationModal: jest.fn(({ heading, message, onConfirm, onCancel }) => (
     <div>
       <span>ConfirmationModal</span>

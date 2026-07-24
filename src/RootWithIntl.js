@@ -9,7 +9,7 @@ import { Provider } from 'react-redux';
 import { CookiesProvider } from 'react-cookie';
 
 import { connectFor } from '@folio/stripes-connect';
-import { Callout, HotKeys } from '@folio/stripes-components';
+import { Callout, CommandList } from '@folio/stripes-components';
 
 import ModuleRoutes from './ModuleRoutes';
 import events from './events';
@@ -89,11 +89,7 @@ const RootWithIntl = ({
         <ModuleTranslator>
           <EntitlementLoader>
             <TitleManager>
-              <HotKeys
-                keyMap={connectedStripes.bindings}
-                attach={document.body}
-                noWrapper
-              >
+              <CommandList commands={connectedStripes.bindings}>
                 <Provider store={connectedStripes.store}>
                   <Router history={history}>
                     {isAuthenticated || token || disableAuth ?
@@ -209,7 +205,7 @@ const RootWithIntl = ({
                     }
                   </Router>
                 </Provider>
-              </HotKeys>
+              </CommandList>
             </TitleManager>
           </EntitlementLoader>
         </ModuleTranslator>
