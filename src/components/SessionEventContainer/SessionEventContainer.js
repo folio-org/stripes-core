@@ -42,8 +42,9 @@ export const thisWindowRtrIstTimeout = (_e, stripes, history) => {
 };
 
 // fixed-length session warning in this window: show banner
-export const thisWindowRtrFlsWarning = (_e, stripes, setIsFlsVisible) => {
+export const thisWindowRtrFlsWarning = (e, stripes, setIsFlsVisible, setFlsTimeRemaining) => {
   stripes.logger.log('rtr', 'fixed-length session warning');
+  setFlsTimeRemaining(e.detail.timeRemaining)
   setIsFlsVisible(true);
 };
 
@@ -250,7 +251,7 @@ const SessionEventContainer = ({ history }) => {
     });
 
     // fixed-length session: show session-is-ending warning
-    channels.window[RTR_FLS_WARNING_EVENT] = (e) => thisWindowRtrFlsWarning(e, stripes, setIsFlsVisible);
+    channels.window[RTR_FLS_WARNING_EVENT] = (e) => thisWindowRtrFlsWarning(e, stripes, setIsFlsVisible, setFlsTimeRemaining);
 
     // fixed-length session: terminate session
     channels.window[RTR_FLS_TIMEOUT_EVENT] = (e) => thisWindowRtrFlsTimeout(e, stripes, history);
