@@ -7,6 +7,7 @@ import SessionEventContainer, {
   otherWindowStorage,
   thisWindowActivity,
   thisWindowRtrError,
+  thisWindowRtrFlsWarning,
   thisWindowRtrIstTimeout,
 } from './SessionEventContainer';
 import {
@@ -92,6 +93,22 @@ describe('SessionEventContainer event listeners', () => {
 
     thisWindowRtrIstTimeout(null, s, history);
     expect(history.push).toHaveBeenCalledWith(`/logout?reason=${LOGOUT_MESSAGES.INACTIVITY}`);
+  });
+
+  it('thisWindowRtrFlsWarning', () => {
+    const setIsFlsVisible = jest.fn();
+    const setFlsTimeRemaining = jest.fn();
+    const stripesForWarning = { logger: { log: jest.fn() } };
+
+    thisWindowRtrFlsWarning(
+      { detail: { timeRemaining: 42000 } },
+      stripesForWarning,
+      setIsFlsVisible,
+      setFlsTimeRemaining,
+    );
+
+    expect(setFlsTimeRemaining).toHaveBeenCalledWith(42000);
+    expect(setIsFlsVisible).toHaveBeenCalledWith(true);
   });
 
   describe('otherWindowStorage', () => {

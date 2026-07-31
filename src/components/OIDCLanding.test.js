@@ -1,11 +1,16 @@
-import { render, screen } from '@folio/jest-config-stripes/testing-library/react';
+import { render, screen, waitFor } from '@folio/jest-config-stripes/testing-library/react';
 import { useHistory } from 'react-router';
 
 import OIDCLanding from './OIDCLanding';
 import useExchangeCode from './useExchangeCode';
-import { LOGOUT_MESSAGES } from '../loginServices';
+import { LOGOUT_MESSAGES, requestUserWithPerms, storeLogoutTenant } from '../loginServices';
 
 jest.mock('react-router');
+jest.mock('../loginServices', () => ({
+  ...jest.requireActual('../loginServices'),
+  requestUserWithPerms: jest.fn(),
+  storeLogoutTenant: jest.fn(),
+}));
 jest.mock('../StripesContext', () => ({
   useStripes: () => ({
     okapi: { tenant: 'diku' },
@@ -15,6 +20,11 @@ jest.mock('../StripesContext', () => ({
 jest.mock('./useExchangeCode');
 
 describe('OIDCLanding', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    requestUserWithPerms.mockResolvedValue();
+  });
+
   it('displays session-init progress message', () => {
     const history = { push: jest.fn() };
     useHistory.mockReturnValue(history);
@@ -55,5 +65,22 @@ describe('OIDCLanding', () => {
     render(<OIDCLanding handleRotation={jest.fn()} />);
 
     expect(history.push).toHaveBeenCalledWith(`/logout?reason=${LOGOUT_MESSAGES.INIT_ERROR}`);
+  });
+
+  it('loads the user before rotating the tokens', async () => {
+    const history = { push: jest.fn() };
+    const handleRotation = jest.fn();
+    const tokenData = { accessTokenExpiration: 1, refreshTokenExpiration: 2 };
+    useHistory.mockReturnValue(history);
+    useExchangeCode.mockImplementationOnce((initSession) => {
+      initSession(tokenData);
+      return { tokenData, isLoading: false, error: null };
+    });
+
+    render(<OIDCLanding handleRotation={handleRotation} />);
+
+    expect(storeLogoutTenant).toHaveBeenCalledWith('diku');
+    await waitFor(() => expect(requestUserWithPerms).toHaveBeenCalledWith({ tenant: 'diku' }, {}, 'diku', ''));
+    await waitFor(() => expect(handleRotation).toHaveBeenCalledWith(tokenData));
   });
 });

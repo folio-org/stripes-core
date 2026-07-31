@@ -121,11 +121,22 @@ export const rotationHandler = (handleSaveTokens, timeoutTimer, warningTimer, rt
     const rtExpires = new Date(expiry.refreshTokenExpiration).getTime();
     await handleSaveTokens({ atExpires, rtExpires });
 
-    const rtTimeoutInterval = rtExpires - Date.now();
-    timeoutTimer.reset(rtTimeoutInterval - RTR_TIME_MARGIN_IN_MS);
+    // how long until the "session is over" timer pings?
+    const rtTimeoutInterval = rtExpires - Date.now() - RTR_TIME_MARGIN_IN_MS;
 
+    // how long until the "session will end soon" timer pings?
+    // this may be < 0, which is fine; calling setTimeout(function, -1) fires
+    // the timer immediately. the value will be < 0 e.g. if there are 15 left
+    // in the session but the warning is supposed to display for 20 seconds.
     const rtWarningInterval = rtTimeoutInterval - ms(rtrConfig.fixedLengthSessionWarningTTL);
-    warningTimer.reset(rtWarningInterval - RTR_TIME_MARGIN_IN_MS);
+
+    timeoutTimer.reset(rtTimeoutInterval);
+
+    // calculate how many milliseconds will be remaining in the session when
+    // this timer pings and pass that value through the timer so it can then be
+    // passed through to the callback when the timer pings.
+    const timeRemaining = rtWarningInterval < 0 ? rtTimeoutInterval : ms(rtrConfig.fixedLengthSessionWarningTTL);
+    warningTimer.reset(rtWarningInterval, { timeRemaining });
   };
 };
 
@@ -158,7 +169,7 @@ export class ResetTimer {
     }
   }
 
-  reset = (interval) => {
+  reset = (interval, args = {}) => {
     const timeout = (typeof interval === 'string') ? ms(interval) : interval;
     if (typeof timeout !== 'number') throw new TypeError('Expected `interval` to be a number');
 
@@ -167,7 +178,7 @@ export class ResetTimer {
       clearTimeout(this.#id);
     }
 
-    this.#id = setTimeout(this.#callback, timeout);
+    this.#id = setTimeout(() => this.#callback(args), timeout);
     this.#logger?.log('rtrv', `ResetTimer: setting ${this.#id}`);
   };
 

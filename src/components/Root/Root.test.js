@@ -1,7 +1,10 @@
 import { render, screen } from '@folio/jest-config-stripes/testing-library/react';
 
 import Root from './Root';
+import { RTR_FLS_TIMEOUT_EVENT, RTR_FLS_WARNING_EVENT } from './constants';
 import { modulesInitialState } from '../../ModulesContext';
+
+let mockResetTimerCallbacks = [];
 
 jest.mock('../../loginServices', () => ({
   loadTranslations: jest.fn(),
@@ -15,6 +18,7 @@ jest.mock('./token-util', () => ({
     constructor(callback, logger) {
       this.callback = callback;
       this.logger = logger;
+      mockResetTimerCallbacks.push(callback);
     }
 
     reset() { }
@@ -108,6 +112,7 @@ const renderRoot = (props = {}) => render(getRootComponent(props));
 describe('Root component', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockResetTimerCallbacks = [];
     latestContextFns = {};
   });
 
@@ -235,6 +240,37 @@ describe('Root component', () => {
     expect(latestContextFns.addEpic('epic1', epic)).toBe(true);
     expect(latestContextFns.addEpic('epic1', epic)).toBe(false);
     expect(mockAdd).toHaveBeenCalledTimes(1);
+  });
+
+  it('dispatches fixed-length timer events with timer details', () => {
+    const dispatchEvent = jest.spyOn(window, 'dispatchEvent').mockImplementation(() => {});
+    const store = makeStore({
+      okapi: {
+        okapiReady: true,
+        translations: { title: 'Home' },
+      },
+    });
+
+    renderRoot({ store });
+
+    mockResetTimerCallbacks[0]({ timeRemaining: 1000 });
+    mockResetTimerCallbacks[1]({ timeRemaining: 42000 });
+
+    expect(dispatchEvent).toHaveBeenNthCalledWith(
+      1,
+      expect.objectContaining({
+        type: RTR_FLS_TIMEOUT_EVENT,
+        detail: { timeRemaining: 1000 },
+      }),
+    );
+    expect(dispatchEvent).toHaveBeenNthCalledWith(
+      2,
+      expect.objectContaining({
+        type: RTR_FLS_WARNING_EVENT,
+        detail: { timeRemaining: 42000 },
+      }),
+    );
+    dispatchEvent.mockRestore();
   });
 
   it('updates queryResourceStateKey on modules change', () => {

@@ -1,5 +1,9 @@
 # Change history for stripes-core
 
+## IN PROGRESS
+
+* Correctly display session-remaining time after refresh. Refs STCOR-1087.
+
 ## [11.1.6](https://github.com/folio-org/stripes-core/tree/v11.1.6) (2026-07-09)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v11.1.5...v11.1.6)
 
