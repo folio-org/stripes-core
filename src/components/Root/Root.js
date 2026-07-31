@@ -81,15 +81,15 @@ class Root extends Component {
     const rtrConfig = configureRtr(this.props.config.rtr);
 
     // pings when the session ends
-    this.sessionTimeoutTimer = new ResetTimer(() => {
+    this.sessionTimeoutTimer = new ResetTimer((detail) => {
       this.props.logger?.log('rtr-fls', 'emitting RTR_FLS_TIMEOUT_EVENT');
-      globalThis.dispatchEvent(new Event(RTR_FLS_TIMEOUT_EVENT));
+      globalThis.dispatchEvent(new CustomEvent(RTR_FLS_TIMEOUT_EVENT, { detail }));
     }, this.props.logger);
 
     // pings when we need to show a "session is ending!" countdown-banner
-    this.sessionTimeoutWarningTimer = new ResetTimer(() => {
+    this.sessionTimeoutWarningTimer = new ResetTimer((detail) => {
       this.props.logger?.log('rtr-fls', 'emitting RTR_FLS_WARNING_EVENT');
-      globalThis.dispatchEvent(new Event(RTR_FLS_WARNING_EVENT));
+      globalThis.dispatchEvent(new CustomEvent(RTR_FLS_WARNING_EVENT, { detail }));
     }, this.props.logger);
 
     // configure the rotation handler:
