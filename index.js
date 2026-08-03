@@ -20,6 +20,7 @@ export { default as isGuardable } from './src/helpers/isGuardable';
 
 /* components */
 export { default as AppContextMenu } from './src/components/MainNav/CurrentApp/AppContextMenu';
+export { default as NavButton } from './src/components/MainNav/NavButton';
 export { default as IfInterface } from './src/components/IfInterface';
 export { default as IfPermission } from './src/components/IfPermission';
 export { default as IfAnyPermission } from './src/components/IfAnyPermission';
