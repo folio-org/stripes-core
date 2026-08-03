@@ -102,6 +102,18 @@ describe('ResetTimer', () => {
       expect(callback).toHaveBeenCalled();
     });
 
+    it('passes callback arguments when the timer fires', () => {
+      jest.useFakeTimers();
+      const callback = jest.fn();
+      const rt = new ResetTimer(callback);
+
+      rt.reset(100, { timeRemaining: 42 });
+      jest.advanceTimersByTime(100);
+
+      expect(callback).toHaveBeenCalledWith({ timeRemaining: 42 });
+      jest.useRealTimers();
+    });
+
     it('resets existing timer', async () => {
       const callback = jest.fn();
       const logger = { log: jest.fn() };
@@ -136,16 +148,31 @@ describe('ResetTimer', () => {
 });
 
 describe('rotationHandler', () => {
-  const hst = jest.fn(async () => { });
-  const tt = { reset: jest.fn() };
-  const wt = { reset: jest.fn() };
-
-  const rt = rotationHandler(hst, tt, wt, { fixedLengthSessionWarningTTL: 1 });
-
   it('calls dem callbacks', async () => {
-    await rt({ accessTokenExpiration: 1, refreshTokenExpiration: 2 });
+    jest.spyOn(Date, 'now').mockReturnValue(1000);
+    const hst = jest.fn(async () => { });
+    const timeoutTimer = { reset: jest.fn() };
+    const warningTimer = { reset: jest.fn() };
+
+    const rotate = rotationHandler(
+      hst,
+      timeoutTimer,
+      warningTimer,
+      { fixedLengthSessionWarningTTL: '5s' }
+    );
+    await rotate({ accessTokenExpiration: 10000, refreshTokenExpiration: 30000 });
+
+    // calls handleSaveTokens callback
     expect(hst).toHaveBeenCalled();
-    expect(tt.reset).toHaveBeenCalled();
-    expect(wt.reset).toHaveBeenCalled();
+
+    // configures end-of-session timer
+    // av[0]: RT - currentTime - margin
+    expect(timeoutTimer.reset).toHaveBeenCalledWith(28800);
+
+    // configures session-will-end-banner timer
+    // av[0]: RT - currentTime - margin - FLSTWarningTTL
+    // av[1]: FLST TTL
+    expect(warningTimer.reset).toHaveBeenCalledWith(23800, { timeRemaining: 5000 });
+    Date.now.mockRestore();
   });
 });

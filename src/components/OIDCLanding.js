@@ -42,13 +42,9 @@ const OIDCLanding = ({ handleRotation }) => {
    */
   const initSession = (tokenData) => {
     if (tokenData) {
-      handleRotation(tokenData)
-        .then(() => {
-          return storeLogoutTenant(okapi.tenant);
-        })
-        .then(() => {
-          return requestUserWithPerms(okapi, store, okapi.tenant, '');
-        });
+      storeLogoutTenant(okapi.tenant);
+      requestUserWithPerms(okapi, store, okapi.tenant, '')
+        .then(() => handleRotation(tokenData));
     }
   };
 
