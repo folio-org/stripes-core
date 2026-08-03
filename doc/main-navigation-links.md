@@ -214,7 +214,7 @@ Use `render` when the module needs to own the full interaction model while still
 
 Typical use cases:
 
-- Notification center trigger with unread badge.
+- Custom trigger with dynamic badge or counter.
 - Toggle that opens a popover or panel.
 - Real-time indicator subscribed to backend events.
 - Stateful trigger that should not be reduced to navigation or side effect only.
@@ -223,10 +223,10 @@ Typical use cases:
 
 ```json
 {
-  "render": "renderNotificationsCenter",
+  "render": "renderCustomFeature",
   "icon": "flag",
-  "caption": "ui-notifications-center.meta.title",
-  "check": "checkNotificationsVisibility"
+  "caption": "ui-custom-feature.meta.title",
+  "check": "checkCustomFeatureVisibility"
 }
 ```
 
@@ -236,9 +236,9 @@ Class-based root:
 
 ```js
 class Root extends React.Component {
-  static checkNotificationsVisibility = checkNotificationsVisibility;
+  static checkCustomFeatureVisibility = checkCustomFeatureVisibility;
 
-  static renderNotificationsCenter = renderNotificationsCenter;
+  static renderCustomFeature = renderCustomFeature;
 
   render() {
     return <AppRoutes />;
@@ -255,8 +255,8 @@ function Root() {
   return <AppRoutes />;
 }
 
-Root.checkNotificationsVisibility = checkNotificationsVisibility;
-Root.renderNotificationsCenter = renderNotificationsCenter;
+Root.checkCustomFeatureVisibility = checkCustomFeatureVisibility;
+Root.renderCustomFeature = renderCustomFeature;
 
 export default Root;
 ```
@@ -299,13 +299,13 @@ import React from 'react';
 
 import { Popper } from '@folio/stripes/components';
 
-export const renderNotificationsCenter = (props = {}) => {
-  return <NotificationsCenterContainer {...props} />;
+export const renderCustomFeature = (props = {}) => {
+  return <CustomFeatureContainer {...props} />;
 };
 
-function NotificationsCenterContainer({ renderTrigger, triggerProps }) {
+function CustomFeatureContainer({ renderTrigger, triggerProps }) {
   const [isOpen, setIsOpen] = React.useState(false);
-  const [unreadCount] = React.useState(0);
+  const [itemCount] = React.useState(0);
 
   if (!renderTrigger) {
     return null;
@@ -315,7 +315,7 @@ function NotificationsCenterContainer({ renderTrigger, triggerProps }) {
     <div>
       {renderTrigger({
         onClick: () => setIsOpen((prev) => !prev),
-        badge: unreadCount,
+        badge: itemCount,
         badgeSize: 'small',
         'aria-expanded': isOpen,
         'aria-haspopup': 'dialog',
@@ -326,7 +326,7 @@ function NotificationsCenterContainer({ renderTrigger, triggerProps }) {
           anchorEl={triggerProps.ref.current}
           placement="bottom-end"
         >
-          <NotificationsPanel />
+          <CustomFeaturePanel />
         </Popper>
       )}
     </div>
