@@ -26,6 +26,7 @@
 * Supply `<EntitlementChangeBanner>` to indicate entitlement changes. Refs STCOR-780.
 * Correctly display session-remaining time after refresh. Refs STCOR-1087.
 * Rename `button.new` from "+ New" to "New". Refs STCOR-1093.
+* Support module-contributed main navigation entries. STCOR-1094.
 
 ## [11.1.1](https://github.com/folio-org/stripes-core/tree/v11.1.1) (2026-04-20)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v11.1.0...v11.1.1)

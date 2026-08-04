@@ -1,10 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 
-import { Icon } from '@folio/stripes-components';
-
 import css from './MainNav.css';
-import NavButton from './NavButton';
 import NavDivider from './NavDivider';
 import { CurrentAppGroup } from './CurrentApp';
 import ProfileDropdown from './ProfileDropdown';
@@ -12,6 +9,7 @@ import AppList from './AppList';
 import { SkipLink } from './components';
 import { useAppOrderContext } from './AppOrderProvider';
 import { useStripes } from '../../StripesContext';
+import { MainNavButtons } from './MainNavButtons';
 
 const MainNav = () => {
   const {
@@ -21,7 +19,6 @@ const MainNav = () => {
   const intl = useIntl();
 
   const [selectedApp, setSelectedApp] = useState(apps.find(entry => entry.active));
-  const helpUrl = useRef(stripes.config.helpUrl ?? 'https://docs.folio.org').current;
 
   // This logic changes the visible current app at the starting side of the Main Navigation.
   useEffect(() => {
@@ -41,17 +38,7 @@ const MainNav = () => {
           dropdownToggleId="app-list-dropdown-toggle"
         />
         <NavDivider md="hide" />
-        <NavButton
-          aria-label={intl.formatMessage({ id: 'stripes-core.help' })}
-          data-test-item-help-button
-          href={helpUrl}
-          icon={<Icon
-            icon="question-mark"
-            size="large"
-          />}
-          id="helpButton"
-          target="_blank"
-        />
+        <MainNavButtons />
         <NavDivider md="hide" />
         <ProfileDropdown stripes={stripes} />
       </nav>
