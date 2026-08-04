@@ -12,7 +12,7 @@ import {
 } from 'react';
 import { useIntl } from 'react-intl';
 
-import { Icon } from '@folio/stripes/components';
+import { Icon } from '@folio/stripes-components';
 
 import { handleEvent } from '../../../handlerService';
 import { useModules } from '../../../ModulesContext';

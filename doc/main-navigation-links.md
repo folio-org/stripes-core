@@ -264,7 +264,7 @@ export default Root;
 ### Render function contract
 
 ```ts
-import { Icon } from '@folio/stripes/components';
+import { Icon } from '@folio/stripes-components';
 
 interface TriggerProps {
   'aria-label': string;
@@ -297,7 +297,7 @@ type RenderFn = (props: RenderProps) => React.ReactNode;
 ```js
 import React from 'react';
 
-import { Popper } from '@folio/stripes/components';
+import { Popper } from '@folio/stripes-components';
 
 export const renderCustomFeature = (props = {}) => {
   return <CustomFeatureContainer {...props} />;
