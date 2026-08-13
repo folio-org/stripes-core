@@ -24,16 +24,16 @@ class ModuleTranslator extends React.Component {
     };
   }
 
-  async componentDidMount() {
-    try {
-      const { stripes } = this.props;
-      const moduleData = await getModules(stripes.config);
-      const modules = this.translateModules(moduleData);
-
-      this.setState({ modules });
-    } catch (error) {
-      console.error('Failed to load modules:', error); // eslint-disable-line no-console
-    }
+  componentDidMount() {
+    const { stripes } = this.props;
+    getModules(stripes.config)
+      .then((moduleData) => {
+        const modules = this.translateModules(moduleData);
+        this.setState({ modules });
+      })
+      .catch((error) => {
+        console.error('Failed to load modules:', error); // eslint-disable-line no-console
+      });
   }
 
   translateModules = (originalModules) => {
@@ -57,7 +57,7 @@ class ModuleTranslator extends React.Component {
   render() {
     return (
       <ModulesContext.Provider value={this.state.modules}>
-        { this.props.children }
+        {this.props.children}
       </ModulesContext.Provider>
     );
   }

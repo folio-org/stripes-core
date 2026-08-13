@@ -66,6 +66,9 @@ class ResizeContainer extends React.Component {
     if (hasSetOfItemsChanged) {
       // Clear cached widths and show all items temporarily to measure them accurately
       this.cachedItemWidths = {};
+      // these calculations depend on the DOM, so we need to call setState.
+      // it is called conditionally here; there will be no render thrashing.
+      // eslint-disable-next-line react/no-did-update-set-state
       this.setState({ hiddenItems: [] }, () => {
         this.cacheWidthsOfItems();
         this.updateHiddenItems();
@@ -127,24 +130,24 @@ class ResizeContainer extends React.Component {
       const wrapperWidth = wrapperEl.clientWidth;
 
       const newHiddenItems =
-      // Set all items as hidden
-      shouldHideAll ? Object.keys(this.cachedItemWidths) :
+        // Set all items as hidden
+        shouldHideAll ? Object.keys(this.cachedItemWidths) :
 
-        // Find items that should be hidden
-        items.reduce((acc, { id }) => {
-          const itemWidth = this.cachedItemWidths[id] || 0;
-          const shouldBeHidden = (itemWidth + acc.accWidth + offset) > wrapperWidth;
-          const hidden = shouldBeHidden ? acc.hidden.concat(id) : acc.hidden;
+          // Find items that should be hidden
+          items.reduce((acc, { id }) => {
+            const itemWidth = this.cachedItemWidths[id] || 0;
+            const shouldBeHidden = (itemWidth + acc.accWidth + offset) > wrapperWidth;
+            const hidden = shouldBeHidden ? acc.hidden.concat(id) : acc.hidden;
 
-          return {
-            hidden,
-            accWidth: acc.accWidth + itemWidth,
-          };
-        },
-        {
-          hidden: [],
-          accWidth: 0,
-        }).hidden;
+            return {
+              hidden,
+              accWidth: acc.accWidth + itemWidth,
+            };
+          },
+            {
+              hidden: [],
+              accWidth: 0,
+            }).hidden;
 
       this.setState({
         hiddenItems: newHiddenItems

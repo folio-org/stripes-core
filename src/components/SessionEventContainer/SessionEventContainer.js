@@ -44,7 +44,7 @@ export const thisWindowRtrIstTimeout = (_e, stripes, history) => {
 // fixed-length session warning in this window: show banner
 export const thisWindowRtrFlsWarning = (e, stripes, setIsFlsVisible, setFlsTimeRemaining) => {
   stripes.logger.log('rtr', 'fixed-length session warning');
-  setFlsTimeRemaining(e.detail.timeRemaining)
+  setFlsTimeRemaining(e.detail.timeRemaining);
   setIsFlsVisible(true);
 };
 

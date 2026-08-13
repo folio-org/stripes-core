@@ -224,7 +224,7 @@ describe('EntitlementLoader', () => {
             <div>Content</div>
           </TestHarness>
         );
-      } catch (e) {
+      } catch  {
         await waitFor(() => {
           expect(mockStripes.logger.log).toHaveBeenCalled();
         });
@@ -429,7 +429,7 @@ describe('EntitlementLoader', () => {
 
       try {
         await loadModuleAssets(mockStripes, module);
-      } catch (e) {
+      } catch  {
         expect(mockStripes.logger.log).toHaveBeenCalledWith('core', 'Error loading assets for test-module: Could not load translations for test-module; failed to find localhost:3000/path/translations/en_US.json');
       }
     });

@@ -39,7 +39,7 @@ export const isStorageEnabled = () => {
   // local storage
   try {
     localStorage.getItem('test-key');
-  } catch (e) {
+  } catch {
     console.warn('local storage is disabled'); // eslint-disable-line no-console
     isEnabled = false;
   }
@@ -47,7 +47,7 @@ export const isStorageEnabled = () => {
   // session storage
   try {
     sessionStorage.getItem('test-key');
-  } catch (e) {
+  } catch {
     console.warn('session storage is disabled'); // eslint-disable-line no-console
     isEnabled = false;
   }
@@ -157,29 +157,29 @@ export default class StripesCore extends Component {
     }
   }
 
-  async componentDidMount() {
+  componentDidMount() {
     if (this.state.isStorageEnabled) {
-      try {
-        const modules = await getModules(this.config);
-
-        const discoveryUrl = await localforage.getItem(stripesHubAPI.DISCOVERY_URL_KEY);
-        const hostUrl = await localforage.getItem(stripesHubAPI.HOST_URL_KEY);
-        const remotesList = await localforage.getItem(stripesHubAPI.REMOTE_LIST_KEY);
-
-        const actionNames = gatherActions(modules);
-
-        this.setState({
-          actionNames,
-          modules,
-          stripesHub: {
-            discoveryUrl,
-            hostUrl,
-            remotesList,
-          }
+      Promise.all([
+        getModules(this.config),
+        localforage.getItem(stripesHubAPI.DISCOVERY_URL_KEY),
+        localforage.getItem(stripesHubAPI.HOST_URL_KEY),
+        localforage.getItem(stripesHubAPI.REMOTE_LIST_KEY)
+      ])
+        .then(([modules, discoveryUrl, hostUrl, remotesList]) => {
+          const actionNames = gatherActions(modules);
+          this.setState({
+            actionNames,
+            modules,
+            stripesHub: {
+              discoveryUrl,
+              hostUrl,
+              remotesList,
+            }
+          });
+        })
+        .catch((error) => {
+          console.error('Failed to gather actions:', error); // eslint-disable-line no-console
         });
-      } catch (error) {
-        console.error('Failed to gather actions:', error); // eslint-disable-line no-console
-      }
     }
   }
 

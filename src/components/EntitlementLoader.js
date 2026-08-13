@@ -68,7 +68,7 @@ export const preloadModules = async (stripes, remotes) => {
       <div>
         <FormattedMessage id="stripes-core.entitlementLoader.moduleError" />
         <ul>
-          {loadFailures.map(f => (<li>{f.name}: {f.reason.message}</li>))}
+          {loadFailures.map(f => (<li key={f.name}>{f.name}: {f.reason.message}</li>))}
         </ul>
       </div>
     );
@@ -236,7 +236,7 @@ const EntitlementLoader = ({ children }) => {
               <div>
                 <FormattedMessage id="stripes-core.entitlementLoader.assetError" />
                 <ul>
-                  {loadFailures.map(f => (<li>{f.name}</li>))}
+                  {loadFailures.map(f => (<li key={f.name}>{f.name}</li>))}
                 </ul>
               </div>
             );

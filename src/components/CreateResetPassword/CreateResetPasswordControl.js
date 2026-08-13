@@ -48,11 +48,11 @@ class CreateResetPasswordControl extends Component {
     };
   }
 
-  async componentDidMount() {
+  componentDidMount() {
     this._isMounted = true;
-    await this.makeCall();
-
-    this.setState({ isLoading: false });
+    this.makeCall().then(() => {
+      this.setState({ isLoading: false });
+    });
   }
 
   componentWillUnmount() {

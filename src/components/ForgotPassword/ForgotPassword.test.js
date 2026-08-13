@@ -45,9 +45,9 @@ describe('ForgotPasswordForm', () => {
   it('displays headline, input field, submit button', () => {
     render(<ForgotPasswordForm onSubmit={jest.fn()} />);
 
-    expect(screen.getByText('stripes-core.label.forgotPassword'));
-    expect(screen.getByText('stripes-core.placeholder.field.forgotPassword'));
-    expect(screen.getByText('stripes-core.button.continue'));
+    screen.getByText('stripes-core.label.forgotPassword');
+    screen.getByText('stripes-core.placeholder.field.forgotPassword');
+    screen.getByText('stripes-core.button.continue');
   });
 
   it('enables submit conditionally', async () => {
@@ -68,7 +68,7 @@ describe('ForgotPasswordForm', () => {
     ];
 
     render(<ForgotPasswordForm errors={errors} onSubmit={jest.fn()} />);
-    expect(screen.getByText(errors[0].code));
+    screen.getByText(errors[0].code);
   });
 
   it('calls onSubmit', async () => {
@@ -110,7 +110,7 @@ describe('ForgotPassword', () => {
     await user.click(submit);
 
     await waitFor(() => {
-      expect(screen.getByText('<Redirect />'));
+      screen.getByText('<Redirect />');
     });
   });
 
@@ -140,7 +140,7 @@ describe('ForgotPassword', () => {
     await user.click(submit);
 
     await waitFor(() => {
-      expect(screen.getByText(defaultErrors.FORGOTTEN_PASSWORD_CLIENT_ERROR.code));
+      screen.getByText(defaultErrors.FORGOTTEN_PASSWORD_CLIENT_ERROR.code);
     });
   });
 });

@@ -26,7 +26,7 @@ describe('rotateAndReplay', () => {
         // @ts-ignore
         delete global.navigator;
       }
-    } catch (e) { /* ignore */ }
+    } catch  { /* ignore */ }
     jest.clearAllMocks();
   });
 
