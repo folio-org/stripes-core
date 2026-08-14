@@ -2,7 +2,7 @@
  * App Switcher
  */
 
-@import '@folio/stripes-components/lib/variables.css';
+@import "@folio/stripes-components/lib/variables.css";
 
 :root {
   --padding-for-header: 66px;
@@ -93,7 +93,10 @@
 .navItem {
   display: flex;
   flex-shrink: 0;
-  transition: opacity 0.1s, visibility 0.1s, width 0.07s ease-in-out;
+  transition:
+    opacity 0.1s,
+    visibility 0.1s,
+    width 0.07s ease-in-out;
   padding: 0 var(--gutter-static-one-third);
 
   &.hidden {

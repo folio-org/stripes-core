@@ -1,11 +1,11 @@
-import satisfies from 'semver/functions/satisfies';
+import satisfies from "semver/functions/satisfies";
 
 /**
  * Check whether the provided error is an AbortError.
  * @param {any} error - The error object to inspect.
  * @returns {boolean} True if the error is an AbortError, otherwise false.
  */
-const isAbortError = (error) => error?.name === 'AbortError';
+const isAbortError = (error) => error?.name === "AbortError";
 
 /**
  * Construct a message for failures fetching the remote's mf-manifest file.
@@ -37,7 +37,7 @@ export const formatDependencyMismatch = (remoteName, pkgName, version, requiredV
  * @returns {string|null} A formatted failure message if validation fails, otherwise null.
  */
 const validateManifestDependency = (remoteName, dependency) => {
-  const pkgName = dependency?.name || dependency?.id || 'unknown-package';
+  const pkgName = dependency?.name || dependency?.id || "unknown-package";
   const { version, requiredVersion } = dependency || {};
 
   if (!version || !requiredVersion) {
@@ -68,41 +68,42 @@ export const logRemoteDependencyViolations = async (signal, remotes = []) => {
 
   const failures = [];
 
-  await Promise.all(remotes.map(async (remote) => {
-    const remoteName = remote?.name || 'unknown-remote';
+  await Promise.all(
+    remotes.map(async (remote) => {
+      const remoteName = remote?.name || "unknown-remote";
 
-    try {
-      const manifestUrl = `${remote.assetPath}/mf-manifest.json`;
-      const response = await fetch(manifestUrl, { signal });
+      try {
+        const manifestUrl = `${remote.assetPath}/mf-manifest.json`;
+        const response = await fetch(manifestUrl, { signal });
 
-      if (!response.ok) {
-        failures.push(formatManifestFetchFailure(remoteName, manifestUrl, response.status));
-        return;
-      }
-
-      const manifest = await response.json();
-      const sharedDependencies = Array.isArray(manifest?.shared) ? manifest.shared : [];
-
-      sharedDependencies.forEach((dependency) => {
-        const validationFailure = validateManifestDependency(remoteName, dependency);
-        if (validationFailure) {
-          failures.push(validationFailure);
+        if (!response.ok) {
+          failures.push(formatManifestFetchFailure(remoteName, manifestUrl, response.status));
+          return;
         }
-      });
-    } catch (error) {
-      if (isAbortError(error) || signal?.aborted) {
-        return;
-      }
 
-      failures.push(`[${remoteName}] ${error?.message || error}`);
-    }
-  }));
+        const manifest = await response.json();
+        const sharedDependencies = Array.isArray(manifest?.shared) ? manifest.shared : [];
+
+        sharedDependencies.forEach((dependency) => {
+          const validationFailure = validateManifestDependency(remoteName, dependency);
+          if (validationFailure) {
+            failures.push(validationFailure);
+          }
+        });
+      } catch (error) {
+        if (isAbortError(error) || signal?.aborted) {
+          return;
+        }
+
+        failures.push(`[${remoteName}] ${error?.message || error}`);
+      }
+    }),
+  );
 
   if (signal?.aborted || !failures.length) {
     return;
   }
 
   // eslint-disable-next-line no-console
-  console.warn(`Remote dependency validation failed:\n${failures.map(f => '- ' + f).join('\n')}`);
+  console.warn(`Remote dependency validation failed:\n${failures.map((f) => "- " + f).join("\n")}`);
 };
-

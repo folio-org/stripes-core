@@ -1,9 +1,7 @@
-import PropTypes from 'prop-types';
-import { FormattedMessage } from 'react-intl';
+import PropTypes from "prop-types";
+import { FormattedMessage } from "react-intl";
 
-import {
-  List,
-} from '@folio/stripes-components';
+import { List } from "@folio/stripes-components";
 
 /**
  * AboutUIModuleDetails
@@ -25,18 +23,17 @@ const AboutUIModuleDetails = ({ module, showDependencies }) => {
     return <FormattedMessage id="stripes-core.about.noDependencies" values={{ base }} />;
   }
 
-  const items = Object
-    .keys(module.okapiInterfaces)
+  const items = Object.keys(module.okapiInterfaces)
     .sort((a, b) => a.localeCompare(b))
     .map((item) => `${item} ${module.okapiInterfaces[item]}`);
 
   return (
     <>
-      <FormattedMessage id="stripes-core.about.moduleDependsOn" values={{ module: `${module.module} ${module.version || ''}` }} />
-      <List
-        items={items}
-        listStyle="bullets"
+      <FormattedMessage
+        id="stripes-core.about.moduleDependsOn"
+        values={{ module: `${module.module} ${module.version || ""}` }}
       />
+      <List items={items} listStyle="bullets" />
     </>
   );
 };

@@ -1,12 +1,12 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { compose } from 'redux';
-import { withRouter } from 'react-router';
-import hoistNonReactStatics from 'hoist-non-react-statics';
+import React from "react";
+import PropTypes from "prop-types";
+import { compose } from "redux";
+import { withRouter } from "react-router";
+import hoistNonReactStatics from "hoist-non-react-statics";
 
-import { withModules } from '../Modules';
-import LastVisitedContext from './LastVisitedContext';
-import { packageName } from '../../constants';
+import { withModules } from "../Modules";
+import LastVisitedContext from "./LastVisitedContext";
+import { packageName } from "../../constants";
 
 function withLastVisited(WrappedComponent) {
   class LastVisited extends React.Component {
@@ -30,7 +30,7 @@ function withLastVisited(WrappedComponent) {
       history.listen((location) => {
         const module = this.getCurrentModule(location);
         if (!module) return;
-        const name = module.module.replace(packageName.PACKAGE_SCOPE_REGEX, '');
+        const name = module.module.replace(packageName.PACKAGE_SCOPE_REGEX, "");
         this.previous[name] = this.lastVisited[name];
         this.lastVisited[name] = `${location.pathname}${location.search}`;
         this.currentName = name;
@@ -55,14 +55,16 @@ function withLastVisited(WrappedComponent) {
       if (!modules.app?.length) return;
 
       this.moduleList = modules.app.concat({
-        route: '/settings',
-        module: '@folio/x_settings',
+        route: "/settings",
+        module: "@folio/x_settings",
       });
     }
 
     getCurrentModule(location) {
-      return this.moduleList.find(entry => (location.pathname === entry.route ||
-        location.pathname.startsWith(`${entry.route}/`)));
+      return this.moduleList.find(
+        (entry) =>
+          location.pathname === entry.route || location.pathname.startsWith(`${entry.route}/`),
+      );
     }
 
     cachePreviousUrl() {
@@ -73,7 +75,7 @@ function withLastVisited(WrappedComponent) {
     render() {
       const value = {
         lastVisited: this.lastVisited,
-        cachePreviousUrl: this.cachePreviousUrl
+        cachePreviousUrl: this.cachePreviousUrl,
       };
 
       return (
@@ -87,8 +89,4 @@ function withLastVisited(WrappedComponent) {
   return hoistNonReactStatics(LastVisited, WrappedComponent);
 }
 
-export default compose(
-  withRouter,
-  withModules,
-  withLastVisited,
-);
+export default compose(withRouter, withModules, withLastVisited);

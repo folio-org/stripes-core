@@ -12,6 +12,8 @@
     "registry": "https://repository.folio.org/repository/npm-folio/"
   },
   "scripts": {
+    "fmt": "oxfmt ./src ./test",
+    "fmt:check": "oxfmt --check ./src ./test",
     "start": "stripes serve",
     "test": "yarn run test:jest && yarn run test:bigtest ",
     "test:bigtest": "stripes test karma",
@@ -101,6 +103,7 @@
     "miragejs": "^0.1.32",
     "mocha": "^10.2.0",
     "moment": "^2.29.0",
+    "oxfmt": "^0.63.0",
     "oxlint": "^1.78.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

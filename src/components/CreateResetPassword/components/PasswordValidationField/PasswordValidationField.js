@@ -1,17 +1,15 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { FormattedMessage } from 'react-intl';
-import { Field } from 'redux-form';
-import isEmpty from 'lodash/isEmpty';
+import React from "react";
+import PropTypes from "prop-types";
+import { FormattedMessage } from "react-intl";
+import { Field } from "redux-form";
+import isEmpty from "lodash/isEmpty";
 
-import { TextField } from '@folio/stripes-components';
-import omitProps from '@folio/stripes-components/util/omitProps';
+import { TextField } from "@folio/stripes-components";
+import omitProps from "@folio/stripes-components/util/omitProps";
 
 const defaultValidationHandler = (errors) => {
   if (!isEmpty(errors)) {
-    return (
-      <FormattedMessage id={`stripes-smart-components.${errors.pop()}`} />
-    );
+    return <FormattedMessage id={`stripes-smart-components.${errors.pop()}`} />;
   }
 
   return undefined;
@@ -20,8 +18,8 @@ const defaultValidationHandler = (errors) => {
 class PasswordValidationField extends React.Component {
   static manifest = Object.freeze({
     validators: {
-      type: 'okapi',
-      path: 'tenant/rules',
+      type: "okapi",
+      path: "tenant/rules",
       throwErrors: false,
       fetch: false,
       accumulate: true,
@@ -43,14 +41,14 @@ class PasswordValidationField extends React.Component {
   static defaultProps = {
     validate: [],
     validationHandler: defaultValidationHandler,
-    token: '',
+    token: "",
   };
 
   constructor(props) {
     super(props);
 
-    this.noUserNameRuleName = 'no_user_name';
-    this.userNamePlaceholder = '<USER_NAME>';
+    this.noUserNameRuleName = "no_user_name";
+    this.userNamePlaceholder = "<USER_NAME>";
   }
 
   async componentDidMount() {
@@ -58,43 +56,33 @@ class PasswordValidationField extends React.Component {
   }
 
   async getRules() {
-    const {
-      mutator,
-      token,
-    } = this.props;
-    const headers = token
-      ? { headers: { 'x-okapi-token': token } }
-      : {};
+    const { mutator, token } = this.props;
+    const headers = token ? { headers: { "x-okapi-token": token } } : {};
     const { rules } = await mutator.validators.GET(headers);
 
     return rules;
   }
 
-  validatePassword = value => {
+  validatePassword = (value) => {
     if (!this.rules) {
       return undefined;
     }
 
-    const {
-      username,
-      validationHandler,
-    } = this.props;
+    const { username, validationHandler } = this.props;
 
     return validationHandler(this.getErrors(value, username));
   };
 
   getErrors(value, username) {
-    return this.rules.filter(({ expression }) => expression)
+    return this.rules
+      .filter(({ expression }) => expression)
       .reduce((errors, rule) => {
-        const {
-          errMessageId,
-          expression,
-          name,
-        } = rule;
+        const { errMessageId, expression, name } = rule;
 
-        const parsedExpression = (name === this.noUserNameRuleName)
-          ? expression.replace(this.userNamePlaceholder, username)
-          : expression;
+        const parsedExpression =
+          name === this.noUserNameRuleName
+            ? expression.replace(this.userNamePlaceholder, username)
+            : expression;
 
         const regex = new RegExp(parsedExpression);
 
@@ -114,7 +102,7 @@ class PasswordValidationField extends React.Component {
       validationHandler,
       ...props
     } = this.props;
-    const fieldProps = omitProps(props, ['dataKey', 'refreshRemote']);
+    const fieldProps = omitProps(props, ["dataKey", "refreshRemote"]);
 
     return (
       <Field

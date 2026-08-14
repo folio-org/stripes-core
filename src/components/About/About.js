@@ -1,24 +1,20 @@
-import React, { useRef, useEffect } from 'react';
-import PropTypes from 'prop-types';
-import { FormattedMessage } from 'react-intl';
-import {
-  Headline,
-  Loading,
-  Pane,
-} from '@folio/stripes-components';
+import React, { useRef, useEffect } from "react";
+import PropTypes from "prop-types";
+import { FormattedMessage } from "react-intl";
+import { Headline, Loading, Pane } from "@folio/stripes-components";
 
-import AboutInstallMessages from './AboutInstallMessages';
-import WarningBanner from './WarningBanner';
-import { withModules } from '../Modules';
-import css from './About.css';
-import { useStripes } from '../../StripesContext';
-import AboutOkapi from './AboutOkapi';
-import AboutApplicationVersions from './AboutApplicationVersions';
-import AboutStripes from './AboutStripes';
-import AboutAPIGateway from './AboutAPIGateway';
-import AboutUIDependencies from './AboutUIDependencies';
-import AboutUIModuleDetails from './AboutUIModuleDetails';
-import stripesCore from '../../../package';
+import AboutInstallMessages from "./AboutInstallMessages";
+import WarningBanner from "./WarningBanner";
+import { withModules } from "../Modules";
+import css from "./About.css";
+import { useStripes } from "../../StripesContext";
+import AboutOkapi from "./AboutOkapi";
+import AboutApplicationVersions from "./AboutApplicationVersions";
+import AboutStripes from "./AboutStripes";
+import AboutAPIGateway from "./AboutAPIGateway";
+import AboutUIDependencies from "./AboutUIDependencies";
+import AboutUIModuleDetails from "./AboutUIModuleDetails";
+import stripesCore from "../../../package";
 
 const About = (props) => {
   const titleRef = useRef(null);
@@ -39,10 +35,7 @@ const About = (props) => {
   const na = Object.keys(applications).length;
 
   const numApplicationsMsg = (
-    <FormattedMessage
-      id="stripes-core.about.applicationCount"
-      values={{ count: na }}
-    />
+    <FormattedMessage id="stripes-core.about.applicationCount" values={{ count: na }} />
   );
 
   return (
@@ -54,11 +47,7 @@ const About = (props) => {
       {!isLoadingFinished ? (
         <Loading />
       ) : (
-        <WarningBanner
-          interfaces={interfaces}
-          modules={props.modules}
-          bannerRef={bannerRef}
-        />
+        <WarningBanner interfaces={interfaces} modules={props.modules} bannerRef={bannerRef} />
       )}
       <AboutInstallMessages />
       <div className={css.versionsContainer}>
@@ -81,8 +70,8 @@ const About = (props) => {
               <AboutUIModuleDetails
                 module={{
                   ...stripesCore.stripes,
-                  module: 'stripes-core',
-                  version: stripesCore.version
+                  module: "stripes-core",
+                  version: stripesCore.version,
                 }}
                 showDependencies
               />

@@ -1,23 +1,20 @@
-import {
-  QueryClient,
-  QueryClientProvider,
-} from 'react-query';
-import { renderHook, waitFor } from '@folio/jest-config-stripes/testing-library/react';
+import { QueryClient, QueryClientProvider } from "react-query";
+import { renderHook, waitFor } from "@folio/jest-config-stripes/testing-library/react";
 
-import useConfigurations, { configurationsApi } from './useConfigurations';
-import { useStripes } from '../StripesContext';
-import useOkapiKy from '../useOkapiKy';
+import useConfigurations, { configurationsApi } from "./useConfigurations";
+import { useStripes } from "../StripesContext";
+import useOkapiKy from "../useOkapiKy";
 
-jest.mock('../useOkapiKy');
-jest.mock('../StripesContext');
+jest.mock("../useOkapiKy");
+jest.mock("../StripesContext");
 
 // reassign console.log to keep things quiet
 const consoleInterruptor = {};
 beforeAll(() => {
   consoleInterruptor.log = global.console.log;
   consoleInterruptor.error = global.console.error;
-  console.log = () => { };
-  console.error = () => { };
+  console.log = () => {};
+  console.error = () => {};
 });
 
 afterAll(() => {
@@ -32,39 +29,41 @@ afterAll(() => {
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      retry: false
-    }
-  }
+      retry: false,
+    },
+  },
 });
 
-describe('Given useConfigurations', () => {
-  describe('configurationsApi', () => {
-    const module = 'module';
-    const configName = 'configName';
-    const code = 'code';
+describe("Given useConfigurations", () => {
+  describe("configurationsApi", () => {
+    const module = "module";
+    const configName = "configName";
+    const code = "code";
 
-    it('includes module in the API query', () => {
+    it("includes module in the API query", () => {
       expect(configurationsApi(module)).toContain(`module=="${module}"`);
     });
 
-    it('includes configName in the API query', () => {
+    it("includes configName in the API query", () => {
       expect(configurationsApi(module, configName)).toContain(`configName=="${configName}"`);
     });
 
-    it('includes code in the API query', () => {
+    it("includes code in the API query", () => {
       expect(configurationsApi(module, configName, code)).toContain(`code=="${code}"`);
     });
 
     it('joins criteria with "AND"', () => {
-      expect(configurationsApi(module, configName, code)).toContain(`module=="${module}" and configName=="${configName}" and code=="${code}"`);
+      expect(configurationsApi(module, configName, code)).toContain(
+        `module=="${module}" and configName=="${configName}" and code=="${code}"`,
+      );
     });
 
-    it('retrieves all values without any criteria', () => {
-      expect(configurationsApi()).toContain('configurations/entries?&limit=');
+    it("retrieves all values without any criteria", () => {
+      expect(configurationsApi()).toContain("configurations/entries?&limit=");
     });
   });
 
-  describe('correctly checks permissions: with permissions', () => {
+  describe("correctly checks permissions: with permissions", () => {
     const response = { configs: [], totalRecords: 1 };
     beforeEach(() => {
       const mockUseStripes = useStripes;
@@ -80,11 +79,9 @@ describe('Given useConfigurations', () => {
       });
     });
 
-    it('with permission, calls get', async () => {
+    it("with permission, calls get", async () => {
       const wrapper = ({ children }) => (
-        <QueryClientProvider client={queryClient}>
-          {children}
-        </QueryClientProvider>
+        <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
       );
 
       const { result } = renderHook(() => useConfigurations({}), { wrapper });
@@ -93,7 +90,7 @@ describe('Given useConfigurations', () => {
       // so we convert isLoading from being truthy to being errory
       await waitFor(() => {
         if (result.current.isLoading) {
-          throw new Error('kaboom');
+          throw new Error("kaboom");
         }
       });
 
@@ -101,7 +98,7 @@ describe('Given useConfigurations', () => {
     });
   });
 
-  describe('correctly checks permissions: without permissions', () => {
+  describe("correctly checks permissions: without permissions", () => {
     beforeEach(() => {
       const mockUseStripes = useStripes;
       mockUseStripes.mockReturnValue({
@@ -116,11 +113,9 @@ describe('Given useConfigurations', () => {
       });
     });
 
-    it('without permission, throws an error', async () => {
+    it("without permission, throws an error", async () => {
       const wrapper = ({ children }) => (
-        <QueryClientProvider client={queryClient}>
-          {children}
-        </QueryClientProvider>
+        <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
       );
 
       const { result } = renderHook(() => useConfigurations({}), { wrapper });
@@ -129,7 +124,7 @@ describe('Given useConfigurations', () => {
       // so we convert isLoading from being truthy to being errory
       await waitFor(() => {
         if (result.current.isLoading) {
-          throw new Error('Kaboom');
+          throw new Error("Kaboom");
         }
       });
 
@@ -137,4 +132,3 @@ describe('Given useConfigurations', () => {
     });
   });
 });
-

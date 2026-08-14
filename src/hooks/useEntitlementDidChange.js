@@ -1,7 +1,7 @@
-import { useQuery } from 'react-query';
-import { useRef, useState } from 'react';
-import { useStripes } from '../StripesContext';
-import useOkapiKy from '../useOkapiKy';
+import { useQuery } from "react-query";
+import { useRef, useState } from "react";
+import { useStripes } from "../StripesContext";
+import useOkapiKy from "../useOkapiKy";
 
 /**
  * useEntitlementChangeNotifier
@@ -21,15 +21,16 @@ const useEntitlementChangeNotifier = () => {
   const stripes = useStripes();
   const ky = useOkapiKy();
   const config = stripes?.config?.staleBundleWarning;
-  const refetchInterval = (Number.isInteger(config?.interval) ? config.interval : INTERVAL_MINUTES) * 60 * 1000;
+  const refetchInterval =
+    (Number.isInteger(config?.interval) ? config.interval : INTERVAL_MINUTES) * 60 * 1000;
   const previous = useRef();
   const [isStale, setIsStale] = useState(false);
 
   useQuery({
-    queryKey: ['EntitlementChangeWarning'],
+    queryKey: ["EntitlementChangeWarning"],
     queryFn: async () => {
       const json = await ky(`entitlements/${stripes.okapi.tenant}/applications`, {
-        searchParams: { limit: 500 }
+        searchParams: { limit: 500 },
       }).json();
       /* entitlement data looks, in part, like this:
        *
@@ -44,7 +45,7 @@ const useEntitlementChangeNotifier = () => {
        * When the version of a module inside an application changes, there will
        * be a corresponding change in the application's version.
        */
-      const idSet = new Set(json.applicationDescriptors.map(i => i.id));
+      const idSet = new Set(json.applicationDescriptors.map((i) => i.id));
       if (previous.current) {
         setIsStale(Boolean(previous.current.difference(idSet).size));
       }

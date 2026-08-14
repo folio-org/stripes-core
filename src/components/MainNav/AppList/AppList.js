@@ -2,20 +2,16 @@
  * App List
  */
 
-import React, { Component } from 'react';
-import classnames from 'classnames';
-import PropTypes from 'prop-types';
-import { FormattedMessage, injectIntl } from 'react-intl';
+import React, { Component } from "react";
+import classnames from "classnames";
+import PropTypes from "prop-types";
+import { FormattedMessage, injectIntl } from "react-intl";
 
-import {
-  Dropdown,
-  DropdownMenu,
-  Icon
-} from '@folio/stripes-components';
+import { Dropdown, DropdownMenu, Icon } from "@folio/stripes-components";
 
-import { ResizeContainer, AppListDropdown } from './components';
-import NavButton from '../NavButton';
-import css from './AppList.css';
+import { ResizeContainer, AppListDropdown } from "./components";
+import NavButton from "../NavButton";
+import css from "./AppList.css";
 
 class AppList extends Component {
   static propTypes = {
@@ -37,7 +33,7 @@ class AppList extends Component {
       formatMessage: PropTypes.func.isRequired,
     }),
     selectedApp: PropTypes.object,
-  }
+  };
 
   constructor(props) {
     super(props);
@@ -57,7 +53,7 @@ class AppList extends Component {
           }
           // If not; focus first item in the list
         } else if (firstItem) firstItem.focus();
-      }
+      },
     };
 
     this.dropdownListRef = React.createRef();
@@ -77,7 +73,7 @@ class AppList extends Component {
       }
     }
     return false;
-  }
+  };
 
   /**
    * Get the nav buttons that is displayed
@@ -88,35 +84,33 @@ class AppList extends Component {
 
     return (
       <ul className={css.navItemsList}>
-        {
-          apps.map(app => {
-            const isHidden = hiddenItemIds.includes(app.id);
+        {apps.map((app) => {
+          const isHidden = hiddenItemIds.includes(app.id);
 
-            return (
-              <li
-                className={classnames(css.navItem, { [css.hidden]: isHidden })}
-                key={app.id}
-                aria-hidden={isHidden}
-                style={{ width: itemWidths[app.id] }}
-              >
-                <NavButton
-                  data-test-app-list-item
-                  aria-label={app.displayName}
-                  iconData={app.iconData}
-                  iconKey={app.module}
-                  id={`app-list-item-${app.id}`}
-                  label={app.displayName}
-                  role="button"
-                  selected={selectedApp && selectedApp.id === app.id}
-                  to={app.href}
-                />
-              </li>
-            );
-          })
-        }
+          return (
+            <li
+              className={classnames(css.navItem, { [css.hidden]: isHidden })}
+              key={app.id}
+              aria-hidden={isHidden}
+              style={{ width: itemWidths[app.id] }}
+            >
+              <NavButton
+                data-test-app-list-item
+                aria-label={app.displayName}
+                iconData={app.iconData}
+                iconKey={app.module}
+                id={`app-list-item-${app.id}`}
+                label={app.displayName}
+                role="button"
+                selected={selectedApp && selectedApp.id === app.id}
+                to={app.href}
+              />
+            </li>
+          );
+        })}
       </ul>
     );
-  }
+  };
 
   /**
    * The button that toggles the dropdown
@@ -124,12 +118,16 @@ class AppList extends Component {
   renderDropdownToggleButton = ({ open, getTriggerProps }) => {
     const { dropdownToggleId } = this.props;
     const icon = (
-      <svg className={css.dropdownToggleIcon} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+      <svg
+        className={css.dropdownToggleIcon}
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+      >
         <path d="M8.4 2.4H5.1c-1.5 0-2.7 1.2-2.7 2.7v3.3c0 1.5 1.2 2.7 2.7 2.7h3.3c1.5 0 2.7-1.2 2.7-2.7V5.1c0-1.5-1.2-2.7-2.7-2.7zm.7 6c0 .4-.3.7-.7.7H5.1c-.4 0-.7-.3-.7-.7V5.1c0-.4.3-.7.7-.7h3.3c.4 0 .7.3.7.7v3.3zM18.9 2.4h-3.3c-1.5 0-2.7 1.2-2.7 2.7v3.3c0 1.5 1.2 2.7 2.7 2.7h3.3c1.5 0 2.7-1.2 2.7-2.7V5.1c0-1.5-1.2-2.7-2.7-2.7zm.7 6c0 .4-.3.7-.7.7h-3.3c-.4 0-.7-.3-.7-.7V5.1c0-.4.3-.7.7-.7h3.3c.4 0 .7.3.7.7v3.3zM8.4 12.9H5.1c-1.5 0-2.7 1.2-2.7 2.7v3.3c0 1.5 1.2 2.7 2.7 2.7h3.3c1.5 0 2.7-1.2 2.7-2.7v-3.3c0-1.5-1.2-2.7-2.7-2.7zm.7 6c0 .4-.3.7-.7.7H5.1c-.4 0-.7-.3-.7-.7v-3.3c0-.4.3-.7.7-.7h3.3c.4 0 .7.3.7.7v3.3zM18.9 12.9h-3.3c-1.5 0-2.7 1.2-2.7 2.7v3.3c0 1.5 1.2 2.7 2.7 2.7h3.3c1.5 0 2.7-1.2 2.7-2.7v-3.3c0-1.5-1.2-2.7-2.7-2.7zm.7 6c0 .4-.3.7-.7.7h-3.3c-.4 0-.7-.3-.7-.7v-3.3c0-.4.3-.7.7-.7h3.3c.4 0 .7.3.7.7v3.3z" />
       </svg>
     );
     const label = (
-      <Icon iconPosition="end" icon={open ? 'caret-up' : 'caret-down'}>
+      <Icon iconPosition="end" icon={open ? "caret-up" : "caret-down"}>
         <FormattedMessage id="stripes-core.mainnav.showAllApplicationsButtonLabel" />
       </Icon>
     );
@@ -148,16 +146,13 @@ class AppList extends Component {
         noSelectedBar
       />
     );
-  }
+  };
 
   /**
    * App list dropdown
    */
   renderNavDropdown = (hiddenItemIds) => {
-    const {
-      renderDropdownToggleButton,
-      dropdownListRef,
-    } = this;
+    const { renderDropdownToggleButton, dropdownListRef } = this;
 
     const { apps, dropdownId, dropdownToggleId, selectedApp } = this.props;
 
@@ -174,22 +169,21 @@ class AppList extends Component {
           usePortal={false}
           focusHandlers={this.focusHandlers}
         >
-          { ({ onToggle }) => (
+          {({ onToggle }) => (
             <DropdownMenu onToggle={onToggle}>
               <AppListDropdown
-                apps={apps.filter(item => hiddenItemIds.includes(item.id))}
+                apps={apps.filter((item) => hiddenItemIds.includes(item.id))}
                 dropdownToggleId={dropdownToggleId}
                 listRef={dropdownListRef}
                 selectedApp={selectedApp}
                 toggleDropdown={onToggle}
               />
             </DropdownMenu>
-          )
-          }
+          )}
         </Dropdown>
       </div>
     );
-  }
+  };
 
   render() {
     const { apps, selectedApp } = this.props;
@@ -208,8 +202,7 @@ class AppList extends Component {
               {this.renderNavDropdown(hiddenItems)}
             </div>
           );
-        }
-      }
+        }}
       </ResizeContainer>
     );
   }

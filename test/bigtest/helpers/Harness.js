@@ -1,13 +1,12 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { IntlProvider } from 'react-intl';
-import { reducer as formReducer } from 'redux-form';
-import { Provider } from 'react-redux';
-import { createStore, combineReducers } from 'redux';
+import React from "react";
+import PropTypes from "prop-types";
+import { IntlProvider } from "react-intl";
+import { reducer as formReducer } from "redux-form";
+import { Provider } from "react-redux";
+import { createStore, combineReducers } from "redux";
 
-import componentsTranslations from '@folio/stripes-components/translations/stripes-components/en';
-import coreTranslations from '../../../translations/stripes-core/en';
-
+import componentsTranslations from "@folio/stripes-components/translations/stripes-components/en";
+import coreTranslations from "../../../translations/stripes-core/en";
 
 const reducers = {
   form: formReducer,
@@ -39,8 +38,8 @@ function prefixKeys(obj, prefix) {
  */
 class Harness extends React.Component {
   render() {
-    const prefixedComponentsTranslations = prefixKeys(componentsTranslations, 'stripes-components');
-    const prefixedCoreTranslations = prefixKeys(coreTranslations, 'stripes-core');
+    const prefixedComponentsTranslations = prefixKeys(componentsTranslations, "stripes-components");
+    const prefixedCoreTranslations = prefixKeys(coreTranslations, "stripes-core");
 
     const allTranslations = { ...prefixedComponentsTranslations, ...prefixedCoreTranslations };
 

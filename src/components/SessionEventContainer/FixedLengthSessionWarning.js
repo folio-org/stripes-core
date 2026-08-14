@@ -1,7 +1,7 @@
-import PropTypes from 'prop-types';
-import { FormattedMessage } from 'react-intl';
-import { MessageBanner } from '@folio/stripes-components';
-import css from './style.css';
+import PropTypes from "prop-types";
+import { FormattedMessage } from "react-intl";
+import { MessageBanner } from "@folio/stripes-components";
+import css from "./style.css";
 
 /**
  * FixedLengthSessionWarning
@@ -24,10 +24,15 @@ const FixedLengthSessionWarning = ({ timeRemainingMillis }) => {
       return new Date(timeRemainingMillis).toISOString().substring(14, 19);
     }
 
-    return '00:00';
+    return "00:00";
   };
 
-  return <MessageBanner show contentClassName={css.fixedSessionBanner}><FormattedMessage id="stripes-core.rtr.fixedLengthSession.timeRemaining" /> {timestampFormatter()}</MessageBanner>;
+  return (
+    <MessageBanner show contentClassName={css.fixedSessionBanner}>
+      <FormattedMessage id="stripes-core.rtr.fixedLengthSession.timeRemaining" />{" "}
+      {timestampFormatter()}
+    </MessageBanner>
+  );
 };
 
 FixedLengthSessionWarning.propTypes = {

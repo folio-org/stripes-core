@@ -1,19 +1,15 @@
-import { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
-import {
-  Route,
-  Router,
-  Switch,
-} from 'react-router-dom';
-import { Provider } from 'react-redux';
-import { CookiesProvider } from 'react-cookie';
+import { useState, useEffect } from "react";
+import PropTypes from "prop-types";
+import { Route, Router, Switch } from "react-router-dom";
+import { Provider } from "react-redux";
+import { CookiesProvider } from "react-cookie";
 
-import { connectFor } from '@folio/stripes-connect';
-import { Callout, HotKeys } from '@folio/stripes-components';
+import { connectFor } from "@folio/stripes-connect";
+import { Callout, HotKeys } from "@folio/stripes-components";
 
-import ModuleRoutes from './ModuleRoutes';
-import events from './events';
-import { SESSION_READY_EVENT } from './components/Root/constants';
+import ModuleRoutes from "./ModuleRoutes";
+import events from "./events";
+import { SESSION_READY_EVENT } from "./components/Root/constants";
 
 import {
   MainContainer,
@@ -38,14 +34,14 @@ import {
   AppCtxMenuProvider,
   SessionEventContainer,
   AppOrderProvider,
-  QueryStateUpdater
-} from './components';
-import StaleBundleWarning from './components/StaleBundleWarning';
-import EntitlementChangeBanner from './components/EntitlementChangeBanner';
-import { StripesContext } from './StripesContext';
-import { CalloutProvider } from './CalloutContext';
-import AuthnLogin from './components/AuthnLogin';
-import EntitlementLoader from './components/EntitlementLoader';
+  QueryStateUpdater,
+} from "./components";
+import StaleBundleWarning from "./components/StaleBundleWarning";
+import EntitlementChangeBanner from "./components/EntitlementChangeBanner";
+import { StripesContext } from "./StripesContext";
+import { CalloutProvider } from "./CalloutContext";
+import AuthnLogin from "./components/AuthnLogin";
+import EntitlementLoader from "./components/EntitlementLoader";
 
 const RootWithIntl = ({
   disableAuth,
@@ -56,9 +52,9 @@ const RootWithIntl = ({
   sessionTimeoutTimer,
   sessionTimeoutWarningTimer,
   stripes,
-  token = ''
+  token = "",
 }) => {
-  const connect = connectFor('@folio/core', stripes.epics, stripes.logger);
+  const connect = connectFor("@folio/core", stripes.epics, stripes.logger);
   const connectedStripes = stripes.clone({ connect });
 
   const [callout, setCallout] = useState(null);
@@ -73,7 +69,7 @@ const RootWithIntl = ({
   // Listen for SessionReady events and trigger re-render
   useEffect(() => {
     const handleSessionReady = () => {
-      setForceRenderFlag(prev => !prev);
+      setForceRenderFlag((prev) => !prev);
     };
 
     globalThis.addEventListener(SESSION_READY_EVENT, handleSessionReady);
@@ -89,22 +85,20 @@ const RootWithIntl = ({
         <ModuleTranslator>
           <EntitlementLoader>
             <TitleManager>
-              <HotKeys
-                keyMap={connectedStripes.bindings}
-                attach={document.body}
-                noWrapper
-              >
+              <HotKeys keyMap={connectedStripes.bindings} attach={document.body} noWrapper>
                 <Provider store={connectedStripes.store}>
                   <Router history={history}>
-                    {isAuthenticated || token || disableAuth ?
+                    {isAuthenticated || token || disableAuth ? (
                       <Switch>
                         <TitledRoute
                           name="logout"
                           path="/logout"
-                          component={<Logout
-                            sessionTimeoutTimer={sessionTimeoutTimer}
-                            sessionTimeoutWarningTimer={sessionTimeoutWarningTimer}
-                          />}
+                          component={
+                            <Logout
+                              sessionTimeoutTimer={sessionTimeoutTimer}
+                              sessionTimeoutWarningTimer={sessionTimeoutWarningTimer}
+                            />
+                          }
                         />
                         <Route>
                           <QueryStateUpdater stripes={connectedStripes} queryClient={queryClient} />
@@ -112,16 +106,18 @@ const RootWithIntl = ({
                             <AppCtxMenuProvider>
                               <AppOrderProvider>
                                 <MainNav stripes={connectedStripes} queryClient={queryClient} />
-                                {typeof connectedStripes?.config?.staleBundleWarning === 'object' && <StaleBundleWarning />}
+                                {typeof connectedStripes?.config?.staleBundleWarning ===
+                                  "object" && <StaleBundleWarning />}
                                 <EntitlementChangeBanner />
-                                <HandlerManager
-                                  event={events.LOGIN}
-                                  stripes={connectedStripes}
-                                />
-                                {(typeof connectedStripes.okapi !== 'object' || connectedStripes.discovery.isFinished) && (
+                                <HandlerManager event={events.LOGIN} stripes={connectedStripes} />
+                                {(typeof connectedStripes.okapi !== "object" ||
+                                  connectedStripes.discovery.isFinished) && (
                                   <ModuleContainer id="content">
                                     <OverlayContainer />
-                                    <SessionEventContainer history={history} queryClient={queryClient} />
+                                    <SessionEventContainer
+                                      history={history}
+                                      queryClient={queryClient}
+                                    />
                                     <Switch>
                                       <TitledRoute
                                         name="home"
@@ -157,7 +153,7 @@ const RootWithIntl = ({
                           <Callout ref={setCalloutDomRef} />
                         </Route>
                       </Switch>
-                      :
+                    ) : (
                       <Switch>
                         {/* The ? after :token makes that part of the path optional, so that token may optionally
                       be passed in via URL parameter to avoid length restrictions */}
@@ -170,14 +166,22 @@ const RootWithIntl = ({
                           name="ssoLanding"
                           exact
                           path="/sso-landing"
-                          component={<CookiesProvider><SSOLanding stripes={connectedStripes} /></CookiesProvider>}
+                          component={
+                            <CookiesProvider>
+                              <SSOLanding stripes={connectedStripes} />
+                            </CookiesProvider>
+                          }
                           key="sso-landing"
                         />
                         <TitledRoute
                           name="oidcLanding"
                           exact
                           path="/oidc-landing"
-                          component={<CookiesProvider><OIDCLanding handleRotation={handleRotation} stripes={stripes} /></CookiesProvider>}
+                          component={
+                            <CookiesProvider>
+                              <OIDCLanding handleRotation={handleRotation} stripes={stripes} />
+                            </CookiesProvider>
+                          }
                           key="oidc-landing"
                         />
                         <TitledRoute
@@ -195,18 +199,19 @@ const RootWithIntl = ({
                           path="/check-email"
                           component={<CheckEmailStatusPage />}
                         />
-                        <TitledRoute
-                          name="logout"
-                          path="/logout"
-                          component={<Logout />}
-                        />
+                        <TitledRoute name="logout" path="/logout" component={<Logout />} />
                         <TitledRoute
                           name="login"
                           path="*"
-                          component={<AuthnLogin handleRotation={handleRotation} stripes={connectedStripes} />}
+                          component={
+                            <AuthnLogin
+                              handleRotation={handleRotation}
+                              stripes={connectedStripes}
+                            />
+                          }
                         />
                       </Switch>
-                    }
+                    )}
                   </Router>
                 </Provider>
               </HotKeys>
@@ -238,7 +243,7 @@ RootWithIntl.propTypes = {
     epics: PropTypes.object,
     logger: PropTypes.object.isRequired,
     okapi: PropTypes.object.isRequired,
-    store: PropTypes.object.isRequired
+    store: PropTypes.object.isRequired,
   }).isRequired,
   token: PropTypes.string,
 };

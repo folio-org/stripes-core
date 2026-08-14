@@ -1,1 +1,1 @@
-export { default } from './AppConfigError';
+export { default } from "./AppConfigError";

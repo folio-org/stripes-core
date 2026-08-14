@@ -6,9 +6,9 @@
  *
  * This was introduced in STCOR-276/PR #496
  */
-export default email => {
+export default (email) => {
   // eslint-disable-next-line no-useless-escape
-  const emailRegExp = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+  const emailRegExp = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i; // oxfmt-ignore
 
   return emailRegExp.test(email);
 };

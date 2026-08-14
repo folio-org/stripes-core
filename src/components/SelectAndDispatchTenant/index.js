@@ -1,1 +1,1 @@
-export { default } from './SelectAndDispatchTenant';
+export { default } from "./SelectAndDispatchTenant";

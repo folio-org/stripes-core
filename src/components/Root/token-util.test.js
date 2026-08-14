@@ -1,50 +1,50 @@
-import { UnexpectedResourceError } from './Errors';
+import { UnexpectedResourceError } from "./Errors";
 import {
   ResetTimer,
   configureRtr,
   isFolioApiRequest,
   resourceMapper,
   rotationHandler,
-} from './token-util';
+} from "./token-util";
 
-describe('isFolioApiRequest', () => {
-  it('accepts requests whose origin matches okapi\'s', () => {
-    const oUrl = 'https://millicent-sounds-kinda-like-malificent.edu';
+describe("isFolioApiRequest", () => {
+  it("accepts requests whose origin matches okapi's", () => {
+    const oUrl = "https://millicent-sounds-kinda-like-malificent.edu";
     const req = `${oUrl}/that/is/awkward`;
     expect(isFolioApiRequest(req, oUrl)).toBe(true);
   });
 
-  it('rejects requests whose origin does not match okapi\'s', () => {
-    const req = 'https://skipper-seriously-skipper.org';
-    expect(isFolioApiRequest(req, 'https://anything-but-skipper.edu')).toBe(false);
+  it("rejects requests whose origin does not match okapi's", () => {
+    const req = "https://skipper-seriously-skipper.org";
+    expect(isFolioApiRequest(req, "https://anything-but-skipper.edu")).toBe(false);
   });
 
-  it('rejects invalid resource input', () => {
-    const req = { 'ken': 'not kenough' };
-    expect(isFolioApiRequest(req, 'https://sorry-dude.edu')).toBe(false);
+  it("rejects invalid resource input", () => {
+    const req = { ken: "not kenough" };
+    expect(isFolioApiRequest(req, "https://sorry-dude.edu")).toBe(false);
   });
 });
 
-describe('resourceMapper', () => {
-  const fx = (input) => (input);
+describe("resourceMapper", () => {
+  const fx = (input) => input;
 
-  it('accepts strings', () => {
-    const av = 'barbie';
+  it("accepts strings", () => {
+    const av = "barbie";
     expect(resourceMapper(av, fx)).toBe(av);
   });
 
-  it('accepts URLs', () => {
-    const av = 'https://oppie.com';
+  it("accepts URLs", () => {
+    const av = "https://oppie.com";
     expect(resourceMapper(new URL(av), fx)).toBe(av);
   });
 
-  it('accepts Requests', () => {
-    const av = 'https://los-alamos-dreamtopia-castle-was-actually-a-nightmare.com/';
+  it("accepts Requests", () => {
+    const av = "https://los-alamos-dreamtopia-castle-was-actually-a-nightmare.com/";
     expect(resourceMapper(new Request(av), fx)).toBe(av);
   });
 
-  it('rejects other argument types', () => {
-    const av = { ken: 'kenough' };
+  it("rejects other argument types", () => {
+    const av = { ken: "kenough" };
     try {
       resourceMapper(av, fx);
     } catch (e) {
@@ -53,46 +53,46 @@ describe('resourceMapper', () => {
   });
 });
 
-describe('configureRtr', () => {
-  it('sets idleSessionTTL and idleModalTTL', () => {
+describe("configureRtr", () => {
+  it("sets idleSessionTTL and idleModalTTL", () => {
     const res = configureRtr({});
-    expect(res.idleSessionTTL).toBe('4h');
-    expect(res.idleModalTTL).toBe('1m');
+    expect(res.idleSessionTTL).toBe("4h");
+    expect(res.idleModalTTL).toBe("1m");
   });
 
-  it('leaves existing settings in place', () => {
+  it("leaves existing settings in place", () => {
     const res = configureRtr({
-      idleSessionTTL: '5m',
-      idleModalTTL: '5m',
+      idleSessionTTL: "5m",
+      idleModalTTL: "5m",
     });
 
-    expect(res.idleSessionTTL).toBe('5m');
-    expect(res.idleModalTTL).toBe('5m');
+    expect(res.idleSessionTTL).toBe("5m");
+    expect(res.idleModalTTL).toBe("5m");
   });
 });
 
-describe('ResetTimer', () => {
-  it('validates callback', () => {
+describe("ResetTimer", () => {
+  it("validates callback", () => {
     const t = () => {
       // lint, oy, yer not helping
       // this test validates that the constructor throws on invalid input
       // so, no, I do not care that this value is unused. 🙄
       // eslint-disable-next-line no-unused-vars
-      const rt = new ResetTimer('not a function');
+      const rt = new ResetTimer("not a function");
     };
     expect(t).toThrow(TypeError);
   });
 
-  describe('reset', () => {
-    it('validates interval', () => {
+  describe("reset", () => {
+    it("validates interval", () => {
       const t = () => {
-        const rt = new ResetTimer(() => { });
-        rt.reset('whoops');
+        const rt = new ResetTimer(() => {});
+        rt.reset("whoops");
       };
       expect(t).toThrow(TypeError);
     });
 
-    it('calls callback', async () => {
+    it("calls callback", async () => {
       const callback = jest.fn();
       const rt = new ResetTimer(callback);
       rt.reset(1);
@@ -102,7 +102,7 @@ describe('ResetTimer', () => {
       expect(callback).toHaveBeenCalled();
     });
 
-    it('passes callback arguments when the timer fires', () => {
+    it("passes callback arguments when the timer fires", () => {
       jest.useFakeTimers();
       const callback = jest.fn();
       const rt = new ResetTimer(callback);
@@ -114,7 +114,7 @@ describe('ResetTimer', () => {
       jest.useRealTimers();
     });
 
-    it('resets existing timer', async () => {
+    it("resets existing timer", async () => {
       const callback = jest.fn();
       const logger = { log: jest.fn() };
       const rt = new ResetTimer(callback, logger);
@@ -131,8 +131,8 @@ describe('ResetTimer', () => {
     });
   });
 
-  describe('clear', () => {
-    it('cancels callback', async () => {
+  describe("clear", () => {
+    it("cancels callback", async () => {
       const callback = jest.fn();
       const logger = { log: jest.fn() };
       const rt = new ResetTimer(callback, logger);
@@ -147,19 +147,16 @@ describe('ResetTimer', () => {
   });
 });
 
-describe('rotationHandler', () => {
-  it('calls dem callbacks', async () => {
-    jest.spyOn(Date, 'now').mockReturnValue(1000);
-    const hst = jest.fn(async () => { });
+describe("rotationHandler", () => {
+  it("calls dem callbacks", async () => {
+    jest.spyOn(Date, "now").mockReturnValue(1000);
+    const hst = jest.fn(async () => {});
     const timeoutTimer = { reset: jest.fn() };
     const warningTimer = { reset: jest.fn() };
 
-    const rotate = rotationHandler(
-      hst,
-      timeoutTimer,
-      warningTimer,
-      { fixedLengthSessionWarningTTL: '5s' }
-    );
+    const rotate = rotationHandler(hst, timeoutTimer, warningTimer, {
+      fixedLengthSessionWarningTTL: "5s",
+    });
     await rotate({ accessTokenExpiration: 10000, refreshTokenExpiration: 30000 });
 
     // calls handleSaveTokens callback

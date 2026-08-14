@@ -1,6 +1,6 @@
 const domainToPath = {
-  items: 'inventory',
-  instances: 'inventory',
+  items: "inventory",
+  instances: "inventory",
 };
 
 /**
@@ -13,5 +13,5 @@ const domainToPath = {
  * @param {string} domain string
  */
 export default function mapDomainToPath(domain) {
-  return (domainToPath[domain] ? domainToPath[domain] : domain);
+  return domainToPath[domain] ? domainToPath[domain] : domain;
 }

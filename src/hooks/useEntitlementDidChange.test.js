@@ -1,42 +1,35 @@
-import { act, renderHook, waitFor } from '@folio/jest-config-stripes/testing-library/react';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { act, renderHook, waitFor } from "@folio/jest-config-stripes/testing-library/react";
+import { QueryClient, QueryClientProvider } from "react-query";
 
-import useEntitlementDidChange from './useEntitlementDidChange';
-import useOkapiKy from '../useOkapiKy';
+import useEntitlementDidChange from "./useEntitlementDidChange";
+import useOkapiKy from "../useOkapiKy";
 
-const interfaceProviders = [
-];
+const interfaceProviders = [];
 
-jest.mock('../useOkapiKy');
-jest.mock('../components', () => ({
-  useNamespace: () => ([]),
+jest.mock("../useOkapiKy");
+jest.mock("../components", () => ({
+  useNamespace: () => [],
 }));
-jest.mock('../StripesContext', () => ({
+jest.mock("../StripesContext", () => ({
   useStripes: () => ({
     okapi: {
-      tenant: 't',
+      tenant: "t",
     },
     discovery: {
       interfaceProviders,
-    }
+    },
   }),
 }));
 
 const initialResponse = {
-  applicationDescriptors: [
-    { id: 'one' },
-    { id: 'two' },
-  ],
+  applicationDescriptors: [{ id: "one" }, { id: "two" }],
 };
 
 const changedResponse = {
-  applicationDescriptors: [
-    { id: 'one' },
-    { id: 'three' },
-  ],
+  applicationDescriptors: [{ id: "one" }, { id: "three" }],
 };
 
-describe('useEntitlementDidChange', () => {
+describe("useEntitlementDidChange", () => {
   let queryClient;
   let wrapper;
   let kyMock;
@@ -47,9 +40,7 @@ describe('useEntitlementDidChange', () => {
     useOkapiKy.mockReturnValue(kyMock);
     // eslint-disable-next-line react/prop-types
     wrapper = ({ children }) => (
-      <QueryClientProvider client={queryClient}>
-        {children}
-      </QueryClientProvider>
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
     );
   });
 
@@ -57,7 +48,7 @@ describe('useEntitlementDidChange', () => {
     queryClient.clear();
   });
 
-  it('returns false after the initial query', async () => {
+  it("returns false after the initial query", async () => {
     kyMock.mockImplementation(() => ({
       json: () => initialResponse,
     }));
@@ -65,31 +56,31 @@ describe('useEntitlementDidChange', () => {
     await waitFor(() => expect(result.current).toBe(false));
   });
 
-  it('returns false when entitlement data remains constant', async () => {
+  it("returns false when entitlement data remains constant", async () => {
     kyMock.mockImplementation(() => ({
       json: () => initialResponse,
     }));
     const { result } = renderHook(() => useEntitlementDidChange(), { wrapper });
     await waitFor(() => expect(result.current).toBe(false));
     await act(async () => {
-      await queryClient.refetchQueries(['EntitlementChangeWarning']);
+      await queryClient.refetchQueries(["EntitlementChangeWarning"]);
     });
     await waitFor(() => expect(result.current).toBe(false));
   });
 
-  it('returns true when entitlement data changes', async () => {
+  it("returns true when entitlement data changes", async () => {
     kyMock
       .mockImplementationOnce(() => ({
-        json: () => initialResponse
+        json: () => initialResponse,
       }))
       .mockImplementationOnce(() => ({
-        json: () => changedResponse
+        json: () => changedResponse,
       }));
 
     const { result } = renderHook(() => useEntitlementDidChange(), { wrapper });
     await waitFor(() => expect(result.current).toBe(false));
     await act(async () => {
-      await queryClient.refetchQueries(['EntitlementChangeWarning']);
+      await queryClient.refetchQueries(["EntitlementChangeWarning"]);
     });
     await waitFor(() => expect(result.current).toBe(true));
   });

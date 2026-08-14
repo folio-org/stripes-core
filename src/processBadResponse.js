@@ -1,7 +1,7 @@
-import { isObject } from 'lodash';
+import { isObject } from "lodash";
 
-import { defaultErrors } from './constants';
-import { setAuthError } from './okapiActions';
+import { defaultErrors } from "./constants";
+import { setAuthError } from "./okapiActions";
 
 const getLoginErrors = (payload) => {
   try {
@@ -14,7 +14,7 @@ const getLoginErrors = (payload) => {
 
       return errors || [defaultErrors.DEFAULT_LOGIN_CLIENT_ERROR];
     }
-  } catch  {
+  } catch {
     return [defaultErrors.DEFAULT_LOGIN_CLIENT_ERROR];
   }
 };
@@ -25,7 +25,7 @@ function getProcessedErrors(response, status, defaultClientError) {
       return [defaultClientError];
     case 422:
       return getLoginErrors(response);
-    case 404:  // Okapi's deployment of mod-users-bl hasn't completed
+    case 404: // Okapi's deployment of mod-users-bl hasn't completed
     case 500:
       return [defaultErrors.DEFAULT_LOGIN_SERVER_ERROR];
     default:
@@ -41,15 +41,14 @@ export default async function processBadResponse(dispatch, response, defaultClie
     const responseBody = await response.json();
     const responsePayload = responseBody.errorMessage || responseBody;
     actionPayload = getProcessedErrors(responsePayload, response.status, clientError);
-  } catch  {
+  } catch {
     actionPayload = [defaultErrors.DEFAULT_LOGIN_CLIENT_ERROR];
   }
 
-  if (typeof dispatch === 'function') {
+  if (typeof dispatch === "function") {
     dispatch(setAuthError(actionPayload));
     return undefined;
   } else {
     return actionPayload;
   }
 }
-

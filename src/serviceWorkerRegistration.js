@@ -1,7 +1,7 @@
 export const registerServiceWorker = async () => {};
 
 export const unregisterServiceWorker = async () => {
-  if ('serviceWorker' in navigator) {
+  if ("serviceWorker" in navigator) {
     navigator.serviceWorker.ready
       .then((reg) => {
         reg.unregister();

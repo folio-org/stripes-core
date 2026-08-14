@@ -1,1 +1,1 @@
-export { default } from './PasswordRequirementsList';
+export { default } from "./PasswordRequirementsList";

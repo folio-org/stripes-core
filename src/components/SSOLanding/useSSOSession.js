@@ -1,12 +1,12 @@
-import { useEffect, useState } from 'react';
-import { useDispatch, useStore } from 'react-redux';
-import { useLocation } from 'react-router-dom';
-import { useCookies } from 'react-cookie';
-import queryString from 'query-string';
+import { useEffect, useState } from "react";
+import { useDispatch, useStore } from "react-redux";
+import { useLocation } from "react-router-dom";
+import { useCookies } from "react-cookie";
+import queryString from "query-string";
 
-import { defaultErrors } from '../../constants';
-import { setAuthError } from '../../okapiActions';
-import { requestUserWithPerms } from '../../loginServices';
+import { defaultErrors } from "../../constants";
+import { setAuthError } from "../../okapiActions";
+import { requestUserWithPerms } from "../../loginServices";
 
 const getParams = (location) => {
   const search = location.search;
@@ -32,7 +32,7 @@ const useSSOSession = () => {
   const dispatch = useDispatch();
 
   const location = useLocation();
-  const [cookies] = useCookies(['ssoToken']);
+  const [cookies] = useCookies(["ssoToken"]);
 
   const params = getParams(location);
 
@@ -43,7 +43,7 @@ const useSSOSession = () => {
     requestUserWithPerms(store.getState().okapi, store, tenant, token)
       .then(() => {
         if (store.getState()?.okapi?.authFailure) {
-          return Promise.reject(new Error('SSO Failed'));
+          return Promise.reject(new Error("SSO Failed"));
         }
 
         return Promise.resolve();
@@ -52,12 +52,12 @@ const useSSOSession = () => {
         dispatch(setAuthError([defaultErrors.SSO_SESSION_FAILED_ERROR]));
         setIsFailed(true);
       });
-  /*
+    /*
     Dependencies are not required here
     as all information is provided before component is rendered (query params or cookies)
     and session set up should be called only once
   */
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return {

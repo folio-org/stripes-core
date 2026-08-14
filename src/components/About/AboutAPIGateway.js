@@ -1,11 +1,8 @@
-import _ from 'lodash';
-import { FormattedMessage } from 'react-intl';
+import _ from "lodash";
+import { FormattedMessage } from "react-intl";
 
-import {
-  Headline,
-  List,
-} from '@folio/stripes-components';
-import { useStripes } from '../../StripesContext';
+import { Headline, List } from "@folio/stripes-components";
+import { useStripes } from "../../StripesContext";
 
 /**
  * AboutAPIGateway
@@ -25,11 +22,23 @@ const AboutAPIGateway = () => {
       </Headline>
       <List
         listStyle="bullets"
-        itemFormatter={(item, i) => (<li key={i}>{item}</li>)}
+        itemFormatter={(item, i) => <li key={i}>{item}</li>}
         items={[
-          <FormattedMessage key="version" id="stripes-core.about.version" values={{ version: _.get(stripes, ['discovery', 'okapi']) || unknownMsg }} />,
-          <FormattedMessage key="forTenant" id="stripes-core.about.forTenant" values={{ tenant: _.get(stripes, ['okapi', 'tenant']) || unknownMsg }} />,
-          <FormattedMessage key="onUrl" id="stripes-core.about.onUrl" values={{ url: _.get(stripes, ['okapi', 'url']) || unknownMsg }} />
+          <FormattedMessage
+            key="version"
+            id="stripes-core.about.version"
+            values={{ version: _.get(stripes, ["discovery", "okapi"]) || unknownMsg }}
+          />,
+          <FormattedMessage
+            key="forTenant"
+            id="stripes-core.about.forTenant"
+            values={{ tenant: _.get(stripes, ["okapi", "tenant"]) || unknownMsg }}
+          />,
+          <FormattedMessage
+            key="onUrl"
+            id="stripes-core.about.onUrl"
+            values={{ url: _.get(stripes, ["okapi", "url"]) || unknownMsg }}
+          />,
         ]}
       />
     </>

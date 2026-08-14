@@ -1,51 +1,35 @@
-import React from 'react';
-import { FormattedMessage } from 'react-intl';
-import { withRouter } from 'react-router-dom';
-import PropTypes from 'prop-types';
+import React from "react";
+import { FormattedMessage } from "react-intl";
+import { withRouter } from "react-router-dom";
+import PropTypes from "prop-types";
 
-import {
-  Button,
-  Headline,
-} from '@folio/stripes-components';
+import { Button, Headline } from "@folio/stripes-components";
 
-import OrganizationLogo from '../../../OrganizationLogo';
+import OrganizationLogo from "../../../OrganizationLogo";
 
-import styles from './PasswordSuccessfullyChanged.css';
+import styles from "./PasswordSuccessfullyChanged.css";
 
 const PasswordSuccessfullyChanged = ({ history, stripes }) => {
-  const labelNamespace = 'stripes-core.label';
-  const buttonNamespace = 'stripes-core.button';
+  const labelNamespace = "stripes-core.label";
+  const buttonNamespace = "stripes-core.button";
 
   const handleRedirectClick = () => {
     // If using Eureka, go to base URL. Otherwise, if using Okapi then go to /login
     if (stripes.okapi.authnUrl) {
-      history.push('/');
+      history.push("/");
     } else {
-      history.push('/login');
+      history.push("/login");
     }
   };
 
   return (
-    <div
-      className={styles.wrap}
-      data-test-change-password-confirmation
-    >
+    <div className={styles.wrap} data-test-change-password-confirmation>
       <div className={styles.centered}>
         <OrganizationLogo />
-        <Headline
-          size="xx-large"
-          tag="h1"
-          data-test-h1
-        >
+        <Headline size="xx-large" tag="h1" data-test-h1>
           <FormattedMessage id={`${labelNamespace}.congratulations`} />
         </Headline>
-        <Headline
-          size="x-large"
-          tag="p"
-          weight="regular"
-          faded
-          data-test-message
-        >
+        <Headline size="x-large" tag="p" weight="regular" faded data-test-message>
           <FormattedMessage id={`${labelNamespace}.changed.password`} />
         </Headline>
         <div data-test-redirect>

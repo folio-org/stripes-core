@@ -1,1 +1,1 @@
-export { default } from './changePasswordErrorCodes';
+export { default } from "./changePasswordErrorCodes";

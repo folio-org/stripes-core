@@ -1,6 +1,6 @@
 // Gather actionNames from all registered modules for hot-key mapping
 
-import stripesComponents from '@folio/stripes-components/package';
+import stripesComponents from "@folio/stripes-components/package";
 
 function addKeys(moduleName, register, list) {
   if (list) {
@@ -23,7 +23,7 @@ export default function gatherActions(modules) {
     }
   }
 
-  addKeys('stripes-components', allActions, (stripesComponents.stripes || {}).actionNames);
+  addKeys("stripes-components", allActions, (stripesComponents.stripes || {}).actionNames);
 
   return Object.keys(allActions);
 }

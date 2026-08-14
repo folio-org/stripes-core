@@ -1,4 +1,4 @@
-import { OKAPI_REDUCER_ACTIONS } from './okapiReducer';
+import { OKAPI_REDUCER_ACTIONS } from "./okapiReducer";
 
 function setCurrentUser(currentUser) {
   return {
@@ -140,7 +140,7 @@ function updateCurrentUser(data) {
 function setOkapiTenant(payload) {
   return {
     type: OKAPI_REDUCER_ACTIONS.SET_OKAPI_TENANT,
-    payload
+    payload,
   };
 }
 
@@ -162,7 +162,7 @@ function addIcon(key, icon) {
   return {
     type: OKAPI_REDUCER_ACTIONS.ADD_ICON,
     key,
-    icon
+    icon,
   };
 }
 
@@ -190,5 +190,5 @@ export {
   setTranslations,
   toggleRtrModal,
   updateCurrentUser,
-  setOkapiTenant
+  setOkapiTenant,
 };

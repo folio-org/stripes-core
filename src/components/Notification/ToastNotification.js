@@ -1,15 +1,11 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
-import { Transition } from 'react-transition-group';
+import React from "react";
+import PropTypes from "prop-types";
+import classNames from "classnames";
+import { Transition } from "react-transition-group";
 
-import {
-  Button,
-  Icon,
-  Layout
-} from '@folio/stripes-components';
+import { Button, Icon, Layout } from "@folio/stripes-components";
 
-import css from './Toast.css';
+import css from "./Toast.css";
 
 const propTypes = {
   /*
@@ -44,8 +40,8 @@ const propTypes = {
 };
 
 const defaultProps = {
-  position: 'end bottom',
-  transition: 'slide',
+  position: "end bottom",
+  transition: "slide",
   timeout: 6000,
 };
 
@@ -65,7 +61,9 @@ class ToastNotification extends React.Component {
 
   componentDidMount() {
     if (this.props.timeout !== 0) {
-      this.timeout = window.setTimeout(() => { this.handleHide(); }, this.props.timeout);
+      this.timeout = window.setTimeout(() => {
+        this.handleHide();
+      }, this.props.timeout);
     }
   }
 
@@ -77,29 +75,29 @@ class ToastNotification extends React.Component {
     const { type } = this.props;
     return classNames(
       css.base,
-      { [`${css.error}`]: type === 'error' },
-      { [`${css.success}`]: type === 'success' },
+      { [`${css.error}`]: type === "error" },
+      { [`${css.success}`]: type === "success" },
     );
   }
 
   getTransitionClass() {
     const { position, transition } = this.props;
     return classNames(
-      { [`${css.startOutside}`]:
-        /start\b/.test(position) && transition === 'slide' },
-      { [`${css.endOutside}`]:
-        /end\b/.test(position) && transition === 'slide' || // eslint-disable-line no-mixed-operators
-        ((position === 'top' || position === 'bottom') && transition === 'slide') },
-      { [`${css.fade}`]: transition === 'fade' },
+      { [`${css.startOutside}`]: /start\b/.test(position) && transition === "slide" },
+      {
+        [`${css.endOutside}`]:
+          (/end\b/.test(position) && transition === "slide") || // eslint-disable-line no-mixed-operators
+          ((position === "top" || position === "bottom") && transition === "slide"),
+      },
+      { [`${css.fade}`]: transition === "fade" },
     );
   }
 
   getRootClass() {
     const { position } = this.props;
-    return classNames(
-      css.toastNotificationRoot,
-      { [`${css.alignStart}`]: /start\b/.test(position) },
-    );
+    return classNames(css.toastNotificationRoot, {
+      [`${css.alignStart}`]: /start\b/.test(position),
+    });
   }
 
   handleHide() {
@@ -113,11 +111,7 @@ class ToastNotification extends React.Component {
     const message = (
       <Layout className="flex full justified centerItems">
         {this.props.message}
-        <Button
-          ariaLabel="Dismiss this message"
-          buttonStyle="link"
-          onClick={this.handleHide}
-        >
+        <Button ariaLabel="Dismiss this message" buttonStyle="link" onClick={this.handleHide}>
           <Icon icon="times" />
         </Button>
       </Layout>
@@ -133,9 +127,7 @@ class ToastNotification extends React.Component {
           onExited={this.onExited}
           transitionAppear
         >
-          <div className={this.getDisplayClass()}>
-            {message}
-          </div>
+          <div className={this.getDisplayClass()}>{message}</div>
         </Transition>
       </div>
     );

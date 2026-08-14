@@ -1,14 +1,9 @@
 // This is analagous to useChunkedCQLFetch, but instead can do an _arbitrary_ transformation on the provided ids
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useState
-} from 'react';
-import { useQueries } from 'react-query';
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useQueries } from "react-query";
 
-import { chunk } from 'lodash';
-import useOkapiKy from '../useOkapiKy';
+import { chunk } from "lodash";
+import useOkapiKy from "../useOkapiKy";
 
 /* When fetching from a potentially large list of items,
  * make sure to chunk the request to avoid hitting limits.
@@ -61,18 +56,18 @@ const useChunkedIdTransformFetch = ({
     const queryArray = [];
     chunkedItems.forEach((chunkedItem, chunkedItemIndex) => {
       const query = chunkedQueryIdTransform(chunkedItem);
-      const queryKey = generateQueryKey ?
-        generateQueryKey({
-          CONCURRENT_REQUESTS,
-          chunkedItem,
-          chunkedItemIndex,
-          endpoint,
-          ids,
-          queryOptions,
-          STEP_SIZE,
-          tenantId,
-        }) :
-        ['stripes-core', endpoint, chunkedItem, tenantId];
+      const queryKey = generateQueryKey
+        ? generateQueryKey({
+            CONCURRENT_REQUESTS,
+            chunkedItem,
+            chunkedItemIndex,
+            endpoint,
+            ids,
+            queryOptions,
+            STEP_SIZE,
+            tenantId,
+          })
+        : ["stripes-core", endpoint, chunkedItem, tenantId];
       queryArray.push({
         queryKey,
         // !WARNING! This is likely not the place to make query parameter changes
@@ -82,12 +77,24 @@ const useChunkedIdTransformFetch = ({
         queryFn: () => ky.get(endpoint, { searchParams: query }).json(),
         // Only enable once the previous slice has all been fetched
         enabled: queryEnabled && chunkedItemIndex < CONCURRENT_REQUESTS,
-        ...queryOptions
+        ...queryOptions,
       });
     });
 
     return queryArray;
-  }, [chunkedItems, chunkedQueryIdTransform, CONCURRENT_REQUESTS, endpoint, generateQueryKey, ids, ky, queryEnabled, queryOptions, STEP_SIZE, tenantId]);
+  }, [
+    chunkedItems,
+    chunkedQueryIdTransform,
+    CONCURRENT_REQUESTS,
+    endpoint,
+    generateQueryKey,
+    ids,
+    ky,
+    queryEnabled,
+    queryOptions,
+    STEP_SIZE,
+    tenantId,
+  ]);
 
   const queryArray = getQueryArray();
 
@@ -101,12 +108,12 @@ const useChunkedIdTransformFetch = ({
       // and that all of our current chunk are not fetched and not loading
       if (
         i !== 0 &&
-        chunkedQuery[i - 1]?.every(pq => pq.isFetched === true) &&
-        q.every(req => req.isFetched === false) &&
-        q.every(req => req.isLoading === false)
+        chunkedQuery[i - 1]?.every((pq) => pq.isFetched === true) &&
+        q.every((req) => req.isFetched === false) &&
+        q.every((req) => req.isLoading === false)
       ) {
         // Trigger fetch for each request in the chunk
-        q.forEach(req => {
+        q.forEach((req) => {
           req.refetch();
         });
       }
@@ -116,20 +123,20 @@ const useChunkedIdTransformFetch = ({
   // Keep easy track of whether this hook is all loaded or not
   // (This slightly flattens the "isLoading/isFetched" distinction, but it's an ease of use prop)
   useEffect(() => {
-    const newLoading = ids?.length > 0 && (!itemQueries?.length || itemQueries?.some(uq => !uq.isFetched));
+    const newLoading =
+      ids?.length > 0 && (!itemQueries?.length || itemQueries?.some((uq) => !uq.isFetched));
 
     if (isLoading !== newLoading) {
       setIsLoading(newLoading);
     }
   }, [isLoading, itemQueries, ids?.length]);
 
-
   return {
     itemQueries,
     isLoading,
     // Offer all fetched orderLines in flattened array once ready
     items: isLoading ? [] : reduceFunction(itemQueries),
-    queryKeys: queryArray.map(q => q.queryKey)
+    queryKeys: queryArray.map((q) => q.queryKey),
   };
 };
 

@@ -1,12 +1,13 @@
 /* based around convergeance, this tests that an assertion passes over a period of time,
-*  rather than exiting on the first non-throw pass (as converge from @folio/stripes-testing does).
-*/
+ *  rather than exiting on the first non-throw pass (as converge from @folio/stripes-testing does).
+ */
 
 export default (trial) => {
   const duration = 200;
   return async () => {
     const startTime = performance.now();
-    while (true) { // eslint-disable-line no-constant-condition
+    while (true) {
+      // eslint-disable-line no-constant-condition
       // run the trial - if it throws over the duration, it will fail.
       trial();
       const diff = performance.now() - startTime;

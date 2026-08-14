@@ -1,40 +1,29 @@
-import React, {
-  useRef,
-  useEffect,
-  useMemo,
-  Suspense,
-} from 'react';
-import {
-  FormattedMessage,
-  useIntl,
-} from 'react-intl';
-import { useLocation } from 'react-router';
-import {
-  Switch,
-  Route,
-} from 'react-router-dom';
+import React, { useRef, useEffect, useMemo, Suspense } from "react";
+import { FormattedMessage, useIntl } from "react-intl";
+import { useLocation } from "react-router";
+import { Switch, Route } from "react-router-dom";
 
-import { connectFor } from '@folio/stripes-connect';
+import { connectFor } from "@folio/stripes-connect";
 import {
   LoadingView,
   NavList,
   NavListItem,
   NavListSection,
   Pane,
-  Paneset
-} from '@folio/stripes-components';
+  Paneset,
+} from "@folio/stripes-components";
 
-import About from '../About';
-import { StripesContext } from '../../StripesContext';
-import { useModules } from '../../ModulesContext';
-import { stripesShape } from '../../Stripes';
-import AppIcon from '../AppIcon';
-import { packageName } from '../../constants';
-import RouteErrorBoundary from '../RouteErrorBoundary';
-import { ModuleHierarchyProvider } from '../ModuleHierarchy';
-import ReleaseNotesLink, { RELEASE_NOTES_LINK_ATTRS } from '../ReleaseNotesLink';
+import About from "../About";
+import { StripesContext } from "../../StripesContext";
+import { useModules } from "../../ModulesContext";
+import { stripesShape } from "../../Stripes";
+import AppIcon from "../AppIcon";
+import { packageName } from "../../constants";
+import RouteErrorBoundary from "../RouteErrorBoundary";
+import { ModuleHierarchyProvider } from "../ModuleHierarchy";
+import ReleaseNotesLink, { RELEASE_NOTES_LINK_ATTRS } from "../ReleaseNotesLink";
 
-import css from './Settings.css';
+import css from "./Settings.css";
 
 const propTypes = {
   stripes: stripesShape.isRequired,
@@ -56,7 +45,11 @@ const Settings = ({ stripes }) => {
     const settingsModules = modules.settings || [];
 
     return settingsModules
-      .filter(x => stripes.hasPerm(`settings.${x.module.replace(packageName.PACKAGE_SCOPE_REGEX, '')}.enabled`))
+      .filter((x) =>
+        stripes.hasPerm(
+          `settings.${x.module.replace(packageName.PACKAGE_SCOPE_REGEX, "")}.enabled`,
+        ),
+      )
       .sort((x, y) => x.displayName.toLowerCase().localeCompare(y.displayName.toLowerCase()))
       .map((m) => {
         try {
@@ -73,47 +66,52 @@ const Settings = ({ stripes }) => {
       });
   }, [stripes, modules.settings]);
 
-  const navLinks = useMemo(() => connectedModules.map(({ module }) => {
-    return (
-      <NavListItem
-        key={module.route}
-        to={`/settings${module.route}`}
-      >
-        <AppIcon
-          alt={module.displayName}
-          app={module.module}
-          size="small"
-          iconClassName={css.appIcon}
-        >
-          {module.displayName}
-        </AppIcon>
-      </NavListItem>
-    );
-  }), [connectedModules]);
+  const navLinks = useMemo(
+    () =>
+      connectedModules.map(({ module }) => {
+        return (
+          <NavListItem key={module.route} to={`/settings${module.route}`}>
+            <AppIcon
+              alt={module.displayName}
+              app={module.module}
+              size="small"
+              iconClassName={css.appIcon}
+            >
+              {module.displayName}
+            </AppIcon>
+          </NavListItem>
+        );
+      }),
+    [connectedModules],
+  );
 
-  const routes = useMemo(() => connectedModules.map(({ module, Component, moduleStripes }) => {
-    const path = `/settings${module.route}`;
-    return (
-      <Route
-        path={path}
-        key={module.route}
-        render={(props2) => (
-          <RouteErrorBoundary escapeRoute={path} moduleName={module.displayName} isSettings>
-            <StripesContext.Provider value={moduleStripes}>
-              <ModuleHierarchyProvider module={module.module}>
-                <Component {...props2} stripes={moduleStripes} showSettings actAs="settings" />
-              </ModuleHierarchyProvider>
-              {props2.match.isExact ? <div className={css.panePlaceholder} /> : null}
-            </StripesContext.Provider>
-          </RouteErrorBoundary>
-        )}
-      />
-    );
-  }), [connectedModules]);
+  const routes = useMemo(
+    () =>
+      connectedModules.map(({ module, Component, moduleStripes }) => {
+        const path = `/settings${module.route}`;
+        return (
+          <Route
+            path={path}
+            key={module.route}
+            render={(props2) => (
+              <RouteErrorBoundary escapeRoute={path} moduleName={module.displayName} isSettings>
+                <StripesContext.Provider value={moduleStripes}>
+                  <ModuleHierarchyProvider module={module.module}>
+                    <Component {...props2} stripes={moduleStripes} showSettings actAs="settings" />
+                  </ModuleHierarchyProvider>
+                  {props2.match.isExact ? <div className={css.panePlaceholder} /> : null}
+                </StripesContext.Provider>
+              </RouteErrorBoundary>
+            )}
+          />
+        );
+      }),
+    [connectedModules],
+  );
 
   // To keep the top level parent menu item shown as active
   // when a child settings page is active
-  const activeLink = `/settings/${location.pathname.split('/')[2]}`;
+  const activeLink = `/settings/${location.pathname.split("/")[2]}`;
 
   return (
     <Suspense fallback={<LoadingView />}>
@@ -124,24 +122,24 @@ const Settings = ({ stripes }) => {
           paneTitleRef={paneTitleRef}
           id="settings-nav-pane"
         >
-          <NavList aria-label={intl.formatMessage({ id: 'stripes-core.settings' })}>
+          <NavList aria-label={intl.formatMessage({ id: "stripes-core.settings" })}>
             <NavListSection
               activeLink={activeLink}
-              label={intl.formatMessage({ id: 'stripes-core.settings' })}
+              label={intl.formatMessage({ id: "stripes-core.settings" })}
               className={css.navListSection}
             >
               {navLinks}
             </NavListSection>
           </NavList>
-          <NavList aria-label={intl.formatMessage({ id: 'stripes-core.settingSystemInfo' })}>
+          <NavList aria-label={intl.formatMessage({ id: "stripes-core.settingSystemInfo" })}>
             <NavListSection
-              label={intl.formatMessage({ id: 'stripes-core.settingSystemInfo' })}
+              label={intl.formatMessage({ id: "stripes-core.settingSystemInfo" })}
               activeLink={activeLink}
               className={css.navListSection}
             >
               <NavListItem {...RELEASE_NOTES_LINK_ATTRS}>
                 <ReleaseNotesLink>
-                  {intl.formatMessage({ id: 'stripes-core.releaseNotes.settings' })}
+                  {intl.formatMessage({ id: "stripes-core.releaseNotes.settings" })}
                 </ReleaseNotesLink>
               </NavListItem>
               <NavListItem to="/settings/about">
@@ -153,7 +151,13 @@ const Settings = ({ stripes }) => {
         <Switch>
           {routes}
           <Route path="/settings/about" component={() => <About stripes={stripes} />} key="about" />
-          <Route component={() => <div style={{ padding: '15px' }}><FormattedMessage id="stripes-core.settingChoose" /></div>} />
+          <Route
+            component={() => (
+              <div style={{ padding: "15px" }}>
+                <FormattedMessage id="stripes-core.settingChoose" />
+              </div>
+            )}
+          />
         </Switch>
       </Paneset>
     </Suspense>

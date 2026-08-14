@@ -1,11 +1,11 @@
-import PropTypes from 'prop-types';
-import { useStripes } from '../../StripesContext';
+import PropTypes from "prop-types";
+import { useStripes } from "../../StripesContext";
 
 const IfInterface = ({ children, name, version }) => {
   const stripes = useStripes();
   const hasInterface = stripes.hasInterface(name, version);
 
-  if (typeof children === 'function') {
+  if (typeof children === "function") {
     return children({ hasInterface });
   }
 

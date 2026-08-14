@@ -1,4 +1,4 @@
-import { isStorageEnabled, getOverrideConfig } from './App';
+import { isStorageEnabled, getOverrideConfig } from "./App";
 
 const storageMock = () => ({
   getItem: () => {
@@ -6,71 +6,71 @@ const storageMock = () => ({
   },
 });
 
-describe('isStorageEnabled', () => {
+describe("isStorageEnabled", () => {
   afterEach(() => {
     jest.restoreAllMocks();
   });
 
-  it('returns true when all storage options are enabled', () => {
+  it("returns true when all storage options are enabled", () => {
     expect(isStorageEnabled()).toBe(true);
   });
 
-  describe('returns false when any storage option is disabled', () => {
-    it('handles local storage', () => {
-      Object.defineProperty(window, 'localStorage', { value: storageMock });
+  describe("returns false when any storage option is disabled", () => {
+    it("handles local storage", () => {
+      Object.defineProperty(window, "localStorage", { value: storageMock });
       const isEnabled = isStorageEnabled();
       expect(isEnabled).toBe(false);
     });
-    it('handles session storage', () => {
-      Object.defineProperty(window, 'sessionStorage', { value: storageMock });
+    it("handles session storage", () => {
+      Object.defineProperty(window, "sessionStorage", { value: storageMock });
       const isEnabled = isStorageEnabled();
       expect(isEnabled).toBe(false);
     });
 
-    it('handles cookies', () => {
-      jest.spyOn(navigator, 'cookieEnabled', 'get').mockReturnValue(false);
+    it("handles cookies", () => {
+      jest.spyOn(navigator, "cookieEnabled", "get").mockReturnValue(false);
       const isEnabled = isStorageEnabled();
       expect(isEnabled).toBe(false);
     });
   });
 });
 
-const okapi = { url: 'https://okapi.example.com' };
-const config = { name: 'test' };
+const okapi = { url: "https://okapi.example.com" };
+const config = { name: "test" };
 const branding = {
   logo: {
-    src: './default.png',
-    alt: 'Default'
+    src: "./default.png",
+    alt: "Default",
   },
   favicon: {
-    src: './default-favicon.png',
-  }
+    src: "./default-favicon.png",
+  },
 };
 
-describe('getOverrideConfig', () => {
-  it('returns the correct config when StripesHub is present', () => {
+describe("getOverrideConfig", () => {
+  it("returns the correct config when StripesHub is present", () => {
     const stripesHub = {
       folioConfig: {
-        name: 'StripesHub',
-        gatewayUrl: 'https://stripes-hub.example.com',
-        authnUrl: 'https://authn.example.com',
+        name: "StripesHub",
+        gatewayUrl: "https://stripes-hub.example.com",
+        authnUrl: "https://authn.example.com",
       },
       brandingConfig: {
         logo: {
-          src: './logo.png',
-          alt: 'Opentown Libraries'
+          src: "./logo.png",
+          alt: "Opentown Libraries",
         },
         favicon: {
-          src: './favicon.png',
-        }
-      }
+          src: "./favicon.png",
+        },
+      },
     };
 
     const result = getOverrideConfig(okapi, config, branding, stripesHub);
 
-    expect(result.stripesOkapi.url).toBe('https://stripes-hub.example.com');
-    expect(result.stripesConfig.name).toBe('StripesHub');
-    expect(result.stripesBranding.logo.src).toBe('./logo.png');
+    expect(result.stripesOkapi.url).toBe("https://stripes-hub.example.com");
+    expect(result.stripesConfig.name).toBe("StripesHub");
+    expect(result.stripesBranding.logo.src).toBe("./logo.png");
 
     // Utitity should not pollute stripes config with values classic stripes stores in okapi config.
     expect(result.stripesConfig.discoveryUrl).toBeUndefined();
@@ -78,11 +78,11 @@ describe('getOverrideConfig', () => {
     expect(result.stripesConfig.authnUrl).toBeUndefined();
   });
 
-  it('returns the original config when StripesHub is not present', () => {
+  it("returns the original config when StripesHub is not present", () => {
     const result = getOverrideConfig(okapi, config, branding, null);
 
-    expect(result.stripesOkapi.url).toBe('https://okapi.example.com');
-    expect(result.stripesConfig.name).toBe('test');
-    expect(result.stripesBranding.logo.src).toBe('./default.png');
+    expect(result.stripesOkapi.url).toBe("https://okapi.example.com");
+    expect(result.stripesConfig.name).toBe("test");
+    expect(result.stripesBranding.logo.src).toBe("./default.png");
   });
 });

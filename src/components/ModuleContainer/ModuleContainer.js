@@ -1,6 +1,6 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import style from './ModuleContainer.css';
+import React from "react";
+import PropTypes from "prop-types";
+import style from "./ModuleContainer.css";
 
 const propTypes = {
   children: PropTypes.node.isRequired,
@@ -8,7 +8,9 @@ const propTypes = {
 
 function ModuleContainer(props) {
   return (
-    <main className={style.moduleContainer} id="ModuleContainer">{props.children}</main>
+    <main className={style.moduleContainer} id="ModuleContainer">
+      {props.children}
+    </main>
   );
 }
 

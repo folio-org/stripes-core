@@ -1,16 +1,16 @@
-import ReactDOM from 'react-dom';
-import { beforeEach } from 'mocha';
-import localforage from 'localforage';
+import ReactDOM from "react-dom";
+import { beforeEach } from "mocha";
+import localforage from "localforage";
 
-import { reset } from '@folio/stripes-connect';
-import { visit, location } from '@folio/stripes-testing/bigtest';
+import { reset } from "@folio/stripes-connect";
+import { visit, location } from "@folio/stripes-testing/bigtest";
 
 // load these styles for our tests
-import '@folio/stripes-components/lib/global.css';
+import "@folio/stripes-components/lib/global.css";
 
-import { setupAppForTesting } from './setupAppForTesting';
-import startMirage from '../network/start';
-import App from '../../../src/App';
+import { setupAppForTesting } from "./setupAppForTesting";
+import startMirage from "../network/start";
+import App from "../../../src/App";
 
 import {
   withModules,
@@ -19,7 +19,7 @@ import {
   clearConfig,
   setCookies,
   clearCookies,
-} from './stripes-config';
+} from "./stripes-config";
 
 const { assign } = Object;
 
@@ -36,28 +36,31 @@ export default function setupApplication({
   initialState = {},
   cookies = {},
 } = {}) {
-  const mountId = 'testing-root';
+  const mountId = "testing-root";
 
   beforeEach(async function () {
     // when auth is disabled, add a fake user to the store
     if (disableAuth) {
       initialState.okapi = {
         ...initialState.okapi,
-        currentUser: assign({
-          id: 'test',
-          username: 'testuser',
-          firstName: 'Test',
-          lastName: 'User',
-          email: 'user@folio.org',
-          addresses: [],
-          servicePoints: [],
-          tokenExpiration: {
-            accessTokenExpiration: new Date(Date.now() + (10 * 60 * 1000)).toISOString(),
-            refreshTokenExpiration: new Date(Date.now() + (10 * 60 * 1000)).toISOString(),
-            atExpires: Date.now() + (10 * 60 * 1000),
-            rtExpires: Date.now() + (10 * 60 * 1000),
+        currentUser: assign(
+          {
+            id: "test",
+            username: "testuser",
+            firstName: "Test",
+            lastName: "User",
+            email: "user@folio.org",
+            addresses: [],
+            servicePoints: [],
+            tokenExpiration: {
+              accessTokenExpiration: new Date(Date.now() + 10 * 60 * 1000).toISOString(),
+              refreshTokenExpiration: new Date(Date.now() + 10 * 60 * 1000).toISOString(),
+              atExpires: Date.now() + 10 * 60 * 1000,
+              rtExpires: Date.now() + 10 * 60 * 1000,
+            },
           },
-        }, currentUser),
+          currentUser,
+        ),
         currentPerms: permissions,
         isAuthenticated: true,
       };
@@ -78,7 +81,7 @@ export default function setupApplication({
 
       props: {
         initialState,
-        defaultTranslations: translations
+        defaultTranslations: translations,
       },
 
       setup: () => {
@@ -86,23 +89,23 @@ export default function setupApplication({
         this.server.logging = false;
 
         if (userLoggedIn) {
-          localforage.setItem('okapiSess', {
+          localforage.setItem("okapiSess", {
             isAuthenticated: true,
             user: initialState.okapi.currentUser,
             perms: initialState.okapi.currentPerms,
-            tenant: 'tenant',
+            tenant: "tenant",
             tokenExpiration: {
-              atExpires: Date.now() + (10 * 60 * 1000),
-              rtExpires: Date.now() + (10 * 60 * 1000),
-              accessTokenExpiration: new Date(Date.now() + (10 * 60 * 1000)).toISOString(),
-              refreshTokenExpiration: new Date(Date.now() + (10 * 60 * 1000)).toISOString(),
+              atExpires: Date.now() + 10 * 60 * 1000,
+              rtExpires: Date.now() + 10 * 60 * 1000,
+              accessTokenExpiration: new Date(Date.now() + 10 * 60 * 1000).toISOString(),
+              refreshTokenExpiration: new Date(Date.now() + 10 * 60 * 1000).toISOString(),
             },
           });
         }
 
         setCookies(cookies);
         withModules(modules);
-        withConfig({ logCategories: '', ...stripesConfig });
+        withConfig({ logCategories: "", ...stripesConfig });
       },
 
       teardown: () => {
@@ -113,7 +116,7 @@ export default function setupApplication({
         this.server?.shutdown();
         this.server = null;
         this.app = null;
-      }
+      },
     });
 
     // setup react validators

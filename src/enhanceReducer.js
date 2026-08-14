@@ -8,13 +8,13 @@ function enhanceReducer(reducer) {
     const { config, okapi, discovery } = state;
 
     switch (action.type) {
-      case 'RESET_STORE':
+      case "RESET_STORE":
         return {
           config,
           okapi,
           discovery,
         };
-      case 'DESTROY_STORE':
+      case "DESTROY_STORE":
         return {
           config: {},
           okapi: {},

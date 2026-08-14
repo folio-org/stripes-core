@@ -1,6 +1,6 @@
-import React from 'react';
-import { withStripes } from './StripesContext';
-import useOkapiKy from './useOkapiKy';
+import React from "react";
+import { withStripes } from "./StripesContext";
+import useOkapiKy from "./useOkapiKy";
 
 const withOkapiKy = (WrappedComponent) => {
   const HOC = (props) => {

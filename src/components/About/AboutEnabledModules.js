@@ -1,15 +1,15 @@
-import _ from 'lodash';
-import React from 'react';
-import PropTypes from 'prop-types';
-import { List } from '@folio/stripes-components';
+import _ from "lodash";
+import React from "react";
+import PropTypes from "prop-types";
+import { List } from "@folio/stripes-components";
 
-import stripesConnect from '../../stripesConnect';
+import stripesConnect from "../../stripesConnect";
 
 class AboutEnabledModules extends React.Component {
   static manifest = Object.freeze({
     enabledModules: {
-      type: 'okapi',
-      path: '_/proxy/tenants/!{tenantid}/modules',
+      type: "okapi",
+      path: "_/proxy/tenants/!{tenantid}/modules",
     },
   });
 
@@ -27,30 +27,24 @@ class AboutEnabledModules extends React.Component {
 
   render() {
     const em = {};
-    _.each(this.props.resources.enabledModules?.records || [], (m) => { em[m.id] = true; });
+    _.each(this.props.resources.enabledModules?.records || [], (m) => {
+      em[m.id] = true;
+    });
     const items = Object.keys(this.props.availableModules).sort((a, b) => a.localeCompare(b));
     const itemFormatter = (key) => {
       let style = {};
       if (!em[key]) {
-        style = { color: '#ccc' };
+        style = { color: "#ccc" };
       }
 
       return (
         <li key={key} style={style}>
-          {this.props.availableModules[key]}
-          {' '}
-          <tt>{`(${key})`}</tt>
+          {this.props.availableModules[key]} <tt>{`(${key})`}</tt>
         </li>
       );
     };
 
-    return (
-      <List
-        listStyle="bullets"
-        items={items}
-        itemFormatter={itemFormatter}
-      />
-    );
+    return <List listStyle="bullets" items={items} itemFormatter={itemFormatter} />;
   }
 }
 

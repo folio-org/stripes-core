@@ -1,20 +1,17 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { injectIntl } from 'react-intl';
+import React from "react";
+import PropTypes from "prop-types";
+import { injectIntl } from "react-intl";
 
-import { withStripes } from '../../StripesContext';
-import { getModules } from '../../entitlementService';
-import {
-  ModulesContext,
-  modulesInitialState,
-} from '../../ModulesContext';
+import { withStripes } from "../../StripesContext";
+import { getModules } from "../../entitlementService";
+import { ModulesContext, modulesInitialState } from "../../ModulesContext";
 
 class ModuleTranslator extends React.Component {
   static propTypes = {
     children: PropTypes.node,
     intl: PropTypes.object,
     stripes: PropTypes.object,
-  }
+  };
 
   constructor(props) {
     super(props);
@@ -32,7 +29,7 @@ class ModuleTranslator extends React.Component {
         this.setState({ modules });
       })
       .catch((error) => {
-        console.error('Failed to load modules:', error); // eslint-disable-line no-console
+        console.error("Failed to load modules:", error); // eslint-disable-line no-console
       });
   }
 
@@ -43,7 +40,7 @@ class ModuleTranslator extends React.Component {
       settings: (originalModules.settings || []).map(this.translateModule),
       handler: (originalModules.handler || []).map(this.translateModule),
     };
-  }
+  };
 
   translateModule = (module) => {
     const { formatMessage } = this.props.intl;
@@ -52,7 +49,7 @@ class ModuleTranslator extends React.Component {
       ...module,
       displayName: module.displayName ? formatMessage({ id: module.displayName }) : undefined,
     };
-  }
+  };
 
   render() {
     return (

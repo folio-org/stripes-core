@@ -1,18 +1,18 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { FormattedMessage } from 'react-intl';
-import { Headline, List } from '@folio/stripes-components';
+import React from "react";
+import PropTypes from "prop-types";
+import { FormattedMessage } from "react-intl";
+import { Headline, List } from "@folio/stripes-components";
 
-import AboutAPIGateway from './AboutAPIGateway';
-import AboutStripes from './AboutStripes';
-import AboutUIModuleDetails from './AboutUIModuleDetails';
-import AboutUIDependencies from './AboutUIDependencies';
+import AboutAPIGateway from "./AboutAPIGateway";
+import AboutStripes from "./AboutStripes";
+import AboutUIModuleDetails from "./AboutUIModuleDetails";
+import AboutUIDependencies from "./AboutUIDependencies";
 
-import { withModules } from '../Modules';
-import css from './About.css';
-import stripesCore from '../../../package';
-import { useStripes } from '../../StripesContext';
-import AboutEnabledModules from './AboutEnabledModules';
+import { withModules } from "../Modules";
+import css from "./About.css";
+import stripesCore from "../../../package";
+import { useStripes } from "../../StripesContext";
+import AboutEnabledModules from "./AboutEnabledModules";
 
 const AboutOkapi = ({ modules }) => {
   const stripes = useStripes();
@@ -24,9 +24,12 @@ const AboutOkapi = ({ modules }) => {
   const ni = Object.keys(dinterfaces).length;
 
   const unknownMsg = <FormattedMessage id="stripes-core.about.unknown" />;
-  const numModulesMsg = <FormattedMessage id="stripes-core.about.moduleCount" values={{ count: nm }} />;
-  const numInterfacesMsg = <FormattedMessage id="stripes-core.about.interfaceCount" values={{ count: ni }} />;
-
+  const numModulesMsg = (
+    <FormattedMessage id="stripes-core.about.moduleCount" values={{ count: nm }} />
+  );
+  const numInterfacesMsg = (
+    <FormattedMessage id="stripes-core.about.interfaceCount" values={{ count: ni }} />
+  );
 
   return (
     <>
@@ -39,7 +42,10 @@ const AboutOkapi = ({ modules }) => {
         <AboutAPIGateway />
 
         <Headline>{numModulesMsg}</Headline>
-        <AboutEnabledModules tenantid={stripes.okapi.tenant || unknownMsg} availableModules={dmodules} />
+        <AboutEnabledModules
+          tenantid={stripes.okapi.tenant || unknownMsg}
+          availableModules={dmodules}
+        />
         <Headline size="small">
           <FormattedMessage id="stripes-core.about.legendKey" />
         </Headline>
@@ -47,7 +53,7 @@ const AboutOkapi = ({ modules }) => {
           id="stripes-core.about.notEnabledModules"
           tagName="p"
           values={{
-            span: chunks => <span className={css.isEmptyMessage}>{chunks}</span>
+            span: (chunks) => <span className={css.isEmptyMessage}>{chunks}</span>,
           }}
         />
         <br />
@@ -55,11 +61,7 @@ const AboutOkapi = ({ modules }) => {
         <List
           listStyle="bullets"
           items={Object.keys(dinterfaces).sort((a, b) => a.localeCompare(b))}
-          itemFormatter={key => (
-            <li key={key}>
-              {`${key} ${dinterfaces[key]}`}
-            </li>
-          )}
+          itemFormatter={(key) => <li key={key}>{`${key} ${dinterfaces[key]}`}</li>}
         />
       </div>
 
@@ -73,8 +75,8 @@ const AboutOkapi = ({ modules }) => {
         <AboutUIModuleDetails
           module={{
             ...stripesCore.stripes,
-            module: 'stripes-core',
-            version: stripesCore.version
+            module: "stripes-core",
+            version: stripesCore.version,
           }}
           showDependencies
         />

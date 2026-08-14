@@ -1,1 +1,1 @@
-export { default } from './validateEmail';
+export { default } from "./validateEmail";

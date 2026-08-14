@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { withRouter, Redirect } from 'react-router';
-import queryString from 'query-string';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { withRouter, Redirect } from "react-router";
+import queryString from "query-string";
 
 class SSORedirect extends Component {
   getParams() {
@@ -12,14 +12,12 @@ class SSORedirect extends Component {
 
   getUrl() {
     const params = this.getParams();
-    return params?.fwd ?? '';
+    return params?.fwd ?? "";
   }
 
   render() {
     const forwardUrl = this.getUrl();
-    return (
-      <Redirect to={forwardUrl} />
-    );
+    return <Redirect to={forwardUrl} />;
   }
 }
 

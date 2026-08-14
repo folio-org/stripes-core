@@ -1,7 +1,7 @@
-import { handleEvent, invokeEventHandlers } from './handlerService';
+import { handleEvent, invokeEventHandlers } from "./handlerService";
 
-describe('handleEvent', () => {
-  it('does nothing in modules without handlers', () => {
+describe("handleEvent", () => {
+  it("does nothing in modules without handlers", () => {
     const e = {};
     const stripes = {};
     const module = {
@@ -12,15 +12,14 @@ describe('handleEvent', () => {
     expect(handleEvent(e, stripes, module, data)).toBeNull();
   });
 
-
-  it('calls module\'s handler when it is defined', () => {
+  it("calls module's handler when it is defined", () => {
     const e = {};
     const s = { logger: { log: jest.fn() } };
     const module = {
       getModule: () => ({
         eventHandler: (ee, ss, dd) => ({ event: ee, stripes: ss, data: dd }),
       }),
-      handlerName: 'eventHandler',
+      handlerName: "eventHandler",
     };
     const d = {};
 
@@ -29,11 +28,11 @@ describe('handleEvent', () => {
   });
 });
 
-describe('invokeEventHandlers', () => {
-  it('invokes event handler on modules that contain them', () => {
+describe("invokeEventHandlers", () => {
+  it("invokes event handler on modules that contain them", () => {
     const e = {};
     const s = {
-      connect: (component) => (component),
+      connect: (component) => component,
       logger: { log: jest.fn() },
     };
     const d = {};
@@ -43,7 +42,7 @@ describe('invokeEventHandlers', () => {
         getModule: () => ({
           eventHandler: (ee, ss, dd) => ({ event: ee, stripes: ss, data: dd }),
         }),
-        handlerName: 'eventHandler',
+        handlerName: "eventHandler",
       },
       {
         getModule: () => ({}),

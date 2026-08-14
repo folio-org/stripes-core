@@ -1,12 +1,9 @@
-import {
-  checkIfUserInCentralTenant,
-  checkIfUserInMemberTenant,
-} from './consortiaServices';
+import { checkIfUserInCentralTenant, checkIfUserInMemberTenant } from "./consortiaServices";
 
-describe('consortiaServices', () => {
-  describe('checkIfUserInCentralTenant', () => {
-    describe('when consortia interface is not available', () => {
-      it('should return false', () => {
+describe("consortiaServices", () => {
+  describe("checkIfUserInCentralTenant", () => {
+    describe("when consortia interface is not available", () => {
+      it("should return false", () => {
         const stripes = {
           hasInterface: jest.fn().mockReturnValue(false),
         };
@@ -15,17 +12,17 @@ describe('consortiaServices', () => {
       });
     });
 
-    describe('when tenant matches central tenant id', () => {
-      it('should return true', () => {
+    describe("when tenant matches central tenant id", () => {
+      it("should return true", () => {
         const stripes = {
           hasInterface: jest.fn().mockReturnValue(true),
           okapi: {
-            tenant: 'consortia',
+            tenant: "consortia",
           },
           user: {
             user: {
               consortium: {
-                centralTenantId: 'consortia',
+                centralTenantId: "consortia",
               },
             },
           },
@@ -35,17 +32,17 @@ describe('consortiaServices', () => {
       });
     });
 
-    describe('when tenant does not match central tenant id', () => {
-      it('should return false', () => {
+    describe("when tenant does not match central tenant id", () => {
+      it("should return false", () => {
         const stripes = {
           hasInterface: jest.fn().mockReturnValue(true),
           okapi: {
-            tenant: 'university',
+            tenant: "university",
           },
           user: {
             user: {
               consortium: {
-                centralTenantId: 'consortia',
+                centralTenantId: "consortia",
               },
             },
           },
@@ -56,9 +53,9 @@ describe('consortiaServices', () => {
     });
   });
 
-  describe('checkIfUserInMemberTenant', () => {
-    describe('when consortia interface is not available', () => {
-      it('should return false', () => {
+  describe("checkIfUserInMemberTenant", () => {
+    describe("when consortia interface is not available", () => {
+      it("should return false", () => {
         const stripes = {
           hasInterface: jest.fn().mockReturnValue(false),
         };
@@ -67,17 +64,17 @@ describe('consortiaServices', () => {
       });
     });
 
-    describe('when tenant matches central tenant id', () => {
-      it('should return false', () => {
+    describe("when tenant matches central tenant id", () => {
+      it("should return false", () => {
         const stripes = {
           hasInterface: jest.fn().mockReturnValue(true),
           okapi: {
-            tenant: 'consortia',
+            tenant: "consortia",
           },
           user: {
             user: {
               consortium: {
-                centralTenantId: 'consortia',
+                centralTenantId: "consortia",
               },
             },
           },
@@ -87,17 +84,17 @@ describe('consortiaServices', () => {
       });
     });
 
-    describe('when tenant does not match central tenant id', () => {
-      it('should return true', () => {
+    describe("when tenant does not match central tenant id", () => {
+      it("should return true", () => {
         const stripes = {
           hasInterface: jest.fn().mockReturnValue(true),
           okapi: {
-            tenant: 'university',
+            tenant: "university",
           },
           user: {
             user: {
               consortium: {
-                centralTenantId: 'consortia',
+                centralTenantId: "consortia",
               },
             },
           },

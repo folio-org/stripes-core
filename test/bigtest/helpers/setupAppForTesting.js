@@ -1,8 +1,8 @@
-import React from 'react';
-import { createRoot } from 'react-dom/client';
-import { createMemoryHistory as createHistory } from 'history';
+import React from "react";
+import { createRoot } from "react-dom/client";
+import { createMemoryHistory as createHistory } from "history";
 
-import { clearContext, setContext, getContext } from '@folio/stripes-testing/bigtest';
+import { clearContext, setContext, getContext } from "@folio/stripes-testing/bigtest";
 
 /**
  * Creates a div with an ID and appends it into the `$root` element.
@@ -15,8 +15,8 @@ import { clearContext, setContext, getContext } from '@folio/stripes-testing/big
 let $container = null;
 function insertNode() {
   if (!$container) {
-    $container = document.createElement('div');
-    $container.id = 'root';
+    $container = document.createElement("div");
+    $container.id = "root";
     document.body.appendChild($container);
   }
 
@@ -36,21 +36,21 @@ function insertNode() {
  * clearing the current context
  */
 export function cleanup() {
-  const {
-    node,
-    teardown = () => {}
-  } = getContext('mountOptions', false) || {};
+  const { node, teardown = () => {} } = getContext("mountOptions", false) || {};
 
   // maybe teardown
-  return Promise.resolve().then(teardown)
-  // unmount any existing node and clear the context
-    .then(() => {
-      if (node) {
-        node.unmount();
-      }
+  return (
+    Promise.resolve()
+      .then(teardown)
+      // unmount any existing node and clear the context
+      .then(() => {
+        if (node) {
+          node.unmount();
+        }
 
-      clearContext();
-    });
+        clearContext();
+      })
+  );
 }
 
 /**
@@ -62,7 +62,9 @@ export function cleanup() {
  * @returns
  */
 const TestComponent = ({ component, callback }) => (
-  <div style={{ width: '100vw', height: '100vh' }} ref={callback}>{component}</div>
+  <div style={{ width: "100vw", height: "100vh" }} ref={callback}>
+    {component}
+  </div>
 );
 
 /**
@@ -111,22 +113,27 @@ const TestComponent = ({ component, callback }) => (
  */
 function mount(Component, options = {}) {
   const {
-    mountId = 'testing-root',
+    mountId = "testing-root",
     rootElement = document.body,
     setup = () => {},
-    teardown
+    teardown,
   } = options;
 
   // maybe clean & setup
-  return cleanup().then(setup)
-  // create a fresh mount node for the component
-    .then(() => new Promise(resolve => {
-      const node = insertNode(mountId, rootElement);
-      setContext({ mountOptions: { node, teardown } });
-      node.render(<TestComponent component={<Component />} callback={resolve} />);
-    }));
+  return (
+    cleanup()
+      .then(setup)
+      // create a fresh mount node for the component
+      .then(
+        () =>
+          new Promise((resolve) => {
+            const node = insertNode(mountId, rootElement);
+            setContext({ mountOptions: { node, teardown } });
+            node.render(<TestComponent component={<Component />} callback={resolve} />);
+          }),
+      )
+  );
 }
-
 
 /**
  * Returns `true` or `false` if the component specifies a prop type in
@@ -214,24 +221,23 @@ export function setupAppForTesting(App, options = {}) {
   const props = Object.assign({}, originalProps);
 
   // create an in-memory history object
-  if (hasPropType(App, 'history') && !('history' in props)) {
+  if (hasPropType(App, "history") && !("history" in props)) {
     Object.assign(props, { history: createHistory() });
   }
 
   // save a reference to the app
   if (Object.getPrototypeOf(App) === React.Component) {
-    Object.assign(props, { ref: app => setContext({ app }) });
+    Object.assign(props, { ref: (app) => setContext({ app }) });
   }
 
   // mount with props & options
-  return mount(() => <App {...props} />, mountOptions)
-    .then(() => {
-      // save the history context after mounting
-      if ('history' in props) {
-        setContext({ history: props.history });
-      }
+  return mount(() => <App {...props} />, mountOptions).then(() => {
+    // save the history context after mounting
+    if ("history" in props) {
+      setContext({ history: props.history });
+    }
 
-      // always resolve with the app if possible
-      return getContext('app', false) || null;
-    });
+    // always resolve with the app if possible
+    return getContext("app", false) || null;
+  });
 }

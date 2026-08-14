@@ -1,14 +1,14 @@
-import { isEmpty } from 'lodash';
-import ms from 'ms';
+import { isEmpty } from "lodash";
+import ms from "ms";
 
-import { UnexpectedResourceError } from './Errors';
+import { UnexpectedResourceError } from "./Errors";
 import {
   RTR_ACTIVITY_EVENTS,
   RTR_FLS_WARNING_TTL,
   RTR_IDLE_MODAL_TTL,
   RTR_IDLE_SESSION_TTL,
   RTR_TIME_MARGIN_IN_MS,
-} from './constants';
+} from "./constants";
 
 /**
  * resourceMapper
@@ -24,7 +24,7 @@ import {
  * @throws UnexpectedResourceError if resource is not a string, URL, or Request
  */
 export const resourceMapper = (resource, fx) => {
-  if (typeof resource === 'string') {
+  if (typeof resource === "string") {
     return fx(resource);
   } else if (resource instanceof URL) {
     return fx(resource.origin);
@@ -135,7 +135,8 @@ export const rotationHandler = (handleSaveTokens, timeoutTimer, warningTimer, rt
     // calculate how many milliseconds will be remaining in the session when
     // this timer pings and pass that value through the timer so it can then be
     // passed through to the callback when the timer pings.
-    const timeRemaining = rtWarningInterval < 0 ? rtTimeoutInterval : ms(rtrConfig.fixedLengthSessionWarningTTL);
+    const timeRemaining =
+      rtWarningInterval < 0 ? rtTimeoutInterval : ms(rtrConfig.fixedLengthSessionWarningTTL);
     warningTimer.reset(rtWarningInterval, { timeRemaining });
   };
 };
@@ -161,7 +162,7 @@ export class ResetTimer {
   #logger = null;
 
   constructor(callback, logger) {
-    if (typeof callback !== 'function') throw new TypeError('Expected `callback` to be a function');
+    if (typeof callback !== "function") throw new TypeError("Expected `callback` to be a function");
 
     this.#callback = callback;
     if (logger) {
@@ -170,20 +171,20 @@ export class ResetTimer {
   }
 
   reset = (interval, args = {}) => {
-    const timeout = (typeof interval === 'string') ? ms(interval) : interval;
-    if (typeof timeout !== 'number') throw new TypeError('Expected `interval` to be a number');
+    const timeout = typeof interval === "string" ? ms(interval) : interval;
+    if (typeof timeout !== "number") throw new TypeError("Expected `interval` to be a number");
 
     if (this.#id) {
-      this.#logger?.log('rtrv', `ResetTimer: clearing ${this.#id}`);
+      this.#logger?.log("rtrv", `ResetTimer: clearing ${this.#id}`);
       clearTimeout(this.#id);
     }
 
     this.#id = setTimeout(() => this.#callback(args), timeout);
-    this.#logger?.log('rtrv', `ResetTimer: setting ${this.#id}`);
+    this.#logger?.log("rtrv", `ResetTimer: setting ${this.#id}`);
   };
 
   clear = () => {
-    this.#logger?.log('rtrv', `ResetTimer: clearing ${this.#id}`);
+    this.#logger?.log("rtrv", `ResetTimer: clearing ${this.#id}`);
     clearTimeout(this.#id);
     this.#id = null;
   };

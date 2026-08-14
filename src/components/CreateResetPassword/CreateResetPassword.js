@@ -1,33 +1,23 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 
-import { FormattedMessage } from 'react-intl';
-import {
-  Field,
-  Form,
-} from 'react-final-form';
+import { FormattedMessage } from "react-intl";
+import { Field, Form } from "react-final-form";
 
-import isEmpty from 'lodash/isEmpty';
+import isEmpty from "lodash/isEmpty";
 
-import {
-  TextField,
-  Button,
-  Row,
-  Col,
-  PasswordStrength,
-  Headline,
-} from '@folio/stripes-components';
+import { TextField, Button, Row, Col, PasswordStrength, Headline } from "@folio/stripes-components";
 
-import PasswordRequirementsList from './components/PasswordRequirementsList';
+import PasswordRequirementsList from "./components/PasswordRequirementsList";
 
-import { setAuthError } from '../../okapiActions';
-import { stripesShape } from '../../Stripes';
+import { setAuthError } from "../../okapiActions";
+import { stripesShape } from "../../Stripes";
 
-import OrganizationLogo from '../OrganizationLogo';
-import AuthErrorsContainer from '../AuthErrorsContainer';
-import FieldLabel from './components/FieldLabel';
+import OrganizationLogo from "../OrganizationLogo";
+import AuthErrorsContainer from "../AuthErrorsContainer";
+import FieldLabel from "./components/FieldLabel";
 
-import styles from './CreateResetPassword.css';
+import styles from "./CreateResetPassword.css";
 
 class CreateResetPassword extends Component {
   static propTypes = {
@@ -50,24 +40,24 @@ class CreateResetPassword extends Component {
       passwordMasked: true,
     };
     this.translationNamespaces = {
-      module: 'stripes-core',
-      smartComponents: 'stripes-smart-components',
-      page: 'stripes-core.createResetPassword',
-      errors: 'stripes-core.errors',
-      button: 'stripes-core.button',
+      module: "stripes-core",
+      smartComponents: "stripes-smart-components",
+      page: "stripes-core.createResetPassword",
+      errors: "stripes-core.errors",
+      button: "stripes-core.button",
     };
-    this.passwordMatchErrorCode = 'password.match.error';
+    this.passwordMatchErrorCode = "password.match.error";
     this.validators = {
       confirmPassword: this.confirmPasswordFieldValidation,
     };
     this.inputColProps = {
-      xs:12,
-      sm:8,
+      xs: 12,
+      sm: 8,
     };
     this.passwordMeterColProps = {
-      xs:12,
-      sm:4,
-      className:styles.passwordStrength,
+      xs: 12,
+      sm: 4,
+      className: styles.passwordStrength,
     };
   }
 
@@ -78,14 +68,15 @@ class CreateResetPassword extends Component {
   };
 
   confirmPasswordFieldValidation = (value, { newPassword, confirmPassword } = {}) => {
-    const confirmPasswordValid = !(newPassword && confirmPassword && newPassword !== confirmPassword);
+    const confirmPasswordValid = !(
+      newPassword &&
+      confirmPassword &&
+      newPassword !== confirmPassword
+    );
     const { clearAuthErrors } = this.props;
 
     if (!confirmPasswordValid) {
-      this.validationHandler(
-        [this.passwordMatchErrorCode],
-        this.translationNamespaces.errors,
-      );
+      this.validationHandler([this.passwordMatchErrorCode], this.translationNamespaces.errors);
     } else {
       clearAuthErrors();
     }
@@ -94,42 +85,38 @@ class CreateResetPassword extends Component {
   validationHandler = (errors, translationNamespace) => {
     const {
       stripes: {
-        store: {
-          dispatch
-        }
-      }
+        store: { dispatch },
+      },
     } = this.props;
 
-    dispatch(setAuthError(errors.map((error) => {
-      return {
-        code: error,
-        translationNamespace,
-      };
-    })));
+    dispatch(
+      setAuthError(
+        errors.map((error) => {
+          return {
+            code: error,
+            translationNamespace,
+          };
+        }),
+      ),
+    );
   };
 
   render() {
-    const {
-      submitting,
-      onSubmit,
-      onPasswordInputFocus,
-      submitIsFailed,
-      stripes,
-    } = this.props;
+    const { submitting, onSubmit, onPasswordInputFocus, submitIsFailed, stripes } = this.props;
 
     const errors = stripes.okapi.authFailure;
     const { passwordMasked } = this.state;
     const submissionStatus = submitting || submitIsFailed;
-    const passwordType = passwordMasked ? 'password' : 'text';
-    const buttonLabelId = `${this.translationNamespaces.module}.${submitting ? 'settingPassword' : 'setPassword'}`;
-    const passwordToggleLabelId = `${this.translationNamespaces.button}.${passwordMasked ? 'show' : 'hide'}Password`;
+    const passwordType = passwordMasked ? "password" : "text";
+    const buttonLabelId = `${this.translationNamespaces.module}.${submitting ? "settingPassword" : "setPassword"}`;
+    const passwordToggleLabelId = `${this.translationNamespaces.button}.${passwordMasked ? "show" : "hide"}Password`;
 
-    const isButtonDisabled = getState => {
+    const isButtonDisabled = (getState) => {
       const { newPassword, confirmPassword } = getState().values;
       return !isEmpty(errors) || submissionStatus || !(newPassword && confirmPassword);
     };
 
-    const getPasswordValue = getState => {
+    const getPasswordValue = (getState) => {
       const { newPassword } = getState().values;
 
       return newPassword;
@@ -139,24 +126,13 @@ class CreateResetPassword extends Component {
       <div className={styles.wrapper}>
         <div className={styles.container}>
           <Row center="xs">
-            <Col
-              xs={12}
-              sm={6}
-            >
+            <Col xs={12} sm={6}>
               <OrganizationLogo />
             </Col>
           </Row>
           <Row center="xs">
-            <Col
-              xs={12}
-              sm={6}
-            >
-              <Headline
-                margin="none"
-                size="xx-large"
-                tag="h1"
-                data-test-h1
-              >
+            <Col xs={12} sm={6}>
+              <Headline margin="none" size="xx-large" tag="h1" data-test-h1>
                 <FormattedMessage id={`${this.translationNamespaces.page}.header`} />
               </Headline>
             </Col>
@@ -170,30 +146,18 @@ class CreateResetPassword extends Component {
                 pristine: true,
               }}
             >
-              { ({ handleSubmit, form: { getState } }) => (
-                <form
-                  className={styles.form}
-                  onSubmit={handleSubmit}
-                >
+              {({ handleSubmit, form: { getState } }) => (
+                <form className={styles.form} onSubmit={handleSubmit}>
                   <div data-test-new-password-field>
                     <Row center="xs">
-                      <Col
-                        xs={12}
-                        sm={6}
-                      >
+                      <Col xs={12} sm={6}>
                         <FieldLabel htmlFor="new-password">
                           <FormattedMessage id={`${this.translationNamespaces.page}.newPassword`} />
                         </FieldLabel>
                       </Col>
                     </Row>
-                    <Row
-                      center="xs"
-                      end="sm"
-                    >
-                      <Col
-                        xs={12}
-                        sm={9}
-                      >
+                    <Row center="xs" end="sm">
+                      <Col xs={12} sm={9}>
                         <Field
                           id="new-password"
                           name="newPassword"
@@ -213,36 +177,23 @@ class CreateResetPassword extends Component {
                       </Col>
                     </Row>
                     <Row center="xs">
-                      <Col
-                        xs={12}
-                        sm={6}
-                      >
-                        <PasswordRequirementsList
-                          passwordValue={getPasswordValue(getState)}
-                        />
+                      <Col xs={12} sm={6}>
+                        <PasswordRequirementsList passwordValue={getPasswordValue(getState)} />
                       </Col>
                     </Row>
                   </div>
                   <div data-test-confirm-password-field>
                     <Row center="xs">
-                      <Col
-                        xs={12}
-                        sm={6}
-                      >
+                      <Col xs={12} sm={6}>
                         <FieldLabel htmlFor="confirm-password">
-                          <FormattedMessage id={`${this.translationNamespaces.page}.confirmPassword`} />
+                          <FormattedMessage
+                            id={`${this.translationNamespaces.page}.confirmPassword`}
+                          />
                         </FieldLabel>
                       </Col>
                     </Row>
-                    <Row
-                      end="sm"
-                      center="xs"
-                      bottom="xs"
-                    >
-                      <Col
-                        xs={12}
-                        sm={6}
-                      >
+                    <Row end="sm" center="xs" bottom="xs">
+                      <Col xs={12} sm={6}>
                         <div className={styles.formGroup}>
                           <Field
                             id="confirm-password"
@@ -259,10 +210,7 @@ class CreateResetPassword extends Component {
                           />
                         </div>
                       </Col>
-                      <Col
-                        sm={3}
-                        xs={12}
-                      >
+                      <Col sm={3} xs={12}>
                         <div
                           data-test-change-password-toggle-mask-btn
                           className={styles.toggleButtonWrapper}
@@ -279,14 +227,8 @@ class CreateResetPassword extends Component {
                     </Row>
                   </div>
                   <Row center="xs">
-                    <Col
-                      xs={12}
-                      sm={6}
-                    >
-                      <div
-                        className={styles.formGroup}
-                        data-test-submit
-                      >
+                    <Col xs={12} sm={6}>
+                      <div className={styles.formGroup} data-test-submit>
                         <Button
                           buttonStyle="primary"
                           id="clickable-login"
@@ -302,10 +244,7 @@ class CreateResetPassword extends Component {
                     </Col>
                   </Row>
                   <Row center="xs">
-                    <Col
-                      xs={12}
-                      sm={6}
-                    >
+                    <Col xs={12} sm={6}>
                       <div className={styles.authErrorsWrapper}>
                         <AuthErrorsContainer errors={errors} />
                       </div>
@@ -322,4 +261,3 @@ class CreateResetPassword extends Component {
 }
 
 export default CreateResetPassword;
-

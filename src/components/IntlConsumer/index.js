@@ -1,1 +1,1 @@
-export { default } from './IntlConsumer';
+export { default } from "./IntlConsumer";

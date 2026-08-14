@@ -1,15 +1,8 @@
-import {
-  combineEpics,
-  createEpicMiddleware,
-  ofType,
-} from 'redux-observable';
-import { BehaviorSubject } from 'rxjs';
-import {
-  mergeMap,
-  takeUntil,
-} from 'rxjs/operators';
+import { combineEpics, createEpicMiddleware, ofType } from "redux-observable";
+import { BehaviorSubject } from "rxjs";
+import { mergeMap, takeUntil } from "rxjs/operators";
 
-import { actionTypes } from './mainActions';
+import { actionTypes } from "./mainActions";
 
 //
 // here be dragons, maybe. or if not dragons, something that is
@@ -24,10 +17,8 @@ export default function configureEpics(...initialEpics) {
   const epic$ = new BehaviorSubject(combineEpics(...initialEpics));
   const rootEpic = (action$, store) => {
     return epic$.pipe(
-      mergeMap(epic => epic(action$, store)),
-      takeUntil(action$.pipe(
-        ofType(actionTypes.DESTROY_STORE)
-      )),
+      mergeMap((epic) => epic(action$, store)),
+      takeUntil(action$.pipe(ofType(actionTypes.DESTROY_STORE))),
     );
   };
 
@@ -35,7 +26,7 @@ export default function configureEpics(...initialEpics) {
     middleware,
     rootEpic,
     add: (...epics) => {
-      epics.forEach(epic => epic$.next(epic));
+      epics.forEach((epic) => epic$.next(epic));
     },
   };
 }

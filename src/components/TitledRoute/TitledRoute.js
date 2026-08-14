@@ -1,11 +1,11 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { injectIntl } from 'react-intl';
-import { Route } from 'react-router-dom';
-import TitleManager from '../TitleManager';
-import RouteErrorBoundary from '../RouteErrorBoundary';
+import React from "react";
+import PropTypes from "prop-types";
+import { injectIntl } from "react-intl";
+import { Route } from "react-router-dom";
+import TitleManager from "../TitleManager";
+import RouteErrorBoundary from "../RouteErrorBoundary";
 
-import { withStripes } from '../../StripesContext';
+import { withStripes } from "../../StripesContext";
 
 class TitledRoute extends React.Component {
   static propTypes = {
@@ -14,26 +14,20 @@ class TitledRoute extends React.Component {
     intl: PropTypes.shape({
       formatMessage: PropTypes.func,
     }),
-    name: PropTypes.string
+    name: PropTypes.string,
   };
 
   render() {
-    const {
-      name,
-      component,
-      computedMatch,
-      intl,
-      ...rest
-    } = this.props;
+    const { name, component, computedMatch, intl, ...rest } = this.props;
 
     const componentWithExtraProps = computedMatch
       ? {
-        ...component,
-        props: {
-          ...component.props,
-          match: computedMatch,
+          ...component,
+          props: {
+            ...component.props,
+            match: computedMatch,
+          },
         }
-      }
       : component;
 
     return (
@@ -41,7 +35,9 @@ class TitledRoute extends React.Component {
         {...rest}
         render={() => (
           <RouteErrorBoundary escapeRoute="/">
-            <TitleManager page={intl.formatMessage({ id: `stripes-core.title.${name}`, defaultMessage: name })} />
+            <TitleManager
+              page={intl.formatMessage({ id: `stripes-core.title.${name}`, defaultMessage: name })}
+            />
             {componentWithExtraProps}
           </RouteErrorBoundary>
         )}

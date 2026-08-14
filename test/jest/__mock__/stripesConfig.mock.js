@@ -1,5 +1,6 @@
-jest.mock('stripes-config', () => (
-  {
+jest.mock(
+  "stripes-config",
+  () => ({
     branding: {
       style: {},
     },
@@ -7,11 +8,11 @@ jest.mock('stripes-config', () => (
     metadata: {},
     modules: [],
     okapi: {
-      tenant: 'okapiTenant',
-      token: 'okapiToken',
-      url: 'okapiUrl',
+      tenant: "okapiTenant",
+      token: "okapiToken",
+      url: "okapiUrl",
     },
     translations: [],
-  }
-),
-{ virtual: true });
+  }),
+  { virtual: true },
+);

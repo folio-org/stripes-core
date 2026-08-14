@@ -19,11 +19,13 @@ export function handleEvent(event, stripes, handler, data) {
   // but doesn't actually define a corresponding method. whoops!
   if (!eventHander) {
     // eslint-disable-next-line no-console
-    console.warn(`${handler.module} does not provide the event handler ${handler.handlerName} it declares in its package.json`);
+    console.warn(
+      `${handler.module} does not provide the event handler ${handler.handlerName} it declares in its package.json`,
+    );
     return null;
   }
 
-  stripes.logger.log('event', `handling ${event} in ${handler.module}...`);
+  stripes.logger.log("event", `handling ${event} in ${handler.module}...`);
 
   // invoke the event handler
   return eventHander(event, stripes, data);

@@ -1,9 +1,9 @@
-import jwtDecode from 'jwt-decode';
+import jwtDecode from "jwt-decode";
 
-const parseJWT = token => {
+const parseJWT = (token) => {
   try {
     return jwtDecode(token);
-  } catch  {
+  } catch {
     return null;
   }
 };

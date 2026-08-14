@@ -24,23 +24,17 @@
  *
  */
 
-import { RTR_LOCK_KEY, rotateAndReplay } from './rotateAndReplay';
-import { getTokenExpiry } from '../../loginServices';
+import { RTR_LOCK_KEY, rotateAndReplay } from "./rotateAndReplay";
+import { getTokenExpiry } from "../../loginServices";
 
-import {
-  isFolioApiRequest,
-} from './token-util';
-import {
-  RTRError,
-} from './Errors';
-import {
-  RTR_ERROR_EVENT,
-} from './constants';
-import FXHR from './FXHR';
+import { isFolioApiRequest } from "./token-util";
+import { RTRError } from "./Errors";
+import { RTR_ERROR_EVENT } from "./constants";
+import FXHR from "./FXHR";
 
 const FOLIO_FETCH_OPTIONS = {
-  credentials: 'include',
-  mode: 'cors',
+  credentials: "include",
+  mode: "cors",
 };
 
 export class FFetch {
@@ -53,10 +47,10 @@ export class FFetch {
 
   destroy = () => {
     // restore replaced globals.
-    this.logger?.log?.('rtr', 'cleaning up after ffetch');
+    this.logger?.log?.("rtr", "cleaning up after ffetch");
     this.restoreFetch();
     this.restoreXMLHttpRequest();
-  }
+  };
 
   /**
    * save a reference to fetch, and then reassign the global :scream:
@@ -127,15 +121,16 @@ export class FFetch {
         const cr = response.clone();
         const text = await cr.text();
         return (
-          (response.status === 400 && text.startsWith('Token missing, access requires permission')) ||
-          (response.status === 404 && response.url?.includes('/users-keycloak/_self')) ||
-          (response.status === 404 && response.url?.includes('/bl-users/_self')) ||
-          (response.status === 422 && response.url?.includes('/authn/logout'))
+          (response.status === 400 &&
+            text.startsWith("Token missing, access requires permission")) ||
+          (response.status === 404 && response.url?.includes("/users-keycloak/_self")) ||
+          (response.status === 404 && response.url?.includes("/bl-users/_self")) ||
+          (response.status === 422 && response.url?.includes("/authn/logout"))
         );
       }
 
       const expiry = await getTokenExpiry();
-      return (Date.now() > (expiry?.atExpires || 0));
+      return Date.now() > (expiry?.atExpires || 0);
     },
 
     // shouldPreRotate
@@ -147,22 +142,25 @@ export class FFetch {
     // we can skip the first fetch, jumping straight to rotation.
     shouldPreRotate: async () => {
       const expiry = await getTokenExpiry();
-      return (Date.now() > (expiry?.atExpires || 0));
+      return Date.now() > (expiry?.atExpires || 0);
     },
 
     // rotate
     // handle rotation
     rotate: async () => {
       try {
-        const res = await this.nativeFetch.apply(globalThis, [`${this.okapi.url}/authn/refresh`, {
-          headers: {
-            'content-type': 'application/json',
-            'x-okapi-tenant': this.okapi.tenant,
+        const res = await this.nativeFetch.apply(globalThis, [
+          `${this.okapi.url}/authn/refresh`,
+          {
+            headers: {
+              "content-type": "application/json",
+              "x-okapi-tenant": this.okapi.tenant,
+            },
+            method: "POST",
+            credentials: "include",
+            mode: "cors",
           },
-          method: 'POST',
-          credentials: 'include',
-          mode: 'cors',
-        }]);
+        ]);
 
         if (res.ok) {
           const json = await res.json();
@@ -173,13 +171,15 @@ export class FFetch {
             };
           }
 
-          throw new RTRError('accessTokenExpiration and/or refreshTokenExpiration were not available');
+          throw new RTRError(
+            "accessTokenExpiration and/or refreshTokenExpiration were not available",
+          );
         }
 
-        throw new RTRError('Rotation response was not ok');
+        throw new RTRError("Rotation response was not ok");
       } catch (err) {
         console.error(err); // eslint-disable-line no-console
-        throw new RTRError('Rotation failure!', { cause: err });
+        throw new RTRError("Rotation failure!", { cause: err });
       }
     },
 
@@ -190,7 +190,7 @@ export class FFetch {
         await this.onRotate(newTokens);
       } catch (err) {
         console.error(err); // eslint-disable-line no-console
-        throw new RTRError('Rotation failure; could not save!', { cause: err });
+        throw new RTRError("Rotation failure; could not save!", { cause: err });
       }
     },
 
@@ -198,7 +198,7 @@ export class FFetch {
     // 😱 what to do, what to do? log the error, emit RTR_ERROR_EVENT, which
     // has a listener in SessionEventContainer that will terminate the session.
     onFailure: async (error) => {
-      console.error('Session expired', error); // eslint-disable-line no-console
+      console.error("Session expired", error); // eslint-disable-line no-console
       globalThis.dispatchEvent(new Event(RTR_ERROR_EVENT));
     },
   };
@@ -224,7 +224,6 @@ export class FFetch {
       // triggers rotation and it needs to be replayed.
       const reusableResource = resource instanceof Request ? resource.clone() : resource;
 
-
       // first check and see if the token metadata we have is expired or not.
       // If it is expired, we'll just skip to rotateAndReplay instead of trying the request and inviting
       // handfuls of 401 responses. In case our meta-expiry is out of sync, we'll still catch the problem in an
@@ -235,8 +234,11 @@ export class FFetch {
       if (Date.now() < expiry?.atExpires || options?.rtrIgnore) {
         // readers/writer lock pattern: don't fetch while rotation is in-progress
         // https://developer.mozilla.org/en-US/docs/Web/API/LockManager/request
-        response = await navigator.locks.request(RTR_LOCK_KEY, { mode: 'shared' }, async () => {
-          const fr = await this.nativeFetch.apply(globalThis, [resource, options && { ...options, ...FOLIO_FETCH_OPTIONS }]);
+        response = await navigator.locks.request(RTR_LOCK_KEY, { mode: "shared" }, async () => {
+          const fr = await this.nativeFetch.apply(globalThis, [
+            resource,
+            options && { ...options, ...FOLIO_FETCH_OPTIONS },
+          ]);
           return fr;
         });
         if (options?.rtrIgnore) {
@@ -248,7 +250,7 @@ export class FFetch {
         response = await rotateAndReplay(
           this.nativeFetch,
           { ...this.rotationConfig, logger: this.logger },
-          { response, resource: reusableResource, options }
+          { response, resource: reusableResource, options },
         );
       }
 

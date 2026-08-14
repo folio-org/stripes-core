@@ -1,15 +1,12 @@
-import {
-  render,
-  screen,
-} from '@folio/jest-config-stripes/testing-library/react';
+import { render, screen } from "@folio/jest-config-stripes/testing-library/react";
 
-import AboutModules from './AboutModules';
+import AboutModules from "./AboutModules";
 
-describe('AboutModules', () => {
-  it('displays application version details', async () => {
+describe("AboutModules", () => {
+  it("displays application version details", async () => {
     const list = [
-      { name: 'Abigail', interfaces: [{ name: 'iAnnabeth' }, { name: 'iAlice' }] },
-      { name: 'Betsy', interfaces: [{ name: 'iBelle' }, { name: 'iBrea' }] },
+      { name: "Abigail", interfaces: [{ name: "iAnnabeth" }, { name: "iAlice" }] },
+      { name: "Betsy", interfaces: [{ name: "iBelle" }, { name: "iBrea" }] },
     ];
 
     render(<AboutModules list={list} />);

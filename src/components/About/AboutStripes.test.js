@@ -1,17 +1,14 @@
-import {
-  render,
-  screen,
-} from '@folio/jest-config-stripes/testing-library/react';
+import { render, screen } from "@folio/jest-config-stripes/testing-library/react";
 
-import AboutStripes from './AboutStripes';
+import AboutStripes from "./AboutStripes";
 
-jest.mock('@folio/stripes-connect/package', () => ({ version: '1.2.3' }));
-jest.mock('@folio/stripes-components/package', () => ({ version: '4.5.6' }));
-jest.mock('@folio/stripes-logger/package', () => ({ version: '7.8.9' }));
-jest.mock('../../../package', () => ({ version: '10.11.12' }));
+jest.mock("@folio/stripes-connect/package", () => ({ version: "1.2.3" }));
+jest.mock("@folio/stripes-components/package", () => ({ version: "4.5.6" }));
+jest.mock("@folio/stripes-logger/package", () => ({ version: "7.8.9" }));
+jest.mock("../../../package", () => ({ version: "10.11.12" }));
 
-describe('AboutStripes', () => {
-  it('displays stripes-* version details', async () => {
+describe("AboutStripes", () => {
+  it("displays stripes-* version details", async () => {
     render(<AboutStripes />);
 
     expect(screen.getByText(/about.userInterface/)).toBeInTheDocument();
@@ -23,4 +20,3 @@ describe('AboutStripes', () => {
     expect(screen.getByText(/stripes-logger 7.8.9/)).toBeInTheDocument();
   });
 });
-

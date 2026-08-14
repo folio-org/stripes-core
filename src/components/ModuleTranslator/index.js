@@ -1,1 +1,1 @@
-export { default } from './ModuleTranslator';
+export { default } from "./ModuleTranslator";

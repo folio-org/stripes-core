@@ -1,1 +1,1 @@
-export { default } from './RouteErrorBoundary';
+export { default } from "./RouteErrorBoundary";

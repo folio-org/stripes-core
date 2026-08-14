@@ -24,8 +24,12 @@ export const buildResources = ({
     ...otherResources,
   };
 
-  Object.defineProperty(resources.query, 'sort', { get: () => new URLSearchParams(window.location.search).get('sort') || '' });
-  Object.defineProperty(resources.query, 'query', { get: () => new URLSearchParams(window.location.search).get('query') || '' });
+  Object.defineProperty(resources.query, "sort", {
+    get: () => new URLSearchParams(window.location.search).get("sort") || "",
+  });
+  Object.defineProperty(resources.query, "query", {
+    get: () => new URLSearchParams(window.location.search).get("query") || "",
+  });
   return resources;
 };
 

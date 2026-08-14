@@ -1,9 +1,10 @@
 # App Context Menu
+
 FOLIO UI modules can populate a module-specific context menu by using the provided `<AppContextMenu>` component.
 
 ```
 
-/* - index.js 
+/* - index.js
 Ideally the AppContextMenu component is placed at the highest level within a module, so that the dropdown will render outside of any routing that's taking place.
 */
 import { AppContextMenu } from '@folio/stripes/core';

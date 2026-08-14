@@ -1,28 +1,28 @@
 export const OKAPI_REDUCER_ACTIONS = {
-  ADD_ICON: 'ADD_ICON',
-  CHECK_SSO: 'CHECK_SSO',
-  CLEAR_CURRENT_USER: 'CLEAR_CURRENT_USER',
-  CLEAR_OKAPI_TOKEN: 'CLEAR_OKAPI_TOKEN',
-  OKAPI_READY: 'OKAPI_READY',
-  SERVER_DOWN: 'SERVER_DOWN',
-  SET_AUTH_FAILURE: 'SET_AUTH_FAILURE',
-  SET_BINDINGS: 'SET_BINDINGS',
-  SET_CURRENCY: 'SET_CURRENCY',
-  SET_CURRENT_PERMS: 'SET_CURRENT_PERMS',
-  SET_CURRENT_USER: 'SET_CURRENT_USER',
-  SET_IS_AUTHENTICATED: 'SET_IS_AUTHENTICATED',
-  SET_LOCALE: 'SET_LOCALE',
-  SET_LOGIN_DATA: 'SET_LOGIN_DATA',
-  SET_OKAPI_TENANT: 'SET_OKAPI_TENANT',
-  SET_OKAPI_TOKEN: 'SET_OKAPI_TOKEN',
-  SET_PLUGINS: 'SET_PLUGINS',
-  SET_SESSION_DATA: 'SET_SESSION_DATA',
-  SET_SINGLE_PLUGIN: 'SET_SINGLE_PLUGIN',
-  SET_TIMEZONE: 'SET_TIMEZONE',
-  SET_TOKEN_EXPIRATION: 'SET_TOKEN_EXPIRATION',
-  SET_TRANSLATIONS: 'SET_TRANSLATIONS',
-  TOGGLE_RTR_MODAL: 'TOGGLE_RTR_MODAL',
-  UPDATE_CURRENT_USER: 'UPDATE_CURRENT_USER',
+  ADD_ICON: "ADD_ICON",
+  CHECK_SSO: "CHECK_SSO",
+  CLEAR_CURRENT_USER: "CLEAR_CURRENT_USER",
+  CLEAR_OKAPI_TOKEN: "CLEAR_OKAPI_TOKEN",
+  OKAPI_READY: "OKAPI_READY",
+  SERVER_DOWN: "SERVER_DOWN",
+  SET_AUTH_FAILURE: "SET_AUTH_FAILURE",
+  SET_BINDINGS: "SET_BINDINGS",
+  SET_CURRENCY: "SET_CURRENCY",
+  SET_CURRENT_PERMS: "SET_CURRENT_PERMS",
+  SET_CURRENT_USER: "SET_CURRENT_USER",
+  SET_IS_AUTHENTICATED: "SET_IS_AUTHENTICATED",
+  SET_LOCALE: "SET_LOCALE",
+  SET_LOGIN_DATA: "SET_LOGIN_DATA",
+  SET_OKAPI_TENANT: "SET_OKAPI_TENANT",
+  SET_OKAPI_TOKEN: "SET_OKAPI_TOKEN",
+  SET_PLUGINS: "SET_PLUGINS",
+  SET_SESSION_DATA: "SET_SESSION_DATA",
+  SET_SINGLE_PLUGIN: "SET_SINGLE_PLUGIN",
+  SET_TIMEZONE: "SET_TIMEZONE",
+  SET_TOKEN_EXPIRATION: "SET_TOKEN_EXPIRATION",
+  SET_TRANSLATIONS: "SET_TRANSLATIONS",
+  TOGGLE_RTR_MODAL: "TOGGLE_RTR_MODAL",
+  UPDATE_CURRENT_USER: "UPDATE_CURRENT_USER",
 };
 
 export default function okapiReducer(state = {}, action) {
@@ -57,7 +57,9 @@ export default function okapiReducer(state = {}, action) {
     case OKAPI_REDUCER_ACTIONS.SET_PLUGINS:
       return Object.assign({}, state, { plugins: action.plugins });
     case OKAPI_REDUCER_ACTIONS.SET_SINGLE_PLUGIN:
-      return Object.assign({}, state, { plugins: Object.assign({}, state.plugins, { [action.name]: action.value }) });
+      return Object.assign({}, state, {
+        plugins: Object.assign({}, state.plugins, { [action.name]: action.value }),
+      });
     case OKAPI_REDUCER_ACTIONS.SET_BINDINGS:
       return Object.assign({}, state, { bindings: action.bindings });
     case OKAPI_REDUCER_ACTIONS.SET_CURRENT_PERMS:
@@ -65,14 +67,23 @@ export default function okapiReducer(state = {}, action) {
     case OKAPI_REDUCER_ACTIONS.SET_LOGIN_DATA:
       return Object.assign({}, state, { loginData: action.loginData });
     case OKAPI_REDUCER_ACTIONS.SET_TOKEN_EXPIRATION:
-      return Object.assign({}, state, { loginData: { ...state.loginData, tokenExpiration: action.tokenExpiration } });
+      return Object.assign({}, state, {
+        loginData: { ...state.loginData, tokenExpiration: action.tokenExpiration },
+      });
     case OKAPI_REDUCER_ACTIONS.CLEAR_CURRENT_USER:
       return Object.assign({}, state, { currentUser: {}, currentPerms: {} });
     case OKAPI_REDUCER_ACTIONS.SET_SESSION_DATA: {
       const { isAuthenticated, perms, tenant, token, user } = action.session;
       const sessionTenant = tenant || state.tenant;
 
-      return { ...state, currentUser: user, currentPerms: perms, isAuthenticated, tenant: sessionTenant, token };
+      return {
+        ...state,
+        currentUser: user,
+        currentPerms: perms,
+        isAuthenticated,
+        tenant: sessionTenant,
+        token,
+      };
     }
     case OKAPI_REDUCER_ACTIONS.SET_AUTH_FAILURE:
       return Object.assign({}, state, { authFailure: action.message });

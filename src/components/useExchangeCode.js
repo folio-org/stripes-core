@@ -1,13 +1,10 @@
-import { useQuery } from 'react-query';
-import { useIntl } from 'react-intl';
-import { noop } from 'lodash';
+import { useQuery } from "react-query";
+import { useIntl } from "react-intl";
+import { noop } from "lodash";
 
-import { usePublicGatewayKy } from '../useOkapiKy';
-import {
-  getLoginTenant,
-  SESSION_NAME,
-} from '../loginServices';
-import { useStripes } from '../StripesContext';
+import { usePublicGatewayKy } from "../useOkapiKy";
+import { getLoginTenant, SESSION_NAME } from "../loginServices";
+import { useStripes } from "../StripesContext";
 
 /**
  * useExchangeCode
@@ -30,19 +27,19 @@ const useExchangeCode = (initSession = noop) => {
   const intl = useIntl();
 
   const urlParams = new URLSearchParams(globalThis.location.search);
-  const code = urlParams.get('code');
+  const code = urlParams.get("code");
   const { tenant, clientId } = getLoginTenant(stripes.okapi, stripes.config);
 
   const { isFetching, data, error } = useQuery(
-    ['@folio/stripes-core', 'authn/token', code],
+    ["@folio/stripes-core", "authn/token", code],
     async () => {
       if (code) {
         try {
-          const json = await ky('authn/token', {
+          const json = await ky("authn/token", {
             searchParams: {
               code,
-              'redirect-uri': `${globalThis.location.protocol}//${globalThis.location.host}/oidc-landing?tenant=${tenant}&client_id=${clientId}`,
-            }
+              "redirect-uri": `${globalThis.location.protocol}//${globalThis.location.host}/oidc-landing?tenant=${tenant}&client_id=${clientId}`,
+            },
           }).json();
 
           // note: initSession is expected to execute an unawaited promise.
@@ -76,18 +73,18 @@ const useExchangeCode = (initSession = noop) => {
       }
 
       // eslint-disable-next-line no-throw-literal
-      throw intl.formatMessage({ id: 'stripes-core.oidc.otp.missingCode' });
+      throw intl.formatMessage({ id: "stripes-core.oidc.otp.missingCode" });
     },
     {
       retry: false,
-    }
+    },
   );
 
-  return ({
+  return {
     tokenData: data,
     isLoading: isFetching,
     error,
-  });
+  };
 };
 
 export default useExchangeCode;

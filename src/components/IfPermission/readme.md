@@ -30,4 +30,4 @@ Supports children in the form of React nodes or as a render-prop function.
 
 A single property is supported:
 
-* `perm`: a comma-delimited string of permissions to check.
+- `perm`: a comma-delimited string of permissions to check.

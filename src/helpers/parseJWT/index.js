@@ -1,1 +1,1 @@
-export { default } from './parseJWT';
+export { default } from "./parseJWT";

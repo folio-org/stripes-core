@@ -1,30 +1,26 @@
-import {
-  discoverServices,
-  discoveryReducer,
-  isVersionCompatible,
-} from './discoverServices';
+import { discoverServices, discoveryReducer, isVersionCompatible } from "./discoverServices";
 
 // fetch success: resolve promise with ok == true and $data in json()
 const mockFetchSuccess = (data) => {
-  global.fetch = jest.fn().mockImplementation(() => (
+  global.fetch = jest.fn().mockImplementation(() =>
     Promise.resolve({
       ok: true,
       json: () => Promise.resolve(data),
       text: () => Promise.resolve(data),
       headers: new Map(),
-    })
-  ));
+    }),
+  );
 };
 
 // fetch error: resolve promise with ok: false
 const mockFetchError = () => {
-  global.fetch = jest.fn().mockImplementation(() => (
+  global.fetch = jest.fn().mockImplementation(() =>
     Promise.resolve({
       ok: false,
       headers: new Map(),
       status: 400,
-    })
-  ));
+    }),
+  );
 };
 
 // fetch failure: reject promise with $error
@@ -40,174 +36,185 @@ const mockFetchCleanUp = () => {
 
 const TENANT_OPTIONS = {
   diku: {
-    name: 'diku', clientId: 'diku-application'
-  }
+    name: "diku",
+    clientId: "diku-application",
+  },
 };
 
-describe('discoverServices', () => {
+describe("discoverServices", () => {
   afterEach(() => {
     mockFetchCleanUp();
   });
 
-  describe('okapi-based discovery', () => {
+  describe("okapi-based discovery", () => {
     const store = {
       getState: () => ({
         okapi: {
-          url: 'https://url.com',
-          token: 'frodo',
-          tenant: 'elevenant'
+          url: "https://url.com",
+          token: "frodo",
+          tenant: "elevenant",
         },
         config: {},
       }),
       dispatch: jest.fn(),
     };
 
-    it('handles success', async () => {
-      const version = '1.2.3';
+    it("handles success", async () => {
+      const version = "1.2.3";
       mockFetchSuccess(version);
 
       await discoverServices(store);
-      expect(store.dispatch).toHaveBeenCalledWith({ type: 'DISCOVERY_OKAPI', version });
+      expect(store.dispatch).toHaveBeenCalledWith({ type: "DISCOVERY_OKAPI", version });
       jest.clearAllMocks();
     });
 
-    it('handles errors', async () => {
+    it("handles errors", async () => {
       mockFetchError();
 
       await discoverServices(store);
-      expect(store.dispatch).toHaveBeenCalledWith({ type: 'DISCOVERY_FAILURE', code: 400 });
+      expect(store.dispatch).toHaveBeenCalledWith({ type: "DISCOVERY_FAILURE", code: 400 });
       jest.clearAllMocks();
     });
 
-    it('handles failures', async () => {
-      const message = 'boom';
+    it("handles failures", async () => {
+      const message = "boom";
 
       mockFetchFail(message);
 
       await discoverServices(store);
-      expect(store.dispatch).toHaveBeenCalledWith({ type: 'DISCOVERY_FAILURE', message });
+      expect(store.dispatch).toHaveBeenCalledWith({ type: "DISCOVERY_FAILURE", message });
       jest.clearAllMocks();
     });
   });
 
-  describe('eureka-based discovery', () => {
+  describe("eureka-based discovery", () => {
     const store = {
       getState: () => ({
         okapi: {
-          url: 'https://url.com',
-          token: 'frodo'
+          url: "https://url.com",
+          token: "frodo",
         },
         config: {
           tenantOptions: TENANT_OPTIONS,
-        }
+        },
       }),
       dispatch: jest.fn(),
     };
 
-    it('handles success', async () => {
-      const version = '1.2.3';
+    it("handles success", async () => {
+      const version = "1.2.3";
       const data = {
         totalRecords: 123,
-        applicationDescriptors: [{
-          moduleDescriptors: [{ a: 'A' }],
-          uiModuleDescriptors: [{ b: 'B' }],
-          uiModules: [{ c: 'C' }],
-        }],
+        applicationDescriptors: [
+          {
+            moduleDescriptors: [{ a: "A" }],
+            uiModuleDescriptors: [{ b: "B" }],
+            uiModules: [{ c: "C" }],
+          },
+        ],
       };
 
       globalThis.fetch = jest.fn();
-      globalThis.fetch.mockImplementationOnce(() => (
+      globalThis.fetch.mockImplementationOnce(() =>
         Promise.resolve({
           ok: true,
           status: 200,
           json: () => Promise.resolve(data),
           text: () => Promise.resolve(data),
           headers: new Map(),
-        })
-      ));
-      globalThis.fetch.mockImplementationOnce(() => (
+        }),
+      );
+      globalThis.fetch.mockImplementationOnce(() =>
         Promise.resolve({
           ok: true,
           status: 200,
           json: () => Promise.resolve(version),
           text: () => Promise.resolve(version),
           headers: new Map(),
-        })
-      ));
+        }),
+      );
 
       await discoverServices(store);
-      expect(store.dispatch).toHaveBeenCalledWith({ type: 'DISCOVERY_OKAPI', version });
+      expect(store.dispatch).toHaveBeenCalledWith({ type: "DISCOVERY_OKAPI", version });
 
-      expect(store.dispatch).toHaveBeenCalledWith({ type: 'DISCOVERY_APPLICATIONS', data: data.applicationDescriptors[0] });
+      expect(store.dispatch).toHaveBeenCalledWith({
+        type: "DISCOVERY_APPLICATIONS",
+        data: data.applicationDescriptors[0],
+      });
 
-      expect(store.dispatch).toHaveBeenCalledWith({ type: 'DISCOVERY_INTERFACES', data: data.applicationDescriptors[0].moduleDescriptors[0] });
-      expect(store.dispatch).toHaveBeenCalledWith({ type: 'DISCOVERY_PERMISSION_DISPLAY_NAMES', data: data.applicationDescriptors[0].moduleDescriptors[0] });
-      expect(store.dispatch).toHaveBeenCalledWith({ type: 'DISCOVERY_PROVIDERS', data: data.applicationDescriptors[0].moduleDescriptors[0] });
+      expect(store.dispatch).toHaveBeenCalledWith({
+        type: "DISCOVERY_INTERFACES",
+        data: data.applicationDescriptors[0].moduleDescriptors[0],
+      });
+      expect(store.dispatch).toHaveBeenCalledWith({
+        type: "DISCOVERY_PERMISSION_DISPLAY_NAMES",
+        data: data.applicationDescriptors[0].moduleDescriptors[0],
+      });
+      expect(store.dispatch).toHaveBeenCalledWith({
+        type: "DISCOVERY_PROVIDERS",
+        data: data.applicationDescriptors[0].moduleDescriptors[0],
+      });
     });
 
-    it('throws when no records are present', async () => {
-      const version = '1.2.3';
+    it("throws when no records are present", async () => {
+      const version = "1.2.3";
       const data = {};
 
       globalThis.fetch = jest.fn();
-      globalThis.fetch.mockImplementationOnce(() => (
+      globalThis.fetch.mockImplementationOnce(() =>
         Promise.resolve({
           ok: true,
           status: 200,
           json: () => Promise.resolve(data),
           text: () => Promise.resolve(data),
           headers: new Map(),
-        })
-      ));
-      globalThis.fetch.mockImplementationOnce(() => (
+        }),
+      );
+      globalThis.fetch.mockImplementationOnce(() =>
         Promise.resolve({
           ok: true,
           status: 200,
           json: () => Promise.resolve(version),
           text: () => Promise.resolve(version),
           headers: new Map(),
-        })
-      ));
+        }),
+      );
 
       await discoverServices(store);
-      expect(store.dispatch).toHaveBeenCalledWith({ type: 'DISCOVERY_OKAPI', version });
-      expect(store.dispatch).toHaveBeenCalledWith({ type: 'DISCOVERY_FAILURE', code: 200 });
+      expect(store.dispatch).toHaveBeenCalledWith({ type: "DISCOVERY_OKAPI", version });
+      expect(store.dispatch).toHaveBeenCalledWith({ type: "DISCOVERY_FAILURE", code: 200 });
     });
 
-
-    it('handles errors', async () => {
+    it("handles errors", async () => {
       mockFetchError();
 
       await discoverServices(store);
-      expect(store.dispatch).toHaveBeenCalledWith({ type: 'DISCOVERY_FAILURE', code: 400 });
+      expect(store.dispatch).toHaveBeenCalledWith({ type: "DISCOVERY_FAILURE", code: 400 });
     });
 
-    it('handles failures', async () => {
-      const message = 'boom';
+    it("handles failures", async () => {
+      const message = "boom";
 
       mockFetchFail(message);
 
       await discoverServices(store);
-      expect(store.dispatch).toHaveBeenCalledWith({ type: 'DISCOVERY_FAILURE', message });
+      expect(store.dispatch).toHaveBeenCalledWith({ type: "DISCOVERY_FAILURE", message });
     });
   });
 });
 
-describe('discoveryReducer', () => {
-  it('handles DISCOVERY_APPLICATIONS', () => {
+describe("discoveryReducer", () => {
+  it("handles DISCOVERY_APPLICATIONS", () => {
     let state = {};
     const moduleDescriptors = [
-      { id: 'mod-a', provides: [{ id: 'if-a', version: '1.0' }] },
-      { id: 'mod-b' },
+      { id: "mod-a", provides: [{ id: "if-a", version: "1.0" }] },
+      { id: "mod-b" },
     ];
-    const uiModules = [
-      { id: 'folio_c' },
-      { id: 'folio_d' },
-    ];
+    const uiModules = [{ id: "folio_c" }, { id: "folio_d" }];
     const action = {
-      type: 'DISCOVERY_APPLICATIONS',
+      type: "DISCOVERY_APPLICATIONS",
       data: {
-        id: 'a',
+        id: "a",
         moduleDescriptors,
         uiModules,
       },
@@ -218,13 +225,13 @@ describe('discoveryReducer', () => {
         [action.data.id]: {
           name: action.data.id,
           modules: [
-            ...moduleDescriptors.map((d) => (
-              {
-                name: d.id,
-                interfaces: d.provides?.map((i) => {
-                  return { name: i.id + ' ' + i.version };
-                }) || []
-              })),
+            ...moduleDescriptors.map((d) => ({
+              name: d.id,
+              interfaces:
+                d.provides?.map((i) => {
+                  return { name: i.id + " " + i.version };
+                }) || [],
+            })),
             ...uiModules.map((d) => ({ name: d.id, interfaces: [] })),
           ],
         },
@@ -236,17 +243,17 @@ describe('discoveryReducer', () => {
     expect(state).toMatchObject(mapped);
   });
 
-  it('handles DISCOVERY_PERMISSION_DISPLAY_NAMES', () => {
+  it("handles DISCOVERY_PERMISSION_DISPLAY_NAMES", () => {
     let state = {
-      permissionDisplayNames: {}
+      permissionDisplayNames: {},
     };
     const action = {
-      type: 'DISCOVERY_PERMISSION_DISPLAY_NAMES',
+      type: "DISCOVERY_PERMISSION_DISPLAY_NAMES",
       data: {
         permissionSets: [
-          { 'permissionName': 'perm1', 'displayName': 'Admin Permission' },
-          { 'permissionName': 'perm2', 'displayName': 'Read-only Permission' }
-        ]
+          { permissionName: "perm1", displayName: "Admin Permission" },
+          { permissionName: "perm2", displayName: "Read-only Permission" },
+        ],
       },
     };
 
@@ -256,13 +263,13 @@ describe('discoveryReducer', () => {
     expect(state.permissionDisplayNames.perm2).toBe(action.data.permissionSets[1].displayName);
   });
 
-  it('handles DISCOVERY_OKAPI', () => {
+  it("handles DISCOVERY_OKAPI", () => {
     let state = {
-      okapi: '0.0.0'
+      okapi: "0.0.0",
     };
     const action = {
-      type: 'DISCOVERY_OKAPI',
-      version: '1.2.3',
+      type: "DISCOVERY_OKAPI",
+      version: "1.2.3",
     };
 
     state = discoveryReducer(state, action);
@@ -270,11 +277,11 @@ describe('discoveryReducer', () => {
     expect(state.okapi).toBe(action.version);
   });
 
-  it('handles DISCOVERY_FAILURE', () => {
+  it("handles DISCOVERY_FAILURE", () => {
     let state = {};
     const action = {
-      type: 'DISCOVERY_FAILURE',
-      message: 'it exploded',
+      type: "DISCOVERY_FAILURE",
+      message: "it exploded",
     };
 
     state = discoveryReducer(state, action);
@@ -282,19 +289,19 @@ describe('discoveryReducer', () => {
     expect(state.failure).toMatchObject(action);
   });
 
-  it('handles DISCOVERY_SUCCESS', () => {
+  it("handles DISCOVERY_SUCCESS", () => {
     let state = {};
     const action = {
-      type: 'DISCOVERY_SUCCESS',
+      type: "DISCOVERY_SUCCESS",
       data: [
-        { id: 'a', name: 'alpha' },
-        { id: 'b', name: 'beta' },
-        { id: 'g', name: 'gamma' },
+        { id: "a", name: "alpha" },
+        { id: "b", name: "beta" },
+        { id: "g", name: "gamma" },
       ],
     };
 
     const mapped = {};
-    action.data.forEach(i => {
+    action.data.forEach((i) => {
       mapped[i.id] = i.name;
     });
 
@@ -303,21 +310,21 @@ describe('discoveryReducer', () => {
     expect(state.modules).toMatchObject(mapped);
   });
 
-  it('handles DISCOVERY_INTERFACES', () => {
+  it("handles DISCOVERY_INTERFACES", () => {
     let state = {};
     const action = {
-      type: 'DISCOVERY_INTERFACES',
+      type: "DISCOVERY_INTERFACES",
       data: {
         provides: [
-          { id: 'a', version: '1.1' },
-          { id: 'b', version: '2.2' },
-          { id: 'g', version: '3.3' },
+          { id: "a", version: "1.1" },
+          { id: "b", version: "2.2" },
+          { id: "g", version: "3.3" },
         ],
-      }
+      },
     };
 
     const mapped = {};
-    action.data.provides.forEach(i => {
+    action.data.provides.forEach((i) => {
       mapped[i.id] = i.version;
     });
 
@@ -326,11 +333,11 @@ describe('discoveryReducer', () => {
     expect(state.interfaces).toMatchObject(mapped);
   });
 
-  it('handles empty DISCOVERY_INTERFACES', () => {
+  it("handles empty DISCOVERY_INTERFACES", () => {
     let state = {};
     const action = {
-      type: 'DISCOVERY_INTERFACES',
-      data: {}
+      type: "DISCOVERY_INTERFACES",
+      data: {},
     };
 
     state = discoveryReducer(state, action);
@@ -338,23 +345,23 @@ describe('discoveryReducer', () => {
     expect(state.interfaces).toMatchObject({});
   });
 
-  it('handles DISCOVERY_PROVIDERS', () => {
+  it("handles DISCOVERY_PROVIDERS", () => {
     let state = {};
     const action = {
-      type: 'DISCOVERY_PROVIDERS',
+      type: "DISCOVERY_PROVIDERS",
       data: {
-        id: 'monkey',
+        id: "monkey",
         provides: [
-          { id: 'a', version: '1.1' },
-          { id: 'b', version: '2.2' },
-          { id: 'g', version: '3.3' },
+          { id: "a", version: "1.1" },
+          { id: "b", version: "2.2" },
+          { id: "g", version: "3.3" },
         ],
       },
     };
 
     const mapped = {
       id: action.data.id,
-      provides: action.data.provides.map(j => ({ id: j.id, version: j.version })),
+      provides: action.data.provides.map((j) => ({ id: j.id, version: j.version })),
     };
 
     state = discoveryReducer(state, action);
@@ -362,12 +369,12 @@ describe('discoveryReducer', () => {
     expect(state.interfaceProviders[0]).toMatchObject(mapped);
   });
 
-  it('handles empty DISCOVERY_PROVIDERS', () => {
+  it("handles empty DISCOVERY_PROVIDERS", () => {
     let state = {};
     const action = {
-      type: 'DISCOVERY_PROVIDERS',
+      type: "DISCOVERY_PROVIDERS",
       data: {
-        id: 'monkey',
+        id: "monkey",
       },
     };
 
@@ -376,12 +383,12 @@ describe('discoveryReducer', () => {
     expect(state).toMatchObject({});
   });
 
-  it('handles DISCOVERY_FINISHED', () => {
+  it("handles DISCOVERY_FINISHED", () => {
     let state = {
       isFinished: false,
     };
     const action = {
-      type: 'DISCOVERY_FINISHED',
+      type: "DISCOVERY_FINISHED",
     };
 
     state = discoveryReducer(state, action);
@@ -389,12 +396,12 @@ describe('discoveryReducer', () => {
     expect(state.isFinished).toBe(true);
   });
 
-  it('passes state through for other actions', () => {
+  it("passes state through for other actions", () => {
     let state = {
-      monkey: 'bagel'
+      monkey: "bagel",
     };
     const action = {
-      type: 'THUNDER_CHICKEN',
+      type: "THUNDER_CHICKEN",
     };
 
     state = discoveryReducer(state, action);
@@ -403,30 +410,28 @@ describe('discoveryReducer', () => {
   });
 });
 
-
-describe('isVersionCompatible', () => {
-  it('rejects incompatible majors', () => {
-    expect(isVersionCompatible('1.0', '2.0')).toBe(false);
+describe("isVersionCompatible", () => {
+  it("rejects incompatible majors", () => {
+    expect(isVersionCompatible("1.0", "2.0")).toBe(false);
   });
 
-  it('rejects incompatible minors', () => {
-    expect(isVersionCompatible('2.0', '2.1')).toBe(false);
+  it("rejects incompatible minors", () => {
+    expect(isVersionCompatible("2.0", "2.1")).toBe(false);
   });
 
-  it('rejects incompatible patches', () => {
-    expect(isVersionCompatible('3.0.0', '3.0.1')).toBe(false);
+  it("rejects incompatible patches", () => {
+    expect(isVersionCompatible("3.0.0", "3.0.1")).toBe(false);
   });
 
-  it('accepts compatible majors', () => {
-    expect(isVersionCompatible('1', '1')).toBe(true);
+  it("accepts compatible majors", () => {
+    expect(isVersionCompatible("1", "1")).toBe(true);
   });
 
-  it('accepts compatible minors', () => {
-    expect(isVersionCompatible('2.2', '2.1')).toBe(true);
+  it("accepts compatible minors", () => {
+    expect(isVersionCompatible("2.2", "2.1")).toBe(true);
   });
 
-  it('accepts compatible patches', () => {
-    expect(isVersionCompatible('3.0.1', '3.0.0')).toBe(true);
+  it("accepts compatible patches", () => {
+    expect(isVersionCompatible("3.0.1", "3.0.0")).toBe(true);
   });
 });
-

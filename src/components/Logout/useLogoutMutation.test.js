@@ -1,28 +1,16 @@
-import localforage from 'localforage';
-import { act } from 'react';
-import { renderHook, waitFor } from '@folio/jest-config-stripes/testing-library/react';
-import {
-  QueryClient,
-  QueryClientProvider,
-} from 'react-query';
+import localforage from "localforage";
+import { act } from "react";
+import { renderHook, waitFor } from "@folio/jest-config-stripes/testing-library/react";
+import { QueryClient, QueryClientProvider } from "react-query";
 
-import { clearPrivateStorage, clearSharedStorage, useLogoutMutation } from './useLogoutMutation';
-import { useStripes } from '../../StripesContext';
-import {
-  clearCurrentUser,
-  clearOkapiToken,
-  setIsAuthenticated,
-} from '../../okapiActions';
-import { resetStore } from '../../mainActions';
-import { stripesHubAPI } from '../../constants';
-import {
-  SESSION_NAME,
-  TENANT_LOCAL_STORAGE_KEY,
-} from '../../loginServices';
-import {
-  RTR_TIMEOUT_EVENT
-} from '../Root/constants';
-import { SessionSyncError } from '../SessionSyncError';
+import { clearPrivateStorage, clearSharedStorage, useLogoutMutation } from "./useLogoutMutation";
+import { useStripes } from "../../StripesContext";
+import { clearCurrentUser, clearOkapiToken, setIsAuthenticated } from "../../okapiActions";
+import { resetStore } from "../../mainActions";
+import { stripesHubAPI } from "../../constants";
+import { SESSION_NAME, TENANT_LOCAL_STORAGE_KEY } from "../../loginServices";
+import { RTR_TIMEOUT_EVENT } from "../Root/constants";
+import { SessionSyncError } from "../SessionSyncError";
 
 // restore default fetch impl
 const mockFetchCleanUp = () => {
@@ -31,7 +19,7 @@ const mockFetchCleanUp = () => {
 };
 
 const mockStripesHubAPI = stripesHubAPI;
-jest.mock('localforage', () => ({
+jest.mock("localforage", () => ({
   getItem: jest.fn((str) => {
     if (str === mockStripesHubAPI.HOST_URL_KEY) {
       return Promise.resolve(null);
@@ -42,17 +30,16 @@ jest.mock('localforage', () => ({
   removeItem: jest.fn(() => Promise.resolve()),
 }));
 
-
-describe('clearPrivateStorage', () => {
+describe("clearPrivateStorage", () => {
   beforeEach(() => {
-    jest.spyOn(Storage.prototype, 'removeItem');
+    jest.spyOn(Storage.prototype, "removeItem");
   });
   afterEach(() => {
     Storage.prototype.removeItem.mockRestore();
     mockFetchCleanUp();
   });
 
-  it('clears timers', () => {
+  it("clears timers", () => {
     globalThis.fetch = jest.fn().mockImplementation(() => Promise.resolve());
     const store = {
       dispatch: jest.fn(),
@@ -66,7 +53,7 @@ describe('clearPrivateStorage', () => {
     expect(sessionTimer.clear).toHaveBeenCalled();
   });
 
-  it('clears the redux store', async () => {
+  it("clears the redux store", async () => {
     globalThis.fetch = jest.fn().mockImplementation(() => Promise.resolve());
     const store = {
       dispatch: jest.fn(),
@@ -82,10 +69,12 @@ describe('clearPrivateStorage', () => {
     expect(store.dispatch).toHaveBeenCalledWith(resetStore());
   });
 
-  it('calls queryClient.removeQueries()', async () => {
+  it("calls queryClient.removeQueries()", async () => {
     const store = {
       dispatch: jest.fn(),
-      getState: jest.fn().mockReturnValue({ okapi: { tenant: 'diku' }, config: { preserveConsole: false } }),
+      getState: jest
+        .fn()
+        .mockReturnValue({ okapi: { tenant: "diku" }, config: { preserveConsole: false } }),
     };
     const rqc = {
       removeQueries: jest.fn(),
@@ -97,16 +86,16 @@ describe('clearPrivateStorage', () => {
   });
 });
 
-describe('clearSharedStorage', () => {
+describe("clearSharedStorage", () => {
   beforeEach(() => {
-    jest.spyOn(Storage.prototype, 'removeItem');
+    jest.spyOn(Storage.prototype, "removeItem");
   });
   afterEach(() => {
     Storage.prototype.removeItem.mockRestore();
     mockFetchCleanUp();
   });
 
-  it('clears localStorage', async () => {
+  it("clears localStorage", async () => {
     globalThis.fetch = jest.fn().mockImplementation(() => Promise.resolve());
     const store = {
       dispatch: jest.fn(),
@@ -123,7 +112,7 @@ describe('clearSharedStorage', () => {
     expect(localStorage.removeItem).toHaveBeenCalledWith(stripesHubAPI.BRANDING_CONFIG_KEY);
   });
 
-  it('clears localforage', async () => {
+  it("clears localforage", async () => {
     globalThis.fetch = jest.fn().mockImplementation(() => Promise.resolve());
     const store = {
       dispatch: jest.fn(),
@@ -134,37 +123,34 @@ describe('clearSharedStorage', () => {
     await clearSharedStorage(store, null, []);
 
     expect(localforage.removeItem).toHaveBeenCalledWith(SESSION_NAME);
-    expect(localforage.removeItem).toHaveBeenCalledWith('loginResponse');
+    expect(localforage.removeItem).toHaveBeenCalledWith("loginResponse");
     expect(localforage.removeItem).toHaveBeenCalledWith(stripesHubAPI.DISCOVERY_URL_KEY);
     expect(localforage.removeItem).toHaveBeenCalledWith(stripesHubAPI.HOST_URL_KEY);
     expect(localforage.removeItem).toHaveBeenCalledWith(stripesHubAPI.REMOTE_LIST_KEY);
   });
 });
 
-
 const mockPost = jest.fn();
 
-jest.mock('../../useOkapiKy', () => ({
+jest.mock("../../useOkapiKy", () => ({
   __esModule: true, // this property makes it work
   default: jest.fn(() => ({
     post: mockPost,
-  }))
+  })),
 }));
 
-jest.mock('../../StripesContext');
+jest.mock("../../StripesContext");
 
 const queryClient = new QueryClient();
 // eslint-disable-next-line react/prop-types
 const wrapper = ({ children }) => (
-  <QueryClientProvider client={queryClient}>
-    {children}
-  </QueryClientProvider>
+  <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
 );
 
-describe('useLogoutMutation', () => {
-  describe('when storage-flag is present', () => {
+describe("useLogoutMutation", () => {
+  describe("when storage-flag is present", () => {
     beforeEach(() => {
-      jest.spyOn(Storage.prototype, 'getItem').mockReturnValue(true);
+      jest.spyOn(Storage.prototype, "getItem").mockReturnValue(true);
       const mockUseStripes = useStripes;
       mockUseStripes.mockReturnValue({
         config: {},
@@ -172,7 +158,7 @@ describe('useLogoutMutation', () => {
         store: {
           dispatch: jest.fn(),
           getState: jest.fn().mockReturnValue({ config: { preserveConsole: false } }),
-        }
+        },
       });
     });
 
@@ -181,19 +167,19 @@ describe('useLogoutMutation', () => {
       mockPost.mockReset();
     });
 
-    it('makes /authn/rotate and /authn/logout API calls', async () => {
+    it("makes /authn/rotate and /authn/logout API calls", async () => {
       globalThis.fetch = jest.fn().mockImplementation(() => Promise.resolve());
 
       const hook = renderHook(() => useLogoutMutation([]), { wrapper });
       hook.result.current.mutate();
 
       await waitFor(async () => {
-        expect(mockPost).toHaveBeenCalledWith('authn/refresh');
-        expect(mockPost).toHaveBeenCalledWith('authn/logout');
+        expect(mockPost).toHaveBeenCalledWith("authn/refresh");
+        expect(mockPost).toHaveBeenCalledWith("authn/logout");
       });
     });
 
-    it('clears storage', async () => {
+    it("clears storage", async () => {
       const timer = { clear: jest.fn() };
       const hook = renderHook(() => useLogoutMutation([timer]), { wrapper });
       hook.result.current.mutate();
@@ -203,8 +189,10 @@ describe('useLogoutMutation', () => {
       });
     });
 
-    it('throws an error if API calls fail', async () => {
-      mockPost.mockImplementation(() => { throw new Error('asdf'); });
+    it("throws an error if API calls fail", async () => {
+      mockPost.mockImplementation(() => {
+        throw new Error("asdf");
+      });
       let didCallOnError = false;
 
       const timer = { clear: jest.fn() };
@@ -227,9 +215,9 @@ describe('useLogoutMutation', () => {
     });
   });
 
-  describe('when storage-flag is absent', () => {
+  describe("when storage-flag is absent", () => {
     beforeEach(() => {
-      jest.spyOn(Storage.prototype, 'getItem').mockReturnValue(false);
+      jest.spyOn(Storage.prototype, "getItem").mockReturnValue(false);
       const mockUseStripes = useStripes;
       mockUseStripes.mockReturnValue({
         config: {},
@@ -237,7 +225,7 @@ describe('useLogoutMutation', () => {
         store: {
           dispatch: jest.fn(),
           getState: jest.fn().mockReturnValue({ config: { preserveConsole: true } }),
-        }
+        },
       });
     });
 
@@ -246,17 +234,17 @@ describe('useLogoutMutation', () => {
       mockPost.mockReset();
     });
 
-    it('makes /authn/rotate and /authn/logout API calls', async () => {
+    it("makes /authn/rotate and /authn/logout API calls", async () => {
       const hook = renderHook(() => useLogoutMutation([]), { wrapper });
       hook.result.current.mutate();
 
       await waitFor(async () => {
-        expect(mockPost).toHaveBeenCalledWith('authn/refresh');
-        expect(mockPost).toHaveBeenCalledWith('authn/logout');
+        expect(mockPost).toHaveBeenCalledWith("authn/refresh");
+        expect(mockPost).toHaveBeenCalledWith("authn/logout");
       });
     });
 
-    it('clears storage', async () => {
+    it("clears storage", async () => {
       const timer = { clear: jest.fn() };
       const hook = renderHook(() => useLogoutMutation([timer]), { wrapper });
       hook.result.current.mutate();
@@ -266,8 +254,10 @@ describe('useLogoutMutation', () => {
       });
     });
 
-    it('does not throw if API calls fail', async () => {
-      mockPost.mockImplementation(() => { throw new Error('asdf'); });
+    it("does not throw if API calls fail", async () => {
+      mockPost.mockImplementation(() => {
+        throw new Error("asdf");
+      });
       let didCallOnError = false;
 
       const timer = { clear: jest.fn() };

@@ -1,5 +1,5 @@
 /* eslint-disable */
-import FakeXMLHttpRequest from 'fake-xml-http-request';
+import FakeXMLHttpRequest from "fake-xml-http-request";
 
 /**
  * Monkey patch FakeXMLHttpRequest and remove `response` based on the work in:
@@ -22,10 +22,10 @@ _Event.prototype = {
   stopPropagation: function () {},
   preventDefault: function () {
     this.defaultPrevented = true;
-  }
+  },
 };
 
-FakeXMLHttpRequest.prototype.open = function(method, url, async, username, password) {
+FakeXMLHttpRequest.prototype.open = function (method, url, async, username, password) {
   this.method = method;
   this.url = url;
   this.async = typeof async == "boolean" ? async : true;
@@ -38,9 +38,9 @@ FakeXMLHttpRequest.prototype.open = function(method, url, async, username, passw
   this.sendFlag = false;
   delete this.response;
   this._readyStateChange(FakeXMLHttpRequest.OPENED);
-}
+};
 
-FakeXMLHttpRequest.prototype.abort = function() {
+FakeXMLHttpRequest.prototype.abort = function () {
   this.aborted = true;
   this.responseText = null;
   delete this.response;
@@ -57,7 +57,7 @@ FakeXMLHttpRequest.prototype.abort = function() {
   if (typeof this.onerror === "function") {
     this.onerror();
   }
-}
+};
 
 FakeXMLHttpRequest.prototype._setResponseBody = function (body) {
   verifyRequestSent(this);
@@ -97,22 +97,23 @@ FakeXMLHttpRequest.prototype._setResponseBody = function (body) {
 
 function verifyRequestSent(xhr) {
   if (xhr.readyState == FakeXMLHttpRequest.DONE) {
-      throw new Error("Request done");
+    throw new Error("Request done");
   }
 }
 
 function verifyHeadersReceived(xhr) {
   if (xhr.async && xhr.readyState != FakeXMLHttpRequest.HEADERS_RECEIVED) {
-      throw new Error("No headers received");
+    throw new Error("No headers received");
   }
 }
 
 function verifyResponseBodyType(body) {
   if (typeof body != "string") {
-      var error = new Error("Attempted to respond to fake XMLHttpRequest with " +
-                           body + ", which is not a string.");
-      error.name = "InvalidBodyException";
-      throw error;
+    var error = new Error(
+      "Attempted to respond to fake XMLHttpRequest with " + body + ", which is not a string.",
+    );
+    error.name = "InvalidBodyException";
+    throw error;
   }
 }
 

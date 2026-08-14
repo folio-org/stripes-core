@@ -1,8 +1,8 @@
-import ms from 'ms';
+import ms from "ms";
 
-import { RTRError } from './Errors';
+import { RTRError } from "./Errors";
 
-export const RTR_LOCK_KEY = '@folio/stripes-core::RTR_LOCK_KEY';
+export const RTR_LOCK_KEY = "@folio/stripes-core::RTR_LOCK_KEY";
 
 /**
  * replayRequest
@@ -21,15 +21,18 @@ export const RTR_LOCK_KEY = '@folio/stripes-core::RTR_LOCK_KEY';
  */
 export const replayRequest = async (fetchfx, config, original) => {
   // there is no value in playing a request that we expect to fail
-  if (config.shouldPreRotate && await config.shouldPreRotate()) {
+  if (config.shouldPreRotate && (await config.shouldPreRotate())) {
     return undefined;
   }
 
   if (original?.resource) {
-    config.logger.log('rtr', 'replaying ...');
+    config.logger.log("rtr", "replaying ...");
     const { resource } = original;
     const reusableResource = resource instanceof Request ? resource.clone() : resource;
-    const response = await fetchfx.apply(globalThis, [reusableResource, config.options(original.options)]);
+    const response = await fetchfx.apply(globalThis, [
+      reusableResource,
+      config.options(original.options),
+    ]);
     return response;
   }
 
@@ -93,7 +96,7 @@ export const replayRequest = async (fetchfx, config, original) => {
  * request. Otherwise, reject
  */
 export const rotateAndReplay = async (fetchfx, config, original) => {
-  config.logger.log('rtr', 'queueRotateReplay...', config);
+  config.logger.log("rtr", "queueRotateReplay...", config);
 
   // rotation config
   const shouldRotate = config.shouldRotate ?? (() => Promise.resolve(false));
@@ -109,42 +112,42 @@ export const rotateAndReplay = async (fetchfx, config, original) => {
    * @returns promise response from the original request
    */
   const rotateTokens = async () => {
-    config.logger.log('rtr', 'locked ...');
+    config.logger.log("rtr", "locked ...");
     try {
       //
       // 1. 👀 If rotation completed elsewhere, we don't need to rotate!
       // Replay the request and inspect the response for success. If it's ok,
       // we're done and can return that response. If it's not 2xx/ok, rotate
       // and then replay again.
-      config.logger.log('rtr', 'pre-rotation replay', original?.resource);
+      config.logger.log("rtr", "pre-rotation replay", original?.resource);
       const replayedResponse = await replayRequest(fetchfx, config, original);
       if (replayedResponse?.ok) {
         return replayedResponse;
       }
-      config.logger.log('rtr', replayedResponse ? 'replay failed; forcing rotate ...' : 'replay skipped');
+      config.logger.log(
+        "rtr",
+        replayedResponse ? "replay failed; forcing rotate ..." : "replay skipped",
+      );
 
       //
       // 2. 🔄 rotate: race the rotation-request with a timeout; default 30s
       let rejectId = null;
       const refreshTimeout = new Promise((_res, rej) => {
-        const timeout = config.refreshTimeout || ms('30s');
+        const timeout = config.refreshTimeout || ms("30s");
         rejectId = setTimeout(() => {
           rej(new RTRError(`Token refresh timed out after ${ms(timeout)}`));
         }, timeout);
       });
 
-      config.logger.log('rtr', '===> rotating ...');
-      const t = await Promise.race([
-        refreshTimeout,
-        config.rotate()
-      ]);
+      config.logger.log("rtr", "===> rotating ...");
+      const t = await Promise.race([refreshTimeout, config.rotate()]);
       clearTimeout(rejectId);
-      config.logger.log('rtr', '<=== rotated!');
+      config.logger.log("rtr", "<=== rotated!");
 
       //
       // 3. 💾 callback: save new token-expiration value
       await config.onSuccess(t);
-      config.logger.log('rtr', 'stored updated expiry ...');
+      config.logger.log("rtr", "stored updated expiry ...");
 
       //
       // 4. 🔂 replay the original request
@@ -156,7 +159,7 @@ export const rotateAndReplay = async (fetchfx, config, original) => {
       // failure in the rotation-success handler). Otherwise, reject with the
       // original response or with this error.
       if (err instanceof RTRError) {
-        config.logger.log('rtr', 'RTR error!', err);
+        config.logger.log("rtr", "RTR error!", err);
         await config.onFailure(err);
       }
       if (original?.response) {
@@ -169,7 +172,10 @@ export const rotateAndReplay = async (fetchfx, config, original) => {
   // 🧐 are we certain we need to rotate? check these two conditions:
   // 1. shouldRotate() asked for rotation
   // 2. the response status indicates we need rotation
-  if (await shouldRotate(original?.response) || statusCodes.includes(original?.response?.status)) {
+  if (
+    (await shouldRotate(original?.response)) ||
+    statusCodes.includes(original?.response?.status)
+  ) {
     // 🔒 lock, then rotate
     // default lock-mode is exclusive, preventing others from entering the lock
     // until this lock resolves (writer/readers pattern)

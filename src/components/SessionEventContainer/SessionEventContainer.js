@@ -1,26 +1,22 @@
-import { useEffect, useRef, useState } from 'react';
-import { createPortal } from 'react-dom';
-import PropTypes from 'prop-types';
-import createInactivityTimer from 'inactivity-timer';
-import ms from 'ms';
+import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
+import PropTypes from "prop-types";
+import createInactivityTimer from "inactivity-timer";
+import ms from "ms";
 
-import {
-  LOGOUT_MESSAGES,
-  SESSION_NAME,
-  setUnauthorizedPathToSession
-} from '../../loginServices';
-import KeepWorkingModal from './KeepWorkingModal';
-import { useStripes } from '../../StripesContext';
+import { LOGOUT_MESSAGES, SESSION_NAME, setUnauthorizedPathToSession } from "../../loginServices";
+import KeepWorkingModal from "./KeepWorkingModal";
+import { useStripes } from "../../StripesContext";
 import {
   RTR_ACTIVITY_CHANNEL,
   RTR_ERROR_EVENT,
   RTR_FLS_TIMEOUT_EVENT,
   RTR_FLS_WARNING_EVENT,
-  RTR_TIMEOUT_EVENT
-} from '../Root/constants';
-import { toggleRtrModal } from '../../okapiActions';
-import FixedLengthSessionWarning from './FixedLengthSessionWarning';
-import { eventsPortal } from '../../constants';
+  RTR_TIMEOUT_EVENT,
+} from "../Root/constants";
+import { toggleRtrModal } from "../../okapiActions";
+import FixedLengthSessionWarning from "./FixedLengthSessionWarning";
+import { eventsPortal } from "../../constants";
 
 //
 // event listeners
@@ -29,28 +25,28 @@ import { eventsPortal } from '../../constants';
 
 // RTR error in this window: logout
 export const thisWindowRtrError = (_e, stripes, history) => {
-  console.warn('rtr error; logging out'); // eslint-disable-line no-console
+  console.warn("rtr error; logging out"); // eslint-disable-line no-console
   setUnauthorizedPathToSession();
   history.push(`/logout?reason=${LOGOUT_MESSAGES.ERROR}`);
 };
 
 // idle session timeout in this window: logout
 export const thisWindowRtrIstTimeout = (_e, stripes, history) => {
-  stripes.logger.log('rtr', 'idle session timeout; logging out');
+  stripes.logger.log("rtr", "idle session timeout; logging out");
   setUnauthorizedPathToSession();
   history.push(`/logout?reason=${LOGOUT_MESSAGES.INACTIVITY}`);
 };
 
 // fixed-length session warning in this window: show banner
 export const thisWindowRtrFlsWarning = (e, stripes, setIsFlsVisible, setFlsTimeRemaining) => {
-  stripes.logger.log('rtr', 'fixed-length session warning');
+  stripes.logger.log("rtr", "fixed-length session warning");
   setFlsTimeRemaining(e.detail.timeRemaining);
   setIsFlsVisible(true);
 };
 
 // fixed-length session timeout in this window: logout
 export const thisWindowRtrFlsTimeout = (_e, stripes, history) => {
-  stripes.logger.log('rtr', 'fixed-length session timeout; logging out');
+  stripes.logger.log("rtr", "fixed-length session timeout; logging out");
   setUnauthorizedPathToSession();
   history.push(`/logout?reason=${LOGOUT_MESSAGES.EXPIRED}`);
 };
@@ -61,13 +57,13 @@ export const thisWindowRtrFlsTimeout = (_e, stripes, history) => {
 // in another window and so must occur here as well
 export const otherWindowStorage = (e, stripes, history) => {
   if (e.key === RTR_TIMEOUT_EVENT) {
-    stripes.logger.log('rtr', 'idle session timeout; logging out');
+    stripes.logger.log("rtr", "idle session timeout; logging out");
     setUnauthorizedPathToSession();
     history.push(`/logout?reason=${LOGOUT_MESSAGES.INACTIVITY}`);
   } else if (!localStorage.getItem(SESSION_NAME)) {
-    stripes.logger.log('rtr', 'external localstorage change; logging out');
+    stripes.logger.log("rtr", "external localstorage change; logging out");
     setUnauthorizedPathToSession();
-    history.push('/logout');
+    history.push("/logout");
   }
   return Promise.resolve();
 };
@@ -79,7 +75,7 @@ export const otherWindowStorage = (e, stripes, history) => {
 // activity in each window is published on a BroadcastChannel to announce
 // it to all windows in order to send a keep-alive ping to their timers.
 export const otherWindowActivity = (_m, stripes, timers, setIsVisible) => {
-  stripes.logger.log('rtrv', 'external activity signal');
+  stripes.logger.log("rtrv", "external activity signal");
   if (timers.current) {
     Object.values(timers.current).forEach((it) => {
       it.signal();
@@ -105,16 +101,15 @@ export const thisWindowActivity = (_e, stripes, timers, broadcastChannel) => {
   // due to early binding, the value of isVisible is locked-in when
   // this function is created.
   if (!state.okapi.rtrModalIsVisible) {
-    stripes.logger.log('rtrv', 'local activity signal');
+    stripes.logger.log("rtrv", "local activity signal");
     if (timers.current) {
-      broadcastChannel.postMessage('signal');
+      broadcastChannel.postMessage("signal");
       Object.values(timers.current).forEach((it) => {
         it.signal();
       });
     }
   }
 };
-
 
 /**
  * SessionEventContainer
@@ -147,13 +142,15 @@ const SessionEventContainer = ({ history }) => {
   // inactivity timers
   const timers = useRef();
   const stripes = useStripes();
-  const [flsTimeRemaining, setFlsTimeRemaining] = useState(ms(stripes.config.rtr.fixedLengthSessionWarningTTL));
+  const [flsTimeRemaining, setFlsTimeRemaining] = useState(
+    ms(stripes.config.rtr.fixedLengthSessionWarningTTL),
+  );
 
   useEffect(() => {
     let interval;
     if (isFlsVisible) {
       interval = setInterval(() => {
-        setFlsTimeRemaining(i => i - 1000);
+        setFlsTimeRemaining((i) => i - 1000);
       }, 1000);
     }
     return () => clearInterval(interval);
@@ -214,7 +211,7 @@ const SessionEventContainer = ({ history }) => {
     const showModalIT = createInactivityTimer(ms(idleSessionTTL) - ms(idleModalTTL), () => {
       if (isModalIgnorable) return;
 
-      stripes.logger.log('rtr', 'session idle; showing modal');
+      stripes.logger.log("rtr", "session idle; showing modal");
       stripes.store.dispatch(toggleRtrModal(true));
       setIsVisible(true);
     });
@@ -222,9 +219,9 @@ const SessionEventContainer = ({ history }) => {
 
     // inactive timer: logout
     const logoutIT = createInactivityTimer(idleSessionTTL, () => {
-      stripes.logger.log('rtr', 'session idle; dispatching RTR_TIMEOUT_EVENT');
+      stripes.logger.log("rtr", "session idle; dispatching RTR_TIMEOUT_EVENT");
       // set a localstorage key so other windows know it was a timeout
-      localStorage.setItem(RTR_TIMEOUT_EVENT, 'true');
+      localStorage.setItem(RTR_TIMEOUT_EVENT, "true");
 
       // dispatch a timeout event for handling in this window
       window.dispatchEvent(new Event(RTR_TIMEOUT_EVENT));
@@ -246,21 +243,21 @@ const SessionEventContainer = ({ history }) => {
     channels.bc.message = (message) => otherWindowActivity(message, stripes, timers, setIsVisible);
 
     // activity in this window: ping idle-timers and BroadcastChannel
-    activityEvents.forEach(eventName => {
+    activityEvents.forEach((eventName) => {
       channels.window[eventName] = (e) => thisWindowActivity(e, stripes, timers, bc);
     });
 
     // fixed-length session: show session-is-ending warning
-    channels.window[RTR_FLS_WARNING_EVENT] = (e) => thisWindowRtrFlsWarning(e, stripes, setIsFlsVisible, setFlsTimeRemaining);
+    channels.window[RTR_FLS_WARNING_EVENT] = (e) =>
+      thisWindowRtrFlsWarning(e, stripes, setIsFlsVisible, setFlsTimeRemaining);
 
     // fixed-length session: terminate session
     channels.window[RTR_FLS_TIMEOUT_EVENT] = (e) => thisWindowRtrFlsTimeout(e, stripes, history);
 
-
     // add listeners
     Object.entries(channels).forEach(([k, channel]) => {
       Object.entries(channel).forEach(([e, h]) => {
-        stripes.logger.log('rtrv', `adding listener ${k}.${e}`);
+        stripes.logger.log("rtrv", `adding listener ${k}.${e}`);
         channelListeners[k].addEventListener(e, h);
       });
     });
@@ -274,7 +271,7 @@ const SessionEventContainer = ({ history }) => {
       }
       Object.entries(channels).forEach(([k, channel]) => {
         Object.entries(channel).forEach(([e, h]) => {
-          stripes.logger.log('rtrv', `removing listener ${k}.${e}`);
+          stripes.logger.log("rtrv", `removing listener ${k}.${e}`);
           channelListeners[k].removeEventListener(e, h);
         });
       });
@@ -297,7 +294,12 @@ const SessionEventContainer = ({ history }) => {
 
   // show the fixed-length session warning?
   if (isFlsVisible) {
-    renderList.push(<FixedLengthSessionWarning key="FixedLengthSessionWarning" timeRemainingMillis={flsTimeRemaining} />);
+    renderList.push(
+      <FixedLengthSessionWarning
+        key="FixedLengthSessionWarning"
+        timeRemainingMillis={flsTimeRemaining}
+      />,
+    );
   }
 
   return renderList.length ? createPortal(renderList, document.getElementById(eventsPortal)) : null;

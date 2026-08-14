@@ -1,25 +1,19 @@
-import { useMutation, useQueryClient } from 'react-query';
-import localforage from 'localforage';
+import { useMutation, useQueryClient } from "react-query";
+import localforage from "localforage";
 
-import { useStripes } from '../../StripesContext';
-import {
-  clearCurrentUser,
-  clearOkapiToken,
-  setIsAuthenticated,
-} from '../../okapiActions';
-import { resetStore } from '../../mainActions';
-import { stripesHubAPI } from '../../constants';
+import { useStripes } from "../../StripesContext";
+import { clearCurrentUser, clearOkapiToken, setIsAuthenticated } from "../../okapiActions";
+import { resetStore } from "../../mainActions";
+import { stripesHubAPI } from "../../constants";
 import {
   getLoginTenant,
   getLogoutTenant,
   SESSION_NAME,
   TENANT_LOCAL_STORAGE_KEY,
-} from '../../loginServices';
-import {
-  RTR_TIMEOUT_EVENT
-} from '../Root/constants';
-import useOkapiKy from '../../useOkapiKy';
-import { SessionSyncError } from '../SessionSyncError';
+} from "../../loginServices";
+import { RTR_TIMEOUT_EVENT } from "../Root/constants";
+import useOkapiKy from "../../useOkapiKy";
+import { SessionSyncError } from "../SessionSyncError";
 
 /**
  * clearSharedStorage
@@ -40,12 +34,12 @@ export const clearSharedStorage = async () => {
     localStorage.removeItem(stripesHubAPI.BRANDING_CONFIG_KEY);
 
     await localforage.removeItem(SESSION_NAME);
-    await localforage.removeItem('loginResponse');
+    await localforage.removeItem("loginResponse");
     await localforage.removeItem(stripesHubAPI.DISCOVERY_URL_KEY);
     await localforage.removeItem(stripesHubAPI.HOST_URL_KEY);
     await localforage.removeItem(stripesHubAPI.REMOTE_LIST_KEY);
   } catch (e) {
-    console.error('logout error during logout', e); // eslint-disable-line no-console
+    console.error("logout error during logout", e); // eslint-disable-line no-console
   }
 };
 
@@ -79,11 +73,11 @@ export const clearPrivateStorage = (store, queryClient, timers) => {
 
     // make sure timers don't fire after the session has terminated.
     // who remembers UICHKOUT-869?
-    timers.forEach(timer => timer?.clear());
+    timers.forEach((timer) => timer?.clear());
 
     sessionStorage.clear();
   } catch (e) {
-    console.error('error during logout', e); // eslint-disable-line no-console
+    console.error("error during logout", e); // eslint-disable-line no-console
   }
 };
 
@@ -156,12 +150,15 @@ export const useLogoutMutation = (timers) => {
         // `/authn/refresh` with the hope that it will bless us with active
         // tokens, allowing us to logout successfully and destroy both the
         // keycloak and FOLIO sessions, keeping the world in sync.
-        await ky.post('authn/refresh');
-        await ky.post('authn/logout');
+        await ky.post("authn/refresh");
+        await ky.post("authn/logout");
       } catch (err) {
         // if shared storage is present, treat API request failures as errors
         if (localStorage.getItem(SESSION_NAME)) {
-          console.error('logout failure; session storage was active but the logout API request failed', err); // eslint-disable-line no-console
+          console.error(
+            "logout failure; session storage was active but the logout API request failed",
+            err,
+          ); // eslint-disable-line no-console
           const { clientId } = getLoginTenant(okapi, config);
           const logoutUrl = `${okapi.authnUrl}/realms/${tenant}/protocol/openid-connect/logout?post_logout_redirect_uri=${globalThis.location.origin}/logout?reason=${reason}&client_id=${clientId}`;
           throw new SessionSyncError(logoutUrl);

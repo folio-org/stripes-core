@@ -1,7 +1,7 @@
-import { RTRError } from './Errors';
-import { rotateAndReplay, RTR_LOCK_KEY } from './rotateAndReplay';
+import { RTRError } from "./Errors";
+import { rotateAndReplay, RTR_LOCK_KEY } from "./rotateAndReplay";
 
-describe('rotateAndReplay', () => {
+describe("rotateAndReplay", () => {
   const makeLogger = () => ({ log: jest.fn() });
 
   beforeEach(() => {
@@ -12,7 +12,7 @@ describe('rotateAndReplay', () => {
         request: async (...av) => {
           if (av.length === 3) return av[2]();
           if (av.length === 2) return av[1]();
-          throw new Error('Cannot call navigator.locks.request without a function to execute!');
+          throw new Error("Cannot call navigator.locks.request without a function to execute!");
         },
       };
     }
@@ -22,18 +22,20 @@ describe('rotateAndReplay', () => {
     // clean up navigator if tests set it
     try {
       // eslint-disable-next-line no-undef
-      if (typeof navigator !== 'undefined') {
+      if (typeof navigator !== "undefined") {
         // @ts-ignore
         delete global.navigator;
       }
-    } catch  { /* ignore */ }
+    } catch {
+      /* ignore */
+    }
     jest.clearAllMocks();
   });
 
-  describe('with an original response', () => {
-    describe('resolves', () => {
-      test('short-circuits to replay when token is already valid', async () => {
-        const expected = { ok: true, body: 'replayed-response' };
+  describe("with an original response", () => {
+    describe("resolves", () => {
+      test("short-circuits to replay when token is already valid", async () => {
+        const expected = { ok: true, body: "replayed-response" };
         const fetchfx = jest.fn().mockResolvedValue(expected);
         const config = {
           logger: makeLogger(),
@@ -46,20 +48,22 @@ describe('rotateAndReplay', () => {
           shouldRotate: async () => true,
         };
 
-        const error = { resource: '/foo', options: { some: 'opt' } };
+        const error = { resource: "/foo", options: { some: "opt" } };
 
         const res = await rotateAndReplay(fetchfx, config, error);
         expect(res).toBe(expected);
-        expect(fetchfx).toHaveBeenCalledWith('/foo', { some: 'opt' });
+        expect(fetchfx).toHaveBeenCalledWith("/foo", { some: "opt" });
         expect(config.rotate).not.toHaveBeenCalled();
         expect(config.onSuccess).not.toHaveBeenCalled();
         expect(config.onFailure).not.toHaveBeenCalled();
       });
 
-      test('`config.shouldRotate()` forces rotation then replays and returns the new response', async () => {
-        const fetchfx = jest.fn().mockResolvedValueOnce({ status: 401 })
-          .mockResolvedValueOnce('after-rotate-response');
-        const rotateResult = { token: 'abc' };
+      test("`config.shouldRotate()` forces rotation then replays and returns the new response", async () => {
+        const fetchfx = jest
+          .fn()
+          .mockResolvedValueOnce({ status: 401 })
+          .mockResolvedValueOnce("after-rotate-response");
+        const rotateResult = { token: "abc" };
         const config = {
           logger: makeLogger(),
           rotate: jest.fn().mockResolvedValue(rotateResult),
@@ -69,20 +73,22 @@ describe('rotateAndReplay', () => {
           shouldRotate: async () => true,
         };
 
-        const error = { resource: '/bar', options: { foo: 'bar' } };
+        const error = { resource: "/bar", options: { foo: "bar" } };
 
         const res = await rotateAndReplay(fetchfx, config, error);
-        expect(res).toBe('after-rotate-response');
+        expect(res).toBe("after-rotate-response");
         expect(config.rotate).toHaveBeenCalled();
         expect(config.onSuccess).toHaveBeenCalledWith(rotateResult);
-        expect(fetchfx).toHaveBeenCalledWith('/bar', { foo: 'bar' });
+        expect(fetchfx).toHaveBeenCalledWith("/bar", { foo: "bar" });
       });
 
-      test('matched default error code causes rotation then replays and returns the new response', async () => {
-        const fetchfx = jest.fn().mockResolvedValueOnce({ status: 401 })
-          .mockResolvedValueOnce('after-rotate-response');
+      test("matched default error code causes rotation then replays and returns the new response", async () => {
+        const fetchfx = jest
+          .fn()
+          .mockResolvedValueOnce({ status: 401 })
+          .mockResolvedValueOnce("after-rotate-response");
 
-        const rotateResult = { token: 'abc' };
+        const rotateResult = { token: "abc" };
         const config = {
           logger: makeLogger(),
           rotate: jest.fn().mockResolvedValue(rotateResult),
@@ -91,20 +97,22 @@ describe('rotateAndReplay', () => {
           options: jest.fn((opts) => opts),
         };
 
-        const error = { resource: '/bar', options: { foo: 'bar' }, response: { status: 401 } };
+        const error = { resource: "/bar", options: { foo: "bar" }, response: { status: 401 } };
 
         const res = await rotateAndReplay(fetchfx, config, error);
-        expect(res).toBe('after-rotate-response');
+        expect(res).toBe("after-rotate-response");
         expect(config.rotate).toHaveBeenCalled();
         expect(config.onSuccess).toHaveBeenCalledWith(rotateResult);
-        expect(fetchfx).toHaveBeenCalledWith('/bar', { foo: 'bar' });
+        expect(fetchfx).toHaveBeenCalledWith("/bar", { foo: "bar" });
       });
 
-      test('matched custom error code causes rotation then replays and returns the new response', async () => {
-        const fetchfx = jest.fn().mockResolvedValueOnce({ status: 666 })
-          .mockResolvedValueOnce('after-rotate-response');
+      test("matched custom error code causes rotation then replays and returns the new response", async () => {
+        const fetchfx = jest
+          .fn()
+          .mockResolvedValueOnce({ status: 666 })
+          .mockResolvedValueOnce("after-rotate-response");
 
-        const rotateResult = { token: 'abc' };
+        const rotateResult = { token: "abc" };
         const config = {
           logger: makeLogger(),
           rotate: jest.fn().mockResolvedValue(rotateResult),
@@ -114,16 +122,16 @@ describe('rotateAndReplay', () => {
           statusCodes: [666],
         };
 
-        const error = { resource: '/bar', options: { foo: 'bar' }, response: { status: 666 } };
+        const error = { resource: "/bar", options: { foo: "bar" }, response: { status: 666 } };
 
         const res = await rotateAndReplay(fetchfx, config, error);
-        expect(res).toBe('after-rotate-response');
+        expect(res).toBe("after-rotate-response");
         expect(config.rotate).toHaveBeenCalled();
         expect(config.onSuccess).toHaveBeenCalledWith(rotateResult);
-        expect(fetchfx).toHaveBeenCalledWith('/bar', { foo: 'bar' });
+        expect(fetchfx).toHaveBeenCalledWith("/bar", { foo: "bar" });
       });
 
-      test('with the original reponse if the response status does not match', async () => {
+      test("with the original reponse if the response status does not match", async () => {
         const fetchfx = jest.fn();
         const config = {
           logger: makeLogger(),
@@ -134,7 +142,7 @@ describe('rotateAndReplay', () => {
         await expect(rotateAndReplay(fetchfx, config, err)).resolves.toBe(err.response);
       });
 
-      test('with the original reseponse if the request\'s rtrIgnore option is true', async () => {
+      test("with the original reseponse if the request's rtrIgnore option is true", async () => {
         const fetchfx = jest.fn();
         const config = {
           logger: makeLogger(),
@@ -146,10 +154,10 @@ describe('rotateAndReplay', () => {
       });
     });
 
-    describe('rejects', () => {
-      test('when rotation itself fails, calls onFailure and rejects with the original error', async () => {
+    describe("rejects", () => {
+      test("when rotation itself fails, calls onFailure and rejects with the original error", async () => {
         const fetchfx = jest.fn().mockResolvedValueOnce({ status: 401 });
-        const rotateErr = new RTRError('rotate failed');
+        const rotateErr = new RTRError("rotate failed");
         const config = {
           logger: makeLogger(),
           rotate: jest.fn().mockRejectedValue(rotateErr),
@@ -159,14 +167,14 @@ describe('rotateAndReplay', () => {
           shouldRotate: async () => true,
         };
 
-        const originalError = { resource: '/baz', options: {}, response: { status: 401 } };
+        const originalError = { resource: "/baz", options: {}, response: { status: 401 } };
 
         await expect(rotateAndReplay(fetchfx, config, originalError)).rejects.toBe(originalError);
         expect(config.onFailure).toHaveBeenCalled();
         expect(fetchfx).toHaveBeenCalledWith(originalError.resource, originalError.options);
       });
 
-      test('when replay fails, rejects with the original error', async () => {
+      test("when replay fails, rejects with the original error", async () => {
         const fetchfx = jest.fn().mockRejectedValue({ status: 401 });
 
         const config = {
@@ -178,7 +186,7 @@ describe('rotateAndReplay', () => {
           shouldRotate: async () => true,
         };
 
-        const originalError = { resource: '/baz', options: {}, response: { status: 401 } };
+        const originalError = { resource: "/baz", options: {}, response: { status: 401 } };
 
         await expect(rotateAndReplay(fetchfx, config, originalError)).rejects.toBe(originalError);
         expect(config.onFailure).not.toHaveBeenCalled();
@@ -187,12 +195,12 @@ describe('rotateAndReplay', () => {
     });
   });
 
-  describe('without an error response (XHR)', () => {
+  describe("without an error response (XHR)", () => {
     // effectively, this is just a test of whether `shouldRotate` forces
     // rotation when no error response is present, e.g. in an XHR
-    test('shouldRotate forces rotation then returns undefined', async () => {
-      const fetchfx = jest.fn().mockResolvedValue('after-rotate-response');
-      const rotateResult = { token: 'abc' };
+    test("shouldRotate forces rotation then returns undefined", async () => {
+      const fetchfx = jest.fn().mockResolvedValue("after-rotate-response");
+      const rotateResult = { token: "abc" };
       const config = {
         logger: makeLogger(),
         rotate: jest.fn().mockResolvedValue(rotateResult),
@@ -209,9 +217,9 @@ describe('rotateAndReplay', () => {
     });
   });
 
-  test('uses navigator.locks.request when available', async () => {
-    const fetchfx = jest.fn().mockResolvedValue('nav-lock-response');
-    const rotateResult = { token: 'nav' };
+  test("uses navigator.locks.request when available", async () => {
+    const fetchfx = jest.fn().mockResolvedValue("nav-lock-response");
+    const rotateResult = { token: "nav" };
     const config = {
       logger: makeLogger(),
       rotate: jest.fn().mockResolvedValue(rotateResult),
@@ -226,9 +234,9 @@ describe('rotateAndReplay', () => {
     // @ts-ignore
     global.navigator = { locks: { request: jest.fn((key, cb) => cb()) } };
 
-    const err = { resource: '/nav', options: {} };
+    const err = { resource: "/nav", options: {} };
     const res = await rotateAndReplay(fetchfx, config, err);
-    expect(res).toBe('nav-lock-response');
+    expect(res).toBe("nav-lock-response");
     // ensure lock was requested with the exported key
     // @ts-ignore
     expect(global.navigator.locks.request).toHaveBeenCalledWith(RTR_LOCK_KEY, expect.any(Function));

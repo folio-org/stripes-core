@@ -1,3 +1,3 @@
 export default (server) => {
-  server.post('/bl-users/password-reset/validate', {}, 500);
+  server.post("/bl-users/password-reset/validate", {}, 500);
 };

@@ -1,1 +1,1 @@
-export { default } from './SSOLogin';
+export { default } from "./SSOLogin";

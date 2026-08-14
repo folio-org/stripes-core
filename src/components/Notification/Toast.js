@@ -1,7 +1,7 @@
-import React, { Portal } from 'react';
-import PropTypes from 'prop-types';
-import ToastNotification from './ToastNotification';
-import css from './Toast.css';
+import React, { Portal } from "react";
+import PropTypes from "prop-types";
+import ToastNotification from "./ToastNotification";
+import css from "./Toast.css";
 
 const propTypes = {
   /*
@@ -41,12 +41,8 @@ class Toast extends React.Component {
     return (
       <Portal container={document.body}>
         <div>
-          <div className={`${css.toastContainerRoot} ${css.top}`}>
-            {topMessages}
-          </div>
-          <div className={css.toastContainerRoot}>
-            {bottomMessages}
-          </div>
+          <div className={`${css.toastContainerRoot} ${css.top}`}>{topMessages}</div>
+          <div className={css.toastContainerRoot}>{bottomMessages}</div>
         </div>
       </Portal>
     );

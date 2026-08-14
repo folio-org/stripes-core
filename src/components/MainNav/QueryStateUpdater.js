@@ -1,11 +1,11 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { compose } from 'redux';
-import { injectIntl } from 'react-intl';
-import { withRouter } from 'react-router';
-import { isEqual } from 'lodash';
+import React from "react";
+import PropTypes from "prop-types";
+import { compose } from "redux";
+import { injectIntl } from "react-intl";
+import { withRouter } from "react-router";
+import { isEqual } from "lodash";
 
-import { withModules } from '../Modules';
+import { withModules } from "../Modules";
 
 import {
   updateQueryResource,
@@ -14,12 +14,12 @@ import {
   getCurrentModule,
   isQueryResourceModule,
   getQueryResourceState,
-} from '../../locationService';
+} from "../../locationService";
 
 /** QueryStateUpdater
-*   onMount of stripes, sync the query state to the location.
-*   Also if the location itself changes, sync the query resource to the current location.
-*/
+ *   onMount of stripes, sync the query state to the location.
+ *   Also if the location itself changes, sync the query resource to the current location.
+ */
 
 class QueryStateUpdater extends React.Component {
   static propTypes = {
@@ -42,11 +42,8 @@ class QueryStateUpdater extends React.Component {
         subscribe: PropTypes.func.isRequired,
       }),
     }),
-    children: PropTypes.oneOfType([
-      PropTypes.arrayOf(PropTypes.node),
-      PropTypes.node,
-    ]),
-  }
+    children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
+  };
 
   constructor(props) {
     super(props);
@@ -92,8 +89,4 @@ class QueryStateUpdater extends React.Component {
   render = () => this.props.children;
 }
 
-export default compose(
-  injectIntl,
-  withRouter,
-  withModules,
-)(QueryStateUpdater);
+export default compose(injectIntl, withRouter, withModules)(QueryStateUpdater);

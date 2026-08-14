@@ -1,1 +1,1 @@
-export { default } from './TitleManager';
+export { default } from "./TitleManager";

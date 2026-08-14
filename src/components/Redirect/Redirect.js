@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
-import PropTypes from 'prop-types';
+import { useEffect } from "react";
+import PropTypes from "prop-types";
 
 /**
  * Redirect to the given URL. react-router's built-in Redirect is
@@ -12,7 +12,7 @@ import PropTypes from 'prop-types';
  */
 const Redirect = ({ to, push }) => {
   useEffect(() => {
-    const action = push ? 'assign' : 'replace';
+    const action = push ? "assign" : "replace";
     window.location[action](to);
   }, [to, push]);
 

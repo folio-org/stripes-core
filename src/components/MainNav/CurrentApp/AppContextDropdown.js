@@ -1,23 +1,19 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { FormattedMessage } from 'react-intl';
-import { Dropdown, DropdownMenu } from '@folio/stripes-components';
-import CurrentAppButton from './CurrentAppButton';
-import { withAppCtxMenu } from './AppCtxMenuContext';
+import React from "react";
+import PropTypes from "prop-types";
+import { FormattedMessage } from "react-intl";
+import { Dropdown, DropdownMenu } from "@folio/stripes-components";
+import CurrentAppButton from "./CurrentAppButton";
+import { withAppCtxMenu } from "./AppCtxMenuContext";
 
 class AppContextDropdown extends React.Component {
   static propTypes = {
     onToggle: PropTypes.func,
     open: PropTypes.bool,
     selectedApp: PropTypes.object,
-  }
+  };
 
   render() {
-    const {
-      onToggle: handleToggle,
-      open,
-      selectedApp,
-    } = this.props;
+    const { onToggle: handleToggle, open, selectedApp } = this.props;
 
     const renderToggle = ({ triggerRef, onToggle, ariaProps, keyHandler }) => (
       <CurrentAppButton
@@ -40,11 +36,7 @@ class AppContextDropdown extends React.Component {
     );
 
     const renderMenu = ({ open: openRenderMenu }) => (
-      <DropdownMenu
-        id="App_context_dropdown_menu"
-        onToggle={handleToggle}
-        open={openRenderMenu}
-      >
+      <DropdownMenu id="App_context_dropdown_menu" onToggle={handleToggle} open={openRenderMenu}>
         {/* `currently, dropdowns need something initially rendered
         in order for the element to render/be used
         as a Portal target later` */}

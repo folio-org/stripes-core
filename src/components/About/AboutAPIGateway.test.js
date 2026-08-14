@@ -1,18 +1,15 @@
-import {
-  render,
-  screen,
-} from '@folio/jest-config-stripes/testing-library/react';
+import { render, screen } from "@folio/jest-config-stripes/testing-library/react";
 
-import { useStripes } from '../../StripesContext';
-import AboutAPIGateway from './AboutAPIGateway';
+import { useStripes } from "../../StripesContext";
+import AboutAPIGateway from "./AboutAPIGateway";
 
-jest.mock('../../StripesContext');
+jest.mock("../../StripesContext");
 
-describe('AboutAPIGateway', () => {
-  it('displays API gateway details', async () => {
+describe("AboutAPIGateway", () => {
+  it("displays API gateway details", async () => {
     const okapi = {
-      tenant: 'barbie',
-      url: 'https://oppie.com'
+      tenant: "barbie",
+      url: "https://oppie.com",
     };
 
     const mockUseStripes = useStripes;

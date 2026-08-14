@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 
-import styles from './FieldLabel.css';
+import styles from "./FieldLabel.css";
 
 export default class FieldLabel extends Component {
   static propTypes = {
@@ -10,16 +10,10 @@ export default class FieldLabel extends Component {
   };
 
   render() {
-    const {
-      htmlFor,
-      children
-    } = this.props;
+    const { htmlFor, children } = this.props;
 
     return (
-      <label
-        htmlFor={htmlFor}
-        className={styles.label}
-      >
+      <label htmlFor={htmlFor} className={styles.label}>
         {children}
       </label>
     );

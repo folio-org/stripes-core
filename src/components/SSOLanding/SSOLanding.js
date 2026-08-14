@@ -1,11 +1,9 @@
-import { Redirect } from 'react-router';
+import { Redirect } from "react-router";
 
-import {
-  Loading,
-} from '@folio/stripes-components';
+import { Loading } from "@folio/stripes-components";
 
-import useSSOSession from './useSSOSession';
-import styles from './SSOLanding.css';
+import useSSOSession from "./useSSOSession";
+import styles from "./SSOLanding.css";
 
 const SSOLanding = () => {
   const { isSessionFailed } = useSSOSession();
@@ -15,10 +13,7 @@ const SSOLanding = () => {
   }
 
   return (
-    <main
-      data-test-sso-success
-      className={styles.ssoLoading}
-    >
+    <main data-test-sso-success className={styles.ssoLoading}>
       <Loading size="xlarge" />
     </main>
   );

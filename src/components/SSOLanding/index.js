@@ -1,1 +1,1 @@
-export { default } from './SSOLanding';
+export { default } from "./SSOLanding";

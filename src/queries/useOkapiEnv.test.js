@@ -1,23 +1,20 @@
-import {
-  QueryClient,
-  QueryClientProvider,
-} from 'react-query';
-import { renderHook, waitFor } from '@folio/jest-config-stripes/testing-library/react';
+import { QueryClient, QueryClientProvider } from "react-query";
+import { renderHook, waitFor } from "@folio/jest-config-stripes/testing-library/react";
 
-import useOkapiEnv from './useOkapiEnv';
-import { useStripes } from '../StripesContext';
-import useOkapiKy from '../useOkapiKy';
+import useOkapiEnv from "./useOkapiEnv";
+import { useStripes } from "../StripesContext";
+import useOkapiKy from "../useOkapiKy";
 
-jest.mock('../useOkapiKy');
-jest.mock('../StripesContext');
+jest.mock("../useOkapiKy");
+jest.mock("../StripesContext");
 
 // reassign console.log to keep things quiet
 const consoleInterruptor = {};
 beforeAll(() => {
   consoleInterruptor.log = global.console.log;
   consoleInterruptor.error = global.console.error;
-  console.log = () => { };
-  console.error = () => { };
+  console.log = () => {};
+  console.error = () => {};
 });
 
 afterAll(() => {
@@ -32,14 +29,14 @@ afterAll(() => {
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      retry: false
-    }
-  }
+      retry: false,
+    },
+  },
 });
 
-describe('Given useOkapiEnv', () => {
-  describe('correctly checks permissions: with permissions', () => {
-    const response = [{ name: 'MONKEY', value: 'bagel' }];
+describe("Given useOkapiEnv", () => {
+  describe("correctly checks permissions: with permissions", () => {
+    const response = [{ name: "MONKEY", value: "bagel" }];
 
     beforeEach(() => {
       const mockUseStripes = useStripes;
@@ -55,11 +52,9 @@ describe('Given useOkapiEnv', () => {
       });
     });
 
-    it('with permission, calls get', async () => {
+    it("with permission, calls get", async () => {
       const wrapper = ({ children }) => (
-        <QueryClientProvider client={queryClient}>
-          {children}
-        </QueryClientProvider>
+        <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
       );
 
       const { result } = renderHook(() => useOkapiEnv({}), { wrapper });
@@ -68,15 +63,15 @@ describe('Given useOkapiEnv', () => {
       // so we convert isLoading from being truthy to being errory
       await waitFor(() => {
         if (result.current.isLoading) {
-          throw new Error('Kaboom');
+          throw new Error("Kaboom");
         }
       });
 
-      expect(result.current.data).toEqual({ MONKEY: 'bagel' });
+      expect(result.current.data).toEqual({ MONKEY: "bagel" });
     });
   });
 
-  describe('correctly checks permissions: without permissions', () => {
+  describe("correctly checks permissions: without permissions", () => {
     beforeEach(() => {
       const mockUseStripes = useStripes;
       mockUseStripes.mockReturnValue({
@@ -91,11 +86,9 @@ describe('Given useOkapiEnv', () => {
       });
     });
 
-    it('without permission, throws an error', async () => {
+    it("without permission, throws an error", async () => {
       const wrapper = ({ children }) => (
-        <QueryClientProvider client={queryClient}>
-          {children}
-        </QueryClientProvider>
+        <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
       );
 
       const { result } = renderHook(() => useOkapiEnv({}), { wrapper });
@@ -104,7 +97,7 @@ describe('Given useOkapiEnv', () => {
       // so we convert isLoading from being truthy to being errory
       await waitFor(() => {
         if (result.current.isLoading) {
-          throw new Error('Kaboom');
+          throw new Error("Kaboom");
         }
       });
 
@@ -112,4 +105,3 @@ describe('Given useOkapiEnv', () => {
     });
   });
 });
-

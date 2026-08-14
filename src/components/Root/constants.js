@@ -1,22 +1,22 @@
 /** dispatched during RTR when it is successful */
-export const RTR_SUCCESS_EVENT = '@folio/stripes/core::RTRSuccess';
+export const RTR_SUCCESS_EVENT = "@folio/stripes/core::RTRSuccess";
 
 /** dispatched during RTR if RTR itself fails */
-export const RTR_ERROR_EVENT = '@folio/stripes/core::RTRError';
+export const RTR_ERROR_EVENT = "@folio/stripes/core::RTRError";
 
 /** dispatched if window isn't focused when RTR is attempted */
-export const RTR_DELAYED_NOT_FOCUSED = '@folio/stripes/core::RTRDelayedNotFocused';
+export const RTR_DELAYED_NOT_FOCUSED = "@folio/stripes/core::RTRDelayedNotFocused";
 
 /**
  * dispatched if the session is idle (without activity) for too long
  */
-export const RTR_TIMEOUT_EVENT = '@folio/stripes/core::RTRIdleSessionTimeout';
+export const RTR_TIMEOUT_EVENT = "@folio/stripes/core::RTRIdleSessionTimeout";
 
 /** dispatched when the fixed-length session is about to end */
-export const RTR_FLS_WARNING_EVENT = '@folio/stripes/core::RTRFLSWarning';
+export const RTR_FLS_WARNING_EVENT = "@folio/stripes/core::RTRFLSWarning";
 
 /** dispatched when the fixed-length session ends */
-export const RTR_FLS_TIMEOUT_EVENT = '@folio/stripes/core::RTRFLSTimeout';
+export const RTR_FLS_TIMEOUT_EVENT = "@folio/stripes/core::RTRFLSTimeout";
 
 /**
  * how long is the FLS warning visible?
@@ -27,10 +27,10 @@ export const RTR_FLS_TIMEOUT_EVENT = '@folio/stripes/core::RTRFLSTimeout';
  * overridden in stripes.config.js::config.rtr.fixedLengthSessionWarningTTL
  * value must be a string parsable by ms()
  */
-export const RTR_FLS_WARNING_TTL = '1m';
+export const RTR_FLS_WARNING_TTL = "1m";
 
 /** BroadcastChannel for cross-window activity pings */
-export const RTR_ACTIVITY_CHANNEL = '@folio/stripes/core::RTRActivityChannel';
+export const RTR_ACTIVITY_CHANNEL = "@folio/stripes/core::RTRActivityChannel";
 
 /**
  * how much of a token's lifespan can elapse before it is considered expired?
@@ -46,7 +46,7 @@ export const RTR_AT_TTL_FRACTION = 0.8;
  * events that constitute "activity" and will prolong the session.
  * overridden in stripes.config.js::config.rtr.activityEvents.
  */
-export const RTR_ACTIVITY_EVENTS = ['keydown', 'mousedown'];
+export const RTR_ACTIVITY_EVENTS = ["keydown", "mousedown"];
 
 /**
  * how long does an idle session last?
@@ -60,7 +60,7 @@ export const RTR_ACTIVITY_EVENTS = ['keydown', 'mousedown'];
  * overridden in stripes.config.js::config.rtr.idleSessionTTL
  * value must be a string parsable by ms()
  */
-export const RTR_IDLE_SESSION_TTL = '4h';
+export const RTR_IDLE_SESSION_TTL = "4h";
 
 /**
  * how long is the "keep working?" modal visible
@@ -73,7 +73,7 @@ export const RTR_IDLE_SESSION_TTL = '4h';
  * overridden in stripes.config.js::config.rtr.idleModalTTL
  * value must be a string parsable by ms()
  */
-export const RTR_IDLE_MODAL_TTL = '1m';
+export const RTR_IDLE_MODAL_TTL = "1m";
 
 /**
  * When resuming an existing session but there is no token-expiration
@@ -88,8 +88,8 @@ export const RTR_IDLE_MODAL_TTL = '1m';
  * the rotation-response _will_ contain token-expiration values we can use to
  * replace these.
  */
-export const RTR_AT_EXPIRY_IF_UNKNOWN = '10s';
-export const RTR_RT_EXPIRY_IF_UNKNOWN = '10m';
+export const RTR_AT_EXPIRY_IF_UNKNOWN = "10s";
+export const RTR_RT_EXPIRY_IF_UNKNOWN = "10m";
 
 /**
  * To account for minor delays between events (such as cookie expiration and API calls),
@@ -99,12 +99,12 @@ export const RTR_TIME_MARGIN_IN_MS = 200;
 
 /**
  * Used by RTR logic to determine the priority window - only windows with matching ID's can rotate.
-*/
-export const SESSION_ACTIVE_WINDOW_ID = '@folio/stripes/core::activeWindowId';
+ */
+export const SESSION_ACTIVE_WINDOW_ID = "@folio/stripes/core::activeWindowId";
 
 /** Message type for the BroadcastChannel to indicate the active window */
-export const RTR_ACTIVE_WINDOW_MSG = '@folio/stripes/core::activeWindowMessage';
+export const RTR_ACTIVE_WINDOW_MSG = "@folio/stripes/core::activeWindowMessage";
 /** Message channel for the BroadcastChannel to indicate the active window */
-export const RTR_ACTIVE_WINDOW_MSG_CHANNEL = '@folio/stripes/core::activeWindowMessageChannel';
+export const RTR_ACTIVE_WINDOW_MSG_CHANNEL = "@folio/stripes/core::activeWindowMessageChannel";
 /** dispatched when the session is ready */
-export const SESSION_READY_EVENT = '@folio/stripes/core::SessionReady';
+export const SESSION_READY_EVENT = "@folio/stripes/core::SessionReady";

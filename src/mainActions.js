@@ -1,5 +1,5 @@
-const RESET_STORE = 'RESET_STORE';
-const DESTROY_STORE = 'DESTROY_STORE';
+const RESET_STORE = "RESET_STORE";
+const DESTROY_STORE = "DESTROY_STORE";
 
 const actionTypes = {
   RESET_STORE,
@@ -18,8 +18,4 @@ function destroyStore() {
   };
 }
 
-export {
-  resetStore,
-  destroyStore,
-  actionTypes,
-};
+export { resetStore, destroyStore, actionTypes };

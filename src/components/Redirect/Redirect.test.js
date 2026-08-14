@@ -1,12 +1,12 @@
-import { render } from '@testing-library/react';
-import { createMemoryHistory } from 'history';
+import { render } from "@testing-library/react";
+import { createMemoryHistory } from "history";
 
-import Harness from '../../../test/jest/helpers/harness';
-import Redirect from './Redirect';
+import Harness from "../../../test/jest/helpers/harness";
+import Redirect from "./Redirect";
 
-describe('Redirect', () => {
+describe("Redirect", () => {
   it('updates window.location with "replace"', () => {
-    const to = 'http://monkeybagel.com/';
+    const to = "http://monkeybagel.com/";
 
     const stripes = {
       config: {},
@@ -17,7 +17,7 @@ describe('Redirect', () => {
     render(
       <Harness history={history} stripes={stripes}>
         <Redirect to={to} />
-      </Harness>
+      </Harness>,
     );
 
     expect(window.location).toBeAt(to);
@@ -25,7 +25,7 @@ describe('Redirect', () => {
   });
 
   it('updates window.location with "assign"', () => {
-    const to = 'http://monkeybagel.com/';
+    const to = "http://monkeybagel.com/";
 
     const stripes = {
       config: {},
@@ -36,7 +36,7 @@ describe('Redirect', () => {
     render(
       <Harness history={history} stripes={stripes}>
         <Redirect to={to} push />
-      </Harness>
+      </Harness>,
     );
 
     expect(window.location).toBeAt(to);

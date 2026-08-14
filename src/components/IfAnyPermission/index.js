@@ -1,1 +1,1 @@
-export { default } from './IfAnyPermission';
+export { default } from "./IfAnyPermission";

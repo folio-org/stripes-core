@@ -1,1 +1,1 @@
-export { default } from './ResizeContainer';
+export { default } from "./ResizeContainer";

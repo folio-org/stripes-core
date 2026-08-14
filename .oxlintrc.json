@@ -1,0 +1,9 @@
+{
+  "$schema": "https://oxc.rs/docs/guide/configuration.json",
+  "settings": {
+    "jsx-a11y/aria-role": "warn"
+  },
+  "env": {
+    "es2021": true
+  }
+}

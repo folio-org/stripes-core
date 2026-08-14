@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 
-import CreateResetPasswordControl from './CreateResetPasswordControl';
+import CreateResetPasswordControl from "./CreateResetPasswordControl";
 
 class CreateResetPasswordControlWrapper extends Component {
   static propTypes = {

@@ -1,29 +1,26 @@
-import { Router as DefaultRouter } from 'react-router-dom';
-import { createMemoryHistory } from 'history';
-import {
-  QueryClient,
-  QueryClientProvider,
-} from 'react-query';
+import { Router as DefaultRouter } from "react-router-dom";
+import { createMemoryHistory } from "history";
+import { QueryClient, QueryClientProvider } from "react-query";
 
-import { StripesContext } from '../../../src/StripesContext';
+import { StripesContext } from "../../../src/StripesContext";
 
-import IntlProvider from './intl';
+import IntlProvider from "./intl";
 // import buildStripes from '../__mock__/stripesCore.mock';
 
 const STRIPES = {
   actionNames: [],
-  connect: component => component,
+  connect: (component) => component,
   config: {},
-  currency: 'USD',
+  currency: "USD",
   hasInterface: () => true,
   hasPerm: jest.fn(() => true),
-  locale: 'en-US',
+  locale: "en-US",
   logger: {
-    log: () => { },
+    log: () => {},
   },
   okapi: {
-    tenant: 'diku',
-    url: 'https://folio-testing-okapi.dev.folio.org',
+    tenant: "diku",
+    url: "https://folio-testing-okapi.dev.folio.org",
   },
 };
 
@@ -31,19 +28,12 @@ const defaultHistory = createMemoryHistory();
 
 const queryClient = new QueryClient();
 
-const Harness = ({
-  Router = DefaultRouter,
-  stripes,
-  children,
-  history = defaultHistory,
-}) => {
+const Harness = ({ Router = DefaultRouter, stripes, children, history = defaultHistory }) => {
   return (
     <QueryClientProvider client={queryClient}>
       <StripesContext.Provider value={stripes || STRIPES}>
         <Router history={history}>
-          <IntlProvider>
-            {children}
-          </IntlProvider>
+          <IntlProvider>{children}</IntlProvider>
         </Router>
       </StripesContext.Provider>
     </QueryClientProvider>

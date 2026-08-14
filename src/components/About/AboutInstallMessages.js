@@ -1,19 +1,13 @@
-import React from 'react';
-import { FormattedDate } from 'react-intl';
+import React from "react";
+import { FormattedDate } from "react-intl";
 
-import {
-  Headline,
-} from '@folio/stripes-components';
-import {
-  useConfigurations,
-  useOkapiEnv,
-} from '../../queries';
-import { useStripes } from '../../StripesContext';
-
+import { Headline } from "@folio/stripes-components";
+import { useConfigurations, useOkapiEnv } from "../../queries";
+import { useStripes } from "../../StripesContext";
 
 export function entryFor(config, code) {
-  const entry = config?.configs?.find(i => i.code === code);
-  return entry ? entry.value : '';
+  const entry = config?.configs?.find((i) => i.code === code);
+  return entry ? entry.value : "";
 }
 
 /**
@@ -28,7 +22,12 @@ export function entryFor(config, code) {
  * @returns string
  */
 export function installVersion(env, conf, stripesConf) {
-  return env?.ABOUT_INSTALL_VERSION || entryFor(conf, 'version') || stripesConf?.aboutInstallVersion || '';
+  return (
+    env?.ABOUT_INSTALL_VERSION ||
+    entryFor(conf, "version") ||
+    stripesConf?.aboutInstallVersion ||
+    ""
+  );
 }
 
 /**
@@ -42,7 +41,7 @@ export function installVersion(env, conf, stripesConf) {
  * @returns Component
  */
 export function installDate(env, conf, stripesConf) {
-  return env?.ABOUT_INSTALL_DATE || entryFor(conf, 'date') || stripesConf?.aboutInstallDate || '';
+  return env?.ABOUT_INSTALL_DATE || entryFor(conf, "date") || stripesConf?.aboutInstallDate || "";
 }
 
 /**
@@ -56,7 +55,12 @@ export function installDate(env, conf, stripesConf) {
  * @returns Component
  */
 export function installMessage(env, conf, stripesConf) {
-  return env?.ABOUT_INSTALL_MESSAGE || entryFor(conf, 'message') || stripesConf?.aboutInstallMessage || '';
+  return (
+    env?.ABOUT_INSTALL_MESSAGE ||
+    entryFor(conf, "message") ||
+    stripesConf?.aboutInstallMessage ||
+    ""
+  );
 }
 
 /**
@@ -79,22 +83,26 @@ const AboutInstallMessages = () => {
   const stripes = useStripes();
   const aboutEnv = useOkapiEnv();
   const aboutConfig = useConfigurations({
-    module: '@folio/stripes-core',
-    configName: 'aboutInstall',
+    module: "@folio/stripes-core",
+    configName: "aboutInstall",
   });
 
   const version = installVersion(aboutEnv.data, aboutConfig.data, stripes.config);
   const date = installDate(aboutEnv.data, aboutConfig.data, stripes.config);
   const message = installMessage(aboutEnv.data, aboutConfig.data, stripes.config);
 
-  let formattedDate = '';
+  let formattedDate = "";
   if (date) {
     formattedDate = <FormattedDate value={date} />;
   }
 
   return (
     <>
-      {(version || formattedDate) && <Headline size="large">{version} {formattedDate}</Headline>}
+      {(version || formattedDate) && (
+        <Headline size="large">
+          {version} {formattedDate}
+        </Headline>
+      )}
       {message && <div>{message}</div>}
     </>
   );

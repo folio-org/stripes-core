@@ -1,39 +1,33 @@
 /* shhhh, eslint, it's ok. we need "unused" imports for mocks */
 /* eslint-disable no-unused-vars */
 
-import {
-  QueryClient,
-  QueryClientProvider,
-} from 'react-query';
-import {
-  render,
-  screen,
-} from '@folio/jest-config-stripes/testing-library/react';
+import { QueryClient, QueryClientProvider } from "react-query";
+import { render, screen } from "@folio/jest-config-stripes/testing-library/react";
 
-import { okapi as okapiConfig } from 'stripes-config';
+import { okapi as okapiConfig } from "stripes-config";
 
-import AboutAPIGateway from './AboutAPIGateway';
-import AboutApplicationVersions from './AboutApplicationVersions';
-import AboutEnabledModules from './AboutEnabledModules';
-import AboutInstallMessages from './AboutInstallMessages';
-import AboutOkapi from './AboutOkapi';
-import AboutStripes from './AboutStripes';
-import AboutUIDependencies from './AboutUIDependencies';
-import AboutUIModuleDetails from './AboutUIModuleDetails';
-import WarningBanner from './WarningBanner';
+import AboutAPIGateway from "./AboutAPIGateway";
+import AboutApplicationVersions from "./AboutApplicationVersions";
+import AboutEnabledModules from "./AboutEnabledModules";
+import AboutInstallMessages from "./AboutInstallMessages";
+import AboutOkapi from "./AboutOkapi";
+import AboutStripes from "./AboutStripes";
+import AboutUIDependencies from "./AboutUIDependencies";
+import AboutUIModuleDetails from "./AboutUIModuleDetails";
+import WarningBanner from "./WarningBanner";
 
-import { useStripes } from '../../StripesContext';
-import About from './About';
+import { useStripes } from "../../StripesContext";
+import About from "./About";
 
-jest.mock('./AboutAPIGateway', () => () => 'AboutAPIGateway');
-jest.mock('./AboutApplicationVersions', () => () => 'AboutApplicationVersions');
-jest.mock('./AboutEnabledModules', () => () => 'AboutEnabledModules');
-jest.mock('./AboutInstallMessages', () => () => 'AboutInstallMessages');
-jest.mock('./AboutOkapi', () => () => 'AboutOkapi');
-jest.mock('./AboutStripes', () => () => 'AboutStripes');
-jest.mock('./AboutUIDependencies', () => () => 'AboutUIDependencies');
-jest.mock('./AboutUIModuleDetails', () => () => 'AboutUIModuleDetails');
-jest.mock('./WarningBanner', () => () => 'WarningBanner');
+jest.mock("./AboutAPIGateway", () => () => "AboutAPIGateway");
+jest.mock("./AboutApplicationVersions", () => () => "AboutApplicationVersions");
+jest.mock("./AboutEnabledModules", () => () => "AboutEnabledModules");
+jest.mock("./AboutInstallMessages", () => () => "AboutInstallMessages");
+jest.mock("./AboutOkapi", () => () => "AboutOkapi");
+jest.mock("./AboutStripes", () => () => "AboutStripes");
+jest.mock("./AboutUIDependencies", () => () => "AboutUIDependencies");
+jest.mock("./AboutUIModuleDetails", () => () => "AboutUIModuleDetails");
+jest.mock("./WarningBanner", () => () => "WarningBanner");
 
 // set query retries to false. otherwise, react-query will thoughtfully
 // (but unhelpfully, in the context of testing) retry a failed query
@@ -42,56 +36,56 @@ jest.mock('./WarningBanner', () => () => 'WarningBanner');
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      retry: false
-    }
-  }
+      retry: false,
+    },
+  },
 });
 
-jest.mock('../../StripesContext');
+jest.mock("../../StripesContext");
 
-describe('About', () => {
-  it('displays application discovery details', async () => {
+describe("About", () => {
+  it("displays application discovery details", async () => {
     const modules = {
       app: [
         {
-          module: 'app-alpha',
-          version: '1.2.3',
+          module: "app-alpha",
+          version: "1.2.3",
           okapiInterfaces: {
-            iAlpha: '1.0',
-          }
+            iAlpha: "1.0",
+          },
         },
-        { module: 'app-beta', version: '2.3.4' }
+        { module: "app-beta", version: "2.3.4" },
       ],
       settings: [
-        { module: 'settings-alpha', version: '3.4.5' },
-        { module: 'settings-beta', version: '4.5.6' }
+        { module: "settings-alpha", version: "3.4.5" },
+        { module: "settings-beta", version: "4.5.6" },
       ],
       plugin: [
-        { module: 'plugin-alpha', version: '5.6.7' },
-        { module: 'plugin-beta', version: '6.7.8' }
+        { module: "plugin-alpha", version: "5.6.7" },
+        { module: "plugin-beta", version: "6.7.8" },
       ],
       typeThatHasNotBeenInventedYet: [
-        { module: 'typeThatHasNotBeenInventedYet-alpha', version: '7.8.9' },
-        { module: 'typeThatHasNotBeenInventedYet-beta', version: '8.9.10' }
+        { module: "typeThatHasNotBeenInventedYet-alpha", version: "7.8.9" },
+        { module: "typeThatHasNotBeenInventedYet-beta", version: "8.9.10" },
       ],
     };
 
     const stripes = {
       okapi: {
-        tenant: 'barbie',
-        url: 'https://oppie.edu',
+        tenant: "barbie",
+        url: "https://oppie.edu",
       },
       discovery: {
         modules,
         interfaces: {
-          bar: '1.0',
-          bat: '2.0',
+          bar: "1.0",
+          bat: "2.0",
         },
         isFinished: true,
       },
       config: {
         tenantOptions: true,
-      }
+      },
     };
 
     const mockUseStripes = useStripes;
@@ -100,7 +94,7 @@ describe('About', () => {
     render(
       <QueryClientProvider client={queryClient}>
         <About />
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     expect(screen.getByText(/WarningBanner/)).toBeInTheDocument();

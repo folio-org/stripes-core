@@ -1,14 +1,11 @@
-import React, { useLayoutEffect } from 'react';
-import PropTypes from 'prop-types';
-import Redirect from '../Redirect';
-import PreLoginLanding from '../PreLoginLanding';
-import Login from '../Login';
+import React, { useLayoutEffect } from "react";
+import PropTypes from "prop-types";
+import Redirect from "../Redirect";
+import PreLoginLanding from "../PreLoginLanding";
+import Login from "../Login";
 
-import { setOkapiTenant } from '../../okapiActions';
-import {
-  setUnauthorizedPathToSession,
-  getOIDCRedirectUri,
-} from '../../loginServices';
+import { setOkapiTenant } from "../../okapiActions";
+import { setUnauthorizedPathToSession, getOIDCRedirectUri } from "../../loginServices";
 
 const AuthnLogin = ({ handleRotation, stripes }) => {
   const { config, okapi } = stripes;
@@ -37,7 +34,7 @@ const AuthnLogin = ({ handleRotation, stripes }) => {
      *
      * @see OIDCRedirect
      */
-    if (okapi.authnUrl && window.location.pathname !== '/') {
+    if (okapi.authnUrl && window.location.pathname !== "/") {
       setUnauthorizedPathToSession();
     }
 
@@ -63,16 +60,12 @@ const AuthnLogin = ({ handleRotation, stripes }) => {
     return <PreLoginLanding onSelectTenant={setTenant} />;
   }
 
-  return <Login
-    autoLogin={config.autoLogin}
-    handleRotation={handleRotation}
-    stripes={stripes}
-  />;
+  return <Login autoLogin={config.autoLogin} handleRotation={handleRotation} stripes={stripes} />;
 };
 
 AuthnLogin.propTypes = {
   handleRotation: PropTypes.func.isRequired,
-  stripes: PropTypes.object
+  stripes: PropTypes.object,
 };
 
 export default AuthnLogin;

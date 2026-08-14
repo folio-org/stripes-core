@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
-import { isFunction, kebabCase } from 'lodash';
-import { compose } from 'redux';
-import { withRouter } from 'react-router';
-import PropTypes from 'prop-types';
-import { FormattedMessage, injectIntl } from 'react-intl';
+import React, { Component } from "react";
+import { isFunction, kebabCase } from "lodash";
+import { compose } from "redux";
+import { withRouter } from "react-router";
+import PropTypes from "prop-types";
+import { FormattedMessage, injectIntl } from "react-intl";
 
 import {
   Avatar,
@@ -14,14 +14,14 @@ import {
   NavList,
   NavListItem,
   NavListSection,
-} from '@folio/stripes-components';
+} from "@folio/stripes-components";
 
-import NavButton from '../NavButton';
-import css from './ProfileDropdown.css';
-import { withModules } from '../../Modules';
-import { handleEvent } from '../../../handlerService';
-import validations from '../../../userDropdownLinksService';
-import IntlConsumer from '../../IntlConsumer';
+import NavButton from "../NavButton";
+import css from "./ProfileDropdown.css";
+import { withModules } from "../../Modules";
+import { handleEvent } from "../../../handlerService";
+import validations from "../../../userDropdownLinksService";
+import IntlConsumer from "../../IntlConsumer";
 
 class ProfileDropdown extends Component {
   static propTypes = {
@@ -62,9 +62,12 @@ class ProfileDropdown extends Component {
   }
 
   setInitialState(callback) {
-    this.setState({
-      HandlerComponent: null,
-    }, callback);
+    this.setState(
+      {
+        HandlerComponent: null,
+      },
+      callback,
+    );
   }
 
   getDropdownMenuLinks = () => {
@@ -74,19 +77,17 @@ class ProfileDropdown extends Component {
       const links = m.links.userDropdown.map((link, index) => this.createLink(link, index, m));
       return acc.concat(links);
     }, []);
-  }
+  };
 
   getModulesWithLinks = () => {
     const { modules } = this.props;
     return Object.values(modules)
       .flat()
       .filter((module, index, self) => {
-        return index === self.findIndex((m) => (
-          m.module === module.module
-        ));
+        return index === self.findIndex((m) => m.module === module.module);
       })
       .filter(({ links }) => links && Array.isArray(links.userDropdown));
-  }
+  };
 
   createHandlerComponent(link, module) {
     const { stripes } = this.props;
@@ -102,8 +103,10 @@ class ProfileDropdown extends Component {
     const isLocalLoginCheck = module.getModule()[check] || validations[check];
     let checkfn;
 
-    if (route === '/settings/myprofile/password') {
-      checkfn = check ? (stripes.hasPerm('ui-myprofile.settings.change-password') && isLocalLoginCheck) : null;
+    if (route === "/settings/myprofile/password") {
+      checkfn = check
+        ? stripes.hasPerm("ui-myprofile.settings.change-password") && isLocalLoginCheck
+        : null;
     } else {
       checkfn = check ? isLocalLoginCheck : null;
     }
@@ -116,7 +119,7 @@ class ProfileDropdown extends Component {
   }
 
   onNavItemClicked(link, module) {
-    const handler = (link.event) ? this.createHandlerComponent : this.navigateByUrl;
+    const handler = link.event ? this.createHandlerComponent : this.navigateByUrl;
     this.toggleDropdown();
     handler(link, module);
   }
@@ -124,7 +127,12 @@ class ProfileDropdown extends Component {
   renderNavLink(link, index, module) {
     const buttonId = `${kebabCase(module.displayName)}-clickable-menuItem${index}`;
     return (
-      <NavListItem id={buttonId} key={buttonId} type="button" onClick={() => this.onNavItemClicked(link, module)}>
+      <NavListItem
+        id={buttonId}
+        key={buttonId}
+        type="button"
+        onClick={() => this.onNavItemClicked(link, module)}
+      >
         <FormattedMessage id={link.caption} />
       </NavListItem>
     );
@@ -135,12 +143,14 @@ class ProfileDropdown extends Component {
     this.userLinks = this.getDropdownMenuLinks();
 
     this.setState(({ dropdownOpen }) => ({
-      dropdownOpen: !dropdownOpen
+      dropdownOpen: !dropdownOpen,
     }));
   }
 
   getUserData() {
-    const { stripes: { user } } = this.props;
+    const {
+      stripes: { user },
+    } = this.props;
 
     if (user.user) {
       return user.user;
@@ -152,13 +162,7 @@ class ProfileDropdown extends Component {
     const user = this.getUserData();
 
     /* Note: This is not yet available - only prepared for here */
-    return (
-      <Avatar
-        alt={user.name}
-        ariaLabel={user.name}
-        className={css.avatar}
-      />
-    );
+    return <Avatar alt={user.name} ariaLabel={user.name} className={css.avatar} />;
   }
 
   navigateByUrl(link) {
@@ -167,14 +171,16 @@ class ProfileDropdown extends Component {
 
   onHome = () => {
     this.toggleDropdown();
-    this.navigateByUrl({ route: '/' });
+    this.navigateByUrl({ route: "/" });
   };
 
   getDropdownContent() {
     const { stripes } = this.props;
     const user = this.getUserData();
     const currentPerms = stripes.user ? stripes.user.perms : undefined;
-    const messageId = stripes.okapi.ssoEnabled ? 'stripes-core.logoutKeepSso' : 'stripes-core.logout';
+    const messageId = stripes.okapi.ssoEnabled
+      ? "stripes-core.logoutKeepSso"
+      : "stripes-core.logout";
 
     /**
      * Show perms, locale etc.
@@ -182,28 +188,28 @@ class ProfileDropdown extends Component {
      */
     let perms = null;
     if (stripes.config?.showPerms) {
-      const sortedPerms = Object.keys(currentPerms || {}).sort((a, b) => a.localeCompare(b)).join(', ');
+      const sortedPerms = Object.keys(currentPerms || {})
+        .sort((a, b) => a.localeCompare(b))
+        .join(", ");
       perms = (
         <IntlConsumer>
-          {
-            intl => {
-              const items = [
-                `${intl.formatMessage({ id: 'stripes-core.mainnav.profileDropdown.locale' })}: ${intl.locale}`,
-                `${intl.formatMessage({ id: 'stripes-core.mainnav.profileDropdown.permissions' })}: ${sortedPerms}`,
-              ];
+          {(intl) => {
+            const items = [
+              `${intl.formatMessage({ id: "stripes-core.mainnav.profileDropdown.locale" })}: ${intl.locale}`,
+              `${intl.formatMessage({ id: "stripes-core.mainnav.profileDropdown.permissions" })}: ${sortedPerms}`,
+            ];
 
-              return (
-                <section>
-                  <hr className={css.divider} />
-                  <List
-                    items={items}
-                    itemFormatter={(item, index) => (<li key={index}>{item}</li>)}
-                    marginBottom0
-                  />
-                </section>
-              );
-            }
-          }
+            return (
+              <section>
+                <hr className={css.divider} />
+                <List
+                  items={items}
+                  itemFormatter={(item, index) => <li key={index}>{item}</li>}
+                  marginBottom0
+                />
+              </section>
+            );
+          }}
         </IntlConsumer>
       );
     }
@@ -211,24 +217,28 @@ class ProfileDropdown extends Component {
     return (
       <div>
         <div className={css.header}>
-          <FormattedMessage id="stripes-core.loggedInAs" values={{ firstName: user.firstName, lastName: user.lastName }} />
+          <FormattedMessage
+            id="stripes-core.loggedInAs"
+            values={{ firstName: user.firstName, lastName: user.lastName }}
+          />
           <br />
-          {
-            user.curServicePoint ?
-              <FormattedMessage id="stripes-core.currentServicePoint" values={{ name: user.curServicePoint.name }} /> :
-              <FormattedMessage id="stripes-core.currentServicePointNotSelected" />
-          }
+          {user.curServicePoint ? (
+            <FormattedMessage
+              id="stripes-core.currentServicePoint"
+              values={{ name: user.curServicePoint.name }}
+            />
+          ) : (
+            <FormattedMessage id="stripes-core.currentServicePointNotSelected" />
+          )}
         </div>
         <hr className={css.divider} />
         <NavList>
           <NavListSection>
-            {
-              (!stripes.config?.showHomeLink) ?
-                null :
-                <NavListItem id="clickable-home" type="button" onClick={this.onHome}>
-                  <FormattedMessage id="stripes-core.front.home" />
-                </NavListItem>
-            }
+            {!stripes.config?.showHomeLink ? null : (
+              <NavListItem id="clickable-home" type="button" onClick={this.onHome}>
+                <FormattedMessage id="stripes-core.front.home" />
+              </NavListItem>
+            )}
             {this.userLinks}
             <NavListItem id="clickable-logout" type="button" to="/logout">
               <FormattedMessage id={messageId} />
@@ -241,7 +251,10 @@ class ProfileDropdown extends Component {
   }
 
   renderProfileTrigger = ({ getTriggerProps, open }) => {
-    const { intl, stripes: { okapi } } = this.props;
+    const {
+      intl,
+      stripes: { okapi },
+    } = this.props;
     const userData = this.getUserData();
     const servicePointName = userData?.curServicePoint?.name;
     const tenantName = userData?.tenants?.find(({ id }) => id === okapi.tenant)?.name;
@@ -249,11 +262,11 @@ class ProfileDropdown extends Component {
     return (
       <NavButton
         ariaLabel={intl.formatMessage(
-          { id: 'stripes-core.mainnav.myProfileAriaLabel' },
+          { id: "stripes-core.mainnav.myProfileAriaLabel" },
           {
             tenantName,
             servicePointName,
-          }
+          },
         )}
         selected={open}
         className={css.button}
@@ -262,7 +275,7 @@ class ProfileDropdown extends Component {
         {...getTriggerProps()}
       />
     );
-  }
+  };
 
   renderProfileTriggerLabel = ({ open }) => {
     const { okapi } = this.props.stripes;
@@ -272,23 +285,19 @@ class ProfileDropdown extends Component {
 
     const hasLabel = Boolean(servicePointName || tenantName);
 
-    return (
-      hasLabel ? (
-        <>
-          <span className={css.button__label}>
-            {tenantName && <span>{tenantName}</span>}
-            {servicePointName && <span>{servicePointName}</span>}
-          </span>
-          <Icon icon={open ? 'caret-up' : 'caret-down'} />
-        </>
-      ) : null
-    );
-  }
+    return hasLabel ? (
+      <>
+        <span className={css.button__label}>
+          {tenantName && <span>{tenantName}</span>}
+          {servicePointName && <span>{servicePointName}</span>}
+        </span>
+        <Icon icon={open ? "caret-up" : "caret-down"} />
+      </>
+    ) : null;
+  };
 
   renderProfileMenu = ({ open }) => (
-    <DropdownMenu open={open}>
-      {this.getDropdownContent()}
-    </DropdownMenu>
+    <DropdownMenu open={open}>{this.getDropdownContent()}</DropdownMenu>
   );
 
   render() {
@@ -312,8 +321,4 @@ class ProfileDropdown extends Component {
   }
 }
 
-export default compose(
-  withRouter,
-  withModules,
-  injectIntl,
-)(ProfileDropdown);
+export default compose(withRouter, withModules, injectIntl)(ProfileDropdown);

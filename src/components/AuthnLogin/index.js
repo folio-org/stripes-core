@@ -1,1 +1,1 @@
-export { default } from './AuthnLogin';
+export { default } from "./AuthnLogin";

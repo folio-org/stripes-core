@@ -1,13 +1,7 @@
-import {
-  useQuery,
-  useMutation,
-} from 'react-query';
+import { useQuery, useMutation } from "react-query";
 
-import {
-  useTenantPreferences,
-  usePreferences,
-} from '../hooks';
-import { useStripes } from '../StripesContext';
+import { useTenantPreferences, usePreferences } from "../hooks";
+import { useStripes } from "../StripesContext";
 
 const DEFAULT_SETTINGS = {};
 
@@ -15,20 +9,13 @@ const useSettings = ({ scope, key, userId }) => {
   const stripes = useStripes();
   const tenantId = stripes.okapi.tenant;
 
-  const {
-    setTenantPreference,
-    getTenantPreference,
-    removeTenantPreference,
-  } = useTenantPreferences();
+  const { setTenantPreference, getTenantPreference, removeTenantPreference } =
+    useTenantPreferences();
 
-  const {
-    setPreference,
-    getPreference,
-    removePreference,
-  } = usePreferences();
+  const { setPreference, getPreference, removePreference } = usePreferences();
 
   const { data, isLoading, refetch } = useQuery(
-    ['settings', userId, tenantId, scope, key],
+    ["settings", userId, tenantId, scope, key],
     () => {
       if (userId) {
         return getPreference({ scope, key, userId });
@@ -38,7 +25,7 @@ const useSettings = ({ scope, key, userId }) => {
     },
     {
       keepPreviousData: false,
-    }
+    },
   );
 
   const { mutateAsync } = useMutation(
