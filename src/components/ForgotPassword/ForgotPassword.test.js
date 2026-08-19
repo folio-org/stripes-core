@@ -1,5 +1,6 @@
 import { render, screen, waitFor } from '@folio/jest-config-stripes/testing-library/react';
 import { userEvent } from '@folio/jest-config-stripes/testing-library/user-event';
+import { useHistory } from 'react-router';
 
 import ForgotPasswordForm from './ForgotPasswordForm';
 import ForgotPassword from './ForgotPassword';
@@ -20,9 +21,7 @@ jest.mock('../../StripesContext', () => ({
 
 jest.mock('../OrganizationLogo', () => () => 'OrganizationLogo');
 jest.mock('../AuthErrorsContainer', () => ({ errors = [] }) => errors[0]?.code);
-jest.mock('react-router-dom', () => ({
-  Redirect: () => '<Redirect />',
-}));
+jest.mock('react-router');
 
 // PreLoginLanding tests don't handle button.disabled
 // and I don't feel like expanding this PR even further
@@ -45,9 +44,9 @@ describe('ForgotPasswordForm', () => {
   it('displays headline, input field, submit button', () => {
     render(<ForgotPasswordForm onSubmit={jest.fn()} />);
 
-    expect(screen.getByText('stripes-core.label.forgotPassword'));
-    expect(screen.getByText('stripes-core.placeholder.field.forgotPassword'));
-    expect(screen.getByText('stripes-core.button.continue'));
+    screen.getByText('stripes-core.label.forgotPassword');
+    screen.getByText('stripes-core.placeholder.field.forgotPassword');
+    screen.getByText('stripes-core.button.continue');
   });
 
   it('enables submit conditionally', async () => {
@@ -68,7 +67,7 @@ describe('ForgotPasswordForm', () => {
     ];
 
     render(<ForgotPasswordForm errors={errors} onSubmit={jest.fn()} />);
-    expect(screen.getByText(errors[0].code));
+    screen.getByText(errors[0].code);
   });
 
   it('calls onSubmit', async () => {
@@ -94,6 +93,8 @@ describe('ForgotPassword', () => {
   it('handles success', async () => {
     const user = userEvent.setup();
     const userInput = 'some-username';
+    const history = { push: jest.fn() };
+    useHistory.mockReturnValue(history);
 
     const mockUseForgotPasswordMutation = useForgotPasswordMutation;
     mockUseForgotPasswordMutation.mockReturnValue({
@@ -110,7 +111,7 @@ describe('ForgotPassword', () => {
     await user.click(submit);
 
     await waitFor(() => {
-      expect(screen.getByText('<Redirect />'));
+      expect(history.push).toHaveBeenCalledWith('/check-email', { userEmail: userInput });
     });
   });
 
@@ -140,7 +141,7 @@ describe('ForgotPassword', () => {
     await user.click(submit);
 
     await waitFor(() => {
-      expect(screen.getByText(defaultErrors.FORGOTTEN_PASSWORD_CLIENT_ERROR.code));
+      screen.getByText(defaultErrors.FORGOTTEN_PASSWORD_CLIENT_ERROR.code);
     });
   });
 });
