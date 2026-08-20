@@ -15,7 +15,7 @@ import useOkapiKy from '../../useOkapiKy';
  */
 const useForgotPasswordMutation = () => {
   const stripes = useStripes();
-  const ky = useOkapiKy();
+  const ky = useOkapiKy({ rtrIgnore: true });
 
   const pathPrefix = stripes.okapi.authnUrl ? 'users-keycloak' : 'bl-users';
 
