@@ -17,9 +17,7 @@ class SSORedirect extends Component {
 
   render() {
     const forwardUrl = this.getUrl();
-    return (
-      <Redirect to={forwardUrl} />
-    );
+    return <Redirect to={forwardUrl} />;
   }
 }
 

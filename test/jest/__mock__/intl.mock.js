@@ -13,7 +13,9 @@ jest.mock('react-intl', () => {
       }
 
       if (values) {
-        return `${id} ${Object.keys(values).map(key => `${key}:${values[key]}`).join(', ')}`;
+        return `${id} ${Object.keys(values)
+          .map((key) => `${key}:${values[key]}`)
+          .join(', ')}`;
       }
 
       return id;

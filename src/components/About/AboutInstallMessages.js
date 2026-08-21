@@ -1,18 +1,12 @@
 import React from 'react';
 import { FormattedDate } from 'react-intl';
 
-import {
-  Headline,
-} from '@folio/stripes-components';
-import {
-  useConfigurations,
-  useOkapiEnv,
-} from '../../queries';
+import { Headline } from '@folio/stripes-components';
+import { useConfigurations, useOkapiEnv } from '../../queries';
 import { useStripes } from '../../StripesContext';
 
-
 export function entryFor(config, code) {
-  const entry = config?.configs?.find(i => i.code === code);
+  const entry = config?.configs?.find((i) => i.code === code);
   return entry ? entry.value : '';
 }
 
@@ -28,7 +22,12 @@ export function entryFor(config, code) {
  * @returns string
  */
 export function installVersion(env, conf, stripesConf) {
-  return env?.ABOUT_INSTALL_VERSION || entryFor(conf, 'version') || stripesConf?.aboutInstallVersion || '';
+  return (
+    env?.ABOUT_INSTALL_VERSION ||
+    entryFor(conf, 'version') ||
+    stripesConf?.aboutInstallVersion ||
+    ''
+  );
 }
 
 /**
@@ -56,7 +55,12 @@ export function installDate(env, conf, stripesConf) {
  * @returns Component
  */
 export function installMessage(env, conf, stripesConf) {
-  return env?.ABOUT_INSTALL_MESSAGE || entryFor(conf, 'message') || stripesConf?.aboutInstallMessage || '';
+  return (
+    env?.ABOUT_INSTALL_MESSAGE ||
+    entryFor(conf, 'message') ||
+    stripesConf?.aboutInstallMessage ||
+    ''
+  );
 }
 
 /**
@@ -94,7 +98,11 @@ const AboutInstallMessages = () => {
 
   return (
     <>
-      {(version || formattedDate) && <Headline size="large">{version} {formattedDate}</Headline>}
+      {(version || formattedDate) && (
+        <Headline size="large">
+          {version} {formattedDate}
+        </Headline>
+      )}
       {message && <div>{message}</div>}
     </>
   );

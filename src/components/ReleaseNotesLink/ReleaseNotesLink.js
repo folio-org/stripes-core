@@ -21,10 +21,7 @@ const ReleaseNotesLink = ({ children }) => {
 };
 
 ReleaseNotesLink.propTypes = {
-  children: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.node,
-  ]).isRequired,
+  children: PropTypes.oneOfType([PropTypes.string, PropTypes.node]).isRequired,
 };
 
 export default ReleaseNotesLink;

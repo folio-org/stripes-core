@@ -83,8 +83,16 @@ class NavDropdownMenu extends React.Component {
     };
 
     const menu = (
-      <div className={css.DropdownMenu} aria-expanded="true" style={position} {...ddprops} ref={(ref) => { this.ddContainer = ref; }}>
-        { this.props.children }
+      <div
+        className={css.DropdownMenu}
+        aria-expanded="true"
+        style={position}
+        {...ddprops}
+        ref={(ref) => {
+          this.ddContainer = ref;
+        }}
+      >
+        {this.props.children}
       </div>
     );
 

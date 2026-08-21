@@ -80,7 +80,9 @@ describe('OIDCLanding', () => {
     render(<OIDCLanding handleRotation={handleRotation} />);
 
     expect(storeLogoutTenant).toHaveBeenCalledWith('diku');
-    await waitFor(() => expect(requestUserWithPerms).toHaveBeenCalledWith({ tenant: 'diku' }, {}, 'diku', ''));
+    await waitFor(() =>
+      expect(requestUserWithPerms).toHaveBeenCalledWith({ tenant: 'diku' }, {}, 'diku', ''),
+    );
     await waitFor(() => expect(handleRotation).toHaveBeenCalledWith(tokenData));
   });
 });

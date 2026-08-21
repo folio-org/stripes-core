@@ -24,9 +24,12 @@ const AboutOkapi = ({ modules }) => {
   const ni = Object.keys(dinterfaces).length;
 
   const unknownMsg = <FormattedMessage id="stripes-core.about.unknown" />;
-  const numModulesMsg = <FormattedMessage id="stripes-core.about.moduleCount" values={{ count: nm }} />;
-  const numInterfacesMsg = <FormattedMessage id="stripes-core.about.interfaceCount" values={{ count: ni }} />;
-
+  const numModulesMsg = (
+    <FormattedMessage id="stripes-core.about.moduleCount" values={{ count: nm }} />
+  );
+  const numInterfacesMsg = (
+    <FormattedMessage id="stripes-core.about.interfaceCount" values={{ count: ni }} />
+  );
 
   return (
     <>
@@ -39,7 +42,10 @@ const AboutOkapi = ({ modules }) => {
         <AboutAPIGateway />
 
         <Headline>{numModulesMsg}</Headline>
-        <AboutEnabledModules tenantid={stripes.okapi.tenant || unknownMsg} availableModules={dmodules} />
+        <AboutEnabledModules
+          tenantid={stripes.okapi.tenant || unknownMsg}
+          availableModules={dmodules}
+        />
         <Headline size="small">
           <FormattedMessage id="stripes-core.about.legendKey" />
         </Headline>
@@ -47,7 +53,7 @@ const AboutOkapi = ({ modules }) => {
           id="stripes-core.about.notEnabledModules"
           tagName="p"
           values={{
-            span: chunks => <span className={css.isEmptyMessage}>{chunks}</span>
+            span: (chunks) => <span className={css.isEmptyMessage}>{chunks}</span>,
           }}
         />
         <br />
@@ -55,11 +61,7 @@ const AboutOkapi = ({ modules }) => {
         <List
           listStyle="bullets"
           items={Object.keys(dinterfaces).sort((a, b) => a.localeCompare(b))}
-          itemFormatter={key => (
-            <li key={key}>
-              {`${key} ${dinterfaces[key]}`}
-            </li>
-          )}
+          itemFormatter={(key) => <li key={key}>{`${key} ${dinterfaces[key]}`}</li>}
         />
       </div>
 
@@ -74,7 +76,7 @@ const AboutOkapi = ({ modules }) => {
           module={{
             ...stripesCore.stripes,
             module: 'stripes-core',
-            version: stripesCore.version
+            version: stripesCore.version,
           }}
           showDependencies
         />

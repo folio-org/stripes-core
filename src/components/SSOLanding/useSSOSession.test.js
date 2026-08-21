@@ -14,11 +14,11 @@ import { parseJWT } from '../../helpers';
 import useSSOSession from './useSSOSession';
 
 jest.mock('react-router-dom', () => ({
-  useLocation: jest.fn()
+  useLocation: jest.fn(),
 }));
 
 jest.mock('react-cookie', () => ({
-  useCookies: jest.fn()
+  useCookies: jest.fn(),
 }));
 
 jest.mock('react-redux', () => ({
@@ -29,10 +29,10 @@ jest.mock('react-redux', () => ({
 jest.mock('');
 
 jest.mock('../../loginServices', () => ({
-  requestUserWithPerms: jest.fn()
+  requestUserWithPerms: jest.fn(),
 }));
 jest.mock('../../helpers', () => ({
-  parseJWT: jest.fn()
+  parseJWT: jest.fn(),
 }));
 
 describe('SSOLanding', () => {
@@ -46,12 +46,12 @@ describe('SSOLanding', () => {
       getState: jest.fn().mockReturnValue({
         okapi: {
           url: 'okapiUrl',
-          tenant: 'okapiTenant'
+          tenant: 'okapiTenant',
         },
         config: {
           useSecureTokens: true,
-        }
-      })
+        },
+      }),
     });
 
     requestUserWithPerms.mockReturnValue(Promise.resolve());
@@ -69,7 +69,12 @@ describe('SSOLanding', () => {
 
     renderHook(() => useSSOSession());
 
-    expect(requestUserWithPerms).toHaveBeenCalledWith(store.getState().okapi, store, store.getState().okapi.tenant, ssoTokenValue);
+    expect(requestUserWithPerms).toHaveBeenCalledWith(
+      store.getState().okapi,
+      store,
+      store.getState().okapi.tenant,
+      ssoTokenValue,
+    );
   });
 
   it('should request user session when RTR is disabled with token from cookies', () => {
@@ -80,7 +85,12 @@ describe('SSOLanding', () => {
 
     renderHook(() => useSSOSession());
 
-    expect(requestUserWithPerms).toHaveBeenCalledWith(store.getState().okapi, store, 'okapiTenant', ssoTokenValue);
+    expect(requestUserWithPerms).toHaveBeenCalledWith(
+      store.getState().okapi,
+      store,
+      'okapiTenant',
+      ssoTokenValue,
+    );
   });
 
   it('should request user session when RTR is disabled and right tenant from ssoToken', () => {
@@ -94,7 +104,12 @@ describe('SSOLanding', () => {
 
     renderHook(() => useSSOSession());
 
-    expect(requestUserWithPerms).toHaveBeenCalledWith(store.getState().okapi, store, okapiTenant, ssoTokenValue);
+    expect(requestUserWithPerms).toHaveBeenCalledWith(
+      store.getState().okapi,
+      store,
+      okapiTenant,
+      ssoTokenValue,
+    );
   });
 
   it('should request user session when RTR is enabled and right tenant from query params', () => {
@@ -106,7 +121,12 @@ describe('SSOLanding', () => {
 
     renderHook(() => useSSOSession());
 
-    expect(requestUserWithPerms).toHaveBeenCalledWith(store.getState().okapi, store, queryTenant, undefined);
+    expect(requestUserWithPerms).toHaveBeenCalledWith(
+      store.getState().okapi,
+      store,
+      queryTenant,
+      undefined,
+    );
   });
 
   it('should display error when session request failed', async () => {

@@ -4,11 +4,7 @@ import PropTypes from 'prop-types';
 import { ModulesContext } from './ModulesContext';
 
 import { packageName } from './constants';
-import {
-  AuthenticatedError,
-  NoPermissionScreen,
-  TitledRoute,
-} from './components';
+import { AuthenticatedError, NoPermissionScreen, TitledRoute } from './components';
 
 import AppRoutes from './AppRoutes';
 
@@ -32,11 +28,11 @@ function ModuleRoutes({ stripes }) {
         }
 
         // requested route does not belong to any module
-        if (!modules.app.some(module => location.pathname.startsWith(`${module.route}`))) {
+        if (!modules.app.some((module) => location.pathname.startsWith(`${module.route}`))) {
           return <AuthenticatedError location={location} />;
         }
 
-        const currentModule = modules.app.find(module => {
+        const currentModule = modules.app.find((module) => {
           const SEPARATOR = '/';
 
           return `${SEPARATOR}${location.pathname.split(SEPARATOR)[1]}` === module.route;
@@ -45,17 +41,10 @@ function ModuleRoutes({ stripes }) {
 
         // requested route is forbidden
         if (!stripes.hasPerm(`module.${moduleName}.enabled`)) {
-          return (
-            <TitledRoute
-              name="noPermission"
-              component={<NoPermissionScreen />}
-            />
-          );
+          return <TitledRoute name="noPermission" component={<NoPermissionScreen />} />;
         }
 
-        return (
-          <AppRoutes modules={modules} stripes={stripes} />
-        );
+        return <AppRoutes modules={modules} stripes={stripes} />;
       }}
     </ModulesContext.Consumer>
   );

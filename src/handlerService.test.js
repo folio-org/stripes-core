@@ -12,8 +12,7 @@ describe('handleEvent', () => {
     expect(handleEvent(e, stripes, module, data)).toBeNull();
   });
 
-
-  it('calls module\'s handler when it is defined', () => {
+  it("calls module's handler when it is defined", () => {
     const e = {};
     const s = { logger: { log: jest.fn() } };
     const module = {
@@ -33,7 +32,7 @@ describe('invokeEventHandlers', () => {
   it('invokes event handler on modules that contain them', () => {
     const e = {};
     const s = {
-      connect: (component) => (component),
+      connect: (component) => component,
       logger: { log: jest.fn() },
     };
     const d = {};

@@ -1,8 +1,4 @@
-import {
-  Row,
-  Col,
-  Headline,
-} from '@folio/stripes-components';
+import { Row, Col, Headline } from '@folio/stripes-components';
 
 import { useStripes } from '../../StripesContext';
 import OrganizationLogo from '../OrganizationLogo';
@@ -30,11 +26,9 @@ const AppConfigError = () => {
           </Row>
           <Row center="xs">
             <Col xs={6}>
-              <Headline
-                size="xx-large"
-                tag="h1"
-              >
-                FOLIO requires cookies, sessionStorage, and localStorage. Please enable these features and try again.
+              <Headline size="xx-large" tag="h1">
+                FOLIO requires cookies, sessionStorage, and localStorage. Please enable these
+                features and try again.
               </Headline>
             </Col>
           </Row>

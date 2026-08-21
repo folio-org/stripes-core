@@ -4,19 +4,19 @@ import { RTRError } from './Errors';
 import FXHR from './FXHR';
 
 jest.mock('./token-util', () => ({
-  ...(jest.requireActual('./token-util')),
+  ...jest.requireActual('./token-util'),
 }));
 
 jest.mock('./rotateAndReplay', () => ({
-  ...(jest.requireActual('./rotateAndReplay')),
+  ...jest.requireActual('./rotateAndReplay'),
   rotateAndReplay: jest.fn(() => Promise.resolve()),
 }));
 
 const openSpy = jest.spyOn(XMLHttpRequest.prototype, 'open').mockImplementation();
-const sendSpy = jest.spyOn(XMLHttpRequest.prototype, 'send').mockImplementation(() => { });
+const sendSpy = jest.spyOn(XMLHttpRequest.prototype, 'send').mockImplementation(() => {});
 const aelSpy = jest.spyOn(XMLHttpRequest.prototype, 'addEventListener').mockImplementation();
 
-const mockHandler = jest.fn(() => { });
+const mockHandler = jest.fn(() => {});
 
 const setXhrState = (xhr, { readyState, status, responseText = '' }) => {
   Object.defineProperty(xhr, 'readyState', { configurable: true, value: readyState });
@@ -31,7 +31,7 @@ describe('FXHR', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    FakeXHR = FXHR({ logger: { log: () => { } }, okapi: { url: 'okapiUrl' } });
+    FakeXHR = FXHR({ logger: { log: () => {} }, okapi: { url: 'okapiUrl' } });
     testXHR = new FakeXHR();
     dispatchSpy = jest.spyOn(window, 'dispatchEvent').mockImplementation(() => true);
   });
@@ -41,8 +41,8 @@ describe('FXHR', () => {
   });
 
   it('instantiates without error', () => {
-    expect(FakeXHR).toBeDefined;
-    expect(testXHR).toBeDefined;
+    expect(FakeXHR).toBeDefined();
+    expect(testXHR).toBeDefined();
   });
 
   it('calls inherited open method', () => {

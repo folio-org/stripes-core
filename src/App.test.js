@@ -12,25 +12,25 @@ describe('isStorageEnabled', () => {
   });
 
   it('returns true when all storage options are enabled', () => {
-    expect(isStorageEnabled()).toBeTrue;
+    expect(isStorageEnabled()).toBe(true);
   });
 
   describe('returns false when any storage option is disabled', () => {
     it('handles local storage', () => {
       Object.defineProperty(window, 'localStorage', { value: storageMock });
       const isEnabled = isStorageEnabled();
-      expect(isEnabled).toBeFalse;
+      expect(isEnabled).toBe(false);
     });
     it('handles session storage', () => {
       Object.defineProperty(window, 'sessionStorage', { value: storageMock });
       const isEnabled = isStorageEnabled();
-      expect(isEnabled).toBeFalse;
+      expect(isEnabled).toBe(false);
     });
 
     it('handles cookies', () => {
       jest.spyOn(navigator, 'cookieEnabled', 'get').mockReturnValue(false);
       const isEnabled = isStorageEnabled();
-      expect(isEnabled).toBeFalse;
+      expect(isEnabled).toBe(false);
     });
   });
 });
@@ -40,11 +40,11 @@ const config = { name: 'test' };
 const branding = {
   logo: {
     src: './default.png',
-    alt: 'Default'
+    alt: 'Default',
   },
   favicon: {
     src: './default-favicon.png',
-  }
+  },
 };
 
 describe('getOverrideConfig', () => {
@@ -58,12 +58,12 @@ describe('getOverrideConfig', () => {
       brandingConfig: {
         logo: {
           src: './logo.png',
-          alt: 'Opentown Libraries'
+          alt: 'Opentown Libraries',
         },
         favicon: {
           src: './favicon.png',
-        }
-      }
+        },
+      },
     };
 
     const result = getOverrideConfig(okapi, config, branding, stripesHub);

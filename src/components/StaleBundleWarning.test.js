@@ -64,7 +64,7 @@ describe('StaleBundleWarning', () => {
 
     const kyImpl = {
       get: () => ({
-        text: () => Promise.resolve('monkey')
+        text: () => Promise.resolve('monkey'),
       }),
     };
 
@@ -81,7 +81,7 @@ describe('StaleBundleWarning', () => {
     const kyImpl = jest.fn(async () => ({
       headers: {
         get: () => config.header,
-      }
+      },
     }));
 
     const value = await queryFn(config, kyImpl);
@@ -89,7 +89,7 @@ describe('StaleBundleWarning', () => {
   });
 
   it('query swallows errors but warns about them', async () => {
-    const warn = jest.spyOn(console, 'warn').mockImplementation(() => { });
+    const warn = jest.spyOn(console, 'warn').mockImplementation(() => {});
     const config = {
       path: 'index.html',
     };
@@ -97,7 +97,7 @@ describe('StaleBundleWarning', () => {
     const reject = 'monkey';
     const kyImpl = {
       get: () => ({
-        text: () => Promise.reject(reject) // eslint-disable-line prefer-promise-reject-errors
+        text: () => Promise.reject(reject), // eslint-disable-line prefer-promise-reject-errors
       }),
     };
 

@@ -1,8 +1,6 @@
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
-import {
-  Headline,
-} from '@folio/stripes-components';
+import { Headline } from '@folio/stripes-components';
 
 import css from './About.css';
 import AboutModules from './AboutModules';

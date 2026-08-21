@@ -48,11 +48,11 @@ class CreateResetPasswordControl extends Component {
     };
   }
 
-  async componentDidMount() {
+  componentDidMount() {
     this._isMounted = true;
-    await this.makeCall();
-
-    this.setState({ isLoading: false });
+    this.makeCall().then(() => {
+      this.setState({ isLoading: false });
+    });
   }
 
   componentWillUnmount() {
@@ -61,19 +61,12 @@ class CreateResetPasswordControl extends Component {
   }
 
   handleResponse = (response) => {
-    const {
-      handleBadResponse,
-      setDefaultAuthError,
-    } = this.props;
+    const { handleBadResponse, setDefaultAuthError } = this.props;
     const { isValidToken } = this.state;
 
     switch (response.status) {
       case 204:
-        this.setState(
-          isValidToken
-            ? { isSuccessfulPasswordChange: true }
-            : { isValidToken: true }
-        );
+        this.setState(isValidToken ? { isSuccessfulPasswordChange: true } : { isValidToken: true });
         break;
       case 401:
         this.setState({
@@ -96,17 +89,13 @@ class CreateResetPasswordControl extends Component {
       stripes,
       location,
       match: {
-        params: {
-          token,
-        },
+        params: { token },
       },
       handleBadResponse,
     } = this.props;
     const { isValidToken } = this.state;
     const {
-      okapi: {
-        url,
-      },
+      okapi: { url },
     } = stripes;
 
     // Token value from match.params.token comes from React-Router parsing the value from the URL path /:token?
@@ -134,7 +123,7 @@ class CreateResetPasswordControl extends Component {
           this.handleResponse(response);
         }
       })
-      .catch(error => {
+      .catch((error) => {
         handleBadResponse(error);
       });
 
@@ -155,17 +144,9 @@ class CreateResetPasswordControl extends Component {
   };
 
   render() {
-    const {
-      authFailure,
-      clearAuthErrors,
-    } = this.props;
+    const { authFailure, clearAuthErrors } = this.props;
 
-    const {
-      isSuccessfulPasswordChange,
-      submitIsFailed,
-      isValidToken,
-      isLoading,
-    } = this.state;
+    const { isSuccessfulPasswordChange, submitIsFailed, isValidToken, isLoading } = this.state;
 
     if (isSuccessfulPasswordChange) {
       return <PasswordSuccessfullyChanged stripes={this.props.stripes} />;
@@ -196,11 +177,13 @@ class CreateResetPasswordControl extends Component {
   }
 }
 
-const mapStateToProps = state => ({ authFailure: state.okapi.authFailure });
-const mapDispatchToProps = dispatch => ({
-  handleBadResponse: error => processBadResponse(dispatch, error),
+const mapStateToProps = (state) => ({ authFailure: state.okapi.authFailure });
+const mapDispatchToProps = (dispatch) => ({
+  handleBadResponse: (error) => processBadResponse(dispatch, error),
   clearAuthErrors: () => dispatch(setAuthError([])),
-  setDefaultAuthError: error => dispatch(setAuthError([error])),
+  setDefaultAuthError: (error) => dispatch(setAuthError([error])),
 });
 
-export default withRouter(reduxConnect(mapStateToProps, mapDispatchToProps)(CreateResetPasswordControl));
+export default withRouter(
+  reduxConnect(mapStateToProps, mapDispatchToProps)(CreateResetPasswordControl),
+);

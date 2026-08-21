@@ -10,17 +10,13 @@ import SessionEventContainer, {
   thisWindowRtrFlsWarning,
   thisWindowRtrIstTimeout,
 } from './SessionEventContainer';
-import {
-  setUnauthorizedPathToSession,
-  LOGOUT_MESSAGES,
-  SESSION_NAME,
-} from '../../loginServices';
+import { setUnauthorizedPathToSession, LOGOUT_MESSAGES, SESSION_NAME } from '../../loginServices';
 import { RTR_TIMEOUT_EVENT } from '../Root/constants';
 
 import { toggleRtrModal } from '../../okapiActions';
 import { eventsPortal } from '../../constants';
 
-jest.mock('./KeepWorkingModal', () => (() => <div>KeepWorkingModal</div>));
+jest.mock('./KeepWorkingModal', () => () => <div>KeepWorkingModal</div>);
 jest.mock('../../loginServices');
 
 const stripes = {
@@ -30,8 +26,8 @@ const stripes = {
       idleModalTTL: '3s',
       idleSessionTTL: '3s',
       activityEvents: ['right thing', 'hustle', 'hand jive'],
-      fixedLengthSessionWarningTTL: '60s'
-    }
+      fixedLengthSessionWarningTTL: '60s',
+    },
   },
   okapi: {
     isAuthenticated: true,
@@ -48,7 +44,11 @@ describe('SessionEventContainer', () => {
   });
 
   it('Shows a modal when idle timer expires', async () => {
-    render(<Harness stripes={stripes}><SessionEventContainer /></Harness>);
+    render(
+      <Harness stripes={stripes}>
+        <SessionEventContainer />
+      </Harness>,
+    );
 
     await waitFor(() => {
       screen.getByText('KeepWorkingModal', { timeout: ms(stripes.config.rtr.idleModalTTL) });
@@ -56,15 +56,21 @@ describe('SessionEventContainer', () => {
   });
 
   it('Dispatches logout when modal timer expires', async () => {
-    const dispatchEvent = jest.spyOn(globalThis, 'dispatchEvent').mockImplementation(() => { });
-    render(<Harness stripes={stripes}><SessionEventContainer /></Harness>);
+    const dispatchEvent = jest.spyOn(globalThis, 'dispatchEvent').mockImplementation(() => {});
+    render(
+      <Harness stripes={stripes}>
+        <SessionEventContainer />
+      </Harness>,
+    );
 
-    await waitFor(() => {
-      expect(dispatchEvent).toHaveBeenCalled();
-    }, { timeout: 5000 });
+    await waitFor(
+      () => {
+        expect(dispatchEvent).toHaveBeenCalled();
+      },
+      { timeout: 5000 },
+    );
   });
 });
-
 
 describe('SessionEventContainer event listeners', () => {
   it('thisWindowRtrError', async () => {
@@ -81,12 +87,12 @@ describe('SessionEventContainer event listeners', () => {
   it('thisWindowRtrIstTimeout', async () => {
     const s = {
       okapi: {
-        url: 'http'
+        url: 'http',
       },
       store: {},
       logger: {
         log: jest.fn(),
-      }
+      },
     };
 
     const history = { push: jest.fn() };
@@ -120,12 +126,12 @@ describe('SessionEventContainer event listeners', () => {
       const e = { key: RTR_TIMEOUT_EVENT };
       const s = {
         okapi: {
-          url: 'http'
+          url: 'http',
         },
         store: {},
         logger: {
           log: jest.fn(),
-        }
+        },
       };
       const history = { push: jest.fn() };
 
@@ -137,12 +143,12 @@ describe('SessionEventContainer event listeners', () => {
       const e = { key: '' };
       const s = {
         okapi: {
-          url: 'http'
+          url: 'http',
         },
         store: {},
         logger: {
           log: jest.fn(),
-        }
+        },
       };
       const history = { push: jest.fn() };
 
@@ -165,13 +171,13 @@ describe('SessionEventContainer event listeners', () => {
       },
       logger: {
         log: jest.fn(),
-      }
+      },
     };
     const signal = jest.fn();
     const timers = {
       current: {
         timer: { signal },
-      }
+      },
     };
     const setIsVisible = jest.fn();
 
@@ -197,13 +203,13 @@ describe('SessionEventContainer event listeners', () => {
         },
         logger: {
           log: jest.fn(),
-        }
+        },
       };
       const signal = jest.fn();
       const timers = {
         current: {
           timer: { signal },
-        }
+        },
       };
       const postMessage = jest.fn();
       const broadcastChannel = {
@@ -230,13 +236,13 @@ describe('SessionEventContainer event listeners', () => {
         },
         logger: {
           log: jest.fn(),
-        }
+        },
       };
       const signal = jest.fn();
       const timers = {
         current: {
           timer: { signal },
-        }
+        },
       };
       const postMessage = jest.fn();
       const broadcastChannel = {

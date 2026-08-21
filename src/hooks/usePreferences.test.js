@@ -1,8 +1,5 @@
 import { renderHook, waitFor, act } from '@folio/jest-config-stripes/testing-library/react';
-import {
-  QueryClient,
-  QueryClientProvider,
-} from 'react-query';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
 import usePreferences from './usePreferences';
 
@@ -14,21 +11,21 @@ const response = {
       scope: 'test.manage',
       key: 'testPref',
       value: { pref: '22' },
-      userId: 'test-user'
+      userId: 'test-user',
     },
   ],
-  'resultInfo': {
-    'totalRecords': 1,
-    'diagnostics': []
-  }
+  resultInfo: {
+    totalRecords: 1,
+    diagnostics: [],
+  },
 };
 
 const emptyResponse = {
   items: [],
-  'resultInfo': {
-    'totalRecords': 0,
-    'diagnostics': []
-  }
+  resultInfo: {
+    totalRecords: 0,
+    diagnostics: [],
+  },
 };
 
 const mockGet = jest.fn(() => ({
@@ -45,23 +42,23 @@ jest.mock('../useOkapiKy', () => ({
     get: mockGet,
     put: mockPut,
     post: mockPost,
-    delete: mockDelete
-  }))
+    delete: mockDelete,
+  })),
 }));
 
 jest.mock('../StripesContext', () => ({
   useStripes: () => ({
     user: {
       user: {
-        id: 'test-user'
-      }
+        id: 'test-user',
+      },
     },
     okapi: {
       tenant: 't',
     },
     logger: {
-      log: () => { },
-    }
+      log: () => {},
+    },
   }),
 }));
 
@@ -69,9 +66,7 @@ const queryClient = new QueryClient();
 
 // eslint-disable-next-line react/prop-types
 const wrapper = ({ children }) => (
-  <QueryClientProvider client={queryClient}>
-    {children}
-  </QueryClientProvider>
+  <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
 );
 
 describe('usePreferences', () => {
@@ -84,7 +79,10 @@ describe('usePreferences', () => {
   describe('getPreference', () => {
     let pref;
     beforeEach(async () => {
-      pref = await renderedHook.result.current.getPreference({ scope: 'test.manage', key: 'testPref' });
+      pref = await renderedHook.result.current.getPreference({
+        scope: 'test.manage',
+        key: 'testPref',
+      });
     });
 
     it('getPreference returns preference value', () => {
@@ -93,7 +91,11 @@ describe('usePreferences', () => {
 
     describe('subsequent setPreference call ', () => {
       beforeEach(async () => {
-        await renderedHook.result.current.setPreference({ scope: 'test.manage', key: 'testPref', value: { pref: 25 } });
+        await renderedHook.result.current.setPreference({
+          scope: 'test.manage',
+          key: 'testPref',
+          value: { pref: 25 },
+        });
       });
 
       it('uses "put" method', () => {
@@ -103,7 +105,10 @@ describe('usePreferences', () => {
 
     describe('subsequent deletePreference call ', () => {
       beforeEach(async () => {
-        await renderedHook.result.current.removePreference({ scope: 'test.manage', key: 'testPref' });
+        await renderedHook.result.current.removePreference({
+          scope: 'test.manage',
+          key: 'testPref',
+        });
       });
 
       it('uses "delete" method', () => {
@@ -120,7 +125,9 @@ describe('usePreferences', () => {
         ok: true,
         json: () => emptyResponse,
       }));
-      pref = await act(() => renderedHook.result.current.getPreference({ scope: 'test.manage', key: 'testPref' }));
+      pref = await act(() =>
+        renderedHook.result.current.getPreference({ scope: 'test.manage', key: 'testPref' }),
+      );
     });
 
     it('getPreference returns undefined', async () => {
@@ -129,7 +136,11 @@ describe('usePreferences', () => {
 
     describe('subsequent setPreference call ', () => {
       beforeEach(async () => {
-        await renderedHook.result.current.setPreference({ scope: 'test.manage', key: 'testPref', value: { pref: 25 } });
+        await renderedHook.result.current.setPreference({
+          scope: 'test.manage',
+          key: 'testPref',
+          value: { pref: 25 },
+        });
       });
 
       it('uses "post" method', async () => {

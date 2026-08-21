@@ -5,13 +5,11 @@ import styles from './OrganizationLogo.css';
 const OrganizationLogo = () => {
   const { branding } = useStripes();
   return (
-    branding &&
+    branding && (
       <div className={styles.logo}>
-        <img
-          alt={branding.logo.alt}
-          src={branding.logo.src}
-        />
+        <img alt={branding.logo.alt} src={branding.logo.src} />
       </div>
+    )
   );
 };
 

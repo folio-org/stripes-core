@@ -1,9 +1,6 @@
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
-import {
-  Headline,
-  List,
-} from '@folio/stripes-components';
+import { Headline, List } from '@folio/stripes-components';
 
 import AboutUIModuleDetails from './AboutUIModuleDetails';
 
@@ -27,16 +24,24 @@ const AboutUIDependencies = ({ modules, showDependencies }) => {
     let headlineMsg;
     switch (key) {
       case 'app':
-        headlineMsg = <FormattedMessage id="stripes-core.about.appModuleCount" values={{ count }} />;
+        headlineMsg = (
+          <FormattedMessage id="stripes-core.about.appModuleCount" values={{ count }} />
+        );
         break;
       case 'settings':
-        headlineMsg = <FormattedMessage id="stripes-core.about.settingsModuleCount" values={{ count }} />;
+        headlineMsg = (
+          <FormattedMessage id="stripes-core.about.settingsModuleCount" values={{ count }} />
+        );
         break;
       case 'plugin':
-        headlineMsg = <FormattedMessage id="stripes-core.about.pluginModuleCount" values={{ count }} />;
+        headlineMsg = (
+          <FormattedMessage id="stripes-core.about.pluginModuleCount" values={{ count }} />
+        );
         break;
       default:
-        headlineMsg = <FormattedMessage id="stripes-core.about.moduleTypeCount" values={{ count, type: key }} />;
+        headlineMsg = (
+          <FormattedMessage id="stripes-core.about.moduleTypeCount" values={{ count, type: key }} />
+        );
     }
     return headlineMsg;
   };
@@ -47,11 +52,7 @@ const AboutUIDependencies = ({ modules, showDependencies }) => {
       <div key={key}>
         <Headline>{headlineFor(key, items.length)}</Headline>
         <div data-test-stripes-core-about-module={key}>
-          <List
-            listStyle="bullets"
-            items={items}
-            itemFormatter={itemFormatter}
-          />
+          <List listStyle="bullets" items={items} itemFormatter={itemFormatter} />
         </div>
       </div>
     );

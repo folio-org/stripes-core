@@ -9,7 +9,7 @@ jest.mock('./useTenantPreferences', () => ({
   __esModule: true, // this property makes it work
   default: jest.fn(() => ({
     getTenantPreference: mockGetTenantPreference,
-  }))
+  })),
 }));
 
 jest.mock('../StripesContext');
@@ -18,7 +18,7 @@ describe('useQueryLimit', () => {
   describe('with stored preference', () => {
     it('returns preference value', async () => {
       const mockUseStripes = useStripes;
-      mockUseStripes.mockReturnValue({ stripes: { config: { } } });
+      mockUseStripes.mockReturnValue({ stripes: { config: {} } });
 
       const { result } = renderHook(() => useQueryLimit());
 
@@ -53,7 +53,7 @@ describe('useQueryLimit', () => {
         mockGetTenantPreference.mockReturnValue(undefined);
         // we'll get nothing from stripes.config
         const mockUseStripes = useStripes;
-        mockUseStripes.mockReturnValue({ stripes: { config: { } } });
+        mockUseStripes.mockReturnValue({ stripes: { config: {} } });
 
         const { result } = renderHook(() => useQueryLimit());
 

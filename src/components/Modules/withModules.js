@@ -11,7 +11,7 @@ export default function withModules(WrappedComponent) {
     render() {
       return (
         <ModulesContext.Consumer>
-          {modules => <WrappedComponent {...this.props} modules={modules} /> }
+          {(modules) => <WrappedComponent {...this.props} modules={modules} />}
         </ModulesContext.Consumer>
       );
     }

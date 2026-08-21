@@ -1,7 +1,4 @@
-import {
-  render,
-  screen,
-} from '@folio/jest-config-stripes/testing-library/react';
+import { render, screen } from '@folio/jest-config-stripes/testing-library/react';
 
 import AboutStripes from './AboutStripes';
 
@@ -23,4 +20,3 @@ describe('AboutStripes', () => {
     expect(screen.getByText(/stripes-logger 7.8.9/)).toBeInTheDocument();
   });
 });
-

@@ -1,10 +1,7 @@
 /* shhhh, eslint, it's ok. we need "unused" imports for mocks */
 /* eslint-disable no-unused-vars */
 
-import {
-  render,
-  screen,
-} from '@folio/jest-config-stripes/testing-library/react';
+import { render, screen } from '@folio/jest-config-stripes/testing-library/react';
 
 import stripesConnect from '../../stripesConnect';
 import AboutEnabledModules from './AboutEnabledModules';
@@ -16,23 +13,22 @@ describe('AboutEnabledModules', () => {
     const availableModules = {
       amy: 'angelo',
       beth: 'baldwin',
-      camilla: 'claude'
+      camilla: 'claude',
     };
     const resources = {
       enabledModules: {
-        records: [
-          { id: 'amy' },
-          { id: 'beth' },
-        ]
-      }
+        records: [{ id: 'amy' }, { id: 'beth' }],
+      },
     };
     const tenantid = 'monkey';
 
-    render(<AboutEnabledModules
-      availableModules={availableModules}
-      resources={resources}
-      tenantid={tenantid}
-    />);
+    render(
+      <AboutEnabledModules
+        availableModules={availableModules}
+        resources={resources}
+        tenantid={tenantid}
+      />,
+    );
 
     Object.keys(availableModules).forEach((i) => {
       expect(screen.getByText(availableModules[i])).toBeInTheDocument();
@@ -43,20 +39,25 @@ describe('AboutEnabledModules', () => {
     const availableModules = {
       amy: 'angelo',
       beth: 'baldwin',
-      camilla: 'claude'
+      camilla: 'claude',
     };
     const resources = {};
     const tenantid = 'monkey';
 
-    render(<AboutEnabledModules
-      availableModules={availableModules}
-      resources={resources}
-      tenantid={tenantid}
-    />);
+    render(
+      <AboutEnabledModules
+        availableModules={availableModules}
+        resources={resources}
+        tenantid={tenantid}
+      />,
+    );
 
     Object.keys(availableModules).forEach((i) => {
       expect(screen.getByText(availableModules[i])).toBeInTheDocument();
-      expect(screen.getByText(availableModules[i])).toHaveAttribute('style', 'color: rgb(204, 204, 204);');
+      expect(screen.getByText(availableModules[i])).toHaveAttribute(
+        'style',
+        'color: rgb(204, 204, 204);',
+      );
     });
   });
 });

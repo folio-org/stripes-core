@@ -135,7 +135,8 @@ export const rotationHandler = (handleSaveTokens, timeoutTimer, warningTimer, rt
     // calculate how many milliseconds will be remaining in the session when
     // this timer pings and pass that value through the timer so it can then be
     // passed through to the callback when the timer pings.
-    const timeRemaining = rtWarningInterval < 0 ? rtTimeoutInterval : ms(rtrConfig.fixedLengthSessionWarningTTL);
+    const timeRemaining =
+      rtWarningInterval < 0 ? rtTimeoutInterval : ms(rtrConfig.fixedLengthSessionWarningTTL);
     warningTimer.reset(rtWarningInterval, { timeRemaining });
   };
 };
@@ -170,7 +171,7 @@ export class ResetTimer {
   }
 
   reset = (interval, args = {}) => {
-    const timeout = (typeof interval === 'string') ? ms(interval) : interval;
+    const timeout = typeof interval === 'string' ? ms(interval) : interval;
     if (typeof timeout !== 'number') throw new TypeError('Expected `interval` to be a number');
 
     if (this.#id) {

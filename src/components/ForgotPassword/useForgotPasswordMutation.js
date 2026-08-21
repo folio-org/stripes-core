@@ -20,9 +20,7 @@ const useForgotPasswordMutation = () => {
   const pathPrefix = stripes.okapi.authnUrl ? 'users-keycloak' : 'bl-users';
 
   const mutation = useMutation({
-    mutationFn: (id) => ky.post(
-      `${pathPrefix}/forgotten/password`, { json: { id } }
-    ).json(),
+    mutationFn: (id) => ky.post(`${pathPrefix}/forgotten/password`, { json: { id } }).json(),
   });
 
   return mutation;

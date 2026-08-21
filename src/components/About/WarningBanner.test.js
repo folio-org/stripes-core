@@ -1,7 +1,4 @@
-import {
-  render,
-  screen,
-} from '@folio/jest-config-stripes/testing-library/react';
+import { render, screen } from '@folio/jest-config-stripes/testing-library/react';
 
 import WarningBanner from './WarningBanner';
 
@@ -15,9 +12,9 @@ describe('WarningBanner', () => {
           alpha: '1.0',
           beta: '2.0',
           gamma: '3.1',
-        }
+        },
       },
-      { module: 'app-beta', version: '2.3.4' }
+      { module: 'app-beta', version: '2.3.4' },
     ],
   };
 

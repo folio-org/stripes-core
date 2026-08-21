@@ -1,7 +1,4 @@
-import {
-  QueryClient,
-  QueryClientProvider,
-} from 'react-query';
+import { QueryClient, QueryClientProvider } from 'react-query';
 import { renderHook, waitFor } from '@folio/jest-config-stripes/testing-library/react';
 
 import useConfigurations, { configurationsApi } from './useConfigurations';
@@ -16,8 +13,8 @@ const consoleInterruptor = {};
 beforeAll(() => {
   consoleInterruptor.log = global.console.log;
   consoleInterruptor.error = global.console.error;
-  console.log = () => { };
-  console.error = () => { };
+  console.log = () => {};
+  console.error = () => {};
 });
 
 afterAll(() => {
@@ -32,9 +29,9 @@ afterAll(() => {
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      retry: false
-    }
-  }
+      retry: false,
+    },
+  },
 });
 
 describe('Given useConfigurations', () => {
@@ -56,7 +53,9 @@ describe('Given useConfigurations', () => {
     });
 
     it('joins criteria with "AND"', () => {
-      expect(configurationsApi(module, configName, code)).toContain(`module=="${module}" and configName=="${configName}" and code=="${code}"`);
+      expect(configurationsApi(module, configName, code)).toContain(
+        `module=="${module}" and configName=="${configName}" and code=="${code}"`,
+      );
     });
 
     it('retrieves all values without any criteria', () => {
@@ -82,9 +81,7 @@ describe('Given useConfigurations', () => {
 
     it('with permission, calls get', async () => {
       const wrapper = ({ children }) => (
-        <QueryClientProvider client={queryClient}>
-          {children}
-        </QueryClientProvider>
+        <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
       );
 
       const { result } = renderHook(() => useConfigurations({}), { wrapper });
@@ -118,9 +115,7 @@ describe('Given useConfigurations', () => {
 
     it('without permission, throws an error', async () => {
       const wrapper = ({ children }) => (
-        <QueryClientProvider client={queryClient}>
-          {children}
-        </QueryClientProvider>
+        <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
       );
 
       const { result } = renderHook(() => useConfigurations({}), { wrapper });
@@ -137,4 +132,3 @@ describe('Given useConfigurations', () => {
     });
   });
 });
-

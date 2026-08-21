@@ -19,4 +19,3 @@ describe('validatePhoneNumber', () => {
     expect(validatePhoneNumber('1.2!')).toBe(false);
   });
 });
-

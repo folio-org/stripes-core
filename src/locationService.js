@@ -36,7 +36,7 @@ export function isQueryResourceModule(module, location) {
 
 export function getCurrentModule(modules, location) {
   const { app, settings } = modules ?? { app: [], settings: [] };
-  return app.concat(settings).find(m => isQueryResourceModule(m, location));
+  return app.concat(settings).find((m) => isQueryResourceModule(m, location));
 }
 
 // updates query resource based on the current location query

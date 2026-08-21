@@ -47,7 +47,7 @@ class HandlerManager extends React.Component {
     const { stripes, data, props } = this.props;
     const { components } = this.state;
 
-    return components.map(Component => (
+    return components.map((Component) => (
       <ModuleHierarchyProvider key={Component.name} module={Component.module.module}>
         <Component stripes={stripes} actAs="handler" data={data} {...props} />
       </ModuleHierarchyProvider>

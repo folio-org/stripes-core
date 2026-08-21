@@ -1,8 +1,6 @@
 import { rotateAndReplay } from './rotateAndReplay';
 import { isFolioApiRequest } from './token-util';
-import {
-  RTR_ERROR_EVENT,
-} from './constants';
+import { RTR_ERROR_EVENT } from './constants';
 import { RTRError } from './Errors';
 
 export default (deps) => {
@@ -71,7 +69,7 @@ export default (deps) => {
      */
     invokeUserOnReadyStateChange = (event) => {
       this.userOnReadyStateChange?.(this, event);
-    }
+    };
 
     /**
      * Capture request metadata needed for potential replay.
@@ -85,7 +83,7 @@ export default (deps) => {
       this.originalRequestWithCredentials = false;
       this.hasRetriedAuth = false;
       super.open(method, url, ...rest);
-    }
+    };
 
     /**
      * Persist outgoing headers so replay can reproduce the original request.
@@ -93,7 +91,7 @@ export default (deps) => {
     setRequestHeader = (header, value) => {
       this.originalRequestHeaders.push([header, value]);
       super.setRequestHeader(header, value);
-    }
+    };
 
     /**
      * Match auth failures handled by fetch wrapper: 401 and Okapi token-missing 400.
@@ -108,7 +106,7 @@ export default (deps) => {
       }
 
       return false;
-    }
+    };
 
     /**
      * Reissue the original request one time after rotation succeeds.
@@ -126,7 +124,7 @@ export default (deps) => {
       super.send(this.originalRequestPayload);
 
       return true;
-    }
+    };
 
     /**
      * Rotate tokens on auth failure, then replay or surface the original failure.
@@ -136,13 +134,14 @@ export default (deps) => {
 
       try {
         /**  rotateAndReplay is implemented to work with fetch requests, including original requests and response in
-        *   its parameters, but this is not applicable to XHR requests, so we do not send the third
-        *   parameter so this function only performs rotation within the lock implementation.
-        */
-        await rotateAndReplay(
-          this.FFetchContext.nativeFetch,
-          { ...this.FFetchContext.rotationConfig, logger: this.FFetchContext.logger, shouldRotate: async () => true },
-        );
+         *   its parameters, but this is not applicable to XHR requests, so we do not send the third
+         *   parameter so this function only performs rotation within the lock implementation.
+         */
+        await rotateAndReplay(this.FFetchContext.nativeFetch, {
+          ...this.FFetchContext.rotationConfig,
+          logger: this.FFetchContext.logger,
+          shouldRotate: async () => true,
+        });
 
         const replayed = this.replayRequest();
         if (!replayed) {
@@ -160,7 +159,7 @@ export default (deps) => {
          */
         this.invokeUserOnReadyStateChange(event);
       }
-    }
+    };
 
     /**
      * Intercept DONE responses, trigger RTR when needed, then forward callbacks.
@@ -171,14 +170,15 @@ export default (deps) => {
         return;
       }
 
-      const shouldRetry = this.shouldEnsureToken && !this.hasRetriedAuth && this.isAuthFailureResponse();
+      const shouldRetry =
+        this.shouldEnsureToken && !this.hasRetriedAuth && this.isAuthFailureResponse();
       if (shouldRetry) {
         this.handleAuthFailure(event);
         return;
       }
 
       this.invokeUserOnReadyStateChange(event);
-    }
+    };
 
     /**
      * Capture replay inputs before first send, then pass through to native XHR.

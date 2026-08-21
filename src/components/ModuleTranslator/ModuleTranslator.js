@@ -4,17 +4,14 @@ import { injectIntl } from 'react-intl';
 
 import { withStripes } from '../../StripesContext';
 import { getModules } from '../../entitlementService';
-import {
-  ModulesContext,
-  modulesInitialState,
-} from '../../ModulesContext';
+import { ModulesContext, modulesInitialState } from '../../ModulesContext';
 
 class ModuleTranslator extends React.Component {
   static propTypes = {
     children: PropTypes.node,
     intl: PropTypes.object,
     stripes: PropTypes.object,
-  }
+  };
 
   constructor(props) {
     super(props);
@@ -24,16 +21,16 @@ class ModuleTranslator extends React.Component {
     };
   }
 
-  async componentDidMount() {
-    try {
-      const { stripes } = this.props;
-      const moduleData = await getModules(stripes.config);
-      const modules = this.translateModules(moduleData);
-
-      this.setState({ modules });
-    } catch (error) {
-      console.error('Failed to load modules:', error); // eslint-disable-line no-console
-    }
+  componentDidMount() {
+    const { stripes } = this.props;
+    getModules(stripes.config)
+      .then((moduleData) => {
+        const modules = this.translateModules(moduleData);
+        this.setState({ modules });
+      })
+      .catch((error) => {
+        console.error('Failed to load modules:', error); // eslint-disable-line no-console
+      });
   }
 
   translateModules = (originalModules) => {
@@ -43,7 +40,7 @@ class ModuleTranslator extends React.Component {
       settings: (originalModules.settings || []).map(this.translateModule),
       handler: (originalModules.handler || []).map(this.translateModule),
     };
-  }
+  };
 
   translateModule = (module) => {
     const { formatMessage } = this.props.intl;
@@ -52,12 +49,12 @@ class ModuleTranslator extends React.Component {
       ...module,
       displayName: module.displayName ? formatMessage({ id: module.displayName }) : undefined,
     };
-  }
+  };
 
   render() {
     return (
       <ModulesContext.Provider value={this.state.modules}>
-        { this.props.children }
+        {this.props.children}
       </ModulesContext.Provider>
     );
   }

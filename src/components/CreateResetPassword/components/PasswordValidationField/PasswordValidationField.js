@@ -9,9 +9,7 @@ import omitProps from '@folio/stripes-components/util/omitProps';
 
 const defaultValidationHandler = (errors) => {
   if (!isEmpty(errors)) {
-    return (
-      <FormattedMessage id={`stripes-smart-components.${errors.pop()}`} />
-    );
+    return <FormattedMessage id={`stripes-smart-components.${errors.pop()}`} />;
   }
 
   return undefined;
@@ -58,43 +56,33 @@ class PasswordValidationField extends React.Component {
   }
 
   async getRules() {
-    const {
-      mutator,
-      token,
-    } = this.props;
-    const headers = token
-      ? { headers: { 'x-okapi-token': token } }
-      : {};
+    const { mutator, token } = this.props;
+    const headers = token ? { headers: { 'x-okapi-token': token } } : {};
     const { rules } = await mutator.validators.GET(headers);
 
     return rules;
   }
 
-  validatePassword = value => {
+  validatePassword = (value) => {
     if (!this.rules) {
       return undefined;
     }
 
-    const {
-      username,
-      validationHandler,
-    } = this.props;
+    const { username, validationHandler } = this.props;
 
     return validationHandler(this.getErrors(value, username));
   };
 
   getErrors(value, username) {
-    return this.rules.filter(({ expression }) => expression)
+    return this.rules
+      .filter(({ expression }) => expression)
       .reduce((errors, rule) => {
-        const {
-          errMessageId,
-          expression,
-          name,
-        } = rule;
+        const { errMessageId, expression, name } = rule;
 
-        const parsedExpression = (name === this.noUserNameRuleName)
-          ? expression.replace(this.userNamePlaceholder, username)
-          : expression;
+        const parsedExpression =
+          name === this.noUserNameRuleName
+            ? expression.replace(this.userNamePlaceholder, username)
+            : expression;
 
         const regex = new RegExp(parsedExpression);
 

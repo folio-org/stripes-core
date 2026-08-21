@@ -1,17 +1,13 @@
-import {
-  interactor,
-  scoped,
-} from '@bigtest/interactor';
+import { interactor, scoped } from '@bigtest/interactor';
 
-import TextFieldInteractor
-  from '@folio/stripes-components/lib/TextField/tests/interactor';
+import TextFieldInteractor from '@folio/stripes-components/lib/TextField/tests/interactor';
 import SubmitButtonInteractor from './SubmitButton';
 import ErrorsContainerInteractor from './ErrorsContainer';
 import StatusPageInteractor from './StatusPage';
 
 @interactor
 class ForgotUsernameInteractor {
-  static defaultScope = ('form[class^="form--"]');
+  static defaultScope = 'form[class^="form--"]';
 
   inputField = new TextFieldInteractor('[class^="formGroup--"]');
   submitButton = new SubmitButtonInteractor();

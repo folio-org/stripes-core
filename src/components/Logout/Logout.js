@@ -3,13 +3,7 @@ import PropTypes from 'prop-types';
 import { useLocation } from 'react-router';
 import { FormattedMessage } from 'react-intl';
 
-import {
-  Button,
-  Col,
-  Headline,
-  LoadingView,
-  Row,
-} from '@folio/stripes-components';
+import { Button, Col, Headline, LoadingView, Row } from '@folio/stripes-components';
 
 import OrganizationLogo from '../OrganizationLogo';
 import { useStripes } from '../../StripesContext';
@@ -22,7 +16,6 @@ import { useLogoutMutation } from './useLogoutMutation';
 
 import styles from './Logout.css';
 import { SessionSyncError } from '../SessionSyncError';
-
 
 export const parseError = (error) => {
   // do we have JSON from an error API response?
@@ -84,7 +77,7 @@ const Logout = ({ sessionTimeoutTimer, sessionTimeoutWarningTimer }) => {
         if (err instanceof SessionSyncError) {
           globalThis.location.assign(err.resource);
         }
-      }
+      },
     });
 
     // yes, ignore the logoutMutation dependency; just logout once, on-load.
@@ -109,19 +102,23 @@ const Logout = ({ sessionTimeoutTimer, sessionTimeoutWarningTimer }) => {
           </Row>
           <Row center="xs">
             <Col xs={12}>
-              <Headline size="large"><FormattedMessage id={messageId} /></Headline>
+              <Headline size="large">
+                <FormattedMessage id={messageId} />
+              </Headline>
             </Col>
           </Row>
-          {error &&
+          {error && (
             <Row center="xs">
               <Col xs={12}>
                 <Headline>{error}</Headline>
               </Col>
             </Row>
-          }
+          )}
           <Row center="xs">
             <Col xs={12}>
-              <Button to={redirectTo} onClick={handleClick}><FormattedMessage id="stripes-core.rtr.idleSession.logInAgain" /></Button>
+              <Button to={redirectTo} onClick={handleClick}>
+                <FormattedMessage id="stripes-core.rtr.idleSession.logInAgain" />
+              </Button>
             </Col>
           </Row>
         </div>

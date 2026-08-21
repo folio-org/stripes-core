@@ -43,21 +43,24 @@ export default function setupApplication({
     if (disableAuth) {
       initialState.okapi = {
         ...initialState.okapi,
-        currentUser: assign({
-          id: 'test',
-          username: 'testuser',
-          firstName: 'Test',
-          lastName: 'User',
-          email: 'user@folio.org',
-          addresses: [],
-          servicePoints: [],
-          tokenExpiration: {
-            accessTokenExpiration: new Date(Date.now() + (10 * 60 * 1000)).toISOString(),
-            refreshTokenExpiration: new Date(Date.now() + (10 * 60 * 1000)).toISOString(),
-            atExpires: Date.now() + (10 * 60 * 1000),
-            rtExpires: Date.now() + (10 * 60 * 1000),
+        currentUser: assign(
+          {
+            id: 'test',
+            username: 'testuser',
+            firstName: 'Test',
+            lastName: 'User',
+            email: 'user@folio.org',
+            addresses: [],
+            servicePoints: [],
+            tokenExpiration: {
+              accessTokenExpiration: new Date(Date.now() + 10 * 60 * 1000).toISOString(),
+              refreshTokenExpiration: new Date(Date.now() + 10 * 60 * 1000).toISOString(),
+              atExpires: Date.now() + 10 * 60 * 1000,
+              rtExpires: Date.now() + 10 * 60 * 1000,
+            },
           },
-        }, currentUser),
+          currentUser,
+        ),
         currentPerms: permissions,
         isAuthenticated: true,
       };
@@ -78,7 +81,7 @@ export default function setupApplication({
 
       props: {
         initialState,
-        defaultTranslations: translations
+        defaultTranslations: translations,
       },
 
       setup: () => {
@@ -92,10 +95,10 @@ export default function setupApplication({
             perms: initialState.okapi.currentPerms,
             tenant: 'tenant',
             tokenExpiration: {
-              atExpires: Date.now() + (10 * 60 * 1000),
-              rtExpires: Date.now() + (10 * 60 * 1000),
-              accessTokenExpiration: new Date(Date.now() + (10 * 60 * 1000)).toISOString(),
-              refreshTokenExpiration: new Date(Date.now() + (10 * 60 * 1000)).toISOString(),
+              atExpires: Date.now() + 10 * 60 * 1000,
+              rtExpires: Date.now() + 10 * 60 * 1000,
+              accessTokenExpiration: new Date(Date.now() + 10 * 60 * 1000).toISOString(),
+              refreshTokenExpiration: new Date(Date.now() + 10 * 60 * 1000).toISOString(),
             },
           });
         }
@@ -113,7 +116,7 @@ export default function setupApplication({
         this.server?.shutdown();
         this.server = null;
         this.app = null;
-      }
+      },
     });
 
     // setup react validators

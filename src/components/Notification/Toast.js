@@ -41,12 +41,8 @@ class Toast extends React.Component {
     return (
       <Portal container={document.body}>
         <div>
-          <div className={`${css.toastContainerRoot} ${css.top}`}>
-            {topMessages}
-          </div>
-          <div className={css.toastContainerRoot}>
-            {bottomMessages}
-          </div>
+          <div className={`${css.toastContainerRoot} ${css.top}`}>{topMessages}</div>
+          <div className={css.toastContainerRoot}>{bottomMessages}</div>
         </div>
       </Portal>
     );

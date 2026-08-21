@@ -30,7 +30,7 @@ const Pluggable = (props) => {
 
         cached.push({
           Child,
-          plugin: best.module
+          plugin: best.module,
         });
       }
     }
@@ -54,16 +54,15 @@ const Pluggable = (props) => {
   if (!props.children || !plugins.length) return null;
   if (props.children.length) {
     // eslint-disable-next-line no-console
-    console.error(`<Pluggable type="${props.type}"> has ${props.children.length} children, can only return one`);
+    console.error(
+      `<Pluggable type="${props.type}"> has ${props.children.length} children, can only return one`,
+    );
   }
   return props.children;
 };
 
 Pluggable.propTypes = {
-  children: PropTypes.oneOfType([
-    PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node,
-  ]),
+  children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
   stripes: PropTypes.object.isRequired,
   type: PropTypes.string.isRequired,
 };

@@ -16,26 +16,25 @@ import initialReducers from '../../initialReducers';
 import enhanceReducer from '../../enhanceReducer';
 import createApolloClient from '../../createApolloClient';
 import createReactQueryClient from '../../createReactQueryClient';
-import { addIcon, setSinglePlugin, setBindings, setIsAuthenticated, setOkapiToken, setTimezone, setCurrency, updateCurrentUser, setTranslations } from '../../okapiActions';
 import {
-  checkOkapiSession,
-  loadTranslations,
-  setTokenExpiry,
-} from '../../loginServices';
+  addIcon,
+  setSinglePlugin,
+  setBindings,
+  setIsAuthenticated,
+  setOkapiToken,
+  setTimezone,
+  setCurrency,
+  updateCurrentUser,
+  setTranslations,
+} from '../../okapiActions';
+import { checkOkapiSession, loadTranslations, setTokenExpiry } from '../../loginServices';
 import { getQueryResourceKey, getCurrentModule } from '../../locationService';
 import Stripes from '../../Stripes';
 import RootWithIntl from '../../RootWithIntl';
 import SystemSkeleton from '../SystemSkeleton';
-import {
-  configureRtr,
-  rotationHandler,
-  ResetTimer
-} from './token-util';
+import { configureRtr, rotationHandler, ResetTimer } from './token-util';
 import { modulesInitialState } from '../../ModulesContext';
-import {
-  RTR_FLS_TIMEOUT_EVENT,
-  RTR_FLS_WARNING_EVENT,
-} from './constants';
+import { RTR_FLS_TIMEOUT_EVENT, RTR_FLS_WARNING_EVENT } from './constants';
 
 import './Root.css';
 
@@ -43,9 +42,10 @@ import { FFetch } from './FFetch';
 
 if (!metadata) {
   // eslint-disable-next-line no-console
-  console.error('No metadata harvested from package files, so you will not get app icons. Probably the stripes-core in your Stripes CLI is too old. Try `yarn global upgrade @folio/stripes-cli`');
+  console.error(
+    'No metadata harvested from package files, so you will not get app icons. Probably the stripes-core in your Stripes CLI is too old. Try `yarn global upgrade @folio/stripes-cli`',
+  );
 }
-
 
 class Root extends Component {
   constructor(...args) {
@@ -97,7 +97,7 @@ class Root extends Component {
       setTokenExpiry,
       this.sessionTimeoutTimer,
       this.sessionTimeoutWarningTimer,
-      rtrConfig
+      rtrConfig,
     );
 
     this.ffetch = new FFetch({
@@ -120,13 +120,12 @@ class Root extends Component {
       // check for an existing session in storage. if found, initialize the
       // end-of-session timers. for new sessions, this happens in LoginCtrl
       // after a successful login.
-      checkOkapiSession(okapi.url, store, okapi.tenant, history)
-        .then(sess => {
-          if (sess?.tokenExpiration) {
-            // unawaited async function stores token expiration data
-            this.handleRotation(sess.tokenExpiration);
-          }
-        });
+      checkOkapiSession(okapi.url, store, okapi.tenant, history).then((sess) => {
+        if (sess?.tokenExpiration) {
+          // unawaited async function stores token expiration data
+          this.handleRotation(sess.tokenExpiration);
+        }
+      });
     }
 
     // checkOkapiSession triggers loadTranslations for authenticated sessions
@@ -164,7 +163,7 @@ class Root extends Component {
     const { modules, history } = this.props;
     const appModule = getCurrentModule(modules, history.location);
     this.queryResourceStateKey = appModule ? getQueryResourceKey(appModule) : null;
-  }
+  };
 
   addReducer = (key, reducer) => {
     if (this.queryResourceStateKey === null) {
@@ -175,7 +174,10 @@ class Root extends Component {
       const originalReducer = reducer;
       const initialQueryObject = queryString.parse(window.location.search);
       // eslint-disable-next-line no-param-reassign
-      reducer = (state = Object.values(initialQueryObject).length ? initialQueryObject : undefined, action) => originalReducer(state, action);
+      reducer = (
+        state = Object.values(initialQueryObject).length ? initialQueryObject : undefined,
+        action,
+      ) => originalReducer(state, action);
     }
 
     if (this.reducers[key] === undefined) {
@@ -184,7 +186,7 @@ class Root extends Component {
       return true;
     }
     return false;
-  }
+  };
 
   addEpic = (key, epic) => {
     if (this.epics[key] === undefined) {
@@ -193,7 +195,7 @@ class Root extends Component {
       return true;
     }
     return false;
-  }
+  };
 
   render() {
     const {
@@ -225,7 +227,12 @@ class Root extends Component {
 
     if (serverDown) {
       // note: this isn't i18n'ed because we haven't rendered an IntlProvider yet.
-      return <div>Error: server is forbidden, unreachable or down. Clear the cookies? Use incognito mode? VPN issue?</div>;
+      return (
+        <div>
+          Error: server is forbidden, unreachable or down. Clear the cookies? Use incognito mode?
+          VPN issue?
+        </div>
+      );
     }
 
     // Wait for modules to load before rendering the app, so when stripes-connect calls `addReducer`
@@ -233,7 +240,7 @@ class Root extends Component {
     // and `addReducer` can initialize the query resource (`resources.query`) with URL params on page reload.
     if (!translations || this.props.modules === modulesInitialState) {
       // We don't know the locale, so we use English as backup
-      return (<SystemSkeleton />);
+      return <SystemSkeleton />;
     }
 
     // make sure RTR is configured, either from StripesHub or stripes.config.js.
@@ -258,36 +265,60 @@ class Root extends Component {
       okapi,
       branding,
       withOkapi: this.withOkapi,
-      setToken: (val) => { store.dispatch(setOkapiToken(val)); },
-      setIsAuthenticated: (val) => { store.dispatch(setIsAuthenticated(val)); },
+      setToken: (val) => {
+        store.dispatch(setOkapiToken(val));
+      },
+      setIsAuthenticated: (val) => {
+        store.dispatch(setIsAuthenticated(val));
+      },
       actionNames,
       locale,
       timezone,
       currency,
       metadata,
       icons: { ...configIcons, ...icons },
-      addIcon: (key, icon) => { store.dispatch(addIcon(key, icon)); },
-      setLocale: (localeValue) => { loadTranslations(store, localeValue, defaultTranslations); },
-      setTimezone: (timezoneValue) => { store.dispatch(setTimezone(timezoneValue)); },
-      setTranslations: (nextTranslations) => { store.dispatch(setTranslations(nextTranslations)); },
-      setCurrency: (currencyValue) => { store.dispatch(setCurrency(currencyValue)); },
-      updateUser: (userValue) => { store.dispatch(updateCurrentUser(userValue)); },
+      addIcon: (key, icon) => {
+        store.dispatch(addIcon(key, icon));
+      },
+      setLocale: (localeValue) => {
+        loadTranslations(store, localeValue, defaultTranslations);
+      },
+      setTimezone: (timezoneValue) => {
+        store.dispatch(setTimezone(timezoneValue));
+      },
+      setTranslations: (nextTranslations) => {
+        store.dispatch(setTranslations(nextTranslations));
+      },
+      setCurrency: (currencyValue) => {
+        store.dispatch(setCurrency(currencyValue));
+      },
+      updateUser: (userValue) => {
+        store.dispatch(updateCurrentUser(userValue));
+      },
       plugins: plugins || {},
-      setSinglePlugin: (key, value) => { store.dispatch(setSinglePlugin(key, value)); },
+      setSinglePlugin: (key, value) => {
+        store.dispatch(setSinglePlugin(key, value));
+      },
       bindings,
-      setBindings: (val) => { store.dispatch(setBindings(val)); },
+      setBindings: (val) => {
+        store.dispatch(setBindings(val));
+      },
       discovery,
       user: {
         user: currentUser,
         perms: currentPerms,
       },
-      connect(X) { return X; },
+      connect(X) {
+        return X;
+      },
       stripesHub,
     });
 
     return (
       <ErrorBoundary>
-        <ConnectContext.Provider value={{ addReducer: this.addReducer, addEpic: this.addEpic, store }}>
+        <ConnectContext.Provider
+          value={{ addReducer: this.addReducer, addEpic: this.addEpic, store }}
+        >
           <ApolloProvider client={this.apolloClient}>
             <QueryClientProvider client={this.reactQueryClient}>
               <IntlProvider
@@ -297,8 +328,8 @@ class Root extends Component {
                 currency={currency}
                 messages={translations}
                 textComponent={Fragment}
-                onError={config?.suppressIntlErrors ? () => { } : undefined}
-                onWarn={config?.suppressIntlWarnings ? () => { } : undefined}
+                onError={config?.suppressIntlErrors ? () => {} : undefined}
+                onWarn={config?.suppressIntlWarnings ? () => {} : undefined}
                 defaultRichTextElements={this.defaultRichTextElements}
               >
                 <RootWithIntl
@@ -352,9 +383,7 @@ Root.propTypes = {
     tenant: PropTypes.string,
     withoutOkapi: PropTypes.bool,
   }),
-  actionNames: PropTypes.arrayOf(
-    PropTypes.string,
-  ).isRequired,
+  actionNames: PropTypes.arrayOf(PropTypes.string).isRequired,
   discovery: PropTypes.shape({
     modules: PropTypes.object,
     interfaces: PropTypes.object,

@@ -10,16 +10,10 @@ export default class FieldLabel extends Component {
   };
 
   render() {
-    const {
-      htmlFor,
-      children
-    } = this.props;
+    const { htmlFor, children } = this.props;
 
     return (
-      <label
-        htmlFor={htmlFor}
-        className={styles.label}
-      >
+      <label htmlFor={htmlFor} className={styles.label}>
         {children}
       </label>
     );

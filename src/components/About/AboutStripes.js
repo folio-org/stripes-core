@@ -4,13 +4,9 @@ import stripesConnect from '@folio/stripes-connect/package';
 import stripesComponents from '@folio/stripes-components/package';
 import stripesLogger from '@folio/stripes-logger/package';
 
-import {
-  Headline,
-  List,
-} from '@folio/stripes-components';
+import { Headline, List } from '@folio/stripes-components';
 import stripesCore from '../../../package';
 import { useStripes } from '../../StripesContext';
-
 
 const AboutStripes = () => {
   const stripes = useStripes();
@@ -53,7 +49,7 @@ const AboutStripes = () => {
       <List
         listStyle="bullets"
         items={stripesModules}
-        itemFormatter={item => (<li key={item.key}>{item.value}</li>)}
+        itemFormatter={(item) => <li key={item.key}>{item.value}</li>}
       />
     </>
   );

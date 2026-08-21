@@ -29,36 +29,36 @@ import { settings, stripesHubAPI } from './constants';
 
 // export supported locales, i.e. the languages we provide translations for
 export const supportedLocales = [
-  'ar',     // arabic
-  'cs-CZ',  // czech, czechia
-  'da-DK',  // danish, denmark
-  'de-DE',  // german, germany
-  'en-GB',  // british english
-  'en-SE',  // english, sweden
-  'en-US',  // american english
+  'ar', // arabic
+  'cs-CZ', // czech, czechia
+  'da-DK', // danish, denmark
+  'de-DE', // german, germany
+  'en-GB', // british english
+  'en-SE', // english, sweden
+  'en-US', // american english
   'es-419', // latin american spanish
-  'es-ES',  // european spanish
-  'es',     // spanish
-  'fr-FR',  // french, france
-  'he',     // hebrew
-  'hi-IN',  // hindi, india
-  'hu-HU',  // hugarian, hungry
-  'it-IT',  // italian, italy
-  'ja',     // japanese
-  'ko',     // korean
-  'nb',     // norwegian bokmål
-  'nl',     // dutch, flemish
-  'nn',     // norwegian nynorsk
-  'pl',     // polish
-  'pt-BR',  // portuguese, brazil
-  'pt-PT',  // portuguese, portugal
-  'ru',     // russian
-  'sv',     // swedish
-  'tr',     // turkish
-  'uk',     // ukrainian
-  'ur',     // urdu
-  'zh-CN',  // chinese, china
-  'zh-TW',  // chinese, taiwan
+  'es-ES', // european spanish
+  'es', // spanish
+  'fr-FR', // french, france
+  'he', // hebrew
+  'hi-IN', // hindi, india
+  'hu-HU', // hugarian, hungry
+  'it-IT', // italian, italy
+  'ja', // japanese
+  'ko', // korean
+  'nb', // norwegian bokmål
+  'nl', // dutch, flemish
+  'nn', // norwegian nynorsk
+  'pl', // polish
+  'pt-BR', // portuguese, brazil
+  'pt-PT', // portuguese, portugal
+  'ru', // russian
+  'sv', // swedish
+  'tr', // turkish
+  'uk', // ukrainian
+  'ur', // urdu
+  'zh-CN', // chinese, china
+  'zh-TW', // chinese, taiwan
 ];
 
 export const LOGOUT_MESSAGES = {
@@ -71,8 +71,8 @@ export const LOGOUT_MESSAGES = {
 // export supported numbering systems, i.e. the systems tenants may chose
 // for numeral display
 export const supportedNumberingSystems = [
-  'latn',  // Arabic (0 1 2 3 4 5 6 7 8 9)
-  'arab',  // Arabic-Hindi (٠ ١ ٢ ٣ ٤ ٥ ٦ ٧ ٨ ٩)
+  'latn', // Arabic (0 1 2 3 4 5 6 7 8 9)
+  'arab', // Arabic-Hindi (٠ ١ ٢ ٣ ٤ ٥ ٦ ٧ ٨ ٩)
 ];
 
 /** name for the session key in local storage */
@@ -152,7 +152,9 @@ export const getUnauthorizedPathFromSession = () => sessionStorage.getItem(UNAUT
 
 export const getOIDCRedirectUri = (tenant, clientId) => {
   // we need to use `encodeURIComponent` to separate `redirect_uri` URL parameters from the rest of URL parameters that `redirect_uri` itself is part of
-  return encodeURIComponent(`${window.location.protocol}//${window.location.host}/oidc-landing?tenant=${tenant}&client_id=${clientId}`);
+  return encodeURIComponent(
+    `${window.location.protocol}//${window.location.host}/oidc-landing?tenant=${tenant}&client_id=${clientId}`,
+  );
 };
 
 /**
@@ -195,8 +197,8 @@ export const getLoginTenant = (stripesOkapi, stripesConfig) => {
 
 // export config values for storing user locale
 export const userLocaleConfig = {
-  'configName': 'localeSettings',
-  'module': '@folio/stripes-core',
+  configName: 'localeSettings',
+  module: '@folio/stripes-core',
 };
 
 // config values for storing user locale in mod-settings
@@ -282,16 +284,20 @@ export async function loadTranslations(store, locale, defaultTranslations = {}) 
     // For moment, we want to import and load the most-specific
     // locale possible without the numbering system suffix,
     // e.g. it-IT if available, falling back to it if that fails.
-    import(`moment/locale/${momentLocale}`).then(() => {
-      moment.locale(momentLocale);
-    }).catch(() => {
-      import(`moment/locale/${parentLocale}`).then(() => {
-        moment.locale(parentLocale);
-      }).catch(e => {
-        // eslint-disable-next-line no-console
-        console.error(`Error loading locale ${parentLocale} for Moment.js`, e);
+    import(`moment/locale/${momentLocale}`)
+      .then(() => {
+        moment.locale(momentLocale);
+      })
+      .catch(() => {
+        import(`moment/locale/${parentLocale}`)
+          .then(() => {
+            moment.locale(parentLocale);
+          })
+          .catch((e) => {
+            // eslint-disable-next-line no-console
+            console.error(`Error loading locale ${parentLocale} for Moment.js`, e);
+          });
       });
-    });
   }
 
   // load DayJS Locale. DayJS is expected to replace Moment as Stripes' date/time library.
@@ -302,8 +308,9 @@ export async function loadTranslations(store, locale, defaultTranslations = {}) 
   // Here we put additional condition because languages
   // like Japan we need to use like ja, but with numeric system
   // Japan language builds like ja_u, that incorrect. We need to be safe from that bug.
-  const translationName = translations[region] ? translations[region] :
-    translations[loadedLocale] || translations[[parentLocale]];
+  const translationName = translations[region]
+    ? translations[region]
+    : translations[loadedLocale] || translations[[parentLocale]];
 
   // if stripes-core is served from a different origin (module-federation) then
   // we need to fetch translations from that origin as well rather than the current location.
@@ -314,15 +321,14 @@ export async function loadTranslations(store, locale, defaultTranslations = {}) 
   }
 
   const translationUrl = new URL(translationName, translationOrigin);
-  const res = await fetch(translationUrl.href)
-    .then((response) => {
-      if (response.ok) {
-        response.json().then((stripesTranslations) => {
-          store.dispatch(setTranslations(Object.assign(stripesTranslations, defaultTranslations)));
-          store.dispatch(setLocale(locale));
-        });
-      }
-    });
+  const res = await fetch(translationUrl.href).then((response) => {
+    if (response.ok) {
+      response.json().then((stripesTranslations) => {
+        store.dispatch(setTranslations(Object.assign(stripesTranslations, defaultTranslations)));
+        store.dispatch(setLocale(locale));
+      });
+    }
+  });
 
   return res;
 }
@@ -391,10 +397,13 @@ export async function getPlugins(okapiUrl, store, tenant) {
 
   if (response.ok) {
     const json = await response.json();
-    const configs = json.configs?.reduce((acc, val) => ({
-      ...acc,
-      [val.configName]: val.value,
-    }), {});
+    const configs = json.configs?.reduce(
+      (acc, val) => ({
+        ...acc,
+        [val.configName]: val.value,
+      }),
+      {},
+    );
     store.dispatch(setPlugins(configs));
   }
 
@@ -411,11 +420,14 @@ export async function getPlugins(okapiUrl, store, tenant) {
  * @returns {Promise}
  */
 export async function getBindings(okapiUrl, store, tenant) {
-  const response = await fetch(`${okapiUrl}/configurations/entries?query=(module==ORG and configName==bindings)`, {
-    headers: getHeaders(tenant, store.getState().okapi.token),
-    credentials: 'include',
-    mode: 'cors',
-  });
+  const response = await fetch(
+    `${okapiUrl}/configurations/entries?query=(module==ORG and configName==bindings)`,
+    {
+      headers: getHeaders(tenant, store.getState().okapi.token),
+      credentials: 'include',
+      mode: 'cors',
+    },
+  );
 
   let bindings = {};
   if (response.ok) {
@@ -459,7 +471,6 @@ const getTenantLocale = async (url, store, tenant) => {
   return response;
 };
 
-
 /**
  * Retrieves the user's own locale setting from the mod-settings.
  *
@@ -499,13 +510,13 @@ export async function getLocaleConfigurationsEntries(okapiUrl, store, tenant) {
   const query = [
     'module==ORG',
     'configName == localeSettings',
-    '(cql.allRecords=1 NOT userId="" NOT code="")'
+    '(cql.allRecords=1 NOT userId="" NOT code="")',
   ].join(' AND ');
 
   const res = await fetchAndDispatchLocale(
     `${okapiUrl}/configurations/entries?query=(${query})`,
     store,
-    tenant
+    tenant,
   );
 
   return res;
@@ -529,7 +540,7 @@ export async function getUserLocaleConfigurationsEntries(okapiUrl, store, tenant
   const res = await fetchAndDispatchLocale(
     `${okapiUrl}/configurations/entries?query=(${query} and userId=="${userId}")`,
     store,
-    tenant
+    tenant,
   );
 
   return res;
@@ -543,7 +554,6 @@ const getLocalesPromises = (url, store, tenant, userId) => {
     getUserLocaleConfigurationsEntries(url, store, tenant, userId),
   ]);
 };
-
 
 /**
  * Applies locale settings by loading translations and dispatching actions to update timezone and currency.
@@ -579,8 +589,6 @@ export const getFullLocale = (languageRegion, numberingSystem) => {
   return [languageRegion, numberingSystem].filter(Boolean).join(unicodeExtensionKey);
 };
 
-
-
 /**
  * Processes and applies locale settings to the given store based on tenant and user locale data.
  *
@@ -601,7 +609,8 @@ const processLocaleSettings = async (store, tenantLocaleData, userLocaleData) =>
   const userLocaleSettings = userLocaleData?.items?.[0]?.value;
 
   const locale = userLocaleSettings?.locale || tenantLocaleSettings?.locale;
-  const numberingSystem = userLocaleSettings?.numberingSystem || tenantLocaleSettings?.numberingSystem;
+  const numberingSystem =
+    userLocaleSettings?.numberingSystem || tenantLocaleSettings?.numberingSystem;
   const timezone = userLocaleSettings?.timezone || tenantLocaleSettings?.timezone;
   const currency = userLocaleSettings?.currency || tenantLocaleSettings?.currency;
 
@@ -655,16 +664,17 @@ export async function loadResources(store, tenant, userId) {
     ]);
 
     if (responses[0].value.ok) {
-      [tenantLocaleData, userLocaleData] = await Promise.all(responses.map(res => res.value?.json?.()));
+      [tenantLocaleData, userLocaleData] = await Promise.all(
+        responses.map((res) => res.value?.json?.()),
+      );
       hasSetting = tenantLocaleData.locale || userLocaleData?.items[0]?.value;
     }
   }
 
   if (hasSetting) {
     await processLocaleSettings(store, tenantLocaleData, userLocaleData);
-    promises.push(responses.map(res => res?.value));
+    promises.push(responses.map((res) => res?.value));
   }
-
 
   // only read from legacy mod-config if we haven't already read from mod-settings
   if (hasReadConfigPerm && !hasSetting) {
@@ -675,10 +685,7 @@ export async function loadResources(store, tenant, userId) {
   // in mod-configuration so we can only retrieve them if the user has
   // read-permission for configuration entries.
   if (hasReadConfigPerm) {
-    promises.push(
-      getPlugins(okapiUrl, store, tenant),
-      getBindings(okapiUrl, store, tenant)
-    );
+    promises.push(getPlugins(okapiUrl, store, tenant), getBindings(okapiUrl, store, tenant));
   }
 
   if (!okapi.withoutOkapi) {
@@ -689,7 +696,6 @@ export async function loadResources(store, tenant, userId) {
 
   return result.flat();
 }
-
 
 /**
  * spreadUserWithPerms
@@ -732,9 +738,9 @@ export function spreadUserWithPerms(userWithPerms) {
     // shaped like this ["foo", "bar", "bat"] or
     // shaped like that [{ "permissionName": "foo" }]?
     if (typeof list[0] === 'string') {
-      perms = Object.assign({}, ...list.map(p => ({ [p]: true })));
+      perms = Object.assign({}, ...list.map((p) => ({ [p]: true })));
     } else {
-      perms = Object.assign({}, ...list.map(p => ({ [p.permissionName]: true })));
+      perms = Object.assign({}, ...list.map((p) => ({ [p.permissionName]: true })));
     }
   }
 
@@ -791,18 +797,22 @@ export async function createOkapiSession(store, tenant, token, data) {
   // the invalid AT will prompt an RTR cycle which will either give us new AT/RT values
   // (if the RT was valid) or throw an RTR_ERROR (if the RT was not valid).
   const tokenExpiration = {
-    atExpires: data.tokenExpiration?.accessTokenExpiration ? new Date(data.tokenExpiration.accessTokenExpiration).getTime() : -1,
-    rtExpires: data.tokenExpiration?.refreshTokenExpiration ? new Date(data.tokenExpiration.refreshTokenExpiration).getTime() : Date.now() + (10 * 60 * 1000),
+    atExpires: data.tokenExpiration?.accessTokenExpiration
+      ? new Date(data.tokenExpiration.accessTokenExpiration).getTime()
+      : -1,
+    rtExpires: data.tokenExpiration?.refreshTokenExpiration
+      ? new Date(data.tokenExpiration.refreshTokenExpiration).getTime()
+      : Date.now() + 10 * 60 * 1000,
   };
 
   /* @ See the comments for fetchOverriddenUserWithPerms.
-  * There are consortia(multi-tenant) and non-consortia modes/envs.
-  * We don't want to care if it is consortia or non-consortia modes, just use fetchOverriderUserWithPerms on login to initiate the session.
-  * 1. In consortia mode, fetchOverriderUserWithPerms returns originalTenantId.
-  * 2. In non-consortia mode, fetchOverriderUserWithPerms won't response with originalTenantId,
-  * instead `tenant` field will be provided.
-  * 3. As a fallback use default tenant.
-  */
+   * There are consortia(multi-tenant) and non-consortia modes/envs.
+   * We don't want to care if it is consortia or non-consortia modes, just use fetchOverriderUserWithPerms on login to initiate the session.
+   * 1. In consortia mode, fetchOverriderUserWithPerms returns originalTenantId.
+   * 2. In non-consortia mode, fetchOverriderUserWithPerms won't response with originalTenantId,
+   * instead `tenant` field will be provided.
+   * 3. As a fallback use default tenant.
+   */
   const sessionTenant = data.originalTenantId || data.tenant || tenant;
   const okapiSess = {
     token,
@@ -843,7 +853,7 @@ export async function createOkapiSession(store, tenant, token, data) {
     // or on failure we'll get kicked out. no harm, no foul.
     okapiSess.tokenExpiration = {
       atExpires: -1,
-      rtExpires: Date.now() + (10 * 60 * 1000),
+      rtExpires: Date.now() + 10 * 60 * 1000,
     };
   }
 
@@ -867,8 +877,8 @@ export async function createOkapiSession(store, tenant, token, data) {
 export async function getSSOEnabled(okapiUrl, store, tenant) {
   try {
     const response = await fetch(`${okapiUrl}/saml/check`, {
-      headers: { 'X-Okapi-Tenant': tenant, 'Accept': 'application/json' },
-      rtrIgnore: true
+      headers: { 'X-Okapi-Tenant': tenant, Accept: 'application/json' },
+      rtrIgnore: true,
     });
     if (response.ok) {
       const json = await response.json();
@@ -1019,17 +1029,19 @@ export async function validateUser(okapiUrl, store, tenant, session, handleError
       // tenant because the user may have switched the session-tenant to
       // something other than their default and tokenExpiration because that
       // data isn't provided by _self.
-      store.dispatch(setSessionData({
-        isAuthenticated: true,
-        // spread data from the previous session (which may include session-specific
-        // values such as the current service point), and the restructured user object
-        // (which includes permissions in a lookup-friendly way)
-        user: { ...session.user, ...user },
-        perms,
-        tenant: sessionTenant,
-        token,
-        tokenExpiration: session.tokenExpiration
-      }));
+      store.dispatch(
+        setSessionData({
+          isAuthenticated: true,
+          // spread data from the previous session (which may include session-specific
+          // values such as the current service point), and the restructured user object
+          // (which includes permissions in a lookup-friendly way)
+          user: { ...session.user, ...user },
+          perms,
+          tenant: sessionTenant,
+          token,
+          tokenExpiration: session.tokenExpiration,
+        }),
+      );
 
       return loadResources(store, sessionTenant, user.id);
     } else {
@@ -1063,7 +1075,9 @@ export async function validateUser(okapiUrl, store, tenant, session, handleError
 export async function checkOkapiSession(okapiUrl, store, tenant, history) {
   const sess = await getOkapiSession();
   const handleError = () => history.push(`/logout?reason=${LOGOUT_MESSAGES.INIT_ERROR}`);
-  const res = sess?.user?.id ? await validateUser(okapiUrl, store, tenant, sess, handleError) : null;
+  const res = sess?.user?.id
+    ? await validateUser(okapiUrl, store, tenant, sess, handleError)
+    : null;
   // check whether SSO is enabled if either
   // 1. res is null (when we are starting a new session)
   // 2. login-saml interface is present (when we are resuming an existing session)
@@ -1088,14 +1102,17 @@ export async function checkOkapiSession(okapiUrl, store, tenant, history) {
  */
 export async function requestLogin(okapiUrl, store, tenant, data) {
   const loginPath = 'login-with-expiry';
-  const resp = await fetch(`${okapiUrl}/bl-users/${loginPath}?expandPermissions=true&fullPermissions=true`, {
-    body: JSON.stringify(data),
-    credentials: 'include',
-    headers: { 'X-Okapi-Tenant': tenant, 'Content-Type': 'application/json' },
-    method: 'POST',
-    mode: 'cors',
-    rtrIgnore: true,
-  });
+  const resp = await fetch(
+    `${okapiUrl}/bl-users/${loginPath}?expandPermissions=true&fullPermissions=true`,
+    {
+      body: JSON.stringify(data),
+      credentials: 'include',
+      headers: { 'X-Okapi-Tenant': tenant, 'Content-Type': 'application/json' },
+      method: 'POST',
+      mode: 'cors',
+      rtrIgnore: true,
+    },
+  );
 
   return processOkapiSession(store, tenant, resp);
 }
@@ -1185,7 +1202,9 @@ export async function requestUserWithPerms(okapi, store, tenant, token) {
  * @returns {Promise}
  */
 export async function requestSSOLogin(okapiUrl, tenant) {
-  const stripesUrl = (window.location.origin || `${window.location.protocol}//${window.location.host}`) + window.location.pathname;
+  const stripesUrl =
+    (window.location.origin || `${window.location.protocol}//${window.location.host}`) +
+    window.location.pathname;
   // the /_/invoke/... URL is used for systems that make call-backs
   // to okapi and don't handle setting of the tenant in the HTTP header.
   // i.e. ordinarily, we'd just call ${okapiUrl}/saml/login.
@@ -1226,7 +1245,16 @@ export async function updateUser(store, data) {
  */
 export async function updateTenant(okapiConfig, tenant) {
   const okapiSess = await getOkapiSession();
-  const userWithPermsResponse = await fetchUserWithPerms(okapiConfig, tenant, okapiConfig.token, false);
+  const userWithPermsResponse = await fetchUserWithPerms(
+    okapiConfig,
+    tenant,
+    okapiConfig.token,
+    false,
+  );
   const userWithPerms = await userWithPermsResponse.json();
-  await localforage.setItem(SESSION_NAME, { ...okapiSess, tenant, ...spreadUserWithPerms(userWithPerms) });
+  await localforage.setItem(SESSION_NAME, {
+    ...okapiSess,
+    tenant,
+    ...spreadUserWithPerms(userWithPerms),
+  });
 }

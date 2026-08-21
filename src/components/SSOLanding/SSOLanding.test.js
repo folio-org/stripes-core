@@ -2,9 +2,7 @@ import { render, screen } from '@folio/jest-config-stripes/testing-library/react
 
 import { Redirect } from 'react-router';
 
-import {
-  Loading,
-} from '@folio/stripes-components';
+import { Loading } from '@folio/stripes-components';
 
 import useSSOSession from './useSSOSession';
 import SSOLanding from './SSOLanding';

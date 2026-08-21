@@ -11,22 +11,24 @@ describe('Nav', () => {
 
   class DummyApp extends Component {
     render() {
-      return (<h1>Hello Stripes!</h1>);
+      return <h1>Hello Stripes!</h1>;
     }
   }
 
   setupApplication({
-    modules: [{
-      type: 'app',
-      name: '@folio/ui-dummy',
-      displayName: 'dummy.title',
-      route: '/dummy',
-      hasSettings: true,
-      module: DummyApp
-    }],
+    modules: [
+      {
+        type: 'app',
+        name: '@folio/ui-dummy',
+        displayName: 'dummy.title',
+        route: '/dummy',
+        hasSettings: true,
+        module: DummyApp,
+      },
+    ],
     translations: {
-      'dummy.title': 'Dummy'
-    }
+      'dummy.title': 'Dummy',
+    },
   });
 
   it('shows a settings button', () => Button('Settings').exists());

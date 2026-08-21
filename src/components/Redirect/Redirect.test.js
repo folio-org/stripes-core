@@ -17,7 +17,7 @@ describe('Redirect', () => {
     render(
       <Harness history={history} stripes={stripes}>
         <Redirect to={to} />
-      </Harness>
+      </Harness>,
     );
 
     expect(window.location).toBeAt(to);
@@ -36,7 +36,7 @@ describe('Redirect', () => {
     render(
       <Harness history={history} stripes={stripes}>
         <Redirect to={to} push />
-      </Harness>
+      </Harness>,
     );
 
     expect(window.location).toBeAt(to);

@@ -1,7 +1,4 @@
-import {
-  render,
-  screen,
-} from '@folio/jest-config-stripes/testing-library/react';
+import { render, screen } from '@folio/jest-config-stripes/testing-library/react';
 import { FormattedMessage } from 'react-intl';
 
 import AboutApplicationVersions from './AboutApplicationVersions';
@@ -11,13 +8,12 @@ describe('AboutApplicationVersions', () => {
     const applications = {
       a: {
         name: 'Albus',
-        modules: [{ name: 'apple' }, { name: 'banana' }, { name: 'cherry' }]
+        modules: [{ name: 'apple' }, { name: 'banana' }, { name: 'cherry' }],
       },
       b: {
         name: 'Beetlejuice',
-        modules: [{ name: 'alpha' }, { name: 'barvo' }, { name: 'charlie' }]
-      }
-
+        modules: [{ name: 'alpha' }, { name: 'barvo' }, { name: 'charlie' }],
+      },
     };
     const id = 'All passing tests are alike; each failing test fails in its own way.';
     const message = <FormattedMessage id={id} />;

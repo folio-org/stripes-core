@@ -1,7 +1,4 @@
-import {
-  render,
-  screen,
-} from '@folio/jest-config-stripes/testing-library/react';
+import { render, screen } from '@folio/jest-config-stripes/testing-library/react';
 
 import { useStripes } from '../../StripesContext';
 import AboutAPIGateway from './AboutAPIGateway';
@@ -12,7 +9,7 @@ describe('AboutAPIGateway', () => {
   it('displays API gateway details', async () => {
     const okapi = {
       tenant: 'barbie',
-      url: 'https://oppie.com'
+      url: 'https://oppie.com',
     };
 
     const mockUseStripes = useStripes;

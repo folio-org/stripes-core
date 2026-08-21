@@ -9,19 +9,21 @@ import CreateResetPasswordControl from './CreateResetPasswordControl';
 jest.mock('../OrganizationLogo');
 
 jest.mock('../../locationService', () => ({
-  getLocationQuery: jest.fn()
+  getLocationQuery: jest.fn(),
 }));
 
 describe('CreateResetPasswordControl', () => {
-  const mockFetch = jest.fn(() => Promise.resolve({
-    json: () => Promise.resolve({ test: 100 }),
-  }));
+  const mockFetch = jest.fn(() =>
+    Promise.resolve({
+      json: () => Promise.resolve({ test: 100 }),
+    }),
+  );
 
   const stripes = {
     clone: jest.fn(),
     config: {},
     okapi: {
-      authnUrl: 'http://test'
+      authnUrl: 'http://test',
     },
     hasInterface: jest.fn().mockReturnValue(true),
     store: {
@@ -33,7 +35,7 @@ describe('CreateResetPasswordControl', () => {
       dispatch: () => {},
       subscribe: () => {},
       replaceReducer: () => {},
-    }
+    },
   };
 
   beforeEach(() => {
@@ -54,7 +56,7 @@ describe('CreateResetPasswordControl', () => {
         <Router history={history}>
           <CreateResetPasswordControl stripes={stripes} />
         </Router>
-      </Provider>
+      </Provider>,
     );
 
     expect(mockFetch.mock.lastCall[1].headers['x-okapi-token'] === '123').toBeTruthy();

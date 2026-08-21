@@ -99,7 +99,7 @@ export const RTR_TIME_MARGIN_IN_MS = 200;
 
 /**
  * Used by RTR logic to determine the priority window - only windows with matching ID's can rotate.
-*/
+ */
 export const SESSION_ACTIVE_WINDOW_ID = '@folio/stripes/core::activeWindowId';
 
 /** Message type for the BroadcastChannel to indicate the active window */

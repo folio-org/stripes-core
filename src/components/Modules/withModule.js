@@ -7,13 +7,13 @@ const getDisplayName = (WrappedComponent) => {
 };
 
 const findModuleInArray = (array, moduleName) => {
-  return array.find(m => m.module === moduleName || m.module === `@folio/${moduleName}`);
+  return array.find((m) => m.module === moduleName || m.module === `@folio/${moduleName}`);
 };
 
 const findModule = (modules, moduleName) => {
   return Object.values(modules)
-    .map(mods => findModuleInArray(mods, moduleName))
-    .filter(m => m)
+    .map((mods) => findModuleInArray(mods, moduleName))
+    .filter((m) => m)
     .pop();
 };
 
@@ -28,7 +28,7 @@ export default function withModule(moduleName) {
 
         return (
           <ModulesContext.Consumer>
-            {modules => <WrappedComponent {...this.props} module={findModule(modules, name)} /> }
+            {(modules) => <WrappedComponent {...this.props} module={findModule(modules, name)} />}
           </ModulesContext.Consumer>
         );
       }

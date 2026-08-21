@@ -3,10 +3,7 @@ import { useIntl } from 'react-intl';
 import { noop } from 'lodash';
 
 import { usePublicGatewayKy } from '../useOkapiKy';
-import {
-  getLoginTenant,
-  SESSION_NAME,
-} from '../loginServices';
+import { getLoginTenant, SESSION_NAME } from '../loginServices';
 import { useStripes } from '../StripesContext';
 
 /**
@@ -42,7 +39,7 @@ const useExchangeCode = (initSession = noop) => {
             searchParams: {
               code,
               'redirect-uri': `${globalThis.location.protocol}//${globalThis.location.host}/oidc-landing?tenant=${tenant}&client_id=${clientId}`,
-            }
+            },
           }).json();
 
           // note: initSession is expected to execute an unawaited promise.
@@ -80,14 +77,14 @@ const useExchangeCode = (initSession = noop) => {
     },
     {
       retry: false,
-    }
+    },
   );
 
-  return ({
+  return {
     tokenData: data,
     isLoading: isFetching,
     error,
-  });
+  };
 };
 
 export default useExchangeCode;

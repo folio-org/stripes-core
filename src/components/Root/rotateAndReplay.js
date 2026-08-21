@@ -21,7 +21,7 @@ export const RTR_LOCK_KEY = '@folio/stripes-core::RTR_LOCK_KEY';
  */
 export const replayRequest = async (fetchfx, config, original) => {
   // there is no value in playing a request that we expect to fail
-  if (config.shouldPreRotate && await config.shouldPreRotate()) {
+  if (config.shouldPreRotate && (await config.shouldPreRotate())) {
     return undefined;
   }
 
@@ -29,7 +29,10 @@ export const replayRequest = async (fetchfx, config, original) => {
     config.logger.log('rtr', 'replaying ...');
     const { resource } = original;
     const reusableResource = resource instanceof Request ? resource.clone() : resource;
-    const response = await fetchfx.apply(globalThis, [reusableResource, config.options(original.options)]);
+    const response = await fetchfx.apply(globalThis, [
+      reusableResource,
+      config.options(original.options),
+    ]);
     return response;
   }
 
@@ -121,7 +124,10 @@ export const rotateAndReplay = async (fetchfx, config, original) => {
       if (replayedResponse?.ok) {
         return replayedResponse;
       }
-      config.logger.log('rtr', replayedResponse ? 'replay failed; forcing rotate ...' : 'replay skipped');
+      config.logger.log(
+        'rtr',
+        replayedResponse ? 'replay failed; forcing rotate ...' : 'replay skipped',
+      );
 
       //
       // 2. 🔄 rotate: race the rotation-request with a timeout; default 30s
@@ -134,10 +140,7 @@ export const rotateAndReplay = async (fetchfx, config, original) => {
       });
 
       config.logger.log('rtr', '===> rotating ...');
-      const t = await Promise.race([
-        refreshTimeout,
-        config.rotate()
-      ]);
+      const t = await Promise.race([refreshTimeout, config.rotate()]);
       clearTimeout(rejectId);
       config.logger.log('rtr', '<=== rotated!');
 
@@ -169,7 +172,10 @@ export const rotateAndReplay = async (fetchfx, config, original) => {
   // 🧐 are we certain we need to rotate? check these two conditions:
   // 1. shouldRotate() asked for rotation
   // 2. the response status indicates we need rotation
-  if (await shouldRotate(original?.response) || statusCodes.includes(original?.response?.status)) {
+  if (
+    (await shouldRotate(original?.response)) ||
+    statusCodes.includes(original?.response?.status)
+  ) {
     // 🔒 lock, then rotate
     // default lock-mode is exclusive, preventing others from entering the lock
     // until this lock resolves (writer/readers pattern)

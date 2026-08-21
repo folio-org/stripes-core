@@ -8,12 +8,12 @@ jest.mock('../../StripesContext');
 const stripes = new Stripes({
   discovery: {
     interfaces: {
-      foo: '1.0'
-    }
+      foo: '1.0',
+    },
   },
   logger: {
     log: jest.fn(),
-  }
+  },
 });
 
 // IfInterface is just a component version of Stripes::hasInterface

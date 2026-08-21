@@ -3,10 +3,7 @@ import { FormattedMessage } from 'react-intl';
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
-import {
-  Button,
-  Headline,
-} from '@folio/stripes-components';
+import { Button, Headline } from '@folio/stripes-components';
 
 import OrganizationLogo from '../../../OrganizationLogo';
 
@@ -26,26 +23,13 @@ const PasswordSuccessfullyChanged = ({ history, stripes }) => {
   };
 
   return (
-    <div
-      className={styles.wrap}
-      data-test-change-password-confirmation
-    >
+    <div className={styles.wrap} data-test-change-password-confirmation>
       <div className={styles.centered}>
         <OrganizationLogo />
-        <Headline
-          size="xx-large"
-          tag="h1"
-          data-test-h1
-        >
+        <Headline size="xx-large" tag="h1" data-test-h1>
           <FormattedMessage id={`${labelNamespace}.congratulations`} />
         </Headline>
-        <Headline
-          size="x-large"
-          tag="p"
-          weight="regular"
-          faded
-          data-test-message
-        >
+        <Headline size="x-large" tag="p" weight="regular" faded data-test-message>
           <FormattedMessage id={`${labelNamespace}.changed.password`} />
         </Headline>
         <div data-test-redirect>

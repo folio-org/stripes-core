@@ -55,7 +55,7 @@ import { defaultErrors, stripesHubAPI } from './constants';
 
 jest.mock('./loginServices', () => ({
   ...jest.requireActual('./loginServices'),
-  fetchOverriddenUserWithPerms: jest.fn()
+  fetchOverriddenUserWithPerms: jest.fn(),
 }));
 
 jest.mock('./discoverServices', () => ({
@@ -76,21 +76,21 @@ jest.mock('localforage', () => ({
 }));
 
 jest.mock('stripes-config', () => ({
-  translations: { cs_CZ: 'cs-CZ', cs: 'cs-CZ', fr: 'fr', ar: 'ar', en_US: 'en-US', en_GB: 'en-GB' }
+  translations: { cs_CZ: 'cs-CZ', cs: 'cs-CZ', fr: 'fr', ar: 'ar', en_US: 'en-US', en_GB: 'en-GB' },
 }));
 
 const OKAPI = { authnUrl: 'https://authn.url', url: 'http://okapi-url' };
 
 // fetch success: resolve promise with ok == true and $data in json()
 const mockFetchSuccess = (data) => {
-  global.fetch = jest.fn().mockImplementation(() => (
+  global.fetch = jest.fn().mockImplementation(() =>
     Promise.resolve({
       ok: true,
       status: 200,
       json: () => Promise.resolve(data),
       headers: new Map(),
-    })
-  ));
+    }),
+  );
 };
 
 // fetch failure: reject promise with $error
@@ -111,14 +111,14 @@ describe('createOkapiSession', () => {
       getState: () => ({
         okapi: {
           currentPerms: [],
-          url: 'okapiUrl'
+          url: 'okapiUrl',
         },
         config: {
           tenantOptions: {
             romulus: { name: 'romulus', clientId: 'romulus-application' },
             remus: { name: 'remus', clientId: 'remus-application' },
-          }
-        }
+          },
+        },
       }),
     };
 
@@ -132,7 +132,7 @@ describe('createOkapiSession', () => {
         id: 'user-id',
       },
       permissions: {
-        permissions: [{ permissionName: 'a' }, { permissionName: 'b' }]
+        permissions: [{ permissionName: 'a' }, { permissionName: 'b' }],
       },
       tokenExpiration: te,
     };
@@ -218,8 +218,8 @@ describe('processOkapiSession', () => {
       getState: () => ({
         okapi: {
           currentPerms: [],
-          authnUrl: 'keycloakURL'
-        }
+          authnUrl: 'keycloakURL',
+        },
       }),
     };
 
@@ -228,12 +228,13 @@ describe('processOkapiSession', () => {
         get: jest.fn(),
       },
       ok: true,
-      json: () => Promise.resolve({
-        user: { id: 'id' },
-        permissions: {
-          permissions: [{ permissionName: 'a' }, { permissionName: 'b' }]
-        }
-      }),
+      json: () =>
+        Promise.resolve({
+          user: { id: 'id' },
+          permissions: {
+            permissions: [{ permissionName: 'a' }, { permissionName: 'b' }],
+          },
+        }),
     };
 
     mockFetchSuccess();
@@ -247,18 +248,20 @@ describe('processOkapiSession', () => {
 
   it('handles error', async () => {
     const store = {
-      dispatch: jest.fn()
+      dispatch: jest.fn(),
     };
     const resp = {
       headers: {
         get: jest.fn(),
-      }
+      },
     };
 
     await processOkapiSession(store, 'tenant', resp);
 
     expect(store.dispatch).toHaveBeenCalledWith(setOkapiReady());
-    expect(store.dispatch).toHaveBeenCalledWith(setAuthError([defaultErrors.DEFAULT_LOGIN_CLIENT_ERROR]));
+    expect(store.dispatch).toHaveBeenCalledWith(
+      setAuthError([defaultErrors.DEFAULT_LOGIN_CLIENT_ERROR]),
+    );
   });
 });
 
@@ -295,7 +298,13 @@ describe('validateUser', () => {
   it('handles valid user with empty tenant in session', async () => {
     const store = {
       dispatch: jest.fn(),
-      getState: () => ({ okapi: { tenant: 'monkey', url: 'monkeyUrl', currentPerms: { 'configuration.entries.collection.get': true } } }),
+      getState: () => ({
+        okapi: {
+          tenant: 'monkey',
+          url: 'monkeyUrl',
+          currentPerms: { 'configuration.entries.collection.get': true },
+        },
+      }),
     };
 
     const tenant = 'tenant';
@@ -362,7 +371,7 @@ describe('validateUser', () => {
       },
       permissions: {
         permissions: [{ permissionName: 'ask' }, { permissionName: 'tell' }],
-      }
+      },
     };
 
     const session = {
@@ -548,7 +557,6 @@ describe('localforage wrappers', () => {
       localforage.getItem = jest.fn(() => Promise.resolve(storage));
       localforage.setItem = jest.fn((k, v) => Promise.resolve(v));
 
-
       const te = {
         atExpires: 1,
         rtExpires: 2,
@@ -602,10 +610,13 @@ describe('getPlugins', () => {
     };
     await getPlugins('url', store, 'tenant');
 
-    const mappedConfigs = configs.reduce((acc, val) => ({
-      ...acc,
-      [val.configName]: val.value,
-    }), {});
+    const mappedConfigs = configs.reduce(
+      (acc, val) => ({
+        ...acc,
+        [val.configName]: val.value,
+      }),
+      {},
+    );
     expect(store.dispatch).toHaveBeenCalledWith(setPlugins(mappedConfigs));
     mockFetchCleanUp();
   });
@@ -653,7 +664,9 @@ describe('unauthorizedPath functions', () => {
       window.location.pathname = '/some-path';
       window.location.search = '?monkey=bagel';
       setUnauthorizedPathToSession();
-      expect(getUnauthorizedPathFromSession()).toBe(`${window.location.pathname}${window.location.search}`);
+      expect(getUnauthorizedPathFromSession()).toBe(
+        `${window.location.pathname}${window.location.search}`,
+      );
     });
 
     describe('refuses to set locations beginning with "/logout"', () => {
@@ -700,7 +713,9 @@ describe('unauthorizedPath functions', () => {
       const tenant = 'tenant';
       const clientId = 'client_id';
 
-      expect(getOIDCRedirectUri(tenant, clientId)).toEqual('http%3A%2F%2Flocalhost%2Foidc-landing%3Ftenant%3Dtenant%26client_id%3Dclient_id');
+      expect(getOIDCRedirectUri(tenant, clientId)).toEqual(
+        'http%3A%2F%2Flocalhost%2Foidc-landing%3Ftenant%3Dtenant%26client_id%3Dclient_id',
+      );
     });
   });
 
@@ -714,16 +729,14 @@ describe('unauthorizedPath functions', () => {
         getState: () => ({
           okapi: {},
         }),
-        dispatch: jest.fn()
+        dispatch: jest.fn(),
       };
       mockFetchSuccess({});
 
-      await requestLogin(
-        'http://okapi-url',
-        mockStore,
-        'test-tenant',
-        { username: 'testuser', password: 'testpass' }
-      );
+      await requestLogin('http://okapi-url', mockStore, 'test-tenant', {
+        username: 'testuser',
+        password: 'testpass',
+      });
 
       expect(global.fetch).toHaveBeenCalledWith(
         'http://okapi-url/bl-users/login-with-expiry?expandPermissions=true&fullPermissions=true',
@@ -731,9 +744,9 @@ describe('unauthorizedPath functions', () => {
           method: 'POST',
           headers: expect.objectContaining({
             'X-Okapi-Tenant': 'test-tenant',
-            'Content-Type': 'application/json'
-          })
-        })
+            'Content-Type': 'application/json',
+          }),
+        }),
       );
     });
   });
@@ -749,25 +762,22 @@ describe('unauthorizedPath functions', () => {
         getState: () => ({
           okapi: {},
         }),
-        dispatch: jest.fn()
+        dispatch: jest.fn(),
       };
 
-      await requestUserWithPerms(
-        OKAPI,
-        mockStore,
-        'test-tenant',
-        'token'
-      );
+      await requestUserWithPerms(OKAPI, mockStore, 'test-tenant', 'token');
 
-      expect(global.fetch).toHaveBeenCalledWith('http://okapi-url/users-keycloak/_self?expandPermissions=true&fullPermissions=true&overrideUser=true',
+      expect(global.fetch).toHaveBeenCalledWith(
+        'http://okapi-url/users-keycloak/_self?expandPermissions=true&fullPermissions=true&overrideUser=true',
         {
           headers: expect.objectContaining({
             'X-Okapi-Tenant': 'test-tenant',
             'X-Okapi-Token': 'token',
             'Content-Type': 'application/json',
           }),
-          'rtrIgnore': false
-        });
+          rtrIgnore: false,
+        },
+      );
     });
 
     it('should reject with an error object when response is not ok', async () => {
@@ -776,22 +786,25 @@ describe('unauthorizedPath functions', () => {
         getState: () => ({
           okapi: {},
         }),
-        dispatch: jest.fn()
+        dispatch: jest.fn(),
       };
       const mockResponse = {
         ok: false,
         json: jest.fn().mockResolvedValue(mockError), // Ensure `json()` is async
       };
-      global.fetch = jest.fn().mockImplementation(() => (
+      global.fetch = jest.fn().mockImplementation(() =>
         Promise.resolve({
           ok: false,
           status: 404,
           json: () => Promise.resolve('Reject message'),
           headers: new Map(),
-        })));
+        }),
+      );
       fetchOverriddenUserWithPerms.mockResolvedValue(mockResponse);
 
-      await expect(requestUserWithPerms('okapiUrl', mockStore, 'tenant', 'token')).rejects.toEqual('Reject message');
+      await expect(requestUserWithPerms('okapiUrl', mockStore, 'tenant', 'token')).rejects.toEqual(
+        'Reject message',
+      );
       mockFetchCleanUp();
     });
   });
@@ -809,15 +822,17 @@ describe('loadResources', () => {
   };
 
   const tenantLocaleDataSettings = {
-    items: [{
-      id: 'tenantDataId',
-      value: {
-        locale: 'en-US',
-        numberingSystem: 'latn',
-        timezone: 'America/New_York',
-        currency: 'USD',
+    items: [
+      {
+        id: 'tenantDataId',
+        value: {
+          locale: 'en-US',
+          numberingSystem: 'latn',
+          timezone: 'America/New_York',
+          currency: 'USD',
+        },
       },
-    }]
+    ],
   };
 
   const userLocaleData = {
@@ -847,16 +862,18 @@ describe('loadResources', () => {
       getState: jest.fn().mockReturnValue({
         okapi: {
           url: 'http://okapi-url',
-          currentPerms: {}
-        }
+          currentPerms: {},
+        },
       }),
     };
 
-    global.fetch = jest.fn().mockImplementation((url) => Promise.resolve({
-      url,
-      ok: true,
-      json: () => Promise.resolve(getResponseData(url)),
-    }));
+    global.fetch = jest.fn().mockImplementation((url) =>
+      Promise.resolve({
+        url,
+        ok: true,
+        json: () => Promise.resolve(getResponseData(url)),
+      }),
+    );
 
     discoverServices.mockResolvedValue({ url: 'discoverServices' });
   });
@@ -884,10 +901,7 @@ describe('loadResources', () => {
     it('should fetch the tenant locale from locale API and user locale settings from mod-settings', async () => {
       await loadResources(store, 'tenant', 'userId');
 
-      expect(global.fetch).toHaveBeenCalledWith(
-        'http://okapi-url/locale',
-        expect.anything(),
-      );
+      expect(global.fetch).toHaveBeenCalledWith('http://okapi-url/locale', expect.anything());
       expect(global.fetch).toHaveBeenCalledWith(
         'http://okapi-url/settings/entries?query=(userId=="userId" and scope=="stripes-core.prefs.manage" and key=="localeSettings")',
         expect.anything(),
@@ -936,16 +950,21 @@ describe('loadResources', () => {
         }
 
         // if mod-configuration API
-        if (url?.includes('configName == localeSettings') || url?.includes('"configName"=="localeSettings"')) {
+        if (
+          url?.includes('configName == localeSettings') ||
+          url?.includes('"configName"=="localeSettings"')
+        ) {
           return {
             url,
-            configs: [{
-              value: JSON.stringify({
-                locale: 'en-GB-u-nu-latn',
-                timezone: 'UTC',
-                currency: 'USD'
-              }),
-            }],
+            configs: [
+              {
+                value: JSON.stringify({
+                  locale: 'en-GB-u-nu-latn',
+                  timezone: 'UTC',
+                  currency: 'USD',
+                }),
+              },
+            ],
           };
         }
 
@@ -953,20 +972,19 @@ describe('loadResources', () => {
       };
 
       beforeEach(() => {
-        global.fetch = jest.fn().mockImplementation((url) => Promise.resolve({
-          url,
-          json: () => Promise.resolve(getData(url)),
-          ok: true,
-        }));
+        global.fetch = jest.fn().mockImplementation((url) =>
+          Promise.resolve({
+            url,
+            json: () => Promise.resolve(getData(url)),
+            ok: true,
+          }),
+        );
       });
 
       it('should fetch the tenant and user locale settings from locale API and mod-configuration', async () => {
         await loadResources(store, 'tenant', 'userId');
 
-        expect(global.fetch).toHaveBeenCalledWith(
-          'http://okapi-url/locale',
-          expect.anything(),
-        );
+        expect(global.fetch).toHaveBeenCalledWith('http://okapi-url/locale', expect.anything());
         expect(global.fetch).toHaveBeenCalledWith(
           'http://okapi-url/settings/entries?query=(userId=="userId" and scope=="stripes-core.prefs.manage" and key=="localeSettings")',
           expect.anything(),
@@ -1016,36 +1034,40 @@ describe('loadResources', () => {
 
       const getData = (url) => {
         // mod-configuration locales
-        if (url?.includes('configName == localeSettings') || url?.includes('"configName"=="localeSettings"')) {
+        if (
+          url?.includes('configName == localeSettings') ||
+          url?.includes('"configName"=="localeSettings"')
+        ) {
           return {
             url,
-            configs: [{
-              value: JSON.stringify({
-                locale: 'en-GB-u-nu-latn',
-                timezone: 'UTC',
-                currency: 'USD'
-              }),
-            }],
+            configs: [
+              {
+                value: JSON.stringify({
+                  locale: 'en-GB-u-nu-latn',
+                  timezone: 'UTC',
+                  currency: 'USD',
+                }),
+              },
+            ],
           };
         }
 
         return { url };
       };
 
-      global.fetch = jest.fn().mockImplementation((url) => Promise.resolve({
-        url,
-        json: () => Promise.resolve(getData(url)),
-        ok: true,
-      }));
+      global.fetch = jest.fn().mockImplementation((url) =>
+        Promise.resolve({
+          url,
+          json: () => Promise.resolve(getData(url)),
+          ok: true,
+        }),
+      );
     });
 
     it('should not fetch the tenant and user locale settings from mod-settings', async () => {
       await loadResources(store, 'tenant', 'userId');
 
-      expect(global.fetch).not.toHaveBeenCalledWith(
-        'http://okapi-url/locale',
-        expect.anything(),
-      );
+      expect(global.fetch).not.toHaveBeenCalledWith('http://okapi-url/locale', expect.anything());
       expect(global.fetch).not.toHaveBeenCalledWith(
         'http://okapi-url/settings/entries?query=(userId=="userId" and scope=="stripes-core.prefs.manage" and key=="localeSettings")',
         expect.anything(),
@@ -1081,11 +1103,13 @@ describe('loadResources', () => {
     it('should retrieve plugins and bindings from configurations', async () => {
       loadResourcesResult = await loadResources(store, 'tenant', 'userId');
 
-      expect(loadResourcesResult.map(({ url }) => url)).toEqual(expect.arrayContaining([
-        'http://okapi-url/configurations/entries?query=(module==PLUGINS)',
-        'http://okapi-url/configurations/entries?query=(module==ORG and configName==bindings)',
-        'discoverServices',
-      ]));
+      expect(loadResourcesResult.map(({ url }) => url)).toEqual(
+        expect.arrayContaining([
+          'http://okapi-url/configurations/entries?query=(module==PLUGINS)',
+          'http://okapi-url/configurations/entries?query=(module==ORG and configName==bindings)',
+          'discoverServices',
+        ]),
+      );
     });
   });
 
@@ -1110,8 +1134,8 @@ describe('getLoginTenant', () => {
     it('uses config.tenantOptions values when URL values are absent', () => {
       const config = {
         tenantOptions: {
-          denzel: { name: 'denzel', clientId: 'nolan' }
-        }
+          denzel: { name: 'denzel', clientId: 'nolan' },
+        },
       };
 
       const res = getLoginTenant({}, config);
@@ -1142,7 +1166,7 @@ describe('getLoginTenant', () => {
       tenantOptions: {
         tenant1: { name: 'tenant1', clientId: 'client1' },
         tenant2: { name: 'tenant2', clientId: 'client2' },
-      }
+      },
     };
     describe('when URL contains tenant and no client_id', () => {
       it('should take tenant from URL', () => {
@@ -1156,5 +1180,5 @@ describe('getLoginTenant', () => {
     });
   });
 
-  describe('ECS', () => { });
+  describe('ECS', () => {});
 });

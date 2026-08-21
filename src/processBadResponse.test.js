@@ -20,9 +20,10 @@ describe('processBadResponse', () => {
   it('shows default error without defaultClientError', async () => {
     const dispatch = jest.fn();
     const response = {
-      json: () => Promise.resolve({
-        errorMessage: 'monkey',
-      })
+      json: () =>
+        Promise.resolve({
+          errorMessage: 'monkey',
+        }),
     };
     const message = setAuthError([defaultErrors.DEFAULT_LOGIN_CLIENT_ERROR]);
 
@@ -116,4 +117,3 @@ describe('processBadResponse', () => {
     expect(dispatch).toHaveBeenCalledWith(message);
   });
 });
-

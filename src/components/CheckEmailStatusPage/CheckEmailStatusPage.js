@@ -14,9 +14,7 @@ import styles from './CheckEmailStatusPage.css';
 const CheckEmailStatusPage = (props) => {
   const {
     location: {
-      state: {
-        userEmail,
-      },
+      state: { userEmail },
     },
   } = props;
 
@@ -25,43 +23,19 @@ const CheckEmailStatusPage = (props) => {
   const notificationText = isEmail
     ? `${labelNamespace}.sent.email`
     : `${labelNamespace}.your.email`;
-  const userEmailMessage = isEmail
-    ? { hiddenUserEmail: hideEmail(userEmail) }
-    : {};
+  const userEmailMessage = isEmail ? { hiddenUserEmail: hideEmail(userEmail) } : {};
 
   return (
-    <div
-      className={styles.wrap}
-      data-test-status-page
-    >
+    <div className={styles.wrap} data-test-status-page>
       <div className={styles.centered}>
         <OrganizationLogo />
-        <Headline
-          size="xx-large"
-          tag="h1"
-          data-test-h1
-        >
+        <Headline size="xx-large" tag="h1" data-test-h1>
           <FormattedMessage id={`${labelNamespace}.check.email`} />
         </Headline>
-        <Headline
-          size="x-large"
-          tag="p"
-          weight="regular"
-          faded
-          data-test-p-notification
-        >
-          <FormattedMessage
-            id={notificationText}
-            values={userEmailMessage}
-          />
+        <Headline size="x-large" tag="p" weight="regular" faded data-test-p-notification>
+          <FormattedMessage id={notificationText} values={userEmailMessage} />
         </Headline>
-        <Headline
-          size="x-large"
-          tag="p"
-          weight="regular"
-          faded
-          data-test-p-caution
-        >
+        <Headline size="x-large" tag="p" weight="regular" faded data-test-p-caution>
           <FormattedMessage id={`${labelNamespace}.caution.email`} />
         </Headline>
       </div>
@@ -72,7 +46,7 @@ const CheckEmailStatusPage = (props) => {
 CheckEmailStatusPage.propTypes = {
   location: PropTypes.shape({
     state: PropTypes.shape({
-      userEmail: PropTypes.string.isRequired
+      userEmail: PropTypes.string.isRequired,
     }).isRequired,
   }).isRequired,
 };

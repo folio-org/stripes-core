@@ -1,14 +1,6 @@
-import {
-  describe,
-  it,
-  beforeEach,
-} from 'mocha';
+import { describe, it, beforeEach } from 'mocha';
 
-import {
-  TextField,
-  HTML,
-  Button,
-} from '@folio/stripes-testing';
+import { TextField, HTML, Button } from '@folio/stripes-testing';
 
 import setupApplication from '../helpers/setup-core-application';
 import always from '../helpers/always';
@@ -19,20 +11,20 @@ import translations from '../../../translations/stripes-core/en';
 const labelInteractor = HTML.extend('label')
   .selector('label')
   .filters({
-    for: el => el.htmlFor
+    for: (el) => el.htmlFor,
   });
 
 const CreateResetPasswordInteractor = HTML.extend('create/reset password form')
   .selector('form[class^="form--"]')
   .filters({
-    error: el => el.querySelector('[data-test-message-banner]') !== null,
-    errorText: el => el.querySelector('[data-test-message-banner]')?.innerText || '',
-    newPasswordLabel: el => el.querySelectorAll('label')[0].textContent,
-    newPasswordValue: el => el.querySelector('#new-password').value,
-    newPasswordType: el => el.querySelector('#new-password').type,
-    confirmPasswordLabel: el => el.querySelectorAll('label')[1].textContent,
-    confirmPasswordValue: el => el.querySelector('#confirm-password').value,
-    confirmPasswordType: el => el.querySelector('#confirm-password').type,
+    error: (el) => el.querySelector('[data-test-message-banner]') !== null,
+    errorText: (el) => el.querySelector('[data-test-message-banner]')?.innerText || '',
+    newPasswordLabel: (el) => el.querySelectorAll('label')[0].textContent,
+    newPasswordValue: (el) => el.querySelector('#new-password').value,
+    newPasswordType: (el) => el.querySelector('#new-password').type,
+    confirmPasswordLabel: (el) => el.querySelectorAll('label')[1].textContent,
+    confirmPasswordValue: (el) => el.querySelector('#confirm-password').value,
+    confirmPasswordType: (el) => el.querySelector('#confirm-password').type,
   })
   .actions({
     async fillIn({ find }, values) {
@@ -41,23 +33,24 @@ const CreateResetPasswordInteractor = HTML.extend('create/reset password form')
     },
     clickShowPassword: ({ find }) => find(Button(translations['button.showPassword'])).click(),
     clickHidePassword: ({ find }) => find(Button(translations['button.hidePassword'])).click(),
-    clickSubmit: ({ find }) => find(Button({ text: translations.setPassword, disabled: false })).click(),
+    clickSubmit: ({ find }) =>
+      find(Button({ text: translations.setPassword, disabled: false })).click(),
   });
 
 const ChangePasswordErrorInteractor = HTML.extend('change password confirmation')
   .selector('[data-test-change-password-error]')
   .filters({
-    errorText: el => el.querySelector('[data-test-message]').innerText,
+    errorText: (el) => el.querySelector('[data-test-message]').innerText,
   });
 
 const ChangePasswordConfirmationInteractor = HTML.extend('change password confirmation')
   .selector('[data-test-change-password-confirmation]')
   .filters({
     heading: (el) => el.querySelector('h1').innerText,
-    errorText: el => el.querySelector('[data-test-message]').innerText,
+    errorText: (el) => el.querySelector('[data-test-message]').innerText,
   })
   .actions({
-    clickContinue: ({ find }) => find(Button('Continue to FOLIO')).click()
+    clickContinue: ({ find }) => find(Button('Continue to FOLIO')).click(),
   });
 
 describe('Create/Reset password page', () => {
@@ -72,22 +65,35 @@ describe('Create/Reset password page', () => {
 
   describe('valid token scenario', () => {
     beforeEach(function () {
-      return this.visit({
-        pathname: '/reset-password/test',
-      }, () => CreateResetPasswordPage.exists());
+      return this.visit(
+        {
+          pathname: '/reset-password/test',
+        },
+        () => CreateResetPasswordPage.exists(),
+      );
     });
 
     describe('default behavior', () => {
       describe('new password field', () => {
-        it('should have a [type=password] field for new password', () => CreateResetPasswordPage.has({ newPasswordType: 'password' }));
+        it('should have a [type=password] field for new password', () =>
+          CreateResetPasswordPage.has({ newPasswordType: 'password' }));
 
-        it('should contain a proper label for the new password field', () => labelInteractor({ text: translations['createResetPassword.newPassword'], for: 'new-password' }));
+        it('should contain a proper label for the new password field', () =>
+          labelInteractor({
+            text: translations['createResetPassword.newPassword'],
+            for: 'new-password',
+          }));
       });
 
       describe('confirm password field', () => {
-        it('should have a [type=password] field for confirm password', () => CreateResetPasswordPage.has({ confirmPasswordType: 'password' }));
+        it('should have a [type=password] field for confirm password', () =>
+          CreateResetPasswordPage.has({ confirmPasswordType: 'password' }));
 
-        it('should contain a proper label for the confirm password field', () => labelInteractor({ text: translations['createResetPassword.confirmPassword'], for: 'confirm-password' }));
+        it('should contain a proper label for the confirm password field', () =>
+          labelInteractor({
+            text: translations['createResetPassword.confirmPassword'],
+            for: 'confirm-password',
+          }));
       });
 
       describe('toggle mask button', () => {
@@ -95,10 +101,14 @@ describe('Create/Reset password page', () => {
       });
 
       describe('submit button', () => {
-        it('should be present', () => Button({ text: translations.setPassword, disabled: true }).exists());
+        it('should be present', () =>
+          Button({ text: translations.setPassword, disabled: true }).exists());
 
         describe('error message', () => {
-          it('should not be presented', always(() => CreateResetPasswordPage.has({ error: false })));
+          it(
+            'should not be presented',
+            always(() => CreateResetPasswordPage.has({ error: false })),
+          );
         });
       });
 
@@ -108,19 +118,41 @@ describe('Create/Reset password page', () => {
         });
 
         describe('new password field', () => {
-          it('should be presented', always(() => newPasswordField.exists()));
+          it(
+            'should be presented',
+            always(() => newPasswordField.exists()),
+          );
 
-          it('should have proper label', always(() => CreateResetPasswordPage.has({ newPasswordLabel: translations['createResetPassword.newPassword'] })));
+          it(
+            'should have proper label',
+            always(() =>
+              CreateResetPasswordPage.has({
+                newPasswordLabel: translations['createResetPassword.newPassword'],
+              }),
+            ),
+          );
 
-          it('should have inserted password', () => CreateResetPasswordPage.has({ newPasswordValue: 'test' }));
+          it('should have inserted password', () =>
+            CreateResetPasswordPage.has({ newPasswordValue: 'test' }));
         });
 
         describe('confirm password field', () => {
-          it('should be presented', always(() => confirmPasswordField.exists()));
+          it(
+            'should be presented',
+            always(() => confirmPasswordField.exists()),
+          );
 
-          it('should have proper label', always(() => CreateResetPasswordPage.has({ confirmPasswordLabel: translations['createResetPassword.newPassword'] })));
+          it(
+            'should have proper label',
+            always(() =>
+              CreateResetPasswordPage.has({
+                confirmPasswordLabel: translations['createResetPassword.newPassword'],
+              }),
+            ),
+          );
 
-          it('should have inserted password', () => CreateResetPasswordPage.has({ confirmPasswordValue: 'test' }));
+          it('should have inserted password', () =>
+            CreateResetPasswordPage.has({ confirmPasswordValue: 'test' }));
         });
 
         describe('toggle mask button', () => {
@@ -129,50 +161,70 @@ describe('Create/Reset password page', () => {
               await CreateResetPasswordPage.clickShowPassword();
             });
 
-            it('checks toggled button text', () => Button(translations['button.hidePassword']).exists());
+            it('checks toggled button text', () =>
+              Button(translations['button.hidePassword']).exists());
 
-            it('changes the type of the confirm password field to text', () => CreateResetPasswordPage.has({ confirmPasswordType: 'text' }));
+            it('changes the type of the confirm password field to text', () =>
+              CreateResetPasswordPage.has({ confirmPasswordType: 'text' }));
 
-            it('changes the type of the new password field to text', () => CreateResetPasswordPage.has({ newPasswordType: 'text' }));
+            it('changes the type of the new password field to text', () =>
+              CreateResetPasswordPage.has({ newPasswordType: 'text' }));
 
             describe('toggle mask from text to password', () => {
               beforeEach(async () => {
                 await CreateResetPasswordPage.clickHidePassword();
               });
 
-              it('checks toggled button text', () => Button(translations['button.showPassword']).exists());
+              it('checks toggled button text', () =>
+                Button(translations['button.showPassword']).exists());
 
-              it('changes the type of the confirm password field to text', () => CreateResetPasswordPage.has({ confirmPasswordType: 'password' }));
+              it('changes the type of the confirm password field to text', () =>
+                CreateResetPasswordPage.has({ confirmPasswordType: 'password' }));
 
-              it('changes the type of the new password field to text', () => CreateResetPasswordPage.has({ confirmPasswordType: 'password' }));
+              it('changes the type of the new password field to text', () =>
+                CreateResetPasswordPage.has({ confirmPasswordType: 'password' }));
             });
           });
         });
 
         describe('submit button', () => {
-          it('should be active', always(() => Button({ text: translations.setPassword, disabled: false })));
+          it(
+            'should be active',
+            always(() => Button({ text: translations.setPassword, disabled: false })),
+          );
 
           describe('error message', () => {
-            it('should not be presented', always(() => CreateResetPasswordPage.has({ error: false })));
+            it(
+              'should not be presented',
+              always(() => CreateResetPasswordPage.has({ error: false })),
+            );
           });
         });
       });
 
       describe('different passwords insertion', () => {
         beforeEach(async () => {
-          await CreateResetPasswordPage.fillIn({ newPassword: 'test-test', confirmPassword: 'test' });
+          await CreateResetPasswordPage.fillIn({
+            newPassword: 'test-test',
+            confirmPassword: 'test',
+          });
         });
 
         describe('new password field', () => {
-          it('should have inserted password', () => CreateResetPasswordPage.has({ newPasswordValue: 'test-test' }));
+          it('should have inserted password', () =>
+            CreateResetPasswordPage.has({ newPasswordValue: 'test-test' }));
         });
 
         describe('confirm password field', () => {
-          it('should have inserted password', () => CreateResetPasswordPage.has({ confirmPasswordValue: 'test' }));
+          it('should have inserted password', () =>
+            CreateResetPasswordPage.has({ confirmPasswordValue: 'test' }));
         });
 
         describe('submit button', () => {
-          it('should be disabled', always(() => Button({ text: translations.setPassword, disabled: true }).exists()));
+          it(
+            'should be disabled',
+            always(() => Button({ text: translations.setPassword, disabled: true }).exists()),
+          );
 
           describe('error message', () => {
             it('should present error message', () => CreateResetPasswordPage.has({ error: true }));
@@ -186,10 +238,7 @@ describe('Create/Reset password page', () => {
 
       setupApplication({
         disableAuth: false,
-        scenarios: [
-          'passwordLengthRule',
-          'changePasswordSuccess'
-        ],
+        scenarios: ['passwordLengthRule', 'changePasswordSuccess'],
       });
 
       beforeEach(async function () {
@@ -200,9 +249,11 @@ describe('Create/Reset password page', () => {
 
       it('should display change password confirmation', () => confirmation.exists());
 
-      it('should display the proper heading', () => confirmation.has({ heading: translations['label.congratulations'] }));
+      it('should display the proper heading', () =>
+        confirmation.has({ heading: translations['label.congratulations'] }));
 
-      it('should have an appropriate content', () => confirmation.has({ errorText: translations['label.changed.password'] }));
+      it('should have an appropriate content', () =>
+        confirmation.has({ errorText: translations['label.changed.password'] }));
 
       describe('successful submission: redirect', () => {
         beforeEach(async function () {
@@ -211,7 +262,8 @@ describe('Create/Reset password page', () => {
 
         it('should not display a passwordChanged view', () => confirmation.absent());
 
-        it('should display a login page', () => LoginInteractor(translations['title.login']).exists());
+        it('should display a login page', () =>
+          LoginInteractor(translations['title.login']).exists());
       });
     });
 
@@ -220,9 +272,7 @@ describe('Create/Reset password page', () => {
 
       setupApplication({
         disableAuth: false,
-        scenarios: [
-          'changePasswordExpiredLinkFailure',
-        ],
+        scenarios: ['changePasswordExpiredLinkFailure'],
       });
 
       beforeEach(async function () {
@@ -233,7 +283,8 @@ describe('Create/Reset password page', () => {
 
       it('should not display change password confirmation', () => confirmation.absent());
 
-      it('should have an appropriate text content', () => CreateResetPasswordPage.has({ errorText: translations['errors.link.expired'] }));
+      it('should have an appropriate text content', () =>
+        CreateResetPasswordPage.has({ errorText: translations['errors.link.expired'] }));
     });
 
     describe('non-successful submission: invalid link', () => {
@@ -241,10 +292,7 @@ describe('Create/Reset password page', () => {
 
       setupApplication({
         disableAuth: false,
-        scenarios: [
-          'passwordLengthRule',
-          'changePasswordInvalidLinkFailure',
-        ],
+        scenarios: ['passwordLengthRule', 'changePasswordInvalidLinkFailure'],
       });
 
       beforeEach(async function () {
@@ -255,7 +303,8 @@ describe('Create/Reset password page', () => {
 
       it('should not display change password confirmation', () => confirmation.absent());
 
-      it('should present an error message', () => CreateResetPasswordPage.has({ errorText: translations['errors.link.invalid'] }));
+      it('should present an error message', () =>
+        CreateResetPasswordPage.has({ errorText: translations['errors.link.invalid'] }));
     });
 
     describe('non-successful submission: client error', () => {
@@ -263,7 +312,7 @@ describe('Create/Reset password page', () => {
 
       setupApplication({
         disableAuth: false,
-        scenarios: ['changePasswordClientError']
+        scenarios: ['changePasswordClientError'],
       });
 
       beforeEach(async function () {
@@ -274,7 +323,8 @@ describe('Create/Reset password page', () => {
 
       it('should not display change password confirmation', () => confirmation.absent());
 
-      it('should have an appropriate text content', () => CreateResetPasswordPage.has({ errorText: translations['errors.link.invalid'] }));
+      it('should have an appropriate text content', () =>
+        CreateResetPasswordPage.has({ errorText: translations['errors.link.invalid'] }));
     });
   });
 
@@ -284,85 +334,95 @@ describe('Create/Reset password page', () => {
     describe('invalid token: default', () => {
       setupApplication({
         disableAuth: false,
-        scenarios: [
-          'changePasswordValidateClientError',
-        ],
+        scenarios: ['changePasswordValidateClientError'],
       });
 
       beforeEach(function () {
-        return this.visit({
-          pathname: '/reset-password/test'
-        }, () => errorPage.exists());
+        return this.visit(
+          {
+            pathname: '/reset-password/test',
+          },
+          () => errorPage.exists(),
+        );
       });
 
-      it('should have an appropriate content', () => errorPage.has({ errorText: translations['errors.link.invalid'] }));
+      it('should have an appropriate content', () =>
+        errorPage.has({ errorText: translations['errors.link.invalid'] }));
     });
 
     describe('invalid token', () => {
       setupApplication({
         disableAuth: false,
-        scenarios: [
-          'changePasswordValidateInvalidLink',
-        ],
+        scenarios: ['changePasswordValidateInvalidLink'],
       });
 
       beforeEach(function () {
-        return this.visit({
-          pathname: '/reset-password/test/'
-        }, () => errorPage.exists());
+        return this.visit(
+          {
+            pathname: '/reset-password/test/',
+          },
+          () => errorPage.exists(),
+        );
       });
 
-      it('should have an appropriate content', () => errorPage.has({ errorText: translations['errors.link.invalid'] }));
+      it('should have an appropriate content', () =>
+        errorPage.has({ errorText: translations['errors.link.invalid'] }));
     });
 
     describe('expired token', () => {
       setupApplication({
         disableAuth: false,
-        scenarios: [
-          'changePasswordValidateExpiredLink',
-        ],
+        scenarios: ['changePasswordValidateExpiredLink'],
       });
 
       beforeEach(function () {
-        return this.visit({
-          pathname: '/reset-password/test/'
-        }, () => errorPage.exists());
+        return this.visit(
+          {
+            pathname: '/reset-password/test/',
+          },
+          () => errorPage.exists(),
+        );
       });
 
-      it('should have an appropriate content', () => errorPage.has({ errorText: translations['errors.link.expired'] }));
+      it('should have an appropriate content', () =>
+        errorPage.has({ errorText: translations['errors.link.expired'] }));
     });
 
     describe('used token', () => {
       setupApplication({
         disableAuth: false,
-        scenarios: [
-          'changePasswordValidateUsedLink',
-        ],
+        scenarios: ['changePasswordValidateUsedLink'],
       });
 
       beforeEach(function () {
-        return this.visit({
-          pathname: '/reset-password/test/'
-        }, () => errorPage.exists());
+        return this.visit(
+          {
+            pathname: '/reset-password/test/',
+          },
+          () => errorPage.exists(),
+        );
       });
 
-      it('should have an appropriate content', () => errorPage.has({ errorText: translations['errors.link.used'] }));
+      it('should have an appropriate content', () =>
+        errorPage.has({ errorText: translations['errors.link.used'] }));
     });
     describe('system error', () => {
       setupApplication({
         disableAuth: false,
-        scenarios: [
-          'changePasswordValidateSystemError',
-        ],
+        scenarios: ['changePasswordValidateSystemError'],
       });
 
       beforeEach(function () {
-        return this.visit({
-          pathname: '/reset-password/test/'
-        }, () => errorPage.exists());
+        return this.visit(
+          {
+            pathname: '/reset-password/test/',
+          },
+          () => errorPage.exists(),
+        );
       });
 
-      it('should have an appropriate content', () => errorPage.has({ errorText: translations['errors.default.server.error'] }));
+      it('should have an appropriate content', () =>
+        errorPage.has({ errorText: translations['errors.default.server.error'] }));
     });
   });
 });

@@ -57,7 +57,9 @@ export default function okapiReducer(state = {}, action) {
     case OKAPI_REDUCER_ACTIONS.SET_PLUGINS:
       return Object.assign({}, state, { plugins: action.plugins });
     case OKAPI_REDUCER_ACTIONS.SET_SINGLE_PLUGIN:
-      return Object.assign({}, state, { plugins: Object.assign({}, state.plugins, { [action.name]: action.value }) });
+      return Object.assign({}, state, {
+        plugins: Object.assign({}, state.plugins, { [action.name]: action.value }),
+      });
     case OKAPI_REDUCER_ACTIONS.SET_BINDINGS:
       return Object.assign({}, state, { bindings: action.bindings });
     case OKAPI_REDUCER_ACTIONS.SET_CURRENT_PERMS:
@@ -65,14 +67,23 @@ export default function okapiReducer(state = {}, action) {
     case OKAPI_REDUCER_ACTIONS.SET_LOGIN_DATA:
       return Object.assign({}, state, { loginData: action.loginData });
     case OKAPI_REDUCER_ACTIONS.SET_TOKEN_EXPIRATION:
-      return Object.assign({}, state, { loginData: { ...state.loginData, tokenExpiration: action.tokenExpiration } });
+      return Object.assign({}, state, {
+        loginData: { ...state.loginData, tokenExpiration: action.tokenExpiration },
+      });
     case OKAPI_REDUCER_ACTIONS.CLEAR_CURRENT_USER:
       return Object.assign({}, state, { currentUser: {}, currentPerms: {} });
     case OKAPI_REDUCER_ACTIONS.SET_SESSION_DATA: {
       const { isAuthenticated, perms, tenant, token, user } = action.session;
       const sessionTenant = tenant || state.tenant;
 
-      return { ...state, currentUser: user, currentPerms: perms, isAuthenticated, tenant: sessionTenant, token };
+      return {
+        ...state,
+        currentUser: user,
+        currentPerms: perms,
+        isAuthenticated,
+        tenant: sessionTenant,
+        token,
+      };
     }
     case OKAPI_REDUCER_ACTIONS.SET_AUTH_FAILURE:
       return Object.assign({}, state, { authFailure: action.message });

@@ -22,19 +22,13 @@ const makeid = (length) => {
 
 const baseOptions = {
   endpoint: 'users',
-  chunkedQueryIdTransform: (chunkedIds) => `?(${chunkedIds.map(theId => `id==${theId}`).join('||')})`,
-  ids: [
-    '1234-5678-a',
-    '1234-5678-b',
-    '1234-5678-c',
-    '1234-5678-d',
-    '1234-5678-e'
-  ],
-  reduceFunction: (uq) => (
+  chunkedQueryIdTransform: (chunkedIds) =>
+    `?(${chunkedIds.map((theId) => `id==${theId}`).join('||')})`,
+  ids: ['1234-5678-a', '1234-5678-b', '1234-5678-c', '1234-5678-d', '1234-5678-e'],
+  reduceFunction: (uq) =>
     uq.reduce((acc, curr) => {
       return [...acc, ...(curr?.data?.users ?? [])];
-    }, [])
-  ),
+    }, []),
 };
 
 // Set these up in beforeEach so it's fresh for each describe -- otherwise get improper test component changes(?)
@@ -54,15 +48,13 @@ describe('Given useChunkedIdTransformFetch', () => {
     queryClient = new QueryClient({
       defaultOptions: {
         queries: {
-          retry: false
-        }
-      }
+          retry: false,
+        },
+      },
     });
 
     wrapper = ({ children }) => (
-      <QueryClientProvider client={queryClient}>
-        {children}
-      </QueryClientProvider>
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
     );
 
     mockUseOkapiKy.mockClear();
@@ -72,12 +64,16 @@ describe('Given useChunkedIdTransformFetch', () => {
 
   describe('sets up correct number of fetches', () => {
     it('sets up 1 fetch for the 5 ids by default', async () => {
-      const { result } = renderHook(() => useChunkedIdTransformFetch({
-        ...baseOptions
-      }), { wrapper });
+      const { result } = renderHook(
+        () =>
+          useChunkedIdTransformFetch({
+            ...baseOptions,
+          }),
+        { wrapper },
+      );
 
       await waitFor(() => {
-        const loadingQueries = result.current.itemQueries?.filter(iq => iq.isLoading);
+        const loadingQueries = result.current.itemQueries?.filter((iq) => iq.isLoading);
 
         return loadingQueries.length === 0;
       });
@@ -86,13 +82,17 @@ describe('Given useChunkedIdTransformFetch', () => {
     });
 
     it('sets up 3 fetches for the 5 ids when STEP_SIZE = 2', async () => {
-      const { result } = renderHook(() => useChunkedIdTransformFetch({
-        ...baseOptions,
-        STEP_SIZE: 2
-      }), { wrapper });
+      const { result } = renderHook(
+        () =>
+          useChunkedIdTransformFetch({
+            ...baseOptions,
+            STEP_SIZE: 2,
+          }),
+        { wrapper },
+      );
 
       await waitFor(() => {
-        const loadingQueries = result.current.itemQueries?.filter(iq => iq.isLoading);
+        const loadingQueries = result.current.itemQueries?.filter((iq) => iq.isLoading);
 
         return loadingQueries.length === 0;
       });
@@ -101,13 +101,17 @@ describe('Given useChunkedIdTransformFetch', () => {
     });
 
     it('sets up 5 fetches for the 5 ids when STEP_SIZE = 1', async () => {
-      const { result } = renderHook(() => useChunkedIdTransformFetch({
-        ...baseOptions,
-        STEP_SIZE: 1
-      }), { wrapper });
+      const { result } = renderHook(
+        () =>
+          useChunkedIdTransformFetch({
+            ...baseOptions,
+            STEP_SIZE: 1,
+          }),
+        { wrapper },
+      );
 
       await waitFor(() => {
-        const loadingQueries = result.current.itemQueries?.filter(iq => iq.isLoading);
+        const loadingQueries = result.current.itemQueries?.filter((iq) => iq.isLoading);
 
         return loadingQueries.length === 0;
       });
@@ -118,20 +122,24 @@ describe('Given useChunkedIdTransformFetch', () => {
 
   describe('deduplicates ids as expected', () => {
     it('sets up 1 fetch for the 5 unique ids', async () => {
-      const { result } = renderHook(() => useChunkedIdTransformFetch({
-        ...baseOptions,
-        ids: [
-          ...baseOptions.ids,
-          ...baseOptions.ids,
-          ...baseOptions.ids,
-          ...baseOptions.ids,
-          ...baseOptions.ids,
-        ],
-        STEP_SIZE: 5
-      }), { wrapper });
+      const { result } = renderHook(
+        () =>
+          useChunkedIdTransformFetch({
+            ...baseOptions,
+            ids: [
+              ...baseOptions.ids,
+              ...baseOptions.ids,
+              ...baseOptions.ids,
+              ...baseOptions.ids,
+              ...baseOptions.ids,
+            ],
+            STEP_SIZE: 5,
+          }),
+        { wrapper },
+      );
 
       await waitFor(() => {
-        const loadingQueries = result.current.itemQueries?.filter(iq => iq.isLoading);
+        const loadingQueries = result.current.itemQueries?.filter((iq) => iq.isLoading);
 
         return loadingQueries.length === 0;
       });
@@ -147,13 +155,17 @@ describe('Given useChunkedIdTransformFetch', () => {
         largeIdSet.push(makeid(5));
       }
 
-      const { result } = renderHook(() => useChunkedIdTransformFetch({
-        ...baseOptions,
-        ids: largeIdSet,
-      }), { wrapper });
+      const { result } = renderHook(
+        () =>
+          useChunkedIdTransformFetch({
+            ...baseOptions,
+            ids: largeIdSet,
+          }),
+        { wrapper },
+      );
 
       await waitFor(() => {
-        const loadingQueries = result.current.itemQueries?.filter(iq => iq.isLoading);
+        const loadingQueries = result.current.itemQueries?.filter((iq) => iq.isLoading);
         return loadingQueries.length === 0;
       });
 
@@ -163,13 +175,17 @@ describe('Given useChunkedIdTransformFetch', () => {
 
   describe('allows parameter overrides', () => {
     it('sets up 1 fetch using alternate ID name', async () => {
-      const { result } = renderHook(() => useChunkedIdTransformFetch({
-        ...baseOptions,
-        idName: 'userId'
-      }), { wrapper });
+      const { result } = renderHook(
+        () =>
+          useChunkedIdTransformFetch({
+            ...baseOptions,
+            idName: 'userId',
+          }),
+        { wrapper },
+      );
 
       await waitFor(() => {
-        const loadingQueries = result.current.itemQueries?.filter(iq => iq.isLoading);
+        const loadingQueries = result.current.itemQueries?.filter((iq) => iq.isLoading);
 
         return loadingQueries.length === 0;
       });
@@ -183,14 +199,18 @@ describe('Given useChunkedIdTransformFetch', () => {
         largeIdSet.push(makeid(5));
       }
 
-      const { result } = renderHook(() => useChunkedIdTransformFetch({
-        ...baseOptions,
-        ids: largeIdSet,
-        limit: 100
-      }), { wrapper });
+      const { result } = renderHook(
+        () =>
+          useChunkedIdTransformFetch({
+            ...baseOptions,
+            ids: largeIdSet,
+            limit: 100,
+          }),
+        { wrapper },
+      );
 
       await waitFor(() => {
-        const loadingQueries = result.current.itemQueries?.filter(iq => iq.isLoading);
+        const loadingQueries = result.current.itemQueries?.filter((iq) => iq.isLoading);
         return loadingQueries.length === 0;
       });
 
@@ -198,14 +218,18 @@ describe('Given useChunkedIdTransformFetch', () => {
     });
 
     it('expose queryKeys based on given ids and endpoint', async () => {
-      const { result } = renderHook(() => useChunkedIdTransformFetch({
-        ...baseOptions,
-        STEP_SIZE: 2,
-        tenantId: 'central',
-      }), { wrapper });
+      const { result } = renderHook(
+        () =>
+          useChunkedIdTransformFetch({
+            ...baseOptions,
+            STEP_SIZE: 2,
+            tenantId: 'central',
+          }),
+        { wrapper },
+      );
 
       await waitFor(() => {
-        const loadingQueries = result.current.itemQueries?.filter(iq => iq.isLoading);
+        const loadingQueries = result.current.itemQueries?.filter((iq) => iq.isLoading);
 
         return loadingQueries.length === 0;
       });
@@ -214,7 +238,7 @@ describe('Given useChunkedIdTransformFetch', () => {
       expect(result.current.queryKeys).toStrictEqual([
         ['stripes-core', 'users', ['1234-5678-a', '1234-5678-b'], 'central'],
         ['stripes-core', 'users', ['1234-5678-c', '1234-5678-d'], 'central'],
-        ['stripes-core', 'users', ['1234-5678-e'], 'central']
+        ['stripes-core', 'users', ['1234-5678-e'], 'central'],
       ]);
     });
   });
@@ -223,13 +247,17 @@ describe('Given useChunkedIdTransformFetch', () => {
     const providedTenantId = 'providedTenantId';
 
     it('sets up 1 fetch using alternate tenant ID', async () => {
-      const { result } = renderHook(() => useChunkedIdTransformFetch({
-        ...baseOptions,
-        tenantId: providedTenantId,
-      }), { wrapper });
+      const { result } = renderHook(
+        () =>
+          useChunkedIdTransformFetch({
+            ...baseOptions,
+            tenantId: providedTenantId,
+          }),
+        { wrapper },
+      );
 
       await waitFor(() => {
-        return result.current.itemQueries?.filter(iq => iq.isLoading)?.length === 0;
+        return result.current.itemQueries?.filter((iq) => iq.isLoading)?.length === 0;
       });
 
       expect(mockUseOkapiKy).toHaveBeenCalledWith({ tenant: providedTenantId });
@@ -238,17 +266,23 @@ describe('Given useChunkedIdTransformFetch', () => {
     it('includes tenantId in the generateQueryKey function', async () => {
       const generateQueryKey = jest.fn();
 
-      const { result } = renderHook(() => useChunkedIdTransformFetch({
-        ...baseOptions,
-        generateQueryKey,
-        tenantId: providedTenantId,
-      }), { wrapper });
+      const { result } = renderHook(
+        () =>
+          useChunkedIdTransformFetch({
+            ...baseOptions,
+            generateQueryKey,
+            tenantId: providedTenantId,
+          }),
+        { wrapper },
+      );
 
       await waitFor(() => {
-        return result.current.itemQueries?.filter(iq => iq.isLoading)?.length === 0;
+        return result.current.itemQueries?.filter((iq) => iq.isLoading)?.length === 0;
       });
 
-      expect(generateQueryKey).toHaveBeenCalledWith(expect.objectContaining({ tenantId: providedTenantId }));
+      expect(generateQueryKey).toHaveBeenCalledWith(
+        expect.objectContaining({ tenantId: providedTenantId }),
+      );
     });
   });
 
@@ -256,13 +290,17 @@ describe('Given useChunkedIdTransformFetch', () => {
     const providedTenantId = 'providedTenantId';
 
     it('sets up 1 fetch using alternate tenant ID', async () => {
-      const { result } = renderHook(() => useChunkedIdTransformFetch({
-        ...baseOptions,
-        tenantId: providedTenantId,
-      }), { wrapper });
+      const { result } = renderHook(
+        () =>
+          useChunkedIdTransformFetch({
+            ...baseOptions,
+            tenantId: providedTenantId,
+          }),
+        { wrapper },
+      );
 
       await waitFor(() => {
-        return result.current.itemQueries?.filter(iq => iq.isLoading)?.length === 0;
+        return result.current.itemQueries?.filter((iq) => iq.isLoading)?.length === 0;
       });
 
       expect(mockUseOkapiKy).toHaveBeenCalledWith({ tenant: providedTenantId });
@@ -271,44 +309,53 @@ describe('Given useChunkedIdTransformFetch', () => {
     it('includes tenantId in the generateQueryKey function', async () => {
       const generateQueryKey = jest.fn();
 
-      const { result } = renderHook(() => useChunkedIdTransformFetch({
-        ...baseOptions,
-        generateQueryKey,
-        tenantId: providedTenantId,
-      }), { wrapper });
+      const { result } = renderHook(
+        () =>
+          useChunkedIdTransformFetch({
+            ...baseOptions,
+            generateQueryKey,
+            tenantId: providedTenantId,
+          }),
+        { wrapper },
+      );
 
       await waitFor(() => {
-        return result.current.itemQueries?.filter(iq => iq.isLoading)?.length === 0;
+        return result.current.itemQueries?.filter((iq) => iq.isLoading)?.length === 0;
       });
 
-      expect(generateQueryKey).toHaveBeenCalledWith(expect.objectContaining({ tenantId: providedTenantId }));
+      expect(generateQueryKey).toHaveBeenCalledWith(
+        expect.objectContaining({ tenantId: providedTenantId }),
+      );
     });
   });
 
   describe('reduceFunction works as expected', () => {
     beforeEach(() => {
       response.mockClear();
-      response.mockImplementationOnce(() => (['a', 'b', 'c']));
-      response.mockImplementationOnce(() => (['d', 'e', 'f']));
-      response.mockImplementationOnce(() => (['g', 'h', 'i']));
+      response.mockImplementationOnce(() => ['a', 'b', 'c']);
+      response.mockImplementationOnce(() => ['d', 'e', 'f']);
+      response.mockImplementationOnce(() => ['g', 'h', 'i']);
       mockUseOkapiKy.mockClear();
       mockUseOkapiKyValue.get.mockClear();
       mockUseOkapiKy.mockReturnValue(mockUseOkapiKyValue);
     });
 
     it('sets up 3 fetches using custom reduce hook', async () => {
-      const { result } = renderHook(() => useChunkedIdTransformFetch({
-        ...baseOptions,
-        reduceFunction: (queries) => (
-          queries.reduce((acc, curr) => {
-            return [...acc, ...(curr?.data ?? [])];
-          }, [])
-        ),
-        STEP_SIZE: 2
-      }), { wrapper });
+      const { result } = renderHook(
+        () =>
+          useChunkedIdTransformFetch({
+            ...baseOptions,
+            reduceFunction: (queries) =>
+              queries.reduce((acc, curr) => {
+                return [...acc, ...(curr?.data ?? [])];
+              }, []),
+            STEP_SIZE: 2,
+          }),
+        { wrapper },
+      );
 
       await waitFor(() => {
-        return result.current.itemQueries?.filter(iq => iq.isLoading)?.length === 0;
+        return result.current.itemQueries?.filter((iq) => iq.isLoading)?.length === 0;
       });
 
       await waitFor(() => {
@@ -319,44 +366,65 @@ describe('Given useChunkedIdTransformFetch', () => {
 
   describe('chunkedQueryIdTransform works as expected', () => {
     it('sets up 3 fetches using default chunkedQueryIdTransform', async () => {
-      const { result } = renderHook(() => useChunkedIdTransformFetch({
-        ...baseOptions,
-        STEP_SIZE: 2
-      }), { wrapper });
+      const { result } = renderHook(
+        () =>
+          useChunkedIdTransformFetch({
+            ...baseOptions,
+            STEP_SIZE: 2,
+          }),
+        { wrapper },
+      );
 
       await waitFor(() => {
-        return result.current.itemQueries?.filter(iq => iq.isLoading)?.length === 0;
+        return result.current.itemQueries?.filter((iq) => iq.isLoading)?.length === 0;
       });
 
       expect(mockUseOkapiKyValue.get.mock.calls[0][0]).toEqual('users');
-      expect(mockUseOkapiKyValue.get.mock.calls[0][1]).toEqual({ searchParams: '?(id==1234-5678-a||id==1234-5678-b)' });
+      expect(mockUseOkapiKyValue.get.mock.calls[0][1]).toEqual({
+        searchParams: '?(id==1234-5678-a||id==1234-5678-b)',
+      });
 
       expect(mockUseOkapiKyValue.get.mock.calls[1][0]).toEqual('users');
-      expect(mockUseOkapiKyValue.get.mock.calls[1][1]).toEqual({ searchParams: '?(id==1234-5678-c||id==1234-5678-d)' });
+      expect(mockUseOkapiKyValue.get.mock.calls[1][1]).toEqual({
+        searchParams: '?(id==1234-5678-c||id==1234-5678-d)',
+      });
 
       expect(mockUseOkapiKyValue.get.mock.calls[2][0]).toEqual('users');
-      expect(mockUseOkapiKyValue.get.mock.calls[2][1]).toEqual({ searchParams: '?(id==1234-5678-e)' });
+      expect(mockUseOkapiKyValue.get.mock.calls[2][1]).toEqual({
+        searchParams: '?(id==1234-5678-e)',
+      });
     });
 
     it('sets up 3 fetches using custom chunkedQueryIdTransform', async () => {
-      const { result } = renderHook(() => useChunkedIdTransformFetch({
-        ...baseOptions,
-        chunkedQueryIdTransform: (idChunk) => `?wibble=true&${idChunk.map(theId => `anId=~=${theId}`)}`,
-        STEP_SIZE: 2
-      }), { wrapper });
+      const { result } = renderHook(
+        () =>
+          useChunkedIdTransformFetch({
+            ...baseOptions,
+            chunkedQueryIdTransform: (idChunk) =>
+              `?wibble=true&${idChunk.map((theId) => `anId=~=${theId}`)}`,
+            STEP_SIZE: 2,
+          }),
+        { wrapper },
+      );
 
       await waitFor(() => {
-        return result.current.itemQueries?.filter(iq => iq.isLoading)?.length === 0;
+        return result.current.itemQueries?.filter((iq) => iq.isLoading)?.length === 0;
       });
 
       expect(mockUseOkapiKyValue.get.mock.calls[0][0]).toEqual('users');
-      expect(mockUseOkapiKyValue.get.mock.calls[0][1]).toEqual({ searchParams: '?wibble=true&anId=~=1234-5678-a,anId=~=1234-5678-b' });
+      expect(mockUseOkapiKyValue.get.mock.calls[0][1]).toEqual({
+        searchParams: '?wibble=true&anId=~=1234-5678-a,anId=~=1234-5678-b',
+      });
 
       expect(mockUseOkapiKyValue.get.mock.calls[1][0]).toEqual('users');
-      expect(mockUseOkapiKyValue.get.mock.calls[1][1]).toEqual({ searchParams: '?wibble=true&anId=~=1234-5678-c,anId=~=1234-5678-d' });
+      expect(mockUseOkapiKyValue.get.mock.calls[1][1]).toEqual({
+        searchParams: '?wibble=true&anId=~=1234-5678-c,anId=~=1234-5678-d',
+      });
 
       expect(mockUseOkapiKyValue.get.mock.calls[2][0]).toEqual('users');
-      expect(mockUseOkapiKyValue.get.mock.calls[2][1]).toEqual({ searchParams: '?wibble=true&anId=~=1234-5678-e' });
+      expect(mockUseOkapiKyValue.get.mock.calls[2][1]).toEqual({
+        searchParams: '?wibble=true&anId=~=1234-5678-e',
+      });
     });
   });
 });

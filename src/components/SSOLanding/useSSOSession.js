@@ -52,12 +52,12 @@ const useSSOSession = () => {
         dispatch(setAuthError([defaultErrors.SSO_SESSION_FAILED_ERROR]));
         setIsFailed(true);
       });
-  /*
+    /*
     Dependencies are not required here
     as all information is provided before component is rendered (query params or cookies)
     and session set up should be called only once
   */
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return {

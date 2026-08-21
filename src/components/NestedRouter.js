@@ -31,10 +31,10 @@ export function Route({ component: Component, children, ...props }) {
   /* istanbul ignore else */
   if (Component) {
     return (
-      <RouterRoute {...props} render={props => (<Component {...props}>{children}</Component>)} /> // eslint-disable-line no-shadow
+      <RouterRoute {...props} render={(props) => <Component {...props}>{children}</Component>} /> // eslint-disable-line no-shadow
     );
   } else {
-    return (<RouterRoute {...props}>{children}</RouterRoute>);
+    return <RouterRoute {...props}>{children}</RouterRoute>;
   }
 }
 
@@ -44,8 +44,5 @@ Route.propTypes = {
     PropTypes.node,
     PropTypes.func,
   ]),
-  component: PropTypes.oneOfType([
-    PropTypes.func,
-    PropTypes.object,
-  ])
+  component: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
 };

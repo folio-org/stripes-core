@@ -18,8 +18,7 @@ const EntitlementChangeBanner = () => {
 
   return (
     <MessageBanner type="warning" show={stale}>
-      <FormattedMessage id="stripes-core.stale.warning" />
-      {' '}
+      <FormattedMessage id="stripes-core.stale.warning" />{' '}
       <Button buttonStyle="link" onClick={() => window.location.reload(true)} marginBottom0>
         <FormattedMessage id="stripes-core.stale.reload" />
       </Button>

@@ -45,10 +45,10 @@ describe('RootWithIntl', () => {
           config: {
             isSingleTenant: true,
             tenantOptions: {
-              diku: { name: 'diku', clientId: 'diku-application' }
-            }
+              diku: { name: 'diku', clientId: 'diku-application' },
+            },
           },
-          store
+          store,
         };
         render(<AuthnLogin stripes={stripes} />);
 
@@ -62,10 +62,10 @@ describe('RootWithIntl', () => {
             isSingleTenant: false,
             tenantOptions: {
               diku: { name: 'diku', clientId: 'diku-application' },
-              diku2: { name: 'diku2', clientId: 'diku2-application' }
-            }
+              diku2: { name: 'diku2', clientId: 'diku2-application' },
+            },
           },
-          store
+          store,
         };
         render(<AuthnLogin stripes={stripes} />);
 

@@ -7,14 +7,13 @@ import componentsTranslations from '@folio/stripes-components/translations/strip
 import stripesCoreTranslations from '../../../translations/stripes-core/en';
 
 const prefixKeys = (translations, prefix) => {
-  return Object
-    .keys(translations)
-    .reduce((acc, key) => (
-      {
-        ...acc,
-        [`${prefix}.${key}`]: translations[key],
-      }
-    ), {});
+  return Object.keys(translations).reduce(
+    (acc, key) => ({
+      ...acc,
+      [`${prefix}.${key}`]: translations[key],
+    }),
+    {},
+  );
 };
 
 const translations = {
@@ -23,15 +22,13 @@ const translations = {
 };
 
 const history = createMemoryHistory();
-const renderWithRouter = children => render(
-  <Router history={history}>
-    <IntlProvider
-      locale="en"
-      messages={translations}
-    >
-      {children}
-    </IntlProvider>
-  </Router>
-);
+const renderWithRouter = (children) =>
+  render(
+    <Router history={history}>
+      <IntlProvider locale="en" messages={translations}>
+        {children}
+      </IntlProvider>
+    </Router>,
+  );
 
 export default renderWithRouter;

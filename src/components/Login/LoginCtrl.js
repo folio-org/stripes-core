@@ -1,17 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect as reduxConnect } from 'react-redux';
-import {
-  withRouter,
-  matchPath,
-} from 'react-router-dom';
+import { withRouter, matchPath } from 'react-router-dom';
 
 import { ConnectContext } from '@folio/stripes-connect';
-import {
-  requestLogin,
-  requestSSOLogin,
-  storeLogoutTenant,
-} from '../../loginServices';
+import { requestLogin, requestSSOLogin, storeLogoutTenant } from '../../loginServices';
 import { setAuthError } from '../../okapiActions';
 import Login from './Login';
 
@@ -70,11 +63,11 @@ class LoginCtrl extends Component {
     } catch (e) {
       console.error(e); // eslint-disable-line no-console
     }
-  }
+  };
 
   handleSSOLogin = () => {
     requestSSOLogin(this.props.okapiUrl, this.tenant);
-  }
+  };
 
   render() {
     const { authFailure, ssoEnabled } = this.props;
@@ -90,12 +83,12 @@ class LoginCtrl extends Component {
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   authFailure: state.okapi.authFailure,
   ssoEnabled: state.okapi.ssoEnabled,
   okapiUrl: state.okapi.url,
 });
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   clearAuthErrors: () => dispatch(setAuthError([])),
 });
 

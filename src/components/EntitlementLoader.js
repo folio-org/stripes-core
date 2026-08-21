@@ -46,7 +46,7 @@ export const preloadModules = async (stripes, remotes) => {
   const modules = { app: [], plugin: [], settings: [], handler: [] };
 
   const loaderArray = [];
-  remotes.forEach(remote => {
+  remotes.forEach((remote) => {
     const { name } = remote;
     loaderArray.push(getInstance().loadRemote(`${name}/MainEntry`));
   });
@@ -58,17 +58,24 @@ export const preloadModules = async (stripes, remotes) => {
       remotes[i].getModule = () => r.value.default;
     } else {
       loadFailures.push({ name: remotes[i].name, reason: r.reason });
-      stripes.logger.log('core', `Error loading remote module '${remotes[i].name}' from ${remotes[i].location}: ${r.reason}`);
+      stripes.logger.log(
+        'core',
+        `Error loading remote module '${remotes[i].name}' from ${remotes[i].location}: ${r.reason}`,
+      );
     }
   });
 
   if (loadFailures.length) {
-    const errorMsg = loadFailures.map(f => `- ${f.name} : ${f.reason}`).join('\n');
+    const errorMsg = loadFailures.map((f) => `- ${f.name} : ${f.reason}`).join('\n');
     const calloutMessage = (
       <div>
         <FormattedMessage id="stripes-core.entitlementLoader.moduleError" />
         <ul>
-          {loadFailures.map(f => (<li>{f.name}: {f.reason.message}</li>))}
+          {loadFailures.map((f) => (
+            <li key={f.name}>
+              {f.name}: {f.reason.message}
+            </li>
+          ))}
         </ul>
       </div>
     );
@@ -78,7 +85,7 @@ export const preloadModules = async (stripes, remotes) => {
   // once the all the code for the modules are loaded, populate the `modules` structure based on `actsAs` keys.
   remotes.forEach((remote) => {
     const { actsAs } = remote;
-    actsAs.forEach(type => modules[type].push({ ...remote }));
+    actsAs.forEach((type) => modules[type].push({ ...remote }));
   });
 
   return modules;
@@ -126,12 +133,12 @@ const loadTranslations = async (stripes, module) => {
  */
 const loadIcons = (stripes, module) => {
   if (module.icons?.length) {
-    module.icons.forEach(i => {
+    module.icons.forEach((i) => {
       const icon = {
         [i.name]: {
           src: `${module.assetPath}/icons/${i.name}.svg`,
           alt: i.title,
-        }
+        },
       };
       stripes.addIcon(module.module, icon);
     });
@@ -162,8 +169,7 @@ export const loadModuleAssets = async (stripes, module) => {
 
     const adjustedModule = {
       ...module,
-      displayName: module.displayName ?
-        newDisplayName : module.module,
+      displayName: module.displayName ? newDisplayName : module.module,
     };
     return adjustedModule;
   } catch (e) {
@@ -209,7 +215,10 @@ const EntitlementLoader = ({ children }) => {
         try {
           remotes = await loadEntitlement(okapi.discoveryUrl, signal);
         } catch (e) {
-          handleRemoteModuleError(stripes, `Error fetching entitlement registry from ${okapi.discoveryUrl}: ${e}`);
+          handleRemoteModuleError(
+            stripes,
+            `Error fetching entitlement registry from ${okapi.discoveryUrl}: ${e}`,
+          );
         }
 
         let cachedModules = modulesInitialState;
@@ -231,20 +240,28 @@ const EntitlementLoader = ({ children }) => {
           });
 
           if (loadFailures.length) {
-            const errorMsg = loadFailures.map(f => `- ${f.name}`).join('\n');
+            const errorMsg = loadFailures.map((f) => `- ${f.name}`).join('\n');
             const calloutMessage = (
               <div>
                 <FormattedMessage id="stripes-core.entitlementLoader.assetError" />
                 <ul>
-                  {loadFailures.map(f => (<li>{f.name}</li>))}
+                  {loadFailures.map((f) => (
+                    <li key={f.name}>{f.name}</li>
+                  ))}
                 </ul>
               </div>
             );
-            handleRemoteModuleError(stripes, `Error loading remote module assets (icons, translations, sounds):\n   ${errorMsg}`, callout?.sendCallout, calloutMessage);
+            handleRemoteModuleError(
+              stripes,
+              `Error loading remote module assets (icons, translations, sounds):\n   ${errorMsg}`,
+              callout?.sendCallout,
+              calloutMessage,
+            );
           }
 
-          const remotesToRegister = remotes.map(remote => ({
-            name: remote.name, entry: remote.location
+          const remotesToRegister = remotes.map((remote) => ({
+            name: remote.name,
+            entry: remote.location,
           }));
 
           // register the dynamically provided remotes with the module federation runtime.
@@ -254,7 +271,12 @@ const EntitlementLoader = ({ children }) => {
             // load module code - this loads each module only once and up `getModule` so that it can be used sychronously.
             cachedModules = await preloadModules(stripes, remotesWithLoadedAssets);
           } catch (e) {
-            handleRemoteModuleError(stripes, `Error preloading modules:\n${e.message || e}`, callout?.sendCallout, e.options?.calloutMessage || e.message || e);
+            handleRemoteModuleError(
+              stripes,
+              `Error preloading modules:\n${e.message || e}`,
+              callout?.sendCallout,
+              e.options?.calloutMessage || e.message || e,
+            );
           }
 
           setRemoteModules(cachedModules);
@@ -272,15 +294,13 @@ const EntitlementLoader = ({ children }) => {
 
   const combinedModules = useMemo(() => {
     const baseModules = {};
-    Object.keys(modulesInitialState).forEach(key => { baseModules[key] = [...configModules[key], ...remoteModules[key]]; });
+    Object.keys(modulesInitialState).forEach((key) => {
+      baseModules[key] = [...configModules[key], ...remoteModules[key]];
+    });
     return baseModules;
   }, [configModules, remoteModules]);
 
-  return (
-    <ModulesContext.Provider value={combinedModules}>
-      {children}
-    </ModulesContext.Provider>
-  );
+  return <ModulesContext.Provider value={combinedModules}>{children}</ModulesContext.Provider>;
 };
 
 EntitlementLoader.propTypes = {
@@ -288,7 +308,7 @@ EntitlementLoader.propTypes = {
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node,
     PropTypes.func,
-  ])
+  ]),
 };
 
 export default EntitlementLoader;

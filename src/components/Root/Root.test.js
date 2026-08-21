@@ -13,7 +13,7 @@ jest.mock('../../loginServices', () => ({
 
 jest.mock('./token-util', () => ({
   configureRtr: jest.fn().mockReturnValue({ rtr: true }),
-  rotationHandler: jest.fn().mockReturnValue(() => { }),
+  rotationHandler: jest.fn().mockReturnValue(() => {}),
   ResetTimer: class {
     constructor(callback, logger) {
       this.callback = callback;
@@ -21,8 +21,8 @@ jest.mock('./token-util', () => ({
       mockResetTimerCallbacks.push(callback);
     }
 
-    reset() { }
-    clear() { }
+    reset() {}
+    clear() {}
   },
 }));
 jest.mock('../SystemSkeleton', () => () => <div data-testid="system-skeleton">SystemSkeleton</div>);
@@ -30,7 +30,9 @@ jest.mock('../../createApolloClient', () => jest.fn().mockReturnValue({}));
 jest.mock('../../createReactQueryClient', () => jest.fn().mockReturnValue({}));
 jest.mock('@apollo/client', () => ({ ApolloProvider: ({ children }) => <>{children}</> }));
 jest.mock('react-query', () => ({ QueryClientProvider: ({ children }) => <>{children}</> }));
-jest.mock('@folio/stripes-components', () => ({ ErrorBoundary: ({ children }) => <>{children}</> }));
+jest.mock('@folio/stripes-components', () => ({
+  ErrorBoundary: ({ children }) => <>{children}</>,
+}));
 
 let latestContextFns = {};
 
@@ -41,10 +43,7 @@ jest.mock('../../RootWithIntl', () => {
       {(val) => {
         latestContextFns = val; // capture addReducer/addEpic
         return (
-          <div
-            data-testid="root-with-intl"
-            data-locale={stripes.locale}
-          >
+          <div data-testid="root-with-intl" data-locale={stripes.locale}>
             RootWithIntl
           </div>
         );
@@ -142,12 +141,12 @@ describe('Root component', () => {
             okapi: {
               translations: undefined,
               okapiReady: false,
-            }
+            },
           });
 
           const { rerender } = renderRoot({
             store: initialStore,
-            modules: { app: [], settings: [] }
+            modules: { app: [], settings: [] },
           });
 
           // Should show SystemSkeleton (no translations)
@@ -160,7 +159,7 @@ describe('Root component', () => {
             okapi: {
               ...initialStore.getState().okapi,
               translations: { title: 'foo' },
-            }
+            },
           };
 
           const stageOneStore = {
@@ -168,10 +167,12 @@ describe('Root component', () => {
             getState: () => stageOneState,
           };
 
-          rerender(getRootComponent({
-            store: stageOneStore,
-            modules: { app: [], settings: [] }
-          }));
+          rerender(
+            getRootComponent({
+              store: stageOneStore,
+              modules: { app: [], settings: [] },
+            }),
+          );
 
           // Should show SystemSkeleton (okapiReady is still false)
           expect(screen.queryByTestId('root-with-intl')).toBeNull();
@@ -179,16 +180,16 @@ describe('Root component', () => {
 
           // Stage 2: Load modules
           const stageTwoModules = {
-            app: [
-              { module: 'QueryMod', route: '/app1' },
-            ],
-            settings: []
+            app: [{ module: 'QueryMod', route: '/app1' }],
+            settings: [],
           };
 
-          rerender(getRootComponent({
-            store: stageOneStore,
-            modules: stageTwoModules
-          }));
+          rerender(
+            getRootComponent({
+              store: stageOneStore,
+              modules: stageTwoModules,
+            }),
+          );
 
           // Should show SystemSkeleton (okapiReady is still false)
           expect(screen.queryByTestId('root-with-intl')).toBeNull();
@@ -200,8 +201,8 @@ describe('Root component', () => {
             okapi: {
               ...stageOneState.okapi,
               okapiReady: true,
-              currentUser: { id: 'user123', username: 'testuser' }
-            }
+              currentUser: { id: 'user123', username: 'testuser' },
+            },
           };
 
           const stageThreeStore = {
@@ -209,10 +210,12 @@ describe('Root component', () => {
             getState: () => stageThreeState,
           };
 
-          rerender(getRootComponent({
-            store: stageThreeStore,
-            modules: stageTwoModules,
-          }));
+          rerender(
+            getRootComponent({
+              store: stageThreeStore,
+              modules: stageTwoModules,
+            }),
+          );
 
           // Should show RootWithIntl
           expect(screen.getByTestId('root-with-intl')).toBeInTheDocument();
@@ -310,14 +313,16 @@ describe('Root component', () => {
       getState: () => updatedState,
     };
 
-    rerender(getRootComponent({
-      ...props,
-      store: updatedStore,
-      modules: {
-        app: [queryModule],
-        settings: [],
-      },
-    }));
+    rerender(
+      getRootComponent({
+        ...props,
+        store: updatedStore,
+        modules: {
+          app: [queryModule],
+          settings: [],
+        },
+      }),
+    );
 
     const passedReducer = jest.fn();
     const result = latestContextFns.addReducer('query_mod_list', passedReducer);
@@ -378,14 +383,16 @@ describe('Root component', () => {
 
     expect(screen.getByTestId('system-skeleton')).toBeInTheDocument();
 
-    rerender(getRootComponent({
-      store,
-      history,
-      modules: {
-        app: [queryModule],
-        settings: [],
-      },
-    }));
+    rerender(
+      getRootComponent({
+        store,
+        history,
+        modules: {
+          app: [queryModule],
+          settings: [],
+        },
+      }),
+    );
 
     const passedReducer = jest.fn();
     const result = latestContextFns.addReducer('folio_users_query', passedReducer);
@@ -393,7 +400,7 @@ describe('Root component', () => {
     // The reducer should be initialized with the URL query parameters
     expect(passedReducer).toHaveBeenCalledWith(
       { query: 'test', filters: 'status.active' },
-      expect.anything()
+      expect.anything(),
     );
     expect(store.replaceReducer).toHaveBeenCalled();
     expect(result).toBe(true);

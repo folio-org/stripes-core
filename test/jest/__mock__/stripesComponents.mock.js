@@ -3,12 +3,8 @@ import React from 'react';
 jest.mock('@folio/stripes-components', () => ({
   ...jest.requireActual('@folio/stripes-components'),
   loadDayJSLocale: jest.fn(),
-  Accordion: jest.fn(({ children, ...rest }) => (
-    <span {...rest}>{children}</span>
-  )),
-  AccordionSet: jest.fn(({ children, ...rest }) => (
-    <span {...rest}>{children}</span>
-  )),
+  Accordion: jest.fn(({ children, ...rest }) => <span {...rest}>{children}</span>),
+  AccordionSet: jest.fn(({ children, ...rest }) => <span {...rest}>{children}</span>),
   Badge: jest.fn((props) => (
     <span>
       <span>{props.children}</span>
@@ -18,24 +14,18 @@ jest.mock('@folio/stripes-components', () => ({
     if (to) {
       return (
         <a href={to} role="button" data-test-button onClick={onClick}>
-          <span>
-            {children}
-          </span>
+          <span>{children}</span>
         </a>
       );
     }
 
     return (
       <button data-test-button onClick={onClick} type={type || 'button'}>
-        <span>
-          {children}
-        </span>
+        <span>{children}</span>
       </button>
     );
   }),
-  Callout: jest.fn(({ children, ...rest }) => (
-    <span {...rest}>{children}</span>
-  )),
+  Callout: jest.fn(({ children, ...rest }) => <span {...rest}>{children}</span>),
   Col: jest.fn(({ children }) => <div className="col">{children}</div>),
   ConfirmationModal: jest.fn(({ heading, message, onConfirm, onCancel }) => (
     <div>
@@ -43,8 +33,12 @@ jest.mock('@folio/stripes-components', () => ({
       {heading}
       <div>{message}</div>
       <div>
-        <button type="button" onClick={onConfirm}>confirm</button>
-        <button type="button" onClick={onCancel}>cancel</button>
+        <button type="button" onClick={onConfirm}>
+          confirm
+        </button>
+        <button type="button" onClick={onCancel}>
+          cancel
+        </button>
       </div>
     </div>
   )),
@@ -55,42 +49,38 @@ jest.mock('@folio/stripes-components', () => ({
       <input type="text" />
     </div>
   )),
-  ExpandAllButton: jest.fn(({ children }) => (
-    <span>{children}</span>
-  )),
-  HasCommand: jest.fn(({ children }) => (
-    <span>{children}</span>
-  )),
+  ExpandAllButton: jest.fn(({ children }) => <span>{children}</span>),
+  HasCommand: jest.fn(({ children }) => <span>{children}</span>),
   Headline: jest.fn(({ children }) => <div>{children}</div>),
   HotKeys: jest.fn(({ children }) => <>{children}</>),
   Icon: jest.fn((props) => (props && props.children ? props.children : <span />)),
-  IconButton: jest.fn(({
-    buttonProps,
-    // eslint-disable-next-line no-unused-vars
-    iconClassName,
-    ...rest
-  }) => (
-    <button type="button" {...buttonProps}>
-      <span {...rest} />
-    </button>
-  )),
+  IconButton: jest.fn(
+    ({
+      buttonProps,
+      // eslint-disable-next-line no-unused-vars
+      iconClassName,
+      ...rest
+    }) => (
+      <button type="button" {...buttonProps}>
+        <span {...rest} />
+      </button>
+    ),
+  ),
   KeyValue: jest.fn(({ label, children, value }) => (
     <>
       <span>{label}</span>
       <span>{value || children}</span>
     </>
   )),
-  Label: jest.fn(({ children, ...rest }) => (
-    <span {...rest}>{children}</span>
-  )),
-  List: jest.fn(({ items, itemFormatter = (item, i) => (<li key={i}>{item}</li>) }) => (
-    <ul>
-      [{items?.map((item, i) => itemFormatter(item, i))}]
-    </ul>
+  Label: jest.fn(({ children, ...rest }) => <span {...rest}>{children}</span>),
+  List: jest.fn(({ items, itemFormatter = (item, i) => <li key={i}>{item}</li> }) => (
+    <ul>[{items?.map((item, i) => itemFormatter(item, i))}]</ul>
   )),
   Loading: () => <div>Loading</div>,
   LoadingView: () => <div>LoadingView</div>,
-  MessageBanner: jest.fn(({ show, children }) => { return show ? <>{children}</> : <></>; }),
+  MessageBanner: jest.fn(({ show, children }) => {
+    return show ? <>{children}</> : <></>;
+  }),
 
   // oy, dismissible. we need to pull it out of props so it doesn't
   // get applied to the div as an attribute, which must have a string-value,
@@ -105,27 +95,19 @@ jest.mock('@folio/stripes-components', () => ({
   // failure that the modal isn't visible. oy, dismissible.
   Modal: jest.fn(({ children, label, dismissible, footer, ...rest }) => {
     return (
-      <div
-        data-test={dismissible ? '' : ''}
-        {...rest}
-      >
+      <div data-test={dismissible ? '' : ''} {...rest}>
         <h1>{label}</h1>
         {children}
         {footer}
       </div>
     );
   }),
-  ModalFooter: jest.fn((props) => (
-    <div>{props.children}</div>
-  )),
+  ModalFooter: jest.fn((props) => <div>{props.children}</div>),
   MultiSelection: jest.fn(({ children, dataOptions }) => (
     <div>
       <select multiple>
         {dataOptions.forEach((option, i) => (
-          <option
-            value={option.value}
-            key={option.id || `option-${i}`}
-          >
+          <option value={option.value} key={option.id || `option-${i}`}>
             {option.label}
           </option>
         ))}
@@ -134,34 +116,55 @@ jest.mock('@folio/stripes-components', () => ({
     </div>
   )),
   NavList: jest.fn(({ children, className, ...rest }) => (
-    <div className={className} {...rest}>{children}</div>
+    <div className={className} {...rest}>
+      {children}
+    </div>
   )),
   NavListItem: jest.fn(({ children, className, ...rest }) => (
-    <div className={className} {...rest}>{children}</div>
+    <div className={className} {...rest}>
+      {children}
+    </div>
   )),
   NavListSection: jest.fn(({ children, className, ...rest }) => (
-    <div className={className} {...rest}>{children}</div>
+    <div className={className} {...rest}>
+      {children}
+    </div>
   )),
-  NoValue: jest.fn(({ ariaLabel }) => (<span>{ariaLabel}</span>)),
+  NoValue: jest.fn(({ ariaLabel }) => <span>{ariaLabel}</span>),
   // destructure appIcon and dismissible so they aren't incorrectly
   // applied as DOM attributes via ...rest.
   // eslint-disable-next-line no-unused-vars
-  Pane: jest.fn(({ children, className, defaultWidth, paneTitle, firstMenu, lastMenu, actionMenu, appIcon, dismissible, ...rest }) => {
-    return (
-      <div className={className} {...rest} style={{ width: defaultWidth }}>
-        <div>
-          {firstMenu ?? null}
-          {paneTitle}
-          {actionMenu ? actionMenu({ onToggle: jest.fn() }) : null}
-          {lastMenu ?? null}
+  Pane: jest.fn(
+    ({
+      children,
+      className,
+      defaultWidth,
+      paneTitle,
+      firstMenu,
+      lastMenu,
+      actionMenu,
+      appIcon,
+      dismissible,
+      ...rest
+    }) => {
+      return (
+        <div className={className} {...rest} style={{ width: defaultWidth }}>
+          <div>
+            {firstMenu ?? null}
+            {paneTitle}
+            {actionMenu ? actionMenu({ onToggle: jest.fn() }) : null}
+            {lastMenu ?? null}
+          </div>
+          {children}
         </div>
-        {children}
-      </div>
-    );
-  }),
+      );
+    },
+  ),
   PaneBackLink: jest.fn(() => <span />),
   PaneFooter: jest.fn(({ ref, children, ...rest }) => (
-    <div ref={ref} {...rest}>{children}</div>
+    <div ref={ref} {...rest}>
+      {children}
+    </div>
   )),
   PaneHeader: jest.fn(({ paneTitle, firstMenu, lastMenu, actionMenu }) => (
     <div actionMenu={actionMenu}>
@@ -175,11 +178,7 @@ jest.mock('@folio/stripes-components', () => ({
   RadioButton: jest.fn(({ label, name, ...rest }) => (
     <div>
       <label htmlFor="male">{label}</label>
-      <input
-        type="radio"
-        name={name}
-        {...rest}
-      />
+      <input type="radio" name={name} {...rest} />
     </div>
   )),
   RadioButtonGroup: jest.fn(({ label, children, ...rest }) => (
@@ -191,18 +190,16 @@ jest.mock('@folio/stripes-components', () => ({
   Row: jest.fn(({ children }) => <div className="row">{children}</div>),
   Select: jest.fn(({ children, dataOptions, label, ...props }) => (
     <div>
-      <label>{label}
+      <label>
+        {label}
         <select {...props}>
           {dataOptions.map((option, i) => (
-            <option
-              value={option.value}
-              key={option.id || `option-${i}`}
-            >
+            <option value={option.value} key={option.id || `option-${i}`}>
               {option.label}
-            </option>))}
+            </option>
+          ))}
         </select>
         {children}
-
       </label>
     </div>
   )),

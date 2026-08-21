@@ -9,17 +9,8 @@ const makeItems = (n) => Array.from({ length: n }, (_, i) => ({ id: String(i + 1
 const FIXED_ITEM_WIDTH = 120;
 const WRAPPER_WIDTH = 500;
 
-const Component = forwardRef(({
-  items,
-  currentAppId,
-  hideAllWidth,
-  offset,
-  className,
-}, ref) => (
-  <div
-    data-testid="outer"
-    style={{ width: WRAPPER_WIDTH }}
-  >
+const Component = forwardRef(({ items, currentAppId, hideAllWidth, offset, className }, ref) => (
+  <div data-testid="outer" style={{ width: WRAPPER_WIDTH }}>
     <ResizeContainer
       ref={ref}
       items={items}
@@ -29,17 +20,10 @@ const Component = forwardRef(({
       className={className}
     >
       {({ hiddenItems, itemWidths, ready }) => (
-        <div
-          data-testid="payload"
-          data-hidden-items={hiddenItems.join(',')}
-          data-ready={ready}
-        >
-          {items.map(item => (
+        <div data-testid="payload" data-hidden-items={hiddenItems.join(',')} data-ready={ready}>
+          {items.map((item) => (
             <span key={item.id}>
-              <button
-                id={`app-list-item-${item.id}`}
-                type="button"
-              >
+              <button id={`app-list-item-${item.id}`} type="button">
                 Item {item.id} ({itemWidths[item.id] || 0})
               </button>
             </span>
@@ -61,8 +45,18 @@ describe('ResizeContainer (Jest)', () => {
     originalOffsetWidth = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'offsetWidth');
     originalClientWidth = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'clientWidth');
 
-    Object.defineProperty(HTMLElement.prototype, 'offsetWidth', { configurable: true, get() { return FIXED_ITEM_WIDTH; } });
-    Object.defineProperty(HTMLElement.prototype, 'clientWidth', { configurable: true, get() { return WRAPPER_WIDTH; } });
+    Object.defineProperty(HTMLElement.prototype, 'offsetWidth', {
+      configurable: true,
+      get() {
+        return FIXED_ITEM_WIDTH;
+      },
+    });
+    Object.defineProperty(HTMLElement.prototype, 'clientWidth', {
+      configurable: true,
+      get() {
+        return WRAPPER_WIDTH;
+      },
+    });
 
     jest.useFakeTimers();
   });
@@ -120,8 +114,8 @@ describe('ResizeContainer (Jest)', () => {
     let acc = 0;
     const hiddenCalc = [];
 
-    items.forEach(it => {
-      const fits = (FIXED_ITEM_WIDTH + acc + offset) <= WRAPPER_WIDTH;
+    items.forEach((it) => {
+      const fits = FIXED_ITEM_WIDTH + acc + offset <= WRAPPER_WIDTH;
 
       if (!fits) {
         hiddenCalc.push(it.id);
@@ -147,7 +141,7 @@ describe('ResizeContainer (Jest)', () => {
     const payload = getByTestId('payload');
     const hidden = payload.getAttribute('data-hidden-items').split(',').filter(Boolean);
 
-    expect(hidden).toEqual(items.map(i => i.id));
+    expect(hidden).toEqual(items.map((i) => i.id));
 
     Object.defineProperty(window, 'innerWidth', { configurable: true, value: original });
   });
@@ -165,25 +159,29 @@ describe('ResizeContainer (Jest)', () => {
 
     // Spy after initial mount so we only count subsequent calls
     const cacheSpy = jest.spyOn(ref.current, 'cacheWidthsOfItems');
-    const itemsSameIds = items1.map(i => ({ id: i.id, foo: 'bar' }));
+    const itemsSameIds = items1.map((i) => ({ id: i.id, foo: 'bar' }));
 
-    rerender(getComponent({
-      ref,
-      items: itemsSameIds,
-      hideAllWidth: 0,
-      offset: 0,
-    }));
+    rerender(
+      getComponent({
+        ref,
+        items: itemsSameIds,
+        hideAllWidth: 0,
+        offset: 0,
+      }),
+    );
 
     expect(cacheSpy).not.toHaveBeenCalled();
 
     const itemsNew = [...itemsSameIds, { id: '999' }];
 
-    rerender(getComponent({
-      ref,
-      items: itemsNew,
-      hideAllWidth: 0,
-      offset: 0,
-    }));
+    rerender(
+      getComponent({
+        ref,
+        items: itemsNew,
+        hideAllWidth: 0,
+        offset: 0,
+      }),
+    );
 
     expect(cacheSpy).toHaveBeenCalledTimes(1);
   });
@@ -203,10 +201,12 @@ describe('ResizeContainer (Jest)', () => {
     // Spy after initial mount so we only count subsequent calls
     const cacheSpy = jest.spyOn(ref.current, 'cacheWidthsOfItems');
 
-    rerender(getComponent({
-      ...props,
-      items: items1.toReversed(),
-    }));
+    rerender(
+      getComponent({
+        ...props,
+        items: items1.toReversed(),
+      }),
+    );
 
     expect(cacheSpy).not.toHaveBeenCalled();
   });
@@ -225,13 +225,15 @@ describe('ResizeContainer (Jest)', () => {
 
     const updateSpy = jest.spyOn(ref.current, 'updateHiddenItems');
 
-    rerender(getComponent({
-      ref,
-      items,
-      currentAppId: '2',
-      hideAllWidth: 0,
-      offset: 0,
-    }));
+    rerender(
+      getComponent({
+        ref,
+        items,
+        currentAppId: '2',
+        hideAllWidth: 0,
+        offset: 0,
+      }),
+    );
 
     expect(updateSpy).toHaveBeenCalledTimes(1);
   });
@@ -256,7 +258,9 @@ describe('ResizeContainer (Jest)', () => {
     });
 
     expect(updateSpy).not.toHaveBeenCalled();
-    act(() => { jest.advanceTimersByTime(150); });
+    act(() => {
+      jest.advanceTimersByTime(150);
+    });
     expect(updateSpy).toHaveBeenCalledTimes(1);
   });
 
@@ -269,7 +273,7 @@ describe('ResizeContainer (Jest)', () => {
       offset: 0,
     });
 
-    items.forEach(i => {
+    items.forEach((i) => {
       expect(getByText(new RegExp(`Item ${i.id} \\(${FIXED_ITEM_WIDTH}\\)`))).toBeTruthy();
     });
   });
@@ -291,7 +295,11 @@ describe('ResizeContainer (Jest)', () => {
       // Initial: item 5 is hidden, cache has items 1-5
       expect(ref.current.state.hiddenItems).toEqual(['5']);
       expect(ref.current.cachedItemWidths).toEqual({
-        '1': 120, '2': 120, '3': 120, '4': 120, '5': 120
+        1: 120,
+        2: 120,
+        3: 120,
+        4: 120,
+        5: 120,
       });
 
       // Spy on cacheWidthsOfItems to capture state and cache when it's called
@@ -305,12 +313,14 @@ describe('ResizeContainer (Jest)', () => {
 
       const items2 = [...items1, { id: '6' }];
 
-      rerender(getComponent({
-        ref,
-        items: items2,
-        hideAllWidth: 0,
-        offset: 0,
-      }));
+      rerender(
+        getComponent({
+          ref,
+          items: items2,
+          hideAllWidth: 0,
+          offset: 0,
+        }),
+      );
 
       expect(cacheBeforeMeasuring).toEqual({});
       expect(hiddenItemsWhenMeasuring).toEqual([]);

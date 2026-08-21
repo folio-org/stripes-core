@@ -1,4 +1,8 @@
-import { logRemoteDependencyViolations, formatManifestFetchFailure, formatDependencyMismatch } from './remoteDependencyValidation';
+import {
+  logRemoteDependencyViolations,
+  formatManifestFetchFailure,
+  formatDependencyMismatch,
+} from './remoteDependencyValidation';
 
 describe('remoteDependencyValidation', () => {
   let consoleWarnSpy;
@@ -7,7 +11,7 @@ describe('remoteDependencyValidation', () => {
 
   beforeEach(() => {
     global.fetch = jest.fn();
-    consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => { });
+    consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
   });
 
   afterEach(() => {
@@ -19,7 +23,9 @@ describe('remoteDependencyValidation', () => {
     it('returns without error when remotes are missing, empty, or not an array', async () => {
       await expect(logRemoteDependencyViolations()).resolves.toBeUndefined();
       await expect(logRemoteDependencyViolations(undefined, [])).resolves.toBeUndefined();
-      await expect(logRemoteDependencyViolations(undefined, { name: 'not-an-array' })).resolves.toBeUndefined();
+      await expect(
+        logRemoteDependencyViolations(undefined, { name: 'not-an-array' }),
+      ).resolves.toBeUndefined();
 
       expect(global.fetch).not.toHaveBeenCalled();
       expect(consoleWarnSpy).not.toHaveBeenCalled();
@@ -36,7 +42,9 @@ describe('remoteDependencyValidation', () => {
         }),
       });
 
-      await expect(logRemoteDependencyViolations(undefined, [defaultRemote])).resolves.toBeUndefined();
+      await expect(
+        logRemoteDependencyViolations(undefined, [defaultRemote]),
+      ).resolves.toBeUndefined();
       expect(consoleWarnSpy).not.toHaveBeenCalled();
     });
 
@@ -44,42 +52,54 @@ describe('remoteDependencyValidation', () => {
       global.fetch.mockResolvedValueOnce({
         ok: true,
         json: jest.fn().mockResolvedValue({
-          shared: [
-            { name: 'react', version: '18.3.1', requiredVersion: '^19.0.0' },
-          ],
+          shared: [{ name: 'react', version: '18.3.1', requiredVersion: '^19.0.0' }],
         }),
       });
 
-      await expect(logRemoteDependencyViolations(undefined, [defaultRemote])).resolves.toBeUndefined();
-      expect(consoleWarnSpy).toHaveBeenCalledWith(expect.stringContaining(formatDependencyMismatch('folio_bulk_edit', 'react', '18.3.1', '^19.0.0')));
+      await expect(
+        logRemoteDependencyViolations(undefined, [defaultRemote]),
+      ).resolves.toBeUndefined();
+      expect(consoleWarnSpy).toHaveBeenCalledWith(
+        expect.stringContaining(
+          formatDependencyMismatch('folio_bulk_edit', 'react', '18.3.1', '^19.0.0'),
+        ),
+      );
     });
 
     it('uses dependency id as fallback package name in mismatch warnings', async () => {
       global.fetch.mockResolvedValueOnce({
         ok: true,
         json: jest.fn().mockResolvedValue({
-          shared: [
-            { id: 'react-dom', version: '18.3.1', requiredVersion: '^19.0.0' },
-          ],
+          shared: [{ id: 'react-dom', version: '18.3.1', requiredVersion: '^19.0.0' }],
         }),
       });
 
-      await expect(logRemoteDependencyViolations(undefined, [defaultRemote])).resolves.toBeUndefined();
-      expect(consoleWarnSpy).toHaveBeenCalledWith(expect.stringContaining(formatDependencyMismatch('folio_bulk_edit', 'react-dom', '18.3.1', '^19.0.0')));
+      await expect(
+        logRemoteDependencyViolations(undefined, [defaultRemote]),
+      ).resolves.toBeUndefined();
+      expect(consoleWarnSpy).toHaveBeenCalledWith(
+        expect.stringContaining(
+          formatDependencyMismatch('folio_bulk_edit', 'react-dom', '18.3.1', '^19.0.0'),
+        ),
+      );
     });
 
     it('uses unknown-package fallback when dependency has no name or id', async () => {
       global.fetch.mockResolvedValueOnce({
         ok: true,
         json: jest.fn().mockResolvedValue({
-          shared: [
-            { version: '18.3.1', requiredVersion: '^19.0.0' },
-          ],
+          shared: [{ version: '18.3.1', requiredVersion: '^19.0.0' }],
         }),
       });
 
-      await expect(logRemoteDependencyViolations(undefined, [defaultRemote])).resolves.toBeUndefined();
-      expect(consoleWarnSpy).toHaveBeenCalledWith(expect.stringContaining(formatDependencyMismatch('folio_bulk_edit', 'unknown-package', '18.3.1', '^19.0.0')));
+      await expect(
+        logRemoteDependencyViolations(undefined, [defaultRemote]),
+      ).resolves.toBeUndefined();
+      expect(consoleWarnSpy).toHaveBeenCalledWith(
+        expect.stringContaining(
+          formatDependencyMismatch('folio_bulk_edit', 'unknown-package', '18.3.1', '^19.0.0'),
+        ),
+      );
     });
 
     it('ignores dependencies missing version or requiredVersion', async () => {
@@ -93,7 +113,9 @@ describe('remoteDependencyValidation', () => {
         }),
       });
 
-      await expect(logRemoteDependencyViolations(undefined, [defaultRemote])).resolves.toBeUndefined();
+      await expect(
+        logRemoteDependencyViolations(undefined, [defaultRemote]),
+      ).resolves.toBeUndefined();
       expect(consoleWarnSpy).not.toHaveBeenCalled();
     });
 
@@ -105,7 +127,9 @@ describe('remoteDependencyValidation', () => {
         }),
       });
 
-      await expect(logRemoteDependencyViolations(undefined, [defaultRemote])).resolves.toBeUndefined();
+      await expect(
+        logRemoteDependencyViolations(undefined, [defaultRemote]),
+      ).resolves.toBeUndefined();
       expect(consoleWarnSpy).not.toHaveBeenCalled();
     });
 
@@ -115,8 +139,18 @@ describe('remoteDependencyValidation', () => {
         status: 404,
       });
 
-      await expect(logRemoteDependencyViolations(undefined, [defaultRemote])).resolves.toBeUndefined();
-      expect(consoleWarnSpy).toHaveBeenCalledWith(expect.stringContaining(formatManifestFetchFailure('folio_bulk_edit', 'http://localhost:3000/mf-manifest.json', 404)));
+      await expect(
+        logRemoteDependencyViolations(undefined, [defaultRemote]),
+      ).resolves.toBeUndefined();
+      expect(consoleWarnSpy).toHaveBeenCalledWith(
+        expect.stringContaining(
+          formatManifestFetchFailure(
+            'folio_bulk_edit',
+            'http://localhost:3000/mf-manifest.json',
+            404,
+          ),
+        ),
+      );
     });
 
     it('uses unknown-remote fallback in fetch failure warnings', async () => {
@@ -125,21 +159,37 @@ describe('remoteDependencyValidation', () => {
         status: 500,
       });
 
-      await expect(logRemoteDependencyViolations(undefined, [{ assetPath: 'http://localhost:3000' }])).resolves.toBeUndefined();
-      expect(consoleWarnSpy).toHaveBeenCalledWith(expect.stringContaining(formatManifestFetchFailure('unknown-remote', 'http://localhost:3000/mf-manifest.json', 500)));
+      await expect(
+        logRemoteDependencyViolations(undefined, [{ assetPath: 'http://localhost:3000' }]),
+      ).resolves.toBeUndefined();
+      expect(consoleWarnSpy).toHaveBeenCalledWith(
+        expect.stringContaining(
+          formatManifestFetchFailure(
+            'unknown-remote',
+            'http://localhost:3000/mf-manifest.json',
+            500,
+          ),
+        ),
+      );
     });
 
     it('warns with thrown error message when manifest request throws non-abort error', async () => {
       global.fetch.mockRejectedValueOnce(new Error('network exploded'));
 
-      await expect(logRemoteDependencyViolations(undefined, [defaultRemote])).resolves.toBeUndefined();
-      expect(consoleWarnSpy).toHaveBeenCalledWith(expect.stringContaining('[folio_bulk_edit] network exploded'));
+      await expect(
+        logRemoteDependencyViolations(undefined, [defaultRemote]),
+      ).resolves.toBeUndefined();
+      expect(consoleWarnSpy).toHaveBeenCalledWith(
+        expect.stringContaining('[folio_bulk_edit] network exploded'),
+      );
     });
 
     it('returns without warning when fetch throws AbortError', async () => {
       global.fetch.mockRejectedValueOnce({ name: 'AbortError', message: 'aborted' });
 
-      await expect(logRemoteDependencyViolations(undefined, [defaultRemote])).resolves.toBeUndefined();
+      await expect(
+        logRemoteDependencyViolations(undefined, [defaultRemote]),
+      ).resolves.toBeUndefined();
       expect(consoleWarnSpy).not.toHaveBeenCalled();
     });
 
@@ -171,22 +221,26 @@ describe('remoteDependencyValidation', () => {
         .mockResolvedValueOnce({
           ok: true,
           json: jest.fn().mockResolvedValue({
-            shared: [
-              { name: 'react', version: '18.3.1', requiredVersion: '^19.0.0' },
-            ],
+            shared: [{ name: 'react', version: '18.3.1', requiredVersion: '^19.0.0' }],
           }),
         });
 
-      await expect(logRemoteDependencyViolations(undefined, [
-        { name: 'remote_a', assetPath: 'http://localhost:3000' },
-        { name: 'remote_b', assetPath: 'http://localhost:3001' },
-      ])).resolves.toBeUndefined();
+      await expect(
+        logRemoteDependencyViolations(undefined, [
+          { name: 'remote_a', assetPath: 'http://localhost:3000' },
+          { name: 'remote_b', assetPath: 'http://localhost:3001' },
+        ]),
+      ).resolves.toBeUndefined();
 
       expect(consoleWarnSpy).toHaveBeenCalledTimes(1);
       const warning = consoleWarnSpy.mock.calls[0][0];
       expect(warning).toContain('Remote dependency validation failed:');
-      expect(warning).toContain(`- ${formatManifestFetchFailure('remote_a', 'http://localhost:3000/mf-manifest.json', 404)}`);
-      expect(warning).toContain(`- ${formatDependencyMismatch('remote_b', 'react', '18.3.1', '^19.0.0')}`);
+      expect(warning).toContain(
+        `- ${formatManifestFetchFailure('remote_a', 'http://localhost:3000/mf-manifest.json', 404)}`,
+      );
+      expect(warning).toContain(
+        `- ${formatDependencyMismatch('remote_b', 'react', '18.3.1', '^19.0.0')}`,
+      );
     });
   });
 });

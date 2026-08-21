@@ -1,14 +1,8 @@
 /* shhhh, eslint, it's ok. we need "unused" imports for mocks */
 /* eslint-disable no-unused-vars */
 
-import {
-  QueryClient,
-  QueryClientProvider,
-} from 'react-query';
-import {
-  render,
-  screen,
-} from '@folio/jest-config-stripes/testing-library/react';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { render, screen } from '@folio/jest-config-stripes/testing-library/react';
 
 import { okapi as okapiConfig } from 'stripes-config';
 
@@ -42,9 +36,9 @@ jest.mock('./WarningBanner', () => () => 'WarningBanner');
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      retry: false
-    }
-  }
+      retry: false,
+    },
+  },
 });
 
 jest.mock('../../StripesContext');
@@ -58,21 +52,21 @@ describe('About', () => {
           version: '1.2.3',
           okapiInterfaces: {
             iAlpha: '1.0',
-          }
+          },
         },
-        { module: 'app-beta', version: '2.3.4' }
+        { module: 'app-beta', version: '2.3.4' },
       ],
       settings: [
         { module: 'settings-alpha', version: '3.4.5' },
-        { module: 'settings-beta', version: '4.5.6' }
+        { module: 'settings-beta', version: '4.5.6' },
       ],
       plugin: [
         { module: 'plugin-alpha', version: '5.6.7' },
-        { module: 'plugin-beta', version: '6.7.8' }
+        { module: 'plugin-beta', version: '6.7.8' },
       ],
       typeThatHasNotBeenInventedYet: [
         { module: 'typeThatHasNotBeenInventedYet-alpha', version: '7.8.9' },
-        { module: 'typeThatHasNotBeenInventedYet-beta', version: '8.9.10' }
+        { module: 'typeThatHasNotBeenInventedYet-beta', version: '8.9.10' },
       ],
     };
 
@@ -91,7 +85,7 @@ describe('About', () => {
       },
       config: {
         tenantOptions: true,
-      }
+      },
     };
 
     const mockUseStripes = useStripes;
@@ -100,7 +94,7 @@ describe('About', () => {
     render(
       <QueryClientProvider client={queryClient}>
         <About />
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     expect(screen.getByText(/WarningBanner/)).toBeInTheDocument();

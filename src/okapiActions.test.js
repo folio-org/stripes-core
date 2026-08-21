@@ -23,7 +23,6 @@ import {
   updateCurrentUser,
 } from './okapiActions';
 
-
 describe('checkSSO', () => {
   it('sets ssoEnabled', () => {
     expect(checkSSO('monkey').ssoEnabled).toBe('monkey');

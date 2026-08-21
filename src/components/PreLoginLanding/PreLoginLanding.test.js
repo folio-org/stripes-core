@@ -25,7 +25,14 @@ describe('PreLoginLanding', () => {
       };
 
       const sorted = sortedTenantOptions(tenantOptions);
-      expect(sorted.map(i => i.label)).toEqual(['Yusef (A)', 'Zoe (B)', 'Charlene', 'e', 'f', 'Greta']);
+      expect(sorted.map((i) => i.label)).toEqual([
+        'Yusef (A)',
+        'Zoe (B)',
+        'Charlene',
+        'e',
+        'f',
+        'Greta',
+      ]);
     });
   });
 
@@ -44,8 +51,8 @@ describe('PreLoginLanding', () => {
             p: { name: 'p', clientId: 'p-client', displayName: 'Pangolin' },
             q: { name: 'q', clientId: 'q-client', displayName: 'Quetzal' },
             r: { name: 'rhinoceros', clientId: 'r-client' },
-          }
-        }
+          },
+        },
       });
 
       delete window.location;
@@ -70,8 +77,8 @@ describe('PreLoginLanding', () => {
             p: { name: 'p', clientId: 'p-client', displayName: 'Pangolin' },
             q: { name: 'q', clientId: 'q-client', displayName: 'Quetzal' },
             r: { name: 'rhinoceros', clientId: 'r-client' },
-          }
-        }
+          },
+        },
       });
 
       delete window.location;
@@ -85,7 +92,6 @@ describe('PreLoginLanding', () => {
     });
   });
 
-
   describe('tenant-select list', () => {
     beforeEach(() => {
       const mockUseStripes = useStripes;
@@ -96,8 +102,8 @@ describe('PreLoginLanding', () => {
             p: { name: 'p', clientId: 'p-client', displayName: 'Pangolin' },
             q: { name: 'q', clientId: 'q-client', displayName: 'Quetzal' },
             r: { name: 'rhinoceros', clientId: 'r-client' },
-          }
-        }
+          },
+        },
       });
     });
 

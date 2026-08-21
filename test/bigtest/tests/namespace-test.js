@@ -2,13 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { describe, beforeEach, it } from 'mocha';
-import {
-  HTML
-} from '@folio/stripes-testing';
+import { HTML } from '@folio/stripes-testing';
 
-import {
-  AppListInteractor
-} from '../interactors/app';
+import { AppListInteractor } from '../interactors/app';
 import setupApplication from '../helpers/setup-core-application';
 
 import { useNamespace, withNamespace } from '../../../src/components';
@@ -17,7 +13,7 @@ import Pluggable from '../../../src/Pluggable';
 const NamespaceInteractor = HTML.extend('Namespace')
   .selector('#module-namespace')
   .filters({
-    name: el => el.innerText
+    name: (el) => el.innerText,
   });
 
 const PrintNamespace = ({ options }) => {
@@ -109,7 +105,7 @@ describe('Namespace', () => {
         displayName: 'module-e.title',
         route: '/module-e',
         module: ModuleE,
-      }
+      },
     ],
     translations: {
       'module-a.title': 'ModuleA',
@@ -143,7 +139,8 @@ describe('Namespace', () => {
       await nav.choose('ModuleC');
     });
 
-    it('shows module namespace with a key', () => namespace.has({ name: '@folio/ui-module-c:test-key' }));
+    it('shows module namespace with a key', () =>
+      namespace.has({ name: '@folio/ui-module-c:test-key' }));
   });
 
   describe('open app D', () => {
@@ -151,7 +148,8 @@ describe('Namespace', () => {
       await nav.choose('ModuleD');
     });
 
-    it('shows module namespace with a key', () => namespace.has({ name: '@folio/ui-module-d:test-key-2' }));
+    it('shows module namespace with a key', () =>
+      namespace.has({ name: '@folio/ui-module-d:test-key-2' }));
   });
 
   describe('open app E wrapped in a withNamespace HOC', () => {
@@ -159,6 +157,7 @@ describe('Namespace', () => {
       await nav.choose('ModuleE');
     });
 
-    it('shows module namespace with a key via props', () => namespace.has({ name: '@folio/ui-module-e:with-namespace' }));
+    it('shows module namespace with a key via props', () =>
+      namespace.has({ name: '@folio/ui-module-e:with-namespace' }));
   });
 });

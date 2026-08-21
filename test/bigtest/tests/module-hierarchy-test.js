@@ -1,34 +1,27 @@
 import React from 'react';
 
 import { describe, beforeEach, it } from 'mocha';
-import {
-  HTML,
-} from '@folio/stripes-testing';
+import { HTML } from '@folio/stripes-testing';
 
 import setupApplication from '../helpers/setup-core-application';
 
 import { useModuleHierarchy } from '../../../src/components';
 import Pluggable from '../../../src/Pluggable';
 
-import {
-  AppListInteractor
-} from '../interactors/app';
+import { AppListInteractor } from '../interactors/app';
 
 const ModuleHierarchyInteractor = HTML.extend('Module Hierarchy')
   .selector('#module-hierarchy')
   .filters({
-    names: el => el.innerText
+    names: (el) => el.innerText,
   });
-
 
 const PrintModuleHierarchy = () => {
   const moduleHierarchy = useModuleHierarchy();
 
   return <div id="module-hierarchy">{moduleHierarchy.join(':')}</div>;
 };
-const ModuleA = () => (
-  <Pluggable type="plugin-a" />
-);
+const ModuleA = () => <Pluggable type="plugin-a" />;
 const ModuleB = () => <PrintModuleHierarchy />;
 const PluginB = () => <PrintModuleHierarchy />;
 
@@ -72,7 +65,8 @@ describe('ModuleHierarchy', () => {
       await nav.choose('ModuleA');
     });
 
-    it('shows full hierarchy', () => moduleHierarchy.has({ names: '@folio/ui-module-a:@folio/plugin-a' }));
+    it('shows full hierarchy', () =>
+      moduleHierarchy.has({ names: '@folio/ui-module-a:@folio/plugin-a' }));
   });
 
   describe('open app without pluggable', () => {

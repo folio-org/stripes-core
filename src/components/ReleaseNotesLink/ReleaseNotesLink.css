@@ -1,4 +1,4 @@
-@import "@folio/stripes-components/lib/variables.css";
+@import '@folio/stripes-components/lib/variables.css';
 
 .ReleaseNotesLink {
   color: inherit;
@@ -6,5 +6,5 @@
   & span {
     color: var(--color-link);
     margin-left: 5px;
-  };
+  }
 }

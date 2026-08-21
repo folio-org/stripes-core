@@ -5,10 +5,7 @@ import { includes } from 'lodash';
 
 import { Headline } from '@folio/stripes-components';
 
-import {
-  changePasswordErrorCodes,
-  defaultErrorCodes,
-} from '../../../../constants';
+import { changePasswordErrorCodes, defaultErrorCodes } from '../../../../constants';
 import OrganizationLogo from '../../../OrganizationLogo';
 
 import styles from './PasswordHasNotChanged.css';
@@ -31,7 +28,8 @@ class PasswordHasNotChanged extends Component {
     const isExpiredLink = includes(errorCodes, changePasswordErrorCodes.EXPIRED_ERROR_CODE);
     const isUsedLink = includes(errorCodes, changePasswordErrorCodes.USED_ERROR_CODE);
     const isOutdatedLink = isExpiredLink || isUsedLink;
-    const isInvalidLink = includes(errorCodes, changePasswordErrorCodes.INVALID_ERROR_CODE) && !isOutdatedLink;
+    const isInvalidLink =
+      includes(errorCodes, changePasswordErrorCodes.INVALID_ERROR_CODE) && !isOutdatedLink;
 
     if (isInvalidLink) {
       return `${labelNamespace}.${changePasswordErrorCodes.INVALID_ERROR_CODE}`;
@@ -48,18 +46,10 @@ class PasswordHasNotChanged extends Component {
     const errorCode = this.defineErrorCode();
 
     return (
-      <div
-        className={styles.wrap}
-        data-test-change-password-error
-      >
+      <div className={styles.wrap} data-test-change-password-error>
         <div className={styles.centered}>
           <OrganizationLogo />
-          <Headline
-            size="x-large"
-            tag="p"
-            faded
-            data-test-message
-          >
+          <Headline size="x-large" tag="p" faded data-test-message>
             <FormattedMessage id={errorCode} />
           </Headline>
         </div>

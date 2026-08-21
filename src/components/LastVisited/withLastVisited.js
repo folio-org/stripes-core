@@ -61,8 +61,10 @@ function withLastVisited(WrappedComponent) {
     }
 
     getCurrentModule(location) {
-      return this.moduleList.find(entry => (location.pathname === entry.route ||
-        location.pathname.startsWith(`${entry.route}/`)));
+      return this.moduleList.find(
+        (entry) =>
+          location.pathname === entry.route || location.pathname.startsWith(`${entry.route}/`),
+      );
     }
 
     cachePreviousUrl() {
@@ -73,7 +75,7 @@ function withLastVisited(WrappedComponent) {
     render() {
       const value = {
         lastVisited: this.lastVisited,
-        cachePreviousUrl: this.cachePreviousUrl
+        cachePreviousUrl: this.cachePreviousUrl,
       };
 
       return (
@@ -87,8 +89,4 @@ function withLastVisited(WrappedComponent) {
   return hoistNonReactStatics(LastVisited, WrappedComponent);
 }
 
-export default compose(
-  withRouter,
-  withModules,
-  withLastVisited,
-);
+export default compose(withRouter, withModules, withLastVisited);

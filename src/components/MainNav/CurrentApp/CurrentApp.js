@@ -13,21 +13,16 @@ const propTypes = {
     platformName: PropTypes.string,
     platformDescription: PropTypes.string,
   }),
-  currentApp: PropTypes.shape(
-    {
-      displayName: PropTypes.string,
-      home: PropTypes.string,
-      iconData: PropTypes.object, // Only used by "Settings" since it's not a standalone app yet
-      name: PropTypes.string,
-      route: PropTypes.string,
-    },
-  ),
+  currentApp: PropTypes.shape({
+    displayName: PropTypes.string,
+    home: PropTypes.string,
+    iconData: PropTypes.object, // Only used by "Settings" since it's not a standalone app yet
+    name: PropTypes.string,
+    route: PropTypes.string,
+  }),
   id: PropTypes.string,
   intl: PropTypes.object,
-  badge: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.number,
-  ]),
+  badge: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 };
 
 const CurrentApp = ({ config, currentApp, id, intl, badge }) => {
@@ -42,7 +37,12 @@ const CurrentApp = ({ config, currentApp, id, intl, badge }) => {
 
   const { displayName, iconData, module, home, route } = actualCurrentApp;
   const href = home || route;
-  const ariaLabel = href ? intl.formatMessage({ id: 'stripes-core.mainnav.currentAppAriaLabel' }, { appName: displayName }) : displayName;
+  const ariaLabel = href
+    ? intl.formatMessage(
+        { id: 'stripes-core.mainnav.currentAppAriaLabel' },
+        { appName: displayName },
+      )
+    : displayName;
 
   return (
     <CurrentAppButton

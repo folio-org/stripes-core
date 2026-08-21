@@ -8,16 +8,13 @@ const usePasswordRules = (rulesLimit) => {
     limit: rulesLimit,
   };
 
-  const { data } = useQuery(
-    ['requirements-list'],
-    async () => {
-      return ky.get('tenant/rules', { searchParams }).json();
-    },
-  );
-
-  return ({
-    rules: data?.rules,
+  const { data } = useQuery(['requirements-list'], async () => {
+    return ky.get('tenant/rules', { searchParams }).json();
   });
+
+  return {
+    rules: data?.rules,
+  };
 };
 
 export default usePasswordRules;

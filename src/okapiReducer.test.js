@@ -27,7 +27,6 @@ import {
 
 import okapiReducer from './okapiReducer';
 
-
 describe('okapiReducer', () => {
   describe('SET_IS_AUTHENTICATED', () => {
     it('sets isAuthenticated to true', () => {
@@ -72,7 +71,7 @@ describe('okapiReducer', () => {
           user: {
             id: 'userId',
             username: 'admin',
-          }
+          },
         },
         tenant: 'institutional',
       };
@@ -98,7 +97,7 @@ describe('okapiReducer', () => {
           user: {
             id: 'userId',
             username: 'admin',
-          }
+          },
         },
       };
       const o = okapiReducer(initialState, setSessionData(session));
@@ -211,8 +210,8 @@ describe('okapiReducer', () => {
   });
 
   it('SET_TRANSLATIONS', () => {
-    const state = { translations: { 'fred': 'Fredrick' } };
-    const translations = { 'george': 'George', 'fred': 'Freddy' };
+    const state = { translations: { fred: 'Fredrick' } };
+    const translations = { george: 'George', fred: 'Freddy' };
     const o = okapiReducer(state, setTranslations(translations));
     expect(o.translations).toMatchObject({ ...state.translations, ...translations });
   });
@@ -232,17 +231,17 @@ describe('okapiReducer', () => {
   });
 
   it('ADD_ICON', () => {
-    const state = { icons: { 'iconKey': 'icon1' } };
+    const state = { icons: { iconKey: 'icon1' } };
     const newIcon = { name: 'icon2' };
     const o = okapiReducer(state, addIcon('iconKey2', newIcon));
-    expect(o.icons).toMatchObject({ ...state.icons, 'iconKey2': newIcon });
+    expect(o.icons).toMatchObject({ ...state.icons, iconKey2: newIcon });
   });
 
   it('ADD_ICON, key present', () => {
-    const state = { icons: { 'iconKey': { name: 'icon1' } } };
+    const state = { icons: { iconKey: { name: 'icon1' } } };
     const newIcon = { new: 'icon2' };
     const o = okapiReducer(state, addIcon('iconKey', newIcon));
-    expect(o.icons).toMatchObject({ 'iconKey': { new: 'icon2', name: 'icon1' } });
+    expect(o.icons).toMatchObject({ iconKey: { new: 'icon2', name: 'icon1' } });
   });
 
   it('SERVER_DOWN', () => {

@@ -68,41 +68,42 @@ export const logRemoteDependencyViolations = async (signal, remotes = []) => {
 
   const failures = [];
 
-  await Promise.all(remotes.map(async (remote) => {
-    const remoteName = remote?.name || 'unknown-remote';
+  await Promise.all(
+    remotes.map(async (remote) => {
+      const remoteName = remote?.name || 'unknown-remote';
 
-    try {
-      const manifestUrl = `${remote.assetPath}/mf-manifest.json`;
-      const response = await fetch(manifestUrl, { signal });
+      try {
+        const manifestUrl = `${remote.assetPath}/mf-manifest.json`;
+        const response = await fetch(manifestUrl, { signal });
 
-      if (!response.ok) {
-        failures.push(formatManifestFetchFailure(remoteName, manifestUrl, response.status));
-        return;
-      }
-
-      const manifest = await response.json();
-      const sharedDependencies = Array.isArray(manifest?.shared) ? manifest.shared : [];
-
-      sharedDependencies.forEach((dependency) => {
-        const validationFailure = validateManifestDependency(remoteName, dependency);
-        if (validationFailure) {
-          failures.push(validationFailure);
+        if (!response.ok) {
+          failures.push(formatManifestFetchFailure(remoteName, manifestUrl, response.status));
+          return;
         }
-      });
-    } catch (error) {
-      if (isAbortError(error) || signal?.aborted) {
-        return;
-      }
 
-      failures.push(`[${remoteName}] ${error?.message || error}`);
-    }
-  }));
+        const manifest = await response.json();
+        const sharedDependencies = Array.isArray(manifest?.shared) ? manifest.shared : [];
+
+        sharedDependencies.forEach((dependency) => {
+          const validationFailure = validateManifestDependency(remoteName, dependency);
+          if (validationFailure) {
+            failures.push(validationFailure);
+          }
+        });
+      } catch (error) {
+        if (isAbortError(error) || signal?.aborted) {
+          return;
+        }
+
+        failures.push(`[${remoteName}] ${error?.message || error}`);
+      }
+    }),
+  );
 
   if (signal?.aborted || !failures.length) {
     return;
   }
 
   // eslint-disable-next-line no-console
-  console.warn(`Remote dependency validation failed:\n${failures.map(f => '- ' + f).join('\n')}`);
+  console.warn(`Remote dependency validation failed:\n${failures.map((f) => '- ' + f).join('\n')}`);
 };
-

@@ -10,9 +10,7 @@ const propTypes = {
 };
 
 function MainContainer(props) {
-  return (
-    <div className={css.root}>{props.children}</div>
-  );
+  return <div className={css.root}>{props.children}</div>;
 }
 
 MainContainer.propTypes = propTypes;

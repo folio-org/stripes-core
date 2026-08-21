@@ -1,8 +1,7 @@
 const signToShow = '*';
 
-const replacer = (string, pattern1, pattern2) => (
-  pattern1.concat(signToShow.repeat(pattern2.length))
-);
+const replacer = (string, pattern1, pattern2) =>
+  pattern1.concat(signToShow.repeat(pattern2.length));
 
 /**
  * A function to hide the eternal user email and show it according to the following rules:
@@ -13,11 +12,10 @@ const replacer = (string, pattern1, pattern2) => (
  * @param email      - an email to be formatted
  * @returns {string} - a formatted email string
  */
-const hideEmail = email => (
+const hideEmail = (email) =>
   email
     .replaceAll(/(^.{2})(.+?)(?=@)/g, replacer)
     .replaceAll(/(^.+@.)(.+?)(?=\.)/g, replacer)
-    .replaceAll(/(\.)(.+?)(?=$)/g, replacer)
-);
+    .replaceAll(/(\.)(.+?)(?=$)/g, replacer);
 
 export default hideEmail;

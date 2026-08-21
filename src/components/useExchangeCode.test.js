@@ -1,20 +1,17 @@
 import { act, renderHook, waitFor } from '@folio/jest-config-stripes/testing-library/react';
-import {
-  QueryClient,
-  QueryClientProvider,
-} from 'react-query';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
 import { usePublicGatewayKy } from '../useOkapiKy';
 import useExchangeCode from './useExchangeCode';
 
-jest.mock('./OrganizationLogo', () => (() => <div>OrganizationLogo</div>));
+jest.mock('./OrganizationLogo', () => () => <div>OrganizationLogo</div>);
 jest.mock('../useOkapiKy');
 jest.mock('../StripesContext', () => ({
-  useStripes: () => ({ tenant: 'tenant', clientId: 'clientId' })
+  useStripes: () => ({ tenant: 'tenant', clientId: 'clientId' }),
 }));
 
 jest.mock('../loginServices', () => ({
-  ...(jest.requireActual('../loginServices')),
+  ...jest.requireActual('../loginServices'),
   setTokenExpiry: jest.fn(() => Promise.resolve()),
   requestUserWithPerms: jest.fn(() => Promise.resolve()),
   storeLogoutTenant: jest.fn(() => Promise.resolve()),
@@ -23,9 +20,7 @@ jest.mock('../loginServices', () => ({
 const queryClient = new QueryClient();
 // eslint-disable-next-line react/prop-types
 const wrapper = ({ children }) => (
-  <QueryClientProvider client={queryClient}>
-    {children}
-  </QueryClientProvider>
+  <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
 );
 
 describe('useExchangeCode', () => {
@@ -53,8 +48,8 @@ describe('useExchangeCode', () => {
       // eslint-disable-next-line no-throw-literal
       throw {
         response: {
-          json: async () => err
-        }
+          json: async () => err,
+        },
       };
     });
 
@@ -96,7 +91,7 @@ describe('useExchangeCode', () => {
 
     const mockUseUnauthenticatedOkapiKy = usePublicGatewayKy;
     mockUseUnauthenticatedOkapiKy.mockReturnValue(() => ({
-      json: () => ({ some: 'object' })
+      json: () => ({ some: 'object' }),
     }));
 
     const callback = jest.fn();

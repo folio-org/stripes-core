@@ -14,7 +14,7 @@ const IfPermission = ({ children, perm }) => {
 
 IfPermission.propTypes = {
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
-  perm: PropTypes.string.isRequired
+  perm: PropTypes.string.isRequired,
 };
 
 export default IfPermission;

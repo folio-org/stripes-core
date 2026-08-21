@@ -16,7 +16,9 @@ export const loadEntitlement = async (discoveryUrl, signal) => {
       // want to load ourselves. that would result in the host app loading the
       // host app, then loading entitlement and stripping out the host app if
       // it's present...)
-      registry.discovery = registryData?.discovery.filter((entry) => entry.name !== stripesHubAPI.HOST_APP_NAME);
+      registry.discovery = registryData?.discovery.filter(
+        (entry) => entry.name !== stripesHubAPI.HOST_APP_NAME,
+      );
 
       await localforage.setItem(stripesHubAPI.REMOTE_LIST_KEY, registry.discovery);
     } catch (e) {
@@ -29,7 +31,7 @@ export const loadEntitlement = async (discoveryUrl, signal) => {
   // Take the location information for each remote in the response and split out its origin...
   // i.e. 'http://localhost:3002/remoteEntry.js -> 'http://localhost:3002'
   // this origin is where stripes-core will attempt to fetch translations and assets from.
-  registry?.discovery?.forEach(remote => {
+  registry?.discovery?.forEach((remote) => {
     if (!remote?.location?.startsWith('http')) {
       remote.location = `${window.location.protocol}//${remote.location}`;
     }

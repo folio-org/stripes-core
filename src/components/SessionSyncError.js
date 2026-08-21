@@ -6,4 +6,3 @@ export class SessionSyncError extends Error {
     this.resource = resource;
   }
 }
-

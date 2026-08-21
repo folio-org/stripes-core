@@ -8,10 +8,22 @@ import Stripes from './Stripes';
 jest.mock('./components/AuthnLogin', () => () => '<AuthnLogin>');
 jest.mock('./components/Login', () => () => '<Login>');
 jest.mock('./components/MainNav', () => () => '<MainNav>');
-jest.mock('./components/MainNav/AppOrderProvider', () => ({ AppOrderProvider: ({ children }) => children }));
+jest.mock('./components/MainNav/AppOrderProvider', () => ({
+  AppOrderProvider: ({ children }) => children,
+}));
 jest.mock('./components/OverlayContainer', () => () => '<OverlayContainer>');
-jest.mock('./components/ModuleContainer', () => ({ children }) => children);
-jest.mock('./components/MainContainer', () => ({ children }) => children);
+jest.mock(
+  './components/ModuleContainer',
+  () =>
+    ({ children }) =>
+      children,
+);
+jest.mock(
+  './components/MainContainer',
+  () =>
+    ({ children }) =>
+      children,
+);
 jest.mock('./components/StaleBundleWarning', () => () => '<StaleBundleWarning>');
 jest.mock('./components/EntitlementChangeBanner', () => () => '<EntitlementChangeBanner>');
 jest.mock('./components/SessionEventContainer', () => () => '<SessionEventContainer>');
@@ -19,16 +31,8 @@ jest.mock('./components/MainNav/QueryStateUpdater', () => () => null);
 
 const defaultHistory = createMemoryHistory();
 
-const Harness = ({
-  Router = DefaultRouter,
-  children,
-  history = defaultHistory,
-}) => {
-  return (
-    <Router history={history}>
-      {children}
-    </Router>
-  );
+const Harness = ({ Router = DefaultRouter, children, history = defaultHistory }) => {
+  return <Router history={history}>{children}</Router>;
 };
 
 const store = {
@@ -37,9 +41,9 @@ const store = {
       token: '123',
     },
   }),
-  dispatch: () => { },
-  subscribe: () => { },
-  replaceReducer: () => { },
+  dispatch: () => {},
+  subscribe: () => {},
+  replaceReducer: () => {},
 };
 
 describe('RootWithIntl', () => {
@@ -54,7 +58,11 @@ describe('RootWithIntl', () => {
       plugins: {},
       store,
     });
-    await render(<Harness><RootWithIntl stripes={stripes} history={defaultHistory} isAuthenticated={false} /></Harness>);
+    await render(
+      <Harness>
+        <RootWithIntl stripes={stripes} history={defaultHistory} isAuthenticated={false} />
+      </Harness>,
+    );
 
     expect(screen.getByText(/<AuthnLogin>/)).toBeInTheDocument();
     expect(screen.queryByText(/<MainNav>/)).toBeNull();
@@ -72,7 +80,11 @@ describe('RootWithIntl', () => {
         plugins: {},
         store,
       });
-      await render(<Harness><RootWithIntl stripes={stripes} history={defaultHistory} isAuthenticated /></Harness>);
+      await render(
+        <Harness>
+          <RootWithIntl stripes={stripes} history={defaultHistory} isAuthenticated />
+        </Harness>,
+      );
 
       expect(screen.queryByText(/<AuthnLogin>/)).toBeNull();
       expect(screen.queryByText(/<MainNav>/)).toBeInTheDocument();
@@ -89,7 +101,11 @@ describe('RootWithIntl', () => {
         plugins: {},
         store,
       });
-      await render(<Harness><RootWithIntl stripes={stripes} history={defaultHistory} token /></Harness>);
+      await render(
+        <Harness>
+          <RootWithIntl stripes={stripes} history={defaultHistory} token />
+        </Harness>,
+      );
 
       expect(screen.queryByText(/<AuthnLogin>/)).toBeNull();
       expect(screen.queryByText(/<MainNav>/)).toBeInTheDocument();
@@ -106,7 +122,11 @@ describe('RootWithIntl', () => {
         plugins: {},
         store,
       });
-      await render(<Harness><RootWithIntl stripes={stripes} history={defaultHistory} disableAuth /></Harness>);
+      await render(
+        <Harness>
+          <RootWithIntl stripes={stripes} history={defaultHistory} disableAuth />
+        </Harness>,
+      );
 
       expect(screen.queryByText(/<AuthnLogin>/)).toBeNull();
       expect(screen.queryByText(/<MainNav>/)).toBeInTheDocument();
@@ -125,7 +145,11 @@ describe('RootWithIntl', () => {
         plugins: {},
         store,
       });
-      await render(<Harness><RootWithIntl stripes={stripes} history={defaultHistory} isAuthenticated /></Harness>);
+      await render(
+        <Harness>
+          <RootWithIntl stripes={stripes} history={defaultHistory} isAuthenticated />
+        </Harness>,
+      );
 
       expect(screen.queryByText(/<Login>/)).toBeNull();
       expect(screen.queryByText(/<MainNav>/)).toBeInTheDocument();
@@ -143,7 +167,11 @@ describe('RootWithIntl', () => {
         plugins: {},
         store,
       });
-      await render(<Harness><RootWithIntl stripes={stripes} history={defaultHistory} isAuthenticated /></Harness>);
+      await render(
+        <Harness>
+          <RootWithIntl stripes={stripes} history={defaultHistory} isAuthenticated />
+        </Harness>,
+      );
 
       expect(screen.queryByText(/<Login>/)).toBeNull();
       expect(screen.queryByText(/<MainNav>/)).toBeInTheDocument();
@@ -162,7 +190,11 @@ describe('RootWithIntl', () => {
       plugins: {},
       store,
     });
-    await render(<Harness><RootWithIntl stripes={stripes} history={defaultHistory} isAuthenticated /></Harness>);
+    await render(
+      <Harness>
+        <RootWithIntl stripes={stripes} history={defaultHistory} isAuthenticated />
+      </Harness>,
+    );
 
     expect(screen.getByText(/<StaleBundleWarning>/)).toBeInTheDocument();
   });
@@ -178,7 +210,11 @@ describe('RootWithIntl', () => {
       plugins: {},
       store,
     });
-    await render(<Harness><RootWithIntl stripes={stripes} history={defaultHistory} isAuthenticated /></Harness>);
+    await render(
+      <Harness>
+        <RootWithIntl stripes={stripes} history={defaultHistory} isAuthenticated />
+      </Harness>,
+    );
 
     expect(screen.getByText(/<SessionEventContainer>/)).toBeInTheDocument();
   });

@@ -6,45 +6,47 @@ import setupApplication from '../helpers/setup-application';
 
 class DummyApp extends Component {
   render() {
-    return (<h1>Hello Stripes!</h1>);
+    return <h1>Hello Stripes!</h1>;
   }
 }
 
 const ProfileMenuInteractor = HTML.extend('profile menu')
   .selector('div[class*=DropdownMenu]')
   .filters({
-    itemCount: el => el.querySelectorAll('[data-test-nav-list-item]').length
+    itemCount: (el) => el.querySelectorAll('[data-test-nav-list-item]').length,
   });
 
 describe('Profile dropdown', () => {
   const profileDropdown = DropdownInteractor({ id: 'profileDropdown' });
   const profileMenu = ProfileMenuInteractor();
 
-  const modules = [{
-    type: 'app',
-    name: '@folio/ui-dummy',
-    displayName: 'dummy.title',
-    route: '/dummy',
-    hasSettings: true,
-    module: DummyApp,
-    links: {
-      userDropdown: [
-        {
-          route: '/dummy',
-          caption: 'stripes-core.label.okay'
-        },
-        {
-          route: '/settings/myprofile/password',
-          caption: 'stripes-core.title.changePassword'
-        },
-      ]
-    }
-  }];
+  const modules = [
+    {
+      type: 'app',
+      name: '@folio/ui-dummy',
+      displayName: 'dummy.title',
+      route: '/dummy',
+      hasSettings: true,
+      module: DummyApp,
+      links: {
+        userDropdown: [
+          {
+            route: '/dummy',
+            caption: 'stripes-core.label.okay',
+          },
+          {
+            route: '/settings/myprofile/password',
+            caption: 'stripes-core.title.changePassword',
+          },
+        ],
+      },
+    },
+  ];
 
   setupApplication({
     modules,
     translations: {
-      'dummy.title': 'Dummy'
+      'dummy.title': 'Dummy',
     },
     stripesConfig: {
       showHomeLink: true,
@@ -65,7 +67,7 @@ describe('Profile dropdown', () => {
   describe('opening the dropdown', () => {
     beforeEach(async () => {
       await profileDropdown.exists();
-      await new Promise(resolve => setTimeout(resolve, 150)); // wait for `modules`
+      await new Promise((resolve) => setTimeout(resolve, 150)); // wait for `modules`
       await profileDropdown.toggle();
     });
 

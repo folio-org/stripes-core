@@ -17,31 +17,31 @@ import selectedApp from './selectedApp';
 const AppDropdownInteractor = HTML.extend('app dropdown')
   .selector('[data-test-app-list]')
   .filters({
-    itemCount: el => el.querySelectorAll('[class^=navItem--]').length,
+    itemCount: (el) => el.querySelectorAll('[class^=navItem--]').length,
   })
   .actions({
     focusDropdownTrigger: ({ find }) => find(Bigtest.Button('Apps')).focus(),
-    clickDropdownTrigger: ({ find }) => find(Bigtest.Button('Apps')).click()
+    clickDropdownTrigger: ({ find }) => find(Bigtest.Button('Apps')).click(),
   });
 
 const AppNavMenuItem = HTML.extend('app dropdown item')
   .selector('[data-test-nav-list-item]')
-  .locator(el => el.textContent);
+  .locator((el) => el.textContent);
 
 const AppMenuInteractor = HTML.extend('app menu')
   .selector('[class^=DropdownMenu]')
   .filters({
-    itemCount: el => el.querySelectorAll('[data-test-item-link]').length,
-    focusedIndex: el => {
+    itemCount: (el) => el.querySelectorAll('[data-test-item-link]').length,
+    focusedIndex: (el) => {
       if (!el.querySelector(':focus')) return -1;
       const focused = el.querySelector(':focus');
       return [...focused.parentNode.children].indexOf(focused);
-    }
+    },
   })
   .actions({
     clickItem: async ({ find }, label) => {
       await find(AppNavMenuItem(label)).click();
-    }
+    },
   });
 
 describe('AppList', () => {
@@ -56,7 +56,7 @@ describe('AppList', () => {
           selectedApp={selectedApp}
           dropdownToggleId="app-list-dropdown-toggle"
         />
-      </BrowserRouter>
+      </BrowserRouter>,
     );
   });
 
@@ -68,19 +68,16 @@ describe('AppList', () => {
         // Simulate very small screen
         <div style={{ width: 150, background: 'yellow' }}>
           <BrowserRouter>
-            <AppList
-              apps={apps}
-              selectedApp={selectedApp}
-              dropdownToggleId="xyz"
-            />
+            <AppList apps={apps} selectedApp={selectedApp} dropdownToggleId="xyz" />
           </BrowserRouter>
-        </div>
+        </div>,
       );
       await appsNav.focusDropdownTrigger();
       await appsNav.clickDropdownTrigger();
     });
 
-    it('focuses the corresponding item for the selected app', () => AppMenuInteractor({ focusedIndex: -1 }).absent());
+    it('focuses the corresponding item for the selected app', () =>
+      AppMenuInteractor({ focusedIndex: -1 }).absent());
 
     describe('if the selected app is not present in the list', () => {
       beforeEach(async () => {
@@ -94,7 +91,7 @@ describe('AppList', () => {
                 dropdownToggleId="xyz"
               />
             </BrowserRouter>
-          </div>
+          </div>,
         );
         await appsNav.focusDropdownTrigger();
         await appsNav.clickDropdownTrigger();
@@ -108,12 +105,8 @@ describe('AppList', () => {
     beforeEach(async () => {
       await mountWithContext(
         <BrowserRouter>
-          <AppList
-            apps={[]}
-            selectedApp={{}}
-            dropdownToggleId="xyz"
-          />
-        </BrowserRouter>
+          <AppList apps={[]} selectedApp={{}} dropdownToggleId="xyz" />
+        </BrowserRouter>,
       );
     });
 
@@ -126,12 +119,9 @@ describe('AppList', () => {
         // Simulate very small screen
         <div style={{ width: 150, background: 'yellow' }}>
           <BrowserRouter>
-            <AppList
-              apps={apps}
-              dropdownToggleId="xyz"
-            />
+            <AppList apps={apps} dropdownToggleId="xyz" />
           </BrowserRouter>
-        </div>
+        </div>,
       );
       await appsNav.focusDropdownTrigger();
       await appsNav.clickDropdownTrigger();
@@ -141,14 +131,16 @@ describe('AppList', () => {
 
     it('Should show the apps dropdown on button click', () => appsDropdown.exists());
 
-    it('Should focus the first item in the dropdown if there is no current app', () => appsDropdown.has({ focusedIndex: 0 }));
+    it('Should focus the first item in the dropdown if there is no current app', () =>
+      appsDropdown.has({ focusedIndex: 0 }));
 
     describe('Clicking an item inside the app list dropdown', () => {
       beforeEach(async () => {
         await appsDropdown.clickItem('Inventory');
       });
 
-      it('Should close the app dropdown and focus the dropdown toggle', () => Bigtest.Button('Apps').is({ focused: true }));
+      it('Should close the app dropdown and focus the dropdown toggle', () =>
+        Bigtest.Button('Apps').is({ focused: true }));
     });
   });
 });

@@ -18,4 +18,3 @@ describe('Login via SSO', () => {
     expect(fx).toHaveBeenCalled();
   });
 });
-

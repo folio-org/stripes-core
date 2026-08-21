@@ -13,7 +13,8 @@ const useChunkedCQLFetch = ({
 }) => {
   return useChunkedIdTransformFetch({
     // This is the place to put logic which performs transforms in CQL queries
-    chunkedQueryIdTransform: (chunkedIds) => `?limit=${limit}&query=${idName}==(${chunkedIds.join(' or ')})`,
+    chunkedQueryIdTransform: (chunkedIds) =>
+      `?limit=${limit}&query=${idName}==(${chunkedIds.join(' or ')})`,
     ...props,
   });
 };

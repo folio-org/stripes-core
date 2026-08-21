@@ -8,7 +8,7 @@ import { useStripes } from '../../StripesContext';
 import {
   LOGOUT_MESSAGES,
   getUnauthorizedPathFromSession,
-  setUnauthorizedPathToSession
+  setUnauthorizedPathToSession,
 } from '../../loginServices';
 
 jest.mock('./useLogoutMutation');
@@ -23,11 +23,13 @@ jest.mock('../../loginServices', () => ({
   getLogoutTenant: jest.fn(() => ({ tenantId: 'tenant' })),
 }));
 
-const mockBranding = { branding: { logo: { src: './test.png' }, favicon: { src: './test-icon.png' } } };
+const mockBranding = {
+  branding: { logo: { src: './test.png' }, favicon: { src: './test-icon.png' } },
+};
 
 const mockTimers = {
   sessionTimeoutTimer: { clear: jest.fn(), reset: jest.fn() },
-  sessionTimeoutWarningTimer: { clear: jest.fn(), reset: jest.fn() }
+  sessionTimeoutWarningTimer: { clear: jest.fn(), reset: jest.fn() },
 };
 
 describe('Logout', () => {

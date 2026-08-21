@@ -16,7 +16,7 @@ const defaultOptions = ({ locale, tenant, currentTenant, timeout, defaultTimeout
       (request) => {
         request.headers.set('X-Okapi-Tenant', tenant || currentTenant);
       },
-    ]
+    ],
   },
   mode: 'cors',
   prefixUrl: url,
@@ -57,8 +57,8 @@ export default ({ tenant, timeout, rtrIgnore = false } = {}) => {
           if (token) {
             request.headers.set('X-Okapi-Token', token);
           }
-        }
-      ]
+        },
+      ],
     },
   });
 };
@@ -87,6 +87,6 @@ export const usePublicGatewayKy = ({ tenant, timeout } = {}) => {
     // see /src/components/Root/FFetch.js for additional details.
     fetch: (request, options) => {
       return fetch(request, { ...options, rtrIgnore: true });
-    }
+    },
   });
 };

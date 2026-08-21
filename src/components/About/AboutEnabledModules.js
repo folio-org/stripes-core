@@ -27,7 +27,9 @@ class AboutEnabledModules extends React.Component {
 
   render() {
     const em = {};
-    _.each(this.props.resources.enabledModules?.records || [], (m) => { em[m.id] = true; });
+    _.each(this.props.resources.enabledModules?.records || [], (m) => {
+      em[m.id] = true;
+    });
     const items = Object.keys(this.props.availableModules).sort((a, b) => a.localeCompare(b));
     const itemFormatter = (key) => {
       let style = {};
@@ -37,20 +39,12 @@ class AboutEnabledModules extends React.Component {
 
       return (
         <li key={key} style={style}>
-          {this.props.availableModules[key]}
-          {' '}
-          <tt>{`(${key})`}</tt>
+          {this.props.availableModules[key]} <tt>{`(${key})`}</tt>
         </li>
       );
     };
 
-    return (
-      <List
-        listStyle="bullets"
-        items={items}
-        itemFormatter={itemFormatter}
-      />
-    );
+    return <List listStyle="bullets" items={items} itemFormatter={itemFormatter} />;
   }
 }
 

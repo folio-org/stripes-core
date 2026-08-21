@@ -24,14 +24,15 @@ import { delimiters } from '../../constants';
 // from plugin embedded in app module with `key` option present (e.g. ui-plugin-find-order executing in ui-agreements)
 // const [namespace] = useNamespace({ key: "filters-pane" }); // "@folio/agreements:@folio/plugin-find-order:filters-pane"
 
-
 const useNamespace = (options = {}) => {
   const moduleHierarchy = useModuleHierarchy();
   const getNamespace = (opts = {}) => {
     const { ignoreParents, key } = opts;
     const { NAMESPACE_DELIMITER } = delimiters;
 
-    let namespace = ignoreParents ? moduleHierarchy[moduleHierarchy.length - 1] : moduleHierarchy.join(NAMESPACE_DELIMITER);
+    let namespace = ignoreParents
+      ? moduleHierarchy[moduleHierarchy.length - 1]
+      : moduleHierarchy.join(NAMESPACE_DELIMITER);
 
     if (key) {
       namespace += `${NAMESPACE_DELIMITER}${key}`;

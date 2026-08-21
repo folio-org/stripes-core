@@ -1,8 +1,4 @@
-import {
-  describe,
-  it,
-  beforeEach
-} from 'mocha';
+import { describe, it, beforeEach } from 'mocha';
 
 import { TextField, Bigtest, HTML, including } from '@folio/stripes-testing';
 import setupApplication from '../helpers/setup-core-application';
@@ -10,8 +6,7 @@ import always from '../helpers/always';
 
 import translations from '../../../translations/stripes-core/en';
 
-const ErrorMessage = HTML.extend('message banner')
-  .selector('[data-test-message-banner]');
+const ErrorMessage = HTML.extend('message banner').selector('[data-test-message-banner]');
 
 describe('Login', () => {
   const { Link, Button: LoginButton } = Bigtest;
@@ -39,7 +34,10 @@ describe('Login', () => {
 
     it('submit button should be disabled', loginDisabled);
 
-    it('error message should not be present', always(() => ErrorMessage().absent()));
+    it(
+      'error message should not be present',
+      always(() => ErrorMessage().absent()),
+    );
   });
 
   describe('username insertion', () => {
@@ -49,7 +47,10 @@ describe('Login', () => {
 
     it('submit button should be active', () => loginButton.is({ disabled: false }));
 
-    it('error message should not be present', always(() => ErrorMessage().absent()));
+    it(
+      'error message should not be present',
+      always(() => ErrorMessage().absent()),
+    );
   });
 
   describe('password insertion', () => {
@@ -59,7 +60,10 @@ describe('Login', () => {
 
     it('submit button should be disabled', loginDisabled);
 
-    it('error message should not be present', always(() => ErrorMessage().absent()));
+    it(
+      'error message should not be present',
+      always(() => ErrorMessage().absent()),
+    );
   });
 
   describe('errors', () => {
@@ -71,11 +75,15 @@ describe('Login', () => {
 
       beforeEach(loginAction);
 
-      it('username should not be reset upon failed submit', always(() => usernamefield.has({ value: 'username' })));
+      it(
+        'username should not be reset upon failed submit',
+        always(() => usernamefield.has({ value: 'username' })),
+      );
 
       it('password should be reset upon failed submit', () => passwordfield.has({ value: '' }));
 
-      it('error message should have proper text upon failed submit', () => ErrorMessage(translations['errors.username.incorrect']).exists());
+      it('error message should have proper text upon failed submit', () =>
+        ErrorMessage(translations['errors.username.incorrect']).exists());
     });
 
     describe('error for the wrong password', () => {
@@ -86,11 +94,15 @@ describe('Login', () => {
 
       beforeEach(loginAction);
 
-      it('username should not be reset upon failed submit', always(() => usernamefield.has({ value: 'username' })));
+      it(
+        'username should not be reset upon failed submit',
+        always(() => usernamefield.has({ value: 'username' })),
+      );
 
       it('password should be reset upon failed submit', () => passwordfield.has({ value: '' }));
 
-      it('error message should have proper text upon failed submit', () => ErrorMessage(translations['errors.password.incorrect']).exists());
+      it('error message should have proper text upon failed submit', () =>
+        ErrorMessage(translations['errors.password.incorrect']).exists());
     });
 
     describe('error for the server error', () => {
@@ -101,11 +113,15 @@ describe('Login', () => {
 
       beforeEach(loginAction);
 
-      it('username should not be reset upon failed submit', always(() => usernamefield.has({ value: 'username' })));
+      it(
+        'username should not be reset upon failed submit',
+        always(() => usernamefield.has({ value: 'username' })),
+      );
 
       it('password should be reset upon failed submit', () => passwordfield.has({ value: '' }));
 
-      it('error message should have proper text upon failed submit', () => ErrorMessage(translations['errors.default.server.error']).exists());
+      it('error message should have proper text upon failed submit', () =>
+        ErrorMessage(translations['errors.default.server.error']).exists());
     });
 
     describe('error for the third attempt to enter wrong password', () => {
@@ -116,11 +132,15 @@ describe('Login', () => {
 
       beforeEach(loginAction);
 
-      it('username should not be reset upon failed submit', always(() => usernamefield.has({ value: 'username' })));
+      it(
+        'username should not be reset upon failed submit',
+        always(() => usernamefield.has({ value: 'username' })),
+      );
 
       it('password should be reset upon failed submit', () => passwordfield.has({ value: '' }));
 
-      it('error message should have proper text upon failed submit', () => ErrorMessage(translations['errors.password.incorrect.warn.user']).exists());
+      it('error message should have proper text upon failed submit', () =>
+        ErrorMessage(translations['errors.password.incorrect.warn.user']).exists());
     });
 
     describe('error for the fifth attempt to enter wrong password', () => {
@@ -131,11 +151,15 @@ describe('Login', () => {
 
       beforeEach(loginAction);
 
-      it('username should not be reset upon failed submit', always(() => usernamefield.has({ value: 'username' })));
+      it(
+        'username should not be reset upon failed submit',
+        always(() => usernamefield.has({ value: 'username' })),
+      );
 
       it('password should be reset upon failed submit', () => passwordfield.has({ value: '' }));
 
-      it('error message should have proper text upon failed submit', () => ErrorMessage(translations['errors.password.incorrect.block.user']));
+      it('error message should have proper text upon failed submit', () =>
+        ErrorMessage(translations['errors.password.incorrect.block.user']));
     });
 
     describe('error for the attempt to login to locked account', () => {
@@ -146,11 +170,15 @@ describe('Login', () => {
 
       beforeEach(loginAction);
 
-      it('username should not be reset upon failed submit', always(() => usernamefield.has({ value: 'username' })));
+      it(
+        'username should not be reset upon failed submit',
+        always(() => usernamefield.has({ value: 'username' })),
+      );
 
       it('password should be reset upon failed submit', () => passwordfield.has({ value: '' }));
 
-      it('error message should have proper text upon failed submit', () => ErrorMessage(translations['errors.user.blocked']));
+      it('error message should have proper text upon failed submit', () =>
+        ErrorMessage(translations['errors.user.blocked']));
     });
 
     describe('multiple errors', () => {
@@ -161,14 +189,17 @@ describe('Login', () => {
 
       beforeEach(loginAction);
 
-      it('username should not be reset upon failed submit', always(() => usernamefield.has({ value: 'username' })));
+      it(
+        'username should not be reset upon failed submit',
+        always(() => usernamefield.has({ value: 'username' })),
+      );
 
       it('password should be reset upon failed submit', () => passwordfield.has({ value: '' }));
 
       it('error message should have proper text upon failed submit', () => {
         const res = [
           ErrorMessage(including(translations['errors.user.blocked'])).exists(),
-          ErrorMessage(including(translations['errors.password.incorrect.warn.user'])).exists()
+          ErrorMessage(including(translations['errors.password.incorrect.warn.user'])).exists(),
         ];
         return Promise.all(res);
       });
@@ -182,11 +213,15 @@ describe('Login', () => {
 
       beforeEach(loginAction);
 
-      it('username should not be reset upon failed submit', always(() => usernamefield.has({ value: 'username' })));
+      it(
+        'username should not be reset upon failed submit',
+        always(() => usernamefield.has({ value: 'username' })),
+      );
 
       it('password should be reset upon failed submit', () => passwordfield.has({ value: '' }));
 
-      it('error message should have proper text upon failed submit', () => ErrorMessage(translations['errors.default.error']).exists());
+      it('error message should have proper text upon failed submit', () =>
+        ErrorMessage(translations['errors.default.error']).exists());
     });
 
     describe('with valid credentials', () => {

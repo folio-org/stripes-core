@@ -1,8 +1,5 @@
 import { renderHook, waitFor } from '@folio/jest-config-stripes/testing-library/react';
-import {
-  QueryClient,
-  QueryClientProvider,
-} from 'react-query';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
 import permissions from 'fixtures/permissions';
 import useUserTenantPermissions from './useUserTenantPermissions';
@@ -10,11 +7,11 @@ import useOkapiKy from '../useOkapiKy';
 
 jest.mock('../useOkapiKy');
 jest.mock('../components', () => ({
-  useNamespace: () => ([]),
+  useNamespace: () => [],
 }));
 jest.mock('../StripesContext', () => ({
   useStripes: () => ({
-    hasInterface: () => true
+    hasInterface: () => true,
   }),
 }));
 
@@ -22,9 +19,7 @@ const queryClient = new QueryClient();
 
 // eslint-disable-next-line react/prop-types
 const wrapper = ({ children }) => (
-  <QueryClientProvider client={queryClient}>
-    {children}
-  </QueryClientProvider>
+  <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
 );
 
 const response = {
@@ -38,7 +33,7 @@ describe('useUserTenantPermissions', () => {
   const setHeaderMock = jest.fn();
   const kyMock = {
     extend: jest.fn(({ hooks: { beforeRequest } }) => {
-      beforeRequest.forEach(handler => handler({ headers: { set: setHeaderMock } }));
+      beforeRequest.forEach((handler) => handler({ headers: { set: setHeaderMock } }));
 
       return {
         get: getMock,
@@ -60,6 +55,9 @@ describe('useUserTenantPermissions', () => {
     await waitFor(() => !result.current.isLoading);
 
     expect(setHeaderMock).toHaveBeenCalledWith('X-Okapi-Tenant', options.tenantId);
-    expect(getMock).toHaveBeenCalledWith('users-keycloak/_self?expandPermissions=true', expect.objectContaining({}));
+    expect(getMock).toHaveBeenCalledWith(
+      'users-keycloak/_self?expandPermissions=true',
+      expect.objectContaining({}),
+    );
   });
 });

@@ -1,7 +1,7 @@
 import enhanceReducer from './enhanceReducer';
 
 describe('enhanceReducer', () => {
-  const reducer = (state) => (state);
+  const reducer = (state) => state;
 
   it('provides RESET_STORE', () => {
     let state = {

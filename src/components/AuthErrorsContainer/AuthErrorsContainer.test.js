@@ -7,7 +7,7 @@ describe('AuthErrorsContainer', () => {
     const errors = [
       {
         code: 'monkey',
-        translationNamespace: 'test'
+        translationNamespace: 'test',
       },
     ];
     await render(<AuthErrorsContainer errors={errors} />);

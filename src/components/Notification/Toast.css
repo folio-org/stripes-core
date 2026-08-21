@@ -92,7 +92,7 @@
   }
 }
 
-[dir="rtl"] {
+[dir='rtl'] {
   & .endOutside {
     left: -40%;
     right: auto;

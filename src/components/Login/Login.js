@@ -3,13 +3,7 @@ import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import { Field, Form } from 'react-final-form';
 
-import {
-  TextField,
-  Button,
-  Row,
-  Col,
-  Headline,
-} from '@folio/stripes-components';
+import { TextField, Button, Row, Col, Headline } from '@folio/stripes-components';
 
 import { withStripes } from '../../StripesContext';
 import SSOLogin from '../SSOLogin';
@@ -34,28 +28,20 @@ class Login extends Component {
   };
 
   render() {
-    const {
-      authErrors,
-      handleSSOLogin,
-      ssoActive,
-      stripes,
-      onSubmit,
-    } = this.props;
+    const { authErrors, handleSSOLogin, ssoActive, stripes, onSubmit } = this.props;
 
     const { branding } = stripes;
-    const cookieMessage = navigator.cookieEnabled ?
-      '' :
-      (
-        <Row center="xs">
-          <Col xs={6}>
-            <Headline
-              size="large"
-              tag="h3"
-            >
-              <FormattedMessage id="stripes-core.title.cookieEnabled" />
-            </Headline>
-          </Col>
-        </Row>);
+    const cookieMessage = navigator.cookieEnabled ? (
+      ''
+    ) : (
+      <Row center="xs">
+        <Col xs={6}>
+          <Headline size="large" tag="h3">
+            <FormattedMessage id="stripes-core.title.cookieEnabled" />
+          </Headline>
+        </Col>
+      </Row>
+    );
 
     return (
       <Form
@@ -64,7 +50,7 @@ class Login extends Component {
         render={({ form, submitting, handleSubmit, submitSucceeded, values }) => {
           const { username } = values;
           const submissionStatus = submitting || submitSucceeded;
-          const buttonDisabled = submissionStatus || !(username) || !(navigator.cookieEnabled);
+          const buttonDisabled = submissionStatus || !username || !navigator.cookieEnabled;
           const buttonLabel = submissionStatus ? 'loggingIn' : 'login';
           return (
             <main>
@@ -78,7 +64,9 @@ class Login extends Component {
                   <Row>
                     <form
                       className={styles.form}
-                      onSubmit={data => handleSubmit(data).then(() => form.change('password', undefined))}
+                      onSubmit={(data) =>
+                        handleSubmit(data).then(() => form.change('password', undefined))
+                      }
                     >
                       <Row center="xs">
                         <Col xs={6}>
@@ -89,11 +77,7 @@ class Login extends Component {
                       </Row>
                       <Row center="xs">
                         <Col xs={6}>
-                          <Headline
-                            size="xx-large"
-                            tag="h1"
-                            data-test-h1
-                          >
+                          <Headline size="xx-large" tag="h1" data-test-h1>
                             <FormattedMessage id="stripes-core.title.login" />
                           </Headline>
                         </Col>
@@ -102,10 +86,7 @@ class Login extends Component {
                       <div data-test-new-username-field>
                         <Row center="xs">
                           <Col xs={6}>
-                            <Row
-                              between="xs"
-                              bottom="xs"
-                            >
+                            <Row between="xs" bottom="xs">
                               <Col xs={3}>
                                 <FieldLabel htmlFor="input-username">
                                   <FormattedMessage id="stripes-core.username" />
@@ -136,10 +117,7 @@ class Login extends Component {
                       <div data-test-new-username-field>
                         <Row center="xs">
                           <Col xs={6}>
-                            <Row
-                              between="xs"
-                              bottom="xs"
-                            >
+                            <Row between="xs" bottom="xs">
                               <Col xs={3}>
                                 <FieldLabel htmlFor="input-password">
                                   <FormattedMessage id="stripes-core.password" />
@@ -184,18 +162,10 @@ class Login extends Component {
                           </div>
                         </Col>
                       </Row>
-                      <Row
-                        className={styles.linksWrapper}
-                        center="xs"
-                      >
+                      <Row className={styles.linksWrapper} center="xs">
                         <Col xs={6}>
                           <Row between="xs">
-                            <Col
-                              xs={12}
-                              sm={6}
-                              md={4}
-                              data-test-new-forgot-password-link
-                            >
+                            <Col xs={12} sm={6} md={4} data-test-new-forgot-password-link>
                               <Button
                                 to="/forgot-password"
                                 buttonClass={styles.link}
@@ -205,12 +175,7 @@ class Login extends Component {
                                 <FormattedMessage id="stripes-core.button.forgotPassword" />
                               </Button>
                             </Col>
-                            <Col
-                              xs={12}
-                              sm={6}
-                              md={4}
-                              data-test-new-forgot-username-link
-                            >
+                            <Col xs={12} sm={6} md={4} data-test-new-forgot-username-link>
                               <Button
                                 to="/forgot-username"
                                 buttonClass={styles.link}

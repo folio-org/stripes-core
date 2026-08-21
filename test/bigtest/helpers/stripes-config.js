@@ -5,20 +5,13 @@ const { assign, keys } = Object;
 const originalModules = assign({}, stripes.modules);
 const originalMeta = assign({}, stripes.metadata);
 
-export function withModule({
-  name,
-  module,
-  type = 'app',
-  displayName,
-  fullName,
-  ...config
-}) {
+export function withModule({ name, module, type = 'app', displayName, fullName, ...config }) {
   const moduleConfig = {
     module: name,
     getModule: () => module,
     displayName,
     fullName,
-    ...config
+    ...config,
   };
 
   const moduleMeta = {
@@ -32,7 +25,7 @@ export function withModule({
     defaultPopoverWidth: config.defaultPopoverWidth,
     welcomePageEntries: config.welcomePageEntries,
     helpPage: config.helpPage,
-    icons: config.icons
+    icons: config.icons,
   };
 
   stripes.modules[type] = (stripes.modules[type] || []).concat(moduleConfig);
@@ -45,8 +38,8 @@ export function withModules(modules) {
 
 export function clearModules() {
   // delete existing modules and metadata
-  keys(stripes.modules).forEach(type => {
-    stripes.modules[type].forEach(module => {
+  keys(stripes.modules).forEach((type) => {
+    stripes.modules[type].forEach((module) => {
       delete stripes.metadata[module.module];
     });
 
@@ -66,7 +59,7 @@ export function withConfig(config) {
 
 export function clearConfig() {
   // delete existing config
-  keys(stripes.config).forEach(key => {
+  keys(stripes.config).forEach((key) => {
     delete stripes.config[key];
   });
 
@@ -93,7 +86,9 @@ export function clearAllCookies() {
  */
 export function setCookies(cookies) {
   if (Object.entries(cookies).length > 0) {
-    document.cookie = Object.entries(cookies).map(([key, val]) => (`${key}=${val}`)).join(';');
+    document.cookie = Object.entries(cookies)
+      .map(([key, val]) => `${key}=${val}`)
+      .join(';');
   } else {
     clearAllCookies();
   }
@@ -105,7 +100,7 @@ export function setCookies(cookies) {
  * @arg cookies object: keys and values are both strings
  */
 export function clearCookies(cookies) {
-  Object.keys(cookies).forEach(key => {
+  Object.keys(cookies).forEach((key) => {
     document.cookie = `${key}=;max-age=0`;
   });
 }

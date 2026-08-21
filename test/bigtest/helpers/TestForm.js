@@ -11,7 +11,7 @@ import { reduxForm } from 'redux-form';
 
 class TestForm extends React.Component {
   static propTypes = {
-    children: PropTypes.node.isRequired
+    children: PropTypes.node.isRequired,
   };
 
   render() {
@@ -20,5 +20,5 @@ class TestForm extends React.Component {
 }
 
 export default reduxForm({
-  form: 'formsDemo'
+  form: 'formsDemo',
 })(TestForm);

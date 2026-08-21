@@ -4,11 +4,7 @@ import PropTypes from 'prop-types';
 import createInactivityTimer from 'inactivity-timer';
 import ms from 'ms';
 
-import {
-  LOGOUT_MESSAGES,
-  SESSION_NAME,
-  setUnauthorizedPathToSession
-} from '../../loginServices';
+import { LOGOUT_MESSAGES, SESSION_NAME, setUnauthorizedPathToSession } from '../../loginServices';
 import KeepWorkingModal from './KeepWorkingModal';
 import { useStripes } from '../../StripesContext';
 import {
@@ -16,7 +12,7 @@ import {
   RTR_ERROR_EVENT,
   RTR_FLS_TIMEOUT_EVENT,
   RTR_FLS_WARNING_EVENT,
-  RTR_TIMEOUT_EVENT
+  RTR_TIMEOUT_EVENT,
 } from '../Root/constants';
 import { toggleRtrModal } from '../../okapiActions';
 import FixedLengthSessionWarning from './FixedLengthSessionWarning';
@@ -44,7 +40,7 @@ export const thisWindowRtrIstTimeout = (_e, stripes, history) => {
 // fixed-length session warning in this window: show banner
 export const thisWindowRtrFlsWarning = (e, stripes, setIsFlsVisible, setFlsTimeRemaining) => {
   stripes.logger.log('rtr', 'fixed-length session warning');
-  setFlsTimeRemaining(e.detail.timeRemaining)
+  setFlsTimeRemaining(e.detail.timeRemaining);
   setIsFlsVisible(true);
 };
 
@@ -115,7 +111,6 @@ export const thisWindowActivity = (_e, stripes, timers, broadcastChannel) => {
   }
 };
 
-
 /**
  * SessionEventContainer
  * This component component performs several jobs:
@@ -147,13 +142,15 @@ const SessionEventContainer = ({ history }) => {
   // inactivity timers
   const timers = useRef();
   const stripes = useStripes();
-  const [flsTimeRemaining, setFlsTimeRemaining] = useState(ms(stripes.config.rtr.fixedLengthSessionWarningTTL));
+  const [flsTimeRemaining, setFlsTimeRemaining] = useState(
+    ms(stripes.config.rtr.fixedLengthSessionWarningTTL),
+  );
 
   useEffect(() => {
     let interval;
     if (isFlsVisible) {
       interval = setInterval(() => {
-        setFlsTimeRemaining(i => i - 1000);
+        setFlsTimeRemaining((i) => i - 1000);
       }, 1000);
     }
     return () => clearInterval(interval);
@@ -246,16 +243,16 @@ const SessionEventContainer = ({ history }) => {
     channels.bc.message = (message) => otherWindowActivity(message, stripes, timers, setIsVisible);
 
     // activity in this window: ping idle-timers and BroadcastChannel
-    activityEvents.forEach(eventName => {
+    activityEvents.forEach((eventName) => {
       channels.window[eventName] = (e) => thisWindowActivity(e, stripes, timers, bc);
     });
 
     // fixed-length session: show session-is-ending warning
-    channels.window[RTR_FLS_WARNING_EVENT] = (e) => thisWindowRtrFlsWarning(e, stripes, setIsFlsVisible, setFlsTimeRemaining);
+    channels.window[RTR_FLS_WARNING_EVENT] = (e) =>
+      thisWindowRtrFlsWarning(e, stripes, setIsFlsVisible, setFlsTimeRemaining);
 
     // fixed-length session: terminate session
     channels.window[RTR_FLS_TIMEOUT_EVENT] = (e) => thisWindowRtrFlsTimeout(e, stripes, history);
-
 
     // add listeners
     Object.entries(channels).forEach(([k, channel]) => {
@@ -297,7 +294,12 @@ const SessionEventContainer = ({ history }) => {
 
   // show the fixed-length session warning?
   if (isFlsVisible) {
-    renderList.push(<FixedLengthSessionWarning key="FixedLengthSessionWarning" timeRemainingMillis={flsTimeRemaining} />);
+    renderList.push(
+      <FixedLengthSessionWarning
+        key="FixedLengthSessionWarning"
+        timeRemainingMillis={flsTimeRemaining}
+      />,
+    );
   }
 
   return renderList.length ? createPortal(renderList, document.getElementById(eventsPortal)) : null;

@@ -2,13 +2,7 @@ import PropTypes from 'prop-types';
 import { Field, Form } from 'react-final-form';
 import { FormattedMessage, useIntl } from 'react-intl';
 
-import {
-  Button,
-  Col,
-  Headline,
-  Row,
-  TextField,
-} from '@folio/stripes-components';
+import { Button, Col, Headline, Row, TextField } from '@folio/stripes-components';
 
 import FieldLabel from '../CreateResetPassword/components/FieldLabel';
 
@@ -21,7 +15,9 @@ import styles from '../Login/Login.css';
 const ForgotPasswordForm = ({ errors = [], onSubmit }) => {
   const { branding, okapi } = useStripes();
   const intl = useIntl();
-  const forgotPasswordPlaceholder = intl.formatMessage({ id: 'stripes-core.placeholder.field.forgotPassword' });
+  const forgotPasswordPlaceholder = intl.formatMessage({
+    id: 'stripes-core.placeholder.field.forgotPassword',
+  });
 
   return (
     <Form
@@ -36,18 +32,10 @@ const ForgotPasswordForm = ({ errors = [], onSubmit }) => {
                 </Col>
               </Row>
               <Row>
-                <form
-                  className={styles.form}
-                  data-form="forgot"
-                  onSubmit={handleSubmit}
-                >
+                <form className={styles.form} data-form="forgot" onSubmit={handleSubmit}>
                   <Row center="xs">
                     <Col xs={6}>
-                      <Headline
-                        size="xx-large"
-                        tag="h1"
-                        data-test-h1
-                      >
+                      <Headline size="xx-large" tag="h1" data-test-h1>
                         <FormattedMessage id="stripes-core.label.forgotPassword" />
                       </Headline>
                     </Col>
@@ -56,10 +44,7 @@ const ForgotPasswordForm = ({ errors = [], onSubmit }) => {
                   <div data-test-new-username-field>
                     <Row center="xs">
                       <Col xs={6}>
-                        <Row
-                          between="xs"
-                          bottom="xs"
-                        >
+                        <Row between="xs" bottom="xs">
                           <Col xs={8}>
                             <FieldLabel htmlFor="input-email-or-phone">
                               {forgotPasswordPlaceholder}

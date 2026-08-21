@@ -18,15 +18,10 @@ const propTypes = {
   id: PropTypes.string,
   iconKey: PropTypes.string,
   iconData: PropTypes.object, // Alternative way of passing icon data
-  icon: PropTypes.oneOfType([
-    PropTypes.element,
-  ]),
+  icon: PropTypes.oneOfType([PropTypes.element]),
   innerClassName: PropTypes.string,
   labelClassName: PropTypes.string,
-  badge: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.number,
-  ]),
+  badge: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   onClick: PropTypes.func,
   open: PropTypes.bool,
   selected: PropTypes.bool,
@@ -34,103 +29,112 @@ const propTypes = {
   to: PropTypes.string,
 };
 
-const NavButton = React.forwardRef(({
-  ariaLabel,
-  badge,
-  className,
-  href,
-  icon,
-  iconData,
-  iconKey,
-  id,
-  innerClassName,
-  label,
-  labelClassName,
-  noSelectedBar = false,
-  onClick,
-  open,
-  selected,
-  title,
-  to,
-  ...rest
-}, ref) => {
-  /**
-   * Root classes
-   */
-  const rootClasses = classNames(
-    css.navButton,
-    { [css.selected]: selected },
-    { [css.noSelectedBar]: noSelectedBar },
-    className,
-  );
-
-  /**
-   * Icon
-   */
-  const renderedIcon = (
-    <span className={css.icon}>
-      {icon || (
-        <AppIcon
-          alt=""
-          app={iconKey}
-          icon={iconData}
-          focusable={false}
-          className={css.appIcon}
-        />
-      )}
-    </span>
-  );
-
-  let Element = 'span';
-  let clickableProps = {};
-  const isInteractive = href || onClick || to;
-
-  /**
-   * Is link
-   */
-  if (href) {
-    Element = 'a';
-    clickableProps = {
+const NavButton = React.forwardRef(
+  (
+    {
+      ariaLabel,
+      badge,
+      className,
       href,
-    };
-  }
-
-  /**
-   * Is router link (use react-router link)
-   */
-  if (to) {
-    Element = Link;
-    clickableProps = {
-      to,
-    };
-  }
-
-  /**
-   * Is button (with onClick handler)
-   */
-  if (typeof onClick === 'function') {
-    Element = 'button';
-    clickableProps = {
+      icon,
+      iconData,
+      iconKey,
+      id,
+      innerClassName,
+      label,
+      labelClassName,
+      noSelectedBar = false,
       onClick,
-    };
-  }
+      open,
+      selected,
+      title,
+      to,
+      ...rest
+    },
+    ref,
+  ) => {
+    /**
+     * Root classes
+     */
+    const rootClasses = classNames(
+      css.navButton,
+      { [css.selected]: selected },
+      { [css.noSelectedBar]: noSelectedBar },
+      className,
+    );
 
-  return (
-    <Element ref={ref} id={id} aria-label={ariaLabel || title} className={rootClasses} {...rest} {...clickableProps}>
-      <span className={classNames(css.inner, { [css.isInteractive]: isInteractive }, innerClassName)}>
-        { badge && (<Badge color="red" className={css.badge}>{badge}</Badge>) }
-        { renderedIcon }
-        { label && <span className={classNames(css.label, labelClassName)}>{label}</span>}
-        {typeof open === 'boolean' && (
-          <Icon
-            iconRootClass={css.caretIcon}
-            icon={open ? 'caret-up' : 'caret-down'}
-          />
+    /**
+     * Icon
+     */
+    const renderedIcon = (
+      <span className={css.icon}>
+        {icon || (
+          <AppIcon alt="" app={iconKey} icon={iconData} focusable={false} className={css.appIcon} />
         )}
       </span>
-    </Element>
-  );
-});
+    );
+
+    let Element = 'span';
+    let clickableProps = {};
+    const isInteractive = href || onClick || to;
+
+    /**
+     * Is link
+     */
+    if (href) {
+      Element = 'a';
+      clickableProps = {
+        href,
+      };
+    }
+
+    /**
+     * Is router link (use react-router link)
+     */
+    if (to) {
+      Element = Link;
+      clickableProps = {
+        to,
+      };
+    }
+
+    /**
+     * Is button (with onClick handler)
+     */
+    if (typeof onClick === 'function') {
+      Element = 'button';
+      clickableProps = {
+        onClick,
+      };
+    }
+
+    return (
+      <Element
+        ref={ref}
+        id={id}
+        aria-label={ariaLabel || title}
+        className={rootClasses}
+        {...rest}
+        {...clickableProps}
+      >
+        <span
+          className={classNames(css.inner, { [css.isInteractive]: isInteractive }, innerClassName)}
+        >
+          {badge && (
+            <Badge color="red" className={css.badge}>
+              {badge}
+            </Badge>
+          )}
+          {renderedIcon}
+          {label && <span className={classNames(css.label, labelClassName)}>{label}</span>}
+          {typeof open === 'boolean' && (
+            <Icon iconRootClass={css.caretIcon} icon={open ? 'caret-up' : 'caret-down'} />
+          )}
+        </span>
+      </Element>
+    );
+  },
+);
 
 NavButton.propTypes = propTypes;
 

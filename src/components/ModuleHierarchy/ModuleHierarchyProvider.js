@@ -19,10 +19,7 @@ const ModuleHierarchyProvider = ({ children, module }) => {
 };
 
 ModuleHierarchyProvider.propTypes = {
-  children: PropTypes.oneOfType([
-    PropTypes.node,
-    PropTypes.func,
-  ]).isRequired,
+  children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]).isRequired,
   module: PropTypes.string.isRequired,
 };
 

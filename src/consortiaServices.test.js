@@ -1,7 +1,4 @@
-import {
-  checkIfUserInCentralTenant,
-  checkIfUserInMemberTenant,
-} from './consortiaServices';
+import { checkIfUserInCentralTenant, checkIfUserInMemberTenant } from './consortiaServices';
 
 describe('consortiaServices', () => {
   describe('checkIfUserInCentralTenant', () => {

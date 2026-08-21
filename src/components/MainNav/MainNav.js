@@ -14,18 +14,16 @@ import { useAppOrderContext } from './AppOrderProvider';
 import { useStripes } from '../../StripesContext';
 
 const MainNav = () => {
-  const {
-    apps,
-  } = useAppOrderContext();
+  const { apps } = useAppOrderContext();
   const stripes = useStripes();
   const intl = useIntl();
 
-  const [selectedApp, setSelectedApp] = useState(apps.find(entry => entry.active));
+  const [selectedApp, setSelectedApp] = useState(apps.find((entry) => entry.active));
   const helpUrl = useRef(stripes.config.helpUrl ?? 'https://docs.folio.org').current;
 
   // This logic changes the visible current app at the starting side of the Main Navigation.
   useEffect(() => {
-    setSelectedApp(apps.find(entry => entry.active));
+    setSelectedApp(apps.find((entry) => entry.active));
   }, [apps]);
 
   return (
@@ -34,7 +32,10 @@ const MainNav = () => {
         <SkipLink />
         <CurrentAppGroup selectedApp={selectedApp} config={stripes.config} />
       </div>
-      <nav aria-label={intl.formatMessage({ id: 'stripes-core.mainnav.topLevelLabel' })} className={css.endSection}>
+      <nav
+        aria-label={intl.formatMessage({ id: 'stripes-core.mainnav.topLevelLabel' })}
+        className={css.endSection}
+      >
         <AppList
           apps={apps}
           selectedApp={selectedApp}
@@ -45,10 +46,7 @@ const MainNav = () => {
           aria-label={intl.formatMessage({ id: 'stripes-core.help' })}
           data-test-item-help-button
           href={helpUrl}
-          icon={<Icon
-            icon="question-mark"
-            size="large"
-          />}
+          icon={<Icon icon="question-mark" size="large" />}
           id="helpButton"
           target="_blank"
         />

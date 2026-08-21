@@ -2,13 +2,7 @@ import PropTypes from 'prop-types';
 import { Field, Form } from 'react-final-form';
 import { FormattedMessage, useIntl } from 'react-intl';
 
-import {
-  Button,
-  Col,
-  Headline,
-  Row,
-  TextField,
-} from '@folio/stripes-components';
+import { Button, Col, Headline, Row, TextField } from '@folio/stripes-components';
 
 import { forgotFormErrorCodes } from '../../constants';
 import FieldLabel from '../CreateResetPassword/components/FieldLabel';
@@ -22,7 +16,9 @@ import styles from '../Login/Login.css';
 const ForgotUserNameForm = ({ errors = [], isValid, onSubmit }) => {
   const { branding, okapi } = useStripes();
   const intl = useIntl();
-  const forgotUsernamePlaceholder = intl.formatMessage({ id: 'stripes-core.placeholder.forgotUsername' });
+  const forgotUsernamePlaceholder = intl.formatMessage({
+    id: 'stripes-core.placeholder.forgotUsername',
+  });
 
   return (
     <Form
@@ -37,18 +33,10 @@ const ForgotUserNameForm = ({ errors = [], isValid, onSubmit }) => {
                 </Col>
               </Row>
               <Row>
-                <form
-                  className={styles.form}
-                  data-form="forgot"
-                  onSubmit={handleSubmit}
-                >
+                <form className={styles.form} data-form="forgot" onSubmit={handleSubmit}>
                   <Row center="xs">
                     <Col xs={6}>
-                      <Headline
-                        size="xx-large"
-                        tag="h1"
-                        data-test-h1
-                      >
+                      <Headline size="xx-large" tag="h1" data-test-h1>
                         <FormattedMessage id="stripes-core.label.forgotUsername" />
                       </Headline>
                     </Col>
@@ -57,10 +45,7 @@ const ForgotUserNameForm = ({ errors = [], isValid, onSubmit }) => {
                   <div data-test-new-username-field>
                     <Row center="xs">
                       <Col xs={6}>
-                        <Row
-                          between="xs"
-                          bottom="xs"
-                        >
+                        <Row between="xs" bottom="xs">
                           <Col xs={6}>
                             <FieldLabel htmlFor="input-email-or-phone">
                               {forgotUsernamePlaceholder}
@@ -110,9 +95,8 @@ const ForgotUserNameForm = ({ errors = [], isValid, onSubmit }) => {
                     <Col xs={6}>
                       <div className={styles.authErrorsWrapper}>
                         <AuthErrorsContainer
-                          errors={!isValid
-                            ? [{ code: forgotFormErrorCodes.EMAIL_INVALID }]
-                            : errors
+                          errors={
+                            !isValid ? [{ code: forgotFormErrorCodes.EMAIL_INVALID }] : errors
                           }
                           data-test-container
                         />

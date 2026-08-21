@@ -17,10 +17,12 @@ jest.mock('../../queries/useConfigurations');
 
 describe('entryFor', () => {
   const config = {
-    configs: [{
-      code: 'thunder',
-      value: 'chicken',
-    }]
+    configs: [
+      {
+        code: 'thunder',
+        value: 'chicken',
+      },
+    ],
   };
   it('should find a matching entry', () => {
     expect(entryFor(config, 'thunder')).toBe('chicken');
@@ -45,7 +47,7 @@ describe('installVersion', () => {
   });
 
   it('should prefer conf over stripesConf', () => {
-    const env = { };
+    const env = {};
     const conf = { configs: [{ code: 'version', value: 'conf' }] };
     const stripesConf = { aboutInstallVersion: 'stripes.config' };
 
@@ -53,8 +55,8 @@ describe('installVersion', () => {
   });
 
   it('should find a stripesConf value', () => {
-    const env = { };
-    const conf = { };
+    const env = {};
+    const conf = {};
     const stripesConf = { aboutInstallVersion: 'stripes.config' };
 
     expect(installVersion(env, conf, stripesConf)).toBe(stripesConf.aboutInstallVersion);
@@ -75,7 +77,7 @@ describe('installDate', () => {
   });
 
   it('should prefer conf over stripesConf', () => {
-    const env = { };
+    const env = {};
     const conf = { configs: [{ code: 'date', value: 'conf' }] };
     const stripesConf = { aboutInstallDate: 'stripes.config' };
 
@@ -83,8 +85,8 @@ describe('installDate', () => {
   });
 
   it('should find a stripesConf value', () => {
-    const env = { };
-    const conf = { };
+    const env = {};
+    const conf = {};
     const stripesConf = { aboutInstallDate: 'stripes.config' };
 
     expect(installDate(env, conf, stripesConf)).toBe(stripesConf.aboutInstallDate);
@@ -105,7 +107,7 @@ describe('installMessage', () => {
   });
 
   it('should prefer conf over stripesConf', () => {
-    const env = { };
+    const env = {};
     const conf = { configs: [{ code: 'message', value: 'conf' }] };
     const stripesConf = { aboutInstallMessage: 'stripes.config' };
 
@@ -113,8 +115,8 @@ describe('installMessage', () => {
   });
 
   it('should find a stripesConf value', () => {
-    const env = { };
-    const conf = { };
+    const env = {};
+    const conf = {};
     const stripesConf = { aboutInstallMessage: 'stripes.config' };
 
     expect(installMessage(env, conf, stripesConf)).toBe(stripesConf.aboutInstallMessage);
@@ -132,8 +134,8 @@ describe('AboutInstallMessages', () => {
       data: {
         ABOUT_INSTALL_VERSION: '1.2.3',
         ABOUT_INSTALL_DATE: '2022-08-01T13:25:00Z',
-        ABOUT_INSTALL_MESSAGE: 'Don\'t pussyfoot the thunder chicken',
-      }
+        ABOUT_INSTALL_MESSAGE: "Don't pussyfoot the thunder chicken",
+      },
     });
 
     const mockUseConfigurations = useConfigurations;
@@ -141,8 +143,8 @@ describe('AboutInstallMessages', () => {
       data: {
         configs: [
           // { code: 'version', value: 'monkey' },
-        ]
-      }
+        ],
+      },
     });
 
     const stripes = {
@@ -154,10 +156,9 @@ describe('AboutInstallMessages', () => {
     render(
       <Harness history={history} stripes={stripes}>
         <AboutInstallMessages stripes={stripes} />
-      </Harness>
+      </Harness>,
     );
   });
-
 
   it('finds a version', () => {
     expect(screen.getByText(/1\.2\.3/)).toBeInTheDocument();
@@ -178,8 +179,8 @@ describe('finds conditional fields', () => {
     mockUseOkapiEnv.mockReturnValue({
       data: {
         ABOUT_INSTALL_DATE: '2022-08-01T13:25:00Z',
-        ABOUT_INSTALL_MESSAGE: 'Don\'t pussyfoot the thunder chicken',
-      }
+        ABOUT_INSTALL_MESSAGE: "Don't pussyfoot the thunder chicken",
+      },
     });
 
     const mockUseConfigurations = useConfigurations;
@@ -187,8 +188,8 @@ describe('finds conditional fields', () => {
       data: {
         configs: [
           // { code: 'version', value: 'monkey' },
-        ]
-      }
+        ],
+      },
     });
 
     const stripes = {
@@ -200,7 +201,7 @@ describe('finds conditional fields', () => {
     render(
       <Harness history={history} stripes={stripes}>
         <AboutInstallMessages stripes={stripes} />
-      </Harness>
+      </Harness>,
     );
 
     expect(screen.getByText(/2022/)).toBeInTheDocument();
@@ -213,7 +214,7 @@ describe('finds conditional fields', () => {
     mockUseOkapiEnv.mockReturnValue({
       data: {
         ABOUT_INSTALL_VERSION: '1.2.3',
-      }
+      },
     });
 
     const mockUseConfigurations = useConfigurations;
@@ -221,8 +222,8 @@ describe('finds conditional fields', () => {
       data: {
         configs: [
           // { code: 'version', value: 'monkey' },
-        ]
-      }
+        ],
+      },
     });
 
     const stripes = {
@@ -234,7 +235,7 @@ describe('finds conditional fields', () => {
     render(
       <Harness history={history} stripes={stripes}>
         <AboutInstallMessages stripes={stripes} />
-      </Harness>
+      </Harness>,
     );
 
     expect(screen.getByText(/1\.2\.3/)).toBeInTheDocument();

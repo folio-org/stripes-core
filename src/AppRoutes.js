@@ -17,71 +17,99 @@ import events from './events';
 const AppRoutes = ({ modules, stripes }) => {
   // cache app modules
   const cachedModules = useMemo(() => {
-    return modules.app.map(module => {
-      const name = module.module.replace(packageName.PACKAGE_SCOPE_REGEX, '');
-      const displayName = module.displayName;
-      const perm = `module.${name}.enabled`;
-      if (!stripes.hasPerm(perm)) return null;
+    return modules.app
+      .map((module) => {
+        const name = module.module.replace(packageName.PACKAGE_SCOPE_REGEX, '');
+        const displayName = module.displayName;
+        const perm = `module.${name}.enabled`;
+        if (!stripes.hasPerm(perm)) return null;
 
-      const connect = connectFor(module.module, stripes.epics, stripes.logger);
+        const connect = connectFor(module.module, stripes.epics, stripes.logger);
 
-      let ModuleComponent;
-      try {
-        ModuleComponent = connect(module.getModule());
-      } catch (error) {
-        console.error(error); // eslint-disable-line
-        throw new Error(error);
-      }
-
-      const moduleStripes = stripes.clone({ connect });
-
-      return {
-        ModuleComponent,
-        moduleStripes,
-        displayName,
-        name,
-        module,
-        stripes,
-        connect,
-      };
-    }).filter(x => x);
-  }, [modules.app, stripes]);
-
-  return cachedModules.map(({ ModuleComponent, connect, module, name, moduleStripes, stripes: propsStripes, displayName }) => (
-    <Route
-      path={module.route}
-      key={module.route}
-      render={props => {
-        const data = { displayName, name };
-
-        // allow SELECT_MODULE handlers to intervene
-        const handlerComponents = invokeEventHandlers(events.SELECT_MODULE, moduleStripes, modules.handler, data);
-        if (handlerComponents.length) {
-          return handlerComponents.map(Handler => (<Handler stripes={propsStripes} data={data} />));
+        let ModuleComponent;
+        try {
+          ModuleComponent = connect(module.getModule());
+        } catch (error) {
+          console.error(error); // eslint-disable-line
+          throw new Error(error);
         }
 
-        return (
-          <StripesContext.Provider value={moduleStripes}>
-            <ModuleHierarchyProvider module={module.module}>
-              <div id={`${name}-module-display`} data-module={module.module} data-version={module.version}>
-                <RouteErrorBoundary
-                  escapeRoute={module.home ?? module.route}
-                  moduleName={displayName}
-                  stripes={moduleStripes}
+        const moduleStripes = stripes.clone({ connect });
+
+        return {
+          ModuleComponent,
+          moduleStripes,
+          displayName,
+          name,
+          module,
+          stripes,
+          connect,
+        };
+      })
+      .filter((x) => x);
+  }, [modules.app, stripes]);
+
+  return cachedModules.map(
+    ({
+      ModuleComponent,
+      connect,
+      module,
+      name,
+      moduleStripes,
+      stripes: propsStripes,
+      displayName,
+    }) => (
+      <Route
+        path={module.route}
+        key={module.route}
+        render={(props) => {
+          const data = { displayName, name };
+
+          // allow SELECT_MODULE handlers to intervene
+          const handlerComponents = invokeEventHandlers(
+            events.SELECT_MODULE,
+            moduleStripes,
+            modules.handler,
+            data,
+          );
+          if (handlerComponents.length) {
+            return handlerComponents.map((Handler) => (
+              <Handler key={Handler.module.module} stripes={propsStripes} data={data} />
+            ));
+          }
+
+          return (
+            <StripesContext.Provider value={moduleStripes}>
+              <ModuleHierarchyProvider module={module.module}>
+                <div
+                  id={`${name}-module-display`}
+                  data-module={module.module}
+                  data-version={module.version}
                 >
-                  <TitleManager page={displayName}>
-                    <Suspense fallback={<LoadingView />}>
-                      <ModuleComponent {...props} connect={connect} stripes={moduleStripes} actAs="app" />
-                    </Suspense>
-                  </TitleManager>
-                </RouteErrorBoundary>
-              </div>
-            </ModuleHierarchyProvider>
-          </StripesContext.Provider>
-        );
-      }}
-    />
-  ));
+                  <RouteErrorBoundary
+                    escapeRoute={module.home ?? module.route}
+                    moduleName={displayName}
+                    stripes={moduleStripes}
+                  >
+                    <TitleManager page={displayName}>
+                      <Suspense fallback={<LoadingView />}>
+                        <ModuleComponent
+                          {...props}
+                          connect={connect}
+                          stripes={moduleStripes}
+                          actAs="app"
+                        />
+                      </Suspense>
+                    </TitleManager>
+                  </RouteErrorBoundary>
+                </div>
+              </ModuleHierarchyProvider>
+            </StripesContext.Provider>
+          );
+        }}
+      />
+    ),
+  );
 };
 
 AppRoutes.propTypes = {

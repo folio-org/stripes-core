@@ -6,7 +6,7 @@ import queryString from 'query-string';
 import { useStripes } from '../StripesContext';
 import {
   getUnauthorizedPathFromSession,
-  removeUnauthorizedPathFromSession
+  removeUnauthorizedPathFromSession,
 } from '../loginServices';
 
 /**
@@ -63,9 +63,7 @@ const OIDCRedirect = () => {
     return params?.fwd ?? '';
   };
 
-  return (
-    <Redirect to={getUrl()} />
-  );
+  return <Redirect to={getUrl()} />;
 };
 
 export default withRouter(OIDCRedirect);

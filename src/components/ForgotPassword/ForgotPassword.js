@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
-import {
-  Redirect,
-} from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 
 import processBadResponse from '../../processBadResponse';
 import { defaultErrors } from '../../constants';
@@ -23,7 +21,11 @@ const ForgotPassword = () => {
       await sendReminderMutation.mutateAsync(userInput);
       setUserEmail(userInput);
     } catch (error) {
-      const res = await processBadResponse(undefined, error.response, FORGOTTEN_PASSWORD_CLIENT_ERROR);
+      const res = await processBadResponse(
+        undefined,
+        error.response,
+        FORGOTTEN_PASSWORD_CLIENT_ERROR,
+      );
       setAuthFailure(res);
     }
   };
@@ -32,12 +34,7 @@ const ForgotPassword = () => {
     return <Redirect to={{ pathname: '/check-email', state: { userEmail } }} />;
   }
 
-  return (
-    <ForgotPasswordForm
-      errors={authFailure}
-      onSubmit={onSubmit}
-    />
-  );
+  return <ForgotPasswordForm errors={authFailure} onSubmit={onSubmit} />;
 };
 
 export default ForgotPassword;

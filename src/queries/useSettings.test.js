@@ -44,7 +44,7 @@ describe('useSettings', () => {
 
       const { result } = renderHook(
         () => useSettings({ scope: 'testScope', key: 'testKey', userId: 'user-123' }),
-        { wrapper: Harness }
+        { wrapper: Harness },
       );
 
       await act(() => !result.current.isLoading);
@@ -52,7 +52,7 @@ describe('useSettings', () => {
       expect(mockGetPreference).toHaveBeenCalledWith({
         scope: 'testScope',
         key: 'testKey',
-        userId: 'user-123'
+        userId: 'user-123',
       });
       expect(mockGetTenantPreference).not.toHaveBeenCalled();
       expect(result.current.settings).toEqual(userPreference);
@@ -63,7 +63,7 @@ describe('useSettings', () => {
 
       const { result } = renderHook(
         () => useSettings({ scope: 'testScope', key: 'testKey', userId: 'user-123' }),
-        { wrapper: Harness }
+        { wrapper: Harness },
       );
 
       await act(() => result.current.updateSetting(newSettings));
@@ -71,7 +71,7 @@ describe('useSettings', () => {
       expect(mockSetPreference).toHaveBeenCalledWith({
         scope: 'testScope',
         key: 'testKey',
-        value: newSettings
+        value: newSettings,
       });
       expect(mockSetTenantPreference).not.toHaveBeenCalled();
     });
@@ -79,14 +79,14 @@ describe('useSettings', () => {
     it('should remove user preferences', async () => {
       const { result } = renderHook(
         () => useSettings({ scope: 'testScope', key: 'testKey', userId: 'user-123' }),
-        { wrapper: Harness }
+        { wrapper: Harness },
       );
 
       await act(() => result.current.removeSetting());
 
       expect(mockRemovePreference).toHaveBeenCalledWith({
         scope: 'testScope',
-        key: 'testKey'
+        key: 'testKey',
       });
       expect(mockRemoveTenantPreference).not.toHaveBeenCalled();
     });
@@ -98,16 +98,15 @@ describe('useSettings', () => {
 
       mockGetTenantPreference.mockResolvedValue(tenantPreference);
 
-      const { result } = renderHook(
-        () => useSettings({ scope: 'testScope', key: 'testKey' }),
-        { wrapper: Harness }
-      );
+      const { result } = renderHook(() => useSettings({ scope: 'testScope', key: 'testKey' }), {
+        wrapper: Harness,
+      });
 
       await act(() => !result.current.isLoading);
 
       expect(mockGetTenantPreference).toHaveBeenCalledWith({
         scope: 'testScope',
-        key: 'testKey'
+        key: 'testKey',
       });
       expect(mockGetPreference).not.toHaveBeenCalled();
       expect(result.current.settings).toEqual(tenantPreference);
@@ -116,32 +115,30 @@ describe('useSettings', () => {
     it('should update tenant preferences', async () => {
       const newSettings = { locale: 'en' };
 
-      const { result } = renderHook(
-        () => useSettings({ scope: 'testScope', key: 'testKey' }),
-        { wrapper: Harness }
-      );
+      const { result } = renderHook(() => useSettings({ scope: 'testScope', key: 'testKey' }), {
+        wrapper: Harness,
+      });
 
       await act(() => result.current.updateSetting(newSettings));
 
       expect(mockSetTenantPreference).toHaveBeenCalledWith({
         scope: 'testScope',
         key: 'testKey',
-        value: newSettings
+        value: newSettings,
       });
       expect(mockSetPreference).not.toHaveBeenCalled();
     });
 
     it('should remove tenant preferences', async () => {
-      const { result } = renderHook(
-        () => useSettings({ scope: 'testScope', key: 'testKey' }),
-        { wrapper: Harness }
-      );
+      const { result } = renderHook(() => useSettings({ scope: 'testScope', key: 'testKey' }), {
+        wrapper: Harness,
+      });
 
       await act(() => result.current.removeSetting());
 
       expect(mockRemoveTenantPreference).toHaveBeenCalledWith({
         scope: 'testScope',
-        key: 'testKey'
+        key: 'testKey',
       });
       expect(mockRemovePreference).not.toHaveBeenCalled();
     });

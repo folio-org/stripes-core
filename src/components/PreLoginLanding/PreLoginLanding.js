@@ -15,12 +15,15 @@ export function sortedTenantOptions(tenantOptions) {
       const bComparable = b.sortableName || b.displayName || b.name;
       return aComparable.localeCompare(bComparable);
     })
-    .map(i => ({ value: i.name, label: i.displayName ?? i.name }));
+    .map((i) => ({ value: i.name, label: i.displayName ?? i.name }));
 }
 
 function PreLoginLanding({ onSelectTenant }) {
   const intl = useIntl();
-  const { okapi, config: { tenantOptions = {} } } = useStripes();
+  const {
+    okapi,
+    config: { tenantOptions = {} },
+  } = useStripes();
 
   const redirectUri = getOIDCRedirectUri(okapi.tenant, okapi.clientId);
   const options = sortedTenantOptions(tenantOptions);
@@ -61,7 +64,10 @@ function PreLoginLanding({ onSelectTenant }) {
                 label={intl.formatMessage({ id: 'stripes-core.tenantLibrary' })}
                 defaultValue=""
                 onChange={handleChangeTenant}
-                dataOptions={[...options, { value: '', label: intl.formatMessage({ id: 'stripes-core.tenantChoose' }) }]}
+                dataOptions={[
+                  ...options,
+                  { value: '', label: intl.formatMessage({ id: 'stripes-core.tenantChoose' }) },
+                ]}
               />
               <Button
                 buttonClass={styles.submitButton}

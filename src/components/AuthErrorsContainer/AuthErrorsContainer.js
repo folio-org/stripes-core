@@ -23,10 +23,7 @@ const AuthErrorsContainer = ({ errors }) => {
 
     return (
       <li key={`${code}-${type}`}>
-        <FormattedMessage
-          id={`${translationNamespace}.${code}`}
-          values={values}
-        />
+        <FormattedMessage id={`${translationNamespace}.${code}`} values={values} />
       </li>
     );
   };
@@ -38,11 +35,7 @@ const AuthErrorsContainer = ({ errors }) => {
       aria-live="assertive"
       className={styles.AuthErrorsContainer}
     >
-      { hasErrors && (
-        <ul>
-          {errors.map(getErrorMessage)}
-        </ul>
-      )}
+      {hasErrors && <ul>{errors.map(getErrorMessage)}</ul>}
     </MessageBanner>
   );
 };

@@ -15,13 +15,15 @@ import css from './AuthenticatedError.css';
  * @returns
  */
 const AuthenticatedError = ({ location }) => {
-  let message = <FormattedMessage
-    id="stripes-core.front.error.general.message"
-    values={{
-      url: location.pathname,
-      br: <br />,
-    }}
-  />;
+  let message = (
+    <FormattedMessage
+      id="stripes-core.front.error.general.message"
+      values={{
+        url: location.pathname,
+        br: <br />,
+      }}
+    />
+  );
 
   // reset-password _is_ a valid route, but not for an authenticated user.
   // if that's the route, show a special error message. otherwise, show
@@ -33,20 +35,10 @@ const AuthenticatedError = ({ location }) => {
   return (
     <Pluggable type="frontpage">
       <div className={css.titleWrap}>
-        <Headline
-          faded
-          tag="h1"
-          margin="none"
-          className={css.title}
-        >
+        <Headline faded tag="h1" margin="none" className={css.title}>
           <FormattedMessage id="stripes-core.front.error.header" />
         </Headline>
-        <Headline
-          faded
-          tag="h3"
-          margin="none"
-          className={css.title}
-        >
+        <Headline faded tag="h3" margin="none" className={css.title}>
           {message}
         </Headline>
       </div>
@@ -57,7 +49,7 @@ const AuthenticatedError = ({ location }) => {
 AuthenticatedError.propTypes = {
   location: PropTypes.shape({
     pathname: PropTypes.string,
-  })
+  }),
 };
 
 export default AuthenticatedError;

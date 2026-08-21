@@ -21,13 +21,13 @@ describe('Stripes', () => {
     describe('returns truthy', () => {
       it('when the interface is present and the query does not contain a version [boolean, true]', () => {
         const logger = { log: jest.fn() };
-        const s = new Stripes({ logger, discovery: { interfaces: { 'monkey': '3.0' } } });
+        const s = new Stripes({ logger, discovery: { interfaces: { monkey: '3.0' } } });
         expect(s.hasInterface('monkey')).toBe(true);
       });
 
       it('when the interface is present and compatible with the requested version [string, available interface]', () => {
         const logger = { log: jest.fn() };
-        const s = new Stripes({ logger, discovery: { interfaces: { 'monkey': '3.0' } } });
+        const s = new Stripes({ logger, discovery: { interfaces: { monkey: '3.0' } } });
         expect(s.hasInterface('monkey', '3.0')).toBe('3.0');
       });
     });
@@ -35,7 +35,7 @@ describe('Stripes', () => {
     describe('returns falsy', () => {
       it('when the interface is present but incompatible with the requested version [number, 0]', () => {
         const logger = { log: jest.fn() };
-        const s = new Stripes({ logger, discovery: { interfaces: { 'monkey': '3.0' } } });
+        const s = new Stripes({ logger, discovery: { interfaces: { monkey: '3.0' } } });
         expect(s.hasInterface('monkey', '4.0')).toBe(0);
       });
 
@@ -53,7 +53,7 @@ describe('Stripes', () => {
 
       it('when the requested interface is absent [undefined]', () => {
         const logger = { log: jest.fn() };
-        const s = new Stripes({ logger, discovery: { interfaces: { 'funky': '3.0' } } });
+        const s = new Stripes({ logger, discovery: { interfaces: { funky: '3.0' } } });
         expect(s.hasInterface('monkey')).toBeUndefined();
       });
     });
@@ -73,9 +73,12 @@ describe('Stripes', () => {
           logger,
           user: {
             perms: {
-              'monkey': true, 'bagel': true, 'funky': true, 'chicken': true
-            }
-          }
+              monkey: true,
+              bagel: true,
+              funky: true,
+              chicken: true,
+            },
+          },
         });
         expect(s.hasPerm('monkey,bagel')).toBe(true);
       });
@@ -87,8 +90,8 @@ describe('Stripes', () => {
         const s = new Stripes({
           logger,
           user: {
-            perms: { 'monkey': true, 'bagel': true }
-          }
+            perms: { monkey: true, bagel: true },
+          },
         });
         expect(s.hasPerm('monkey,funky')).toBe(false);
       });
@@ -115,9 +118,11 @@ describe('Stripes', () => {
           logger,
           user: {
             perms: {
-              'monkey': true, 'funky': true, 'chicken': true
-            }
-          }
+              monkey: true,
+              funky: true,
+              chicken: true,
+            },
+          },
         });
         expect(s.hasAnyPerm('monkey,bagel')).toBe(true);
       });
@@ -129,8 +134,8 @@ describe('Stripes', () => {
         const s = new Stripes({
           logger,
           user: {
-            perms: { 'bagel': true }
-          }
+            perms: { bagel: true },
+          },
         });
         expect(s.hasAnyPerm('monkey,funky')).toBe(false);
       });

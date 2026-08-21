@@ -6,8 +6,8 @@ import { withStripes } from '../../../src/StripesContext';
 export default function connectStripes(component) {
   const propTypes = {
     stripes: PropTypes.shape({
-      connect: PropTypes.func
-    })
+      connect: PropTypes.func,
+    }),
   };
 
   class Connected extends Component {

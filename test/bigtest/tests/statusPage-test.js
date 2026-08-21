@@ -10,7 +10,7 @@ describe('Forgot username/password status test', () => {
   beforeEach(function () {
     this.visit({
       pathname: '/check-email',
-      state: { userEmail: '127-699-8925' }
+      state: { userEmail: '127-699-8925' },
     });
   });
 
@@ -25,11 +25,11 @@ describe('Forgot username/password status test', () => {
     });
 
     it(`should have the paragraph with an appropriate text content
-      equal to sent email precautions label in english translation`,
-    () => statusPage.has({ notificationText: translations['label.your.email'] }));
+      equal to sent email precautions label in english translation`, () =>
+      statusPage.has({ notificationText: translations['label.your.email'] }));
 
     it(`should have the paragraph with an appropriate text content
-      equal to check email precautions label in english translation`,
-    () => statusPage.has({ cautionText: translations['label.caution.email'] }));
+      equal to check email precautions label in english translation`, () =>
+      statusPage.has({ cautionText: translations['label.caution.email'] }));
   });
 });

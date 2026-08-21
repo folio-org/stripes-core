@@ -4,137 +4,96 @@ import useModuleInfo from './useModuleInfo';
 
 const interfaceProviders = [
   {
-    'id': 'mod-users-19.4.5-SNAPSHOT.330',
-    'name': 'users',
-    'provides': [
+    id: 'mod-users-19.4.5-SNAPSHOT.330',
+    name: 'users',
+    provides: [
       {
-        'id': 'users',
-        'version': '16.3',
-        'handlers': [
+        id: 'users',
+        version: '16.3',
+        handlers: [
           {
-            'methods': [
-              'GET'
-            ],
-            'pathPattern': '/users',
-            'permissionsRequired': [
-              'users.collection.get'
-            ],
-            'permissionsDesired': [
-              'users.basic-read.execute',
-              'users.restricted-read.execute'
-            ]
+            methods: ['GET'],
+            pathPattern: '/users',
+            permissionsRequired: ['users.collection.get'],
+            permissionsDesired: ['users.basic-read.execute', 'users.restricted-read.execute'],
           },
           {
-            'methods': [
-              'GET'
-            ],
-            'pathPattern': '/users/{id}',
-            'permissionsRequired': [
-              'users.item.get'
-            ],
-            'permissionsDesired': [
-              'users.basic-read.execute',
-              'users.restricted-read.execute'
-            ]
+            methods: ['GET'],
+            pathPattern: '/users/{id}',
+            permissionsRequired: ['users.item.get'],
+            permissionsDesired: ['users.basic-read.execute', 'users.restricted-read.execute'],
           },
           {
-            'methods': [
-              'POST'
-            ],
-            'pathPattern': '/users',
-            'permissionsRequired': [
-              'users.item.post'
-            ]
+            methods: ['POST'],
+            pathPattern: '/users',
+            permissionsRequired: ['users.item.post'],
           },
           {
-            'methods': [
-              'GET'
-            ],
-            'pathPattern': '/users/profile-picture/{id}',
-            'permissionsRequired': [
-              'users.profile-picture.item.get'
-            ]
+            methods: ['GET'],
+            pathPattern: '/users/profile-picture/{id}',
+            permissionsRequired: ['users.profile-picture.item.get'],
           },
-        ]
-      }
-    ]
+        ],
+      },
+    ],
   },
   {
-    'id': 'mod-circulation-24.4.0',
-    'name': 'Circulation Module',
-    'provides': [
+    id: 'mod-circulation-24.4.0',
+    name: 'Circulation Module',
+    provides: [
       {
-        'id': 'requests-reports',
-        'version': '0.8',
-        'handlers': [
+        id: 'requests-reports',
+        version: '0.8',
+        handlers: [
           {
-            'methods': [
-              'GET'
-            ],
-            'pathPattern': '/circulation/requests-reports/hold-shelf-clearance/{id}',
-            'permissionsRequired': [
-              'circulation.requests.hold-shelf-clearance-report.get'
-            ],
-            'modulePermissions': [
-              'modperms.circulation.requests.hold-shelf-clearance-report.get'
-            ]
-          }
-        ]
+            methods: ['GET'],
+            pathPattern: '/circulation/requests-reports/hold-shelf-clearance/{id}',
+            permissionsRequired: ['circulation.requests.hold-shelf-clearance-report.get'],
+            modulePermissions: ['modperms.circulation.requests.hold-shelf-clearance-report.get'],
+          },
+        ],
       },
       {
-        'id': 'inventory-reports',
-        'version': '0.4',
-        'handlers': [
+        id: 'inventory-reports',
+        version: '0.4',
+        handlers: [
           {
-            'methods': [
-              'GET'
-            ],
-            'pathPattern': '/inventory-reports/items-in-transit',
-            'permissionsRequired': [
-              'circulation.inventory.items-in-transit-report.get'
-            ],
-            'modulePermissions': [
-              'modperms.inventory.items-in-transit-report.get'
-            ]
-          }
-        ]
+            methods: ['GET'],
+            pathPattern: '/inventory-reports/items-in-transit',
+            permissionsRequired: ['circulation.inventory.items-in-transit-report.get'],
+            modulePermissions: ['modperms.inventory.items-in-transit-report.get'],
+          },
+        ],
       },
       {
-        'id': 'pick-slips',
-        'version': '0.4',
-        'handlers': [
+        id: 'pick-slips',
+        version: '0.4',
+        handlers: [
           {
-            'methods': [
-              'GET'
-            ],
-            'pathPattern': '/circulation/pick-slips/{servicePointId}',
-            'permissionsRequired': [
-              'circulation.pick-slips.get'
-            ],
-            'modulePermissions': [
-              'modperms.circulation.pick-slips.get'
-            ]
-          }
-        ]
-      }
+            methods: ['GET'],
+            pathPattern: '/circulation/pick-slips/{servicePointId}',
+            permissionsRequired: ['circulation.pick-slips.get'],
+            modulePermissions: ['modperms.circulation.pick-slips.get'],
+          },
+        ],
+      },
     ],
-  }
+  },
 ];
 
 jest.mock('../components', () => ({
-  useNamespace: () => ([]),
+  useNamespace: () => [],
 }));
 jest.mock('../StripesContext', () => ({
   useStripes: () => ({
     okapi: {
       tenant: 't',
     },
-    discovery : {
+    discovery: {
       interfaceProviders,
-    }
+    },
   }),
 }));
-
 
 describe('useModuleInfo', () => {
   describe('returns the module-name that provides the interface containing a given path', () => {

@@ -6,8 +6,8 @@ import { stripesShape } from './Stripes';
 export default function stripesConnect(WrappedComponent, options) {
   class ConnectedComponent extends Component {
     static propTypes = {
-      stripes: stripesShape.isRequired
-    }
+      stripes: stripesShape.isRequired,
+    };
 
     constructor(props) {
       super(props);

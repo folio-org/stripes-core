@@ -2,7 +2,7 @@
  * My profile
  */
 
-@import "@folio/stripes-components/lib/variables.css";
+@import '@folio/stripes-components/lib/variables.css';
 
 /* Logged in as */
 .header {

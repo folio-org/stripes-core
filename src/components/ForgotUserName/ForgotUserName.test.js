@@ -13,13 +13,18 @@ jest.mock('../../StripesContext', () => ({
     config: {
       tenantOptions: {
         bertha: { name: 'bertha', displayName: 'Big Bertha' },
-      }
-    }
-  })
+      },
+    },
+  }),
 }));
 
 jest.mock('../OrganizationLogo', () => () => 'OrganizationLogo');
-jest.mock('../AuthErrorsContainer', () => ({ errors = [] }) => errors[0]?.code);
+jest.mock(
+  '../AuthErrorsContainer',
+  () =>
+    ({ errors = [] }) =>
+      errors[0]?.code,
+);
 jest.mock('react-router-dom', () => ({
   Redirect: () => '<Redirect />',
 }));
@@ -31,9 +36,7 @@ jest.mock('@folio/stripes-components', () => ({
   Button: jest.fn(({ children, disabled, onClick = jest.fn() }) => {
     return (
       <button data-test-button onClick={onClick} disabled={disabled} type="submit">
-        <span>
-          {children}
-        </span>
+        <span>{children}</span>
       </button>
     );
   }),
@@ -63,9 +66,7 @@ describe('ForgotUserNameForm', () => {
   });
 
   it('passes errors through to AuthErrorsContainer', () => {
-    const errors = [
-      { message: 'this is an error message!', code: 'code', type: 'type' }
-    ];
+    const errors = [{ message: 'this is an error message!', code: 'code', type: 'type' }];
 
     render(<ForgotUserNameForm errors={errors} onSubmit={jest.fn()} isValid />);
     expect(screen.getByText(errors[0].code));
@@ -120,14 +121,17 @@ describe('ForgotUserName', () => {
 
     const mockUseForgotUsernameMutation = useForgotUsernameMutation;
     mockUseForgotUsernameMutation.mockReturnValue({
-      mutateAsync: () => Promise.reject({ // eslint-disable-line prefer-promise-reject-errors
-        response: {
-          json: () => Promise.resolve({
-            errorMessage: 'some error',
-          }),
-          status: 400,
-        }
-      }),
+      mutateAsync: () =>
+        Promise.reject({
+          // eslint-disable-line prefer-promise-reject-errors
+          response: {
+            json: () =>
+              Promise.resolve({
+                errorMessage: 'some error',
+              }),
+            status: 400,
+          },
+        }),
     });
 
     render(<ForgotUserName />);

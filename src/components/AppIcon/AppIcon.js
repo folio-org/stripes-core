@@ -109,7 +109,7 @@ const AppIcon = ({
       <span className={classnames(css.icon, iconClassName)} aria-hidden={iconAriaHidden}>
         {getIcon()}
       </span>
-      { children && <span className={css.label}>{children}</span> }
+      {children && <span className={css.label}>{children}</span>}
     </Element>
   );
 };

@@ -15,7 +15,9 @@ const Front = ({ stripes }) => {
   return (
     <Pluggable type="frontpage">
       <div className={css.frontWrap}>
-        <Headline faded tag="h1" margin="none" className={css.frontTitle}><FormattedMessage id={tag} /></Headline>
+        <Headline faded tag="h1" margin="none" className={css.frontTitle}>
+          <FormattedMessage id={tag} />
+        </Headline>
 
         <div className={css.releaseNotesWrap}>
           <a {...RELEASE_NOTES_LINK_ATTRS}>
@@ -28,7 +30,6 @@ const Front = ({ stripes }) => {
     </Pluggable>
   );
 };
-
 
 Front.propTypes = {
   stripes: PropTypes.shape({

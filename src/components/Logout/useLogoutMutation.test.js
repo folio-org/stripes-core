@@ -1,27 +1,15 @@
 import localforage from 'localforage';
 import { act } from 'react';
 import { renderHook, waitFor } from '@folio/jest-config-stripes/testing-library/react';
-import {
-  QueryClient,
-  QueryClientProvider,
-} from 'react-query';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
 import { clearPrivateStorage, clearSharedStorage, useLogoutMutation } from './useLogoutMutation';
 import { useStripes } from '../../StripesContext';
-import {
-  clearCurrentUser,
-  clearOkapiToken,
-  setIsAuthenticated,
-} from '../../okapiActions';
+import { clearCurrentUser, clearOkapiToken, setIsAuthenticated } from '../../okapiActions';
 import { resetStore } from '../../mainActions';
 import { stripesHubAPI } from '../../constants';
-import {
-  SESSION_NAME,
-  TENANT_LOCAL_STORAGE_KEY,
-} from '../../loginServices';
-import {
-  RTR_TIMEOUT_EVENT
-} from '../Root/constants';
+import { SESSION_NAME, TENANT_LOCAL_STORAGE_KEY } from '../../loginServices';
+import { RTR_TIMEOUT_EVENT } from '../Root/constants';
 import { SessionSyncError } from '../SessionSyncError';
 
 // restore default fetch impl
@@ -41,7 +29,6 @@ jest.mock('localforage', () => ({
   setItem: jest.fn(() => Promise.resolve()),
   removeItem: jest.fn(() => Promise.resolve()),
 }));
-
 
 describe('clearPrivateStorage', () => {
   beforeEach(() => {
@@ -85,7 +72,9 @@ describe('clearPrivateStorage', () => {
   it('calls queryClient.removeQueries()', async () => {
     const store = {
       dispatch: jest.fn(),
-      getState: jest.fn().mockReturnValue({ okapi: { tenant: 'diku' }, config: { preserveConsole: false } }),
+      getState: jest
+        .fn()
+        .mockReturnValue({ okapi: { tenant: 'diku' }, config: { preserveConsole: false } }),
     };
     const rqc = {
       removeQueries: jest.fn(),
@@ -141,14 +130,13 @@ describe('clearSharedStorage', () => {
   });
 });
 
-
 const mockPost = jest.fn();
 
 jest.mock('../../useOkapiKy', () => ({
   __esModule: true, // this property makes it work
   default: jest.fn(() => ({
     post: mockPost,
-  }))
+  })),
 }));
 
 jest.mock('../../StripesContext');
@@ -156,9 +144,7 @@ jest.mock('../../StripesContext');
 const queryClient = new QueryClient();
 // eslint-disable-next-line react/prop-types
 const wrapper = ({ children }) => (
-  <QueryClientProvider client={queryClient}>
-    {children}
-  </QueryClientProvider>
+  <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
 );
 
 describe('useLogoutMutation', () => {
@@ -172,7 +158,7 @@ describe('useLogoutMutation', () => {
         store: {
           dispatch: jest.fn(),
           getState: jest.fn().mockReturnValue({ config: { preserveConsole: false } }),
-        }
+        },
       });
     });
 
@@ -204,7 +190,9 @@ describe('useLogoutMutation', () => {
     });
 
     it('throws an error if API calls fail', async () => {
-      mockPost.mockImplementation(() => { throw new Error('asdf'); });
+      mockPost.mockImplementation(() => {
+        throw new Error('asdf');
+      });
       let didCallOnError = false;
 
       const timer = { clear: jest.fn() };
@@ -237,7 +225,7 @@ describe('useLogoutMutation', () => {
         store: {
           dispatch: jest.fn(),
           getState: jest.fn().mockReturnValue({ config: { preserveConsole: true } }),
-        }
+        },
       });
     });
 
@@ -267,7 +255,9 @@ describe('useLogoutMutation', () => {
     });
 
     it('does not throw if API calls fail', async () => {
-      mockPost.mockImplementation(() => { throw new Error('asdf'); });
+      mockPost.mockImplementation(() => {
+        throw new Error('asdf');
+      });
       let didCallOnError = false;
 
       const timer = { clear: jest.fn() };

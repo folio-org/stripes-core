@@ -18,31 +18,23 @@ const AppListDropdown = ({ toggleDropdown, apps, listRef, selectedApp }) => (
     data-test-app-list-dropdown
     striped
   >
-    {
-      apps.map(app => (
-        <NavListItem
-          key={app.id}
-          data-test-app-list-dropdown-item
-          data-test-app-list-dropdown-current-item={selectedApp && selectedApp.id === app.id}
-          onClick={toggleDropdown}
-          to={app.href}
-          isActive={selectedApp && selectedApp.id === app.id}
-          className={css.dropdownListItem}
-          aria-label={app.displayName}
-          id={`app-list-dropdown-item-${app.id}`}
-          role="button"
-        >
-          <AppIcon
-            app={app.module}
-            size="small"
-            icon={app.iconData}
-          />
-          <span className={css.dropdownListItemLabel}>
-            {app.displayName}
-          </span>
-        </NavListItem>
-      ))
-    }
+    {apps.map((app) => (
+      <NavListItem
+        key={app.id}
+        data-test-app-list-dropdown-item
+        data-test-app-list-dropdown-current-item={selectedApp && selectedApp.id === app.id}
+        onClick={toggleDropdown}
+        to={app.href}
+        isActive={selectedApp && selectedApp.id === app.id}
+        className={css.dropdownListItem}
+        aria-label={app.displayName}
+        id={`app-list-dropdown-item-${app.id}`}
+        role="button"
+      >
+        <AppIcon app={app.module} size="small" icon={app.iconData} />
+        <span className={css.dropdownListItemLabel}>{app.displayName}</span>
+      </NavListItem>
+    ))}
   </NavListSection>
 );
 

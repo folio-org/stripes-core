@@ -19,7 +19,7 @@ describe('TitleManager', () => {
         <TitleManager page={page}>
           <>thunder - chicken</>
         </TitleManager>
-      </Harness>
+      </Harness>,
     );
 
     await waitFor(() => expect(document.title).toBe(`${page} - FOLIO`));
@@ -43,12 +43,13 @@ describe('TitleManager', () => {
         <TitleManager page={page} prefix={prefix} record={record}>
           <>thunder - chicken</>
         </TitleManager>
-      </Harness>
+      </Harness>,
     );
 
-    await waitFor(() => expect(document.title).toBe(`${prefix}${page} - ${record} - ${stripes.config.platformName}`));
+    await waitFor(() =>
+      expect(document.title).toBe(`${prefix}${page} - ${record} - ${stripes.config.platformName}`),
+    );
   });
-
 
   it('renders prefix, record, postfix', async () => {
     const stripes = {
@@ -67,9 +68,11 @@ describe('TitleManager', () => {
         <TitleManager prefix={prefix} record={record}>
           <>thunder - chicken</>
         </TitleManager>
-      </Harness>
+      </Harness>,
     );
 
-    await waitFor(() => expect(document.title).toBe(`${prefix}${record} - ${stripes.config.platformName}`));
+    await waitFor(() =>
+      expect(document.title).toBe(`${prefix}${record} - ${stripes.config.platformName}`),
+    );
   });
 });

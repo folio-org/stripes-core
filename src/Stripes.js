@@ -2,7 +2,6 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { isVersionCompatible } from './discoverServices';
 
-
 export const stripesShape = PropTypes.shape({
   // Properties provided by the class
   clone: PropTypes.func.isRequired,
@@ -11,9 +10,7 @@ export const stripesShape = PropTypes.shape({
   hasAnyPerm: PropTypes.func.isRequired,
 
   // Properties passed into the constructor by the caller
-  actionNames: PropTypes.arrayOf(
-    PropTypes.string,
-  ).isRequired,
+  actionNames: PropTypes.arrayOf(PropTypes.string).isRequired,
   bindings: PropTypes.object,
   branding: PropTypes.shape({
     logo: PropTypes.shape({
@@ -54,10 +51,7 @@ export const stripesShape = PropTypes.shape({
   }).isRequired,
   metadata: PropTypes.object,
   okapi: PropTypes.shape({
-    authFailure:  PropTypes.oneOfType([
-      PropTypes.bool,
-      PropTypes.arrayOf(PropTypes.object)
-    ]),
+    authFailure: PropTypes.oneOfType([PropTypes.bool, PropTypes.arrayOf(PropTypes.object)]),
     okapiReady: PropTypes.bool,
     tenant: PropTypes.string.isRequired,
     token: PropTypes.string,
@@ -95,7 +89,6 @@ export const stripesShape = PropTypes.shape({
   withOkapi: PropTypes.bool.isRequired,
 });
 
-
 class Stripes {
   constructor(properties) {
     Object.assign(this, properties);
@@ -118,7 +111,7 @@ class Stripes {
       return undefined;
     }
 
-    const ok = _.every(perm.split(','), p => !!this.user.perms[p]);
+    const ok = _.every(perm.split(','), (p) => !!this.user.perms[p]);
     logger.log('perm', `checking perm '${perm}': `, ok);
     return ok;
   }
@@ -140,7 +133,7 @@ class Stripes {
       return undefined;
     }
 
-    const ok = _.some(perm.split(','), p => !!this.user.perms[p]);
+    const ok = _.some(perm.split(','), (p) => !!this.user.perms[p]);
     logger.log('perm', `checking any perm '${perm}': `, ok);
     return ok;
   }
@@ -162,7 +155,10 @@ class Stripes {
     }
     const ok = isVersionCompatible(version, versionWanted);
     const cond = ok ? 'is' : 'is not';
-    logger.log('interface', `interface '${name}' v${versionWanted} ${cond} compatible with available v${version}`);
+    logger.log(
+      'interface',
+      `interface '${name}' v${versionWanted} ${cond} compatible with available v${version}`,
+    );
     return ok ? version : 0;
   }
 

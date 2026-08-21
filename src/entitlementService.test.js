@@ -11,11 +11,15 @@ describe('getModules', () => {
     const m = {
       getModule: () => ({ module }),
     };
-    jest.mock('stripes-config', () => ({
-      modules: {
-        app: [m],
-      },
-    }), { virtual: true });
+    jest.mock(
+      'stripes-config',
+      () => ({
+        modules: {
+          app: [m],
+        },
+      }),
+      { virtual: true },
+    );
 
     const modules = await getModules({ isLazy: false });
     expect(modules.app).toHaveLength(1);
@@ -27,11 +31,15 @@ describe('getModules', () => {
     const m = {
       getDynamicModule: () => Promise.resolve({ default: { module } }),
     };
-    jest.mock('stripes-config', () => ({
-      modules: {
-        app: [m],
-      },
-    }), { virtual: true });
+    jest.mock(
+      'stripes-config',
+      () => ({
+        modules: {
+          app: [m],
+        },
+      }),
+      { virtual: true },
+    );
 
     const modules = await getModules({ isLazy: true });
     expect(modules.app).toHaveLength(1);

@@ -11,14 +11,14 @@ jest.unmock('@folio/stripes-components');
 
 const STRIPES = {
   actionNames: [],
-  connect: component => component,
+  connect: (component) => component,
   config: {},
   currency: 'USD',
   hasInterface: () => true,
   hasPerm: jest.fn(() => true),
   locale: 'en-US',
   logger: {
-    log: () => { },
+    log: () => {},
   },
   okapi: {
     tenant: 'diku',
@@ -29,38 +29,39 @@ const STRIPES = {
       consortia: 'old-consortia',
     },
   },
-  clone() { return this; },
+  clone() {
+    return this;
+  },
 };
 
-const TestApp = ({ stripes }) => ((
+const TestApp = ({ stripes }) => (
   <div>
     <span>Test app module</span>
     <span>Consortia is {stripes.user.user.consortia}</span>
   </div>
-));
+);
 
 const modules = {
-  settings: [{
-    route: '/test-app',
-    displayName: 'Test app',
-    module: 'ui-test-app',
-    getModule: () => TestApp,
-  }],
+  settings: [
+    {
+      route: '/test-app',
+      displayName: 'Test app',
+      module: 'ui-test-app',
+      getModule: () => TestApp,
+    },
+  ],
   handler: [],
 };
 
-const getSettings = (props = {}, initialEntries = ['/settings']) => ((
+const getSettings = (props = {}, initialEntries = ['/settings']) => (
   <MemoryRouter initialEntries={initialEntries}>
     <Intl>
       <ModulesContext.Provider value={modules}>
-        <Settings
-          stripes={STRIPES}
-          {...props}
-        />
+        <Settings stripes={STRIPES} {...props} />
       </ModulesContext.Provider>
     </Intl>
   </MemoryRouter>
-));
+);
 
 const renderSettings = (props, initialEntries) => render(getSettings(props, initialEntries));
 

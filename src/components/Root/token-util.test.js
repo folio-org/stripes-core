@@ -8,25 +8,25 @@ import {
 } from './token-util';
 
 describe('isFolioApiRequest', () => {
-  it('accepts requests whose origin matches okapi\'s', () => {
+  it("accepts requests whose origin matches okapi's", () => {
     const oUrl = 'https://millicent-sounds-kinda-like-malificent.edu';
     const req = `${oUrl}/that/is/awkward`;
     expect(isFolioApiRequest(req, oUrl)).toBe(true);
   });
 
-  it('rejects requests whose origin does not match okapi\'s', () => {
+  it("rejects requests whose origin does not match okapi's", () => {
     const req = 'https://skipper-seriously-skipper.org';
     expect(isFolioApiRequest(req, 'https://anything-but-skipper.edu')).toBe(false);
   });
 
   it('rejects invalid resource input', () => {
-    const req = { 'ken': 'not kenough' };
+    const req = { ken: 'not kenough' };
     expect(isFolioApiRequest(req, 'https://sorry-dude.edu')).toBe(false);
   });
 });
 
 describe('resourceMapper', () => {
-  const fx = (input) => (input);
+  const fx = (input) => input;
 
   it('accepts strings', () => {
     const av = 'barbie';
@@ -86,7 +86,7 @@ describe('ResetTimer', () => {
   describe('reset', () => {
     it('validates interval', () => {
       const t = () => {
-        const rt = new ResetTimer(() => { });
+        const rt = new ResetTimer(() => {});
         rt.reset('whoops');
       };
       expect(t).toThrow(TypeError);
@@ -150,16 +150,13 @@ describe('ResetTimer', () => {
 describe('rotationHandler', () => {
   it('calls dem callbacks', async () => {
     jest.spyOn(Date, 'now').mockReturnValue(1000);
-    const hst = jest.fn(async () => { });
+    const hst = jest.fn(async () => {});
     const timeoutTimer = { reset: jest.fn() };
     const warningTimer = { reset: jest.fn() };
 
-    const rotate = rotationHandler(
-      hst,
-      timeoutTimer,
-      warningTimer,
-      { fixedLengthSessionWarningTTL: '5s' }
-    );
+    const rotate = rotationHandler(hst, timeoutTimer, warningTimer, {
+      fixedLengthSessionWarningTTL: '5s',
+    });
     await rotate({ accessTokenExpiration: 10000, refreshTokenExpiration: 30000 });
 
     // calls handleSaveTokens callback

@@ -1,26 +1,20 @@
 import { renderHook, act } from '@folio/jest-config-stripes/testing-library/react';
 
-import {
-  QueryClient,
-  QueryClientProvider,
-} from 'react-query';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
 import { LastVisitedContext } from '../LastVisited';
 
-import {
-  AppOrderProvider,
-  useAppOrderContext
-} from './AppOrderProvider';
+import { AppOrderProvider, useAppOrderContext } from './AppOrderProvider';
 
 const mockUseLocation = jest.fn(() => ({ pathname: 'home/' }));
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
-  useLocation: jest.fn(() => mockUseLocation())
+  useLocation: jest.fn(() => mockUseLocation()),
 }));
 
 const mockUseModules = jest.fn(() => ({ app: [] }));
 jest.mock('../../ModulesContext', () => ({
-  useModules: jest.fn(() => mockUseModules())
+  useModules: jest.fn(() => mockUseModules()),
 }));
 
 const mockGetPreference = jest.fn(() => {});
@@ -32,15 +26,15 @@ jest.mock('../../hooks/usePreferences', () => ({
     getPreference: mockGetPreference,
     setPreference: mockSetPreference,
     removePreference: mockRemovePreference,
-  }))
+  })),
 }));
 
 jest.mock('../../StripesContext', () => ({
   useStripes: () => ({
     user: {
       user: {
-        id: 'test-user'
-      }
+        id: 'test-user',
+      },
     },
     okapi: {
       tenant: 't',
@@ -57,27 +51,27 @@ const queryClient = new QueryClient();
 const wrapper = ({ children }) => (
   <LastVisitedContext.Provider value={{ lastVisited: { x_settings: null } }}>
     <QueryClientProvider client={queryClient}>
-      <AppOrderProvider>
-        {children}
-      </AppOrderProvider>
+      <AppOrderProvider>{children}</AppOrderProvider>
     </QueryClientProvider>
   </LastVisitedContext.Provider>
 );
 
-const settingsOnly = [{
-  active: false,
-  description: 'stripes-core.folioSettings',
-  displayName: 'stripes-core.settings',
-  href: '/settings',
-  iconData: {
-    alt: 'stripes-core.folioSettings',
-    src: {},
-    title: 'stripes-core.settings',
+const settingsOnly = [
+  {
+    active: false,
+    description: 'stripes-core.folioSettings',
+    displayName: 'stripes-core.settings',
+    href: '/settings',
+    iconData: {
+      alt: 'stripes-core.folioSettings',
+      src: {},
+      title: 'stripes-core.settings',
+    },
+    id: 'clickable-settings',
+    name: 'settings',
+    route: '/settings',
   },
-  id: 'clickable-settings',
-  name: 'settings',
-  route: '/settings',
-}];
+];
 
 // apps as per stripes-config...
 const testAppModules = [
@@ -87,7 +81,7 @@ const testAppModules = [
     queryResource: 'query',
     module: '@folio/invoice',
     description: 'Invoice',
-    version: '6.1.1090000001259'
+    version: '6.1.1090000001259',
   },
   {
     handlerName: 'eventHandler',
@@ -97,7 +91,7 @@ const testAppModules = [
     queryResource: 'query',
     module: '@folio/agreements',
     description: 'ERM agreement functionality for Stripes',
-    version: '11.2.109900000000321'
+    version: '11.2.109900000000321',
   },
   {
     displayName: 'Bulk edit',
@@ -105,7 +99,7 @@ const testAppModules = [
     home: '/bulk-edit',
     module: '@folio/bulk-edit',
     description: 'Description for bulk edit',
-    version: '4.2.2090000003517'
+    version: '4.2.2090000003517',
   },
   {
     displayName: 'Check in',
@@ -113,15 +107,15 @@ const testAppModules = [
     queryResource: 'query',
     module: '@folio/checkin',
     description: 'Item Check-in',
-    version: '9.3.109000000926'
+    version: '9.3.109000000926',
   },
   {
     displayName: 'eHoldings',
     route: '/eholdings',
     module: '@folio/eholdings',
     description: 'Description for e-holdings',
-    version: '2.7.1828'
-  }
+    version: '2.7.1828',
+  },
 ];
 
 // default order - sorted by displayName.
@@ -138,7 +132,7 @@ const testOrderedNoPref = [
     queryResource: 'query',
     module: '@folio/agreements',
     description: 'ERM agreement functionality for Stripes',
-    version: '11.2.109900000000321'
+    version: '11.2.109900000000321',
   },
   {
     id: 'clickable-bulk-edit-module',
@@ -150,7 +144,7 @@ const testOrderedNoPref = [
     home: '/bulk-edit',
     module: '@folio/bulk-edit',
     description: 'Description for bulk edit',
-    version: '4.2.2090000003517'
+    version: '4.2.2090000003517',
   },
   {
     id: 'clickable-checkin-module',
@@ -162,7 +156,7 @@ const testOrderedNoPref = [
     queryResource: 'query',
     module: '@folio/checkin',
     description: 'Item Check-in',
-    version: '9.3.109000000926'
+    version: '9.3.109000000926',
   },
   {
     id: 'clickable-eholdings-module',
@@ -173,7 +167,7 @@ const testOrderedNoPref = [
     route: '/eholdings',
     module: '@folio/eholdings',
     description: 'Description for e-holdings',
-    version: '2.7.1828'
+    version: '2.7.1828',
   },
   {
     id: 'clickable-invoice-module',
@@ -185,9 +179,9 @@ const testOrderedNoPref = [
     queryResource: 'query',
     module: '@folio/invoice',
     description: 'Invoice',
-    version: '6.1.1090000001259'
+    version: '6.1.1090000001259',
   },
-  ...settingsOnly
+  ...settingsOnly,
 ];
 
 // default order preference (value that's derived when no user preferred order is present) - ordered by displayName of the original app objects.
@@ -209,7 +203,7 @@ const testPreferencedOrderNoPref = [
   },
   {
     name: 'settings',
-  }
+  },
 ];
 
 // order changed via prefs to move 'checkin' to the start of the list...
@@ -224,7 +218,7 @@ const testOrderedWithPref = [
     queryResource: 'query',
     module: '@folio/checkin',
     description: 'Item Check-in',
-    version: '9.3.109000000926'
+    version: '9.3.109000000926',
   },
   {
     id: 'clickable-invoice-module',
@@ -236,7 +230,7 @@ const testOrderedWithPref = [
     queryResource: 'query',
     module: '@folio/invoice',
     description: 'Invoice',
-    version: '6.1.1090000001259'
+    version: '6.1.1090000001259',
   },
   {
     id: 'clickable-agreements-module',
@@ -250,7 +244,7 @@ const testOrderedWithPref = [
     queryResource: 'query',
     module: '@folio/agreements',
     description: 'ERM agreement functionality for Stripes',
-    version: '11.2.109900000000321'
+    version: '11.2.109900000000321',
   },
   {
     id: 'clickable-bulk-edit-module',
@@ -262,7 +256,7 @@ const testOrderedWithPref = [
     home: '/bulk-edit',
     module: '@folio/bulk-edit',
     description: 'Description for bulk edit',
-    version: '4.2.2090000003517'
+    version: '4.2.2090000003517',
   },
   ...settingsOnly,
   {
@@ -274,7 +268,7 @@ const testOrderedWithPref = [
     route: '/eholdings',
     module: '@folio/eholdings',
     description: 'Description for e-holdings',
-    version: '2.7.1828'
+    version: '2.7.1828',
   },
 ];
 
@@ -297,12 +291,11 @@ const testPreferencedOrderWithPref = [
   },
   {
     name: 'eholdings',
-  }
+  },
 ];
 
 describe('AppOrderProvider', () => {
   let renderedHook;
-
 
   describe('with no modules', () => {
     beforeAll(async () => {
@@ -333,7 +326,7 @@ describe('AppOrderProvider', () => {
   describe('with some modules, no preference', () => {
     beforeAll(async () => {
       mockUseModules.mockImplementation(() => ({
-        app: testAppModules
+        app: testAppModules,
       }));
       renderedHook = await act(() => renderHook(() => useAppOrderContext(), { wrapper }));
     });
@@ -351,7 +344,7 @@ describe('AppOrderProvider', () => {
     beforeAll(async () => {
       mockGetPreference.mockImplementation(() => testPreferencedOrderWithPref);
       mockUseModules.mockImplementation(() => ({
-        app: testAppModules
+        app: testAppModules,
       }));
       renderedHook = await act(() => renderHook(() => useAppOrderContext(), { wrapper }));
     });

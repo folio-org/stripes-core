@@ -1,1 +1,1 @@
-export default () => ('future of libraries is open');
+export default () => 'future of libraries is open';

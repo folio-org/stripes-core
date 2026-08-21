@@ -25,32 +25,27 @@ const defaultMessages = {
   'settings.label': 'Settings Label',
   'handler.label': 'Handler Label',
 };
-const renderWithIntl = ({
-  ui,
-  messages = defaultMessages,
-} = {}) => render(
-  <Harness history={history} stripes={stripes}>
-    <ModuleTranslator>
-      <ModulesContext.Consumer>
-        {({ app, plugin, settings, handler }) => (
-          <IntlProvider
-            locale="en"
-            messages={messages}
-          >
-            {ui || (
-              <div>
-                <div data-testid="app-name">{app[0]?.displayName}</div>
-                <div data-testid="plugin-name">{plugin[0]?.displayName}</div>
-                <div data-testid="settings-name">{settings[0]?.displayName}</div>
-                <div data-testid="handler-name">{handler[0]?.displayName}</div>
-              </div>
-            )}
-          </IntlProvider>
-        )}
-      </ModulesContext.Consumer>
-    </ModuleTranslator>
-  </Harness>
-);
+const renderWithIntl = ({ ui, messages = defaultMessages } = {}) =>
+  render(
+    <Harness history={history} stripes={stripes}>
+      <ModuleTranslator>
+        <ModulesContext.Consumer>
+          {({ app, plugin, settings, handler }) => (
+            <IntlProvider locale="en" messages={messages}>
+              {ui || (
+                <div>
+                  <div data-testid="app-name">{app[0]?.displayName}</div>
+                  <div data-testid="plugin-name">{plugin[0]?.displayName}</div>
+                  <div data-testid="settings-name">{settings[0]?.displayName}</div>
+                  <div data-testid="handler-name">{handler[0]?.displayName}</div>
+                </div>
+              )}
+            </IntlProvider>
+          )}
+        </ModulesContext.Consumer>
+      </ModuleTranslator>
+    </Harness>,
+  );
 
 describe('ModuleTranslator', () => {
   beforeEach(() => {

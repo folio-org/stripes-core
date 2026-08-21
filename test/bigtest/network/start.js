@@ -31,24 +31,23 @@ const importBigTestMirageServer = () => {
   return BigTestMirageServer;
 };
 
-
 if (environment !== 'production') {
   const { default: coreModules } = require('./index');
   const createServer = (Server, options, configName) => {
-    const {
-      baseConfig: coreConfig,
-      ...coreOpts
-    } = coreModules;
+    const { baseConfig: coreConfig, ...coreOpts } = coreModules;
 
-    const {
-      baseConfig = () => {},
-      ...opts
-    } = options;
+    const { baseConfig = () => {}, ...opts } = options;
 
-    return new Server(merge({
-      [configName]: flow(coreConfig, baseConfig),
-      environment
-    }, coreOpts, opts));
+    return new Server(
+      merge(
+        {
+          [configName]: flow(coreConfig, baseConfig),
+          environment,
+        },
+        coreOpts,
+        opts,
+      ),
+    );
   };
 
   start = (scenarioNames, options = {}) => {
@@ -58,20 +57,16 @@ if (environment !== 'production') {
       fixtures: coreFixtures = {},
     } = coreModules;
 
-    const {
-      serverType,
-      scenarios = {},
-      factories = {},
-      fixtures = {},
-    } = options;
+    const { serverType, scenarios = {}, factories = {}, fixtures = {} } = options;
 
     // 'serverType' option can be used to control which mirage
     // server implementation will be used.
     // The BigTest mirage implementation is set as a default
     // for backward compatibility.
-    const server = (serverType === 'miragejs') ?
-      createServer(importMirageServer(), options, 'routes') :
-      createServer(importBigTestMirageServer(), options, 'baseConfig');
+    const server =
+      serverType === 'miragejs'
+        ? createServer(importMirageServer(), options, 'routes')
+        : createServer(importBigTestMirageServer(), options, 'baseConfig');
 
     // mirage conditionally includes factories, we want to include
     // all of them unconditionally
@@ -92,11 +87,14 @@ if (environment !== 'production') {
     // mirage only loads a `default` scenario for us out of the box,
     // so instead of providing all scenarios we run specific scenarios
     // after the mirage server is initialized.
-    [].concat(scenarioNames || defaultScenario).filter(Boolean).forEach(name => {
-      const key = camelCase(name);
-      const scenario = scenarios[key] || coreScenarios[key];
-      if (scenario) scenario(server);
-    });
+    []
+      .concat(scenarioNames || defaultScenario)
+      .filter(Boolean)
+      .forEach((name) => {
+        const key = camelCase(name);
+        const scenario = scenarios[key] || coreScenarios[key];
+        if (scenario) scenario(server);
+      });
 
     return server;
   };

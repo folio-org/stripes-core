@@ -10,7 +10,7 @@ const defaultErrors = {
     code: defaultErrorCodes.DEFAULT_ERROR,
     type: 'error',
   },
-  DEFAULT_LOGIN_SERVER_ERROR:{
+  DEFAULT_LOGIN_SERVER_ERROR: {
     code: defaultErrorCodes.DEFAULT_SERVER_ERROR,
     type: 'error',
   },

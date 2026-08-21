@@ -18,8 +18,8 @@ const modules = req.keys().reduce((acc, modulePath) => {
     return Object.assign(acc, {
       [moduleType]: {
         ...(acc[moduleType] || {}),
-        [moduleKey]: req(modulePath).default
-      }
+        [moduleKey]: req(modulePath).default,
+      },
     });
   } else if (modulePath === './config.js') {
     return Object.assign(acc, {

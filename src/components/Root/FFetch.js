@@ -27,15 +27,9 @@
 import { RTR_LOCK_KEY, rotateAndReplay } from './rotateAndReplay';
 import { getTokenExpiry } from '../../loginServices';
 
-import {
-  isFolioApiRequest,
-} from './token-util';
-import {
-  RTRError,
-} from './Errors';
-import {
-  RTR_ERROR_EVENT,
-} from './constants';
+import { isFolioApiRequest } from './token-util';
+import { RTRError } from './Errors';
+import { RTR_ERROR_EVENT } from './constants';
 import FXHR from './FXHR';
 
 const FOLIO_FETCH_OPTIONS = {
@@ -56,7 +50,7 @@ export class FFetch {
     this.logger?.log?.('rtr', 'cleaning up after ffetch');
     this.restoreFetch();
     this.restoreXMLHttpRequest();
-  }
+  };
 
   /**
    * save a reference to fetch, and then reassign the global :scream:
@@ -127,7 +121,8 @@ export class FFetch {
         const cr = response.clone();
         const text = await cr.text();
         return (
-          (response.status === 400 && text.startsWith('Token missing, access requires permission')) ||
+          (response.status === 400 &&
+            text.startsWith('Token missing, access requires permission')) ||
           (response.status === 404 && response.url?.includes('/users-keycloak/_self')) ||
           (response.status === 404 && response.url?.includes('/bl-users/_self')) ||
           (response.status === 422 && response.url?.includes('/authn/logout'))
@@ -135,7 +130,7 @@ export class FFetch {
       }
 
       const expiry = await getTokenExpiry();
-      return (Date.now() > (expiry?.atExpires || 0));
+      return Date.now() > (expiry?.atExpires || 0);
     },
 
     // shouldPreRotate
@@ -147,22 +142,25 @@ export class FFetch {
     // we can skip the first fetch, jumping straight to rotation.
     shouldPreRotate: async () => {
       const expiry = await getTokenExpiry();
-      return (Date.now() > (expiry?.atExpires || 0));
+      return Date.now() > (expiry?.atExpires || 0);
     },
 
     // rotate
     // handle rotation
     rotate: async () => {
       try {
-        const res = await this.nativeFetch.apply(globalThis, [`${this.okapi.url}/authn/refresh`, {
-          headers: {
-            'content-type': 'application/json',
-            'x-okapi-tenant': this.okapi.tenant,
+        const res = await this.nativeFetch.apply(globalThis, [
+          `${this.okapi.url}/authn/refresh`,
+          {
+            headers: {
+              'content-type': 'application/json',
+              'x-okapi-tenant': this.okapi.tenant,
+            },
+            method: 'POST',
+            credentials: 'include',
+            mode: 'cors',
           },
-          method: 'POST',
-          credentials: 'include',
-          mode: 'cors',
-        }]);
+        ]);
 
         if (res.ok) {
           const json = await res.json();
@@ -173,7 +171,9 @@ export class FFetch {
             };
           }
 
-          throw new RTRError('accessTokenExpiration and/or refreshTokenExpiration were not available');
+          throw new RTRError(
+            'accessTokenExpiration and/or refreshTokenExpiration were not available',
+          );
         }
 
         throw new RTRError('Rotation response was not ok');
@@ -224,7 +224,6 @@ export class FFetch {
       // triggers rotation and it needs to be replayed.
       const reusableResource = resource instanceof Request ? resource.clone() : resource;
 
-
       // first check and see if the token metadata we have is expired or not.
       // If it is expired, we'll just skip to rotateAndReplay instead of trying the request and inviting
       // handfuls of 401 responses. In case our meta-expiry is out of sync, we'll still catch the problem in an
@@ -236,7 +235,10 @@ export class FFetch {
         // readers/writer lock pattern: don't fetch while rotation is in-progress
         // https://developer.mozilla.org/en-US/docs/Web/API/LockManager/request
         response = await navigator.locks.request(RTR_LOCK_KEY, { mode: 'shared' }, async () => {
-          const fr = await this.nativeFetch.apply(globalThis, [resource, options && { ...options, ...FOLIO_FETCH_OPTIONS }]);
+          const fr = await this.nativeFetch.apply(globalThis, [
+            resource,
+            options && { ...options, ...FOLIO_FETCH_OPTIONS },
+          ]);
           return fr;
         });
         if (options?.rtrIgnore) {
@@ -248,7 +250,7 @@ export class FFetch {
         response = await rotateAndReplay(
           this.nativeFetch,
           { ...this.rotationConfig, logger: this.logger },
-          { response, resource: reusableResource, options }
+          { response, resource: reusableResource, options },
         );
       }
 

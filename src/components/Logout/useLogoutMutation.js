@@ -2,11 +2,7 @@ import { useMutation, useQueryClient } from 'react-query';
 import localforage from 'localforage';
 
 import { useStripes } from '../../StripesContext';
-import {
-  clearCurrentUser,
-  clearOkapiToken,
-  setIsAuthenticated,
-} from '../../okapiActions';
+import { clearCurrentUser, clearOkapiToken, setIsAuthenticated } from '../../okapiActions';
 import { resetStore } from '../../mainActions';
 import { stripesHubAPI } from '../../constants';
 import {
@@ -15,9 +11,7 @@ import {
   SESSION_NAME,
   TENANT_LOCAL_STORAGE_KEY,
 } from '../../loginServices';
-import {
-  RTR_TIMEOUT_EVENT
-} from '../Root/constants';
+import { RTR_TIMEOUT_EVENT } from '../Root/constants';
 import useOkapiKy from '../../useOkapiKy';
 import { SessionSyncError } from '../SessionSyncError';
 
@@ -79,7 +73,7 @@ export const clearPrivateStorage = (store, queryClient, timers) => {
 
     // make sure timers don't fire after the session has terminated.
     // who remembers UICHKOUT-869?
-    timers.forEach(timer => timer?.clear());
+    timers.forEach((timer) => timer?.clear());
 
     sessionStorage.clear();
   } catch (e) {
@@ -161,7 +155,10 @@ export const useLogoutMutation = (timers) => {
       } catch (err) {
         // if shared storage is present, treat API request failures as errors
         if (localStorage.getItem(SESSION_NAME)) {
-          console.error('logout failure; session storage was active but the logout API request failed', err); // eslint-disable-line no-console
+          console.error(
+            'logout failure; session storage was active but the logout API request failed',
+            err,
+          ); // eslint-disable-line no-console
           const { clientId } = getLoginTenant(okapi, config);
           const logoutUrl = `${okapi.authnUrl}/realms/${tenant}/protocol/openid-connect/logout?post_logout_redirect_uri=${globalThis.location.origin}/logout?reason=${reason}&client_id=${clientId}`;
           throw new SessionSyncError(logoutUrl);

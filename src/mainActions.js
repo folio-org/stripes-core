@@ -18,8 +18,4 @@ function destroyStore() {
   };
 }
 
-export {
-  resetStore,
-  destroyStore,
-  actionTypes,
-};
+export { resetStore, destroyStore, actionTypes };

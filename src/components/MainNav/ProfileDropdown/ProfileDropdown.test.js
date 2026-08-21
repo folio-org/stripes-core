@@ -16,11 +16,13 @@ const modules = {
       handlerName: 'eventHandler',
       route: '/test',
       links: {
-        userDropdown: [{
-          event: 'TEST_EVENT',
-          caption: 'Profile dropdown action',
-          check: 'checkAction',
-        }]
+        userDropdown: [
+          {
+            event: 'TEST_EVENT',
+            caption: 'Profile dropdown action',
+            check: 'checkAction',
+          },
+        ],
       },
       getModule: jest.fn(() => ({
         checkAction,
@@ -35,10 +37,12 @@ const stripes = {
   user: {
     user: {
       id: 'user-id',
-      tenants: [{
-        id: tenant,
-        name: 'Central office',
-      }]
+      tenants: [
+        {
+          id: tenant,
+          name: 'Central office',
+        },
+      ],
     },
   },
   okapi: {
@@ -53,19 +57,12 @@ const defaultProps = {
 
 const wrapper = ({ children }) => (
   <MemoryRouter>
-    <ModulesContext.Provider value={modules}>
-      {children}
-    </ModulesContext.Provider>
+    <ModulesContext.Provider value={modules}>{children}</ModulesContext.Provider>
   </MemoryRouter>
 );
 
-const renderProfileDropdown = (props = {}) => render(
-  <TestComponent
-    {...defaultProps}
-    {...props}
-  />,
-  { wrapper },
-);
+const renderProfileDropdown = (props = {}) =>
+  render(<TestComponent {...defaultProps} {...props} />, { wrapper });
 
 describe('ProfileDropdown', () => {
   it('should display current consortium (if enabled) in the dropdown trigger', () => {

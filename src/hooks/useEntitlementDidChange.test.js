@@ -4,12 +4,11 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import useEntitlementDidChange from './useEntitlementDidChange';
 import useOkapiKy from '../useOkapiKy';
 
-const interfaceProviders = [
-];
+const interfaceProviders = [];
 
 jest.mock('../useOkapiKy');
 jest.mock('../components', () => ({
-  useNamespace: () => ([]),
+  useNamespace: () => [],
 }));
 jest.mock('../StripesContext', () => ({
   useStripes: () => ({
@@ -18,22 +17,16 @@ jest.mock('../StripesContext', () => ({
     },
     discovery: {
       interfaceProviders,
-    }
+    },
   }),
 }));
 
 const initialResponse = {
-  applicationDescriptors: [
-    { id: 'one' },
-    { id: 'two' },
-  ],
+  applicationDescriptors: [{ id: 'one' }, { id: 'two' }],
 };
 
 const changedResponse = {
-  applicationDescriptors: [
-    { id: 'one' },
-    { id: 'three' },
-  ],
+  applicationDescriptors: [{ id: 'one' }, { id: 'three' }],
 };
 
 describe('useEntitlementDidChange', () => {
@@ -47,9 +40,7 @@ describe('useEntitlementDidChange', () => {
     useOkapiKy.mockReturnValue(kyMock);
     // eslint-disable-next-line react/prop-types
     wrapper = ({ children }) => (
-      <QueryClientProvider client={queryClient}>
-        {children}
-      </QueryClientProvider>
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
     );
   });
 
@@ -80,10 +71,10 @@ describe('useEntitlementDidChange', () => {
   it('returns true when entitlement data changes', async () => {
     kyMock
       .mockImplementationOnce(() => ({
-        json: () => initialResponse
+        json: () => initialResponse,
       }))
       .mockImplementationOnce(() => ({
-        json: () => changedResponse
+        json: () => changedResponse,
       }));
 
     const { result } = renderHook(() => useEntitlementDidChange(), { wrapper });

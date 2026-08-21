@@ -10,9 +10,7 @@ jest.mock('react-router', () => ({
   Redirect: jest.fn(({ children, to }) => {
     return (
       <a href={to} role="button">
-        <span>
-          {children}
-        </span>
+        <span>{children}</span>
       </a>
     );
   }),
@@ -36,11 +34,10 @@ describe('OIDCRedirect', () => {
     expect(screen.getByRole('button')).toHaveAttribute('href', path);
   });
 
-  it('redirects to URL\'s ?fwd param when available', () => {
+  it("redirects to URL's ?fwd param when available", () => {
     useStripes.mockReturnValue({ okapi: {} });
     render(<OIDCRedirect />);
 
     expect(screen.getByRole('button')).toHaveAttribute('href', 'dashboard');
   });
 });
-

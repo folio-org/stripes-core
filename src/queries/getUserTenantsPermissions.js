@@ -8,12 +8,9 @@
  */
 const getUserTenantsPermissions = async (stripes, tenants = []) => {
   const {
-    okapi: {
-      url,
-      token,
-    }
+    okapi: { url, token },
   } = stripes;
-  const userTenantIds = tenants.map(tenant => tenant.id || tenant);
+  const userTenantIds = tenants.map((tenant) => tenant.id || tenant);
 
   const permPath = stripes.hasInterface('users-keycloak') ? 'users-keycloak' : 'bl-users';
   const permUrl = `${url}/${permPath}/_self?expandPermissions=true`;
@@ -35,7 +32,7 @@ const getUserTenantsPermissions = async (stripes, tenants = []) => {
 
   const userTenantsPermissions = await Promise.allSettled(promises);
 
-  return userTenantsPermissions.map(userTenantsPermission => userTenantsPermission.value);
+  return userTenantsPermissions.map((userTenantsPermission) => userTenantsPermission.value);
 };
 
 export default getUserTenantsPermissions;

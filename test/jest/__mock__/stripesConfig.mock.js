@@ -1,5 +1,6 @@
-jest.mock('stripes-config', () => (
-  {
+jest.mock(
+  'stripes-config',
+  () => ({
     branding: {
       style: {},
     },
@@ -12,6 +13,6 @@ jest.mock('stripes-config', () => (
       url: 'okapiUrl',
     },
     translations: [],
-  }
-),
-{ virtual: true });
+  }),
+  { virtual: true },
+);

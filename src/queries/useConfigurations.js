@@ -4,7 +4,6 @@ import queryLimit from '../queryLimit';
 import useOkapiKy from '../useOkapiKy';
 import { useStripes } from '../StripesContext';
 
-
 export const configurationsApi = (module, configName, code) => {
   const params = [];
   if (module) {
@@ -27,22 +26,18 @@ const useConfigurations = ({ module, configName, code }) => {
   const ky = useOkapiKy();
   const namespace = '@folio/stripes-core:QUERY_KEY_CONFIGURATIONS';
 
-  const { isFetching, data, error } = useQuery(
-    [namespace, configName, code],
-    () => {
-      if (stripes.hasPerm('configuration.entries.collection.get')) {
-        return ky.get(configurationsApi(module, configName, code))
-          .json();
-      }
-      throw new Error('missing permission: configuration.entries.collection.get');
-    },
-  );
+  const { isFetching, data, error } = useQuery([namespace, configName, code], () => {
+    if (stripes.hasPerm('configuration.entries.collection.get')) {
+      return ky.get(configurationsApi(module, configName, code)).json();
+    }
+    throw new Error('missing permission: configuration.entries.collection.get');
+  });
 
-  return ({
+  return {
     data,
     isLoading: isFetching,
     error,
-  });
+  };
 };
 
 export default useConfigurations;

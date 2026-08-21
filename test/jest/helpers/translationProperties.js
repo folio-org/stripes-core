@@ -9,7 +9,7 @@ const translationsProperties = [
   {
     prefix: 'stripes-core',
     translations: stripesCoreTranslations,
-  }
+  },
 ];
 
 export default translationsProperties;

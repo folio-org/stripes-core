@@ -13,17 +13,13 @@ const { Link, Button } = Bigtest;
 const HomeButton = Link.extend('home button')
   .selector('[data-test-current-app-home-button]')
   .filters({
-    ariaLabel: el => el.ariaLabel
+    ariaLabel: (el) => el.ariaLabel,
   });
 
 const DummyAppWithContextMenu = () => (
   <div>
     <AppContextMenu>
-      {() => (
-        <div data-test-context-menu>
-          App context menu content..
-        </div>
-      )}
+      {() => <div data-test-context-menu>App context menu content..</div>}
     </AppContextMenu>
   </div>
 );
@@ -47,20 +43,20 @@ describe('CurrentApp', () => {
         name: '@folio/dummy-app-with-app-context-menu',
         displayName: 'dummy.with.context.menu.title',
         route: '/dummy-app-with-app-context-menu',
-        module: DummyAppWithContextMenu
+        module: DummyAppWithContextMenu,
       },
       {
         type: 'app',
         name: '@folio/dummy-app-without-app-context-menu',
         displayName: 'dummy.without.context.menu.title',
         route: '/dummy-app-without-app-context-menu',
-        module: DummyAppWithoutContextMenu
+        module: DummyAppWithoutContextMenu,
       },
     ],
     translations: {
       'dummy.with.context.menu.title': 'Dummy app with context menu',
-      'dummy.without.context.menu.title': 'Dummy app without context menu'
-    }
+      'dummy.without.context.menu.title': 'Dummy app without context menu',
+    },
   });
 
   describe('When the <AppContextMenu> is present in an app', () => {
@@ -87,7 +83,9 @@ describe('CurrentApp', () => {
     it('Should render a home button', () => homeButton.exists());
 
     it('Should have an aria-label equal to: "Current open application: {displayName} (Click to go home)"', () => {
-      return homeButton.has({ ariaLabel: 'Current open application: Dummy app without context menu (Click to go home)' });
+      return homeButton.has({
+        ariaLabel: 'Current open application: Dummy app without context menu (Click to go home)',
+      });
     });
   });
 

@@ -26,7 +26,9 @@ describe('rotateAndReplay', () => {
         // @ts-ignore
         delete global.navigator;
       }
-    } catch (e) { /* ignore */ }
+    } catch {
+      /* ignore */
+    }
     jest.clearAllMocks();
   });
 
@@ -57,7 +59,9 @@ describe('rotateAndReplay', () => {
       });
 
       test('`config.shouldRotate()` forces rotation then replays and returns the new response', async () => {
-        const fetchfx = jest.fn().mockResolvedValueOnce({ status: 401 })
+        const fetchfx = jest
+          .fn()
+          .mockResolvedValueOnce({ status: 401 })
           .mockResolvedValueOnce('after-rotate-response');
         const rotateResult = { token: 'abc' };
         const config = {
@@ -79,7 +83,9 @@ describe('rotateAndReplay', () => {
       });
 
       test('matched default error code causes rotation then replays and returns the new response', async () => {
-        const fetchfx = jest.fn().mockResolvedValueOnce({ status: 401 })
+        const fetchfx = jest
+          .fn()
+          .mockResolvedValueOnce({ status: 401 })
           .mockResolvedValueOnce('after-rotate-response');
 
         const rotateResult = { token: 'abc' };
@@ -101,7 +107,9 @@ describe('rotateAndReplay', () => {
       });
 
       test('matched custom error code causes rotation then replays and returns the new response', async () => {
-        const fetchfx = jest.fn().mockResolvedValueOnce({ status: 666 })
+        const fetchfx = jest
+          .fn()
+          .mockResolvedValueOnce({ status: 666 })
           .mockResolvedValueOnce('after-rotate-response');
 
         const rotateResult = { token: 'abc' };
@@ -134,7 +142,7 @@ describe('rotateAndReplay', () => {
         await expect(rotateAndReplay(fetchfx, config, err)).resolves.toBe(err.response);
       });
 
-      test('with the original reseponse if the request\'s rtrIgnore option is true', async () => {
+      test("with the original reseponse if the request's rtrIgnore option is true", async () => {
         const fetchfx = jest.fn();
         const config = {
           logger: makeLogger(),

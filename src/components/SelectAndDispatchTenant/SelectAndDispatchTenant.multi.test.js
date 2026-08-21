@@ -12,9 +12,9 @@ jest.mock('../../StripesContext', () => ({
         a: { name: 'a', displayName: 'Althea' },
         b: { name: 'b', displayName: 'Bernice' },
         c: { name: 'c', displayName: 'Claudia' },
-      }
-    }
-  })
+      },
+    },
+  }),
 }));
 
 jest.mock('../../okapiActions');
@@ -34,4 +34,3 @@ describe('SelectAndDispatchTenant', () => {
     });
   });
 });
-

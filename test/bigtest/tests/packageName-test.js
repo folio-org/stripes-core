@@ -1,7 +1,4 @@
-import {
-  describe,
-  it,
-} from 'mocha';
+import { describe, it } from 'mocha';
 import { expect } from 'chai';
 import { packageName } from '../../../src/constants';
 
@@ -23,7 +20,10 @@ describe('The package-name-rule', function () {
     });
 
     it('rejects scoped name that exceeds 214 character limit', function () {
-      const result = '@name-that-is-way-too-long-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/end'.match(packageName.PACKAGE_SCOPE_REGEX);
+      const result =
+        '@name-that-is-way-too-long-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/end'.match(
+          packageName.PACKAGE_SCOPE_REGEX,
+        );
       expect(result).to.equal(null);
     });
   });

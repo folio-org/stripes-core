@@ -10,7 +10,6 @@ import usePreferences from '../../hooks/usePreferences';
 import { packageName } from '../../constants';
 import settingsIcon from './settings.svg';
 
-
 const APPORDER_PREF_NAME = 'user-main-nav-order';
 const APPORDER_PREF_SCOPE = 'stripes-core.prefs.manage';
 
@@ -23,7 +22,7 @@ const SETTINGS_ROUTE = '/settings';
 export const AppOrderContext = createContext({
   /**
    * whether or not the persisted preference request is in progress.
-  */
+   */
   isLoading: true,
   /**
    *  Persisted array of app objects for re-ordering - the user-preferred app order.
@@ -33,7 +32,7 @@ export const AppOrderContext = createContext({
   listOrder: [],
   /**
    * list of app link information ordered by user preference, falling back to the order from stripes-config.
-  */
+   */
   apps: [],
   /**
    * Function to update the preference. Accepts an list of objects with shape:
@@ -42,7 +41,7 @@ export const AppOrderContext = createContext({
   updateList: () => {},
   /**
    * Function to delete any the app order preference and reset the list.
-  */
+   */
   reset: () => {},
 });
 
@@ -53,34 +52,36 @@ export const useAppOrderContext = () => {
 
 /**
  *  returns the list of apps/app nav information as filtered by permissions.
-*/
+ */
 function getAllowedApps(appModules, stripes, pathname, lastVisited, formatMessage) {
-  const apps = appModules.map((entry) => {
-    const name = entry.module.replace(packageName.PACKAGE_SCOPE_REGEX, '');
-    const perm = `module.${name}.enabled`;
+  const apps = appModules
+    .map((entry) => {
+      const name = entry.module.replace(packageName.PACKAGE_SCOPE_REGEX, '');
+      const perm = `module.${name}.enabled`;
 
-    if (!stripes.hasPerm(perm)) {
-      return null;
-    }
+      if (!stripes.hasPerm(perm)) {
+        return null;
+      }
 
-    const id = `clickable-${name}-module`;
+      const id = `clickable-${name}-module`;
 
-    const pathRoot = pathname.split('/')[1];
-    const entryRoot = entry.route.split('/')[1];
-    const active = pathRoot === entryRoot;
+      const pathRoot = pathname.split('/')[1];
+      const entryRoot = entry.route.split('/')[1];
+      const active = pathRoot === entryRoot;
 
-    const last = lastVisited[name];
-    const home = entry.home || entry.route;
-    const href = (active || !last) ? home : lastVisited[name];
+      const last = lastVisited[name];
+      const home = entry.home || entry.route;
+      const href = active || !last ? home : lastVisited[name];
 
-    return {
-      id,
-      href,
-      active,
-      name,
-      ...entry,
-    };
-  }).filter(app => app);
+      return {
+        id,
+        href,
+        active,
+        name,
+        ...entry,
+      };
+    })
+    .filter((app) => app);
 
   /**
    * Add Settings to apps array manually
@@ -100,7 +101,7 @@ function getAllowedApps(appModules, stripes, pathname, lastVisited, formatMessag
         alt: formatMessage({ id: 'stripes-core.folioSettings' }),
         title: formatMessage({ id: 'stripes-core.settings' }),
       },
-      route: SETTINGS_ROUTE
+      route: SETTINGS_ROUTE,
     });
   }
   return apps.toSorted((a, b) => a.displayName.localeCompare(b.displayName));
@@ -112,7 +113,8 @@ function getAllowedApps(appModules, stripes, pathname, lastVisited, formatMessag
  * @param {React.ReactNode} props.children - The children to render within the provider
  * @returns {JSX.Element} - The context provider with children
  */
-export const AppOrderProvider = ({ children }) => { // eslint-disable-line react/prop-types
+export const AppOrderProvider = ({ children }) => {
+  // eslint-disable-line react/prop-types
   const { lastVisited } = useContext(LastVisitedContext);
   const { app } = useModules();
   const stripes = useStripes();
@@ -120,9 +122,12 @@ export const AppOrderProvider = ({ children }) => { // eslint-disable-line react
   const { formatMessage } = useIntl();
   const { getPreference, setPreference, removePreference } = usePreferences();
 
-  const { data: userAppList, isLoading, refetch: refetchAppList } = useQuery(
-    `${stripes?.user?.user?.id}-pref-query`,
-    () => getPreference({ key: APPORDER_PREF_NAME, scope: APPORDER_PREF_SCOPE })
+  const {
+    data: userAppList,
+    isLoading,
+    refetch: refetchAppList,
+  } = useQuery(`${stripes?.user?.user?.id}-pref-query`, () =>
+    getPreference({ key: APPORDER_PREF_NAME, scope: APPORDER_PREF_SCOPE }),
   );
 
   // returns list of apps in user-defined order. By alpha if no order defined.
@@ -198,13 +203,14 @@ export const AppOrderProvider = ({ children }) => { // eslint-disable-line react
   };
 
   return (
-    <AppOrderContext.Provider value={{
-      isLoading,
-      apps: apps.navList,
-      appNavOrder: apps.orderedApps,
-      updateList,
-      reset
-    }}
+    <AppOrderContext.Provider
+      value={{
+        isLoading,
+        apps: apps.navList,
+        appNavOrder: apps.orderedApps,
+        updateList,
+        reset,
+      }}
     >
       {children}
     </AppOrderContext.Provider>

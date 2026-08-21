@@ -11,11 +11,11 @@ const stripes = new Stripes({
       john: true,
       george: true,
       ringo: true,
-    }
+    },
   },
   logger: {
     log: jest.fn(),
-  }
+  },
 });
 
 describe('IfPermission', () => {

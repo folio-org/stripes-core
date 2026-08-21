@@ -13,13 +13,18 @@ jest.mock('../../StripesContext', () => ({
     config: {
       tenantOptions: {
         bertha: { name: 'bertha', displayName: 'Big Bertha' },
-      }
-    }
-  })
+      },
+    },
+  }),
 }));
 
 jest.mock('../OrganizationLogo', () => () => 'OrganizationLogo');
-jest.mock('../AuthErrorsContainer', () => ({ errors = [] }) => errors[0]?.code);
+jest.mock(
+  '../AuthErrorsContainer',
+  () =>
+    ({ errors = [] }) =>
+      errors[0]?.code,
+);
 jest.mock('react-router-dom', () => ({
   Redirect: () => '<Redirect />',
 }));
@@ -31,9 +36,7 @@ jest.mock('@folio/stripes-components', () => ({
   Button: jest.fn(({ children, disabled, onClick = jest.fn() }) => {
     return (
       <button data-test-button onClick={onClick} disabled={disabled} type="submit">
-        <span>
-          {children}
-        </span>
+        <span>{children}</span>
       </button>
     );
   }),
@@ -45,9 +48,9 @@ describe('ForgotPasswordForm', () => {
   it('displays headline, input field, submit button', () => {
     render(<ForgotPasswordForm onSubmit={jest.fn()} />);
 
-    expect(screen.getByText('stripes-core.label.forgotPassword'));
-    expect(screen.getByText('stripes-core.placeholder.field.forgotPassword'));
-    expect(screen.getByText('stripes-core.button.continue'));
+    screen.getByText('stripes-core.label.forgotPassword');
+    screen.getByText('stripes-core.placeholder.field.forgotPassword');
+    screen.getByText('stripes-core.button.continue');
   });
 
   it('enables submit conditionally', async () => {
@@ -63,12 +66,10 @@ describe('ForgotPasswordForm', () => {
   });
 
   it('passes errors through to AuthErrorsContainer', () => {
-    const errors = [
-      { message: 'this is an error message!', code: 'code', type: 'type' }
-    ];
+    const errors = [{ message: 'this is an error message!', code: 'code', type: 'type' }];
 
     render(<ForgotPasswordForm errors={errors} onSubmit={jest.fn()} />);
-    expect(screen.getByText(errors[0].code));
+    screen.getByText(errors[0].code);
   });
 
   it('calls onSubmit', async () => {
@@ -110,7 +111,7 @@ describe('ForgotPassword', () => {
     await user.click(submit);
 
     await waitFor(() => {
-      expect(screen.getByText('<Redirect />'));
+      screen.getByText('<Redirect />');
     });
   });
 
@@ -120,14 +121,17 @@ describe('ForgotPassword', () => {
 
     const mockUseForgotPasswordMutation = useForgotPasswordMutation;
     mockUseForgotPasswordMutation.mockReturnValue({
-      mutateAsync: () => Promise.reject({ // eslint-disable-line prefer-promise-reject-errors
-        response: {
-          json: () => Promise.resolve({
-            errorMessage: 'some error',
-          }),
-          status: 400,
-        }
-      }),
+      mutateAsync: () =>
+        Promise.reject({
+          // eslint-disable-line prefer-promise-reject-errors
+          response: {
+            json: () =>
+              Promise.resolve({
+                errorMessage: 'some error',
+              }),
+            status: 400,
+          },
+        }),
     });
 
     render(<ForgotPassword />);
@@ -140,7 +144,7 @@ describe('ForgotPassword', () => {
     await user.click(submit);
 
     await waitFor(() => {
-      expect(screen.getByText(defaultErrors.FORGOTTEN_PASSWORD_CLIENT_ERROR.code));
+      screen.getByText(defaultErrors.FORGOTTEN_PASSWORD_CLIENT_ERROR.code);
     });
   });
 });

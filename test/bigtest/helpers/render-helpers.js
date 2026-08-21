@@ -24,7 +24,7 @@ export async function mount(component) {
  * and react-intl.
  */
 export async function mountWithContext(component) {
-  await (mount(<Harness>{component}</Harness>));
+  await mount(<Harness>{component}</Harness>);
 }
 
 export function selectorFromClassnameString(str) {

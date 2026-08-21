@@ -9,14 +9,18 @@ jest.mock('../Root/token-util');
 const stripes = {
   config: {
     rtr: {
-      idleModalTTL: '99s'
-    }
-  }
+      idleModalTTL: '99s',
+    },
+  },
 };
 
 describe('KeepWorkingModal', () => {
   it('renders a modal with seconds remaining', async () => {
-    render(<Harness stripes={stripes}><KeepWorkingModal /></Harness>);
+    render(
+      <Harness stripes={stripes}>
+        <KeepWorkingModal />
+      </Harness>,
+    );
     screen.getByText(/stripes-core.rtr.idleSession.timeRemaining/);
     screen.getByText(/01:39/);
   });
@@ -25,19 +29,27 @@ describe('KeepWorkingModal', () => {
     const zeroSecondsStripes = {
       config: {
         rtr: {
-          idleModalTTL: '0s'
-        }
-      }
+          idleModalTTL: '0s',
+        },
+      },
     };
 
-    render(<Harness stripes={zeroSecondsStripes}><KeepWorkingModal /></Harness>);
+    render(
+      <Harness stripes={zeroSecondsStripes}>
+        <KeepWorkingModal />
+      </Harness>,
+    );
     screen.getByText(/stripes-core.rtr.idleSession.timeRemaining/);
     screen.getByText(/0:00/);
   });
 
   it('calls the callback', async () => {
     const callback = jest.fn();
-    render(<Harness stripes={stripes}><KeepWorkingModal callback={callback} /></Harness>);
+    render(
+      <Harness stripes={stripes}>
+        <KeepWorkingModal callback={callback} />
+      </Harness>,
+    );
     await userEvent.click(screen.getByRole('button'));
     expect(callback).toHaveBeenCalled();
   });
@@ -51,12 +63,16 @@ describe('KeepWorkingModal', () => {
       const zeroSecondsStripes = {
         config: {
           rtr: {
-            idleModalTTL: '10s'
-          }
-        }
+            idleModalTTL: '10s',
+          },
+        },
       };
 
-      render(<Harness stripes={zeroSecondsStripes}><KeepWorkingModal /></Harness>);
+      render(
+        <Harness stripes={zeroSecondsStripes}>
+          <KeepWorkingModal />
+        </Harness>,
+      );
 
       expect(setInterval).toHaveBeenCalledTimes(1);
       expect(setInterval).toHaveBeenLastCalledWith(expect.any(Function), 1000);

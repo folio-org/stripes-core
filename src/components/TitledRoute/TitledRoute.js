@@ -14,26 +14,20 @@ class TitledRoute extends React.Component {
     intl: PropTypes.shape({
       formatMessage: PropTypes.func,
     }),
-    name: PropTypes.string
+    name: PropTypes.string,
   };
 
   render() {
-    const {
-      name,
-      component,
-      computedMatch,
-      intl,
-      ...rest
-    } = this.props;
+    const { name, component, computedMatch, intl, ...rest } = this.props;
 
     const componentWithExtraProps = computedMatch
       ? {
-        ...component,
-        props: {
-          ...component.props,
-          match: computedMatch,
+          ...component,
+          props: {
+            ...component.props,
+            match: computedMatch,
+          },
         }
-      }
       : component;
 
     return (
@@ -41,7 +35,9 @@ class TitledRoute extends React.Component {
         {...rest}
         render={() => (
           <RouteErrorBoundary escapeRoute="/">
-            <TitleManager page={intl.formatMessage({ id: `stripes-core.title.${name}`, defaultMessage: name })} />
+            <TitleManager
+              page={intl.formatMessage({ id: `stripes-core.title.${name}`, defaultMessage: name })}
+            />
             {componentWithExtraProps}
           </RouteErrorBoundary>
         )}

@@ -1,7 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-} from 'react';
+import React, { useState, useEffect } from 'react';
 import { useIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 
@@ -31,8 +28,8 @@ const PasswordRequirementsList = ({ passwordValue }) => {
   useEffect(() => {
     if (requiredRules.length <= 0 && rules?.length > 0) {
       const requiredRulesSet = rules
-        .filter(rule => passwordRequirementsNames.includes(rule.name))
-        .map(rule => {
+        .filter((rule) => passwordRequirementsNames.includes(rule.name))
+        .map((rule) => {
           // modify rule string away from the "The password must <rule description>"
           // to the "Must <rule description>"
 
@@ -53,48 +50,25 @@ const PasswordRequirementsList = ({ passwordValue }) => {
 
       setRequiredRules(requiredRulesSet);
     }
-  }, [
-    intl,
-    rules,
-    requiredRules.length,
-  ]);
+  }, [intl, rules, requiredRules.length]);
 
   useEffect(() => {
-    const unfulfilledRulesSet = requiredRules?.filter(rule => !new RegExp(rule.expression).test(passwordValue));
+    const unfulfilledRulesSet = requiredRules?.filter(
+      (rule) => !new RegExp(rule.expression).test(passwordValue),
+    );
 
     setUnfulfilledRules(unfulfilledRulesSet);
-  }, [
-    passwordValue,
-    requiredRules,
-    unfulfilledRules.length,
-  ]);
+  }, [passwordValue, requiredRules, unfulfilledRules.length]);
 
-  const rulesList = unfulfilledRules?.length
-    ? (
-      <ul
-        data-test-password-requirements-field
-        className={styles.rulesList}
-      >
-        {
-          unfulfilledRules?.map(rule => (
-            <li key={rule.ruleId}>
-              {rule.description}
-            </li>
-          ))
-        }
-      </ul>
-    )
-    : null;
+  const rulesList = unfulfilledRules?.length ? (
+    <ul data-test-password-requirements-field className={styles.rulesList}>
+      {unfulfilledRules?.map((rule) => (
+        <li key={rule.ruleId}>{rule.description}</li>
+      ))}
+    </ul>
+  ) : null;
 
-  return (
-    passwordValue
-      ? (
-        <Layout className="textLeft">
-          {rulesList}
-        </Layout>
-      )
-      : null
-  );
+  return passwordValue ? <Layout className="textLeft">{rulesList}</Layout> : null;
 };
 
 PasswordRequirementsList.propTypes = {

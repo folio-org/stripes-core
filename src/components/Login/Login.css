@@ -1,4 +1,4 @@
-@import "@folio/stripes-components/lib/variables.css";
+@import '@folio/stripes-components/lib/variables.css';
 
 .wrapper {
   display: flex;
@@ -70,7 +70,6 @@
       font-size: var(--font-size-medium);
     }
   }
-
 }
 
 @media (--large-up) {

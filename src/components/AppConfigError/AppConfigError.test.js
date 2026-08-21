@@ -6,7 +6,9 @@ jest.mock('../../StripesContext');
 jest.mock('../OrganizationLogo', () => () => 'OrganizationLogo');
 
 describe('AppConfigError', () => {
-  const mockBranding = { branding : { logo: { src: './test.png' }, favicon: { src: './test-icon.png' } } };
+  const mockBranding = {
+    branding: { logo: { src: './test.png' }, favicon: { src: './test-icon.png' } },
+  };
   const mockUseStripes = useStripes;
   mockUseStripes.mockReturnValue({ okapi: { isAuthenticated: true }, branding: mockBranding });
 

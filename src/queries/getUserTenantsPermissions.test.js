@@ -28,8 +28,8 @@ describe('getUserTenantsPermissions', () => {
     expect(mockFetch.mock.lastCall[0]).toMatch(/[stripes.okapi.url]/);
     expect(mockFetch.mock.lastCall[1]).toMatchObject({
       headers: {
-        'X-Okapi-Tenant': 'tenantId'
-      }
+        'X-Okapi-Tenant': 'tenantId',
+      },
     });
   });
 
@@ -47,7 +47,9 @@ describe('getUserTenantsPermissions', () => {
     await expect(mockFetch.mock.calls).toHaveLength(1);
 
     expect(mockFetch.mock.lastCall[0]).toMatch(/[stripes.okapi.url]/);
-    expect(mockFetch.mock.lastCall[1].headers.keys).toEqual(expect.not.arrayContaining(['X-Okapi-Token']));
+    expect(mockFetch.mock.lastCall[1].headers.keys).toEqual(
+      expect.not.arrayContaining(['X-Okapi-Token']),
+    );
   });
 
   it('response aggregates permissions across tenants', async () => {

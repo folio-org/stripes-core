@@ -1,30 +1,26 @@
-import {
-  discoverServices,
-  discoveryReducer,
-  isVersionCompatible,
-} from './discoverServices';
+import { discoverServices, discoveryReducer, isVersionCompatible } from './discoverServices';
 
 // fetch success: resolve promise with ok == true and $data in json()
 const mockFetchSuccess = (data) => {
-  global.fetch = jest.fn().mockImplementation(() => (
+  global.fetch = jest.fn().mockImplementation(() =>
     Promise.resolve({
       ok: true,
       json: () => Promise.resolve(data),
       text: () => Promise.resolve(data),
       headers: new Map(),
-    })
-  ));
+    }),
+  );
 };
 
 // fetch error: resolve promise with ok: false
 const mockFetchError = () => {
-  global.fetch = jest.fn().mockImplementation(() => (
+  global.fetch = jest.fn().mockImplementation(() =>
     Promise.resolve({
       ok: false,
       headers: new Map(),
       status: 400,
-    })
-  ));
+    }),
+  );
 };
 
 // fetch failure: reject promise with $error
@@ -40,8 +36,9 @@ const mockFetchCleanUp = () => {
 
 const TENANT_OPTIONS = {
   diku: {
-    name: 'diku', clientId: 'diku-application'
-  }
+    name: 'diku',
+    clientId: 'diku-application',
+  },
 };
 
 describe('discoverServices', () => {
@@ -55,7 +52,7 @@ describe('discoverServices', () => {
         okapi: {
           url: 'https://url.com',
           token: 'frodo',
-          tenant: 'elevenant'
+          tenant: 'elevenant',
         },
         config: {},
       }),
@@ -95,11 +92,11 @@ describe('discoverServices', () => {
       getState: () => ({
         okapi: {
           url: 'https://url.com',
-          token: 'frodo'
+          token: 'frodo',
         },
         config: {
           tenantOptions: TENANT_OPTIONS,
-        }
+        },
       }),
       dispatch: jest.fn(),
     };
@@ -108,41 +105,55 @@ describe('discoverServices', () => {
       const version = '1.2.3';
       const data = {
         totalRecords: 123,
-        applicationDescriptors: [{
-          moduleDescriptors: [{ a: 'A' }],
-          uiModuleDescriptors: [{ b: 'B' }],
-          uiModules: [{ c: 'C' }],
-        }],
+        applicationDescriptors: [
+          {
+            moduleDescriptors: [{ a: 'A' }],
+            uiModuleDescriptors: [{ b: 'B' }],
+            uiModules: [{ c: 'C' }],
+          },
+        ],
       };
 
       globalThis.fetch = jest.fn();
-      globalThis.fetch.mockImplementationOnce(() => (
+      globalThis.fetch.mockImplementationOnce(() =>
         Promise.resolve({
           ok: true,
           status: 200,
           json: () => Promise.resolve(data),
           text: () => Promise.resolve(data),
           headers: new Map(),
-        })
-      ));
-      globalThis.fetch.mockImplementationOnce(() => (
+        }),
+      );
+      globalThis.fetch.mockImplementationOnce(() =>
         Promise.resolve({
           ok: true,
           status: 200,
           json: () => Promise.resolve(version),
           text: () => Promise.resolve(version),
           headers: new Map(),
-        })
-      ));
+        }),
+      );
 
       await discoverServices(store);
       expect(store.dispatch).toHaveBeenCalledWith({ type: 'DISCOVERY_OKAPI', version });
 
-      expect(store.dispatch).toHaveBeenCalledWith({ type: 'DISCOVERY_APPLICATIONS', data: data.applicationDescriptors[0] });
+      expect(store.dispatch).toHaveBeenCalledWith({
+        type: 'DISCOVERY_APPLICATIONS',
+        data: data.applicationDescriptors[0],
+      });
 
-      expect(store.dispatch).toHaveBeenCalledWith({ type: 'DISCOVERY_INTERFACES', data: data.applicationDescriptors[0].moduleDescriptors[0] });
-      expect(store.dispatch).toHaveBeenCalledWith({ type: 'DISCOVERY_PERMISSION_DISPLAY_NAMES', data: data.applicationDescriptors[0].moduleDescriptors[0] });
-      expect(store.dispatch).toHaveBeenCalledWith({ type: 'DISCOVERY_PROVIDERS', data: data.applicationDescriptors[0].moduleDescriptors[0] });
+      expect(store.dispatch).toHaveBeenCalledWith({
+        type: 'DISCOVERY_INTERFACES',
+        data: data.applicationDescriptors[0].moduleDescriptors[0],
+      });
+      expect(store.dispatch).toHaveBeenCalledWith({
+        type: 'DISCOVERY_PERMISSION_DISPLAY_NAMES',
+        data: data.applicationDescriptors[0].moduleDescriptors[0],
+      });
+      expect(store.dispatch).toHaveBeenCalledWith({
+        type: 'DISCOVERY_PROVIDERS',
+        data: data.applicationDescriptors[0].moduleDescriptors[0],
+      });
     });
 
     it('throws when no records are present', async () => {
@@ -150,30 +161,29 @@ describe('discoverServices', () => {
       const data = {};
 
       globalThis.fetch = jest.fn();
-      globalThis.fetch.mockImplementationOnce(() => (
+      globalThis.fetch.mockImplementationOnce(() =>
         Promise.resolve({
           ok: true,
           status: 200,
           json: () => Promise.resolve(data),
           text: () => Promise.resolve(data),
           headers: new Map(),
-        })
-      ));
-      globalThis.fetch.mockImplementationOnce(() => (
+        }),
+      );
+      globalThis.fetch.mockImplementationOnce(() =>
         Promise.resolve({
           ok: true,
           status: 200,
           json: () => Promise.resolve(version),
           text: () => Promise.resolve(version),
           headers: new Map(),
-        })
-      ));
+        }),
+      );
 
       await discoverServices(store);
       expect(store.dispatch).toHaveBeenCalledWith({ type: 'DISCOVERY_OKAPI', version });
       expect(store.dispatch).toHaveBeenCalledWith({ type: 'DISCOVERY_FAILURE', code: 200 });
     });
-
 
     it('handles errors', async () => {
       mockFetchError();
@@ -200,10 +210,7 @@ describe('discoveryReducer', () => {
       { id: 'mod-a', provides: [{ id: 'if-a', version: '1.0' }] },
       { id: 'mod-b' },
     ];
-    const uiModules = [
-      { id: 'folio_c' },
-      { id: 'folio_d' },
-    ];
+    const uiModules = [{ id: 'folio_c' }, { id: 'folio_d' }];
     const action = {
       type: 'DISCOVERY_APPLICATIONS',
       data: {
@@ -218,13 +225,13 @@ describe('discoveryReducer', () => {
         [action.data.id]: {
           name: action.data.id,
           modules: [
-            ...moduleDescriptors.map((d) => (
-              {
-                name: d.id,
-                interfaces: d.provides?.map((i) => {
+            ...moduleDescriptors.map((d) => ({
+              name: d.id,
+              interfaces:
+                d.provides?.map((i) => {
                   return { name: i.id + ' ' + i.version };
-                }) || []
-              })),
+                }) || [],
+            })),
             ...uiModules.map((d) => ({ name: d.id, interfaces: [] })),
           ],
         },
@@ -238,15 +245,15 @@ describe('discoveryReducer', () => {
 
   it('handles DISCOVERY_PERMISSION_DISPLAY_NAMES', () => {
     let state = {
-      permissionDisplayNames: {}
+      permissionDisplayNames: {},
     };
     const action = {
       type: 'DISCOVERY_PERMISSION_DISPLAY_NAMES',
       data: {
         permissionSets: [
-          { 'permissionName': 'perm1', 'displayName': 'Admin Permission' },
-          { 'permissionName': 'perm2', 'displayName': 'Read-only Permission' }
-        ]
+          { permissionName: 'perm1', displayName: 'Admin Permission' },
+          { permissionName: 'perm2', displayName: 'Read-only Permission' },
+        ],
       },
     };
 
@@ -258,7 +265,7 @@ describe('discoveryReducer', () => {
 
   it('handles DISCOVERY_OKAPI', () => {
     let state = {
-      okapi: '0.0.0'
+      okapi: '0.0.0',
     };
     const action = {
       type: 'DISCOVERY_OKAPI',
@@ -294,7 +301,7 @@ describe('discoveryReducer', () => {
     };
 
     const mapped = {};
-    action.data.forEach(i => {
+    action.data.forEach((i) => {
       mapped[i.id] = i.name;
     });
 
@@ -313,11 +320,11 @@ describe('discoveryReducer', () => {
           { id: 'b', version: '2.2' },
           { id: 'g', version: '3.3' },
         ],
-      }
+      },
     };
 
     const mapped = {};
-    action.data.provides.forEach(i => {
+    action.data.provides.forEach((i) => {
       mapped[i.id] = i.version;
     });
 
@@ -330,7 +337,7 @@ describe('discoveryReducer', () => {
     let state = {};
     const action = {
       type: 'DISCOVERY_INTERFACES',
-      data: {}
+      data: {},
     };
 
     state = discoveryReducer(state, action);
@@ -354,7 +361,7 @@ describe('discoveryReducer', () => {
 
     const mapped = {
       id: action.data.id,
-      provides: action.data.provides.map(j => ({ id: j.id, version: j.version })),
+      provides: action.data.provides.map((j) => ({ id: j.id, version: j.version })),
     };
 
     state = discoveryReducer(state, action);
@@ -391,7 +398,7 @@ describe('discoveryReducer', () => {
 
   it('passes state through for other actions', () => {
     let state = {
-      monkey: 'bagel'
+      monkey: 'bagel',
     };
     const action = {
       type: 'THUNDER_CHICKEN',
@@ -402,7 +409,6 @@ describe('discoveryReducer', () => {
     expect(state).toMatchObject(state);
   });
 });
-
 
 describe('isVersionCompatible', () => {
   it('rejects incompatible majors', () => {
@@ -429,4 +435,3 @@ describe('isVersionCompatible', () => {
     expect(isVersionCompatible('3.0.1', '3.0.0')).toBe(true);
   });
 });
-
