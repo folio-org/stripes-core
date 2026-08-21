@@ -1,1 +1,1 @@
-export { default } from "./NoPermissionScreen";
+export { default } from './NoPermissionScreen';

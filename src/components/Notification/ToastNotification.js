@@ -1,11 +1,11 @@
-import React from "react";
-import PropTypes from "prop-types";
-import classNames from "classnames";
-import { Transition } from "react-transition-group";
+import React from 'react';
+import PropTypes from 'prop-types';
+import classNames from 'classnames';
+import { Transition } from 'react-transition-group';
 
-import { Button, Icon, Layout } from "@folio/stripes-components";
+import { Button, Icon, Layout } from '@folio/stripes-components';
 
-import css from "./Toast.css";
+import css from './Toast.css';
 
 const propTypes = {
   /*
@@ -40,8 +40,8 @@ const propTypes = {
 };
 
 const defaultProps = {
-  position: "end bottom",
-  transition: "slide",
+  position: 'end bottom',
+  transition: 'slide',
   timeout: 6000,
 };
 
@@ -75,21 +75,21 @@ class ToastNotification extends React.Component {
     const { type } = this.props;
     return classNames(
       css.base,
-      { [`${css.error}`]: type === "error" },
-      { [`${css.success}`]: type === "success" },
+      { [`${css.error}`]: type === 'error' },
+      { [`${css.success}`]: type === 'success' },
     );
   }
 
   getTransitionClass() {
     const { position, transition } = this.props;
     return classNames(
-      { [`${css.startOutside}`]: /start\b/.test(position) && transition === "slide" },
+      { [`${css.startOutside}`]: /start\b/.test(position) && transition === 'slide' },
       {
         [`${css.endOutside}`]:
-          (/end\b/.test(position) && transition === "slide") || // eslint-disable-line no-mixed-operators
-          ((position === "top" || position === "bottom") && transition === "slide"),
+          (/end\b/.test(position) && transition === 'slide') || // eslint-disable-line no-mixed-operators
+          ((position === 'top' || position === 'bottom') && transition === 'slide'),
       },
-      { [`${css.fade}`]: transition === "fade" },
+      { [`${css.fade}`]: transition === 'fade' },
     );
   }
 

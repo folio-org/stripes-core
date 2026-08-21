@@ -1,21 +1,21 @@
-import React, { Component, Fragment } from "react";
-import PropTypes from "prop-types";
-import { combineReducers } from "redux";
-import { connect } from "react-redux";
-import { createBrowserHistory } from "history";
-import { IntlProvider } from "react-intl";
-import queryString from "query-string";
-import { QueryClientProvider } from "react-query";
-import { ApolloProvider } from "@apollo/client";
+import React, { Component, Fragment } from 'react';
+import PropTypes from 'prop-types';
+import { combineReducers } from 'redux';
+import { connect } from 'react-redux';
+import { createBrowserHistory } from 'history';
+import { IntlProvider } from 'react-intl';
+import queryString from 'query-string';
+import { QueryClientProvider } from 'react-query';
+import { ApolloProvider } from '@apollo/client';
 
-import { ErrorBoundary } from "@folio/stripes-components";
-import { metadata, icons as configIcons } from "stripes-config";
+import { ErrorBoundary } from '@folio/stripes-components';
+import { metadata, icons as configIcons } from 'stripes-config';
 
-import { ConnectContext } from "@folio/stripes-connect";
-import initialReducers from "../../initialReducers";
-import enhanceReducer from "../../enhanceReducer";
-import createApolloClient from "../../createApolloClient";
-import createReactQueryClient from "../../createReactQueryClient";
+import { ConnectContext } from '@folio/stripes-connect';
+import initialReducers from '../../initialReducers';
+import enhanceReducer from '../../enhanceReducer';
+import createApolloClient from '../../createApolloClient';
+import createReactQueryClient from '../../createReactQueryClient';
 import {
   addIcon,
   setSinglePlugin,
@@ -26,24 +26,24 @@ import {
   setCurrency,
   updateCurrentUser,
   setTranslations,
-} from "../../okapiActions";
-import { checkOkapiSession, loadTranslations, setTokenExpiry } from "../../loginServices";
-import { getQueryResourceKey, getCurrentModule } from "../../locationService";
-import Stripes from "../../Stripes";
-import RootWithIntl from "../../RootWithIntl";
-import SystemSkeleton from "../SystemSkeleton";
-import { configureRtr, rotationHandler, ResetTimer } from "./token-util";
-import { modulesInitialState } from "../../ModulesContext";
-import { RTR_FLS_TIMEOUT_EVENT, RTR_FLS_WARNING_EVENT } from "./constants";
+} from '../../okapiActions';
+import { checkOkapiSession, loadTranslations, setTokenExpiry } from '../../loginServices';
+import { getQueryResourceKey, getCurrentModule } from '../../locationService';
+import Stripes from '../../Stripes';
+import RootWithIntl from '../../RootWithIntl';
+import SystemSkeleton from '../SystemSkeleton';
+import { configureRtr, rotationHandler, ResetTimer } from './token-util';
+import { modulesInitialState } from '../../ModulesContext';
+import { RTR_FLS_TIMEOUT_EVENT, RTR_FLS_WARNING_EVENT } from './constants';
 
-import "./Root.css";
+import './Root.css';
 
-import { FFetch } from "./FFetch";
+import { FFetch } from './FFetch';
 
 if (!metadata) {
   // eslint-disable-next-line no-console
   console.error(
-    "No metadata harvested from package files, so you will not get app icons. Probably the stripes-core in your Stripes CLI is too old. Try `yarn global upgrade @folio/stripes-cli`",
+    'No metadata harvested from package files, so you will not get app icons. Probably the stripes-core in your Stripes CLI is too old. Try `yarn global upgrade @folio/stripes-cli`',
   );
 }
 
@@ -82,13 +82,13 @@ class Root extends Component {
 
     // pings when the session ends
     this.sessionTimeoutTimer = new ResetTimer((detail) => {
-      this.props.logger?.log("rtr-fls", "emitting RTR_FLS_TIMEOUT_EVENT");
+      this.props.logger?.log('rtr-fls', 'emitting RTR_FLS_TIMEOUT_EVENT');
       globalThis.dispatchEvent(new CustomEvent(RTR_FLS_TIMEOUT_EVENT, { detail }));
     }, this.props.logger);
 
     // pings when we need to show a "session is ending!" countdown-banner
     this.sessionTimeoutWarningTimer = new ResetTimer((detail) => {
-      this.props.logger?.log("rtr-fls", "emitting RTR_FLS_WARNING_EVENT");
+      this.props.logger?.log('rtr-fls', 'emitting RTR_FLS_WARNING_EVENT');
       globalThis.dispatchEvent(new CustomEvent(RTR_FLS_WARNING_EVENT, { detail }));
     }, this.props.logger);
 
@@ -131,7 +131,7 @@ class Root extends Component {
     // checkOkapiSession triggers loadTranslations for authenticated sessions
     const { locale: currentLocale, translations } = store.getState().okapi;
     if (!translations) {
-      const locale = currentLocale || this.props.config.locale || "en-US";
+      const locale = currentLocale || this.props.config.locale || 'en-US';
       // TODO: remove this after we load locale and translations at start from a public endpoint
       // unawaited async function; loadTranslations fetches locale JSON files
       // and saves them to redux
@@ -403,8 +403,8 @@ Root.propTypes = {
 
 Root.defaultProps = {
   history: createBrowserHistory(),
-  timezone: "UTC",
-  currency: "USD",
+  timezone: 'UTC',
+  currency: 'USD',
   okapiReady: false,
   serverDown: false,
   icons: {},

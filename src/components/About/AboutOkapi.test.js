@@ -1,60 +1,60 @@
 /* shhhh, eslint, it's ok. we need "unused" imports for mocks */
 /* eslint-disable no-unused-vars */
 
-import { render, screen } from "@folio/jest-config-stripes/testing-library/react";
+import { render, screen } from '@folio/jest-config-stripes/testing-library/react';
 
-import AboutOkapi from "./AboutOkapi";
-import { useStripes } from "../../StripesContext";
-import stripesConnect from "../../stripesConnect";
-import AboutEnabledModules from "./AboutEnabledModules";
+import AboutOkapi from './AboutOkapi';
+import { useStripes } from '../../StripesContext';
+import stripesConnect from '../../stripesConnect';
+import AboutEnabledModules from './AboutEnabledModules';
 
-jest.mock("../../StripesContext");
-jest.mock("../../stripesConnect");
-jest.mock("./AboutEnabledModules", () => () => <></>);
+jest.mock('../../StripesContext');
+jest.mock('../../stripesConnect');
+jest.mock('./AboutEnabledModules', () => () => <></>);
 
-describe("AboutOkapi", () => {
+describe('AboutOkapi', () => {
   const modules = {
     app: [
       {
-        module: "app-alpha",
-        version: "1.2.3",
+        module: 'app-alpha',
+        version: '1.2.3',
         okapiInterfaces: {
-          iAlpha: "1.0",
+          iAlpha: '1.0',
         },
       },
-      { module: "app-beta", version: "2.3.4" },
+      { module: 'app-beta', version: '2.3.4' },
     ],
     settings: [
-      { module: "settings-alpha", version: "3.4.5" },
-      { module: "settings-beta", version: "4.5.6" },
+      { module: 'settings-alpha', version: '3.4.5' },
+      { module: 'settings-beta', version: '4.5.6' },
     ],
     plugin: [
-      { module: "plugin-alpha", version: "5.6.7" },
-      { module: "plugin-beta", version: "6.7.8" },
+      { module: 'plugin-alpha', version: '5.6.7' },
+      { module: 'plugin-beta', version: '6.7.8' },
     ],
     typeThatHasNotBeenInventedYet: [
-      { module: "typeThatHasNotBeenInventedYet-alpha", version: "7.8.9" },
-      { module: "typeThatHasNotBeenInventedYet-beta", version: "8.9.10" },
+      { module: 'typeThatHasNotBeenInventedYet-alpha', version: '7.8.9' },
+      { module: 'typeThatHasNotBeenInventedYet-beta', version: '8.9.10' },
     ],
   };
 
   const stripes = {
     okapi: {
-      tenant: "barbie",
-      url: "https://oppie.edu",
+      tenant: 'barbie',
+      url: 'https://oppie.edu',
     },
     discovery: {
       modules,
       interfaces: {
-        bar: "1.0",
-        bat: "2.0",
+        bar: '1.0',
+        bat: '2.0',
       },
     },
   };
   const mockUseStripes = useStripes;
   mockUseStripes.mockReturnValue(stripes);
 
-  it("displays application version details", async () => {
+  it('displays application version details', async () => {
     render(<AboutOkapi />);
 
     expect(screen.getByText(/about.userInterface/)).toBeInTheDocument();

@@ -1,10 +1,10 @@
-import { interactor, scoped } from "@bigtest/interactor";
+import { interactor, scoped } from '@bigtest/interactor';
 
 @interactor
 class ChangePasswordErrorPageInteractor {
-  static defaultScope = "[data-test-change-password-error]";
+  static defaultScope = '[data-test-change-password-error]';
 
-  message = scoped("[data-test-message]");
+  message = scoped('[data-test-message]');
 }
 
 export default ChangePasswordErrorPageInteractor;

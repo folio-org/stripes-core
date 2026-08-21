@@ -1,11 +1,11 @@
-import React, { Suspense, useMemo } from "react";
-import PropTypes from "prop-types";
+import React, { Suspense, useMemo } from 'react';
+import PropTypes from 'prop-types';
 
-import { Loading } from "@folio/stripes-components";
+import { Loading } from '@folio/stripes-components';
 
-import { useModules } from "./ModulesContext";
-import { withStripes } from "./StripesContext";
-import { ModuleHierarchyProvider } from "./components";
+import { useModules } from './ModulesContext';
+import { withStripes } from './StripesContext';
+import { ModuleHierarchyProvider } from './components';
 
 const Pluggable = (props) => {
   const modules = useModules();
@@ -16,7 +16,7 @@ const Pluggable = (props) => {
 
     const wanted = props.stripes.plugins[props.type];
     // "@@" is a special case of explicitly chosen "no plugin"
-    if (!wanted || wanted !== "@@") {
+    if (!wanted || wanted !== '@@') {
       for (const name of Object.keys(plugins)) {
         const m = plugins[name];
         if (m.pluginType === props.type) {

@@ -4,9 +4,9 @@
  * deregistration functions used by AppContextMenu via context.
  */
 
-import React from "react";
-import PropTypes from "prop-types";
-import { AppCtxMenuContext } from "./AppCtxMenuContext";
+import React from 'react';
+import PropTypes from 'prop-types';
+import { AppCtxMenuContext } from './AppCtxMenuContext';
 
 class AppCtxMenuProvider extends React.Component {
   static propTypes = {

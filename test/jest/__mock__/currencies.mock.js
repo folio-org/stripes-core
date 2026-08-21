@@ -1,1 +1,1 @@
-jest.mock("currency-codes/data", () => ({ filter: () => [] }));
+jest.mock('currency-codes/data', () => ({ filter: () => [] }));

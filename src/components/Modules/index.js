@@ -1,4 +1,4 @@
-import withModule from "./withModule";
-import withModules from "./withModules";
+import withModule from './withModule';
+import withModules from './withModules';
 
 export { withModule, withModules };

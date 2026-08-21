@@ -1,9 +1,9 @@
-import React from "react";
-import PropTypes from "prop-types";
+import React from 'react';
+import PropTypes from 'prop-types';
 
-import { withLastVisited } from "../LastVisited";
+import { withLastVisited } from '../LastVisited';
 
-import css from "./MainContainer.css";
+import css from './MainContainer.css';
 
 const propTypes = {
   children: PropTypes.node.isRequired,

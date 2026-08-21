@@ -1,8 +1,8 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { Route as RouterRoute } from "react-router-dom";
+import React from 'react';
+import PropTypes from 'prop-types';
+import { Route as RouterRoute } from 'react-router-dom';
 
-export { Switch, Redirect } from "react-router-dom";
+export { Switch, Redirect } from 'react-router-dom';
 
 /**
  * Pass the children of a Route to the component that is responsible for rendering it.

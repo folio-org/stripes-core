@@ -1,9 +1,9 @@
-import React, { useRef, useEffect, useMemo, Suspense } from "react";
-import { FormattedMessage, useIntl } from "react-intl";
-import { useLocation } from "react-router";
-import { Switch, Route } from "react-router-dom";
+import React, { useRef, useEffect, useMemo, Suspense } from 'react';
+import { FormattedMessage, useIntl } from 'react-intl';
+import { useLocation } from 'react-router';
+import { Switch, Route } from 'react-router-dom';
 
-import { connectFor } from "@folio/stripes-connect";
+import { connectFor } from '@folio/stripes-connect';
 import {
   LoadingView,
   NavList,
@@ -11,19 +11,19 @@ import {
   NavListSection,
   Pane,
   Paneset,
-} from "@folio/stripes-components";
+} from '@folio/stripes-components';
 
-import About from "../About";
-import { StripesContext } from "../../StripesContext";
-import { useModules } from "../../ModulesContext";
-import { stripesShape } from "../../Stripes";
-import AppIcon from "../AppIcon";
-import { packageName } from "../../constants";
-import RouteErrorBoundary from "../RouteErrorBoundary";
-import { ModuleHierarchyProvider } from "../ModuleHierarchy";
-import ReleaseNotesLink, { RELEASE_NOTES_LINK_ATTRS } from "../ReleaseNotesLink";
+import About from '../About';
+import { StripesContext } from '../../StripesContext';
+import { useModules } from '../../ModulesContext';
+import { stripesShape } from '../../Stripes';
+import AppIcon from '../AppIcon';
+import { packageName } from '../../constants';
+import RouteErrorBoundary from '../RouteErrorBoundary';
+import { ModuleHierarchyProvider } from '../ModuleHierarchy';
+import ReleaseNotesLink, { RELEASE_NOTES_LINK_ATTRS } from '../ReleaseNotesLink';
 
-import css from "./Settings.css";
+import css from './Settings.css';
 
 const propTypes = {
   stripes: stripesShape.isRequired,
@@ -47,7 +47,7 @@ const Settings = ({ stripes }) => {
     return settingsModules
       .filter((x) =>
         stripes.hasPerm(
-          `settings.${x.module.replace(packageName.PACKAGE_SCOPE_REGEX, "")}.enabled`,
+          `settings.${x.module.replace(packageName.PACKAGE_SCOPE_REGEX, '')}.enabled`,
         ),
       )
       .sort((x, y) => x.displayName.toLowerCase().localeCompare(y.displayName.toLowerCase()))
@@ -111,7 +111,7 @@ const Settings = ({ stripes }) => {
 
   // To keep the top level parent menu item shown as active
   // when a child settings page is active
-  const activeLink = `/settings/${location.pathname.split("/")[2]}`;
+  const activeLink = `/settings/${location.pathname.split('/')[2]}`;
 
   return (
     <Suspense fallback={<LoadingView />}>
@@ -122,24 +122,24 @@ const Settings = ({ stripes }) => {
           paneTitleRef={paneTitleRef}
           id="settings-nav-pane"
         >
-          <NavList aria-label={intl.formatMessage({ id: "stripes-core.settings" })}>
+          <NavList aria-label={intl.formatMessage({ id: 'stripes-core.settings' })}>
             <NavListSection
               activeLink={activeLink}
-              label={intl.formatMessage({ id: "stripes-core.settings" })}
+              label={intl.formatMessage({ id: 'stripes-core.settings' })}
               className={css.navListSection}
             >
               {navLinks}
             </NavListSection>
           </NavList>
-          <NavList aria-label={intl.formatMessage({ id: "stripes-core.settingSystemInfo" })}>
+          <NavList aria-label={intl.formatMessage({ id: 'stripes-core.settingSystemInfo' })}>
             <NavListSection
-              label={intl.formatMessage({ id: "stripes-core.settingSystemInfo" })}
+              label={intl.formatMessage({ id: 'stripes-core.settingSystemInfo' })}
               activeLink={activeLink}
               className={css.navListSection}
             >
               <NavListItem {...RELEASE_NOTES_LINK_ATTRS}>
                 <ReleaseNotesLink>
-                  {intl.formatMessage({ id: "stripes-core.releaseNotes.settings" })}
+                  {intl.formatMessage({ id: 'stripes-core.releaseNotes.settings' })}
                 </ReleaseNotesLink>
               </NavListItem>
               <NavListItem to="/settings/about">
@@ -153,7 +153,7 @@ const Settings = ({ stripes }) => {
           <Route path="/settings/about" component={() => <About stripes={stripes} />} key="about" />
           <Route
             component={() => (
-              <div style={{ padding: "15px" }}>
+              <div style={{ padding: '15px' }}>
                 <FormattedMessage id="stripes-core.settingChoose" />
               </div>
             )}

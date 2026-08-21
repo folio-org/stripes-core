@@ -1,6 +1,6 @@
-import { useContext } from "react";
+import { useContext } from 'react';
 
-import ModuleHierarchyContext from "./ModuleHierarchyContext";
+import ModuleHierarchyContext from './ModuleHierarchyContext';
 
 const useCurrentModule = () => useContext(ModuleHierarchyContext);
 

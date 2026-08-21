@@ -1,7 +1,7 @@
-import React from "react";
+import React from 'react';
 
-jest.mock("@folio/stripes-components", () => ({
-  ...jest.requireActual("@folio/stripes-components"),
+jest.mock('@folio/stripes-components', () => ({
+  ...jest.requireActual('@folio/stripes-components'),
   loadDayJSLocale: jest.fn(),
   Accordion: jest.fn(({ children, ...rest }) => <span {...rest}>{children}</span>),
   AccordionSet: jest.fn(({ children, ...rest }) => <span {...rest}>{children}</span>),
@@ -20,7 +20,7 @@ jest.mock("@folio/stripes-components", () => ({
     }
 
     return (
-      <button data-test-button onClick={onClick} type={type || "button"}>
+      <button data-test-button onClick={onClick} type={type || 'button'}>
         <span>{children}</span>
       </button>
     );
@@ -42,7 +42,7 @@ jest.mock("@folio/stripes-components", () => ({
       </div>
     </div>
   )),
-  "datepicker-util": jest.fn(),
+  'datepicker-util': jest.fn(),
   Datepicker: jest.fn(({ ref, children, ...rest }) => (
     <div ref={ref} {...rest}>
       {children}
@@ -95,7 +95,7 @@ jest.mock("@folio/stripes-components", () => ({
   // failure that the modal isn't visible. oy, dismissible.
   Modal: jest.fn(({ children, label, dismissible, footer, ...rest }) => {
     return (
-      <div data-test={dismissible ? "" : ""} {...rest}>
+      <div data-test={dismissible ? '' : ''} {...rest}>
         <h1>{label}</h1>
         {children}
         {footer}

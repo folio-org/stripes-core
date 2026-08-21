@@ -4,10 +4,10 @@
  * Hidden until focused and sends the user to the main content when clicked
  */
 
-import React from "react";
-import { useIntl } from "react-intl";
-import NavButton from "../../NavButton";
-import css from "./SkipLink.css";
+import React from 'react';
+import { useIntl } from 'react-intl';
+import NavButton from '../../NavButton';
+import css from './SkipLink.css';
 
 const SkipIcon = () => (
   <svg className={css.skipLink__icon} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26">
@@ -23,7 +23,7 @@ const SkipLink = () => {
     <NavButton
       icon={<SkipIcon />}
       href="#ModuleContainer"
-      aria-label={intl.formatMessage({ id: "stripes-core.mainnav.skipMainNavigation" })}
+      aria-label={intl.formatMessage({ id: 'stripes-core.mainnav.skipMainNavigation' })}
       className={css.skipLink}
     />
   );

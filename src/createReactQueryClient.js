@@ -1,4 +1,4 @@
-import { QueryClient } from "react-query";
+import { QueryClient } from 'react-query';
 
 const cacheTimeMinutes = 5;
 

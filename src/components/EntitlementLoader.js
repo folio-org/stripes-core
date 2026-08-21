@@ -1,12 +1,12 @@
-import { useEffect, useState, useMemo } from "react";
-import PropTypes from "prop-types";
-import { getInstance } from "@module-federation/runtime";
-import { FormattedMessage } from "react-intl";
-import { useStripes } from "../StripesContext";
-import { useCallout } from "../CalloutContext";
-import { ModulesContext, useModules, modulesInitialState } from "../ModulesContext";
-import { loadEntitlement } from "./loadEntitlement";
-import { logRemoteDependencyViolations } from "./remoteDependencyValidation";
+import { useEffect, useState, useMemo } from 'react';
+import PropTypes from 'prop-types';
+import { getInstance } from '@module-federation/runtime';
+import { FormattedMessage } from 'react-intl';
+import { useStripes } from '../StripesContext';
+import { useCallout } from '../CalloutContext';
+import { ModulesContext, useModules, modulesInitialState } from '../ModulesContext';
+import { loadEntitlement } from './loadEntitlement';
+import { logRemoteDependencyViolations } from './remoteDependencyValidation';
 
 // class for carrying formatted callout error messages.
 class RemoteModuleLoadingError extends Error {
@@ -23,10 +23,10 @@ class RemoteModuleLoadingError extends Error {
  * logs error to stripes and throws the error.
  */
 const handleRemoteModuleError = (stripes, errorMsg, sendMessage, calloutMessage) => {
-  stripes.logger.log("core", errorMsg);
+  stripes.logger.log('core', errorMsg);
   // Leaving this as non-fatal for now.
   if (sendMessage) {
-    sendMessage({ type: "warning", message: calloutMessage });
+    sendMessage({ type: 'warning', message: calloutMessage });
   }
   // throw new Error(errorMsg);
 };
@@ -54,19 +54,19 @@ export const preloadModules = async (stripes, remotes) => {
   const loadFailures = [];
   const remoteResults = await Promise.allSettled(loaderArray);
   remoteResults.forEach((r, i) => {
-    if (r.status === "fulfilled") {
+    if (r.status === 'fulfilled') {
       remotes[i].getModule = () => r.value.default;
     } else {
       loadFailures.push({ name: remotes[i].name, reason: r.reason });
       stripes.logger.log(
-        "core",
+        'core',
         `Error loading remote module '${remotes[i].name}' from ${remotes[i].location}: ${r.reason}`,
       );
     }
   });
 
   if (loadFailures.length) {
-    const errorMsg = loadFailures.map((f) => `- ${f.name} : ${f.reason}`).join("\n");
+    const errorMsg = loadFailures.map((f) => `- ${f.name} : ${f.reason}`).join('\n');
     const calloutMessage = (
       <div>
         <FormattedMessage id="stripes-core.entitlementLoader.moduleError" />
@@ -108,7 +108,7 @@ const loadTranslations = async (stripes, module) => {
   // we only care about the name and region. This strips off any numbering system
   // and converts from kebab-case (the IETF standard) to snake_case (which we
   // somehow adopted for our files in Lokalise).
-  const locale = stripes.locale.split("-u-nu-")[0].replace("-", "_");
+  const locale = stripes.locale.split('-u-nu-')[0].replace('-', '_');
   const url = `${module.assetPath}/translations/${locale}.json`;
   const res = await fetch(url);
   if (res.ok) {
@@ -160,7 +160,7 @@ export const loadModuleAssets = async (stripes, module) => {
     const tx = await loadTranslations(stripes, module);
     let newDisplayName;
     if (module.displayName) {
-      if (typeof tx[module.displayName] === "string") {
+      if (typeof tx[module.displayName] === 'string') {
         newDisplayName = tx[module.displayName];
       } else {
         newDisplayName = tx[module.displayName][0].value;
@@ -173,7 +173,7 @@ export const loadModuleAssets = async (stripes, module) => {
     };
     return adjustedModule;
   } catch (e) {
-    stripes.logger.log("core", `Error loading assets for ${module.name}: ${e.message || e}`);
+    stripes.logger.log('core', `Error loading assets for ${module.name}: ${e.message || e}`);
     throw new Error(`Error loading assets for ${module.name}: ${e.message || e}`);
   }
 };
@@ -232,7 +232,7 @@ const EntitlementLoader = ({ children }) => {
           // load module assets (translations, icons)...
           const assetResults = await loadAllModuleAssets(stripes, remotes);
           assetResults.forEach((r, i) => {
-            if (r.status === "fulfilled") {
+            if (r.status === 'fulfilled') {
               remotesWithLoadedAssets.push(r.value);
             } else {
               loadFailures.push({ name: remotes[i].name, reason: r.reason });
@@ -240,7 +240,7 @@ const EntitlementLoader = ({ children }) => {
           });
 
           if (loadFailures.length) {
-            const errorMsg = loadFailures.map((f) => `- ${f.name}`).join("\n");
+            const errorMsg = loadFailures.map((f) => `- ${f.name}`).join('\n');
             const calloutMessage = (
               <div>
                 <FormattedMessage id="stripes-core.entitlementLoader.assetError" />

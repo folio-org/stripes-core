@@ -1,23 +1,23 @@
-import PropTypes from "prop-types";
-import { Field, Form } from "react-final-form";
-import { FormattedMessage, useIntl } from "react-intl";
+import PropTypes from 'prop-types';
+import { Field, Form } from 'react-final-form';
+import { FormattedMessage, useIntl } from 'react-intl';
 
-import { Button, Col, Headline, Row, TextField } from "@folio/stripes-components";
+import { Button, Col, Headline, Row, TextField } from '@folio/stripes-components';
 
-import { forgotFormErrorCodes } from "../../constants";
-import FieldLabel from "../CreateResetPassword/components/FieldLabel";
-import OrganizationLogo from "../OrganizationLogo";
-import AuthErrorsContainer from "../AuthErrorsContainer";
-import { useStripes } from "../../StripesContext";
-import SelectAndDispatchTenant from "../SelectAndDispatchTenant";
+import { forgotFormErrorCodes } from '../../constants';
+import FieldLabel from '../CreateResetPassword/components/FieldLabel';
+import OrganizationLogo from '../OrganizationLogo';
+import AuthErrorsContainer from '../AuthErrorsContainer';
+import { useStripes } from '../../StripesContext';
+import SelectAndDispatchTenant from '../SelectAndDispatchTenant';
 
-import styles from "../Login/Login.css";
+import styles from '../Login/Login.css';
 
 const ForgotUserNameForm = ({ errors = [], isValid, onSubmit }) => {
   const { branding, okapi } = useStripes();
   const intl = useIntl();
   const forgotUsernamePlaceholder = intl.formatMessage({
-    id: "stripes-core.placeholder.forgotUsername",
+    id: 'stripes-core.placeholder.forgotUsername',
   });
 
   return (

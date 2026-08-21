@@ -1,6 +1,6 @@
-import React from "react";
-import PropTypes from "prop-types";
-import css from "./Breadcrumbs.css";
+import React from 'react';
+import PropTypes from 'prop-types';
+import css from './Breadcrumbs.css';
 
 const propTypes = {
   links: PropTypes.array, // eslint-disable-line react/forbid-prop-types
@@ -13,7 +13,7 @@ function Breadcrumbs(props) {
         <a href={link.path}>{link.label}</a>
       </li>
     );
-    const dividerElem = <li key={`divider${i}`}>{">"}</li>;
+    const dividerElem = <li key={`divider${i}`}>{'>'}</li>;
     if (i !== props.links.length - 1) {
       return linkElem + dividerElem;
     }

@@ -1,8 +1,8 @@
-import { combineEpics, createEpicMiddleware, ofType } from "redux-observable";
-import { BehaviorSubject } from "rxjs";
-import { mergeMap, takeUntil } from "rxjs/operators";
+import { combineEpics, createEpicMiddleware, ofType } from 'redux-observable';
+import { BehaviorSubject } from 'rxjs';
+import { mergeMap, takeUntil } from 'rxjs/operators';
 
-import { actionTypes } from "./mainActions";
+import { actionTypes } from './mainActions';
 
 //
 // here be dragons, maybe. or if not dragons, something that is

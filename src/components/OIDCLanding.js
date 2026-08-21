@@ -1,15 +1,15 @@
-import PropTypes from "prop-types";
-import { useIntl } from "react-intl";
-import { useHistory } from "react-router";
+import PropTypes from 'prop-types';
+import { useIntl } from 'react-intl';
+import { useHistory } from 'react-router';
 
-import { Headline, Loading } from "@folio/stripes-components";
+import { Headline, Loading } from '@folio/stripes-components';
 
-import { LOGOUT_MESSAGES, requestUserWithPerms, storeLogoutTenant } from "../loginServices";
-import { useStripes } from "../StripesContext";
+import { LOGOUT_MESSAGES, requestUserWithPerms, storeLogoutTenant } from '../loginServices';
+import { useStripes } from '../StripesContext';
 
-import css from "./Front.css";
+import css from './Front.css';
 
-import useExchangeCode from "./useExchangeCode";
+import useExchangeCode from './useExchangeCode';
 
 /**
  * OIDCLanding: un-authenticated route handler for /oidc-landing.
@@ -36,7 +36,7 @@ const OIDCLanding = ({ handleRotation }) => {
   const initSession = (tokenData) => {
     if (tokenData) {
       storeLogoutTenant(okapi.tenant);
-      requestUserWithPerms(okapi, store, okapi.tenant, "").then(() => handleRotation(tokenData));
+      requestUserWithPerms(okapi, store, okapi.tenant, '').then(() => handleRotation(tokenData));
     }
   };
 
@@ -57,8 +57,8 @@ const OIDCLanding = ({ handleRotation }) => {
         </div>
         <Headline size="xx-large">
           {isLoading &&
-            intl.formatMessage({ id: "stripes-core.oidc.validatingAuthenticationToken" })}
-          {tokenData && intl.formatMessage({ id: "stripes-core.oidc.initializingSession" })}
+            intl.formatMessage({ id: 'stripes-core.oidc.validatingAuthenticationToken' })}
+          {tokenData && intl.formatMessage({ id: 'stripes-core.oidc.initializingSession' })}
         </Headline>
       </div>
     </div>

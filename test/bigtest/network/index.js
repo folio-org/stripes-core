@@ -1,4 +1,4 @@
-import camelCase from "lodash/camelCase";
+import camelCase from 'lodash/camelCase';
 
 // auto-import all mirage submodules
 
@@ -6,14 +6,14 @@ import camelCase from "lodash/camelCase";
 // of the filename, otherwise webpack will output duplicate filepaths
 //
 // see: https://github.com/webpack/webpack/issues/12087
-const req = require.context("./", true, /\.\/.*\.js$/);
+const req = require.context('./', true, /\.\/.*\.js$/);
 const modules = req.keys().reduce((acc, modulePath) => {
-  const moduleParts = modulePath.split("/");
+  const moduleParts = modulePath.split('/');
   const moduleType = moduleParts[1];
   const moduleName = moduleParts[2];
 
   if (moduleName) {
-    const moduleKey = camelCase(moduleName.replace(".js", ""));
+    const moduleKey = camelCase(moduleName.replace('.js', ''));
 
     return Object.assign(acc, {
       [moduleType]: {
@@ -21,7 +21,7 @@ const modules = req.keys().reduce((acc, modulePath) => {
         [moduleKey]: req(modulePath).default,
       },
     });
-  } else if (modulePath === "./config.js") {
+  } else if (modulePath === './config.js') {
     return Object.assign(acc, {
       baseConfig: req(modulePath).default,
     });

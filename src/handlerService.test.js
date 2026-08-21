@@ -1,7 +1,7 @@
-import { handleEvent, invokeEventHandlers } from "./handlerService";
+import { handleEvent, invokeEventHandlers } from './handlerService';
 
-describe("handleEvent", () => {
-  it("does nothing in modules without handlers", () => {
+describe('handleEvent', () => {
+  it('does nothing in modules without handlers', () => {
     const e = {};
     const stripes = {};
     const module = {
@@ -19,7 +19,7 @@ describe("handleEvent", () => {
       getModule: () => ({
         eventHandler: (ee, ss, dd) => ({ event: ee, stripes: ss, data: dd }),
       }),
-      handlerName: "eventHandler",
+      handlerName: 'eventHandler',
     };
     const d = {};
 
@@ -28,8 +28,8 @@ describe("handleEvent", () => {
   });
 });
 
-describe("invokeEventHandlers", () => {
-  it("invokes event handler on modules that contain them", () => {
+describe('invokeEventHandlers', () => {
+  it('invokes event handler on modules that contain them', () => {
     const e = {};
     const s = {
       connect: (component) => component,
@@ -42,7 +42,7 @@ describe("invokeEventHandlers", () => {
         getModule: () => ({
           eventHandler: (ee, ss, dd) => ({ event: ee, stripes: ss, data: dd }),
         }),
-        handlerName: "eventHandler",
+        handlerName: 'eventHandler',
       },
       {
         getModule: () => ({}),

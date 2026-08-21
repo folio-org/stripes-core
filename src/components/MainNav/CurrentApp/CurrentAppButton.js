@@ -2,11 +2,11 @@
  * CurrentAppButton
  */
 
-import React, { forwardRef } from "react";
-import PropTypes from "prop-types";
-import { Headline } from "@folio/stripes-components";
-import NavButton from "../NavButton";
-import css from "./CurrentApp.css";
+import React, { forwardRef } from 'react';
+import PropTypes from 'prop-types';
+import { Headline } from '@folio/stripes-components';
+import NavButton from '../NavButton';
+import css from './CurrentApp.css';
 
 const CurrentAppButton = forwardRef(
   ({ ariaLabel, badge, iconData, iconKey, id, label, open, to, ...rest }, ref) => (

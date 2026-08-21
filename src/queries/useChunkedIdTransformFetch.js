@@ -1,9 +1,9 @@
 // This is analagous to useChunkedCQLFetch, but instead can do an _arbitrary_ transformation on the provided ids
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { useQueries } from "react-query";
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useQueries } from 'react-query';
 
-import { chunk } from "lodash";
-import useOkapiKy from "../useOkapiKy";
+import { chunk } from 'lodash';
+import useOkapiKy from '../useOkapiKy';
 
 /* When fetching from a potentially large list of items,
  * make sure to chunk the request to avoid hitting limits.
@@ -67,7 +67,7 @@ const useChunkedIdTransformFetch = ({
             STEP_SIZE,
             tenantId,
           })
-        : ["stripes-core", endpoint, chunkedItem, tenantId];
+        : ['stripes-core', endpoint, chunkedItem, tenantId];
       queryArray.push({
         queryKey,
         // !WARNING! This is likely not the place to make query parameter changes

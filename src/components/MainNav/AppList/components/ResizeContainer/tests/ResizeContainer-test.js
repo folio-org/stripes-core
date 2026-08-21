@@ -2,20 +2,20 @@
  * ResizeContainer tests
  */
 /* eslint-disable react/prop-types */
-import React from "react";
-import times from "lodash/times";
-import { beforeEach, it, describe } from "mocha";
-import { HTML } from "@folio/stripes-testing";
+import React from 'react';
+import times from 'lodash/times';
+import { beforeEach, it, describe } from 'mocha';
+import { HTML } from '@folio/stripes-testing';
 
-import { mount } from "../../../../../../../test/bigtest/helpers/render-helpers";
+import { mount } from '../../../../../../../test/bigtest/helpers/render-helpers';
 
-import ResizeContainer from "../ResizeContainer";
+import ResizeContainer from '../ResizeContainer';
 
-const ResizeContainerInteractor = HTML.extend("ResizeContainer")
-  .selector("[data-test-resize-container]")
+const ResizeContainerInteractor = HTML.extend('ResizeContainer')
+  .selector('[data-test-resize-container]')
   .filters({
-    visibleCount: (el) => el.querySelectorAll("[data-test-resize-container-visible-item]").length,
-    hiddenCount: (el) => el.querySelectorAll("[data-test-resize-container-hidden-item]").length,
+    visibleCount: (el) => el.querySelectorAll('[data-test-resize-container-visible-item]').length,
+    hiddenCount: (el) => el.querySelectorAll('[data-test-resize-container-hidden-item]').length,
   });
 
 // The width of each item
@@ -41,8 +41,8 @@ const EXPECTED_HIDDEN_ITEMS = ITEMS.length - EXPECTED_VISIBLE_ITEMS;
  */
 const ResizeContainerMock = ({ items, wrapperWidth, itemWidth, hideAllWidth, offset, withRTL }) => {
   return (
-    <div dir={withRTL ? "rtl" : "ltr"}>
-      <div style={{ width: wrapperWidth, backgroundColor: "green", height: 100 }}>
+    <div dir={withRTL ? 'rtl' : 'ltr'}>
+      <div style={{ width: wrapperWidth, backgroundColor: 'green', height: 100 }}>
         <ResizeContainer
           className="my-test-interactor"
           items={items}
@@ -50,7 +50,7 @@ const ResizeContainerMock = ({ items, wrapperWidth, itemWidth, hideAllWidth, off
           offset={offset}
         >
           {({ hiddenItems }) => (
-            <div style={{ display: "flex", flex: 1, minWidth: 0, justifyContent: "flex-end" }}>
+            <div style={{ display: 'flex', flex: 1, minWidth: 0, justifyContent: 'flex-end' }}>
               {items.map((item) => {
                 const isHidden = hiddenItems.includes(item.id);
 
@@ -58,22 +58,22 @@ const ResizeContainerMock = ({ items, wrapperWidth, itemWidth, hideAllWidth, off
                   <span
                     {...{
                       [!isHidden
-                        ? "data-test-resize-container-visible-item"
-                        : "data-test-resize-container-hidden-item"]: true,
+                        ? 'data-test-resize-container-visible-item'
+                        : 'data-test-resize-container-hidden-item']: true,
                     }}
                     key={item.id}
                     style={{
                       flexShrink: 0,
                       height: 50,
-                      visibility: !isHidden ? "visible" : "hidden",
+                      visibility: !isHidden ? 'visible' : 'hidden',
                     }}
                   >
                     <button
                       id={`app-list-item-${item.id}`}
                       type="button"
-                      style={{ width: itemWidth, backgroundColor: "yellow" }}
+                      style={{ width: itemWidth, backgroundColor: 'yellow' }}
                     >
-                      {!isHidden ? `Visible Item ${item.id}` : "Not visible"}
+                      {!isHidden ? `Visible Item ${item.id}` : 'Not visible'}
                     </button>
                   </span>
                 );
@@ -86,7 +86,7 @@ const ResizeContainerMock = ({ items, wrapperWidth, itemWidth, hideAllWidth, off
   );
 };
 
-describe("ResizeContainer", () => {
+describe('ResizeContainer', () => {
   const resizeContainer = ResizeContainerInteractor();
 
   beforeEach(async () => {
@@ -120,13 +120,13 @@ describe("ResizeContainer", () => {
       );
     });
 
-    it("renders 0 visible items", () => resizeContainer.has({ visibleCount: 0 }));
+    it('renders 0 visible items', () => resizeContainer.has({ visibleCount: 0 }));
 
     it(`renders ${ITEMS.length} hidden items (equal to all items)`, () =>
       resizeContainer.has({ hiddenCount: ITEMS.length }));
   });
 
-  describe("If rendered with right-to-left direction", () => {
+  describe('If rendered with right-to-left direction', () => {
     beforeEach(async () => {
       await mount(
         <ResizeContainerMock

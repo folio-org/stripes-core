@@ -1,21 +1,21 @@
-import { render, screen } from "@folio/jest-config-stripes/testing-library/react";
-import { FormattedMessage } from "react-intl";
+import { render, screen } from '@folio/jest-config-stripes/testing-library/react';
+import { FormattedMessage } from 'react-intl';
 
-import AboutApplicationVersions from "./AboutApplicationVersions";
+import AboutApplicationVersions from './AboutApplicationVersions';
 
-describe("AboutApplicationVersions", () => {
-  it("displays application version details", async () => {
+describe('AboutApplicationVersions', () => {
+  it('displays application version details', async () => {
     const applications = {
       a: {
-        name: "Albus",
-        modules: [{ name: "apple" }, { name: "banana" }, { name: "cherry" }],
+        name: 'Albus',
+        modules: [{ name: 'apple' }, { name: 'banana' }, { name: 'cherry' }],
       },
       b: {
-        name: "Beetlejuice",
-        modules: [{ name: "alpha" }, { name: "barvo" }, { name: "charlie" }],
+        name: 'Beetlejuice',
+        modules: [{ name: 'alpha' }, { name: 'barvo' }, { name: 'charlie' }],
       },
     };
-    const id = "All passing tests are alike; each failing test fails in its own way.";
+    const id = 'All passing tests are alike; each failing test fails in its own way.';
     const message = <FormattedMessage id={id} />;
 
     render(<AboutApplicationVersions applications={applications} message={message} />);

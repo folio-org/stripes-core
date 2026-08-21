@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
-import PropTypes from "prop-types";
-import { FormattedMessage } from "react-intl";
-import ms from "ms";
+import { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
+import ms from 'ms';
 
-import { Button, Modal } from "@folio/stripes-components";
+import { Button, Modal } from '@folio/stripes-components';
 
-import { useStripes } from "../../StripesContext";
+import { useStripes } from '../../StripesContext';
 
 /**
  * KeepWorkingModal
@@ -44,7 +44,7 @@ const KeepWorkingModal = ({ callback }) => {
       return new Date(remainingMillis).toISOString().substring(14, 19);
     }
 
-    return "00:00";
+    return '00:00';
   };
 
   return (

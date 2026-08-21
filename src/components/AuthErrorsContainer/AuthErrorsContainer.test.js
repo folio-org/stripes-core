@@ -1,24 +1,24 @@
-import { render, screen } from "@folio/jest-config-stripes/testing-library/react";
+import { render, screen } from '@folio/jest-config-stripes/testing-library/react';
 
-import AuthErrorsContainer from "./AuthErrorsContainer";
+import AuthErrorsContainer from './AuthErrorsContainer';
 
-describe("AuthErrorsContainer", () => {
-  it("displays errors", async () => {
+describe('AuthErrorsContainer', () => {
+  it('displays errors', async () => {
     const errors = [
       {
-        code: "monkey",
-        translationNamespace: "test",
+        code: 'monkey',
+        translationNamespace: 'test',
       },
     ];
     await render(<AuthErrorsContainer errors={errors} />);
     screen.getByText(`${errors[0].translationNamespace}.${errors[0].code}`);
   });
 
-  it("provides default translation namespace", async () => {
+  it('provides default translation namespace', async () => {
     const errors = [
       {
-        code: "code",
-        type: "type",
+        code: 'code',
+        type: 'type',
       },
     ];
     await render(<AuthErrorsContainer errors={errors} />);

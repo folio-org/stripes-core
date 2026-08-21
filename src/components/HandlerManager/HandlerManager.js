@@ -1,10 +1,10 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { withModules } from "../Modules";
-import { stripesShape } from "../../Stripes";
-import { ModuleHierarchyProvider } from "../ModuleHierarchy";
+import React from 'react';
+import PropTypes from 'prop-types';
+import { withModules } from '../Modules';
+import { stripesShape } from '../../Stripes';
+import { ModuleHierarchyProvider } from '../ModuleHierarchy';
 
-import { invokeEventHandlers } from "../../handlerService";
+import { invokeEventHandlers } from '../../handlerService';
 
 class HandlerManager extends React.Component {
   static propTypes = {

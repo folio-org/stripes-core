@@ -1,1 +1,1 @@
-export { default } from "./TitledRoute";
+export { default } from './TitledRoute';

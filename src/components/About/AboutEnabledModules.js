@@ -1,15 +1,15 @@
-import _ from "lodash";
-import React from "react";
-import PropTypes from "prop-types";
-import { List } from "@folio/stripes-components";
+import _ from 'lodash';
+import React from 'react';
+import PropTypes from 'prop-types';
+import { List } from '@folio/stripes-components';
 
-import stripesConnect from "../../stripesConnect";
+import stripesConnect from '../../stripesConnect';
 
 class AboutEnabledModules extends React.Component {
   static manifest = Object.freeze({
     enabledModules: {
-      type: "okapi",
-      path: "_/proxy/tenants/!{tenantid}/modules",
+      type: 'okapi',
+      path: '_/proxy/tenants/!{tenantid}/modules',
     },
   });
 
@@ -34,7 +34,7 @@ class AboutEnabledModules extends React.Component {
     const itemFormatter = (key) => {
       let style = {};
       if (!em[key]) {
-        style = { color: "#ccc" };
+        style = { color: '#ccc' };
       }
 
       return (

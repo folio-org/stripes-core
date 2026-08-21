@@ -1,13 +1,13 @@
-import React from "react";
-import PropTypes from "prop-types";
-import classNames from "classnames";
-import { Link } from "react-router-dom";
+import React from 'react';
+import PropTypes from 'prop-types';
+import classNames from 'classnames';
+import { Link } from 'react-router-dom';
 
-import { Badge, Icon } from "@folio/stripes-components";
+import { Badge, Icon } from '@folio/stripes-components';
 
-import AppIcon from "../../AppIcon";
+import AppIcon from '../../AppIcon';
 
-import css from "./NavButton.css";
+import css from './NavButton.css';
 
 const propTypes = {
   ariaLabel: PropTypes.string,
@@ -74,7 +74,7 @@ const NavButton = React.forwardRef(
       </span>
     );
 
-    let Element = "span";
+    let Element = 'span';
     let clickableProps = {};
     const isInteractive = href || onClick || to;
 
@@ -82,7 +82,7 @@ const NavButton = React.forwardRef(
      * Is link
      */
     if (href) {
-      Element = "a";
+      Element = 'a';
       clickableProps = {
         href,
       };
@@ -101,8 +101,8 @@ const NavButton = React.forwardRef(
     /**
      * Is button (with onClick handler)
      */
-    if (typeof onClick === "function") {
-      Element = "button";
+    if (typeof onClick === 'function') {
+      Element = 'button';
       clickableProps = {
         onClick,
       };
@@ -127,8 +127,8 @@ const NavButton = React.forwardRef(
           )}
           {renderedIcon}
           {label && <span className={classNames(css.label, labelClassName)}>{label}</span>}
-          {typeof open === "boolean" && (
-            <Icon iconRootClass={css.caretIcon} icon={open ? "caret-up" : "caret-down"} />
+          {typeof open === 'boolean' && (
+            <Icon iconRootClass={css.caretIcon} icon={open ? 'caret-up' : 'caret-down'} />
           )}
         </span>
       </Element>

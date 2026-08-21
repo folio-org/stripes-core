@@ -1,11 +1,11 @@
-import * as stripes from "stripes-config";
+import * as stripes from 'stripes-config';
 
 const { assign, keys } = Object;
 
 const originalModules = assign({}, stripes.modules);
 const originalMeta = assign({}, stripes.metadata);
 
-export function withModule({ name, module, type = "app", displayName, fullName, ...config }) {
+export function withModule({ name, module, type = 'app', displayName, fullName, ...config }) {
   const moduleConfig = {
     module: name,
     getModule: () => module,
@@ -16,7 +16,7 @@ export function withModule({ name, module, type = "app", displayName, fullName, 
 
   const moduleMeta = {
     type,
-    name: name.replace(/.*\//, ""),
+    name: name.replace(/.*\//, ''),
     version: config.version,
     description: config.version,
     shortTitle: displayName,
@@ -68,10 +68,10 @@ export function clearConfig() {
 }
 
 export function clearAllCookies() {
-  const cookies = document.cookie.split(";");
+  const cookies = document.cookie.split(';');
 
   cookies.forEach((c) => {
-    const eqPos = c.indexOf("=");
+    const eqPos = c.indexOf('=');
     if (eqPos !== -1) {
       const name = c.substring(0, eqPos);
       document.cookie = `${name}=;max-age=0`;
@@ -88,7 +88,7 @@ export function setCookies(cookies) {
   if (Object.entries(cookies).length > 0) {
     document.cookie = Object.entries(cookies)
       .map(([key, val]) => `${key}=${val}`)
-      .join(";");
+      .join(';');
   } else {
     clearAllCookies();
   }

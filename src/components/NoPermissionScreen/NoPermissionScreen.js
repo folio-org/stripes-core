@@ -1,11 +1,11 @@
-import React from "react";
-import { FormattedMessage } from "react-intl";
+import React from 'react';
+import { FormattedMessage } from 'react-intl';
 
-import { Headline } from "@folio/stripes-components";
+import { Headline } from '@folio/stripes-components';
 
-import Pluggable from "../../Pluggable";
+import Pluggable from '../../Pluggable';
 
-import css from "./NoPermissionScreen.css";
+import css from './NoPermissionScreen.css';
 
 const NoPermissionScreen = () => {
   return (

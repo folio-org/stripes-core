@@ -1,13 +1,13 @@
-import _ from "lodash";
-import React from "react";
-import PropTypes from "prop-types";
-import { FormattedMessage } from "react-intl";
-import { useDeepCompareMemo } from "use-deep-compare";
+import _ from 'lodash';
+import React from 'react';
+import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
+import { useDeepCompareMemo } from 'use-deep-compare';
 
-import { Headline, List, MessageBanner } from "@folio/stripes-components";
+import { Headline, List, MessageBanner } from '@folio/stripes-components';
 
-import { isVersionCompatible } from "../../discoverServices";
-import css from "./About.css";
+import { isVersionCompatible } from '../../discoverServices';
+import css from './About.css';
 
 const WarningBanner = ({ interfaces, modules, bannerRef }) => {
   const allInterfaces = useDeepCompareMemo(() => {

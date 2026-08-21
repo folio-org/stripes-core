@@ -1,7 +1,7 @@
-import { isObject } from "lodash";
+import { isObject } from 'lodash';
 
-import { defaultErrors } from "./constants";
-import { setAuthError } from "./okapiActions";
+import { defaultErrors } from './constants';
+import { setAuthError } from './okapiActions';
 
 const getLoginErrors = (payload) => {
   try {
@@ -45,7 +45,7 @@ export default async function processBadResponse(dispatch, response, defaultClie
     actionPayload = [defaultErrors.DEFAULT_LOGIN_CLIENT_ERROR];
   }
 
-  if (typeof dispatch === "function") {
+  if (typeof dispatch === 'function') {
     dispatch(setAuthError(actionPayload));
     return undefined;
   } else {

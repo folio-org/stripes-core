@@ -1,7 +1,7 @@
-import React, { Component } from "react";
-import hoistNonReactStatics from "hoist-non-react-statics";
-import { withStripes } from "./StripesContext";
-import { stripesShape } from "./Stripes";
+import React, { Component } from 'react';
+import hoistNonReactStatics from 'hoist-non-react-statics';
+import { withStripes } from './StripesContext';
+import { stripesShape } from './Stripes';
 
 export default function stripesConnect(WrappedComponent, options) {
   class ConnectedComponent extends Component {

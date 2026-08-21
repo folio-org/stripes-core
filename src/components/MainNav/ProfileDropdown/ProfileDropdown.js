@@ -1,9 +1,9 @@
-import React, { Component } from "react";
-import { isFunction, kebabCase } from "lodash";
-import { compose } from "redux";
-import { withRouter } from "react-router";
-import PropTypes from "prop-types";
-import { FormattedMessage, injectIntl } from "react-intl";
+import React, { Component } from 'react';
+import { isFunction, kebabCase } from 'lodash';
+import { compose } from 'redux';
+import { withRouter } from 'react-router';
+import PropTypes from 'prop-types';
+import { FormattedMessage, injectIntl } from 'react-intl';
 
 import {
   Avatar,
@@ -14,14 +14,14 @@ import {
   NavList,
   NavListItem,
   NavListSection,
-} from "@folio/stripes-components";
+} from '@folio/stripes-components';
 
-import NavButton from "../NavButton";
-import css from "./ProfileDropdown.css";
-import { withModules } from "../../Modules";
-import { handleEvent } from "../../../handlerService";
-import validations from "../../../userDropdownLinksService";
-import IntlConsumer from "../../IntlConsumer";
+import NavButton from '../NavButton';
+import css from './ProfileDropdown.css';
+import { withModules } from '../../Modules';
+import { handleEvent } from '../../../handlerService';
+import validations from '../../../userDropdownLinksService';
+import IntlConsumer from '../../IntlConsumer';
 
 class ProfileDropdown extends Component {
   static propTypes = {
@@ -103,9 +103,9 @@ class ProfileDropdown extends Component {
     const isLocalLoginCheck = module.getModule()[check] || validations[check];
     let checkfn;
 
-    if (route === "/settings/myprofile/password") {
+    if (route === '/settings/myprofile/password') {
       checkfn = check
-        ? stripes.hasPerm("ui-myprofile.settings.change-password") && isLocalLoginCheck
+        ? stripes.hasPerm('ui-myprofile.settings.change-password') && isLocalLoginCheck
         : null;
     } else {
       checkfn = check ? isLocalLoginCheck : null;
@@ -171,7 +171,7 @@ class ProfileDropdown extends Component {
 
   onHome = () => {
     this.toggleDropdown();
-    this.navigateByUrl({ route: "/" });
+    this.navigateByUrl({ route: '/' });
   };
 
   getDropdownContent() {
@@ -179,8 +179,8 @@ class ProfileDropdown extends Component {
     const user = this.getUserData();
     const currentPerms = stripes.user ? stripes.user.perms : undefined;
     const messageId = stripes.okapi.ssoEnabled
-      ? "stripes-core.logoutKeepSso"
-      : "stripes-core.logout";
+      ? 'stripes-core.logoutKeepSso'
+      : 'stripes-core.logout';
 
     /**
      * Show perms, locale etc.
@@ -190,13 +190,13 @@ class ProfileDropdown extends Component {
     if (stripes.config?.showPerms) {
       const sortedPerms = Object.keys(currentPerms || {})
         .sort((a, b) => a.localeCompare(b))
-        .join(", ");
+        .join(', ');
       perms = (
         <IntlConsumer>
           {(intl) => {
             const items = [
-              `${intl.formatMessage({ id: "stripes-core.mainnav.profileDropdown.locale" })}: ${intl.locale}`,
-              `${intl.formatMessage({ id: "stripes-core.mainnav.profileDropdown.permissions" })}: ${sortedPerms}`,
+              `${intl.formatMessage({ id: 'stripes-core.mainnav.profileDropdown.locale' })}: ${intl.locale}`,
+              `${intl.formatMessage({ id: 'stripes-core.mainnav.profileDropdown.permissions' })}: ${sortedPerms}`,
             ];
 
             return (
@@ -262,7 +262,7 @@ class ProfileDropdown extends Component {
     return (
       <NavButton
         ariaLabel={intl.formatMessage(
-          { id: "stripes-core.mainnav.myProfileAriaLabel" },
+          { id: 'stripes-core.mainnav.myProfileAriaLabel' },
           {
             tenantName,
             servicePointName,
@@ -291,7 +291,7 @@ class ProfileDropdown extends Component {
           {tenantName && <span>{tenantName}</span>}
           {servicePointName && <span>{servicePointName}</span>}
         </span>
-        <Icon icon={open ? "caret-up" : "caret-down"} />
+        <Icon icon={open ? 'caret-up' : 'caret-down'} />
       </>
     ) : null;
   };

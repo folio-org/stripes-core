@@ -1,18 +1,18 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { FormattedMessage } from "react-intl";
-import { Headline, List } from "@folio/stripes-components";
+import React from 'react';
+import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
+import { Headline, List } from '@folio/stripes-components';
 
-import AboutAPIGateway from "./AboutAPIGateway";
-import AboutStripes from "./AboutStripes";
-import AboutUIModuleDetails from "./AboutUIModuleDetails";
-import AboutUIDependencies from "./AboutUIDependencies";
+import AboutAPIGateway from './AboutAPIGateway';
+import AboutStripes from './AboutStripes';
+import AboutUIModuleDetails from './AboutUIModuleDetails';
+import AboutUIDependencies from './AboutUIDependencies';
 
-import { withModules } from "../Modules";
-import css from "./About.css";
-import stripesCore from "../../../package";
-import { useStripes } from "../../StripesContext";
-import AboutEnabledModules from "./AboutEnabledModules";
+import { withModules } from '../Modules';
+import css from './About.css';
+import stripesCore from '../../../package';
+import { useStripes } from '../../StripesContext';
+import AboutEnabledModules from './AboutEnabledModules';
 
 const AboutOkapi = ({ modules }) => {
   const stripes = useStripes();
@@ -75,7 +75,7 @@ const AboutOkapi = ({ modules }) => {
         <AboutUIModuleDetails
           module={{
             ...stripesCore.stripes,
-            module: "stripes-core",
+            module: 'stripes-core',
             version: stripesCore.version,
           }}
           showDependencies

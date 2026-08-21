@@ -1,5 +1,5 @@
-import ky from "ky";
-import { useStripes } from "./StripesContext";
+import ky from 'ky';
+import { useStripes } from './StripesContext';
 
 /**
  * defaultOptions
@@ -11,14 +11,14 @@ const defaultOptions = ({ locale, tenant, currentTenant, timeout, defaultTimeout
   hooks: {
     beforeRequest: [
       (request) => {
-        request.headers.set("Accept-Language", locale);
+        request.headers.set('Accept-Language', locale);
       },
       (request) => {
-        request.headers.set("X-Okapi-Tenant", tenant || currentTenant);
+        request.headers.set('X-Okapi-Tenant', tenant || currentTenant);
       },
     ],
   },
-  mode: "cors",
+  mode: 'cors',
   prefixUrl: url,
   retry: 0,
   timeout: timeout || defaultTimeout,
@@ -34,7 +34,7 @@ const defaultOptions = ({ locale, tenant, currentTenant, timeout, defaultTimeout
  */
 export default ({ tenant, timeout, rtrIgnore = false } = {}) => {
   const {
-    locale = "en",
+    locale = 'en',
     tenant: currentTenant,
     timeout: defaultTimeout = 60000, // Kong has a default timeout of 60 seconds
     token,
@@ -44,7 +44,7 @@ export default ({ tenant, timeout, rtrIgnore = false } = {}) => {
   const kyOptions = defaultOptions({ locale, tenant, currentTenant, timeout, defaultTimeout, url });
   return ky.create({
     ...kyOptions,
-    credentials: "include",
+    credentials: 'include',
     // curry options on to fetch since ky <= v0.23.x does not do it for us
     // see /src/components/Root/FFetch.js for additional details.
     fetch: (request, options) => {
@@ -55,7 +55,7 @@ export default ({ tenant, timeout, rtrIgnore = false } = {}) => {
         ...kyOptions.hooks.beforeRequest,
         (request) => {
           if (token) {
-            request.headers.set("X-Okapi-Token", token);
+            request.headers.set('X-Okapi-Token', token);
           }
         },
       ],
@@ -75,7 +75,7 @@ export default ({ tenant, timeout, rtrIgnore = false } = {}) => {
  */
 export const usePublicGatewayKy = ({ tenant, timeout } = {}) => {
   const {
-    locale = "en",
+    locale = 'en',
     tenant: currentTenant,
     timeout: defaultTimeout = 60000, // Kong has a default timeout of 60 seconds
     url,

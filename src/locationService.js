@@ -1,6 +1,6 @@
-import { snakeCase, isEqual, forOwn, isEmpty, unset } from "lodash";
-import queryString from "query-string";
-import { replaceQueryResource } from "./locationActions";
+import { snakeCase, isEqual, forOwn, isEmpty, unset } from 'lodash';
+import queryString from 'query-string';
+import { replaceQueryResource } from './locationActions';
 
 export function getLocationQuery(location) {
   return location.query ? location.query : queryString.parse(location.search);
@@ -16,7 +16,7 @@ function removeEmpty(obj) {
 }
 
 export function getQueryResourceKey({ dataKey, module, queryResource }) {
-  const prefix = dataKey ? `${dataKey}#` : "";
+  const prefix = dataKey ? `${dataKey}#` : '';
   return `${prefix}${snakeCase(module)}_${queryResource}`;
 }
 
@@ -29,7 +29,7 @@ export function isQueryResourceModule(module, location) {
   if (!module) return false;
 
   const path = location.pathname;
-  const re = new RegExp(`^${module.route}|^/settings${module.route}`, "i");
+  const re = new RegExp(`^${module.route}|^/settings${module.route}`, 'i');
 
   return module.queryResource && path.match(re);
 }
@@ -62,7 +62,7 @@ export function updateLocation(module, curQuery, store, history, location) {
   const params = removeEmpty(Object.assign({}, locationQuery, stateQuery));
 
   let url = params._path || location.pathname;
-  unset(params, "_path");
+  unset(params, '_path');
 
   if (isEqual(curQuery, params) && url === location.pathname) {
     return curQuery;

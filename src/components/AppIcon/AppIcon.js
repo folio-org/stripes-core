@@ -5,25 +5,25 @@
  * in various places across the application
  */
 
-import React from "react";
-import PropTypes from "prop-types";
-import classnames from "classnames";
-import { withStripes } from "../../StripesContext";
-import css from "./AppIcon.css";
+import React from 'react';
+import PropTypes from 'prop-types';
+import classnames from 'classnames';
+import { withStripes } from '../../StripesContext';
+import css from './AppIcon.css';
 
 const AppIcon = ({
-  iconAlignment = "center",
+  iconAlignment = 'center',
   iconAriaHidden = true,
-  size = "medium",
+  size = 'medium',
   icon,
   alt,
   src,
   style,
   children,
   className,
-  tag = "span",
+  tag = 'span',
   app,
-  iconKey = "app",
+  iconKey = 'app',
   iconClassName,
   stripes,
 }) => {
@@ -56,13 +56,13 @@ const AppIcon = ({
 
       // Ignoring next block in tests since it can't be tested consistently
       // istanbul ignore next
-      if (!isRetina && size === "small" && appIcon.low && appIcon.low.src) {
+      if (!isRetina && size === 'small' && appIcon.low && appIcon.low.src) {
         appIconProps.src = appIcon.low.src;
       }
     }
 
     /* If we have an image passed as an object */
-    if (typeof icon === "object") {
+    if (typeof icon === 'object') {
       appIconProps = {
         src: icon.src,
         alt: icon.alt,
@@ -76,8 +76,8 @@ const AppIcon = ({
 
     return (
       <img
-        src={typeof src !== "undefined" ? src : appIconProps.src}
-        alt={typeof alt !== "undefined" ? alt : appIconProps.alt}
+        src={typeof src !== 'undefined' ? src : appIconProps.src}
+        alt={typeof alt !== 'undefined' ? alt : appIconProps.alt}
       />
     );
   };
@@ -125,9 +125,9 @@ AppIcon.propTypes = {
   }),
   iconClassName: PropTypes.string,
   iconAriaHidden: PropTypes.bool,
-  iconAlignment: PropTypes.oneOf(["center", "baseline"]),
+  iconAlignment: PropTypes.oneOf(['center', 'baseline']),
   iconKey: PropTypes.string,
-  size: PropTypes.oneOf(["small", "medium", "large"]),
+  size: PropTypes.oneOf(['small', 'medium', 'large']),
   src: PropTypes.string,
   stripes: PropTypes.shape({
     metadata: PropTypes.object,

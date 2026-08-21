@@ -1,12 +1,12 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { connect as reduxConnect } from "react-redux";
-import { withRouter, matchPath } from "react-router-dom";
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { connect as reduxConnect } from 'react-redux';
+import { withRouter, matchPath } from 'react-router-dom';
 
-import { ConnectContext } from "@folio/stripes-connect";
-import { requestLogin, requestSSOLogin, storeLogoutTenant } from "../../loginServices";
-import { setAuthError } from "../../okapiActions";
-import Login from "./Login";
+import { ConnectContext } from '@folio/stripes-connect';
+import { requestLogin, requestSSOLogin, storeLogoutTenant } from '../../loginServices';
+import { setAuthError } from '../../okapiActions';
+import Login from './Login';
 
 class LoginCtrl extends Component {
   static propTypes = {
@@ -31,7 +31,7 @@ class LoginCtrl extends Component {
 
   constructor(props) {
     super(props);
-    this.sys = require("stripes-config"); // eslint-disable-line global-require
+    this.sys = require('stripes-config'); // eslint-disable-line global-require
     this.tenant = this.sys.okapi.tenant;
     if (props.autoLogin && props.autoLogin.username) {
       this.handleSubmit(props.autoLogin);
@@ -56,8 +56,8 @@ class LoginCtrl extends Component {
     try {
       const json = await requestLogin(this.props.okapiUrl, this.context.store, this.tenant, data);
       await this.props.handleRotation(json.tokenExpiration);
-      if (matchPath(this.props.location.pathname, "/login")) {
-        this.props.history.push("/");
+      if (matchPath(this.props.location.pathname, '/login')) {
+        this.props.history.push('/');
       }
       storeLogoutTenant(this.tenant);
     } catch (e) {

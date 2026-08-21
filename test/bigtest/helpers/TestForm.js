@@ -4,10 +4,10 @@
   as the 'children' prop.
 */
 
-import React from "react";
-import PropTypes from "prop-types";
+import React from 'react';
+import PropTypes from 'prop-types';
 
-import { reduxForm } from "redux-form";
+import { reduxForm } from 'redux-form';
 
 class TestForm extends React.Component {
   static propTypes = {
@@ -20,5 +20,5 @@ class TestForm extends React.Component {
 }
 
 export default reduxForm({
-  form: "formsDemo",
+  form: 'formsDemo',
 })(TestForm);

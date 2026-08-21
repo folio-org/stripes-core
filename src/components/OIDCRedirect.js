@@ -1,13 +1,13 @@
-import { useRef } from "react";
-import { withRouter, Redirect } from "react-router";
-import { useLocation } from "react-router-dom";
-import queryString from "query-string";
+import { useRef } from 'react';
+import { withRouter, Redirect } from 'react-router';
+import { useLocation } from 'react-router-dom';
+import queryString from 'query-string';
 
-import { useStripes } from "../StripesContext";
+import { useStripes } from '../StripesContext';
 import {
   getUnauthorizedPathFromSession,
   removeUnauthorizedPathFromSession,
-} from "../loginServices";
+} from '../loginServices';
 
 /**
  * OIDCRedirect authenticated route handler for /oidc-landing.
@@ -60,7 +60,7 @@ const OIDCRedirect = () => {
     }
 
     const params = getParams();
-    return params?.fwd ?? "";
+    return params?.fwd ?? '';
   };
 
   return <Redirect to={getUrl()} />;

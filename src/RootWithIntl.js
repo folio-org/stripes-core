@@ -1,15 +1,15 @@
-import { useState, useEffect } from "react";
-import PropTypes from "prop-types";
-import { Route, Router, Switch } from "react-router-dom";
-import { Provider } from "react-redux";
-import { CookiesProvider } from "react-cookie";
+import { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
+import { Route, Router, Switch } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import { CookiesProvider } from 'react-cookie';
 
-import { connectFor } from "@folio/stripes-connect";
-import { Callout, HotKeys } from "@folio/stripes-components";
+import { connectFor } from '@folio/stripes-connect';
+import { Callout, HotKeys } from '@folio/stripes-components';
 
-import ModuleRoutes from "./ModuleRoutes";
-import events from "./events";
-import { SESSION_READY_EVENT } from "./components/Root/constants";
+import ModuleRoutes from './ModuleRoutes';
+import events from './events';
+import { SESSION_READY_EVENT } from './components/Root/constants';
 
 import {
   MainContainer,
@@ -35,13 +35,13 @@ import {
   SessionEventContainer,
   AppOrderProvider,
   QueryStateUpdater,
-} from "./components";
-import StaleBundleWarning from "./components/StaleBundleWarning";
-import EntitlementChangeBanner from "./components/EntitlementChangeBanner";
-import { StripesContext } from "./StripesContext";
-import { CalloutProvider } from "./CalloutContext";
-import AuthnLogin from "./components/AuthnLogin";
-import EntitlementLoader from "./components/EntitlementLoader";
+} from './components';
+import StaleBundleWarning from './components/StaleBundleWarning';
+import EntitlementChangeBanner from './components/EntitlementChangeBanner';
+import { StripesContext } from './StripesContext';
+import { CalloutProvider } from './CalloutContext';
+import AuthnLogin from './components/AuthnLogin';
+import EntitlementLoader from './components/EntitlementLoader';
 
 const RootWithIntl = ({
   disableAuth,
@@ -52,9 +52,9 @@ const RootWithIntl = ({
   sessionTimeoutTimer,
   sessionTimeoutWarningTimer,
   stripes,
-  token = "",
+  token = '',
 }) => {
-  const connect = connectFor("@folio/core", stripes.epics, stripes.logger);
+  const connect = connectFor('@folio/core', stripes.epics, stripes.logger);
   const connectedStripes = stripes.clone({ connect });
 
   const [callout, setCallout] = useState(null);
@@ -107,10 +107,10 @@ const RootWithIntl = ({
                               <AppOrderProvider>
                                 <MainNav stripes={connectedStripes} queryClient={queryClient} />
                                 {typeof connectedStripes?.config?.staleBundleWarning ===
-                                  "object" && <StaleBundleWarning />}
+                                  'object' && <StaleBundleWarning />}
                                 <EntitlementChangeBanner />
                                 <HandlerManager event={events.LOGIN} stripes={connectedStripes} />
-                                {(typeof connectedStripes.okapi !== "object" ||
+                                {(typeof connectedStripes.okapi !== 'object' ||
                                   connectedStripes.discovery.isFinished) && (
                                   <ModuleContainer id="content">
                                     <OverlayContainer />

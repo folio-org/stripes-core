@@ -1,12 +1,12 @@
-import { useLocation } from "react-router";
-import PropTypes from "prop-types";
+import { useLocation } from 'react-router';
+import PropTypes from 'prop-types';
 
-import { ModulesContext } from "./ModulesContext";
+import { ModulesContext } from './ModulesContext';
 
-import { packageName } from "./constants";
-import { AuthenticatedError, NoPermissionScreen, TitledRoute } from "./components";
+import { packageName } from './constants';
+import { AuthenticatedError, NoPermissionScreen, TitledRoute } from './components';
 
-import AppRoutes from "./AppRoutes";
+import AppRoutes from './AppRoutes';
 
 const propTypes = {
   stripes: PropTypes.shape({
@@ -33,11 +33,11 @@ function ModuleRoutes({ stripes }) {
         }
 
         const currentModule = modules.app.find((module) => {
-          const SEPARATOR = "/";
+          const SEPARATOR = '/';
 
           return `${SEPARATOR}${location.pathname.split(SEPARATOR)[1]}` === module.route;
         });
-        const moduleName = currentModule?.module?.replace(packageName.PACKAGE_SCOPE_REGEX, "");
+        const moduleName = currentModule?.module?.replace(packageName.PACKAGE_SCOPE_REGEX, '');
 
         // requested route is forbidden
         if (!stripes.hasPerm(`module.${moduleName}.enabled`)) {

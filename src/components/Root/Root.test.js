@@ -1,17 +1,17 @@
-import { render, screen } from "@folio/jest-config-stripes/testing-library/react";
+import { render, screen } from '@folio/jest-config-stripes/testing-library/react';
 
-import Root from "./Root";
-import { RTR_FLS_TIMEOUT_EVENT, RTR_FLS_WARNING_EVENT } from "./constants";
-import { modulesInitialState } from "../../ModulesContext";
+import Root from './Root';
+import { RTR_FLS_TIMEOUT_EVENT, RTR_FLS_WARNING_EVENT } from './constants';
+import { modulesInitialState } from '../../ModulesContext';
 
 let mockResetTimerCallbacks = [];
 
-jest.mock("../../loginServices", () => ({
+jest.mock('../../loginServices', () => ({
   loadTranslations: jest.fn(),
   checkOkapiSession: jest.fn(() => Promise.resolve()),
 }));
 
-jest.mock("./token-util", () => ({
+jest.mock('./token-util', () => ({
   configureRtr: jest.fn().mockReturnValue({ rtr: true }),
   rotationHandler: jest.fn().mockReturnValue(() => {}),
   ResetTimer: class {
@@ -25,19 +25,19 @@ jest.mock("./token-util", () => ({
     clear() {}
   },
 }));
-jest.mock("../SystemSkeleton", () => () => <div data-testid="system-skeleton">SystemSkeleton</div>);
-jest.mock("../../createApolloClient", () => jest.fn().mockReturnValue({}));
-jest.mock("../../createReactQueryClient", () => jest.fn().mockReturnValue({}));
-jest.mock("@apollo/client", () => ({ ApolloProvider: ({ children }) => <>{children}</> }));
-jest.mock("react-query", () => ({ QueryClientProvider: ({ children }) => <>{children}</> }));
-jest.mock("@folio/stripes-components", () => ({
+jest.mock('../SystemSkeleton', () => () => <div data-testid="system-skeleton">SystemSkeleton</div>);
+jest.mock('../../createApolloClient', () => jest.fn().mockReturnValue({}));
+jest.mock('../../createReactQueryClient', () => jest.fn().mockReturnValue({}));
+jest.mock('@apollo/client', () => ({ ApolloProvider: ({ children }) => <>{children}</> }));
+jest.mock('react-query', () => ({ QueryClientProvider: ({ children }) => <>{children}</> }));
+jest.mock('@folio/stripes-components', () => ({
   ErrorBoundary: ({ children }) => <>{children}</>,
 }));
 
 let latestContextFns = {};
 
-jest.mock("../../RootWithIntl", () => {
-  const { ConnectContext } = require("@folio/stripes-connect");
+jest.mock('../../RootWithIntl', () => {
+  const { ConnectContext } = require('@folio/stripes-connect');
   return ({ stripes }) => (
     <ConnectContext.Consumer>
       {(val) => {
@@ -53,8 +53,8 @@ jest.mock("../../RootWithIntl", () => {
 });
 
 const STRIPES_HUB_CONFIG = {
-  discoveryUrl: "http://okapi/discover",
-  hostUrl: "http://localhost",
+  discoveryUrl: 'http://okapi/discover',
+  hostUrl: 'http://localhost',
   remotesList: [],
 };
 
@@ -62,16 +62,16 @@ const makeStore = (stateOverrides = {}) => {
   const state = {
     okapi: {
       bindings: {},
-      currency: "USD",
+      currency: 'USD',
       currentPerms: {},
       currentUser: {},
       discovery: {},
       isAuthenticated: false,
-      locale: "en-US",
+      locale: 'en-US',
       okapiReady: false,
       plugins: {},
       serverDown: false,
-      timezone: "UTC",
+      timezone: 'UTC',
       token: undefined,
       translations: undefined,
       withoutOkapi: false,
@@ -94,13 +94,13 @@ const getRootComponent = (props = {}) => (
     store={makeStore()}
     logger={{ log: jest.fn() }}
     epics={{ add: jest.fn() }}
-    config={{ locale: "en-US", rtr: { enabled: true } }}
-    okapi={{ url: "http://okapi", tenant: "diku", withoutOkapi: false }}
+    config={{ locale: 'en-US', rtr: { enabled: true } }}
+    okapi={{ url: 'http://okapi', tenant: 'diku', withoutOkapi: false }}
     actionNames={[]}
     disableAuth
     defaultTranslations={{}}
     modules={{ app: [] }}
-    history={{ location: { pathname: "/", search: "" } }}
+    history={{ location: { pathname: '/', search: '' } }}
     stripesHub={STRIPES_HUB_CONFIG}
     {...props}
   />
@@ -108,14 +108,14 @@ const getRootComponent = (props = {}) => (
 
 const renderRoot = (props = {}) => render(getRootComponent(props));
 
-describe("Root component", () => {
+describe('Root component', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockResetTimerCallbacks = [];
     latestContextFns = {};
   });
 
-  it("shows server down message if serverDown state is true", () => {
+  it('shows server down message if serverDown state is true', () => {
     const store = makeStore({ okapi: { serverDown: true } });
 
     renderRoot({ store });
@@ -123,19 +123,19 @@ describe("Root component", () => {
     expect(screen.getByText(/server is forbidden, unreachable or down/i)).toBeInTheDocument();
   });
 
-  it("renders SystemSkeleton while translations not loaded", () => {
+  it('renders SystemSkeleton while translations not loaded', () => {
     const store = makeStore({ okapi: { translations: undefined } });
 
     renderRoot({ store });
 
-    expect(screen.getByTestId("system-skeleton")).toBeInTheDocument();
-    expect(screen.queryByTestId("root-with-intl")).toBeNull();
+    expect(screen.getByTestId('system-skeleton')).toBeInTheDocument();
+    expect(screen.queryByTestId('root-with-intl')).toBeNull();
   });
 
-  describe("when user is logged in and reloading the page", () => {
-    describe("and translations are loaded first", () => {
-      describe("and modules are loaded second", () => {
-        it("should display SystemSkeleton, otherwise will show login page flicker", () => {
+  describe('when user is logged in and reloading the page', () => {
+    describe('and translations are loaded first', () => {
+      describe('and modules are loaded second', () => {
+        it('should display SystemSkeleton, otherwise will show login page flicker', () => {
           // Initial state - no translations, not authenticated, okapi not ready
           const initialStore = makeStore({
             okapi: {
@@ -150,15 +150,15 @@ describe("Root component", () => {
           });
 
           // Should show SystemSkeleton (no translations)
-          expect(screen.getByTestId("system-skeleton")).toBeInTheDocument();
-          expect(screen.queryByTestId("root-with-intl")).toBeNull();
+          expect(screen.getByTestId('system-skeleton')).toBeInTheDocument();
+          expect(screen.queryByTestId('root-with-intl')).toBeNull();
 
           // Stage 1: Load translations first
           const stageOneState = {
             ...initialStore.getState(),
             okapi: {
               ...initialStore.getState().okapi,
-              translations: { title: "foo" },
+              translations: { title: 'foo' },
             },
           };
 
@@ -175,12 +175,12 @@ describe("Root component", () => {
           );
 
           // Should show SystemSkeleton (okapiReady is still false)
-          expect(screen.queryByTestId("root-with-intl")).toBeNull();
-          expect(screen.getByTestId("system-skeleton")).toBeInTheDocument();
+          expect(screen.queryByTestId('root-with-intl')).toBeNull();
+          expect(screen.getByTestId('system-skeleton')).toBeInTheDocument();
 
           // Stage 2: Load modules
           const stageTwoModules = {
-            app: [{ module: "QueryMod", route: "/app1" }],
+            app: [{ module: 'QueryMod', route: '/app1' }],
             settings: [],
           };
 
@@ -192,8 +192,8 @@ describe("Root component", () => {
           );
 
           // Should show SystemSkeleton (okapiReady is still false)
-          expect(screen.queryByTestId("root-with-intl")).toBeNull();
-          expect(screen.getByTestId("system-skeleton")).toBeInTheDocument();
+          expect(screen.queryByTestId('root-with-intl')).toBeNull();
+          expect(screen.getByTestId('system-skeleton')).toBeInTheDocument();
 
           // Stage 3: Complete session validation (authenticate user and set okapiReady)
           const stageThreeState = {
@@ -201,7 +201,7 @@ describe("Root component", () => {
             okapi: {
               ...stageOneState.okapi,
               okapiReady: true,
-              currentUser: { id: "user123", username: "testuser" },
+              currentUser: { id: 'user123', username: 'testuser' },
             },
           };
 
@@ -218,20 +218,20 @@ describe("Root component", () => {
           );
 
           // Should show RootWithIntl
-          expect(screen.getByTestId("root-with-intl")).toBeInTheDocument();
-          expect(screen.queryByTestId("system-skeleton")).toBeNull();
+          expect(screen.getByTestId('root-with-intl')).toBeInTheDocument();
+          expect(screen.queryByTestId('system-skeleton')).toBeNull();
         });
       });
     });
   });
 
-  it("addEpic only adds a new epic once", () => {
+  it('addEpic only adds a new epic once', () => {
     const mockAdd = jest.fn();
     const epic = jest.fn();
     const store = makeStore({
       okapi: {
         okapiReady: true,
-        translations: { title: "Home" },
+        translations: { title: 'Home' },
       },
     });
 
@@ -240,17 +240,17 @@ describe("Root component", () => {
       store,
     });
 
-    expect(latestContextFns.addEpic("epic1", epic)).toBe(true);
-    expect(latestContextFns.addEpic("epic1", epic)).toBe(false);
+    expect(latestContextFns.addEpic('epic1', epic)).toBe(true);
+    expect(latestContextFns.addEpic('epic1', epic)).toBe(false);
     expect(mockAdd).toHaveBeenCalledTimes(1);
   });
 
-  it("dispatches fixed-length timer events with timer details", () => {
-    const dispatchEvent = jest.spyOn(window, "dispatchEvent").mockImplementation(() => {});
+  it('dispatches fixed-length timer events with timer details', () => {
+    const dispatchEvent = jest.spyOn(window, 'dispatchEvent').mockImplementation(() => {});
     const store = makeStore({
       okapi: {
         okapiReady: true,
-        translations: { title: "Home" },
+        translations: { title: 'Home' },
       },
     });
 
@@ -276,19 +276,19 @@ describe("Root component", () => {
     dispatchEvent.mockRestore();
   });
 
-  it("updates queryResourceStateKey on modules change", () => {
-    window.location.search = "?x=1";
+  it('updates queryResourceStateKey on modules change', () => {
+    window.location.search = '?x=1';
     const store = makeStore();
     const initialModules = { app: [], settings: [] };
 
     const history = {
-      location: { pathname: "/qm", search: "?x=1" },
+      location: { pathname: '/qm', search: '?x=1' },
     };
 
     const queryModule = {
-      route: "/qm",
-      queryResource: "list",
-      module: "QueryMod",
+      route: '/qm',
+      queryResource: 'list',
+      module: 'QueryMod',
     };
 
     const props = {
@@ -304,7 +304,7 @@ describe("Root component", () => {
       okapi: {
         ...store.getState().okapi,
         okapiReady: true,
-        translations: { title: "Home" },
+        translations: { title: 'Home' },
       },
     };
 
@@ -325,18 +325,18 @@ describe("Root component", () => {
     );
 
     const passedReducer = jest.fn();
-    const result = latestContextFns.addReducer("query_mod_list", passedReducer);
+    const result = latestContextFns.addReducer('query_mod_list', passedReducer);
 
-    expect(passedReducer).toHaveBeenCalledWith({ x: "1" }, expect.anything());
+    expect(passedReducer).toHaveBeenCalledWith({ x: '1' }, expect.anything());
     expect(store.replaceReducer).toHaveBeenCalled();
     expect(result).toBe(true);
   });
 
-  describe("when modules are loading", () => {
-    it("should render SystemSkeleton to avoid stripes-connect calling addReducer without modules on initial render", () => {
+  describe('when modules are loading', () => {
+    it('should render SystemSkeleton to avoid stripes-connect calling addReducer without modules on initial render', () => {
       const store = makeStore({
         okapi: {
-          translations: { title: "Home" },
+          translations: { title: 'Home' },
           okapiReady: true,
         },
       });
@@ -346,23 +346,23 @@ describe("Root component", () => {
         modules: modulesInitialState, // No modules yet
       });
 
-      expect(screen.getByTestId("system-skeleton")).toBeInTheDocument();
+      expect(screen.getByTestId('system-skeleton')).toBeInTheDocument();
     });
   });
 
-  it("should call addReducer with query params from URL only when modules are loaded", () => {
-    const search = "?query=test&filters=status.active";
+  it('should call addReducer with query params from URL only when modules are loaded', () => {
+    const search = '?query=test&filters=status.active';
     window.location.search = search;
 
     const queryModule = {
-      route: "/users",
-      queryResource: "query",
-      module: "@folio/users",
+      route: '/users',
+      queryResource: 'query',
+      module: '@folio/users',
     };
 
     const history = {
       location: {
-        pathname: "/users",
+        pathname: '/users',
         search,
       },
     };
@@ -370,7 +370,7 @@ describe("Root component", () => {
     // Initial render with okapiReady=true but NO modules yet
     const store = makeStore({
       okapi: {
-        translations: { title: "Home" },
+        translations: { title: 'Home' },
         okapiReady: true, // Session check already complete
       },
     });
@@ -381,7 +381,7 @@ describe("Root component", () => {
       modules: modulesInitialState, // No modules yet
     });
 
-    expect(screen.getByTestId("system-skeleton")).toBeInTheDocument();
+    expect(screen.getByTestId('system-skeleton')).toBeInTheDocument();
 
     rerender(
       getRootComponent({
@@ -395,11 +395,11 @@ describe("Root component", () => {
     );
 
     const passedReducer = jest.fn();
-    const result = latestContextFns.addReducer("folio_users_query", passedReducer);
+    const result = latestContextFns.addReducer('folio_users_query', passedReducer);
 
     // The reducer should be initialized with the URL query parameters
     expect(passedReducer).toHaveBeenCalledWith(
-      { query: "test", filters: "status.active" },
+      { query: 'test', filters: 'status.active' },
       expect.anything(),
     );
     expect(store.replaceReducer).toHaveBeenCalled();

@@ -1,9 +1,9 @@
-import React from "react";
-import hoistNonReactStatics from "hoist-non-react-statics";
-import { ModulesContext } from "../../ModulesContext";
+import React from 'react';
+import hoistNonReactStatics from 'hoist-non-react-statics';
+import { ModulesContext } from '../../ModulesContext';
 
 function getDisplayName(WrappedComponent) {
-  return WrappedComponent.displayName || WrappedComponent.name || "Component";
+  return WrappedComponent.displayName || WrappedComponent.name || 'Component';
 }
 
 export default function withModules(WrappedComponent) {

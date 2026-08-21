@@ -1,10 +1,10 @@
-import React from "react";
-import { setupAppForTesting } from "./setupAppForTesting";
+import React from 'react';
+import { setupAppForTesting } from './setupAppForTesting';
 
-import Harness from "./Harness";
+import Harness from './Harness';
 
 // load these styles for our tests
-import "@folio/stripes-components/lib/global.css";
+import '@folio/stripes-components/lib/global.css';
 
 /**
  * mount a component
@@ -15,7 +15,7 @@ export async function mount(component) {
   };
 
   await setupAppForTesting(ComponentHarness, {
-    mountId: "testing-root",
+    mountId: 'testing-root',
   });
 }
 
@@ -28,5 +28,5 @@ export async function mountWithContext(component) {
 }
 
 export function selectorFromClassnameString(str) {
-  return str.replace(/\s/, ".");
+  return str.replace(/\s/, '.');
 }

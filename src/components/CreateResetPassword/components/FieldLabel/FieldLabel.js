@@ -1,7 +1,7 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
-import styles from "./FieldLabel.css";
+import styles from './FieldLabel.css';
 
 export default class FieldLabel extends Component {
   static propTypes = {

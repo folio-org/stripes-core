@@ -1,7 +1,7 @@
-import { render, screen, waitFor } from "@folio/jest-config-stripes/testing-library/react";
-import ms from "ms";
+import { render, screen, waitFor } from '@folio/jest-config-stripes/testing-library/react';
+import ms from 'ms';
 
-import Harness from "../../../test/jest/helpers/harness";
+import Harness from '../../../test/jest/helpers/harness';
 import SessionEventContainer, {
   otherWindowActivity,
   otherWindowStorage,
@@ -9,24 +9,24 @@ import SessionEventContainer, {
   thisWindowRtrError,
   thisWindowRtrFlsWarning,
   thisWindowRtrIstTimeout,
-} from "./SessionEventContainer";
-import { setUnauthorizedPathToSession, LOGOUT_MESSAGES, SESSION_NAME } from "../../loginServices";
-import { RTR_TIMEOUT_EVENT } from "../Root/constants";
+} from './SessionEventContainer';
+import { setUnauthorizedPathToSession, LOGOUT_MESSAGES, SESSION_NAME } from '../../loginServices';
+import { RTR_TIMEOUT_EVENT } from '../Root/constants';
 
-import { toggleRtrModal } from "../../okapiActions";
-import { eventsPortal } from "../../constants";
+import { toggleRtrModal } from '../../okapiActions';
+import { eventsPortal } from '../../constants';
 
-jest.mock("./KeepWorkingModal", () => () => <div>KeepWorkingModal</div>);
-jest.mock("../../loginServices");
+jest.mock('./KeepWorkingModal', () => () => <div>KeepWorkingModal</div>);
+jest.mock('../../loginServices');
 
 const stripes = {
   config: {
     useSecureTokens: true,
     rtr: {
-      idleModalTTL: "3s",
-      idleSessionTTL: "3s",
-      activityEvents: ["right thing", "hustle", "hand jive"],
-      fixedLengthSessionWarningTTL: "60s",
+      idleModalTTL: '3s',
+      idleSessionTTL: '3s',
+      activityEvents: ['right thing', 'hustle', 'hand jive'],
+      fixedLengthSessionWarningTTL: '60s',
     },
   },
   okapi: {
@@ -36,14 +36,14 @@ const stripes = {
   store: { dispatch: jest.fn() },
 };
 
-describe("SessionEventContainer", () => {
+describe('SessionEventContainer', () => {
   beforeAll(() => {
-    const eventsPortalElement = document.createElement("div");
+    const eventsPortalElement = document.createElement('div');
     eventsPortalElement.id = eventsPortal;
     document.body.appendChild(eventsPortalElement);
   });
 
-  it("Shows a modal when idle timer expires", async () => {
+  it('Shows a modal when idle timer expires', async () => {
     render(
       <Harness stripes={stripes}>
         <SessionEventContainer />
@@ -51,12 +51,12 @@ describe("SessionEventContainer", () => {
     );
 
     await waitFor(() => {
-      screen.getByText("KeepWorkingModal", { timeout: ms(stripes.config.rtr.idleModalTTL) });
+      screen.getByText('KeepWorkingModal', { timeout: ms(stripes.config.rtr.idleModalTTL) });
     });
   });
 
-  it("Dispatches logout when modal timer expires", async () => {
-    const dispatchEvent = jest.spyOn(globalThis, "dispatchEvent").mockImplementation(() => {});
+  it('Dispatches logout when modal timer expires', async () => {
+    const dispatchEvent = jest.spyOn(globalThis, 'dispatchEvent').mockImplementation(() => {});
     render(
       <Harness stripes={stripes}>
         <SessionEventContainer />
@@ -72,22 +72,22 @@ describe("SessionEventContainer", () => {
   });
 });
 
-describe("SessionEventContainer event listeners", () => {
-  it("thisWindowRtrError", async () => {
+describe('SessionEventContainer event listeners', () => {
+  it('thisWindowRtrError', async () => {
     const history = { push: jest.fn() };
 
     const setUnauthorizedPathToSessionMock = setUnauthorizedPathToSession;
     setUnauthorizedPathToSessionMock.mockReturnValue(null);
 
-    thisWindowRtrError(null, { okapi: { url: "http" } }, history);
+    thisWindowRtrError(null, { okapi: { url: 'http' } }, history);
     expect(setUnauthorizedPathToSession).toHaveBeenCalled();
     expect(history.push).toHaveBeenCalledWith(`/logout?reason=${LOGOUT_MESSAGES.ERROR}`);
   });
 
-  it("thisWindowRtrIstTimeout", async () => {
+  it('thisWindowRtrIstTimeout', async () => {
     const s = {
       okapi: {
-        url: "http",
+        url: 'http',
       },
       store: {},
       logger: {
@@ -101,7 +101,7 @@ describe("SessionEventContainer event listeners", () => {
     expect(history.push).toHaveBeenCalledWith(`/logout?reason=${LOGOUT_MESSAGES.INACTIVITY}`);
   });
 
-  it("thisWindowRtrFlsWarning", () => {
+  it('thisWindowRtrFlsWarning', () => {
     const setIsFlsVisible = jest.fn();
     const setFlsTimeRemaining = jest.fn();
     const stripesForWarning = { logger: { log: jest.fn() } };
@@ -117,16 +117,16 @@ describe("SessionEventContainer event listeners", () => {
     expect(setIsFlsVisible).toHaveBeenCalledWith(true);
   });
 
-  describe("otherWindowStorage", () => {
+  describe('otherWindowStorage', () => {
     beforeEach(() => {
       localStorage.removeItem(SESSION_NAME);
     });
 
-    it("timeout", async () => {
+    it('timeout', async () => {
       const e = { key: RTR_TIMEOUT_EVENT };
       const s = {
         okapi: {
-          url: "http",
+          url: 'http',
         },
         store: {},
         logger: {
@@ -139,11 +139,11 @@ describe("SessionEventContainer event listeners", () => {
       expect(history.push).toHaveBeenCalledWith(`/logout?reason=${LOGOUT_MESSAGES.INACTIVITY}`);
     });
 
-    it("logout", async () => {
-      const e = { key: "" };
+    it('logout', async () => {
+      const e = { key: '' };
       const s = {
         okapi: {
-          url: "http",
+          url: 'http',
         },
         store: {},
         logger: {
@@ -153,14 +153,14 @@ describe("SessionEventContainer event listeners", () => {
       const history = { push: jest.fn() };
 
       otherWindowStorage(e, s, history);
-      expect(history.push).toHaveBeenCalledWith("/logout");
+      expect(history.push).toHaveBeenCalledWith('/logout');
     });
   });
 
-  it("otherWindowActivity", () => {
-    const m = { key: "" };
+  it('otherWindowActivity', () => {
+    const m = { key: '' };
     const okapi = {
-      url: "http",
+      url: 'http',
       rtrModalIsVisible: true,
     };
     const s = {
@@ -188,11 +188,11 @@ describe("SessionEventContainer event listeners", () => {
     expect(s.store.dispatch).toHaveBeenCalledWith(expect.objectContaining(toggleRtrModal(false)));
   });
 
-  describe("thisWindowActivity", () => {
-    it("pings when modal is hidden", () => {
-      const e = { key: "" };
+  describe('thisWindowActivity', () => {
+    it('pings when modal is hidden', () => {
+      const e = { key: '' };
       const okapi = {
-        url: "http",
+        url: 'http',
         rtrModalIsVisible: false,
       };
       const s = {
@@ -222,10 +222,10 @@ describe("SessionEventContainer event listeners", () => {
       expect(postMessage).toHaveBeenCalled();
     });
 
-    it("does not ping when modal is visible", () => {
-      const e = { key: "" };
+    it('does not ping when modal is visible', () => {
+      const e = { key: '' };
       const okapi = {
-        url: "http",
+        url: 'http',
         rtrModalIsVisible: true,
       };
       const s = {

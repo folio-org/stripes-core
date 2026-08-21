@@ -1,6 +1,6 @@
-import _ from "lodash";
-import PropTypes from "prop-types";
-import { isVersionCompatible } from "./discoverServices";
+import _ from 'lodash';
+import PropTypes from 'prop-types';
+import { isVersionCompatible } from './discoverServices';
 
 export const stripesShape = PropTypes.shape({
   // Properties provided by the class
@@ -103,16 +103,16 @@ class Stripes {
   hasPerm(perm) {
     const logger = this.logger;
     if (this.config && this.config.hasAllPerms) {
-      logger.log("perm", `assuming perm '${perm}': hasAllPerms is true`);
+      logger.log('perm', `assuming perm '${perm}': hasAllPerms is true`);
       return true;
     }
     if (!this.user.perms) {
-      logger.log("perm", `not checking perm '${perm}': no user permissions yet`);
+      logger.log('perm', `not checking perm '${perm}': no user permissions yet`);
       return undefined;
     }
 
-    const ok = _.every(perm.split(","), (p) => !!this.user.perms[p]);
-    logger.log("perm", `checking perm '${perm}': `, ok);
+    const ok = _.every(perm.split(','), (p) => !!this.user.perms[p]);
+    logger.log('perm', `checking perm '${perm}': `, ok);
     return ok;
   }
 
@@ -125,38 +125,38 @@ class Stripes {
   hasAnyPerm(perm) {
     const logger = this.logger;
     if (this.config && this.config.hasAllPerms) {
-      logger.log("perm", `assuming perm '${perm}': hasAllPerms is true`);
+      logger.log('perm', `assuming perm '${perm}': hasAllPerms is true`);
       return true;
     }
     if (!this.user.perms) {
-      logger.log("perm", `not checking perm '${perm}': no user permissions yet`);
+      logger.log('perm', `not checking perm '${perm}': no user permissions yet`);
       return undefined;
     }
 
-    const ok = _.some(perm.split(","), (p) => !!this.user.perms[p]);
-    logger.log("perm", `checking any perm '${perm}': `, ok);
+    const ok = _.some(perm.split(','), (p) => !!this.user.perms[p]);
+    logger.log('perm', `checking any perm '${perm}': `, ok);
     return ok;
   }
 
   hasInterface(name, versionWanted) {
     const logger = this.logger;
     if (!this.discovery || !this.discovery.interfaces) {
-      logger.log("interface", `not checking interface '${name}': no discovery yet`);
+      logger.log('interface', `not checking interface '${name}': no discovery yet`);
       return undefined;
     }
     const version = this.discovery.interfaces[name];
     if (!version) {
-      logger.log("interface", `interface '${name}' is missing`);
+      logger.log('interface', `interface '${name}' is missing`);
       return undefined;
     }
     if (!versionWanted) {
-      logger.log("interface", `interface '${name}' exists`);
+      logger.log('interface', `interface '${name}' exists`);
       return true;
     }
     const ok = isVersionCompatible(version, versionWanted);
-    const cond = ok ? "is" : "is not";
+    const cond = ok ? 'is' : 'is not';
     logger.log(
-      "interface",
+      'interface',
       `interface '${name}' v${versionWanted} ${cond} compatible with available v${version}`,
     );
     return ok ? version : 0;

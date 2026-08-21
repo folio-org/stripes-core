@@ -1,6 +1,6 @@
-import React from "react";
-import PropTypes from "prop-types";
-import css from "./NavDivider.css";
+import React from 'react';
+import PropTypes from 'prop-types';
+import css from './NavDivider.css';
 
 const propTypes = {
   md: PropTypes.string, // Temporary as we work out the responsiveness of the header.
@@ -9,7 +9,7 @@ const propTypes = {
 function NavDivider(props) {
   function getClass() {
     const base = css.navDivider;
-    const hide = props.md === "hide" ? css.hideMed : null;
+    const hide = props.md === 'hide' ? css.hideMed : null;
     return `${base} ${hide}`;
   }
 

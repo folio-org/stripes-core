@@ -1,4 +1,4 @@
-import { OKAPI_REDUCER_ACTIONS } from "./okapiReducer";
+import { OKAPI_REDUCER_ACTIONS } from './okapiReducer';
 
 function setCurrentUser(currentUser) {
   return {

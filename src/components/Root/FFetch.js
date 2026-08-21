@@ -24,17 +24,17 @@
  *
  */
 
-import { RTR_LOCK_KEY, rotateAndReplay } from "./rotateAndReplay";
-import { getTokenExpiry } from "../../loginServices";
+import { RTR_LOCK_KEY, rotateAndReplay } from './rotateAndReplay';
+import { getTokenExpiry } from '../../loginServices';
 
-import { isFolioApiRequest } from "./token-util";
-import { RTRError } from "./Errors";
-import { RTR_ERROR_EVENT } from "./constants";
-import FXHR from "./FXHR";
+import { isFolioApiRequest } from './token-util';
+import { RTRError } from './Errors';
+import { RTR_ERROR_EVENT } from './constants';
+import FXHR from './FXHR';
 
 const FOLIO_FETCH_OPTIONS = {
-  credentials: "include",
-  mode: "cors",
+  credentials: 'include',
+  mode: 'cors',
 };
 
 export class FFetch {
@@ -47,7 +47,7 @@ export class FFetch {
 
   destroy = () => {
     // restore replaced globals.
-    this.logger?.log?.("rtr", "cleaning up after ffetch");
+    this.logger?.log?.('rtr', 'cleaning up after ffetch');
     this.restoreFetch();
     this.restoreXMLHttpRequest();
   };
@@ -122,10 +122,10 @@ export class FFetch {
         const text = await cr.text();
         return (
           (response.status === 400 &&
-            text.startsWith("Token missing, access requires permission")) ||
-          (response.status === 404 && response.url?.includes("/users-keycloak/_self")) ||
-          (response.status === 404 && response.url?.includes("/bl-users/_self")) ||
-          (response.status === 422 && response.url?.includes("/authn/logout"))
+            text.startsWith('Token missing, access requires permission')) ||
+          (response.status === 404 && response.url?.includes('/users-keycloak/_self')) ||
+          (response.status === 404 && response.url?.includes('/bl-users/_self')) ||
+          (response.status === 422 && response.url?.includes('/authn/logout'))
         );
       }
 
@@ -153,12 +153,12 @@ export class FFetch {
           `${this.okapi.url}/authn/refresh`,
           {
             headers: {
-              "content-type": "application/json",
-              "x-okapi-tenant": this.okapi.tenant,
+              'content-type': 'application/json',
+              'x-okapi-tenant': this.okapi.tenant,
             },
-            method: "POST",
-            credentials: "include",
-            mode: "cors",
+            method: 'POST',
+            credentials: 'include',
+            mode: 'cors',
           },
         ]);
 
@@ -172,14 +172,14 @@ export class FFetch {
           }
 
           throw new RTRError(
-            "accessTokenExpiration and/or refreshTokenExpiration were not available",
+            'accessTokenExpiration and/or refreshTokenExpiration were not available',
           );
         }
 
-        throw new RTRError("Rotation response was not ok");
+        throw new RTRError('Rotation response was not ok');
       } catch (err) {
         console.error(err); // eslint-disable-line no-console
-        throw new RTRError("Rotation failure!", { cause: err });
+        throw new RTRError('Rotation failure!', { cause: err });
       }
     },
 
@@ -190,7 +190,7 @@ export class FFetch {
         await this.onRotate(newTokens);
       } catch (err) {
         console.error(err); // eslint-disable-line no-console
-        throw new RTRError("Rotation failure; could not save!", { cause: err });
+        throw new RTRError('Rotation failure; could not save!', { cause: err });
       }
     },
 
@@ -198,7 +198,7 @@ export class FFetch {
     // 😱 what to do, what to do? log the error, emit RTR_ERROR_EVENT, which
     // has a listener in SessionEventContainer that will terminate the session.
     onFailure: async (error) => {
-      console.error("Session expired", error); // eslint-disable-line no-console
+      console.error('Session expired', error); // eslint-disable-line no-console
       globalThis.dispatchEvent(new Event(RTR_ERROR_EVENT));
     },
   };
@@ -234,7 +234,7 @@ export class FFetch {
       if (Date.now() < expiry?.atExpires || options?.rtrIgnore) {
         // readers/writer lock pattern: don't fetch while rotation is in-progress
         // https://developer.mozilla.org/en-US/docs/Web/API/LockManager/request
-        response = await navigator.locks.request(RTR_LOCK_KEY, { mode: "shared" }, async () => {
+        response = await navigator.locks.request(RTR_LOCK_KEY, { mode: 'shared' }, async () => {
           const fr = await this.nativeFetch.apply(globalThis, [
             resource,
             options && { ...options, ...FOLIO_FETCH_OPTIONS },

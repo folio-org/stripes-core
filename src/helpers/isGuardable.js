@@ -9,7 +9,7 @@
  * @returns {boolean} true if a route may be guarded; false otherwise
  */
 const isGuardable = (route) => {
-  const obligatoryRoutes = ["/logout"];
+  const obligatoryRoutes = ['/logout'];
 
   // if the given route matches an obligator route, it cannot be guarded
   return !obligatoryRoutes.includes(route);

@@ -1,8 +1,8 @@
-import { beforeEach } from "mocha";
+import { beforeEach } from 'mocha';
 
-import setupStripesCore from "./setup-application";
-import { withModules, clearModules } from "./stripes-config";
-import mirageOptions from "../network";
+import setupStripesCore from './setup-application';
+import { withModules, clearModules } from './stripes-config';
+import mirageOptions from '../network';
 
 export default function setupApplication({ scenarios } = {}) {
   setupStripesCore({
@@ -12,23 +12,23 @@ export default function setupApplication({ scenarios } = {}) {
     // setup a dummy app for smart components
     modules: [
       {
-        type: "app",
-        name: "@folio/ui-dummy",
-        displayName: "dummy.title",
-        route: "/dummy",
+        type: 'app',
+        name: '@folio/ui-dummy',
+        displayName: 'dummy.title',
+        route: '/dummy',
         module: null,
       },
     ],
 
     translations: {
-      "dummy.title": "Dummy",
+      'dummy.title': 'Dummy',
     },
   });
 
   // go to the dummy app where smart components are mounted
   beforeEach(function () {
     // eslint-disable-line func-names
-    this.visit("/dummy");
+    this.visit('/dummy');
   });
 }
 
@@ -38,10 +38,10 @@ export function mount(component) {
 
   withModules([
     {
-      type: "app",
-      name: "@folio/ui-dummy",
-      displayName: "dummy.title",
-      route: "/dummy",
+      type: 'app',
+      name: '@folio/ui-dummy',
+      displayName: 'dummy.title',
+      route: '/dummy',
       module: () => component,
     },
   ]);

@@ -10,7 +10,7 @@
  *
  */
 export async function getModules(config) {
-  const { modules } = await import("stripes-config");
+  const { modules } = await import('stripes-config');
 
   // monolithic builds define sync getModule() methods; lazy builds define
   // async getDynamicModule() methods and therefore need to have their modules

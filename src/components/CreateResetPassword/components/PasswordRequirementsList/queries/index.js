@@ -1,1 +1,1 @@
-export { default } from "./usePasswordRules";
+export { default } from './usePasswordRules';

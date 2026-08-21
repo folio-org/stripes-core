@@ -2,16 +2,16 @@
  * CurrentApp tests
  */
 
-import React from "react";
-import { before, beforeEach, it, describe } from "mocha";
-import { Bigtest, DropdownMenu, including } from "@folio/stripes-testing";
-import setupApplication from "../helpers/setup-application";
-import AppContextMenu from "../../../src/components/MainNav/CurrentApp/AppContextMenu";
+import React from 'react';
+import { before, beforeEach, it, describe } from 'mocha';
+import { Bigtest, DropdownMenu, including } from '@folio/stripes-testing';
+import setupApplication from '../helpers/setup-application';
+import AppContextMenu from '../../../src/components/MainNav/CurrentApp/AppContextMenu';
 
 const { Link, Button } = Bigtest;
 
-const HomeButton = Link.extend("home button")
-  .selector("[data-test-current-app-home-button]")
+const HomeButton = Link.extend('home button')
+  .selector('[data-test-current-app-home-button]')
   .filters({
     ariaLabel: (el) => el.ariaLabel,
   });
@@ -26,9 +26,9 @@ const DummyAppWithContextMenu = () => (
 
 const DummyAppWithoutContextMenu = () => <div />;
 
-describe("CurrentApp", () => {
-  const homeButton = HomeButton("Dummy app without context menu");
-  const contextDropdownToggle = Button(including("Dummy app with context menu"));
+describe('CurrentApp', () => {
+  const homeButton = HomeButton('Dummy app without context menu');
+  const contextDropdownToggle = Button(including('Dummy app with context menu'));
 
   before(async () => {
     await new Promise((resolve) => {
@@ -39,57 +39,57 @@ describe("CurrentApp", () => {
   setupApplication({
     modules: [
       {
-        type: "app",
-        name: "@folio/dummy-app-with-app-context-menu",
-        displayName: "dummy.with.context.menu.title",
-        route: "/dummy-app-with-app-context-menu",
+        type: 'app',
+        name: '@folio/dummy-app-with-app-context-menu',
+        displayName: 'dummy.with.context.menu.title',
+        route: '/dummy-app-with-app-context-menu',
         module: DummyAppWithContextMenu,
       },
       {
-        type: "app",
-        name: "@folio/dummy-app-without-app-context-menu",
-        displayName: "dummy.without.context.menu.title",
-        route: "/dummy-app-without-app-context-menu",
+        type: 'app',
+        name: '@folio/dummy-app-without-app-context-menu',
+        displayName: 'dummy.without.context.menu.title',
+        route: '/dummy-app-without-app-context-menu',
         module: DummyAppWithoutContextMenu,
       },
     ],
     translations: {
-      "dummy.with.context.menu.title": "Dummy app with context menu",
-      "dummy.without.context.menu.title": "Dummy app without context menu",
+      'dummy.with.context.menu.title': 'Dummy app with context menu',
+      'dummy.without.context.menu.title': 'Dummy app without context menu',
     },
   });
 
-  describe("When the <AppContextMenu> is present in an app", () => {
+  describe('When the <AppContextMenu> is present in an app', () => {
     beforeEach(async function visit() {
-      await this.visit("/dummy-app-with-app-context-menu");
+      await this.visit('/dummy-app-with-app-context-menu');
     });
 
-    it("Should render a context menu toggle button", () => contextDropdownToggle.exists());
+    it('Should render a context menu toggle button', () => contextDropdownToggle.exists());
 
-    describe("Clicking the context menu toggle button", () => {
+    describe('Clicking the context menu toggle button', () => {
       beforeEach(async () => {
         await contextDropdownToggle.click();
       });
 
-      it("Should open the app context menu dropdown", () => DropdownMenu().exists());
+      it('Should open the app context menu dropdown', () => DropdownMenu().exists());
     });
   });
 
-  describe("When the <AppContextMenu> is not present in an app", () => {
+  describe('When the <AppContextMenu> is not present in an app', () => {
     beforeEach(async function visit() {
-      await this.visit("/dummy-app-without-app-context-menu");
+      await this.visit('/dummy-app-without-app-context-menu');
     });
 
-    it("Should render a home button", () => homeButton.exists());
+    it('Should render a home button', () => homeButton.exists());
 
     it('Should have an aria-label equal to: "Current open application: {displayName} (Click to go home)"', () => {
       return homeButton.has({
-        ariaLabel: "Current open application: Dummy app without context menu (Click to go home)",
+        ariaLabel: 'Current open application: Dummy app without context menu (Click to go home)',
       });
     });
   });
 
-  describe("When on the initial route (no active app)", () => {
-    it('Should render a heading with a label of "FOLIO"', () => HomeButton("FOLIO").exists());
+  describe('When on the initial route (no active app)', () => {
+    it('Should render a heading with a label of "FOLIO"', () => HomeButton('FOLIO').exists());
   });
 });

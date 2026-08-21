@@ -1,11 +1,11 @@
-import PropTypes from "prop-types";
-import { FormattedMessage } from "react-intl";
+import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
 
-import { Col, Row, Select } from "@folio/stripes-components";
+import { Col, Row, Select } from '@folio/stripes-components';
 
-import { useStripes } from "../../StripesContext";
-import { setOkapiTenant } from "../../okapiActions";
-import FieldLabel from "../CreateResetPassword/components/FieldLabel";
+import { useStripes } from '../../StripesContext';
+import { setOkapiTenant } from '../../okapiActions';
+import FieldLabel from '../CreateResetPassword/components/FieldLabel';
 
 /**
  * When stripes.config.js::config.tenantOptions contains multiple entries,
@@ -53,7 +53,7 @@ const SelectAndDispatchTenant = ({ styles }) => {
                 id="select-tenant"
                 defaultValue=""
                 onChange={(e) => handleSelectTenant(e.target.value)}
-                dataOptions={[...options, { value: "", label: "" }]}
+                dataOptions={[...options, { value: '', label: '' }]}
                 selectClass={styles?.loginInput}
               />
             </Col>

@@ -1,6 +1,6 @@
-import React from "react";
-import { useStripes } from "../../StripesContext";
-import styles from "./OrganizationLogo.css";
+import React from 'react';
+import { useStripes } from '../../StripesContext';
+import styles from './OrganizationLogo.css';
 
 const OrganizationLogo = () => {
   const { branding } = useStripes();

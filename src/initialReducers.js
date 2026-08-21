@@ -1,6 +1,6 @@
-import { reducer as form } from "redux-form";
-import okapiReducer from "./okapiReducer";
-import { discoveryReducer } from "./discoverServices";
+import { reducer as form } from 'redux-form';
+import okapiReducer from './okapiReducer';
+import { discoveryReducer } from './discoverServices';
 
 const reducers = {
   // TODO: here's where you'd pull in a reducer to handle Okapi actions like auth

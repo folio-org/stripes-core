@@ -1,11 +1,11 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { injectIntl } from "react-intl";
-import { Route } from "react-router-dom";
-import TitleManager from "../TitleManager";
-import RouteErrorBoundary from "../RouteErrorBoundary";
+import React from 'react';
+import PropTypes from 'prop-types';
+import { injectIntl } from 'react-intl';
+import { Route } from 'react-router-dom';
+import TitleManager from '../TitleManager';
+import RouteErrorBoundary from '../RouteErrorBoundary';
 
-import { withStripes } from "../../StripesContext";
+import { withStripes } from '../../StripesContext';
 
 class TitledRoute extends React.Component {
   static propTypes = {

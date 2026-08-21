@@ -1,52 +1,52 @@
-import { renderHook, waitFor } from "@folio/jest-config-stripes/testing-library/react";
+import { renderHook, waitFor } from '@folio/jest-config-stripes/testing-library/react';
 
-import { useDispatch, useStore } from "react-redux";
-import { useLocation } from "react-router-dom";
-import { useCookies } from "react-cookie";
+import { useDispatch, useStore } from 'react-redux';
+import { useLocation } from 'react-router-dom';
+import { useCookies } from 'react-cookie';
 
-import { config } from "stripes-config";
+import { config } from 'stripes-config';
 
-import { defaultErrors } from "../../constants";
-import { setAuthError } from "../../okapiActions";
-import { requestUserWithPerms } from "../../loginServices";
-import { parseJWT } from "../../helpers";
+import { defaultErrors } from '../../constants';
+import { setAuthError } from '../../okapiActions';
+import { requestUserWithPerms } from '../../loginServices';
+import { parseJWT } from '../../helpers';
 
-import useSSOSession from "./useSSOSession";
+import useSSOSession from './useSSOSession';
 
-jest.mock("react-router-dom", () => ({
+jest.mock('react-router-dom', () => ({
   useLocation: jest.fn(),
 }));
 
-jest.mock("react-cookie", () => ({
+jest.mock('react-cookie', () => ({
   useCookies: jest.fn(),
 }));
 
-jest.mock("react-redux", () => ({
+jest.mock('react-redux', () => ({
   useStore: jest.fn(),
   useDispatch: jest.fn(),
 }));
 
-jest.mock("");
+jest.mock('');
 
-jest.mock("../../loginServices", () => ({
+jest.mock('../../loginServices', () => ({
   requestUserWithPerms: jest.fn(),
 }));
-jest.mock("../../helpers", () => ({
+jest.mock('../../helpers', () => ({
   parseJWT: jest.fn(),
 }));
 
-describe("SSOLanding", () => {
-  const ssoTokenValue = "c0ffee";
+describe('SSOLanding', () => {
+  const ssoTokenValue = 'c0ffee';
 
   beforeEach(() => {
-    useLocation.mockReturnValue({ search: "" });
+    useLocation.mockReturnValue({ search: '' });
     useCookies.mockReturnValue([]);
 
     useStore.mockReturnValue({
       getState: jest.fn().mockReturnValue({
         okapi: {
-          url: "okapiUrl",
-          tenant: "okapiTenant",
+          url: 'okapiUrl',
+          tenant: 'okapiTenant',
         },
         config: {
           useSecureTokens: true,
@@ -61,7 +61,7 @@ describe("SSOLanding", () => {
     jest.resetAllMocks();
   });
 
-  it("should request user session when RTR is disabled and token from query params", () => {
+  it('should request user session when RTR is disabled and token from query params', () => {
     const store = useStore();
 
     useLocation.mockReturnValue({ search: `ssoToken=${ssoTokenValue}` });
@@ -77,7 +77,7 @@ describe("SSOLanding", () => {
     );
   });
 
-  it("should request user session when RTR is disabled with token from cookies", () => {
+  it('should request user session when RTR is disabled with token from cookies', () => {
     const store = useStore();
 
     useCookies.mockReturnValue([{ ssoToken: ssoTokenValue }]);
@@ -88,14 +88,14 @@ describe("SSOLanding", () => {
     expect(requestUserWithPerms).toHaveBeenCalledWith(
       store.getState().okapi,
       store,
-      "okapiTenant",
+      'okapiTenant',
       ssoTokenValue,
     );
   });
 
-  it("should request user session when RTR is disabled and right tenant from ssoToken", () => {
-    const tokenTenant = "tokenTenant";
-    const okapiTenant = "okapiTenant";
+  it('should request user session when RTR is disabled and right tenant from ssoToken', () => {
+    const tokenTenant = 'tokenTenant';
+    const okapiTenant = 'okapiTenant';
     const store = useStore();
 
     useLocation.mockReturnValue({ search: `ssoToken=${ssoTokenValue}` });
@@ -112,8 +112,8 @@ describe("SSOLanding", () => {
     );
   });
 
-  it("should request user session when RTR is enabled and right tenant from query params", () => {
-    const queryTenant = "queryTenant";
+  it('should request user session when RTR is enabled and right tenant from query params', () => {
+    const queryTenant = 'queryTenant';
     const store = useStore();
 
     useLocation.mockReturnValue({ search: `tenantId=${queryTenant}` });
@@ -129,8 +129,8 @@ describe("SSOLanding", () => {
     );
   });
 
-  it("should display error when session request failed", async () => {
-    const queryTenant = "queryTenant";
+  it('should display error when session request failed', async () => {
+    const queryTenant = 'queryTenant';
     const dispatch = jest.fn();
 
     requestUserWithPerms.mockReturnValue(Promise.reject());

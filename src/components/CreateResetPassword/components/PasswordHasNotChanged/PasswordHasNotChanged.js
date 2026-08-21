@@ -1,14 +1,14 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { FormattedMessage } from "react-intl";
-import { includes } from "lodash";
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
+import { includes } from 'lodash';
 
-import { Headline } from "@folio/stripes-components";
+import { Headline } from '@folio/stripes-components';
 
-import { changePasswordErrorCodes, defaultErrorCodes } from "../../../../constants";
-import OrganizationLogo from "../../../OrganizationLogo";
+import { changePasswordErrorCodes, defaultErrorCodes } from '../../../../constants';
+import OrganizationLogo from '../../../OrganizationLogo';
 
-import styles from "./PasswordHasNotChanged.css";
+import styles from './PasswordHasNotChanged.css';
 
 class PasswordHasNotChanged extends Component {
   static propTypes = {
@@ -21,7 +21,7 @@ class PasswordHasNotChanged extends Component {
 
   defineErrorCode = () => {
     const { errors } = this.props;
-    const labelNamespace = "stripes-core.errors";
+    const labelNamespace = 'stripes-core.errors';
 
     const errorCodes = errors.map((e) => e?.code);
 

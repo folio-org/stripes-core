@@ -1,3 +1,3 @@
 export default (server) => {
-  server.post("bl-users/forgotten/username", {}, 400);
+  server.post('bl-users/forgotten/username', {}, 400);
 };

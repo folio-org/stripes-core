@@ -1,26 +1,26 @@
 /* shhhh, eslint, it's ok. we need "unused" imports for mocks */
 /* eslint-disable no-unused-vars */
 
-import { render, screen } from "@folio/jest-config-stripes/testing-library/react";
+import { render, screen } from '@folio/jest-config-stripes/testing-library/react';
 
-import stripesConnect from "../../stripesConnect";
-import AboutEnabledModules from "./AboutEnabledModules";
+import stripesConnect from '../../stripesConnect';
+import AboutEnabledModules from './AboutEnabledModules';
 
-jest.mock("../../stripesConnect", () => (Component) => Component);
+jest.mock('../../stripesConnect', () => (Component) => Component);
 
-describe("AboutEnabledModules", () => {
-  it("displays application version details", async () => {
+describe('AboutEnabledModules', () => {
+  it('displays application version details', async () => {
     const availableModules = {
-      amy: "angelo",
-      beth: "baldwin",
-      camilla: "claude",
+      amy: 'angelo',
+      beth: 'baldwin',
+      camilla: 'claude',
     };
     const resources = {
       enabledModules: {
-        records: [{ id: "amy" }, { id: "beth" }],
+        records: [{ id: 'amy' }, { id: 'beth' }],
       },
     };
-    const tenantid = "monkey";
+    const tenantid = 'monkey';
 
     render(
       <AboutEnabledModules
@@ -35,14 +35,14 @@ describe("AboutEnabledModules", () => {
     });
   });
 
-  it("handles empty enabled records", async () => {
+  it('handles empty enabled records', async () => {
     const availableModules = {
-      amy: "angelo",
-      beth: "baldwin",
-      camilla: "claude",
+      amy: 'angelo',
+      beth: 'baldwin',
+      camilla: 'claude',
     };
     const resources = {};
-    const tenantid = "monkey";
+    const tenantid = 'monkey';
 
     render(
       <AboutEnabledModules
@@ -55,8 +55,8 @@ describe("AboutEnabledModules", () => {
     Object.keys(availableModules).forEach((i) => {
       expect(screen.getByText(availableModules[i])).toBeInTheDocument();
       expect(screen.getByText(availableModules[i])).toHaveAttribute(
-        "style",
-        "color: rgb(204, 204, 204);",
+        'style',
+        'color: rgb(204, 204, 204);',
       );
     });
   });

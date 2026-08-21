@@ -1,23 +1,23 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
-import { FormattedMessage } from "react-intl";
-import { Field, Form } from "react-final-form";
+import { FormattedMessage } from 'react-intl';
+import { Field, Form } from 'react-final-form';
 
-import isEmpty from "lodash/isEmpty";
+import isEmpty from 'lodash/isEmpty';
 
-import { TextField, Button, Row, Col, PasswordStrength, Headline } from "@folio/stripes-components";
+import { TextField, Button, Row, Col, PasswordStrength, Headline } from '@folio/stripes-components';
 
-import PasswordRequirementsList from "./components/PasswordRequirementsList";
+import PasswordRequirementsList from './components/PasswordRequirementsList';
 
-import { setAuthError } from "../../okapiActions";
-import { stripesShape } from "../../Stripes";
+import { setAuthError } from '../../okapiActions';
+import { stripesShape } from '../../Stripes';
 
-import OrganizationLogo from "../OrganizationLogo";
-import AuthErrorsContainer from "../AuthErrorsContainer";
-import FieldLabel from "./components/FieldLabel";
+import OrganizationLogo from '../OrganizationLogo';
+import AuthErrorsContainer from '../AuthErrorsContainer';
+import FieldLabel from './components/FieldLabel';
 
-import styles from "./CreateResetPassword.css";
+import styles from './CreateResetPassword.css';
 
 class CreateResetPassword extends Component {
   static propTypes = {
@@ -40,13 +40,13 @@ class CreateResetPassword extends Component {
       passwordMasked: true,
     };
     this.translationNamespaces = {
-      module: "stripes-core",
-      smartComponents: "stripes-smart-components",
-      page: "stripes-core.createResetPassword",
-      errors: "stripes-core.errors",
-      button: "stripes-core.button",
+      module: 'stripes-core',
+      smartComponents: 'stripes-smart-components',
+      page: 'stripes-core.createResetPassword',
+      errors: 'stripes-core.errors',
+      button: 'stripes-core.button',
     };
-    this.passwordMatchErrorCode = "password.match.error";
+    this.passwordMatchErrorCode = 'password.match.error';
     this.validators = {
       confirmPassword: this.confirmPasswordFieldValidation,
     };
@@ -107,9 +107,9 @@ class CreateResetPassword extends Component {
     const errors = stripes.okapi.authFailure;
     const { passwordMasked } = this.state;
     const submissionStatus = submitting || submitIsFailed;
-    const passwordType = passwordMasked ? "password" : "text";
-    const buttonLabelId = `${this.translationNamespaces.module}.${submitting ? "settingPassword" : "setPassword"}`;
-    const passwordToggleLabelId = `${this.translationNamespaces.button}.${passwordMasked ? "show" : "hide"}Password`;
+    const passwordType = passwordMasked ? 'password' : 'text';
+    const buttonLabelId = `${this.translationNamespaces.module}.${submitting ? 'settingPassword' : 'setPassword'}`;
+    const passwordToggleLabelId = `${this.translationNamespaces.button}.${passwordMasked ? 'show' : 'hide'}Password`;
 
     const isButtonDisabled = (getState) => {
       const { newPassword, confirmPassword } = getState().values;

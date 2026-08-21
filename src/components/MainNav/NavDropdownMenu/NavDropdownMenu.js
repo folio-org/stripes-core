@@ -1,7 +1,7 @@
-import React, { createRef } from "react";
-import PropTypes from "prop-types";
-import RootCloseWrapper from "@folio/stripes-components/util/RootCloseWrapper";
-import css from "./NavDropdownMenu.css";
+import React, { createRef } from 'react';
+import PropTypes from 'prop-types';
+import RootCloseWrapper from '@folio/stripes-components/util/RootCloseWrapper';
+import css from './NavDropdownMenu.css';
 
 const propTypes = {
   bsClass: PropTypes.string,
@@ -77,9 +77,9 @@ class NavDropdownMenu extends React.Component {
     } = this.props;
 
     const position = {
-      left: pullRight ? "initial" : "0",
-      display: this.props.open ? "block" : "none",
-      right: pullRight ? "0" : "initial",
+      left: pullRight ? 'initial' : '0',
+      display: this.props.open ? 'block' : 'none',
+      right: pullRight ? '0' : 'initial',
     };
 
     const menu = (

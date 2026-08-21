@@ -1,27 +1,27 @@
-import React from "react";
-import { render, screen, waitFor } from "@folio/jest-config-stripes/testing-library/react";
-import { okapi } from "stripes-config";
-import { getInstance } from "@module-federation/runtime";
-import EntitlementLoader, { preloadModules, loadModuleAssets } from "./EntitlementLoader";
-import { StripesContext } from "../StripesContext";
+import React from 'react';
+import { render, screen, waitFor } from '@folio/jest-config-stripes/testing-library/react';
+import { okapi } from 'stripes-config';
+import { getInstance } from '@module-federation/runtime';
+import EntitlementLoader, { preloadModules, loadModuleAssets } from './EntitlementLoader';
+import { StripesContext } from '../StripesContext';
 import {
   ModulesContext,
   useModules,
   modulesInitialState as mockModuleInitialState,
-} from "../ModulesContext";
-import { loadEntitlement } from "./loadEntitlement";
-import { logRemoteDependencyViolations } from "./remoteDependencyValidation";
+} from '../ModulesContext';
+import { loadEntitlement } from './loadEntitlement';
+import { logRemoteDependencyViolations } from './remoteDependencyValidation';
 
-jest.mock("stripes-config");
-jest.mock("./loadEntitlement", () => ({
+jest.mock('stripes-config');
+jest.mock('./loadEntitlement', () => ({
   loadEntitlement: jest.fn(),
 }));
-jest.mock("./remoteDependencyValidation", () => ({
+jest.mock('./remoteDependencyValidation', () => ({
   logRemoteDependencyViolations: jest.fn(() => Promise.resolve()),
 }));
 
 const mockLoadRemote = jest.fn(() => Promise.resolve({ default: {} }));
-jest.mock("@module-federation/runtime", () => ({
+jest.mock('@module-federation/runtime', () => ({
   getInstance: jest.fn(() => ({
     registerRemotes: jest.fn(),
     loadRemote: mockLoadRemote,
@@ -54,9 +54,9 @@ class ErrorBoundary extends React.Component {
 const mockConfigModules = {
   app: [
     {
-      name: "config-app",
-      module: "config-app",
-      displayName: "Config App",
+      name: 'config-app',
+      module: 'config-app',
+      displayName: 'Config App',
     },
   ],
   plugin: [],
@@ -64,12 +64,12 @@ const mockConfigModules = {
   handler: [],
 };
 
-describe("EntitlementLoader", () => {
+describe('EntitlementLoader', () => {
   const mockStripes = {
     logger: {
       log: jest.fn((msg, err) => console.log(err)),
     },
-    locale: "en-US",
+    locale: 'en-US',
     okapi: {
       translations: {},
     },
@@ -81,25 +81,25 @@ describe("EntitlementLoader", () => {
   const mockRegistry = {
     discovery: [
       {
-        name: "app_module",
-        id: "app_module-1.0.0",
-        location: "http://localhost:3000/remoteEntry.js",
-        host: "localhost",
+        name: 'app_module',
+        id: 'app_module-1.0.0',
+        location: 'http://localhost:3000/remoteEntry.js',
+        host: 'localhost',
         port: 3000,
-        module: "app-module",
-        displayName: "appModule.label",
-        actsAs: ["app"],
-        icons: [{ name: "icon", title: "icon title" }],
+        module: 'app-module',
+        displayName: 'appModule.label',
+        actsAs: ['app'],
+        icons: [{ name: 'icon', title: 'icon title' }],
       },
       {
-        name: "plugin_module",
-        location: "http://localhost:3001/remoteEntry.js",
-        id: "plugin_module-4.0.0",
-        host: "localhost",
+        name: 'plugin_module',
+        location: 'http://localhost:3001/remoteEntry.js',
+        id: 'plugin_module-4.0.0',
+        host: 'localhost',
         port: 3001,
-        module: "plugin-module",
-        displayName: "pluginModule.label",
-        actsAs: ["plugin"],
+        module: 'plugin-module',
+        displayName: 'pluginModule.label',
+        actsAs: ['plugin'],
       },
     ],
   };
@@ -107,9 +107,9 @@ describe("EntitlementLoader", () => {
   const mockRemotes = mockRegistry.discovery;
 
   const translations = {
-    "testModule.label": "Test Module Display",
-    "appModule.label": "App Module Display",
-    "pluginModule.label": "Plugin Module Display",
+    'testModule.label': 'Test Module Display',
+    'appModule.label': 'App Module Display',
+    'pluginModule.label': 'Plugin Module Display',
   };
 
   const TestComponent = ({ children }) => {
@@ -169,7 +169,7 @@ describe("EntitlementLoader", () => {
     jest.restoreAllMocks();
   });
 
-  describe("when discoveryUrl is configured", () => {
+  describe('when discoveryUrl is configured', () => {
     let capturedModules = null;
     const TestContextComponent = () => {
       capturedModules = useModules();
@@ -178,7 +178,7 @@ describe("EntitlementLoader", () => {
 
     beforeEach(() => {
       capturedModules = null;
-      okapi.discoveryUrl = "http://localhost:8000/entitlement";
+      okapi.discoveryUrl = 'http://localhost:8000/entitlement';
       global.fetch = jest.fn();
       // two modules in mock, two calls to fetch translations...
       global.fetch
@@ -192,8 +192,8 @@ describe("EntitlementLoader", () => {
         });
     });
 
-    it("fetches the registry and loads modules dynamically", async () => {
-      const discoveryUrl = "http://localhost:8000/entitlement";
+    it('fetches the registry and loads modules dynamically', async () => {
+      const discoveryUrl = 'http://localhost:8000/entitlement';
       render(<TestHarness testStripes={{ ...mockStripes, okapi: { discoveryUrl } }} />);
 
       await waitFor(() => {
@@ -202,24 +202,24 @@ describe("EntitlementLoader", () => {
       });
     });
 
-    it("passes dynamic modules to ModulesContext.Provider", async () => {
+    it('passes dynamic modules to ModulesContext.Provider', async () => {
       render(
         <TestHarness
-          testStripes={{ ...mockStripes, okapi: { discoveryUrl: "testdiscoveryUrl" } }}
+          testStripes={{ ...mockStripes, okapi: { discoveryUrl: 'testdiscoveryUrl' } }}
         />,
       );
 
       await waitFor(
         () => {
           // expect(screen.queryByText('No Modules')).not.toBeInTheDocument();
-          expect(screen.getByText("Modules Loaded")).toBeInTheDocument();
-          expect(screen.getByText("app")).toBeInTheDocument();
+          expect(screen.getByText('Modules Loaded')).toBeInTheDocument();
+          expect(screen.getByText('app')).toBeInTheDocument();
         },
         { timeout: 1000 },
       );
     });
 
-    it("merges config modules with dynamically loaded modules", async () => {
+    it('merges config modules with dynamically loaded modules', async () => {
       render(
         <TestHarness testModulesContext={mockConfigModules}>
           <TestContextComponent />
@@ -232,8 +232,8 @@ describe("EntitlementLoader", () => {
       });
     });
 
-    it("handles errors during module loading gracefully", async () => {
-      global.fetch.mockRejectedValueOnce(new Error("Network error"));
+    it('handles errors during module loading gracefully', async () => {
+      global.fetch.mockRejectedValueOnce(new Error('Network error'));
 
       try {
         render(
@@ -248,8 +248,8 @@ describe("EntitlementLoader", () => {
       }
     });
 
-    it("handles failures loading module assets (logs and sends callout)", async () => {
-      const discoveryUrl = "http://localhost:8000/entitlement";
+    it('handles failures loading module assets (logs and sends callout)', async () => {
+      const discoveryUrl = 'http://localhost:8000/entitlement';
       okapi.discoveryUrl = discoveryUrl;
 
       // Override the describe-level fetch queue so this test gets exactly one success + one failure.
@@ -262,15 +262,15 @@ describe("EntitlementLoader", () => {
         .mockResolvedValueOnce({ ok: false });
 
       const mockCallout = { sendCallout: jest.fn() };
-      const calloutCtx = require("../CalloutContext");
-      const useCalloutSpy = jest.spyOn(calloutCtx, "useCallout").mockReturnValue(mockCallout);
+      const calloutCtx = require('../CalloutContext');
+      const useCalloutSpy = jest.spyOn(calloutCtx, 'useCallout').mockReturnValue(mockCallout);
 
       render(<TestHarness testStripes={{ ...mockStripes, okapi: { discoveryUrl } }} />);
 
       await waitFor(() => {
         expect(mockStripes.logger.log).toHaveBeenCalledWith(
-          "core",
-          expect.stringContaining("Error loading remote module assets"),
+          'core',
+          expect.stringContaining('Error loading remote module assets'),
         );
         expect(mockCallout.sendCallout).toHaveBeenCalled();
       });
@@ -279,7 +279,7 @@ describe("EntitlementLoader", () => {
     });
   });
 
-  describe("when discoveryUrl is not configured", () => {
+  describe('when discoveryUrl is not configured', () => {
     let capturedModules = null;
     const ContextTestComponent = () => {
       capturedModules = React.useContext(ModulesContext);
@@ -291,7 +291,7 @@ describe("EntitlementLoader", () => {
       okapi.discoveryUrl = undefined;
     });
 
-    it("does not fetch the registry", async () => {
+    it('does not fetch the registry', async () => {
       render(
         <TestHarness>
           <div>Content</div>
@@ -303,7 +303,7 @@ describe("EntitlementLoader", () => {
       });
     });
 
-    it("passes through configModules to ModulesContext when no discoveryUrl", async () => {
+    it('passes through configModules to ModulesContext when no discoveryUrl', async () => {
       render(
         <TestHarness testModulesContext={mockConfigModules}>
           <ContextTestComponent />
@@ -316,8 +316,8 @@ describe("EntitlementLoader", () => {
     });
   });
 
-  describe("children rendering", () => {
-    it("renders children when modules are available", async () => {
+  describe('children rendering', () => {
+    it('renders children when modules are available', async () => {
       okapi.discoveryUrl = undefined;
 
       render(
@@ -327,82 +327,82 @@ describe("EntitlementLoader", () => {
       );
 
       await waitFor(() => {
-        expect(screen.getByText("Test Content")).toBeInTheDocument();
+        expect(screen.getByText('Test Content')).toBeInTheDocument();
       });
     });
   });
 
-  describe("preloadModules", () => {
-    it("loads remote components and builds module structure", async () => {
+  describe('preloadModules', () => {
+    it('loads remote components and builds module structure', async () => {
       const remotes = [
         {
-          name: "app-module",
-          url: "http://localhost:3000/remoteEntry.js",
-          actsAs: ["app"],
+          name: 'app-module',
+          url: 'http://localhost:3000/remoteEntry.js',
+          actsAs: ['app'],
         },
         {
-          name: "plugin-module",
-          url: "http://localhost:3001/remoteEntry.js",
-          actsAs: ["plugin"],
+          name: 'plugin-module',
+          url: 'http://localhost:3001/remoteEntry.js',
+          actsAs: ['plugin'],
         },
       ];
 
       const result = await preloadModules(mockStripes, remotes);
 
       expect(mockLoadRemote).toHaveBeenCalledTimes(2);
-      expect(result).toHaveProperty("app");
-      expect(result).toHaveProperty("plugin");
+      expect(result).toHaveProperty('app');
+      expect(result).toHaveProperty('plugin');
       expect(result.app.length).toBe(1);
       expect(result.plugin.length).toBe(1);
     });
 
-    it("assigns getModule function to loaded modules", async () => {
+    it('assigns getModule function to loaded modules', async () => {
       const remotes = [
         {
-          name: "app-module",
-          url: "http://localhost:3000/remoteEntry.js",
-          actsAs: ["app"],
+          name: 'app-module',
+          url: 'http://localhost:3000/remoteEntry.js',
+          actsAs: ['app'],
         },
       ];
 
       const result = await preloadModules(mockStripes, remotes);
 
-      expect(result.app[0]).toHaveProperty("getModule");
-      expect(typeof result.app[0].getModule).toBe("function");
+      expect(result.app[0]).toHaveProperty('getModule');
+      expect(typeof result.app[0].getModule).toBe('function');
     });
 
-    it("handles loading errors gracefully", async () => {
+    it('handles loading errors gracefully', async () => {
       const remotes = [
         {
-          name: "app-module",
-          url: "http://localhost:3000/remoteEntry.js",
-          actsAs: ["app"],
+          name: 'app-module',
+          url: 'http://localhost:3000/remoteEntry.js',
+          actsAs: ['app'],
         },
       ];
 
-      getInstance().loadRemote.mockRejectedValueOnce(new Error("Load failed"));
+      getInstance().loadRemote.mockRejectedValueOnce(new Error('Load failed'));
 
       try {
         await preloadModules(mockStripes, remotes);
       } catch (e) {
         expect(mockStripes.logger.log).toHaveBeenCalledWith(
-          "core",
+          'core',
           expect.stringContaining(remotes[0].name),
         );
-        expect(e.message).toContain("Load failed");
+        expect(e.message).toContain('Load failed');
       }
     });
   });
 
-  describe("loadModuleAssets", () => {
+  describe('loadModuleAssets', () => {
     const module = {
-      name: "test-module",
-      host: "localhost",
+      name: 'test-module',
+      host: 'localhost',
       port: 3000,
-      module: "test-module",
-      displayName: "testModule.label",
-      assetPath: "localhost:3000/path",
-      location: "localhost:3000",
+      module: 'test-module',
+      displayName: 'testModule.label',
+      assetPath: 'localhost:3000/path',
+      location: 'localhost:3000',
     };
 
     beforeEach(() => {
@@ -410,7 +410,7 @@ describe("EntitlementLoader", () => {
       global.fetch = jest.fn();
     });
 
-    it("loads translations for a module", async () => {
+    it('loads translations for a module', async () => {
       global.fetch.mockResolvedValueOnce({
         ok: true,
         json: jest.fn().mockResolvedValueOnce(translations),
@@ -418,13 +418,13 @@ describe("EntitlementLoader", () => {
 
       const result = await loadModuleAssets(mockStripes, module);
 
-      expect(global.fetch).toHaveBeenCalledWith("localhost:3000/path/translations/en_US.json");
-      expect(result.displayName).toBe("Test Module Display");
+      expect(global.fetch).toHaveBeenCalledWith('localhost:3000/path/translations/en_US.json');
+      expect(result.displayName).toBe('Test Module Display');
     });
 
-    it("handles array translation values with messageFormatPattern", async () => {
+    it('handles array translation values with messageFormatPattern', async () => {
       const msgFormatTranslations = {
-        "testModule.label": [{ type: "messageFormatPattern", value: "Test Module Pattern" }],
+        'testModule.label': [{ type: 'messageFormatPattern', value: 'Test Module Pattern' }],
       };
 
       global.fetch.mockResolvedValueOnce({
@@ -434,10 +434,10 @@ describe("EntitlementLoader", () => {
 
       const result = await loadModuleAssets(mockStripes, module);
 
-      expect(result.displayName).toBe("Test Module Pattern");
+      expect(result.displayName).toBe('Test Module Pattern');
     });
 
-    it("handles translation fetch errors", async () => {
+    it('handles translation fetch errors', async () => {
       global.fetch.mockResolvedValueOnce({
         ok: false,
       });
@@ -446,36 +446,36 @@ describe("EntitlementLoader", () => {
         await loadModuleAssets(mockStripes, module);
       } catch {
         expect(mockStripes.logger.log).toHaveBeenCalledWith(
-          "core",
-          "Error loading assets for test-module: Could not load translations for test-module; failed to find localhost:3000/path/translations/en_US.json",
+          'core',
+          'Error loading assets for test-module: Could not load translations for test-module; failed to find localhost:3000/path/translations/en_US.json',
         );
       }
     });
 
-    it("converts kebab-case locale to snake_case for translations", async () => {
+    it('converts kebab-case locale to snake_case for translations', async () => {
       const stripesWithLocale = {
         ...mockStripes,
-        locale: "en-US-u-nu-latn",
+        locale: 'en-US-u-nu-latn',
       };
 
       global.fetch.mockResolvedValueOnce({
         ok: true,
-        json: jest.fn().mockResolvedValueOnce({ "testModule.label": "Test" }),
+        json: jest.fn().mockResolvedValueOnce({ 'testModule.label': 'Test' }),
       });
 
       await loadModuleAssets(stripesWithLocale, module);
 
-      expect(global.fetch).toHaveBeenCalledWith(expect.stringContaining("en_US"));
+      expect(global.fetch).toHaveBeenCalledWith(expect.stringContaining('en_US'));
     });
 
-    it("loadEntitlement calls fetch", async () => {
-      const actualLoadEntitlement = jest.requireActual("./loadEntitlement").loadEntitlement;
+    it('loadEntitlement calls fetch', async () => {
+      const actualLoadEntitlement = jest.requireActual('./loadEntitlement').loadEntitlement;
       global.fetch.mockResolvedValueOnce({
         ok: true,
         json: jest.fn().mockResolvedValueOnce(mockRegistry),
       });
-      const remotes = await actualLoadEntitlement("okapi:3000");
-      expect(fetch).toHaveBeenCalledWith("okapi:3000", { signal: undefined });
+      const remotes = await actualLoadEntitlement('okapi:3000');
+      expect(fetch).toHaveBeenCalledWith('okapi:3000', { signal: undefined });
       expect(remotes).toEqual(mockRemotes);
     });
   });

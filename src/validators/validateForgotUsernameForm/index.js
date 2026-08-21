@@ -1,1 +1,1 @@
-export { default } from "./validateForgotUsernameForm";
+export { default } from './validateForgotUsernameForm';

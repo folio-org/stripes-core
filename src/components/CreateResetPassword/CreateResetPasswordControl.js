@@ -1,19 +1,19 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { withRouter } from "react-router-dom";
-import { connect as reduxConnect } from "react-redux";
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { withRouter } from 'react-router-dom';
+import { connect as reduxConnect } from 'react-redux';
 
-import processBadResponse from "../../processBadResponse";
-import { stripesShape } from "../../Stripes";
-import { setAuthError } from "../../okapiActions";
-import { defaultErrors } from "../../constants";
-import OrganizationLogo from "../OrganizationLogo";
-import { getLocationQuery } from "../../locationService";
+import processBadResponse from '../../processBadResponse';
+import { stripesShape } from '../../Stripes';
+import { setAuthError } from '../../okapiActions';
+import { defaultErrors } from '../../constants';
+import OrganizationLogo from '../OrganizationLogo';
+import { getLocationQuery } from '../../locationService';
 
-import CreateResetPassword from "./CreateResetPassword";
-import PasswordHasNotChanged from "./components/PasswordHasNotChanged";
-import PasswordSuccessfullyChanged from "./components/PasswordSuccessfullyChanged";
-import { getTenant } from "./utils";
+import CreateResetPassword from './CreateResetPassword';
+import PasswordHasNotChanged from './components/PasswordHasNotChanged';
+import PasswordSuccessfullyChanged from './components/PasswordSuccessfullyChanged';
+import { getTenant } from './utils';
 
 class CreateResetPasswordControl extends Component {
   static propTypes = {
@@ -102,15 +102,15 @@ class CreateResetPasswordControl extends Component {
     // This part of the path is optional (hence the ?) and can instead be placed in the URL param `resetToken`
     // to allow for keys longer than the URL length restriction of 2048 characters.
     const resetToken = token ?? getLocationQuery(location)?.resetToken;
-    const interfacePath = stripes.okapi.authnUrl ? "users-keycloak" : "bl-users";
-    const path = `${url}/${interfacePath}/password-reset/${isValidToken ? "reset" : "validate"}`;
+    const interfacePath = stripes.okapi.authnUrl ? 'users-keycloak' : 'bl-users';
+    const path = `${url}/${interfacePath}/password-reset/${isValidToken ? 'reset' : 'validate'}`;
 
     const res = await fetch(path, {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
-        "x-okapi-token": resetToken,
-        "x-okapi-tenant": getTenant(stripes, location),
+        'Content-Type': 'application/json',
+        'x-okapi-token': resetToken,
+        'x-okapi-tenant': getTenant(stripes, location),
       },
       ...(body && { body: JSON.stringify(body) }),
       // this endpoint will return a 401 if the reset-token is expired/invalid.

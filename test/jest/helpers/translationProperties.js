@@ -1,13 +1,13 @@
-import stripesComponentsTranslations from "@folio/stripes-components/translations/stripes-components/en";
-import stripesCoreTranslations from "../../../translations/stripes-core/en";
+import stripesComponentsTranslations from '@folio/stripes-components/translations/stripes-components/en';
+import stripesCoreTranslations from '../../../translations/stripes-core/en';
 
 const translationsProperties = [
   {
-    prefix: "stripes-components",
+    prefix: 'stripes-components',
     translations: stripesComponentsTranslations,
   },
   {
-    prefix: "stripes-core",
+    prefix: 'stripes-core',
     translations: stripesCoreTranslations,
   },
 ];

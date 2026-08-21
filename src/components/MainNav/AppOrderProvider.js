@@ -1,19 +1,19 @@
-import { createContext, useContext, useMemo } from "react";
-import { useLocation } from "react-router-dom";
-import { useIntl } from "react-intl";
-import { useQuery } from "react-query";
+import { createContext, useContext, useMemo } from 'react';
+import { useLocation } from 'react-router-dom';
+import { useIntl } from 'react-intl';
+import { useQuery } from 'react-query';
 
-import { useStripes } from "../../StripesContext";
-import { useModules } from "../../ModulesContext";
-import { LastVisitedContext } from "../LastVisited";
-import usePreferences from "../../hooks/usePreferences";
-import { packageName } from "../../constants";
-import settingsIcon from "./settings.svg";
+import { useStripes } from '../../StripesContext';
+import { useModules } from '../../ModulesContext';
+import { LastVisitedContext } from '../LastVisited';
+import usePreferences from '../../hooks/usePreferences';
+import { packageName } from '../../constants';
+import settingsIcon from './settings.svg';
 
-const APPORDER_PREF_NAME = "user-main-nav-order";
-const APPORDER_PREF_SCOPE = "stripes-core.prefs.manage";
+const APPORDER_PREF_NAME = 'user-main-nav-order';
+const APPORDER_PREF_SCOPE = 'stripes-core.prefs.manage';
 
-const SETTINGS_ROUTE = "/settings";
+const SETTINGS_ROUTE = '/settings';
 
 /**
  * AppOrderContext - wraps the main navigation components and the module view, passing its
@@ -56,7 +56,7 @@ export const useAppOrderContext = () => {
 function getAllowedApps(appModules, stripes, pathname, lastVisited, formatMessage) {
   const apps = appModules
     .map((entry) => {
-      const name = entry.module.replace(packageName.PACKAGE_SCOPE_REGEX, "");
+      const name = entry.module.replace(packageName.PACKAGE_SCOPE_REGEX, '');
       const perm = `module.${name}.enabled`;
 
       if (!stripes.hasPerm(perm)) {
@@ -65,8 +65,8 @@ function getAllowedApps(appModules, stripes, pathname, lastVisited, formatMessag
 
       const id = `clickable-${name}-module`;
 
-      const pathRoot = pathname.split("/")[1];
-      const entryRoot = entry.route.split("/")[1];
+      const pathRoot = pathname.split('/')[1];
+      const entryRoot = entry.route.split('/')[1];
       const active = pathRoot === entryRoot;
 
       const last = lastVisited[name];
@@ -88,18 +88,18 @@ function getAllowedApps(appModules, stripes, pathname, lastVisited, formatMessag
    * until Settings becomes a standalone app
    */
 
-  if (stripes.hasPerm("settings.enabled")) {
+  if (stripes.hasPerm('settings.enabled')) {
     apps.push({
-      displayName: formatMessage({ id: "stripes-core.settings" }),
-      name: "settings",
-      id: "clickable-settings",
+      displayName: formatMessage({ id: 'stripes-core.settings' }),
+      name: 'settings',
+      id: 'clickable-settings',
       href: lastVisited.x_settings || SETTINGS_ROUTE,
       active: pathname.startsWith(SETTINGS_ROUTE),
-      description: formatMessage({ id: "stripes-core.folioSettings" }),
+      description: formatMessage({ id: 'stripes-core.folioSettings' }),
       iconData: {
         src: settingsIcon,
-        alt: formatMessage({ id: "stripes-core.folioSettings" }),
-        title: formatMessage({ id: "stripes-core.settings" }),
+        alt: formatMessage({ id: 'stripes-core.folioSettings' }),
+        title: formatMessage({ id: 'stripes-core.settings' }),
       },
       route: SETTINGS_ROUTE,
     });
@@ -147,8 +147,8 @@ export const AppOrderProvider = ({ children }) => {
     } else {
       // filter saved app positions by permission.
       orderedApps = orderedApps.filter(({ name }) => {
-        if (name === "settings") {
-          return stripes.hasPerm("settings.enabled");
+        if (name === 'settings') {
+          return stripes.hasPerm('settings.enabled');
         }
         const perm = `module.${name}.enabled`;
         return stripes.hasPerm(perm);
@@ -188,7 +188,7 @@ export const AppOrderProvider = ({ children }) => {
   const updateList = async (list) => {
     // clean the 'isNew' field;
     list.forEach((item) => {
-      if (Object.prototype.hasOwnProperty.call(item, "isNew")) {
+      if (Object.prototype.hasOwnProperty.call(item, 'isNew')) {
         delete item.isNew;
       }
     });

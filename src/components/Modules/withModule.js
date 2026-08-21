@@ -1,9 +1,9 @@
-import React from "react";
-import hoistNonReactStatics from "hoist-non-react-statics";
-import { ModulesContext } from "../../ModulesContext";
+import React from 'react';
+import hoistNonReactStatics from 'hoist-non-react-statics';
+import { ModulesContext } from '../../ModulesContext';
 
 const getDisplayName = (WrappedComponent) => {
-  return WrappedComponent.displayName || WrappedComponent.name || "Component";
+  return WrappedComponent.displayName || WrappedComponent.name || 'Component';
 };
 
 const findModuleInArray = (array, moduleName) => {
@@ -22,7 +22,7 @@ export default function withModule(moduleName) {
     class WithModule extends React.Component {
       render() {
         let name = moduleName;
-        if (typeof moduleName === "function") {
+        if (typeof moduleName === 'function') {
           name = moduleName(this.props);
         }
 

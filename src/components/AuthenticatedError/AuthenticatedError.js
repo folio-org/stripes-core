@@ -1,11 +1,11 @@
-import PropTypes from "prop-types";
-import { FormattedMessage } from "react-intl";
+import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
 
-import { Headline } from "@folio/stripes-components";
+import { Headline } from '@folio/stripes-components';
 
-import Pluggable from "../../Pluggable";
+import Pluggable from '../../Pluggable';
 
-import css from "./AuthenticatedError.css";
+import css from './AuthenticatedError.css';
 
 /**
  * Show a full-screen error message for an authenticated user, e.g. for an
@@ -28,7 +28,7 @@ const AuthenticatedError = ({ location }) => {
   // reset-password _is_ a valid route, but not for an authenticated user.
   // if that's the route, show a special error message. otherwise, show
   // a generic "bad request" message.
-  if (location.pathname.startsWith("/reset-password")) {
+  if (location.pathname.startsWith('/reset-password')) {
     message = <FormattedMessage id="stripes-core.front.error.setPassword.message" />;
   }
 

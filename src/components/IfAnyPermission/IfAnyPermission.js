@@ -1,11 +1,11 @@
-import PropTypes from "prop-types";
-import { useStripes } from "../../StripesContext";
+import PropTypes from 'prop-types';
+import { useStripes } from '../../StripesContext';
 
 const IfAnyPermission = ({ children, perm }) => {
   const stripes = useStripes();
   const hasPermission = stripes.hasAnyPerm(perm);
 
-  if (typeof children === "function") {
+  if (typeof children === 'function') {
     return children({ hasPermission });
   }
 

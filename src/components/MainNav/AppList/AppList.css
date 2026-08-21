@@ -2,7 +2,7 @@
  * App Switcher
  */
 
-@import "@folio/stripes-components/lib/variables.css";
+@import '@folio/stripes-components/lib/variables.css';
 
 :root {
   --padding-for-header: 66px;
@@ -82,7 +82,7 @@
   font-weight: var(--text-weight-bold);
 }
 
-[dir="rtl"] .dropdownListItemLabel {
+[dir='rtl'] .dropdownListItemLabel {
   text-align: right;
 }
 

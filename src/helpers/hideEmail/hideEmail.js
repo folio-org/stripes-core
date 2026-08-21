@@ -1,4 +1,4 @@
-const signToShow = "*";
+const signToShow = '*';
 
 const replacer = (string, pattern1, pattern2) =>
   pattern1.concat(signToShow.repeat(pattern2.length));

@@ -1,1 +1,1 @@
-export { default } from "./SystemSkeleton";
+export { default } from './SystemSkeleton';

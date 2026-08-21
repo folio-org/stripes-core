@@ -2,12 +2,12 @@
  * AppList -> ResizeContainer
  */
 
-import React from "react";
-import classnames from "classnames";
-import debounce from "lodash/debounce";
-import isEqual from "lodash/isEqual";
-import PropTypes from "prop-types";
-import css from "./ResizeContainer.css";
+import React from 'react';
+import classnames from 'classnames';
+import debounce from 'lodash/debounce';
+import isEqual from 'lodash/isEqual';
+import PropTypes from 'prop-types';
+import css from './ResizeContainer.css';
 
 class ResizeContainer extends React.Component {
   static propTypes = {
@@ -37,10 +37,10 @@ class ResizeContainer extends React.Component {
 
   componentDidMount() {
     this.initialize();
-    window.addEventListener("resize", this.onResize, true);
+    window.addEventListener('resize', this.onResize, true);
 
     // Observe size changes of the wrapper itself so we recompute hidden items
-    if (typeof ResizeObserver !== "undefined" && this.wrapperRef.current) {
+    if (typeof ResizeObserver !== 'undefined' && this.wrapperRef.current) {
       this.resizeObserver = new ResizeObserver(this.onResize);
       this.resizeObserver.observe(this.wrapperRef.current);
     }
@@ -82,7 +82,7 @@ class ResizeContainer extends React.Component {
   }
 
   componentWillUnmount() {
-    window.removeEventListener("resize", this.onResize, true);
+    window.removeEventListener('resize', this.onResize, true);
 
     if (this.resizeObserver) {
       this.resizeObserver.disconnect();

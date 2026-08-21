@@ -1,17 +1,17 @@
-import { render, waitFor } from "@folio/jest-config-stripes/testing-library/react";
-import { createMemoryHistory } from "history";
+import { render, waitFor } from '@folio/jest-config-stripes/testing-library/react';
+import { createMemoryHistory } from 'history';
 
-import TitleManager from "./TitleManager";
-import Harness from "../../../test/jest/helpers/harness";
+import TitleManager from './TitleManager';
+import Harness from '../../../test/jest/helpers/harness';
 
-describe("TitleManager", () => {
-  it("renders a title with a default postfix", async () => {
+describe('TitleManager', () => {
+  it('renders a title with a default postfix', async () => {
     const stripes = {
       config: {},
       hasPerm: jest.fn(),
     };
 
-    const page = "record-application";
+    const page = 'record-application';
 
     const history = createMemoryHistory();
     render(
@@ -25,17 +25,17 @@ describe("TitleManager", () => {
     await waitFor(() => expect(document.title).toBe(`${page} - FOLIO`));
   });
 
-  it("renders prefix, page, record, postfix", async () => {
+  it('renders prefix, page, record, postfix', async () => {
     const stripes = {
       config: {
-        platformName: "two mile",
+        platformName: 'two mile',
       },
       hasPerm: jest.fn(),
     };
 
-    const prefix = "pre";
-    const page = "steve";
-    const record = "8:41.5";
+    const prefix = 'pre';
+    const page = 'steve';
+    const record = '8:41.5';
 
     const history = createMemoryHistory();
     render(
@@ -51,16 +51,16 @@ describe("TitleManager", () => {
     );
   });
 
-  it("renders prefix, record, postfix", async () => {
+  it('renders prefix, record, postfix', async () => {
     const stripes = {
       config: {
-        platformName: "two mile",
+        platformName: 'two mile',
       },
       hasPerm: jest.fn(),
     };
 
-    const prefix = "pre";
-    const record = "8:41.5";
+    const prefix = 'pre';
+    const record = '8:41.5';
 
     const history = createMemoryHistory();
     render(

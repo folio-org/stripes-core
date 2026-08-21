@@ -1,15 +1,15 @@
-import { renderHook, waitFor } from "@folio/jest-config-stripes/testing-library/react";
-import { QueryClient, QueryClientProvider } from "react-query";
+import { renderHook, waitFor } from '@folio/jest-config-stripes/testing-library/react';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
-import permissions from "fixtures/permissions";
-import useUserTenantPermissions from "./useUserTenantPermissions";
-import useOkapiKy from "../useOkapiKy";
+import permissions from 'fixtures/permissions';
+import useUserTenantPermissions from './useUserTenantPermissions';
+import useOkapiKy from '../useOkapiKy';
 
-jest.mock("../useOkapiKy");
-jest.mock("../components", () => ({
+jest.mock('../useOkapiKy');
+jest.mock('../components', () => ({
   useNamespace: () => [],
 }));
-jest.mock("../StripesContext", () => ({
+jest.mock('../StripesContext', () => ({
   useStripes: () => ({
     hasInterface: () => true,
   }),
@@ -26,7 +26,7 @@ const response = {
   permissions: { permissions },
 };
 
-describe("useUserTenantPermissions", () => {
+describe('useUserTenantPermissions', () => {
   const getMock = jest.fn(() => ({
     json: () => Promise.resolve(response),
   }));
@@ -46,17 +46,17 @@ describe("useUserTenantPermissions", () => {
     useOkapiKy.mockClear().mockReturnValue(kyMock);
   });
 
-  it("should fetch user permissions for specified tenant", async () => {
+  it('should fetch user permissions for specified tenant', async () => {
     const options = {
-      tenantId: "tenantId",
+      tenantId: 'tenantId',
     };
     const { result } = renderHook(() => useUserTenantPermissions(options), { wrapper });
 
     await waitFor(() => !result.current.isLoading);
 
-    expect(setHeaderMock).toHaveBeenCalledWith("X-Okapi-Tenant", options.tenantId);
+    expect(setHeaderMock).toHaveBeenCalledWith('X-Okapi-Tenant', options.tenantId);
     expect(getMock).toHaveBeenCalledWith(
-      "users-keycloak/_self?expandPermissions=true",
+      'users-keycloak/_self?expandPermissions=true',
       expect.objectContaining({}),
     );
   });

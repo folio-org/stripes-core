@@ -1,7 +1,7 @@
-import PropTypes from "prop-types";
-import { Headline, List } from "@folio/stripes-components";
+import PropTypes from 'prop-types';
+import { Headline, List } from '@folio/stripes-components';
 
-import css from "./About.css";
+import css from './About.css';
 
 const AboutInterfaces = ({ list = [] }) => {
   list.sort((a, b) => a.name.localeCompare(b.name));

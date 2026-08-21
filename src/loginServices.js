@@ -1,11 +1,11 @@
-import localforage from "localforage";
-import { translations } from "stripes-config";
-import rtlDetect from "rtl-detect";
-import moment from "moment";
+import localforage from 'localforage';
+import { translations } from 'stripes-config';
+import rtlDetect from 'rtl-detect';
+import moment from 'moment';
 
-import { loadDayJSLocale } from "@folio/stripes-components";
+import { loadDayJSLocale } from '@folio/stripes-components';
 
-import { discoverServices } from "./discoverServices";
+import { discoverServices } from './discoverServices';
 
 import {
   setCurrentPerms,
@@ -22,61 +22,61 @@ import {
   setSessionData,
   setLoginData,
   updateCurrentUser,
-} from "./okapiActions";
-import processBadResponse from "./processBadResponse";
+} from './okapiActions';
+import processBadResponse from './processBadResponse';
 
-import { settings, stripesHubAPI } from "./constants";
+import { settings, stripesHubAPI } from './constants';
 
 // export supported locales, i.e. the languages we provide translations for
 export const supportedLocales = [
-  "ar", // arabic
-  "cs-CZ", // czech, czechia
-  "da-DK", // danish, denmark
-  "de-DE", // german, germany
-  "en-GB", // british english
-  "en-SE", // english, sweden
-  "en-US", // american english
-  "es-419", // latin american spanish
-  "es-ES", // european spanish
-  "es", // spanish
-  "fr-FR", // french, france
-  "he", // hebrew
-  "hi-IN", // hindi, india
-  "hu-HU", // hugarian, hungry
-  "it-IT", // italian, italy
-  "ja", // japanese
-  "ko", // korean
-  "nb", // norwegian bokmål
-  "nl", // dutch, flemish
-  "nn", // norwegian nynorsk
-  "pl", // polish
-  "pt-BR", // portuguese, brazil
-  "pt-PT", // portuguese, portugal
-  "ru", // russian
-  "sv", // swedish
-  "tr", // turkish
-  "uk", // ukrainian
-  "ur", // urdu
-  "zh-CN", // chinese, china
-  "zh-TW", // chinese, taiwan
+  'ar', // arabic
+  'cs-CZ', // czech, czechia
+  'da-DK', // danish, denmark
+  'de-DE', // german, germany
+  'en-GB', // british english
+  'en-SE', // english, sweden
+  'en-US', // american english
+  'es-419', // latin american spanish
+  'es-ES', // european spanish
+  'es', // spanish
+  'fr-FR', // french, france
+  'he', // hebrew
+  'hi-IN', // hindi, india
+  'hu-HU', // hugarian, hungry
+  'it-IT', // italian, italy
+  'ja', // japanese
+  'ko', // korean
+  'nb', // norwegian bokmål
+  'nl', // dutch, flemish
+  'nn', // norwegian nynorsk
+  'pl', // polish
+  'pt-BR', // portuguese, brazil
+  'pt-PT', // portuguese, portugal
+  'ru', // russian
+  'sv', // swedish
+  'tr', // turkish
+  'uk', // ukrainian
+  'ur', // urdu
+  'zh-CN', // chinese, china
+  'zh-TW', // chinese, taiwan
 ];
 
 export const LOGOUT_MESSAGES = {
-  ERROR: "logout-error", // RTR failure
-  EXPIRED: "session-expired", // fixed-length session end-of-session (FLST)
-  INACTIVITY: "session-inactivity", // idle session timeout (IST)
-  INIT_ERROR: "init-error", // stripes init failure
+  ERROR: 'logout-error', // RTR failure
+  EXPIRED: 'session-expired', // fixed-length session end-of-session (FLST)
+  INACTIVITY: 'session-inactivity', // idle session timeout (IST)
+  INIT_ERROR: 'init-error', // stripes init failure
 };
 
 // export supported numbering systems, i.e. the systems tenants may chose
 // for numeral display
 export const supportedNumberingSystems = [
-  "latn", // Arabic (0 1 2 3 4 5 6 7 8 9)
-  "arab", // Arabic-Hindi (٠ ١ ٢ ٣ ٤ ٥ ٦ ٧ ٨ ٩)
+  'latn', // Arabic (0 1 2 3 4 5 6 7 8 9)
+  'arab', // Arabic-Hindi (٠ ١ ٢ ٣ ٤ ٥ ٦ ٧ ٨ ٩)
 ];
 
 /** name for the session key in local storage */
-export const SESSION_NAME = "okapiSess";
+export const SESSION_NAME = 'okapiSess';
 
 /**
  * getTokenSess
@@ -127,8 +127,8 @@ export const setTokenExpiry = async (te) => {
   }
 
   // eslint-disable-next-line no-console
-  console.error("Expected { atExpires: int, rtExpires: int }; received", te);
-  return Promise.reject(new TypeError("Did not receive { atExpires: int, rtExpires: int }"));
+  console.error('Expected { atExpires: int, rtExpires: int }; received', te);
+  return Promise.reject(new TypeError('Did not receive { atExpires: int, rtExpires: int }'));
 };
 
 /**
@@ -140,11 +140,11 @@ export const setTokenExpiry = async (te) => {
  *
  * @see components/OIDCRedirect
  */
-const UNAUTHORIZED_PATH = "unauthorized_path";
+const UNAUTHORIZED_PATH = 'unauthorized_path';
 export const removeUnauthorizedPathFromSession = () => sessionStorage.removeItem(UNAUTHORIZED_PATH);
 export const setUnauthorizedPathToSession = (pathname) => {
   const path = pathname ?? `${window.location.pathname}${window.location.search}`;
-  if (!path.startsWith("/logout")) {
+  if (!path.startsWith('/logout')) {
     sessionStorage.setItem(UNAUTHORIZED_PATH, path);
   }
 };
@@ -175,8 +175,8 @@ export const getOIDCRedirectUri = (tenant, clientId) => {
 export const getLoginTenant = (stripesOkapi, stripesConfig) => {
   // derive from the URL
   const urlParams = new URLSearchParams(window.location.search);
-  let tenant = urlParams.get("tenant");
-  let clientId = urlParams.get("client_id");
+  let tenant = urlParams.get('tenant');
+  let clientId = urlParams.get('client_id');
 
   // derive from stripes.config.js::config::tenantOptions
   if (stripesConfig?.tenantOptions && Object.keys(stripesConfig?.tenantOptions).length === 1) {
@@ -197,27 +197,27 @@ export const getLoginTenant = (stripesOkapi, stripesConfig) => {
 
 // export config values for storing user locale
 export const userLocaleConfig = {
-  configName: "localeSettings",
-  module: "@folio/stripes-core",
+  configName: 'localeSettings',
+  module: '@folio/stripes-core',
 };
 
 // config values for storing user locale in mod-settings
 export const userOwnLocaleConfig = {
   SCOPE: settings.SCOPE,
-  KEY: "localeSettings",
+  KEY: 'localeSettings',
 };
 
 // config values for storing tenant locale
 export const tenantLocaleConfig = {
   SCOPE: settings.SCOPE,
-  KEY: "tenantLocaleSettings",
+  KEY: 'tenantLocaleSettings',
 };
 
 export function getHeaders(tenant, token) {
   return {
-    "X-Okapi-Tenant": tenant,
-    "Content-Type": "application/json",
-    ...(token && { "X-Okapi-Token": token }),
+    'X-Okapi-Tenant': tenant,
+    'Content-Type': 'application/json',
+    ...(token && { 'X-Okapi-Token': token }),
   };
 }
 
@@ -233,7 +233,7 @@ export function getHeaders(tenant, token) {
  */
 function canReadConfig(store) {
   const perms = store.getState().okapi.currentPerms;
-  return perms?.["configuration.entries.collection.get"];
+  return perms?.['configuration.entries.collection.get'];
 }
 
 /**
@@ -247,7 +247,7 @@ function canReadConfig(store) {
 const canReadLocale = (store) => {
   const perms = store.getState().okapi.currentPerms;
 
-  return perms?.["locale.item.get"];
+  return perms?.['locale.item.get'];
 };
 
 /**
@@ -261,25 +261,25 @@ const canReadLocale = (store) => {
  * @returns {Promise}
  */
 export async function loadTranslations(store, locale, defaultTranslations = {}) {
-  const parentLocale = locale.split("-")[0];
+  const parentLocale = locale.split('-')[0];
   // Since moment.js don't support translations like it or it-IT-u-nu-latn
   // we need to build string like it_IT for fetch call
-  const loadedLocale = locale.replace("-", "_").split("-")[0];
-  const momentLocale = locale.split("-", 2).join("-");
+  const loadedLocale = locale.replace('-', '_').split('-')[0];
+  const momentLocale = locale.split('-', 2).join('-');
 
   // react-intl provides things like pt-BR.
   // lokalise provides things like pt_BR.
   // so we have to translate '-' to '_' because the translation libraries
   // don't know how to talk to each other. sheesh.
-  const region = locale.replace("-", "_");
+  const region = locale.replace('-', '_');
 
   // Update dir- and lang-attributes on the HTML element
   // when the locale changes
-  document.documentElement.setAttribute("lang", locale);
-  document.documentElement.setAttribute("dir", rtlDetect.getLangDir(parentLocale));
+  document.documentElement.setAttribute('lang', locale);
+  document.documentElement.setAttribute('dir', rtlDetect.getLangDir(parentLocale));
 
   // Set locale for Moment.js (en is not importable as it is not stored separately)
-  if (parentLocale === "en") moment.locale(parentLocale);
+  if (parentLocale === 'en') moment.locale(parentLocale);
   else {
     // For moment, we want to import and load the most-specific
     // locale possible without the numbering system suffix,
@@ -363,8 +363,8 @@ async function dispatchLocale(localeValues, store) {
 const fetchAndDispatchLocale = async (url, store, tenant) => {
   const response = await fetch(url, {
     headers: getHeaders(tenant, store.getState().okapi.token),
-    credentials: "include",
-    mode: "cors",
+    credentials: 'include',
+    mode: 'cors',
   });
 
   if (response.ok) {
@@ -390,9 +390,9 @@ const fetchAndDispatchLocale = async (url, store, tenant) => {
  */
 export async function getPlugins(okapiUrl, store, tenant) {
   const response = await fetch(`${okapiUrl}/configurations/entries?query=(module==PLUGINS)`, {
-    credentials: "include",
+    credentials: 'include',
     headers: getHeaders(tenant, store.getState().okapi.token),
-    mode: "cors",
+    mode: 'cors',
   });
 
   if (response.ok) {
@@ -424,8 +424,8 @@ export async function getBindings(okapiUrl, store, tenant) {
     `${okapiUrl}/configurations/entries?query=(module==ORG and configName==bindings)`,
     {
       headers: getHeaders(tenant, store.getState().okapi.token),
-      credentials: "include",
-      mode: "cors",
+      credentials: 'include',
+      mode: 'cors',
     },
   );
 
@@ -464,8 +464,8 @@ export async function getBindings(okapiUrl, store, tenant) {
 const getTenantLocale = async (url, store, tenant) => {
   const response = await fetch(`${url}/locale`, {
     headers: getHeaders(tenant, store.getState().okapi.token),
-    credentials: "include",
-    mode: "cors",
+    credentials: 'include',
+    mode: 'cors',
   });
 
   return response;
@@ -489,8 +489,8 @@ const getUserOwnLocale = async (url, store, tenant, userId) => {
 
   const response = await fetch(`${url}/settings/entries?query=(${query})`, {
     headers: getHeaders(tenant, store.getState().okapi.token),
-    credentials: "include",
-    mode: "cors",
+    credentials: 'include',
+    mode: 'cors',
   });
 
   return response;
@@ -508,10 +508,10 @@ const getUserOwnLocale = async (url, store, tenant, userId) => {
  */
 export async function getLocaleConfigurationsEntries(okapiUrl, store, tenant) {
   const query = [
-    "module==ORG",
-    "configName == localeSettings",
+    'module==ORG',
+    'configName == localeSettings',
     '(cql.allRecords=1 NOT userId="" NOT code="")',
-  ].join(" AND ");
+  ].join(' AND ');
 
   const res = await fetchAndDispatchLocale(
     `${okapiUrl}/configurations/entries?query=(${query})`,
@@ -535,7 +535,7 @@ export async function getLocaleConfigurationsEntries(okapiUrl, store, tenant) {
 export async function getUserLocaleConfigurationsEntries(okapiUrl, store, tenant, userId) {
   const query = Object.entries(userLocaleConfig)
     .map(([k, v]) => `"${k}"=="${v}"`)
-    .join(" AND ");
+    .join(' AND ');
 
   const res = await fetchAndDispatchLocale(
     `${okapiUrl}/configurations/entries?query=(${query} and userId=="${userId}")`,
@@ -584,7 +584,7 @@ const applyLocaleSettings = async (locale, timezone, currency, store) => {
 export const getFullLocale = (languageRegion, numberingSystem) => {
   if (!languageRegion) return null;
 
-  const unicodeExtensionKey = "-u-nu-";
+  const unicodeExtensionKey = '-u-nu-';
 
   return [languageRegion, numberingSystem].filter(Boolean).join(unicodeExtensionKey);
 };
@@ -737,7 +737,7 @@ export function spreadUserWithPerms(userWithPerms) {
   if (list && Array.isArray(list) && list.length > 0) {
     // shaped like this ["foo", "bar", "bat"] or
     // shaped like that [{ "permissionName": "foo" }]?
-    if (typeof list[0] === "string") {
+    if (typeof list[0] === 'string') {
       perms = Object.assign({}, ...list.map((p) => ({ [p]: true })));
     } else {
       perms = Object.assign({}, ...list.map((p) => ({ [p.permissionName]: true })));
@@ -747,9 +747,9 @@ export function spreadUserWithPerms(userWithPerms) {
   return { user, perms };
 }
 
-export const IS_LOGGING_OUT = "@folio/stripes/core::Logout";
+export const IS_LOGGING_OUT = '@folio/stripes/core::Logout';
 
-export const TENANT_LOCAL_STORAGE_KEY = "tenant";
+export const TENANT_LOCAL_STORAGE_KEY = 'tenant';
 
 export const storeLogoutTenant = (tenantId) => {
   localStorage.setItem(TENANT_LOCAL_STORAGE_KEY, JSON.stringify({ tenantId }));
@@ -827,9 +827,9 @@ export async function createOkapiSession(store, tenant, token, data) {
   // BroadcastChannel to communicate with all tabs/windows.
   // here, we set a dummy 'true' value just so we have something to
   // remove (and therefore emit and respond to) on logout
-  localStorage.setItem(SESSION_NAME, "true");
+  localStorage.setItem(SESSION_NAME, 'true');
 
-  await localforage.setItem("loginResponse", data);
+  await localforage.setItem('loginResponse', data);
   const sessionData = await localforage.getItem(SESSION_NAME);
   // for keycloak-based logins, token-expiration data was already
   // pushed to storage, so we pull it out and reuse it here.
@@ -877,7 +877,7 @@ export async function createOkapiSession(store, tenant, token, data) {
 export async function getSSOEnabled(okapiUrl, store, tenant) {
   try {
     const response = await fetch(`${okapiUrl}/saml/check`, {
-      headers: { "X-Okapi-Tenant": tenant, Accept: "application/json" },
+      headers: { 'X-Okapi-Tenant': tenant, Accept: 'application/json' },
       rtrIgnore: true,
     });
     if (response.ok) {
@@ -902,26 +902,26 @@ export async function getSSOEnabled(okapiUrl, store, tenant) {
 async function processSSOLoginResponse(resp) {
   if (resp.ok) {
     const json = await resp.json();
-    const form = document.getElementById("ssoForm");
-    if (json.bindingMethod === "POST") {
-      form.setAttribute("action", json.location);
-      form.setAttribute("method", json.bindingMethod);
+    const form = document.getElementById('ssoForm');
+    if (json.bindingMethod === 'POST') {
+      form.setAttribute('action', json.location);
+      form.setAttribute('method', json.bindingMethod);
 
-      const samlRequest = document.createElement("input");
-      samlRequest.setAttribute("type", "hidden");
-      samlRequest.setAttribute("name", "SAMLRequest");
-      samlRequest.setAttribute("value", json.samlRequest);
+      const samlRequest = document.createElement('input');
+      samlRequest.setAttribute('type', 'hidden');
+      samlRequest.setAttribute('name', 'SAMLRequest');
+      samlRequest.setAttribute('value', json.samlRequest);
       form.appendChild(samlRequest);
 
-      const relayState = document.createElement("input");
-      relayState.setAttribute("type", "hidden");
-      relayState.setAttribute("name", "RelayState");
-      relayState.setAttribute("value", json.relayState);
+      const relayState = document.createElement('input');
+      relayState.setAttribute('type', 'hidden');
+      relayState.setAttribute('name', 'RelayState');
+      relayState.setAttribute('value', json.relayState);
       form.appendChild(relayState);
 
       form.submit();
     } else {
-      window.open(json.location, "_self");
+      window.open(json.location, '_self');
     }
   }
 }
@@ -971,7 +971,7 @@ export async function processOkapiSession(store, tenant, resp, ssoToken) {
 
   if (resp.ok) {
     const json = await resp.json();
-    const token = resp.headers.get("X-Okapi-Token") || json.access_token || ssoToken;
+    const token = resp.headers.get('X-Okapi-Token') || json.access_token || ssoToken;
     await createOkapiSession(store, tenant, token, json);
     store.dispatch(setOkapiReady());
     return json;
@@ -1005,11 +1005,11 @@ export async function processOkapiSession(store, tenant, resp, ssoToken) {
 export async function validateUser(okapiUrl, store, tenant, session, handleError) {
   try {
     const { token, tenant: sessionTenant = tenant } = session;
-    const usersPath = store.getState()?.okapi?.authnUrl ? "users-keycloak" : "bl-users";
+    const usersPath = store.getState()?.okapi?.authnUrl ? 'users-keycloak' : 'bl-users';
     const resp = await fetch(`${okapiUrl}/${usersPath}/_self?expandPermissions=true`, {
       headers: getHeaders(sessionTenant, token),
-      credentials: "include",
-      mode: "cors",
+      credentials: 'include',
+      mode: 'cors',
     });
     if (resp.ok) {
       const data = await resp.json();
@@ -1081,7 +1081,7 @@ export async function checkOkapiSession(okapiUrl, store, tenant, history) {
   // check whether SSO is enabled if either
   // 1. res is null (when we are starting a new session)
   // 2. login-saml interface is present (when we are resuming an existing session)
-  if (!res || store.getState().discovery?.interfaces?.["login-saml"]) {
+  if (!res || store.getState().discovery?.interfaces?.['login-saml']) {
     await getSSOEnabled(okapiUrl, store, tenant);
   }
   store.dispatch(setOkapiReady());
@@ -1101,15 +1101,15 @@ export async function checkOkapiSession(okapiUrl, store, tenant, history) {
  * @returns {Promise}
  */
 export async function requestLogin(okapiUrl, store, tenant, data) {
-  const loginPath = "login-with-expiry";
+  const loginPath = 'login-with-expiry';
   const resp = await fetch(
     `${okapiUrl}/bl-users/${loginPath}?expandPermissions=true&fullPermissions=true`,
     {
       body: JSON.stringify(data),
-      credentials: "include",
-      headers: { "X-Okapi-Tenant": tenant, "Content-Type": "application/json" },
-      method: "POST",
-      mode: "cors",
+      credentials: 'include',
+      headers: { 'X-Okapi-Tenant': tenant, 'Content-Type': 'application/json' },
+      method: 'POST',
+      mode: 'cors',
       rtrIgnore: true,
     },
   );
@@ -1128,7 +1128,7 @@ export async function requestLogin(okapiUrl, store, tenant, data) {
  * @returns {Promise} Promise resolving to the response of the request
  */
 async function fetchUserWithPerms(okapi, tenant, token, rtrIgnore = false) {
-  const usersPath = okapi.authnUrl ? "users-keycloak" : "bl-users";
+  const usersPath = okapi.authnUrl ? 'users-keycloak' : 'bl-users';
   const res = await fetch(
     `${okapi.url}/${usersPath}/_self?expandPermissions=true&fullPermissions=true`,
     {
@@ -1160,7 +1160,7 @@ async function fetchUserWithPerms(okapi, tenant, token, rtrIgnore = false) {
  */
 
 export async function fetchOverriddenUserWithPerms(okapi, tenant, token, rtrIgnore = false) {
-  const usersPath = okapi.authnUrl ? "users-keycloak" : "bl-users";
+  const usersPath = okapi.authnUrl ? 'users-keycloak' : 'bl-users';
   const res = await fetch(
     `${okapi.url}/${usersPath}/_self?expandPermissions=true&fullPermissions=true&overrideUser=true`,
     {
@@ -1210,9 +1210,9 @@ export async function requestSSOLogin(okapiUrl, tenant) {
   // i.e. ordinarily, we'd just call ${okapiUrl}/saml/login.
   // https://s3.amazonaws.com/foliodocs/api/okapi/p/okapi.html#invoke_tenant__id_
   const resp = await fetch(`${okapiUrl}/_/invoke/tenant/${tenant}/saml/login`, {
-    method: "POST",
-    headers: { "X-Okapi-tenant": tenant, "Content-Type": "application/json" },
-    credentials: "include",
+    method: 'POST',
+    headers: { 'X-Okapi-tenant': tenant, 'Content-Type': 'application/json' },
+    credentials: 'include',
     body: JSON.stringify({ stripesUrl }),
   });
   await processSSOLoginResponse(resp);

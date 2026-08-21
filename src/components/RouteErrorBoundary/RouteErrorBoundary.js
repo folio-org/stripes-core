@@ -2,16 +2,16 @@
  * RouteErrorBoundary
  */
 
-import React, { useContext } from "react";
-import { useIntl } from "react-intl";
-import PropTypes from "prop-types";
-import { ErrorBoundary } from "@folio/stripes-components";
-import events from "../../events";
-import { invokeEventHandlers } from "../../handlerService";
-import { ModulesContext } from "../../ModulesContext";
-import { StripesContext } from "../../StripesContext";
+import React, { useContext } from 'react';
+import { useIntl } from 'react-intl';
+import PropTypes from 'prop-types';
+import { ErrorBoundary } from '@folio/stripes-components';
+import events from '../../events';
+import { invokeEventHandlers } from '../../handlerService';
+import { ModulesContext } from '../../ModulesContext';
+import { StripesContext } from '../../StripesContext';
 
-const RouteErrorBoundary = ({ children, escapeRoute = "/", moduleName, isSettings }) => {
+const RouteErrorBoundary = ({ children, escapeRoute = '/', moduleName, isSettings }) => {
   const intl = useIntl();
   let buttonLabelId;
 
@@ -20,12 +20,12 @@ const RouteErrorBoundary = ({ children, escapeRoute = "/", moduleName, isSetting
 
   if (moduleName) {
     if (isSettings) {
-      buttonLabelId = "stripes-core.routeErrorBoundary.goToModuleSettingsHomeLabel";
+      buttonLabelId = 'stripes-core.routeErrorBoundary.goToModuleSettingsHomeLabel';
     } else {
-      buttonLabelId = "stripes-core.routeErrorBoundary.goToModuleHomeLabel";
+      buttonLabelId = 'stripes-core.routeErrorBoundary.goToModuleHomeLabel';
     }
   } else {
-    buttonLabelId = "stripes-core.routeErrorBoundary.goToAppHomeLabel";
+    buttonLabelId = 'stripes-core.routeErrorBoundary.goToAppHomeLabel';
   }
 
   const handleReset = () => {
@@ -49,7 +49,7 @@ const RouteErrorBoundary = ({ children, escapeRoute = "/", moduleName, isSetting
 
   return (
     <ErrorBoundary
-      subTitle={intl.formatMessage({ id: "stripes-core.routeErrorBoundary.sub" })}
+      subTitle={intl.formatMessage({ id: 'stripes-core.routeErrorBoundary.sub' })}
       resetButtonLabel={intl.formatMessage({ id: buttonLabelId }, { name: moduleName })}
       onReset={handleReset}
       onError={handleError}

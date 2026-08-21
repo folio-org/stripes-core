@@ -1,5 +1,5 @@
-import React from "react";
-import hoistNonReactStatics from "hoist-non-react-statics";
+import React from 'react';
+import hoistNonReactStatics from 'hoist-non-react-statics';
 
 export const AppCtxMenuContext = React.createContext();
 

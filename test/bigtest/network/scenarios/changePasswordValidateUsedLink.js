@@ -1,11 +1,11 @@
 export default (server) => {
   server.post(
-    "/bl-users/password-reset/validate",
+    '/bl-users/password-reset/validate',
     {
       errors: [
         {
-          type: "error",
-          code: "link.used",
+          type: 'error',
+          code: 'link.used',
         },
       ],
     },

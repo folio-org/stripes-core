@@ -1,15 +1,15 @@
-import React from "react";
-import { withRouter } from "react-router-dom";
-import { FormattedMessage } from "react-intl";
-import PropTypes from "prop-types";
+import React from 'react';
+import { withRouter } from 'react-router-dom';
+import { FormattedMessage } from 'react-intl';
+import PropTypes from 'prop-types';
 
-import { Headline } from "@folio/stripes-components";
+import { Headline } from '@folio/stripes-components';
 
-import OrganizationLogo from "../OrganizationLogo/OrganizationLogo";
-import validateEmail from "../../validators/validateEmail/validateEmail";
-import { hideEmail } from "../../helpers";
+import OrganizationLogo from '../OrganizationLogo/OrganizationLogo';
+import validateEmail from '../../validators/validateEmail/validateEmail';
+import { hideEmail } from '../../helpers';
 
-import styles from "./CheckEmailStatusPage.css";
+import styles from './CheckEmailStatusPage.css';
 
 const CheckEmailStatusPage = (props) => {
   const {
@@ -19,7 +19,7 @@ const CheckEmailStatusPage = (props) => {
   } = props;
 
   const isEmail = validateEmail(userEmail);
-  const labelNamespace = "stripes-core.label";
+  const labelNamespace = 'stripes-core.label';
   const notificationText = isEmail
     ? `${labelNamespace}.sent.email`
     : `${labelNamespace}.your.email`;

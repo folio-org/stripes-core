@@ -1,4 +1,4 @@
-import { interactor, collection } from "@bigtest/interactor";
+import { interactor, collection } from '@bigtest/interactor';
 
 export default
 @interactor

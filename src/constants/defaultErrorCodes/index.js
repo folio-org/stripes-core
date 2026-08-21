@@ -1,1 +1,1 @@
-export { default } from "./defaultErrorCodes";
+export { default } from './defaultErrorCodes';

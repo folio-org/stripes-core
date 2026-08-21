@@ -1,10 +1,10 @@
-import React, { useState } from "react";
-import { Redirect } from "react-router-dom";
+import React, { useState } from 'react';
+import { Redirect } from 'react-router-dom';
 
-import processBadResponse from "../../processBadResponse";
-import { defaultErrors } from "../../constants";
-import ForgotPasswordForm from "./ForgotPasswordForm";
-import useForgotPasswordMutation from "./useForgotPasswordMutation";
+import processBadResponse from '../../processBadResponse';
+import { defaultErrors } from '../../constants';
+import ForgotPasswordForm from './ForgotPasswordForm';
+import useForgotPasswordMutation from './useForgotPasswordMutation';
 
 const ForgotPassword = () => {
   const [userEmail, setUserEmail] = useState(null);
@@ -31,7 +31,7 @@ const ForgotPassword = () => {
   };
 
   if (userEmail) {
-    return <Redirect to={{ pathname: "/check-email", state: { userEmail } }} />;
+    return <Redirect to={{ pathname: '/check-email', state: { userEmail } }} />;
   }
 
   return <ForgotPasswordForm errors={authFailure} onSubmit={onSubmit} />;

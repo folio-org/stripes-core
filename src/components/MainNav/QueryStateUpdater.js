@@ -1,11 +1,11 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { compose } from "redux";
-import { injectIntl } from "react-intl";
-import { withRouter } from "react-router";
-import { isEqual } from "lodash";
+import React from 'react';
+import PropTypes from 'prop-types';
+import { compose } from 'redux';
+import { injectIntl } from 'react-intl';
+import { withRouter } from 'react-router';
+import { isEqual } from 'lodash';
 
-import { withModules } from "../Modules";
+import { withModules } from '../Modules';
 
 import {
   updateQueryResource,
@@ -14,7 +14,7 @@ import {
   getCurrentModule,
   isQueryResourceModule,
   getQueryResourceState,
-} from "../../locationService";
+} from '../../locationService';
 
 /** QueryStateUpdater
  *   onMount of stripes, sync the query state to the location.

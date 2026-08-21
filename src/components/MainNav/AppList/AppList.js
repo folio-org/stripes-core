@@ -2,16 +2,16 @@
  * App List
  */
 
-import React, { Component } from "react";
-import classnames from "classnames";
-import PropTypes from "prop-types";
-import { FormattedMessage, injectIntl } from "react-intl";
+import React, { Component } from 'react';
+import classnames from 'classnames';
+import PropTypes from 'prop-types';
+import { FormattedMessage, injectIntl } from 'react-intl';
 
-import { Dropdown, DropdownMenu, Icon } from "@folio/stripes-components";
+import { Dropdown, DropdownMenu, Icon } from '@folio/stripes-components';
 
-import { ResizeContainer, AppListDropdown } from "./components";
-import NavButton from "../NavButton";
-import css from "./AppList.css";
+import { ResizeContainer, AppListDropdown } from './components';
+import NavButton from '../NavButton';
+import css from './AppList.css';
 
 class AppList extends Component {
   static propTypes = {
@@ -127,7 +127,7 @@ class AppList extends Component {
       </svg>
     );
     const label = (
-      <Icon iconPosition="end" icon={open ? "caret-up" : "caret-down"}>
+      <Icon iconPosition="end" icon={open ? 'caret-up' : 'caret-down'}>
         <FormattedMessage id="stripes-core.mainnav.showAllApplicationsButtonLabel" />
       </Icon>
     );

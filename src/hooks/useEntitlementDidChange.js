@@ -1,7 +1,7 @@
-import { useQuery } from "react-query";
-import { useRef, useState } from "react";
-import { useStripes } from "../StripesContext";
-import useOkapiKy from "../useOkapiKy";
+import { useQuery } from 'react-query';
+import { useRef, useState } from 'react';
+import { useStripes } from '../StripesContext';
+import useOkapiKy from '../useOkapiKy';
 
 /**
  * useEntitlementChangeNotifier
@@ -27,7 +27,7 @@ const useEntitlementChangeNotifier = () => {
   const [isStale, setIsStale] = useState(false);
 
   useQuery({
-    queryKey: ["EntitlementChangeWarning"],
+    queryKey: ['EntitlementChangeWarning'],
     queryFn: async () => {
       const json = await ky(`entitlements/${stripes.okapi.tenant}/applications`, {
         searchParams: { limit: 500 },

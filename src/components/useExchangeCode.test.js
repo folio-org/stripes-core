@@ -1,17 +1,17 @@
-import { act, renderHook, waitFor } from "@folio/jest-config-stripes/testing-library/react";
-import { QueryClient, QueryClientProvider } from "react-query";
+import { act, renderHook, waitFor } from '@folio/jest-config-stripes/testing-library/react';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
-import { usePublicGatewayKy } from "../useOkapiKy";
-import useExchangeCode from "./useExchangeCode";
+import { usePublicGatewayKy } from '../useOkapiKy';
+import useExchangeCode from './useExchangeCode';
 
-jest.mock("./OrganizationLogo", () => () => <div>OrganizationLogo</div>);
-jest.mock("../useOkapiKy");
-jest.mock("../StripesContext", () => ({
-  useStripes: () => ({ tenant: "tenant", clientId: "clientId" }),
+jest.mock('./OrganizationLogo', () => () => <div>OrganizationLogo</div>);
+jest.mock('../useOkapiKy');
+jest.mock('../StripesContext', () => ({
+  useStripes: () => ({ tenant: 'tenant', clientId: 'clientId' }),
 }));
 
-jest.mock("../loginServices", () => ({
-  ...jest.requireActual("../loginServices"),
+jest.mock('../loginServices', () => ({
+  ...jest.requireActual('../loginServices'),
   setTokenExpiry: jest.fn(() => Promise.resolve()),
   requestUserWithPerms: jest.fn(() => Promise.resolve()),
   storeLogoutTenant: jest.fn(() => Promise.resolve()),
@@ -23,8 +23,8 @@ const wrapper = ({ children }) => (
   <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
 );
 
-describe("useExchangeCode", () => {
-  it("errors when code is missing from window.location.search", async () => {
+describe('useExchangeCode', () => {
+  it('errors when code is missing from window.location.search', async () => {
     const callback = jest.fn();
 
     let hook;
@@ -37,11 +37,11 @@ describe("useExchangeCode", () => {
     });
   });
 
-  it("extracts JSON errors from the authn/token reponse", async () => {
-    window.location.pathname = "/some-path";
-    window.location.search = "?code=code";
+  it('extracts JSON errors from the authn/token reponse', async () => {
+    window.location.pathname = '/some-path';
+    window.location.search = '?code=code';
 
-    const err = "some error";
+    const err = 'some error';
     const mockUseUnauthenticatedOkapiKy = usePublicGatewayKy;
     mockUseUnauthenticatedOkapiKy.mockReturnValue(() => {
       // OMG lint, shut up about mocks of third party libraries 🙄
@@ -64,11 +64,11 @@ describe("useExchangeCode", () => {
     });
   });
 
-  it("extracts plaintext errors from the authn/token reponse", async () => {
-    window.location.pathname = "/some-path";
-    window.location.search = "?code=code";
+  it('extracts plaintext errors from the authn/token reponse', async () => {
+    window.location.pathname = '/some-path';
+    window.location.search = '?code=code';
 
-    const err = "I am nobody; who are you?";
+    const err = 'I am nobody; who are you?';
     const mockUseUnauthenticatedOkapiKy = usePublicGatewayKy;
     mockUseUnauthenticatedOkapiKy.mockReturnValue(() => {
       throw new Error(err);
@@ -85,13 +85,13 @@ describe("useExchangeCode", () => {
     });
   });
 
-  it("executes the callback when token exchange succeeds", async () => {
-    window.location.pathname = "/some-path";
-    window.location.search = "?code=code";
+  it('executes the callback when token exchange succeeds', async () => {
+    window.location.pathname = '/some-path';
+    window.location.search = '?code=code';
 
     const mockUseUnauthenticatedOkapiKy = usePublicGatewayKy;
     mockUseUnauthenticatedOkapiKy.mockReturnValue(() => ({
-      json: () => ({ some: "object" }),
+      json: () => ({ some: 'object' }),
     }));
 
     const callback = jest.fn();

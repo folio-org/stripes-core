@@ -1,11 +1,11 @@
 export default (server) => {
   server.post(
-    "bl-users/forgotten/password",
+    'bl-users/forgotten/password',
     {
       errors: [
         {
-          code: "unable.locate.account",
-          type: "error",
+          code: 'unable.locate.account',
+          type: 'error',
         },
       ],
     },

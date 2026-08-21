@@ -1,81 +1,81 @@
-import { render, screen } from "@folio/jest-config-stripes/testing-library/react";
-import userEvent from "@folio/jest-config-stripes/testing-library/user-event";
+import { render, screen } from '@folio/jest-config-stripes/testing-library/react';
+import userEvent from '@folio/jest-config-stripes/testing-library/user-event';
 
-import { useQuery } from "react-query";
+import { useQuery } from 'react-query';
 
-import StaleBundleWarning, { queryFn } from "./StaleBundleWarning";
+import StaleBundleWarning, { queryFn } from './StaleBundleWarning';
 
-jest.mock("react-query", () => ({
+jest.mock('react-query', () => ({
   useQuery: jest.fn(),
 }));
 
-describe("StaleBundleWarning", () => {
-  describe("unequal responses render a refresh warning", () => {
+describe('StaleBundleWarning', () => {
+  describe('unequal responses render a refresh warning', () => {
     beforeEach(async () => {
       delete window.location;
       window.location = { reload: jest.fn() };
 
       const mockUseQuery = useQuery;
       mockUseQuery.mockReturnValue({
-        data: "foo",
+        data: 'foo',
       });
 
       const { rerender } = await render(<StaleBundleWarning />);
 
-      expect(screen.queryByText("stripes-core.stale.reload")).toBeFalsy();
+      expect(screen.queryByText('stripes-core.stale.reload')).toBeFalsy();
 
       mockUseQuery.mockReturnValue({
-        data: "bar",
+        data: 'bar',
       });
 
       rerender(<StaleBundleWarning />);
     });
 
-    it("warning is present", async () => {
-      expect(screen.getByText("stripes-core.stale.reload")).toBeInTheDocument();
+    it('warning is present', async () => {
+      expect(screen.getByText('stripes-core.stale.reload')).toBeInTheDocument();
     });
 
-    it("clicking warning button calls reload", async () => {
-      await userEvent.click(screen.getByRole("button"));
+    it('clicking warning button calls reload', async () => {
+      await userEvent.click(screen.getByRole('button'));
       expect(window.location.reload).toHaveBeenCalledWith(true);
     });
   });
 
-  it("equal responses render nothing", async () => {
+  it('equal responses render nothing', async () => {
     const { rerender } = await render(<StaleBundleWarning />);
 
-    expect(screen.queryByText("stripes-core.stale.reload")).toBeFalsy();
+    expect(screen.queryByText('stripes-core.stale.reload')).toBeFalsy();
 
     rerender(<StaleBundleWarning />);
 
-    expect(screen.queryByText("stripes-core.stale.reload")).toBeFalsy();
+    expect(screen.queryByText('stripes-core.stale.reload')).toBeFalsy();
   });
 
-  it("query returns null if config is absent", async () => {
+  it('query returns null if config is absent', async () => {
     const config = {};
     const value = await queryFn(config, {});
     expect(value).toBeNull();
   });
 
-  it("query reads request body", async () => {
+  it('query reads request body', async () => {
     const config = {
-      path: "index.html",
+      path: 'index.html',
     };
 
     const kyImpl = {
       get: () => ({
-        text: () => Promise.resolve("monkey"),
+        text: () => Promise.resolve('monkey'),
       }),
     };
 
     const value = await queryFn(config, kyImpl);
-    expect(value).toEqual("monkey");
+    expect(value).toEqual('monkey');
   });
 
-  it("query reads request header", async () => {
+  it('query reads request header', async () => {
     const config = {
-      path: "index.html",
-      header: "monkey",
+      path: 'index.html',
+      header: 'monkey',
     };
 
     const kyImpl = jest.fn(async () => ({
@@ -85,16 +85,16 @@ describe("StaleBundleWarning", () => {
     }));
 
     const value = await queryFn(config, kyImpl);
-    expect(value).toEqual("monkey");
+    expect(value).toEqual('monkey');
   });
 
-  it("query swallows errors but warns about them", async () => {
-    const warn = jest.spyOn(console, "warn").mockImplementation(() => {});
+  it('query swallows errors but warns about them', async () => {
+    const warn = jest.spyOn(console, 'warn').mockImplementation(() => {});
     const config = {
-      path: "index.html",
+      path: 'index.html',
     };
 
-    const reject = "monkey";
+    const reject = 'monkey';
     const kyImpl = {
       get: () => ({
         text: () => Promise.reject(reject), // eslint-disable-line prefer-promise-reject-errors

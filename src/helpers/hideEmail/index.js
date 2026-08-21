@@ -1,1 +1,1 @@
-export { default } from "./hideEmail";
+export { default } from './hideEmail';

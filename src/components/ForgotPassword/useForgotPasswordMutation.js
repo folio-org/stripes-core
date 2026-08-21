@@ -1,6 +1,6 @@
-import { useMutation } from "react-query";
-import { useStripes } from "../../StripesContext";
-import useOkapiKy from "../../useOkapiKy";
+import { useMutation } from 'react-query';
+import { useStripes } from '../../StripesContext';
+import useOkapiKy from '../../useOkapiKy';
 
 /**
  * return a POST mutator that accepts a single argument, id, corresponding
@@ -17,7 +17,7 @@ const useForgotPasswordMutation = () => {
   const stripes = useStripes();
   const ky = useOkapiKy();
 
-  const pathPrefix = stripes.okapi.authnUrl ? "users-keycloak" : "bl-users";
+  const pathPrefix = stripes.okapi.authnUrl ? 'users-keycloak' : 'bl-users';
 
   const mutation = useMutation({
     mutationFn: (id) => ky.post(`${pathPrefix}/forgotten/password`, { json: { id } }).json(),

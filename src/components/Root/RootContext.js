@@ -3,4 +3,4 @@
  * directly from this file.
  */
 
-export { ConnectContext as RootContext, withConnect as withRoot } from "@folio/stripes-connect";
+export { ConnectContext as RootContext, withConnect as withRoot } from '@folio/stripes-connect';

@@ -1,27 +1,27 @@
-import React, { Component, StrictMode } from "react";
-import PropTypes from "prop-types";
+import React, { Component, StrictMode } from 'react';
+import PropTypes from 'prop-types';
 import {
   okapi as localOkapi,
   branding as localBranding,
   config as localConfig,
-} from "stripes-config";
-import isEmpty from "lodash/isEmpty";
-import merge from "lodash/merge";
-import localforage from "localforage";
-import AppConfigError from "./components/AppConfigError";
-import connectErrorEpic from "./connectErrorEpic";
-import configureEpics from "./configureEpics";
-import configureLogger from "./configureLogger";
-import configureStore from "./configureStore";
-import gatherActions from "./gatherActions";
-import { destroyStore } from "./mainActions";
-import { getModules } from "./entitlementService";
-import { modulesInitialState } from "./ModulesContext";
-import css from "./components/SessionEventContainer/style.css";
+} from 'stripes-config';
+import isEmpty from 'lodash/isEmpty';
+import merge from 'lodash/merge';
+import localforage from 'localforage';
+import AppConfigError from './components/AppConfigError';
+import connectErrorEpic from './connectErrorEpic';
+import configureEpics from './configureEpics';
+import configureLogger from './configureLogger';
+import configureStore from './configureStore';
+import gatherActions from './gatherActions';
+import { destroyStore } from './mainActions';
+import { getModules } from './entitlementService';
+import { modulesInitialState } from './ModulesContext';
+import css from './components/SessionEventContainer/style.css';
 
-import Root from "./components/Root";
-import { eventsPortal, stripesHubAPI } from "./constants";
-import { getLoginTenant } from "./loginServices";
+import Root from './components/Root';
+import { eventsPortal, stripesHubAPI } from './constants';
+import { getLoginTenant } from './loginServices';
 
 const StrictWrapper = ({ children, config }) => {
   if (config?.disableStrictMode) {
@@ -41,23 +41,23 @@ export const isStorageEnabled = () => {
   let isEnabled = true;
   // local storage
   try {
-    localStorage.getItem("test-key");
+    localStorage.getItem('test-key');
   } catch {
-    console.warn("local storage is disabled"); // eslint-disable-line no-console
+    console.warn('local storage is disabled'); // eslint-disable-line no-console
     isEnabled = false;
   }
 
   // session storage
   try {
-    sessionStorage.getItem("test-key");
+    sessionStorage.getItem('test-key');
   } catch {
-    console.warn("session storage is disabled"); // eslint-disable-line no-console
+    console.warn('session storage is disabled'); // eslint-disable-line no-console
     isEnabled = false;
   }
 
   // cookies
   if (!navigator.cookieEnabled) {
-    console.warn("cookies are disabled"); // eslint-disable-line no-console
+    console.warn('cookies are disabled'); // eslint-disable-line no-console
     isEnabled = false;
   }
 
@@ -66,13 +66,13 @@ export const isStorageEnabled = () => {
 
 export const getStripesHubConfig = () => {
   try {
-    const folioConfig = JSON.parse(localStorage.getItem(stripesHubAPI.FOLIO_CONFIG_KEY) || "{}");
+    const folioConfig = JSON.parse(localStorage.getItem(stripesHubAPI.FOLIO_CONFIG_KEY) || '{}');
     const brandingConfig = JSON.parse(
-      localStorage.getItem(stripesHubAPI.BRANDING_CONFIG_KEY) || "{}",
+      localStorage.getItem(stripesHubAPI.BRANDING_CONFIG_KEY) || '{}',
     );
     return { folioConfig, brandingConfig };
   } catch (error) {
-    console.error("Failed to parse StripesHub config from localStorage:", error); // eslint-disable-line no-console
+    console.error('Failed to parse StripesHub config from localStorage:', error); // eslint-disable-line no-console
     // If there was an error parsing the config from StripesHub, return empty objects so that we fall back to stripes.config.js values.
     return { folioConfig: {}, brandingConfig: {} };
   }
@@ -141,7 +141,7 @@ export default class StripesCore extends Component {
       const parsedTenant = getLoginTenant(localOkapi, stripesConfig);
 
       const okapi =
-        typeof stripesOkapi === "object" && Object.keys(stripesOkapi).length > 0
+        typeof stripesOkapi === 'object' && Object.keys(stripesOkapi).length > 0
           ? { ...stripesOkapi, ...parsedTenant }
           : { withoutOkapi: true };
 
@@ -190,7 +190,7 @@ export default class StripesCore extends Component {
           });
         })
         .catch((error) => {
-          console.error("Failed to gather actions:", error); // eslint-disable-line no-console
+          console.error('Failed to gather actions:', error); // eslint-disable-line no-console
         });
     }
   }

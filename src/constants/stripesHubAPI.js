@@ -2,10 +2,10 @@
 // These function to allow a remotely loaded host app to
 // load translations and refresh the list of entitled modules.
 export default {
-  HOST_URL_KEY: "hostUrl",
-  REMOTE_LIST_KEY: "entitlements",
-  DISCOVERY_URL_KEY: "discoveryUrl",
-  HOST_APP_NAME: "folio_stripes",
-  FOLIO_CONFIG_KEY: "folio_config",
-  BRANDING_CONFIG_KEY: "branding_config",
+  HOST_URL_KEY: 'hostUrl',
+  REMOTE_LIST_KEY: 'entitlements',
+  DISCOVERY_URL_KEY: 'discoveryUrl',
+  HOST_APP_NAME: 'folio_stripes',
+  FOLIO_CONFIG_KEY: 'folio_config',
+  BRANDING_CONFIG_KEY: 'branding_config',
 };

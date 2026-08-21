@@ -1,8 +1,8 @@
-import { useCallback, useState } from "react";
-import { v4 as uuidv4 } from "uuid";
+import { useCallback, useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
-import useOkapiKy from "../useOkapiKy";
-import { useStripes } from "../StripesContext";
+import useOkapiKy from '../useOkapiKy';
+import { useStripes } from '../StripesContext';
 
 export default () => {
   const { logger } = useStripes();
@@ -20,18 +20,18 @@ export default () => {
         if (resp.ok) {
           respJSON = await resp.json();
           if (respJSON.items.length > 0) {
-            logger.log("pref", `found preference at scope: ${scope}, and key: ${key}`);
+            logger.log('pref', `found preference at scope: ${scope}, and key: ${key}`);
             setId(respJSON.items[0].id);
             return respJSON.items[0].value;
           } else {
             setId(null);
-            logger.log("pref", `no preference found at scope: ${scope}, and key: ${key}`);
+            logger.log('pref', `no preference found at scope: ${scope}, and key: ${key}`);
             return undefined;
           }
         }
       } catch (err) {
         logger.log(
-          "pref",
+          'pref',
           `error getting preference at scope: ${scope}, and key: ${key} - ${err.message}`,
         );
       }
@@ -54,15 +54,15 @@ export default () => {
       // so we use the `POST` endpoint for saving... 'PUT', and including the id in the path is used for updating
       if (!id) {
         try {
-          await ky.post("settings/entries", { json: payload });
+          await ky.post('settings/entries', { json: payload });
           setId(prefId);
           logger.log(
-            "pref",
+            'pref',
             `created preference at scope: ${scope}, and key: ${key} with id: ${id} and value: ${value}`,
           );
         } catch (err) {
           logger.log(
-            "pref",
+            'pref',
             `error creating preference at scope: ${scope}, and key: ${key} - ${err.message}`,
           );
         }
@@ -70,12 +70,12 @@ export default () => {
         try {
           await ky.put(`settings/entries/${prefId}`, { json: payload });
           logger.log(
-            "pref",
+            'pref',
             `updated preference at scope: ${scope}, and key: ${key} with ${value}`,
           );
         } catch (err) {
           logger.log(
-            "pref",
+            'pref',
             `error updating preference at scope: ${scope}, and key: ${key} - ${err.message}`,
           );
         }
@@ -90,12 +90,12 @@ export default () => {
         if (id) {
           await ky.delete(`settings/entries/${id}`);
           setId(null);
-          logger.log("pref", `deleted preference at scope: ${scope}, and key: ${key} at id: ${id}`);
+          logger.log('pref', `deleted preference at scope: ${scope}, and key: ${key} at id: ${id}`);
           return;
         }
       } catch (err) {
         logger.log(
-          "pref",
+          'pref',
           `error deleting preference at scope: ${scope}, and key: ${key} at id: ${id} - ${err.message}`,
         );
       }

@@ -1,10 +1,10 @@
-import { useState } from "react";
-import { useQuery } from "react-query";
+import { useState } from 'react';
+import { useQuery } from 'react-query';
 
-import { useStripes } from "./StripesContext";
-import useOkapiKy from "./useOkapiKy";
+import { useStripes } from './StripesContext';
+import useOkapiKy from './useOkapiKy';
 
-import { isVersionCompatible } from "./discoverServices";
+import { isVersionCompatible } from './discoverServices';
 
 export default (interfaceId, interfaceVersion) => {
   const [customFields, setCustomFields] = useState();
@@ -31,26 +31,26 @@ export default (interfaceId, interfaceVersion) => {
 
     // OK, this module contains that sibling interface. So let's confirm
     // that this module also provides the `custom-fields` interface.
-    return m.provides.find((i) => i.id === "custom-fields");
+    return m.provides.find((i) => i.id === 'custom-fields');
   });
 
   if (module && error) {
     setError(undefined);
   } else if (!module && !error) {
     setError(
-      `Interface ${interfaceId}${interfaceVersion ? ` compatible with interface version ${interfaceVersion} ` : " "}was not found in any module that also provides the "custom-fields" interface`,
+      `Interface ${interfaceId}${interfaceVersion ? ` compatible with interface version ${interfaceVersion} ` : ' '}was not found in any module that also provides the "custom-fields" interface`,
     );
     setIsLoading(false);
   }
 
   const ky = useOkapiKy();
   useQuery(
-    ["custom-fields", module?.id],
+    ['custom-fields', module?.id],
     () => {
       setIsLoading(true);
-      return ky("custom-fields", {
+      return ky('custom-fields', {
         headers: {
-          "x-okapi-module-id": module?.id,
+          'x-okapi-module-id': module?.id,
         },
       }).json();
     },

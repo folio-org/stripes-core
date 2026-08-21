@@ -7,9 +7,9 @@
  */
 export class RTRError extends Error {
   constructor(message) {
-    super(message ?? "Unknown Refresh Token Error");
+    super(message ?? 'Unknown Refresh Token Error');
 
-    this.name = "RTRError";
+    this.name = 'RTRError';
   }
 }
 
@@ -19,9 +19,9 @@ export class RTRError extends Error {
  */
 export class UnexpectedResourceError extends Error {
   constructor(resource) {
-    super("Expected a string, URL, or Request but did not receive one.");
+    super('Expected a string, URL, or Request but did not receive one.');
 
-    this.name = "UnexpectedResourceError";
+    this.name = 'UnexpectedResourceError';
     this.resource = resource;
   }
 }

@@ -1,10 +1,10 @@
 function replaceQueryResource(module, payload) {
   return {
-    type: "@@stripes-connect/LOCAL_REPLACE",
-    payload: Object.assign({ query: "" }, payload),
+    type: '@@stripes-connect/LOCAL_REPLACE',
+    payload: Object.assign({ query: '' }, payload),
     meta: {
       module: module.module,
-      resource: "query",
+      resource: 'query',
       dataKey: module.dataKey,
     },
   };

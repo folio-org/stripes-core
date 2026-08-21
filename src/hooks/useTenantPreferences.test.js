@@ -1,16 +1,16 @@
-import { renderHook, waitFor, act } from "@folio/jest-config-stripes/testing-library/react";
-import { QueryClient, QueryClientProvider } from "react-query";
+import { renderHook, waitFor, act } from '@folio/jest-config-stripes/testing-library/react';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
-import useTenantPreferences from "./useTenantPreferences";
+import useTenantPreferences from './useTenantPreferences';
 
-const testValue = { pref: "22" };
+const testValue = { pref: '22' };
 const response = {
   items: [
     {
-      id: "2ae496b4-244e-4d19-aee7-61f195cdd524",
-      scope: "test.manage",
-      key: "testPref",
-      value: { pref: "22" },
+      id: '2ae496b4-244e-4d19-aee7-61f195cdd524',
+      scope: 'test.manage',
+      key: 'testPref',
+      value: { pref: '22' },
     },
   ],
   resultInfo: {
@@ -35,7 +35,7 @@ const mockPut = jest.fn();
 const mockPost = jest.fn();
 const mockDelete = jest.fn();
 
-jest.mock("../useOkapiKy", () => ({
+jest.mock('../useOkapiKy', () => ({
   __esModule: true, // this property makes it work
   default: jest.fn(() => ({
     get: mockGet,
@@ -45,15 +45,15 @@ jest.mock("../useOkapiKy", () => ({
   })),
 }));
 
-jest.mock("../StripesContext", () => ({
+jest.mock('../StripesContext', () => ({
   useStripes: () => ({
     user: {
       user: {
-        id: "test-user",
+        id: 'test-user',
       },
     },
     okapi: {
-      tenant: "t",
+      tenant: 't',
     },
     logger: {
       log: () => {},
@@ -68,30 +68,30 @@ const wrapper = ({ children }) => (
   <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
 );
 
-describe("useTenantPreferences", () => {
+describe('useTenantPreferences', () => {
   let renderedHook;
 
   beforeAll(() => {
     renderedHook = renderHook(() => useTenantPreferences(), { wrapper });
   });
 
-  describe("getTenantPreference", () => {
+  describe('getTenantPreference', () => {
     let pref;
     beforeEach(async () => {
       pref = await act(() =>
-        renderedHook.result.current.getTenantPreference({ scope: "test.manage", key: "testPref" }),
+        renderedHook.result.current.getTenantPreference({ scope: 'test.manage', key: 'testPref' }),
       );
     });
 
-    it("getTenantPreference returns preference value", () => {
+    it('getTenantPreference returns preference value', () => {
       expect(pref).toEqual(testValue);
     });
 
-    describe("subsequent setTenantPreference call ", () => {
+    describe('subsequent setTenantPreference call ', () => {
       beforeEach(async () => {
         await renderedHook.result.current.setTenantPreference({
-          scope: "test.manage",
-          key: "testPref",
+          scope: 'test.manage',
+          key: 'testPref',
           value: { pref: 25 },
         });
       });
@@ -101,11 +101,11 @@ describe("useTenantPreferences", () => {
       });
     });
 
-    describe("subsequent deleteTenantPreference call ", () => {
+    describe('subsequent deleteTenantPreference call ', () => {
       beforeEach(async () => {
         await renderedHook.result.current.removeTenantPreference({
-          scope: "test.manage",
-          key: "testPref",
+          scope: 'test.manage',
+          key: 'testPref',
         });
       });
 
@@ -115,7 +115,7 @@ describe("useTenantPreferences", () => {
     });
   });
 
-  describe("with no saved preferences", () => {
+  describe('with no saved preferences', () => {
     let pref;
     beforeEach(async () => {
       renderedHook = renderHook(() => useTenantPreferences(), { wrapper });
@@ -124,19 +124,19 @@ describe("useTenantPreferences", () => {
         json: () => emptyResponse,
       }));
       pref = await act(() =>
-        renderedHook.result.current.getTenantPreference({ scope: "test.manage", key: "testPref" }),
+        renderedHook.result.current.getTenantPreference({ scope: 'test.manage', key: 'testPref' }),
       );
     });
 
-    it("getTenantPreference returns undefined", async () => {
+    it('getTenantPreference returns undefined', async () => {
       await waitFor(() => expect(pref).toEqual(undefined));
     });
 
-    describe("subsequent setTenantPreference call ", () => {
+    describe('subsequent setTenantPreference call ', () => {
       beforeEach(async () => {
         await renderedHook.result.current.setTenantPreference({
-          scope: "test.manage",
-          key: "testPref",
+          scope: 'test.manage',
+          key: 'testPref',
           value: { pref: 25 },
         });
       });

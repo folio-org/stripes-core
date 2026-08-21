@@ -1,20 +1,20 @@
-import React, { useRef, useEffect } from "react";
-import PropTypes from "prop-types";
-import { FormattedMessage } from "react-intl";
-import { Headline, Loading, Pane } from "@folio/stripes-components";
+import React, { useRef, useEffect } from 'react';
+import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
+import { Headline, Loading, Pane } from '@folio/stripes-components';
 
-import AboutInstallMessages from "./AboutInstallMessages";
-import WarningBanner from "./WarningBanner";
-import { withModules } from "../Modules";
-import css from "./About.css";
-import { useStripes } from "../../StripesContext";
-import AboutOkapi from "./AboutOkapi";
-import AboutApplicationVersions from "./AboutApplicationVersions";
-import AboutStripes from "./AboutStripes";
-import AboutAPIGateway from "./AboutAPIGateway";
-import AboutUIDependencies from "./AboutUIDependencies";
-import AboutUIModuleDetails from "./AboutUIModuleDetails";
-import stripesCore from "../../../package";
+import AboutInstallMessages from './AboutInstallMessages';
+import WarningBanner from './WarningBanner';
+import { withModules } from '../Modules';
+import css from './About.css';
+import { useStripes } from '../../StripesContext';
+import AboutOkapi from './AboutOkapi';
+import AboutApplicationVersions from './AboutApplicationVersions';
+import AboutStripes from './AboutStripes';
+import AboutAPIGateway from './AboutAPIGateway';
+import AboutUIDependencies from './AboutUIDependencies';
+import AboutUIModuleDetails from './AboutUIModuleDetails';
+import stripesCore from '../../../package';
 
 const About = (props) => {
   const titleRef = useRef(null);
@@ -70,7 +70,7 @@ const About = (props) => {
               <AboutUIModuleDetails
                 module={{
                   ...stripesCore.stripes,
-                  module: "stripes-core",
+                  module: 'stripes-core',
                   version: stripesCore.version,
                 }}
                 showDependencies

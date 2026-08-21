@@ -1,17 +1,17 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { FormattedMessage } from "react-intl";
-import { Field, Form } from "react-final-form";
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
+import { Field, Form } from 'react-final-form';
 
-import { TextField, Button, Row, Col, Headline } from "@folio/stripes-components";
+import { TextField, Button, Row, Col, Headline } from '@folio/stripes-components';
 
-import { withStripes } from "../../StripesContext";
-import SSOLogin from "../SSOLogin";
-import OrganizationLogo from "../OrganizationLogo";
-import AuthErrorsContainer from "../AuthErrorsContainer";
-import FieldLabel from "../CreateResetPassword/components/FieldLabel";
+import { withStripes } from '../../StripesContext';
+import SSOLogin from '../SSOLogin';
+import OrganizationLogo from '../OrganizationLogo';
+import AuthErrorsContainer from '../AuthErrorsContainer';
+import FieldLabel from '../CreateResetPassword/components/FieldLabel';
 
-import styles from "./Login.css";
+import styles from './Login.css';
 
 class Login extends Component {
   static propTypes = {
@@ -32,7 +32,7 @@ class Login extends Component {
 
     const { branding } = stripes;
     const cookieMessage = navigator.cookieEnabled ? (
-      ""
+      ''
     ) : (
       <Row center="xs">
         <Col xs={6}>
@@ -51,7 +51,7 @@ class Login extends Component {
           const { username } = values;
           const submissionStatus = submitting || submitSucceeded;
           const buttonDisabled = submissionStatus || !username || !navigator.cookieEnabled;
-          const buttonLabel = submissionStatus ? "loggingIn" : "login";
+          const buttonLabel = submissionStatus ? 'loggingIn' : 'login';
           return (
             <main>
               <div className={styles.wrapper} style={branding?.style?.login ?? {}}>
@@ -65,7 +65,7 @@ class Login extends Component {
                     <form
                       className={styles.form}
                       onSubmit={(data) =>
-                        handleSubmit(data).then(() => form.change("password", undefined))
+                        handleSubmit(data).then(() => form.change('password', undefined))
                       }
                     >
                       <Row center="xs">

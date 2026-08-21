@@ -1,11 +1,11 @@
-import { render } from "@folio/jest-config-stripes/testing-library/react";
-import { QueryClientProvider, QueryClient } from "react-query";
-import { MemoryRouter as Router, Route } from "react-router-dom";
-import QueryStateUpdater from "./QueryStateUpdater";
+import { render } from '@folio/jest-config-stripes/testing-library/react';
+import { QueryClientProvider, QueryClient } from 'react-query';
+import { MemoryRouter as Router, Route } from 'react-router-dom';
+import QueryStateUpdater from './QueryStateUpdater';
 
 const mockUpdateQueryResource = jest.fn();
-jest.mock("../../locationService", () => ({
-  ...jest.requireActual("../../locationService"),
+jest.mock('../../locationService', () => ({
+  ...jest.requireActual('../../locationService'),
   updateLocation: jest.fn(),
   updateQueryResource: jest.fn(() => mockUpdateQueryResource()),
   getCurrentModule: jest.fn(() => true),
@@ -18,17 +18,17 @@ const stripes = {
   },
 };
 
-describe("QueryStateUpdater", () => {
+describe('QueryStateUpdater', () => {
   let qc;
   let wrapper;
   beforeAll(() => {
     qc = new QueryClient();
     wrapper =
-      (testLocation = { pathname: "/initial" }) =>
+      (testLocation = { pathname: '/initial' }) =>
       ({ children }) => {
         qc = new QueryClient();
         return (
-          <Router initialEntries={["/initial"]}>
+          <Router initialEntries={['/initial']}>
             <QueryClientProvider client={qc}>
               <Route path="*" location={testLocation}>
                 {children}
@@ -38,28 +38,28 @@ describe("QueryStateUpdater", () => {
         );
       };
   });
-  it("renders", () => {
+  it('renders', () => {
     expect(() =>
       render(<QueryStateUpdater queryClient={qc} stripes={stripes} />, { wrapper: wrapper() }),
     ).not.toThrow();
   });
 
-  it("updatesQuery on mount", () => {
+  it('updatesQuery on mount', () => {
     let testVal = {
-      hash: "",
-      key: "f727ww",
-      pathname: "/initial",
-      search: "",
+      hash: '',
+      key: 'f727ww',
+      pathname: '/initial',
+      search: '',
       state: undefined,
     };
     const { rerender } = render(<QueryStateUpdater stripes={stripes} queryClient={qc} />, {
       wrapper: wrapper(testVal),
     });
     testVal = {
-      hash: "",
-      key: "f727w2",
-      pathname: "/updated",
-      search: "",
+      hash: '',
+      key: 'f727w2',
+      pathname: '/updated',
+      search: '',
       state: undefined,
     };
     rerender(<QueryStateUpdater stripes={stripes} queryClient={qc} location={testVal} />, {

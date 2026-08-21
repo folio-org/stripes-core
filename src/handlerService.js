@@ -25,7 +25,7 @@ export function handleEvent(event, stripes, handler, data) {
     return null;
   }
 
-  stripes.logger.log("event", `handling ${event} in ${handler.module}...`);
+  stripes.logger.log('event', `handling ${event} in ${handler.module}...`);
 
   // invoke the event handler
   return eventHander(event, stripes, data);

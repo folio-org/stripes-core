@@ -1,16 +1,16 @@
-import { get } from "lodash";
-import React from "react";
-import PropTypes from "prop-types";
-import { Headline } from "@folio/stripes-components";
-import { FormattedMessage } from "react-intl";
+import { get } from 'lodash';
+import React from 'react';
+import PropTypes from 'prop-types';
+import { Headline } from '@folio/stripes-components';
+import { FormattedMessage } from 'react-intl';
 
-import Pluggable from "../Pluggable";
-import ReleaseNotesLink, { RELEASE_NOTES_LINK_ATTRS } from "./ReleaseNotesLink";
+import Pluggable from '../Pluggable';
+import ReleaseNotesLink, { RELEASE_NOTES_LINK_ATTRS } from './ReleaseNotesLink';
 
-import css from "./Front.css";
+import css from './Front.css';
 
 const Front = ({ stripes }) => {
-  const tag = get(stripes, "config.welcomeMessage") || "stripes-core.front.welcome";
+  const tag = get(stripes, 'config.welcomeMessage') || 'stripes-core.front.welcome';
 
   return (
     <Pluggable type="frontpage">

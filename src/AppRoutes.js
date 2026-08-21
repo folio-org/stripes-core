@@ -1,17 +1,17 @@
-import { Suspense, useMemo } from "react";
-import { Route } from "react-router-dom";
-import PropTypes from "prop-types";
+import { Suspense, useMemo } from 'react';
+import { Route } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
-import { connectFor } from "@folio/stripes-connect";
-import { LoadingView } from "@folio/stripes-components";
+import { connectFor } from '@folio/stripes-connect';
+import { LoadingView } from '@folio/stripes-components';
 
-import { StripesContext } from "./StripesContext";
-import TitleManager from "./components/TitleManager";
-import RouteErrorBoundary from "./components/RouteErrorBoundary";
-import { invokeEventHandlers } from "./handlerService";
-import { packageName } from "./constants";
-import { ModuleHierarchyProvider } from "./components";
-import events from "./events";
+import { StripesContext } from './StripesContext';
+import TitleManager from './components/TitleManager';
+import RouteErrorBoundary from './components/RouteErrorBoundary';
+import { invokeEventHandlers } from './handlerService';
+import { packageName } from './constants';
+import { ModuleHierarchyProvider } from './components';
+import events from './events';
 
 // Process and cache "app" type modules and render the routes
 const AppRoutes = ({ modules, stripes }) => {
@@ -19,7 +19,7 @@ const AppRoutes = ({ modules, stripes }) => {
   const cachedModules = useMemo(() => {
     return modules.app
       .map((module) => {
-        const name = module.module.replace(packageName.PACKAGE_SCOPE_REGEX, "");
+        const name = module.module.replace(packageName.PACKAGE_SCOPE_REGEX, '');
         const displayName = module.displayName;
         const perm = `module.${name}.enabled`;
         if (!stripes.hasPerm(perm)) return null;

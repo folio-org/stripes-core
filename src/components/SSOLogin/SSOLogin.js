@@ -1,10 +1,10 @@
-import React from "react";
-import PropTypes from "prop-types";
+import React from 'react';
+import PropTypes from 'prop-types';
 
-import { FormattedMessage } from "react-intl";
+import { FormattedMessage } from 'react-intl';
 
-import { Button } from "@folio/stripes-components";
-import styles from "../Login/Login.css";
+import { Button } from '@folio/stripes-components';
+import styles from '../Login/Login.css';
 
 const propTypes = {
   handleSSOLogin: PropTypes.func.isRequired,

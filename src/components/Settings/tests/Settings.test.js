@@ -1,32 +1,32 @@
-import React from "react";
-import { MemoryRouter } from "react-router-dom";
+import React from 'react';
+import { MemoryRouter } from 'react-router-dom';
 
-import { render } from "@folio/jest-config-stripes/testing-library/react";
+import { render } from '@folio/jest-config-stripes/testing-library/react';
 
-import Intl from "../../../../test/jest/helpers/intl";
-import { ModulesContext } from "../../../ModulesContext";
-import Settings from "../Settings";
+import Intl from '../../../../test/jest/helpers/intl';
+import { ModulesContext } from '../../../ModulesContext';
+import Settings from '../Settings';
 
-jest.unmock("@folio/stripes-components");
+jest.unmock('@folio/stripes-components');
 
 const STRIPES = {
   actionNames: [],
   connect: (component) => component,
   config: {},
-  currency: "USD",
+  currency: 'USD',
   hasInterface: () => true,
   hasPerm: jest.fn(() => true),
-  locale: "en-US",
+  locale: 'en-US',
   logger: {
     log: () => {},
   },
   okapi: {
-    tenant: "diku",
-    url: "https://folio-testing-okapi.dev.folio.org",
+    tenant: 'diku',
+    url: 'https://folio-testing-okapi.dev.folio.org',
   },
   user: {
     user: {
-      consortia: "old-consortia",
+      consortia: 'old-consortia',
     },
   },
   clone() {
@@ -44,16 +44,16 @@ const TestApp = ({ stripes }) => (
 const modules = {
   settings: [
     {
-      route: "/test-app",
-      displayName: "Test app",
-      module: "ui-test-app",
+      route: '/test-app',
+      displayName: 'Test app',
+      module: 'ui-test-app',
       getModule: () => TestApp,
     },
   ],
   handler: [],
 };
 
-const getSettings = (props = {}, initialEntries = ["/settings"]) => (
+const getSettings = (props = {}, initialEntries = ['/settings']) => (
   <MemoryRouter initialEntries={initialEntries}>
     <Intl>
       <ModulesContext.Provider value={modules}>
@@ -65,39 +65,39 @@ const getSettings = (props = {}, initialEntries = ["/settings"]) => (
 
 const renderSettings = (props, initialEntries) => render(getSettings(props, initialEntries));
 
-describe("Settings", () => {
-  it("should render module settings links", () => {
+describe('Settings', () => {
+  it('should render module settings links', () => {
     const { getByRole } = renderSettings();
 
-    expect(getByRole("link", { name: "Test app" })).toBeDefined();
+    expect(getByRole('link', { name: 'Test app' })).toBeDefined();
   });
 
-  describe("when location matches a module route", () => {
-    it("should render that module", () => {
-      const { getByText } = renderSettings(null, ["/settings/test-app"]);
+  describe('when location matches a module route', () => {
+    it('should render that module', () => {
+      const { getByText } = renderSettings(null, ['/settings/test-app']);
 
-      expect(getByText("Test app module")).toBeDefined();
+      expect(getByText('Test app module')).toBeDefined();
     });
   });
 
-  describe("when stripes object changes", () => {
-    it("should re-render settings with updated stripes object", () => {
-      const { rerender, getByText } = renderSettings(null, ["/settings/test-app"]);
+  describe('when stripes object changes', () => {
+    it('should re-render settings with updated stripes object', () => {
+      const { rerender, getByText } = renderSettings(null, ['/settings/test-app']);
 
-      expect(getByText("Consortia is old-consortia")).toBeDefined();
+      expect(getByText('Consortia is old-consortia')).toBeDefined();
 
       const updatedStripes = {
         ...STRIPES,
         user: {
           user: {
-            consortia: "new-consortia",
+            consortia: 'new-consortia',
           },
         },
       };
 
-      rerender(getSettings({ stripes: updatedStripes }, ["/settings/test-app"]));
+      rerender(getSettings({ stripes: updatedStripes }, ['/settings/test-app']));
 
-      expect(getByText("Consortia is new-consortia")).toBeDefined();
+      expect(getByText('Consortia is new-consortia')).toBeDefined();
     });
   });
 });

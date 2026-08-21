@@ -1,7 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 
 export function checkIfUserInCentralTenant(stripes) {
-  if (!stripes.hasInterface("consortia")) {
+  if (!stripes.hasInterface('consortia')) {
     return false;
   }
 
@@ -9,7 +9,7 @@ export function checkIfUserInCentralTenant(stripes) {
 }
 
 export function checkIfUserInMemberTenant(stripes) {
-  if (!stripes.hasInterface("consortia")) {
+  if (!stripes.hasInterface('consortia')) {
     return false;
   }
 

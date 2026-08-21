@@ -1,1 +1,1 @@
-export { default } from "./IfInterface";
+export { default } from './IfInterface';

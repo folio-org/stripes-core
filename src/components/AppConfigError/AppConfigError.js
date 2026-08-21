@@ -1,8 +1,8 @@
-import { Row, Col, Headline } from "@folio/stripes-components";
+import { Row, Col, Headline } from '@folio/stripes-components';
 
-import { useStripes } from "../../StripesContext";
-import OrganizationLogo from "../OrganizationLogo";
-import styles from "./AppConfigError.css";
+import { useStripes } from '../../StripesContext';
+import OrganizationLogo from '../OrganizationLogo';
+import styles from './AppConfigError.css';
 
 /**
  * AppConfigError

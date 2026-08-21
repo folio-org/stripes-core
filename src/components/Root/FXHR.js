@@ -1,7 +1,7 @@
-import { rotateAndReplay } from "./rotateAndReplay";
-import { isFolioApiRequest } from "./token-util";
-import { RTR_ERROR_EVENT } from "./constants";
-import { RTRError } from "./Errors";
+import { rotateAndReplay } from './rotateAndReplay';
+import { isFolioApiRequest } from './token-util';
+import { RTR_ERROR_EVENT } from './constants';
+import { RTRError } from './Errors';
 
 export default (deps) => {
   /**
@@ -75,7 +75,7 @@ export default (deps) => {
      * Capture request metadata needed for potential replay.
      */
     open = (method, url, ...rest) => {
-      this.FFetchContext.logger?.log("rtr", "capture XHR.open");
+      this.FFetchContext.logger?.log('rtr', 'capture XHR.open');
       this.shouldEnsureToken = isFolioApiRequest(url, this.FFetchContext.okapi.url);
       this.originalRequestOpenArgs = [method, url, ...rest];
       this.originalRequestHeaders = [];
@@ -101,8 +101,8 @@ export default (deps) => {
         return true;
       }
 
-      if (this.status === 400 && typeof this.responseText === "string") {
-        return this.responseText.startsWith("Token missing, access requires permission");
+      if (this.status === 400 && typeof this.responseText === 'string') {
+        return this.responseText.startsWith('Token missing, access requires permission');
       }
 
       return false;
@@ -149,7 +149,7 @@ export default (deps) => {
         }
       } catch (err) {
         if (err instanceof RTRError) {
-          console.error("RTR failure while attempting XHR", err); // eslint-disable-line no-console
+          console.error('RTR failure while attempting XHR', err); // eslint-disable-line no-console
           window.dispatchEvent(new Event(RTR_ERROR_EVENT, { detail: err }));
         }
 
@@ -185,12 +185,12 @@ export default (deps) => {
      */
     send = (payload) => {
       const { logger } = this.FFetchContext;
-      this.FFetchContext.logger?.log("rtr", "capture XHR send");
+      this.FFetchContext.logger?.log('rtr', 'capture XHR send');
       this.originalRequestPayload = payload;
       this.originalRequestWithCredentials = this.withCredentials;
 
       if (!this.shouldEnsureToken) {
-        logger.log("rtr", "request passed through, sending XHR...");
+        logger.log('rtr', 'request passed through, sending XHR...');
       }
 
       super.send(payload);

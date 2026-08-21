@@ -3,11 +3,11 @@
  * dropdown is used by the current ui-module.
  */
 
-import React from "react";
-import PropTypes from "prop-types";
-import AppContextDropdown from "./AppContextDropdown";
-import { withAppCtxMenu } from "./AppCtxMenuContext";
-import CurrentApp from "./CurrentApp";
+import React from 'react';
+import PropTypes from 'prop-types';
+import AppContextDropdown from './AppContextDropdown';
+import { withAppCtxMenu } from './AppCtxMenuContext';
+import CurrentApp from './CurrentApp';
 
 const CurrentAppGroup = ({ displayDropdownButton, selectedApp, config }) => {
   if (displayDropdownButton) {

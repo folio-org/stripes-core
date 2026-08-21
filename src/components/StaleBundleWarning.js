@@ -19,18 +19,18 @@
  * { path: '/index.html', header: 'last-modified', interval: 5 }
  */
 
-import { useQuery } from "react-query";
-import ky from "ky";
-import { useEffect, useState } from "react";
-import { FormattedMessage } from "react-intl";
-import { Button, MessageBanner } from "@folio/stripes-components";
-import { useStripes } from "../StripesContext";
+import { useQuery } from 'react-query';
+import ky from 'ky';
+import { useEffect, useState } from 'react';
+import { FormattedMessage } from 'react-intl';
+import { Button, MessageBanner } from '@folio/stripes-components';
+import { useStripes } from '../StripesContext';
 
 export const queryFn = async (config, kyImpl) => {
-  if (typeof config?.path !== "string") return null;
+  if (typeof config?.path !== 'string') return null;
   try {
-    if (typeof config?.header === "string") {
-      const res = await kyImpl(config.path, { method: "head" });
+    if (typeof config?.header === 'string') {
+      const res = await kyImpl(config.path, { method: 'head' });
       return res.headers.get(config.header);
     } else {
       return await kyImpl.get(config.path).text();
@@ -49,7 +49,7 @@ const StaleBundleWarning = () => {
   const [stale, setStale] = useState(false);
 
   const query = useQuery({
-    queryKey: ["StaleBundleWarning"],
+    queryKey: ['StaleBundleWarning'],
     queryFn: () => queryFn(config, ky),
     staleTime: refetchInterval,
     refetchInterval,
@@ -66,7 +66,7 @@ const StaleBundleWarning = () => {
 
   return (
     <MessageBanner type="warning" show={stale}>
-      <FormattedMessage id="stripes-core.stale.warning" />{" "}
+      <FormattedMessage id="stripes-core.stale.warning" />{' '}
       <Button buttonStyle="link" onClick={() => window.location.reload(true)} marginBottom0>
         <FormattedMessage id="stripes-core.stale.reload" />
       </Button>

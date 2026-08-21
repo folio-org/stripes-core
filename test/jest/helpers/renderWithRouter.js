@@ -1,10 +1,10 @@
-import React from "react";
-import { IntlProvider } from "react-intl";
-import { Router } from "react-router-dom";
-import { render } from "@folio/jest-config-stripes/testing-library/react";
-import { createMemoryHistory } from "history";
-import componentsTranslations from "@folio/stripes-components/translations/stripes-components/en";
-import stripesCoreTranslations from "../../../translations/stripes-core/en";
+import React from 'react';
+import { IntlProvider } from 'react-intl';
+import { Router } from 'react-router-dom';
+import { render } from '@folio/jest-config-stripes/testing-library/react';
+import { createMemoryHistory } from 'history';
+import componentsTranslations from '@folio/stripes-components/translations/stripes-components/en';
+import stripesCoreTranslations from '../../../translations/stripes-core/en';
 
 const prefixKeys = (translations, prefix) => {
   return Object.keys(translations).reduce(
@@ -17,8 +17,8 @@ const prefixKeys = (translations, prefix) => {
 };
 
 const translations = {
-  ...prefixKeys(componentsTranslations, "stripes-components"),
-  ...prefixKeys(stripesCoreTranslations, "stripes-core"),
+  ...prefixKeys(componentsTranslations, 'stripes-components'),
+  ...prefixKeys(stripesCoreTranslations, 'stripes-core'),
 };
 
 const history = createMemoryHistory();

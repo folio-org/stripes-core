@@ -1,5 +1,5 @@
 const delimiters = {
-  NAMESPACE_DELIMITER: ":",
+  NAMESPACE_DELIMITER: ':',
 };
 
 export default delimiters;

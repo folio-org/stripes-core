@@ -1,8 +1,8 @@
-import { useQuery } from "react-query";
+import { useQuery } from 'react-query';
 
-import { useStripes } from "../StripesContext";
-import { useNamespace } from "../components";
-import useOkapiKy from "../useOkapiKy";
+import { useStripes } from '../StripesContext';
+import { useNamespace } from '../components';
+import useOkapiKy from '../useOkapiKy';
 
 const INITIAL_DATA = [];
 
@@ -11,12 +11,12 @@ const useUserTenantPermissions = ({ tenantId }, options = {}) => {
   const ky = useOkapiKy();
   const api = ky.extend({
     hooks: {
-      beforeRequest: [(req) => req.headers.set("X-Okapi-Tenant", tenantId)],
+      beforeRequest: [(req) => req.headers.set('X-Okapi-Tenant', tenantId)],
     },
   });
-  const [namespace] = useNamespace({ key: "user-self-permissions" });
+  const [namespace] = useNamespace({ key: 'user-self-permissions' });
 
-  const permPath = stripes.hasInterface("users-keycloak") ? "users-keycloak" : "bl-users";
+  const permPath = stripes.hasInterface('users-keycloak') ? 'users-keycloak' : 'bl-users';
 
   const { isFetching, isFetched, isLoading, data } = useQuery(
     [namespace, tenantId],

@@ -1,11 +1,11 @@
-import React, { useState } from "react";
-import { Redirect } from "react-router-dom";
+import React, { useState } from 'react';
+import { Redirect } from 'react-router-dom';
 
-import processBadResponse from "../../processBadResponse";
-import { defaultErrors } from "../../constants";
-import ForgotUserNameForm from "./ForgotUserNameForm";
-import useForgotUsernameMutation from "./useForgotUsernameMutation";
-import { validateForgotUsernameForm as isValidUsername } from "../../validators";
+import processBadResponse from '../../processBadResponse';
+import { defaultErrors } from '../../constants';
+import ForgotUserNameForm from './ForgotUserNameForm';
+import useForgotUsernameMutation from './useForgotUsernameMutation';
+import { validateForgotUsernameForm as isValidUsername } from '../../validators';
 
 const ForgotUserName = () => {
   const [userEmail, setUserEmail] = useState(null);
@@ -38,7 +38,7 @@ const ForgotUserName = () => {
   };
 
   if (userEmail) {
-    return <Redirect to={{ pathname: "/check-email", state: { userEmail } }} />;
+    return <Redirect to={{ pathname: '/check-email', state: { userEmail } }} />;
   }
 
   return <ForgotUserNameForm isValid={isValidInput} errors={authFailure} onSubmit={handleSubmit} />;

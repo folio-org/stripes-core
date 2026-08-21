@@ -1,7 +1,7 @@
-import PropTypes from "prop-types";
-import { FormattedMessage } from "react-intl";
+import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
 
-import { List } from "@folio/stripes-components";
+import { List } from '@folio/stripes-components';
 
 /**
  * AboutUIModuleDetails
@@ -31,7 +31,7 @@ const AboutUIModuleDetails = ({ module, showDependencies }) => {
     <>
       <FormattedMessage
         id="stripes-core.about.moduleDependsOn"
-        values={{ module: `${module.module} ${module.version || ""}` }}
+        values={{ module: `${module.module} ${module.version || ''}` }}
       />
       <List items={items} listStyle="bullets" />
     </>

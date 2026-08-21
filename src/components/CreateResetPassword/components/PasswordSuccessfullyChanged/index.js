@@ -1,1 +1,1 @@
-export { default } from "./PasswordSuccessfullyChanged";
+export { default } from './PasswordSuccessfullyChanged';

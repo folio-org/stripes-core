@@ -1,4 +1,4 @@
-import queryString from "query-string";
+import queryString from 'query-string';
 
 // eslint-disable-next-line import/prefer-default-export
 export const getTenant = (stripes, location) => {

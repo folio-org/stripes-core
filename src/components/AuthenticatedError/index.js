@@ -1,1 +1,1 @@
-export { default } from "./AuthenticatedError";
+export { default } from './AuthenticatedError';

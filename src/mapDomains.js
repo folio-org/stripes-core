@@ -1,6 +1,6 @@
 const domainToPath = {
-  items: "inventory",
-  instances: "inventory",
+  items: 'inventory',
+  instances: 'inventory',
 };
 
 /**

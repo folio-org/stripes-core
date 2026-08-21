@@ -1,10 +1,10 @@
-import { some } from "lodash";
+import { some } from 'lodash';
 
 function getHeaders(tenant, token) {
   return {
-    "X-Okapi-Tenant": tenant,
-    ...(token && { "X-Okapi-Token": token }),
-    "Content-Type": "application/json",
+    'X-Okapi-Tenant': tenant,
+    ...(token && { 'X-Okapi-Token': token }),
+    'Content-Type': 'application/json',
   };
 }
 
@@ -23,22 +23,22 @@ function parseApplicationDescriptor(store, descriptor) {
 
   const dispatchDescriptor = (d) => {
     return Promise.all([
-      store.dispatch({ type: "DISCOVERY_INTERFACES", data: d }),
-      store.dispatch({ type: "DISCOVERY_PERMISSION_DISPLAY_NAMES", data: d }),
-      store.dispatch({ type: "DISCOVERY_PROVIDERS", data: d }),
+      store.dispatch({ type: 'DISCOVERY_INTERFACES', data: d }),
+      store.dispatch({ type: 'DISCOVERY_PERMISSION_DISPLAY_NAMES', data: d }),
+      store.dispatch({ type: 'DISCOVERY_PROVIDERS', data: d }),
     ]);
   };
 
   const dispatchApplication = (application) => {
     return store.dispatch({
-      type: "DISCOVERY_APPLICATIONS",
+      type: 'DISCOVERY_APPLICATIONS',
       data: application,
     });
   };
 
   list.push(
     store.dispatch({
-      type: "DISCOVERY_SUCCESS",
+      type: 'DISCOVERY_SUCCESS',
       data: descriptor.moduleDescriptors,
     }),
   );
@@ -104,9 +104,9 @@ function fetchApplicationDetails(store) {
   const { okapi } = store.getState();
 
   return fetch(`${okapi.url}/entitlements/${okapi.tenant}/applications?limit=${APP_MAX_COUNT}`, {
-    credentials: "include",
+    credentials: 'include',
     headers: getHeaders(okapi.tenant, okapi.token),
-    mode: "cors",
+    mode: 'cors',
   })
     .then((response) => {
       if (response.ok) {
@@ -121,20 +121,20 @@ function fetchApplicationDetails(store) {
 
           // eslint-disable-next-line no-console
           console.error(`>>> NO APPLICATIONS AVAILABLE FOR ${okapi.tenant}`, json);
-          store.dispatch({ type: "DISCOVERY_FAILURE", code: response.status });
+          store.dispatch({ type: 'DISCOVERY_FAILURE', code: response.status });
           throw response;
         });
       } else {
         // eslint-disable-next-line no-console
         console.error(`>>> COULD NOT RETRIEVE APPLICATIONS FOR ${okapi.tenant}`, response);
-        store.dispatch({ type: "DISCOVERY_FAILURE", code: response.status });
+        store.dispatch({ type: 'DISCOVERY_FAILURE', code: response.status });
         throw response;
       }
     })
     .catch((reason) => {
       // eslint-disable-next-line no-console
       console.error(`@@ COULD NOT RETRIEVE APPLICATIONS FOR ${okapi.tenant}`, reason);
-      store.dispatch({ type: "DISCOVERY_FAILURE", message: reason });
+      store.dispatch({ type: 'DISCOVERY_FAILURE', message: reason });
     });
 }
 
@@ -154,23 +154,23 @@ function fetchGatewayVersion(store) {
   const { okapi } = store.getState();
 
   return fetch(`${okapi.url}/version`, {
-    credentials: "include",
+    credentials: 'include',
     headers: getHeaders(okapi.tenant, okapi.token),
-    mode: "cors",
+    mode: 'cors',
   })
     .then((response) => {
       // eslint-disable-line consistent-return
       if (response.status >= 400) {
-        store.dispatch({ type: "DISCOVERY_FAILURE", code: response.status });
+        store.dispatch({ type: 'DISCOVERY_FAILURE', code: response.status });
         return response;
       } else {
         return response.text().then((text) => {
-          store.dispatch({ type: "DISCOVERY_OKAPI", version: text });
+          store.dispatch({ type: 'DISCOVERY_OKAPI', version: text });
         });
       }
     })
     .catch((reason) => {
-      store.dispatch({ type: "DISCOVERY_FAILURE", message: reason });
+      store.dispatch({ type: 'DISCOVERY_FAILURE', message: reason });
     });
 }
 
@@ -178,23 +178,23 @@ function fetchOkapiVersion(store) {
   const { okapi } = store.getState();
 
   return fetch(`${okapi.url}/_/version`, {
-    credentials: "include",
+    credentials: 'include',
     headers: getHeaders(okapi.tenant, okapi.token),
-    mode: "cors",
+    mode: 'cors',
   })
     .then((response) => {
       // eslint-disable-line consistent-return
       if (response.status >= 400) {
-        store.dispatch({ type: "DISCOVERY_FAILURE", code: response.status });
+        store.dispatch({ type: 'DISCOVERY_FAILURE', code: response.status });
         return response;
       } else {
         return response.text().then((text) => {
-          store.dispatch({ type: "DISCOVERY_OKAPI", version: text });
+          store.dispatch({ type: 'DISCOVERY_OKAPI', version: text });
         });
       }
     })
     .catch((reason) => {
-      store.dispatch({ type: "DISCOVERY_FAILURE", message: reason });
+      store.dispatch({ type: 'DISCOVERY_FAILURE', message: reason });
     });
 }
 
@@ -202,23 +202,23 @@ function fetchModules(store) {
   const { okapi } = store.getState();
 
   return fetch(`${okapi.url}/_/proxy/tenants/${okapi.tenant}/modules?full=true`, {
-    credentials: "include",
+    credentials: 'include',
     headers: getHeaders(okapi.tenant, okapi.token),
-    mode: "cors",
+    mode: 'cors',
   })
     .then((response) => {
       // eslint-disable-line consistent-return
       if (response.status >= 400) {
-        store.dispatch({ type: "DISCOVERY_FAILURE", code: response.status });
+        store.dispatch({ type: 'DISCOVERY_FAILURE', code: response.status });
         return response;
       } else {
         return response.json().then((json) => {
-          store.dispatch({ type: "DISCOVERY_SUCCESS", data: json });
+          store.dispatch({ type: 'DISCOVERY_SUCCESS', data: json });
           return Promise.all(
             json.map((entry) =>
               Promise.all([
-                store.dispatch({ type: "DISCOVERY_INTERFACES", data: entry }),
-                store.dispatch({ type: "DISCOVERY_PROVIDERS", data: entry }),
+                store.dispatch({ type: 'DISCOVERY_INTERFACES', data: entry }),
+                store.dispatch({ type: 'DISCOVERY_PROVIDERS', data: entry }),
               ]),
             ),
           );
@@ -226,7 +226,7 @@ function fetchModules(store) {
       }
     })
     .catch((reason) => {
-      store.dispatch({ type: "DISCOVERY_FAILURE", message: reason });
+      store.dispatch({ type: 'DISCOVERY_FAILURE', message: reason });
     });
 }
 
@@ -247,13 +247,13 @@ export function discoverServices(store) {
   }
 
   return Promise.all(promises).then(() => {
-    store.dispatch({ type: "DISCOVERY_FINISHED" });
+    store.dispatch({ type: 'DISCOVERY_FINISHED' });
   });
 }
 
 export function discoveryReducer(state = {}, action) {
   switch (action.type) {
-    case "DISCOVERY_APPLICATIONS":
+    case 'DISCOVERY_APPLICATIONS':
       return {
         ...state,
         applications: {
@@ -266,7 +266,7 @@ export function discoveryReducer(state = {}, action) {
                   name: d.id,
                   interfaces:
                     d.provides?.map((i) => {
-                      return { name: i.id + " " + i.version };
+                      return { name: i.id + ' ' + i.version };
                     }) || [],
                 };
               }),
@@ -280,18 +280,18 @@ export function discoveryReducer(state = {}, action) {
           },
         },
       };
-    case "DISCOVERY_OKAPI":
+    case 'DISCOVERY_OKAPI':
       return { ...state, okapi: action.version };
-    case "DISCOVERY_FAILURE":
+    case 'DISCOVERY_FAILURE':
       return { ...state, failure: action };
-    case "DISCOVERY_SUCCESS": {
+    case 'DISCOVERY_SUCCESS': {
       const modules = { ...state.modules };
       for (const entry of action.data) {
         modules[entry.id] = entry.name;
       }
       return { ...state, modules };
     }
-    case "DISCOVERY_INTERFACES": {
+    case 'DISCOVERY_INTERFACES': {
       const interfaces = {};
       for (const entry of action.data.provides || []) {
         interfaces[entry.id] = entry.version;
@@ -301,7 +301,7 @@ export function discoveryReducer(state = {}, action) {
         interfaces: Object.assign(state.interfaces || {}, interfaces),
       };
     }
-    case "DISCOVERY_PERMISSION_DISPLAY_NAMES": {
+    case 'DISCOVERY_PERMISSION_DISPLAY_NAMES': {
       const permissions = {};
       for (const entry of action.data.permissionSets || []) {
         permissions[entry.permissionName] = entry.displayName;
@@ -311,7 +311,7 @@ export function discoveryReducer(state = {}, action) {
         permissionDisplayNames: { ...state.permissionDisplayNames, ...permissions },
       };
     }
-    case "DISCOVERY_PROVIDERS": {
+    case 'DISCOVERY_PROVIDERS': {
       if (action.data.provides?.length > 0) {
         return {
           ...state,
@@ -331,7 +331,7 @@ export function discoveryReducer(state = {}, action) {
 
       return state;
     }
-    case "DISCOVERY_FINISHED": {
+    case 'DISCOVERY_FINISHED': {
       return { ...state, isFinished: true };
     }
     default:
@@ -340,8 +340,8 @@ export function discoveryReducer(state = {}, action) {
 }
 
 function isSingleVersionCompatible(got, wanted) {
-  const [gmajor, gminor, gpatch] = got.split(".");
-  const [wmajor, wminor, wpatch] = wanted.split(".");
+  const [gmajor, gminor, gpatch] = got.split('.');
+  const [wmajor, wminor, wpatch] = wanted.split('.');
 
   if (gmajor !== wmajor) return false;
 
@@ -350,8 +350,8 @@ function isSingleVersionCompatible(got, wanted) {
   if (gmint < wmint) return false;
   if (gmint > wmint) return true;
 
-  const gpint = Number.parseInt(gpatch || "0", 10);
-  const wpint = Number.parseInt(wpatch || "0", 10);
+  const gpint = Number.parseInt(gpatch || '0', 10);
+  const wpint = Number.parseInt(wpatch || '0', 10);
   return gpint >= wpint;
 }
 

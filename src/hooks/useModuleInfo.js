@@ -1,4 +1,4 @@
-import { useStripes } from "../StripesContext";
+import { useStripes } from '../StripesContext';
 
 /**
  * map a module implementation string to a module-name, hopefully.
@@ -6,7 +6,7 @@ import { useStripes } from "../StripesContext";
  */
 const implToModule = (impl) => {
   const moduleName = impl.match(/^(.*)-[0-9]+\.[0-9]+\.[0-9]+.*/);
-  return moduleName[1] ? moduleName[1] : "";
+  return moduleName[1] ? moduleName[1] : '';
 };
 
 /**
@@ -59,7 +59,7 @@ const mapPathToImpl = (impl) => {
  * @returns {string}
  */
 const canonicalPath = (str) => {
-  return `${str.startsWith("/") ? "" : "/"}${str.split("?")[0]}`;
+  return `${str.startsWith('/') ? '' : '/'}${str.split('?')[0]}`;
 };
 
 /**

@@ -1,7 +1,7 @@
-import { render } from "@folio/jest-config-stripes/testing-library/react";
+import { render } from '@folio/jest-config-stripes/testing-library/react';
 
-import withLastVisited from "./withLastVisited";
-import LastVisitedContext from "./LastVisitedContext";
+import withLastVisited from './withLastVisited';
+import LastVisitedContext from './LastVisitedContext';
 
 let mockModulesData = {};
 let listeners = [];
@@ -15,13 +15,13 @@ const mockHistory = {
   },
 };
 
-jest.mock("react-router", () => ({
+jest.mock('react-router', () => ({
   withRouter: (Comp) => (props) => {
     return <Comp {...props} history={mockHistory} />;
   },
 }));
 
-jest.mock("../Modules", () => ({
+jest.mock('../Modules', () => ({
   withModules: (Comp) => (props) => <Comp {...props} modules={mockModulesData} />,
 }));
 
@@ -39,15 +39,15 @@ const Wrapped = withLastVisited(Component);
 const getComponent = (props = {}) => <Wrapped {...props} />;
 const renderComponent = (props = {}) => render(getComponent(props));
 
-describe("withLastVisited", () => {
+describe('withLastVisited', () => {
   beforeEach(() => {
     listeners = [];
     mockModulesData = { app: [] };
   });
 
-  it("updates lastVisited during componentDidMount via history.listen", () => {
+  it('updates lastVisited during componentDidMount via history.listen', () => {
     mockModulesData = {
-      app: [{ route: "/users", module: "@folio/users" }],
+      app: [{ route: '/users', module: '@folio/users' }],
     };
 
     const renders = [];
@@ -58,15 +58,15 @@ describe("withLastVisited", () => {
     renderComponent({ onRender: handleRender });
 
     // Simulate navigation events that history.listen would provide.
-    listeners.forEach((l) => l({ pathname: "/users", search: "" }));
-    listeners.forEach((l) => l({ pathname: "/users/view/1", search: "?layer=edit" }));
+    listeners.forEach((l) => l({ pathname: '/users', search: '' }));
+    listeners.forEach((l) => l({ pathname: '/users/view/1', search: '?layer=edit' }));
 
     const lastCtx = renders.at(-1);
-    expect(lastCtx.lastVisited.users).toBe("/users/view/1?layer=edit");
+    expect(lastCtx.lastVisited.users).toBe('/users/view/1?layer=edit');
   });
 
-  it("updates module list in componentDidUpdate and preserves previous lastVisited via cachePreviousUrl", () => {
-    mockModulesData = { app: [{ route: "/inventory", module: "@folio/inventory" }] };
+  it('updates module list in componentDidUpdate and preserves previous lastVisited via cachePreviousUrl', () => {
+    mockModulesData = { app: [{ route: '/inventory', module: '@folio/inventory' }] };
     const renders = [];
     const handleRender = (ctx) => {
       renders.push(ctx);
@@ -74,8 +74,8 @@ describe("withLastVisited", () => {
 
     const { rerender } = renderComponent({ onRender: handleRender });
 
-    listeners.forEach((l) => l({ pathname: "/inventory", search: "" }));
-    listeners.forEach((l) => l({ pathname: "/inventory/view/uuid", search: "" }));
+    listeners.forEach((l) => l({ pathname: '/inventory', search: '' }));
+    listeners.forEach((l) => l({ pathname: '/inventory/view/uuid', search: '' }));
 
     // trigger cachePreviousUrl to store previous location
     const latest = renders.at(-1);
@@ -83,17 +83,17 @@ describe("withLastVisited", () => {
 
     mockModulesData = {
       app: [
-        { route: "/inventory", module: "@folio/inventory" },
-        { route: "/orders", module: "@folio/orders" },
+        { route: '/inventory', module: '@folio/inventory' },
+        { route: '/orders', module: '@folio/orders' },
       ],
     };
     rerender(getComponent({ onRender: handleRender }));
 
-    listeners.forEach((l) => l({ pathname: "/orders", search: "" }));
+    listeners.forEach((l) => l({ pathname: '/orders', search: '' }));
 
     const finalCtx = renders.at(-1);
 
-    expect(finalCtx.lastVisited.inventory).toBe("/inventory");
-    expect(finalCtx.lastVisited.orders).toBe("/orders");
+    expect(finalCtx.lastVisited.inventory).toBe('/inventory');
+    expect(finalCtx.lastVisited.orders).toBe('/orders');
   });
 });

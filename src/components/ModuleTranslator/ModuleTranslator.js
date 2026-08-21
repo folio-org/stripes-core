@@ -1,10 +1,10 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { injectIntl } from "react-intl";
+import React from 'react';
+import PropTypes from 'prop-types';
+import { injectIntl } from 'react-intl';
 
-import { withStripes } from "../../StripesContext";
-import { getModules } from "../../entitlementService";
-import { ModulesContext, modulesInitialState } from "../../ModulesContext";
+import { withStripes } from '../../StripesContext';
+import { getModules } from '../../entitlementService';
+import { ModulesContext, modulesInitialState } from '../../ModulesContext';
 
 class ModuleTranslator extends React.Component {
   static propTypes = {
@@ -29,7 +29,7 @@ class ModuleTranslator extends React.Component {
         this.setState({ modules });
       })
       .catch((error) => {
-        console.error("Failed to load modules:", error); // eslint-disable-line no-console
+        console.error('Failed to load modules:', error); // eslint-disable-line no-console
       });
   }
 

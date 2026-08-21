@@ -3,10 +3,10 @@
  * to be rendered in FOLIO's main navigation.
  */
 
-import React from "react";
-import ReactDOM from "react-dom";
-import PropTypes from "prop-types";
-import { withAppCtxMenu } from "./AppCtxMenuContext";
+import React from 'react';
+import ReactDOM from 'react-dom';
+import PropTypes from 'prop-types';
+import { withAppCtxMenu } from './AppCtxMenuContext';
 
 class AppContextMenu extends React.PureComponent {
   static propTypes = {
@@ -36,7 +36,7 @@ class AppContextMenu extends React.PureComponent {
   render() {
     const { children, onToggle, open } = this.props;
     const menu = children(onToggle);
-    const container = document.getElementById("App_context_dropdown_menu");
+    const container = document.getElementById('App_context_dropdown_menu');
 
     if (container) {
       return ReactDOM.createPortal(menu, container);

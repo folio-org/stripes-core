@@ -2,13 +2,13 @@
  * App List -> Dropdown
  */
 
-import React from "react";
-import PropTypes from "prop-types";
+import React from 'react';
+import PropTypes from 'prop-types';
 
-import { NavListItem, NavListSection } from "@folio/stripes-components";
+import { NavListItem, NavListSection } from '@folio/stripes-components';
 
-import AppIcon from "../../../../AppIcon";
-import css from "../../AppList.css";
+import AppIcon from '../../../../AppIcon';
+import css from '../../AppList.css';
 
 const AppListDropdown = ({ toggleDropdown, apps, listRef, selectedApp }) => (
   <NavListSection

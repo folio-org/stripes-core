@@ -1,4 +1,4 @@
-import startMirage from "./start";
+import startMirage from './start';
 
 /**
  * Start mirage to handle requests in development and production. Note

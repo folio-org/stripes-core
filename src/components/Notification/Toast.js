@@ -1,7 +1,7 @@
-import React, { Portal } from "react";
-import PropTypes from "prop-types";
-import ToastNotification from "./ToastNotification";
-import css from "./Toast.css";
+import React, { Portal } from 'react';
+import PropTypes from 'prop-types';
+import ToastNotification from './ToastNotification';
+import css from './Toast.css';
 
 const propTypes = {
   /*

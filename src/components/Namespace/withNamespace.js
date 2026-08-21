@@ -1,4 +1,4 @@
-import useNamespace from "./useNamespace";
+import useNamespace from './useNamespace';
 
 // Namespace HOC which exposes namespace and getNamespace via props.
 

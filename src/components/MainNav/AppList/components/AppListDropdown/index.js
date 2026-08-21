@@ -1,1 +1,1 @@
-export { default } from "./AppListDropdown";
+export { default } from './AppListDropdown';

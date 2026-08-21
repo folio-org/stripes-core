@@ -12,17 +12,17 @@ const getUserTenantsPermissions = async (stripes, tenants = []) => {
   } = stripes;
   const userTenantIds = tenants.map((tenant) => tenant.id || tenant);
 
-  const permPath = stripes.hasInterface("users-keycloak") ? "users-keycloak" : "bl-users";
+  const permPath = stripes.hasInterface('users-keycloak') ? 'users-keycloak' : 'bl-users';
   const permUrl = `${url}/${permPath}/_self?expandPermissions=true`;
 
   const promises = userTenantIds.map(async (tenantId) => {
     const result = await fetch(permUrl, {
       headers: {
-        "X-Okapi-Tenant": tenantId,
-        "Content-Type": "application/json",
-        ...(token && { "X-Okapi-Token": token }),
+        'X-Okapi-Tenant': tenantId,
+        'Content-Type': 'application/json',
+        ...(token && { 'X-Okapi-Token': token }),
       },
-      credentials: "include",
+      credentials: 'include',
     });
 
     const json = await result.json();

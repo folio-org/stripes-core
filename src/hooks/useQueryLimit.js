@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
-import { useStripes } from "../StripesContext";
-import useTenantPreferences from "./useTenantPreferences";
-import { settings } from "../constants";
+import { useStripes } from '../StripesContext';
+import useTenantPreferences from './useTenantPreferences';
+import { settings } from '../constants';
 
 /** settings key for this tenant-level preference */
-export const SETTINGS_KEY = "query-limit";
+export const SETTINGS_KEY = 'query-limit';
 
 /** default value, absent values from tenant-settings or stripes.confing.js */
 export const MAX_UNPAGED_RESOURCE_COUNT = 2000;

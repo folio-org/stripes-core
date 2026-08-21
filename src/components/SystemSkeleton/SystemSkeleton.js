@@ -2,8 +2,8 @@
  * System Skeleton
  */
 
-import React from "react";
-import css from "./SystemSkeleton.css";
+import React from 'react';
+import css from './SystemSkeleton.css';
 
 const SystemSkeleton = () => (
   <div className={css.skeleton}>

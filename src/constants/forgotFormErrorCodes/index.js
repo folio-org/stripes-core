@@ -1,1 +1,1 @@
-export { default } from "./forgotFormErrorCodes";
+export { default } from './forgotFormErrorCodes';
