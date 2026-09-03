@@ -1,5 +1,6 @@
 import { render, screen, waitFor } from '@folio/jest-config-stripes/testing-library/react';
 import { userEvent } from '@folio/jest-config-stripes/testing-library/user-event';
+import { useHistory } from 'react-router';
 
 import ForgotUserNameForm from './ForgotUserNameForm';
 import ForgotUserName from './ForgotUserName';
@@ -20,9 +21,7 @@ jest.mock('../../StripesContext', () => ({
 
 jest.mock('../OrganizationLogo', () => () => 'OrganizationLogo');
 jest.mock('../AuthErrorsContainer', () => ({ errors = [] }) => errors[0]?.code);
-jest.mock('react-router-dom', () => ({
-  Redirect: () => '<Redirect />',
-}));
+jest.mock('react-router');
 
 // PreLoginLanding tests don't handle button.disabled
 // and I don't feel like expanding this PR even further
@@ -45,9 +44,9 @@ describe('ForgotUserNameForm', () => {
   it('displays headline, input field, submit button', () => {
     render(<ForgotUserNameForm onSubmit={jest.fn()} isValid />);
 
-    expect(screen.getByText('stripes-core.label.forgotUsername'));
-    expect(screen.getByText('stripes-core.placeholder.forgotUsername'));
-    expect(screen.getByText('stripes-core.button.continue'));
+    screen.getByText('stripes-core.label.forgotUsername');
+    screen.getByText('stripes-core.placeholder.forgotUsername');
+    screen.getByText('stripes-core.button.continue');
   });
 
   it('enables submit conditionally', async () => {
@@ -68,7 +67,7 @@ describe('ForgotUserNameForm', () => {
     ];
 
     render(<ForgotUserNameForm errors={errors} onSubmit={jest.fn()} isValid />);
-    expect(screen.getByText(errors[0].code));
+    screen.getByText(errors[0].code);
   });
 
   it('calls onSubmit', async () => {
@@ -94,6 +93,8 @@ describe('ForgotUserName', () => {
   it('handles success', async () => {
     const user = userEvent.setup();
     const userInput = 'some-username@some-school.edu';
+    const history = { push: jest.fn() };
+    useHistory.mockReturnValue(history);
 
     const mockUseForgotUsernameMutation = useForgotUsernameMutation;
     mockUseForgotUsernameMutation.mockReturnValue({
@@ -110,7 +111,7 @@ describe('ForgotUserName', () => {
     await user.click(submit);
 
     await waitFor(() => {
-      expect(screen.getByText('<Redirect />'));
+      expect(history.push).toHaveBeenCalledWith('/check-email', { userEmail: userInput });
     });
   });
 
@@ -140,7 +141,7 @@ describe('ForgotUserName', () => {
     await user.click(submit);
 
     await waitFor(() => {
-      expect(screen.getByText(defaultErrors.FORGOTTEN_USERNAME_CLIENT_ERROR.code));
+      screen.getByText(defaultErrors.FORGOTTEN_USERNAME_CLIENT_ERROR.code);
     });
   });
 });

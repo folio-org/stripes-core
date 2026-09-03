@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
-import {
-  Redirect,
-} from 'react-router-dom';
+import { useHistory } from 'react-router';
 
 import processBadResponse from '../../processBadResponse';
 import { defaultErrors } from '../../constants';
@@ -10,13 +8,12 @@ import useForgotUsernameMutation from './useForgotUsernameMutation';
 import { validateForgotUsernameForm as isValidUsername } from '../../validators';
 
 const ForgotUserName = () => {
-  const [userEmail, setUserEmail] = useState(null);
+  const history = useHistory();
   const [isValidInput, setIsValidInput] = useState(true);
   const [authFailure, setAuthFailure] = useState([]);
   const sendReminderMutation = useForgotUsernameMutation();
 
   const handleSubmit = async (values) => {
-    setUserEmail(null);
     setAuthFailure([]);
     const { userInput } = values;
     const { FORGOTTEN_USERNAME_CLIENT_ERROR } = defaultErrors;
@@ -24,7 +21,7 @@ const ForgotUserName = () => {
     if (isValidUsername(userInput)) {
       try {
         await sendReminderMutation.mutateAsync(userInput);
-        setUserEmail(userInput);
+        history.push('/check-email', { userEmail: userInput });
       } catch (error) {
         const res = await processBadResponse(undefined, error.response, FORGOTTEN_USERNAME_CLIENT_ERROR);
         setIsValidInput(true);
@@ -34,10 +31,6 @@ const ForgotUserName = () => {
       setIsValidInput(false);
     }
   };
-
-  if (userEmail) {
-    return <Redirect to={{ pathname: '/check-email', state: { userEmail } }} />;
-  }
 
   return (
     <ForgotUserNameForm
