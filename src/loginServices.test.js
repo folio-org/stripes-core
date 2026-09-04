@@ -1098,12 +1098,12 @@ describe('loadResources', () => {
 
 describe('getLoginTenant', () => {
   it('uses URL values when present', () => {
-    const search = { tenant: 't', client_id: 'c' };
-    Object.defineProperty(window, 'location', { value: { search } });
+    const search = '?tenant=t&client_id=c';
+    window.location.href = `http://localhost/${search}`;
 
     const res = getLoginTenant({}, {});
-    expect(res.tenant).toBe(search.tenant);
-    expect(res.clientId).toBe(search.client_id);
+    expect(res.tenant).toBe('t');
+    expect(res.clientId).toBe('c');
   });
 
   describe('single-tenant', () => {
@@ -1147,11 +1147,10 @@ describe('getLoginTenant', () => {
     describe('when URL contains tenant and no client_id', () => {
       it('should take tenant from URL', () => {
         // URL: /reset-password?resetToken=token1&tenant=tenant1
-        const search = { tenant: 'tenant1' };
-        Object.defineProperty(window, 'location', { value: { search } });
+        window.location.href = 'http://localhost/reset-password?resetToken=token1&tenant=tenant1';
 
         const res = getLoginTenant({}, stripesConfig);
-        expect(res.tenant).toBe(search.tenant);
+        expect(res.tenant).toBe('tenant1');
       });
     });
   });
