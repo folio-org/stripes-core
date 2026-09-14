@@ -38,6 +38,7 @@ export {
   LastVisitedContext,
   withLastVisited,
 } from './src/components';
+export { default as CustomMenuSection } from './src/components/CustomMenuSection';
 
 /* Queries */
 export { useChunkedCQLFetch, useChunkedIdTransformFetch } from './src/queries';
@@ -56,6 +57,7 @@ export { supportedNumberingSystems } from './src/loginServices';
 export { userLocaleConfig } from './src/loginServices';
 export { userOwnLocaleConfig } from './src/loginServices';
 export { tenantLocaleConfig } from './src/loginServices';
+export { tenantCustomMenuSectionConfig } from './src/loginServices';
 export { getFullLocale } from './src/loginServices';
 export * from './src/consortiaServices';
 export { default as queryLimit } from './src/queryLimit';

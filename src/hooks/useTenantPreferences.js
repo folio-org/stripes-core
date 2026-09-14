@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import useOkapiKy from '../useOkapiKy';
 import { useStripes } from '../StripesContext';
 
-export default () => {
+const useTenantPreferences = () => {
   const { logger } = useStripes();
   const ky = useOkapiKy();
   const [id, setId] = useState(null);
@@ -32,7 +32,7 @@ export default () => {
       logger.log('pref', `error getting preference at scope: ${scope}, and key: ${key} - ${err.message}`);
     }
     return undefined;
-  }, [id, ky]); // eslint-disable-line
+  }, [id, ky]);
 
   const setTenantPreference = useCallback(async ({ scope, key, value }) => {
     const prefId = id || uuidv4();
@@ -82,3 +82,5 @@ export default () => {
     removeTenantPreference,
   };
 };
+
+export default useTenantPreferences;

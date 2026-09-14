@@ -211,6 +211,12 @@ export const tenantLocaleConfig = {
   KEY: 'tenantLocaleSettings',
 };
 
+// settings values for storing tenant's custom menu links
+export const tenantCustomMenuSectionConfig = {
+  SCOPE: settings.SCOPE,
+  KEY: 'tenantCustomMenuSection',
+};
+
 export function getHeaders(tenant, token) {
   return {
     'X-Okapi-Tenant': tenant,
