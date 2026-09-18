@@ -28,6 +28,7 @@
 * Rename `button.new` from "+ New" to "New". Refs STCOR-1093.
 * Supply `rtrIgnore` on forgot-password and forgot-username API requests. Refs STCOR-1099.
 * Codesmell cleanup in ForgotUserName, ForgotPassword. Refs STCOR-993.
+* Correctly load moment's region data. Refs STCOR-1101.
 
 ## [11.1.1](https://github.com/folio-org/stripes-core/tree/v11.1.1) (2026-04-20)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v11.1.0...v11.1.1)

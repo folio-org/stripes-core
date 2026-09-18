@@ -263,7 +263,7 @@ export async function loadTranslations(store, locale, defaultTranslations = {}) 
   // Since moment.js don't support translations like it or it-IT-u-nu-latn
   // we need to build string like it_IT for fetch call
   const loadedLocale = locale.replace('-', '_').split('-')[0];
-  const momentLocale = locale.split('-', 2).join('-');
+  const momentLocale = locale.split('-', 2).join('-').toLowerCase();
 
   // react-intl provides things like pt-BR.
   // lokalise provides things like pt_BR.
