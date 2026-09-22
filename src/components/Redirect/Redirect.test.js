@@ -20,8 +20,8 @@ describe('Redirect', () => {
       </Harness>
     );
 
-    expect(window.location).toBeAt(to);
-    expect(window.location.replace).toHaveBeenCalled();
+    expect(window.location.href).toBe(to);
+    expect(window.location.replace).toHaveBeenCalledWith(to);
   });
 
   it('updates window.location with "assign"', () => {
@@ -39,7 +39,7 @@ describe('Redirect', () => {
       </Harness>
     );
 
-    expect(window.location).toBeAt(to);
-    expect(window.location.assign).toHaveBeenCalled();
+    expect(window.location.href).toBe(to);
+    expect(window.location.assign).toHaveBeenCalledWith(to);
   });
 });
