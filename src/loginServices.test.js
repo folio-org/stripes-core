@@ -200,6 +200,16 @@ describe('loadTranslations', () => {
     });
   });
 
+  describe('rejects invalid locale settings', () => {
+    const defaultLocale = 'en-US';
+    it('falls back to en-US', async () => {
+      const locale = 'en-US-u-nu-latn-u-nu-latn';
+      await loadTranslations(store, locale, {});
+      expect(store.dispatch).toHaveBeenCalledWith(setLocale(defaultLocale));
+    });
+
+  });
+
   describe('when localforage contains a hostUrl', () => {
     it('fetches using the hostUrl from localforage', async () => {
       const hostUrl = 'http://my-app-here';
@@ -986,7 +996,7 @@ describe('loadResources', () => {
 
         expect(store.dispatch).toHaveBeenCalledWith(setTimezone('UTC'));
         expect(store.dispatch).toHaveBeenCalledWith(setCurrency('USD'));
-        expect(document.documentElement.lang).toBe('en-GB-u-nu-latn');
+        expect(document.documentElement.lang).toBe(new Intl.Locale('en-GB').baseName);
       });
 
       it('should retrieve tenant-locale, user-locale, plugins, and bindings from configurations', async () => {
