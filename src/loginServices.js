@@ -265,11 +265,9 @@ export async function loadTranslations(store, expectedLocale, defaultTranslation
   try {
     intlLocale = new Intl.Locale(expectedLocale);
   } catch (err) {
-    if (err instanceof RangeError) {
-      // eslint-disable-next-line no-console
-      console.error(`The locale "${expectedLocale} is invalid; reverting to en-US!`);
-      intlLocale = new Intl.Locale('en-US');
-    }
+    // eslint-disable-next-line no-console
+    console.error(`The locale "${expectedLocale} is invalid; reverting to en-US!`);
+    intlLocale = new Intl.Locale('en-US');
   }
 
   // Intl.Locale has values like `en-US`, but we have `en_US`. It is not clear
