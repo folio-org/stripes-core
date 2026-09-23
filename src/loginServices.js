@@ -253,62 +253,67 @@ const canReadLocale = (store) => {
  * return a promise that fetches translations for the given locale and then
  * dispatches the locale and translations.
  * @param {redux store} store
- * @param {string} locale
+ * @param {string} expectedLocale
  * @param {object} defaultTranslations
  *
  * @returns {Promise}
  */
-export async function loadTranslations(store, locale, defaultTranslations = {}) {
-  const parentLocale = locale.split('-')[0];
-  // Since moment.js don't support translations like it or it-IT-u-nu-latn
-  // we need to build string like it_IT for fetch call
-  const loadedLocale = locale.replace('-', '_').split('-')[0];
-  const momentLocale = locale.split('-', 2).join('-');
+export async function loadTranslations(store, expectedLocale, defaultTranslations = {}) {
+  // confirm the given locale string is valid by calling the Intl.Locale()
+  // constructor, which throws when given invalid data. fallback to en-US.
+  let intlLocale = null;
+  try {
+    intlLocale = new Intl.Locale(expectedLocale);
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.error(`The locale "${expectedLocale} is invalid; reverting to en-US!`);
+    intlLocale = new Intl.Locale('en-US');
+  }
 
-  // react-intl provides things like pt-BR.
-  // lokalise provides things like pt_BR.
-  // so we have to translate '-' to '_' because the translation libraries
-  // don't know how to talk to each other. sheesh.
-  const region = locale.replace('-', '_');
+  // Intl.Locale has values like `en-US`, but we have `en_US`. It is not clear
+  // where this discrepancy arose, but it is now deeply engrained.
+  const stripesBaseName = intlLocale.baseName.replace('-', '_');
 
   // Update dir- and lang-attributes on the HTML element
   // when the locale changes
-  document.documentElement.setAttribute('lang', locale);
-  document.documentElement.setAttribute('dir', rtlDetect.getLangDir(parentLocale));
+  document.documentElement.setAttribute('lang', intlLocale.baseName);
+  document.documentElement.setAttribute('dir', rtlDetect.getLangDir(intlLocale.language));
 
-  // Set locale for Moment.js (en is not importable as it is not stored separately)
-  if (parentLocale === 'en') moment.locale(parentLocale);
+  // load moment locale
+  if (intlLocale.language === 'en') moment.locale(intlLocale.language);
   else {
-    // For moment, we want to import and load the most-specific
-    // locale possible without the numbering system suffix,
-    // e.g. it-IT if available, falling back to it if that fails.
-    import(`moment/locale/${momentLocale}`).then(() => {
-      moment.locale(momentLocale);
+    // an Intl.Locale object looks like, e.g.
+    //   { baseName: "da-DK", language: "da", region: "DK" }
+    // but moment doesn't like that; it wants `da-dk`. Fine. First try loading
+    // via baseName, then the less-specific language.
+    import(`moment/locale/${intlLocale.baseName.toLowerCase()}`).then(() => {
+      moment.locale(intlLocale.baseName.toLowerCase());
     }).catch(() => {
-      import(`moment/locale/${parentLocale}`).then(() => {
-        moment.locale(parentLocale);
+      import(`moment/locale/${intlLocale.language}`).then(() => {
+        moment.locale(intlLocale.language);
       }).catch(e => {
         // eslint-disable-next-line no-console
-        console.error(`Error loading locale ${parentLocale} for Moment.js`, e);
+        console.error(`Error loading locale ${intlLocale.language} for Moment.js`, e);
       });
     });
   }
 
-  // load DayJS Locale. DayJS is expected to replace Moment as Stripes' date/time library.
-  // As with moment. loading the DayJS locale here passes it down to UI-modules so that they don't have to
-  // load the static locale data themselves.
-  loadDayJSLocale(locale);
+  // load dayjs locale
+  loadDayJSLocale(intlLocale.baseName);
 
-  // Here we put additional condition because languages
-  // like Japan we need to use like ja, but with numeric system
-  // Japan language builds like ja_u, that incorrect. We need to be safe from that bug.
-  const translationName = translations[region] ? translations[region] :
-    translations[loadedLocale] || translations[[parentLocale]];
+  // load translations
+  // as above, try the basename first, then the language without region.
+  // `translations` is a global read from stripes-config shaped like:
+  //   {
+  //     "ar": "/translations/ar-123.json",
+  //     "cs_CZ": "/translations/cs_CZ-123.json",
+  //     ...
+  //   }
+  const translationName = translations[stripesBaseName] ?? translations[intlLocale.language];
 
   // if stripes-core is served from a different origin (module-federation) then
-  // we need to fetch translations from that origin as well rather than the current location.
+  // fetch translations from that origin rather than the current location.
   let translationOrigin = await localforage.getItem(stripesHubAPI.HOST_URL_KEY);
-
   if (!translationOrigin) {
     translationOrigin = window.location.origin;
   }
@@ -319,7 +324,7 @@ export async function loadTranslations(store, locale, defaultTranslations = {}) 
       if (response.ok) {
         response.json().then((stripesTranslations) => {
           store.dispatch(setTranslations(Object.assign(stripesTranslations, defaultTranslations)));
-          store.dispatch(setLocale(locale));
+          store.dispatch(setLocale(intlLocale.baseName));
         });
       }
     });
