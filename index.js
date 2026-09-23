@@ -32,6 +32,7 @@ export {
   AuthenticatedError,
   ModuleHierarchyContext,
   ModuleHierarchyProvider,
+  NavButton,
   useModuleHierarchy,
   useNamespace,
   withNamespace,
