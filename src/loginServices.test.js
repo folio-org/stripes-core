@@ -39,7 +39,7 @@ import {
   setCurrency,
   setPlugins,
   setBindings,
-  // setTranslations,
+  setTranslations,
   setAuthError,
   // checkSSO,
   setIsAuthenticated,
@@ -218,6 +218,122 @@ describe('loadTranslations', () => {
       await loadTranslations(store, locale, { cs: 'cs-CZ' });
       expect(global.fetch).toHaveBeenCalledWith(`${hostUrl}/cs-CZ`);
     });
+  });
+
+  describe('fallbacks', () => {
+    beforeEach(() => {
+      mockFetchSuccess();
+    });
+    afterEach(() => {
+      mockFetchCleanUp();
+    });
+
+    it('loads fallback and given locales', async () => {
+      const locale = 'cs-CZ';
+      await loadTranslations(store, locale, { cs: 'cs-CZ' });
+      expect(global.fetch).toHaveBeenNthCalledWith(1, expect.stringMatching('en-US'));
+      expect(global.fetch).toHaveBeenNthCalledWith(2, expect.stringMatching(locale));
+    });
+
+    it('fallback shines through when no other values are present', async () => {
+      const fallbackData = {
+        a: "fallback-a"
+      };
+      const localeData = {
+      };
+      const argvData = {
+      }
+      global.fetch = jest.fn()
+        .mockImplementationOnce(() => (
+          Promise.resolve({
+            ok: true,
+            status: 200,
+            json: () => Promise.resolve(fallbackData),
+            headers: new Map(),
+          })
+        ))
+        .mockImplementationOnce(() => (
+          Promise.resolve({
+            ok: true,
+            status: 200,
+            json: () => Promise.resolve(localeData),
+            headers: new Map(),
+          })
+        ));
+
+      const locale = 'en-US';
+      await loadTranslations(store, locale, argvData);
+      expect(store.dispatch).toHaveBeenCalledWith(setTranslations(expect.objectContaining(fallbackData)));
+    });
+
+
+    it('defaultValues overwrite fallback', async () => {
+      const fallbackData = {
+        a: "fallback-a"
+      };
+      const localeData = {
+      };
+      const argvData = {
+        a: "argv-a"
+      }
+      global.fetch = jest.fn()
+        .mockImplementationOnce(() => (
+          Promise.resolve({
+            ok: true,
+            status: 200,
+            json: () => Promise.resolve(fallbackData),
+            headers: new Map(),
+          })
+        ))
+        .mockImplementationOnce(() => (
+          Promise.resolve({
+            ok: true,
+            status: 200,
+            json: () => Promise.resolve(localeData),
+            headers: new Map(),
+          })
+        ));
+
+
+      const locale = 'en-US';
+      await loadTranslations(store, locale, argvData);
+      expect(store.dispatch).toHaveBeenCalledWith(setTranslations(expect.objectContaining(argvData)));
+    });
+
+    it('locale translations override everything', async () => {
+      const fallbackData = {
+        a: "fallback-a"
+      };
+      const localeData = {
+        a: "locale-a"
+      };
+      const argvData = {
+        a: "argv-a"
+      }
+      global.fetch = jest.fn()
+        .mockImplementationOnce(() => (
+          Promise.resolve({
+            ok: true,
+            status: 200,
+            json: () => Promise.resolve(fallbackData),
+            headers: new Map(),
+          })
+        ))
+        .mockImplementationOnce(() => (
+          Promise.resolve({
+            ok: true,
+            status: 200,
+            json: () => Promise.resolve(localeData),
+            headers: new Map(),
+          })
+        ));
+
+
+      const locale = 'en-US';
+      await loadTranslations(store, locale, argvData);
+      expect(store.dispatch).toHaveBeenCalledWith(setTranslations(expect.objectContaining(localeData)));
+    });
+
   });
 });
 

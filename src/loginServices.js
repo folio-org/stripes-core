@@ -259,6 +259,8 @@ const canReadLocale = (store) => {
  * @returns {Promise}
  */
 export async function loadTranslations(store, expectedLocale, defaultTranslations = {}) {
+  const fallbackBaseName = 'en-US';
+
   // confirm the given locale string is valid by calling the Intl.Locale()
   // constructor, which throws when given invalid data. fallback to en-US.
   let intlLocale = null;
@@ -266,13 +268,14 @@ export async function loadTranslations(store, expectedLocale, defaultTranslation
     intlLocale = new Intl.Locale(expectedLocale);
   } catch (err) {
     // eslint-disable-next-line no-console
-    console.error(`The locale "${expectedLocale} is invalid; reverting to en-US!`);
-    intlLocale = new Intl.Locale('en-US');
+    console.error(`The locale "${expectedLocale} is invalid; reverting to ${fallbackBaseName}!`, err);
+    intlLocale = new Intl.Locale(fallbackBaseName);
   }
 
   // Intl.Locale has values like `en-US`, but we have `en_US`. It is not clear
   // where this discrepancy arose, but it is now deeply engrained.
   const stripesBaseName = intlLocale.baseName.replace('-', '_');
+  const stripesFallbackBaseName = fallbackBaseName.replace('-', '_');
 
   // Update dir- and lang-attributes on the HTML element
   // when the locale changes
@@ -318,12 +321,25 @@ export async function loadTranslations(store, expectedLocale, defaultTranslation
     translationOrigin = window.location.origin;
   }
 
+  // load fallback translations in case entries are missing in given locale
+  const fallbackTranslationUrl = new URL(translations[stripesFallbackBaseName], translationOrigin);
+  const fallbackTranslations = await fetch(fallbackTranslationUrl.href)
+    .then((response) => {
+      if (response.ok) {
+        return response.json().then((stripesTranslations) => stripesTranslations)
+      }
+    });
+
+  // 1. load translations for given locale
+  // 2. merge them on top of fallback and default value
+  // 3. dispatch setTranslations with the merged translations
+  // 4. dispatch setLocale
   const translationUrl = new URL(translationName, translationOrigin);
   const res = await fetch(translationUrl.href)
     .then((response) => {
       if (response.ok) {
         response.json().then((stripesTranslations) => {
-          store.dispatch(setTranslations(Object.assign(stripesTranslations, defaultTranslations)));
+          store.dispatch(setTranslations({ ...fallbackTranslations, ...defaultTranslations, ...stripesTranslations }));
           store.dispatch(setLocale(intlLocale.baseName));
         });
       }
