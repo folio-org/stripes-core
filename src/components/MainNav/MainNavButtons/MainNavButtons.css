@@ -1,0 +1,4 @@
+.mainNavButtons {
+  display: flex;
+  gap: var(--gutter-static-one-third);
+}
