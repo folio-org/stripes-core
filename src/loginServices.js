@@ -272,16 +272,6 @@ export async function loadTranslations(store, expectedLocale, defaultTranslation
     intlLocale = new Intl.Locale(fallbackBaseName);
   }
 
-  // Intl.Locale has values like `en-US`, but we have `en_US`. It is not clear
-  // where this discrepancy arose, but it is now deeply engrained.
-  const stripesBaseName = intlLocale.baseName.replace('-', '_');
-  const stripesFallbackBaseName = fallbackBaseName.replace('-', '_');
-
-  // Update dir- and lang-attributes on the HTML element
-  // when the locale changes
-  document.documentElement.setAttribute('lang', intlLocale.baseName);
-  document.documentElement.setAttribute('dir', rtlDetect.getLangDir(intlLocale.language));
-
   // load moment locale
   if (intlLocale.language === 'en') moment.locale(intlLocale.language);
   else {
@@ -305,6 +295,17 @@ export async function loadTranslations(store, expectedLocale, defaultTranslation
   loadDayJSLocale(intlLocale.baseName);
 
   // load translations
+
+  // Update dir- and lang-attributes on the HTML element
+  // when the locale changes
+  document.documentElement.setAttribute('lang', intlLocale.baseName);
+  document.documentElement.setAttribute('dir', rtlDetect.getLangDir(intlLocale.language));
+
+  // Intl.Locale has values like `en-US`, but we have `en_US`. It is not clear
+  // where this discrepancy arose, but it is now deeply engrained.
+  const stripesBaseName = intlLocale.baseName.replace('-', '_');
+  const stripesFallbackBaseName = fallbackBaseName.replace('-', '_');
+
   // as above, try the basename first, then the language without region.
   // `translations` is a global read from stripes-config shaped like:
   //   {
@@ -321,31 +322,32 @@ export async function loadTranslations(store, expectedLocale, defaultTranslation
     translationOrigin = window.location.origin;
   }
 
-  // load fallback translations in case entries are missing in given locale
+  // retrieve fallback translations in case entries are missing in given locale
   const fallbackTranslationUrl = new URL(translations[stripesFallbackBaseName], translationOrigin);
-  const fallbackTranslations = await fetch(fallbackTranslationUrl.href)
+  const fallbackTranslationsPromise = fetch(fallbackTranslationUrl.href)
     .then((response) => {
       if (response.ok) {
-        return response.json().then((stripesTranslations) => stripesTranslations)
+        return response.json().then((translations) => translations)
       }
     });
 
-  // 1. load translations for given locale
-  // 2. merge them on top of fallback and default value
-  // 3. dispatch setTranslations with the merged translations
-  // 4. dispatch setLocale
+  // retrieve translations for requested locale
   const translationUrl = new URL(translationName, translationOrigin);
-  const res = await fetch(translationUrl.href)
+  const stripesTranslationsPromise = fetch(translationUrl.href)
     .then((response) => {
       if (response.ok) {
-        response.json().then((stripesTranslations) => {
-          store.dispatch(setTranslations({ ...fallbackTranslations, ...defaultTranslations, ...stripesTranslations }));
-          store.dispatch(setLocale(intlLocale.baseName));
-        });
+        return response.json().then((translations) => translations)
       }
     });
 
-  return res;
+  // collect the fallback-translations and locale-translations responses
+  // in parallel. merge locale-translations on top of default-translations
+  // on top of fallback-translations. finally, dispatch translations and locale.
+  const [fallbackTranslations, stripesTranslations] = await Promise.all([fallbackTranslationsPromise, stripesTranslationsPromise]);
+  store.dispatch(setTranslations({ ...fallbackTranslations, ...defaultTranslations, ...stripesTranslations }));
+  store.dispatch(setLocale(intlLocale.baseName));
+
+  return stripesTranslationsPromise;
 }
 
 /**
