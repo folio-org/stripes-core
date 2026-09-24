@@ -1085,6 +1085,9 @@ describe('loadResources', () => {
           ok: true,
         }));
       });
+      afterEach(() => {
+        mockFetchCleanUp();
+      });
 
       it('should fetch the tenant and user locale settings from locale API and mod-configuration', async () => {
         await loadResources(store, 'tenant', 'userId');

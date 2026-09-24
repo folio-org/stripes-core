@@ -386,8 +386,7 @@ const fetchAndDispatchLocale = async (url, store, tenant) => {
     const json = await response.json();
     if (json.configs?.length) {
       const localeValues = JSON.parse(json.configs[0]?.value);
-
-      dispatchLocale(localeValues, store);
+      await dispatchLocale(localeValues, store);
     }
   }
 
@@ -556,23 +555,34 @@ export async function getUserLocaleConfigurationsEntries(okapiUrl, store, tenant
   return res;
 }
 
-// This function is used to support the deprecated mod-configuration API.
-// It is only used when the new mod-settings API returns empty settings.
+/**
+ * getLocalesPromises
+ * Retrieve tenant and user locale data from the DEPRECATED mod-config API.
+ * This function should only have been called IFF mod-settings API query
+ * returned empty.
+ * @param {string} url
+ * @param {object} store
+ * @param {string} tenant
+ * @param {string} userId
+ * @returns Array of promises
+ */
 const getLocalesPromises = (url, store, tenant, userId) => {
-  return Promise.all([
+  return [
     getLocaleConfigurationsEntries(url, store, tenant),
     getUserLocaleConfigurationsEntries(url, store, tenant, userId),
-  ]);
+  ];
 };
 
-
 /**
- * Applies locale settings by loading translations and dispatching actions to update timezone and currency.
+ * Applies locale settings by loading translations and dispatching actions to
+ * update timezone and currency.
  *
  * @param {string} [locale] - The locale identifier used to load translations. If provided, it triggers loading translations.
  * @param {string} [timezone] - The timezone setting to apply. Dispatches an action to update the store if provided.
  * @param {string} [currency] - The currency setting to apply. Dispatches an action to update the store if provided.
  * @param {Object} store - The store object used to dispatch actions for updating timezone and currency.
+ *
+ * @returns Promise
  */
 const applyLocaleSettings = async (locale, timezone, currency, store) => {
   if (locale) {
@@ -676,20 +686,18 @@ export async function loadResources(store, tenant, userId) {
     ]);
 
     if (responses[0].value.ok) {
-      [tenantLocaleData, userLocaleData] = await Promise.all(responses.map(res => res.value?.json?.()));
+      [tenantLocaleData, userLocaleData] = await Promise.all(responses.map(async res => await res.value?.json?.()));
       hasSetting = tenantLocaleData.locale || userLocaleData?.items[0]?.value;
     }
   }
 
   if (hasSetting) {
     await processLocaleSettings(store, tenantLocaleData, userLocaleData);
-    promises.push(responses.map(res => res?.value));
   }
-
 
   // only read from legacy mod-config if we haven't already read from mod-settings
   if (hasReadConfigPerm && !hasSetting) {
-    promises.push(getLocalesPromises(okapiUrl, store, tenant, userId));
+    promises.push(...getLocalesPromises(okapiUrl, store, tenant, userId));
   }
 
   // tenant's locale, plugin, bindings, and user's locale are all stored
@@ -706,9 +714,7 @@ export async function loadResources(store, tenant, userId) {
     promises.push(discoverServices(store));
   }
 
-  const result = await Promise.all(promises);
-
-  return result.flat();
+  return Promise.all(promises);
 }
 
 
