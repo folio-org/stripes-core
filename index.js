@@ -68,3 +68,5 @@ export { registerServiceWorker, unregisterServiceWorker } from './src/serviceWor
 
 export { handleEvent as getEventHandler } from './src/handlerService';
 export { handleEvent } from './src/handlerService';
+
+export { register, requestRegistryElement, requestRegistryLink } from './src/registryService';
