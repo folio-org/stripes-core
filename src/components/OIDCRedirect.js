@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useState } from 'react';
 import { withRouter, Redirect } from 'react-router';
 import { useLocation } from 'react-router-dom';
 import queryString from 'query-string';
@@ -38,11 +38,7 @@ import {
 const OIDCRedirect = () => {
   const location = useLocation();
   const stripes = useStripes();
-  const unauthorizedPathRef = useRef();
-
-  if (!unauthorizedPathRef.current) {
-    unauthorizedPathRef.current = getUnauthorizedPathFromSession();
-  }
+  const [unauthorizedPath] = useState(getUnauthorizedPathFromSession);
 
   const getParams = () => {
     const search = location.search;
@@ -52,10 +48,10 @@ const OIDCRedirect = () => {
 
   const getUrl = () => {
     if (stripes.okapi.authnUrl) {
-      if (unauthorizedPathRef.current) {
+      if (unauthorizedPath) {
         removeUnauthorizedPathFromSession();
 
-        return unauthorizedPathRef.current;
+        return unauthorizedPath;
       }
     }
 
