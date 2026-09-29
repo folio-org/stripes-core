@@ -30,6 +30,7 @@
 * Codesmell cleanup in ForgotUserName, ForgotPassword. Refs STCOR-993.
 * Given an invalid locale, default to `en-US` and recover. Refs STCOR-1102.
 * Load `en-US` translations as fallback. Refs STCOR-1024.
+* Support notifications plugin in the main navigation. Refs STCOR-1094.
 
 ## [11.1.1](https://github.com/folio-org/stripes-core/tree/v11.1.1) (2026-04-20)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v11.1.0...v11.1.1)

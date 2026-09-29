@@ -27,6 +27,8 @@ const propTypes = {
     PropTypes.string,
     PropTypes.number,
   ]),
+  badgeColor: PropTypes.oneOf(['default', 'primary', 'red']),
+  badgeSize: PropTypes.oneOf(['small', 'medium']),
   onClick: PropTypes.func,
   open: PropTypes.bool,
   selected: PropTypes.bool,
@@ -37,6 +39,8 @@ const propTypes = {
 const NavButton = React.forwardRef(({
   ariaLabel,
   badge,
+  badgeColor = 'red',
+  badgeSize,
   className,
   href,
   icon,
@@ -118,9 +122,17 @@ const NavButton = React.forwardRef(({
   return (
     <Element ref={ref} id={id} aria-label={ariaLabel || title} className={rootClasses} {...rest} {...clickableProps}>
       <span className={classNames(css.inner, { [css.isInteractive]: isInteractive }, innerClassName)}>
-        { badge && (<Badge color="red" className={css.badge}>{badge}</Badge>) }
-        { renderedIcon }
-        { label && <span className={classNames(css.label, labelClassName)}>{label}</span>}
+        {badge && (
+          <Badge
+            color={badgeColor}
+            className={css.badge}
+            size={badgeSize}
+          >
+            {badge}
+          </Badge>
+        )}
+        {renderedIcon}
+        {label && <span className={classNames(css.label, labelClassName)}>{label}</span>}
         {typeof open === 'boolean' && (
           <Icon
             iconRootClass={css.caretIcon}
