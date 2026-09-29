@@ -45,11 +45,7 @@ describe('resourceMapper', () => {
 
   it('rejects other argument types', () => {
     const av = { ken: 'kenough' };
-    try {
-      resourceMapper(av, fx);
-    } catch (e) {
-      expect(e instanceof UnexpectedResourceError).toBe(true);
-    }
+    expect(() => resourceMapper(av, fx)).toThrow(UnexpectedResourceError);
   });
 });
 

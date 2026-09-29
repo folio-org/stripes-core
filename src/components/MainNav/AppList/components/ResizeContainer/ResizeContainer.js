@@ -66,6 +66,8 @@ class ResizeContainer extends React.Component {
     if (hasSetOfItemsChanged) {
       // Clear cached widths and show all items temporarily to measure them accurately
       this.cachedItemWidths = {};
+      // rendering every item is required so the callback can measure their widths from the DOM
+      // eslint-disable-next-line react/no-did-update-set-state
       this.setState({ hiddenItems: [] }, () => {
         this.cacheWidthsOfItems();
         this.updateHiddenItems();

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { render, screen, waitFor } from '@folio/jest-config-stripes/testing-library/react';
 import { okapi } from 'stripes-config';
 import { getInstance } from '@module-federation/runtime';
@@ -164,7 +164,8 @@ describe('EntitlementLoader', () => {
   describe('when discoveryUrl is configured', () => {
     let capturedModules = null;
     const TestContextComponent = () => {
-      capturedModules = useModules();
+      const modules = useModules();
+      useEffect(() => { capturedModules = modules; });
       return null;
     };
 
@@ -216,19 +217,18 @@ describe('EntitlementLoader', () => {
     });
 
     it('handles errors during module loading gracefully', async () => {
-      global.fetch.mockRejectedValueOnce(new Error('Network error'));
+      loadEntitlement.mockReset();
+      loadEntitlement.mockRejectedValueOnce(new Error('Network error'));
 
-      try {
-        render(
-          <TestHarness>
-            <div>Content</div>
-          </TestHarness>
-        );
-      } catch (e) {
-        await waitFor(() => {
-          expect(mockStripes.logger.log).toHaveBeenCalled();
-        });
-      }
+      render(
+        <TestHarness testStripes={{ ...mockStripes, okapi: { discoveryUrl: 'http://localhost:8000/entitlement' } }}>
+          <div>Content</div>
+        </TestHarness>
+      );
+
+      await waitFor(() => {
+        expect(mockStripes.logger.log).toHaveBeenCalledWith('core', expect.stringContaining('Error fetching entitlement registry'));
+      });
     });
 
     it('handles failures loading module assets (logs and sends callout)', async () => {
@@ -263,7 +263,8 @@ describe('EntitlementLoader', () => {
   describe('when discoveryUrl is not configured', () => {
     let capturedModules = null;
     const ContextTestComponent = () => {
-      capturedModules = React.useContext(ModulesContext);
+      const modules = React.useContext(ModulesContext);
+      useEffect(() => { capturedModules = modules; });
       return null;
     };
 
@@ -363,15 +364,11 @@ describe('EntitlementLoader', () => {
 
       getInstance().loadRemote.mockRejectedValueOnce(new Error('Load failed'));
 
-      try {
-        await preloadModules(mockStripes, remotes);
-      } catch (e) {
-        expect(mockStripes.logger.log).toHaveBeenCalledWith(
-          'core',
-          expect.stringContaining(remotes[0].name)
-        );
-        expect(e.message).toContain('Load failed');
-      }
+      await expect(preloadModules(mockStripes, remotes)).rejects.toThrow('Load failed');
+      expect(mockStripes.logger.log).toHaveBeenCalledWith(
+        'core',
+        expect.stringContaining(remotes[0].name)
+      );
     });
   });
 
@@ -427,11 +424,9 @@ describe('EntitlementLoader', () => {
         ok: false,
       });
 
-      try {
-        await loadModuleAssets(mockStripes, module);
-      } catch (e) {
-        expect(mockStripes.logger.log).toHaveBeenCalledWith('core', 'Error loading assets for test-module: Could not load translations for test-module; failed to find localhost:3000/path/translations/en_US.json');
-      }
+      await expect(loadModuleAssets(mockStripes, module)).rejects.toThrow('Error loading assets for test-module');
+
+      expect(mockStripes.logger.log).toHaveBeenCalledWith('core', 'Error loading assets for test-module: Could not load translations for test-module; failed to find localhost:3000/path/translations/en_US.json');
     });
 
     it('converts kebab-case locale to snake_case for translations', async () => {

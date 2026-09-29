@@ -57,6 +57,8 @@ class Login extends Component {
           </Col>
         </Row>);
 
+    // yes, autofocus in the first field is deliberate
+    // eslint-disable jsx-a11y/no-autofocus
     return (
       <Form
         onSubmit={onSubmit}
