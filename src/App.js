@@ -168,6 +168,8 @@ export default class StripesCore extends Component {
 
         const actionNames = gatherActions(modules);
 
+        // state is set after awaiting the fetched modules, not synchronously on mount
+        // eslint-disable-next-line react/no-did-mount-set-state
         this.setState({
           actionNames,
           modules,
