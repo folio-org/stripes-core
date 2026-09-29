@@ -31,6 +31,7 @@
 * Given an invalid locale, default to `en-US` and recover. Refs STCOR-1102.
 * Load `en-US` translations as fallback. Refs STCOR-1024.
 * Support notifications plugin in the main navigation. Refs STCOR-1094.
+* Lint. Taste it again for the first time. Thanks, oxlint! Refs STCOR-1103.
 
 ## [11.1.1](https://github.com/folio-org/stripes-core/tree/v11.1.1) (2026-04-20)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v11.1.0...v11.1.1)

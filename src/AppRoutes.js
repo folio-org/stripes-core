@@ -57,7 +57,7 @@ const AppRoutes = ({ modules, stripes }) => {
         // allow SELECT_MODULE handlers to intervene
         const handlerComponents = invokeEventHandlers(events.SELECT_MODULE, moduleStripes, modules.handler, data);
         if (handlerComponents.length) {
-          return handlerComponents.map(Handler => (<Handler stripes={propsStripes} data={data} />));
+          return handlerComponents.map((Handler, i) => (<Handler key={i} stripes={propsStripes} data={data} />));
         }
 
         return (

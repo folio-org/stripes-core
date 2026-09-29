@@ -12,16 +12,17 @@
     "registry": "https://repository.folio.org/repository/npm-folio/"
   },
   "scripts": {
+    "build-mod-descriptor": "stripes mod descriptor --full --strict | jq '.[]' > module-descriptor.json",
+    "fmt": "stripes-fmt ./src",
+    "fmt:fix": "stripes-fmt --fix ./src",
+    "formatjs-compile": "stripes translate compile",
+    "lint": "stripes-lint ./src",
+    "lint:fix": "stripes-lint --fix ./src",
     "start": "stripes serve",
     "test": "yarn run test:jest && yarn run test:bigtest ",
     "test:bigtest": "stripes test karma",
     "test:bt-dev": "stripes test karma --watch",
-    "test:jest": "jest --ci --coverage --colors",
-    "lint": "eslint . && stylelint \"src/**/*.css\"",
-    "eslint": "eslint .",
-    "stylelint": "stylelint \"src/**/*.css\"",
-    "formatjs-compile": "stripes translate compile",
-    "build-mod-descriptor": "stripes mod descriptor --full --strict | jq '.[]' > module-descriptor.json"
+    "test:jest": "jest --ci --coverage --colors"
   },
   "stripes": {
     "okapiInterfaces": {
@@ -91,7 +92,7 @@
     "@bigtest/convergence": "^0.10.0",
     "@bigtest/interactor": "^0.7.2",
     "@bigtest/mirage": "^0.0.1",
-    "@folio/eslint-config-stripes": "^8.0.0",
+    "@folio/eslint-config-stripes": "^10.0.0",
     "@folio/jest-config-stripes": "^3.0.0",
     "@folio/stripes-cli": "^4.0.0",
     "@folio/stripes-components": "^13.0.0",
@@ -99,7 +100,6 @@
     "@folio/stripes-logger": "^1.0.0",
     "@folio/stripes-testing": "^5.0.0",
     "chai": "^4.1.2",
-    "eslint": "^7.32.0",
     "jest-fetch-mock": "^3.0.3",
     "miragejs": "^0.1.32",
     "mocha": "^10.2.0",
@@ -109,10 +109,7 @@
     "react-intl": "^7.1.5",
     "react-redux": "^8.0.5",
     "react-router": "^5.2.0",
-    "react-router-dom": "^5.2.0",
-    "stylelint": "^16.2.0",
-    "stylelint-config-standard": "^36.0.0",
-    "stylelint-junit-formatter": "^0.2.2"
+    "react-router-dom": "^5.2.0"
   },
   "dependencies": {
     "@apollo/client": "^3.2.1",
