@@ -209,7 +209,7 @@ const EntitlementLoader = ({ children }) => {
         try {
           remotes = await loadEntitlement(okapi.discoveryUrl, signal);
         } catch (e) {
-          // log the error and bail: if there are no remotes, we 
+          // log the error and bail: if there are no remotes, we
           // certainly cannot map over them in loadAllModuleAssets
           handleRemoteModuleError(stripes, `Error fetching entitlement registry from ${okapi.discoveryUrl}: ${e}`);
           return;
@@ -221,7 +221,7 @@ const EntitlementLoader = ({ children }) => {
 
         // if the signal is aborted, avoid all subsequent fetches, state updates...
         if (!signal.aborted) {
-          logRemoteDependencyViolations(signal, remotes);
+          void logRemoteDependencyViolations(signal, remotes);
 
           // load module assets (translations, icons)...
           const assetResults = await loadAllModuleAssets(stripes, remotes);
@@ -264,7 +264,7 @@ const EntitlementLoader = ({ children }) => {
         }
       };
 
-      fetchRegistry();
+      void fetchRegistry();
     }
     return () => {
       controller.abort();
