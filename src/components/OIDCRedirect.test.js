@@ -9,6 +9,7 @@ jest.mock('react-router', () => ({
   ...jest.requireActual('react-router'),
   Redirect: jest.fn(({ children, to }) => {
     return (
+      // eslint-disable-next-line jsx-a11y/prefer-tag-over-role
       <a href={to} role="button">
         <span>
           {children}

@@ -1228,7 +1228,7 @@ describe('loadResources', () => {
 describe('getLoginTenant', () => {
   it('uses URL values when present', () => {
     const search = { tenant: 't', client_id: 'c' };
-    Object.defineProperty(window, 'location', { value: { search } });
+    window.location.search = `?${new URLSearchParams(search)}`;
 
     const res = getLoginTenant({}, {});
     expect(res.tenant).toBe(search.tenant);
@@ -1277,7 +1277,7 @@ describe('getLoginTenant', () => {
       it('should take tenant from URL', () => {
         // URL: /reset-password?resetToken=token1&tenant=tenant1
         const search = { tenant: 'tenant1' };
-        Object.defineProperty(window, 'location', { value: { search } });
+        window.location.search = `?${new URLSearchParams(search)}`;
 
         const res = getLoginTenant({}, stripesConfig);
         expect(res.tenant).toBe(search.tenant);

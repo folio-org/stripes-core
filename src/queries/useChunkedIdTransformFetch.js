@@ -2,8 +2,7 @@
 import {
   useCallback,
   useEffect,
-  useMemo,
-  useState
+  useMemo
 } from 'react';
 import { useQueries } from 'react-query';
 
@@ -54,7 +53,6 @@ const useChunkedIdTransformFetch = ({
   // We need to parallelise CONCURRENT_REQUESTS at a time,
   // and ensure we only fire the next lot once the previous lot are through
 
-  const [isLoading, setIsLoading] = useState(ids?.length > 0);
 
   // Set up query array, and only enable the first CONCURRENT_REQUESTS requests
   const getQueryArray = useCallback(() => {
@@ -115,13 +113,7 @@ const useChunkedIdTransformFetch = ({
 
   // Keep easy track of whether this hook is all loaded or not
   // (This slightly flattens the "isLoading/isFetched" distinction, but it's an ease of use prop)
-  useEffect(() => {
-    const newLoading = ids?.length > 0 && (!itemQueries?.length || itemQueries?.some(uq => !uq.isFetched));
-
-    if (isLoading !== newLoading) {
-      setIsLoading(newLoading);
-    }
-  }, [isLoading, itemQueries, ids?.length]);
+  const isLoading = ids?.length > 0 && (!itemQueries?.length || itemQueries?.some(uq => !uq.isFetched));
 
 
   return {

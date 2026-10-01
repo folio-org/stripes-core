@@ -61,13 +61,13 @@ class CreateResetPassword extends Component {
       confirmPassword: this.confirmPasswordFieldValidation,
     };
     this.inputColProps = {
-      xs:12,
-      sm:8,
+      xs: 12,
+      sm: 8,
     };
     this.passwordMeterColProps = {
-      xs:12,
-      sm:4,
-      className:styles.passwordStrength,
+      xs: 12,
+      sm: 4,
+      className: styles.passwordStrength,
     };
   }
 
@@ -135,6 +135,8 @@ class CreateResetPassword extends Component {
       return newPassword;
     };
 
+    // yes, autofocus in the first field is deliberate
+    // eslint-disable jsx-a11y/no-autofocus
     return (
       <div className={styles.wrapper}>
         <div className={styles.container}>
@@ -170,7 +172,7 @@ class CreateResetPassword extends Component {
                 pristine: true,
               }}
             >
-              { ({ handleSubmit, form: { getState } }) => (
+              {({ handleSubmit, form: { getState } }) => (
                 <form
                   className={styles.form}
                   onSubmit={handleSubmit}

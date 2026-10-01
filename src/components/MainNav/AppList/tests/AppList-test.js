@@ -33,8 +33,10 @@ const AppMenuInteractor = HTML.extend('app menu')
   .filters({
     itemCount: el => el.querySelectorAll('[data-test-item-link]').length,
     focusedIndex: el => {
-      if (!el.querySelector(':focus')) return -1;
-      const focused = el.querySelector(':focus');
+      // :focus only matches when the document itself has focus, which is
+      // not guaranteed in the karma iframe; activeElement always works.
+      const focused = el.contains(document.activeElement) ? document.activeElement : null;
+      if (!focused) return -1;
       return [...focused.parentNode.children].indexOf(focused);
     }
   })

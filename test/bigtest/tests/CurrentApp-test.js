@@ -5,7 +5,7 @@
 import React from 'react';
 import { before, beforeEach, it, describe } from 'mocha';
 import { Bigtest, DropdownMenu, including } from '@folio/stripes-testing';
-import setupApplication from '../helpers/setup-application';
+import setupApplication from '../helpers/setup-core-application';
 import AppContextMenu from '../../../src/components/MainNav/CurrentApp/AppContextMenu';
 
 const { Link, Button } = Bigtest;

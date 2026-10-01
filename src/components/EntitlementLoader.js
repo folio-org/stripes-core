@@ -68,7 +68,7 @@ export const preloadModules = async (stripes, remotes) => {
       <div>
         <FormattedMessage id="stripes-core.entitlementLoader.moduleError" />
         <ul>
-          {loadFailures.map(f => (<li>{f.name}: {f.reason.message}</li>))}
+          {loadFailures.map(f => (<li key={f.name}>{f.name}: {f.reason.message}</li>))}
         </ul>
       </div>
     );
@@ -209,7 +209,10 @@ const EntitlementLoader = ({ children }) => {
         try {
           remotes = await loadEntitlement(okapi.discoveryUrl, signal);
         } catch (e) {
+          // log the error and bail: if there are no remotes, we
+          // certainly cannot map over them in loadAllModuleAssets
           handleRemoteModuleError(stripes, `Error fetching entitlement registry from ${okapi.discoveryUrl}: ${e}`);
+          return;
         }
 
         let cachedModules = modulesInitialState;
@@ -218,7 +221,7 @@ const EntitlementLoader = ({ children }) => {
 
         // if the signal is aborted, avoid all subsequent fetches, state updates...
         if (!signal.aborted) {
-          logRemoteDependencyViolations(signal, remotes);
+          void logRemoteDependencyViolations(signal, remotes);
 
           // load module assets (translations, icons)...
           const assetResults = await loadAllModuleAssets(stripes, remotes);
@@ -236,7 +239,7 @@ const EntitlementLoader = ({ children }) => {
               <div>
                 <FormattedMessage id="stripes-core.entitlementLoader.assetError" />
                 <ul>
-                  {loadFailures.map(f => (<li>{f.name}</li>))}
+                  {loadFailures.map(f => (<li key={f.name}>{f.name}</li>))}
                 </ul>
               </div>
             );
@@ -261,7 +264,7 @@ const EntitlementLoader = ({ children }) => {
         }
       };
 
-      fetchRegistry();
+      void fetchRegistry();
     }
     return () => {
       controller.abort();
