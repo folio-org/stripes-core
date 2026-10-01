@@ -2,7 +2,7 @@
  * AppListDropdown interactor
  */
 
-import { interactor, scoped, is, collection, attribute } from '@bigtest/interactor';
+import { interactor, scoped, is, collection, attribute } from '@folio/stripes-testing';
 
 export default interactor(class AppListDropdownInteractor {
   static defaultScope = '[data-test-app-list-dropdown]';

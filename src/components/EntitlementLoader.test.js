@@ -6,9 +6,14 @@ import EntitlementLoader, { preloadModules, loadModuleAssets } from './Entitleme
 import { StripesContext } from '../StripesContext';
 import { ModulesContext, useModules, modulesInitialState as mockModuleInitialState } from '../ModulesContext';
 import { loadEntitlement } from './loadEntitlement';
+import { useCallout } from '../CalloutContext';
 import { logRemoteDependencyViolations } from './remoteDependencyValidation';
 
 jest.mock('stripes-config');
+jest.mock('../CalloutContext', () => {
+  const actual = jest.requireActual('../CalloutContext');
+  return { ...actual, useCallout: jest.fn(actual.useCallout) };
+});
 jest.mock('./loadEntitlement', () => ({
   loadEntitlement: jest.fn()
 }));
@@ -243,8 +248,7 @@ describe('EntitlementLoader', () => {
       }).mockResolvedValueOnce({ ok: false });
 
       const mockCallout = { sendCallout: jest.fn() };
-      const calloutCtx = require('../CalloutContext');
-      const useCalloutSpy = jest.spyOn(calloutCtx, 'useCallout').mockReturnValue(mockCallout);
+      useCallout.mockReturnValue(mockCallout);
 
       render(<TestHarness testStripes={{ ...mockStripes, okapi: { discoveryUrl } }} />);
 
@@ -256,7 +260,7 @@ describe('EntitlementLoader', () => {
         expect(mockCallout.sendCallout).toHaveBeenCalled();
       });
 
-      useCalloutSpy.mockRestore();
+      useCallout.mockImplementation(jest.requireActual('../CalloutContext').useCallout);
     });
   });
 

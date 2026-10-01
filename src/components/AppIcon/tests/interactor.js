@@ -2,7 +2,7 @@
  * AppIcon interactor
  */
 
-import { interactor, isPresent, find, text, property, attribute } from '@bigtest/interactor';
+import { interactor, isPresent, find, text, property, attribute } from '@folio/stripes-testing';
 import { selectorFromClassnameString } from '../../../../test/bigtest/helpers/render-helpers';
 import css from '../AppIcon.css';
 

@@ -2,7 +2,7 @@
  * AppList interactor
  */
 
-import { interactor, count, scoped, is } from '@bigtest/interactor';
+import { interactor, count, scoped, is } from '@folio/stripes-testing';
 import AppListDropdownInteractor from '../components/AppListDropdown/tests/interactor';
 
 export default interactor(class AppIconInteractor {

@@ -2,7 +2,7 @@
  * ResizeContainer interactor
  */
 
-import { interactor, findAll } from '@bigtest/interactor';
+import { interactor, findAll } from '@folio/stripes-testing';
 
 export default interactor(class AppIconInteractor {
   static defaultScope = '[data-test-resize-container]';

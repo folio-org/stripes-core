@@ -10,6 +10,11 @@ import { ModulesContext } from '../../../ModulesContext';
 import { StripesContext } from '../../../StripesContext';
 import { MainNavButtons } from './MainNavButtons';
 
+jest.mock('../../../handlerService', () => ({
+  ...jest.requireActual('../../../handlerService'),
+  handleEvent: jest.fn(),
+}));
+
 jest.unmock('@folio/stripes-components');
 
 const NOTIFICATIONS_PLUGIN_MODULE = '@folio/ui-plugin';
@@ -60,11 +65,11 @@ describe('MainNavButtons', () => {
   let handleEventSpy;
 
   beforeEach(() => {
-    handleEventSpy = jest.spyOn(handlerService, 'handleEvent').mockReturnValue(null);
+    handleEventSpy = handlerService.handleEvent.mockReturnValue(null);
   });
 
   afterEach(() => {
-    handleEventSpy.mockRestore();
+    handleEventSpy.mockReset();
   });
 
   describe('Help button', () => {
