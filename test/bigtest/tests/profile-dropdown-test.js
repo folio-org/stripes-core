@@ -2,7 +2,7 @@ import { describe, beforeEach, it } from 'mocha';
 import { expect } from 'chai';
 import React, { Component } from 'react';
 import { Dropdown as DropdownInteractor, HTML } from '@folio/stripes-testing';
-import setupApplication from '../helpers/setup-application';
+import setupApplication from '../helpers/setup-core-application';
 
 class DummyApp extends Component {
   render() {
