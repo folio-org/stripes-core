@@ -1,6 +1,7 @@
 # Change history for stripes-core
 
-## IN PROGRESS
+## [11.1.7](https://github.com/folio-org/stripes-core/tree/v11.1.7) (2026-10-12)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v11.1.6...v11.1.7)
 
 * Correctly display session-remaining time after refresh. Refs STCOR-1087.
 * Supply `rtrIgnore` on forgot-password and forgot-username API requests. Refs STCOR-1099.
