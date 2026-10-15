@@ -30,6 +30,8 @@ class ModuleTranslator extends React.Component {
       const moduleData = await getModules(stripes.config);
       const modules = this.translateModules(moduleData);
 
+      // state is set after awaiting the fetched modules, not synchronously on mount
+      // eslint-disable-next-line react/no-did-mount-set-state
       this.setState({ modules });
     } catch (error) {
       console.error('Failed to load modules:', error); // eslint-disable-line no-console

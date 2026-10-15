@@ -1,4 +1,3 @@
-import { useRef } from 'react';
 import { useIntl } from 'react-intl';
 
 import { Icon } from '@folio/stripes-components';
@@ -13,7 +12,7 @@ export const MainNavButtons = () => {
   const intl = useIntl();
   const stripes = useStripes();
 
-  const helpUrl = useRef(stripes.config.helpUrl ?? 'https://docs.folio.org').current;
+  const helpUrl = stripes.config.helpUrl ?? 'https://docs.folio.org';
 
   return (
     <div className={css.mainNavButtons}>

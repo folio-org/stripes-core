@@ -77,7 +77,7 @@ describe('ProfileDropdown', () => {
   it('should display module profile dropdown item', () => {
     renderProfileDropdown();
 
-    expect(checkAction).toBeCalled();
+    expect(checkAction).toHaveBeenCalled();
     expect(screen.getByText('Profile dropdown action')).toBeInTheDocument();
   });
 });

@@ -39,7 +39,7 @@ export const isStorageEnabled = () => {
   // local storage
   try {
     localStorage.getItem('test-key');
-  } catch (e) {
+  } catch {
     console.warn('local storage is disabled'); // eslint-disable-line no-console
     isEnabled = false;
   }
@@ -47,7 +47,7 @@ export const isStorageEnabled = () => {
   // session storage
   try {
     sessionStorage.getItem('test-key');
-  } catch (e) {
+  } catch {
     console.warn('session storage is disabled'); // eslint-disable-line no-console
     isEnabled = false;
   }
@@ -168,6 +168,8 @@ export default class StripesCore extends Component {
 
         const actionNames = gatherActions(modules);
 
+        // state is set after awaiting the fetched modules, not synchronously on mount
+        // eslint-disable-next-line react/no-did-mount-set-state
         this.setState({
           actionNames,
           modules,
