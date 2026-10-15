@@ -89,8 +89,8 @@
   "devDependencies": {
     "@bigtest/convergence": "^0.10.0",
     "@folio/eslint-config-stripes": "^10.0.0",
-    "@folio/jest-config-stripes": "folio-org/jest-config-stripes#jest-30",
-    "@folio/stripes-cli": "folio-org/stripes-cli#debabel",
+    "@folio/jest-config-stripes": "^5.0.0",
+    "@folio/stripes-cli": "^6.0.0",
     "@folio/stripes-components": "^13.0.0",
     "@folio/stripes-connect": "^10.0.0",
     "@folio/stripes-logger": "^1.0.0",
