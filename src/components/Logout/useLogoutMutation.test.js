@@ -16,7 +16,9 @@ import {
 import { resetStore } from '../../mainActions';
 import { stripesHubAPI } from '../../constants';
 import {
+  getUnauthorizedPathFromSession,
   SESSION_NAME,
+  setUnauthorizedPathToSession,
   TENANT_LOCAL_STORAGE_KEY,
 } from '../../loginServices';
 import {
@@ -94,6 +96,36 @@ describe('clearPrivateStorage', () => {
     clearPrivateStorage(store, rqc, []);
 
     expect(rqc.removeQueries).toHaveBeenCalled();
+  });
+
+  describe('sessionStorage', () => {
+    const store = {
+      dispatch: jest.fn(),
+      getState: jest.fn().mockReturnValue({ config: { preserveConsole: false } }),
+    };
+
+    beforeEach(() => {
+      globalThis.sessionStorage.clear();
+    });
+
+    it('preserves the stashed unauthorized path and clears everything else', () => {
+      setUnauthorizedPathToSession('/users?query=monkey');
+      sessionStorage.setItem('other-key', 'other-value');
+
+      clearPrivateStorage(store, null, []);
+
+      expect(getUnauthorizedPathFromSession()).toBe('/users?query=monkey');
+      expect(sessionStorage.getItem('other-key')).toBeNull();
+    });
+
+    it('does not set an unauthorized path if none was stashed', () => {
+      sessionStorage.setItem('other-key', 'other-value');
+
+      clearPrivateStorage(store, null, []);
+
+      expect(getUnauthorizedPathFromSession()).toBeNull();
+      expect(sessionStorage.getItem('other-key')).toBeNull();
+    });
   });
 });
 

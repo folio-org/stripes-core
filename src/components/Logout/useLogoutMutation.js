@@ -12,7 +12,9 @@ import { stripesHubAPI } from '../../constants';
 import {
   getLoginTenant,
   getLogoutTenant,
+  getUnauthorizedPathFromSession,
   SESSION_NAME,
+  setUnauthorizedPathToSession,
   TENANT_LOCAL_STORAGE_KEY,
 } from '../../loginServices';
 import {
@@ -81,7 +83,14 @@ export const clearPrivateStorage = (store, queryClient, timers) => {
     // who remembers UICHKOUT-869?
     timers.forEach(timer => timer?.clear());
 
+    // SessionEventContainer stashes the current location when a session times
+    // out so it can be restored when a user re-authenticates. Grab and restore
+    // that value, but clear everything else.
+    const stashedPath = getUnauthorizedPathFromSession();
     sessionStorage.clear();
+    if (stashedPath) {
+      setUnauthorizedPathToSession(stashedPath);
+    }
   } catch (e) {
     console.error('error during logout', e); // eslint-disable-line no-console
   }

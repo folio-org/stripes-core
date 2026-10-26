@@ -1,3 +1,4 @@
+import ms from 'ms';
 import { UnexpectedResourceError } from './Errors';
 import {
   ResetTimer,
@@ -6,6 +7,8 @@ import {
   resourceMapper,
   rotationHandler,
 } from './token-util';
+
+import { RTR_TIME_MARGIN_IN_MS } from './constants';
 
 describe('isFolioApiRequest', () => {
   it('accepts requests whose origin matches okapi\'s', () => {
@@ -149,7 +152,11 @@ describe('ResetTimer', () => {
 
 describe('rotationHandler', () => {
   it('calls dem callbacks', async () => {
-    jest.spyOn(Date, 'now').mockReturnValue(1000);
+    const refreshTokenExpiration = 30000;
+    const now = 1000;
+    const fixedLengthSessionWarningTTL = '5s';
+
+    jest.spyOn(Date, 'now').mockReturnValue(now);
     const hst = jest.fn(async () => { });
     const timeoutTimer = { reset: jest.fn() };
     const warningTimer = { reset: jest.fn() };
@@ -158,21 +165,21 @@ describe('rotationHandler', () => {
       hst,
       timeoutTimer,
       warningTimer,
-      { fixedLengthSessionWarningTTL: '5s' }
+      { fixedLengthSessionWarningTTL }
     );
-    await rotate({ accessTokenExpiration: 10000, refreshTokenExpiration: 30000 });
+    await rotate({ accessTokenExpiration: 10000, refreshTokenExpiration });
 
     // calls handleSaveTokens callback
     expect(hst).toHaveBeenCalled();
 
     // configures end-of-session timer
     // av[0]: RT - currentTime - margin
-    expect(timeoutTimer.reset).toHaveBeenCalledWith(28800);
+    expect(timeoutTimer.reset).toHaveBeenCalledWith(refreshTokenExpiration - now - RTR_TIME_MARGIN_IN_MS);
 
     // configures session-will-end-banner timer
     // av[0]: RT - currentTime - margin - FLSTWarningTTL
     // av[1]: FLST TTL
-    expect(warningTimer.reset).toHaveBeenCalledWith(23800, { timeRemaining: 5000 });
+    expect(warningTimer.reset).toHaveBeenCalledWith(refreshTokenExpiration - now - RTR_TIME_MARGIN_IN_MS - ms(fixedLengthSessionWarningTTL), { timeRemaining: ms(fixedLengthSessionWarningTTL) });
     Date.now.mockRestore();
   });
 });
