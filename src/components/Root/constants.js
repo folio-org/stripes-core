@@ -93,9 +93,18 @@ export const RTR_RT_EXPIRY_IF_UNKNOWN = '10m';
 
 /**
  * To account for minor delays between events (such as cookie expiration and API calls),
- * this is a small amount of time to wait so the proper order can be ensured if they happen simultaneously.
+ * this is a small amount of time to wait so the proper order can be ensured if they
+ * happen simultaneously. This amount of time is shaved off the end of a session to
+ * help guarantee that when the end-of-session timer pings, the cookies are still
+ * valid for calling logout endpoints.
+ *
+ * A good value is probably more than 1 second and less then 10. Ten would be a lot
+ * of latency, but in the scheme a fixed-length-session that lasts hours-to-days, it's
+ * still unlikely anybody would notice the shrinkage. Less then 1 second is too short;
+ * even running locally, variation in when `setTimeout()` actually pings will cause
+ * grief.
  */
-export const RTR_TIME_MARGIN_IN_MS = 200;
+export const RTR_TIME_MARGIN_IN_MS = 5000;
 
 /**
  * Used by RTR logic to determine the priority window - only windows with matching ID's can rotate.
