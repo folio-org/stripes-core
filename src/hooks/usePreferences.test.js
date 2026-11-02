@@ -91,7 +91,7 @@ describe('usePreferences', () => {
       expect(pref).toEqual(testValue);
     });
 
-    describe('subsequent setPreference call ', () => {
+    describe('subsequent setPreference call', () => {
       beforeEach(async () => {
         await renderedHook.result.current.setPreference({ scope: 'test.manage', key: 'testPref', value: { pref: 25 } });
       });
@@ -101,7 +101,7 @@ describe('usePreferences', () => {
       });
     });
 
-    describe('subsequent deletePreference call ', () => {
+    describe('subsequent deletePreference call', () => {
       beforeEach(async () => {
         await renderedHook.result.current.removePreference({ scope: 'test.manage', key: 'testPref' });
       });
@@ -127,7 +127,7 @@ describe('usePreferences', () => {
       await waitFor(() => expect(pref).toEqual(undefined));
     });
 
-    describe('subsequent setPreference call ', () => {
+    describe('subsequent setPreference call', () => {
       beforeEach(async () => {
         await renderedHook.result.current.setPreference({ scope: 'test.manage', key: 'testPref', value: { pref: 25 } });
       });

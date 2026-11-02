@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useIntl } from 'react-intl';
 
 import css from './MainNav.css';
@@ -18,12 +18,8 @@ const MainNav = () => {
   const stripes = useStripes();
   const intl = useIntl();
 
-  const [selectedApp, setSelectedApp] = useState(apps.find(entry => entry.active));
-
-  // This logic changes the visible current app at the starting side of the Main Navigation.
-  useEffect(() => {
-    setSelectedApp(apps.find(entry => entry.active));
-  }, [apps]);
+  // the visible current app at the starting side of the Main Navigation.
+  const selectedApp = apps.find(entry => entry.active);
 
   return (
     <header className={css.navRoot} style={stripes.branding?.style?.mainNav ?? {}}>

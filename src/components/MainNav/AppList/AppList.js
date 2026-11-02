@@ -85,13 +85,13 @@ class AppList extends Component {
    */
   renderNavButtons = (hiddenItemIds, itemWidths) => {
     const { selectedApp, apps } = this.props;
-
+    // NavButton renders a link or button; keep the explicit role
+    // eslint-disable jsx-a11y/prefer-tag-over-role
     return (
       <ul className={css.navItemsList}>
         {
           apps.map(app => {
             const isHidden = hiddenItemIds.includes(app.id);
-
             return (
               <li
                 className={classnames(css.navItem, { [css.hidden]: isHidden })}
@@ -116,6 +116,8 @@ class AppList extends Component {
         }
       </ul>
     );
+
+    // eslint-enable jsx-a11y/prefer-tag-over-role
   }
 
   /**
@@ -174,7 +176,7 @@ class AppList extends Component {
           usePortal={false}
           focusHandlers={this.focusHandlers}
         >
-          { ({ onToggle }) => (
+          {({ onToggle }) => (
             <DropdownMenu onToggle={onToggle}>
               <AppListDropdown
                 apps={apps.filter(item => hiddenItemIds.includes(item.id))}
@@ -209,7 +211,7 @@ class AppList extends Component {
             </div>
           );
         }
-      }
+        }
       </ResizeContainer>
     );
   }

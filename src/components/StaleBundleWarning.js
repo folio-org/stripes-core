@@ -21,7 +21,7 @@
 
 import { useQuery } from 'react-query';
 import ky from 'ky';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Button, MessageBanner } from '@folio/stripes-components';
 import { useStripes } from '../StripesContext';
@@ -56,13 +56,13 @@ const StaleBundleWarning = () => {
     enabled: !stale,
   });
 
-  useEffect(() => {
-    if (!previous) {
-      setPrevious(query.data);
-      return;
-    }
-    if (previous !== query.data) setStale(true);
-  }, [previous, query.data, stale]);
+  // adjust state while rendering, i.e. without an effect: remember the first
+  // response, then flag as stale when a later response differs from it.
+  if (!previous) {
+    if (query.data) setPrevious(query.data);
+  } else if (previous !== query.data && !stale) {
+    setStale(true);
+  }
 
   return (
     <MessageBanner type="warning" show={stale}>

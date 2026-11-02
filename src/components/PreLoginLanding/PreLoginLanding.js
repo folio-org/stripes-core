@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useState } from 'react';
 import { useIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 
@@ -33,11 +33,11 @@ function PreLoginLanding({ onSelectTenant }) {
     return '';
   };
 
-  const submitButtonRef = useRef({ disabled: true });
+  const [submitDisabled, setSubmitDisabled] = useState(true);
 
   const handleChangeTenant = (e) => {
     const tenantName = e.target.value;
-    submitButtonRef.current.disabled = !tenantName;
+    setSubmitDisabled(!tenantName);
     if (tenantName === '') {
       onSelectTenant('', '');
       return;
@@ -65,8 +65,7 @@ function PreLoginLanding({ onSelectTenant }) {
               />
               <Button
                 buttonClass={styles.submitButton}
-                disabled={submitButtonRef.current.disabled}
-                ref={submitButtonRef}
+                disabled={submitDisabled}
                 onClick={() => window.location.assign(getLoginUrl())}
                 buttonStyle="primary"
                 fullWidth

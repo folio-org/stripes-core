@@ -52,6 +52,8 @@ class CreateResetPasswordControl extends Component {
     this._isMounted = true;
     await this.makeCall();
 
+    // state is set after awaiting the async token check, not synchronously on mount
+    // eslint-disable-next-line react/no-did-mount-set-state
     this.setState({ isLoading: false });
   }
 

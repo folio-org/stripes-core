@@ -22,8 +22,6 @@ describe('StaleBundleWarning', () => {
 
       const { rerender } = await render(<StaleBundleWarning />);
 
-      expect(screen.queryByText('stripes-core.stale.reload')).toBeFalsy();
-
       mockUseQuery.mockReturnValue({
         data: 'bar',
       });

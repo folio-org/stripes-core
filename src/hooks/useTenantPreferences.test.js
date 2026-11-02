@@ -90,7 +90,7 @@ describe('useTenantPreferences', () => {
       expect(pref).toEqual(testValue);
     });
 
-    describe('subsequent setTenantPreference call ', () => {
+    describe('subsequent setTenantPreference call', () => {
       beforeEach(async () => {
         await renderedHook.result.current.setTenantPreference({ scope: 'test.manage', key: 'testPref', value: { pref: 25 } });
       });
@@ -100,7 +100,7 @@ describe('useTenantPreferences', () => {
       });
     });
 
-    describe('subsequent deleteTenantPreference call ', () => {
+    describe('subsequent deleteTenantPreference call', () => {
       beforeEach(async () => {
         await renderedHook.result.current.removeTenantPreference({ scope: 'test.manage', key: 'testPref' });
       });
@@ -126,7 +126,7 @@ describe('useTenantPreferences', () => {
       await waitFor(() => expect(pref).toEqual(undefined));
     });
 
-    describe('subsequent setTenantPreference call ', () => {
+    describe('subsequent setTenantPreference call', () => {
       beforeEach(async () => {
         await renderedHook.result.current.setTenantPreference({ scope: 'test.manage', key: 'testPref', value: { pref: 25 } });
       });

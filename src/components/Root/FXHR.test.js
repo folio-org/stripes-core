@@ -41,8 +41,8 @@ describe('FXHR', () => {
   });
 
   it('instantiates without error', () => {
-    expect(FakeXHR).toBeDefined;
-    expect(testXHR).toBeDefined;
+    expect(FakeXHR).toBeDefined();
+    expect(testXHR).toBeDefined();
   });
 
   it('calls inherited open method', () => {

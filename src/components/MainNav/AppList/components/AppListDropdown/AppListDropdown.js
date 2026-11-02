@@ -10,6 +10,8 @@ import { NavListItem, NavListSection } from '@folio/stripes-components';
 import AppIcon from '../../../../AppIcon';
 import css from '../../AppList.css';
 
+// rendered as a router link; changing the element would alter semantics and styling
+// eslint-disable jsx-a11y/prefer-tag-over-role
 const AppListDropdown = ({ toggleDropdown, apps, listRef, selectedApp }) => (
   <NavListSection
     role="menu"

@@ -29,7 +29,7 @@ const AppRoutes = ({ modules, stripes }) => {
       try {
         ModuleComponent = connect(module.getModule());
       } catch (error) {
-        console.error(error); // eslint-disable-line
+        console.error(error); // eslint-disable-line no-console
         throw new Error(error);
       }
 
@@ -44,7 +44,7 @@ const AppRoutes = ({ modules, stripes }) => {
         stripes,
         connect,
       };
-    }).filter(x => x);
+    }).filter(Boolean);
   }, [modules.app, stripes]);
 
   return cachedModules.map(({ ModuleComponent, connect, module, name, moduleStripes, stripes: propsStripes, displayName }) => (
@@ -57,7 +57,7 @@ const AppRoutes = ({ modules, stripes }) => {
         // allow SELECT_MODULE handlers to intervene
         const handlerComponents = invokeEventHandlers(events.SELECT_MODULE, moduleStripes, modules.handler, data);
         if (handlerComponents.length) {
-          return handlerComponents.map(Handler => (<Handler stripes={propsStripes} data={data} />));
+          return handlerComponents.map((Handler) => (<Handler key={Handler.module.module} stripes={propsStripes} data={data} />));
         }
 
         return (
