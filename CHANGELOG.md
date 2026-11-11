@@ -1,6 +1,7 @@
 # Change history for stripes-core
 
-## IN PROGRESS
+## [11.1.8](https://github.com/folio-org/stripes-core/tree/v11.1.8) (2026-11-11)
+[Full Changelog](https://github.com/folio-org/stripes-core/compare/v11.1.7...v11.1.8)
 
 * Restore path after session timeout. Refs STCOR-1108.
 
