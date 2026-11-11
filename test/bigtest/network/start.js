@@ -19,19 +19,6 @@ const importMirageServer = () => {
   return MirageJsServer;
 };
 
-const importBigTestMirageServer = () => {
-  if (!BigTestMirageServer) {
-    const { default: Server } = require('@bigtest/mirage');
-    require('./force-fetch-polyfill');
-    require('./patch-fake-xml-http-request');
-
-    BigTestMirageServer = Server;
-  }
-
-  return BigTestMirageServer;
-};
-
-
 if (environment !== 'production') {
   const { default: coreModules } = require('./index');
   const createServer = (Server, options, configName) => {
@@ -59,7 +46,6 @@ if (environment !== 'production') {
     } = coreModules;
 
     const {
-      serverType,
       scenarios = {},
       factories = {},
       fixtures = {},
@@ -69,9 +55,7 @@ if (environment !== 'production') {
     // server implementation will be used.
     // The BigTest mirage implementation is set as a default
     // for backward compatibility.
-    const server = (serverType === 'miragejs') ?
-      createServer(importMirageServer(), options, 'routes') :
-      createServer(importBigTestMirageServer(), options, 'baseConfig');
+    const server = createServer(importMirageServer(), options, 'routes');
 
     // mirage conditionally includes factories, we want to include
     // all of them unconditionally
