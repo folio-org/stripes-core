@@ -24,18 +24,17 @@ class ModuleTranslator extends React.Component {
     };
   }
 
-  async componentDidMount() {
-    try {
-      const { stripes } = this.props;
-      const moduleData = await getModules(stripes.config);
+  componentDidMount() {
+    const { stripes } = this.props;
+    getModules(stripes.config).then(moduleData => {
       const modules = this.translateModules(moduleData);
-
       // state is set after awaiting the fetched modules, not synchronously on mount
       // eslint-disable-next-line react/no-did-mount-set-state
       this.setState({ modules });
-    } catch (error) {
+    })
+    .catch(error => {
       console.error('Failed to load modules:', error); // eslint-disable-line no-console
-    }
+    });
   }
 
   translateModules = (originalModules) => {
@@ -44,6 +43,7 @@ class ModuleTranslator extends React.Component {
       plugin: (originalModules.plugin || []).map(this.translateModule),
       settings: (originalModules.settings || []).map(this.translateModule),
       handler: (originalModules.handler || []).map(this.translateModule),
+      myprofile: (originalModules.myprofile || []).map(this.translateModule),
     };
   }
 
