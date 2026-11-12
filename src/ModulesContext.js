@@ -3,6 +3,7 @@ import React, { useContext } from 'react';
 export const modulesInitialState = {
   app: [],
   handler: [],
+  myprofile: [],
   plugin: [],
   settings: [],
 };

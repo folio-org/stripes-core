@@ -63,6 +63,7 @@ const mockConfigModules = {
   plugin: [],
   settings: [],
   handler: [],
+  myprofile: [],
 };
 
 describe('EntitlementLoader', () => {

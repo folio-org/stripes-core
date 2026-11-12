@@ -24,27 +24,31 @@ class ModuleTranslator extends React.Component {
     };
   }
 
-  async componentDidMount() {
-    try {
-      const { stripes } = this.props;
-      const moduleData = await getModules(stripes.config);
+  componentDidMount() {
+    const { stripes } = this.props;
+    getModules(stripes.config).then(moduleData => {
       const modules = this.translateModules(moduleData);
-
       // state is set after awaiting the fetched modules, not synchronously on mount
       // eslint-disable-next-line react/no-did-mount-set-state
       this.setState({ modules });
-    } catch (error) {
+    })
+    .catch(error => {
       console.error('Failed to load modules:', error); // eslint-disable-line no-console
-    }
+    });
   }
 
+  /**
+   * iterate over modulesInitialState and translate the modules names. 
+   * The keys in modulesInitialState are the different actsAs types. The outer
+   * map iterates over those keys, plucking the corresponing values out of the
+   * newly-loaded module data after cDM runs getModules(). The inner map passes
+   * each package in that list of types through `translateModule()`, adding the
+   * `displayName` key to its translations.
+   */
   translateModules = (originalModules) => {
-    return {
-      app: (originalModules.app || []).map(this.translateModule),
-      plugin: (originalModules.plugin || []).map(this.translateModule),
-      settings: (originalModules.settings || []).map(this.translateModule),
-      handler: (originalModules.handler || []).map(this.translateModule),
-    };
+    return Object.fromEntries(
+      Object.keys(modulesInitialState).map(k => [k, (originalModules[k] || []).map(this.translateModule)])
+    );
   }
 
   translateModule = (module) => {
