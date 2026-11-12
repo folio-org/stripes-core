@@ -21,8 +21,8 @@
     "start": "stripes serve",
     "stylelint": "stylelint \"src/**/*.css\"",
     "test": "yarn run test:jest && yarn run test:bigtest ",
-    "test:bigtest": "stripes test karma",
-    "test:bt-dev": "stripes test karma --watch",
+    "test:bigtest": "stripes test browser",
+    "test:bt-dev": "stripes test browser --watch",
     "test:jest": "stripes-jest --ci --coverage --colors"
   },
   "stripes": {
@@ -91,7 +91,7 @@
     "@bigtest/convergence": "^0.10.0",
     "@folio/eslint-config-stripes": "^10.0.0",
     "@folio/jest-config-stripes": "^5.0.0",
-    "@folio/stripes-cli": "^6.0.0",
+    "@folio/stripes-cli": "folio-org/stripes-cli#karma-to-playwright",
     "@folio/stripes-components": "^13.0.0",
     "@folio/stripes-connect": "^10.0.0",
     "@folio/stripes-logger": "^1.0.0",
