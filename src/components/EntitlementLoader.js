@@ -40,10 +40,10 @@ const handleRemoteModuleError = (stripes, errorMsg, sendMessage, calloutMessage)
  *
  * @param {object} stripes
  * @param {array} remotes
- * @returns {app: [], plugin: [], settings: [], handler: []}
+ * @returns {app: [], plugin: [], settings: [], handler: [], myprofile: []}
  */
 export const preloadModules = async (stripes, remotes) => {
-  const modules = { app: [], plugin: [], settings: [], handler: [] };
+  const modules = Object.fromEntries(Object.keys(modulesInitialState).map(k => [k, []]));
 
   const loaderArray = [];
   remotes.forEach(remote => {
