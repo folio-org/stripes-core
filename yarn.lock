@@ -1897,7 +1897,7 @@
 
 "@folio/stripes-cli@folio-org/stripes-cli#karma-to-playwright":
   version "6.0.0"
-  resolved "https://codeload.github.com/folio-org/stripes-cli/tar.gz/40fb01a0220214d4976a223b6035866c23f99c3a"
+  resolved "https://codeload.github.com/folio-org/stripes-cli/tar.gz/a92a68daf78e8c9877b61da5dac841c87273043a"
   dependencies:
     "@folio/stripes-webpack" "^8.0.0"
     "@formatjs/cli" "^6.1.3"
@@ -8466,10 +8466,15 @@ got@^11.8.2:
     p-cancelable "^2.0.0"
     responselike "^2.0.0"
 
-graceful-fs@^4.1.11, graceful-fs@^4.1.15, graceful-fs@^4.1.2, graceful-fs@^4.1.6, graceful-fs@^4.2.0, graceful-fs@^4.2.11, graceful-fs@^4.2.4, graceful-fs@^4.2.6:
+graceful-fs@^4.1.11, graceful-fs@^4.1.2, graceful-fs@^4.1.6, graceful-fs@^4.2.0, graceful-fs@^4.2.11, graceful-fs@^4.2.4, graceful-fs@^4.2.6:
   version "4.2.11"
   resolved "https://registry.npmjs.org/graceful-fs/-/graceful-fs-4.2.11.tgz"
   integrity sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==
+
+graceful-fs@^4.1.15:
+  version "4.2.12"
+  resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.12.tgz#7f6162dee07bc600281cea1b038e5f7cf215a6c2"
+  integrity sha512-iuyGF2E4oafQfPsRrG2wtY2ILupMhvtdrhzrxB+0VcjsPpSPttpfYdjnGFGsTi5MaJFjI1jOKHPQ6UTbTj9TAw==
 
 graphql-tag@^2.12.6:
   version "2.12.7"
