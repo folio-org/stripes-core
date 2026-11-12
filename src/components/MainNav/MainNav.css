@@ -3,8 +3,8 @@
 :root {
   --main-nav-min-height-desktop: 56px;
   --main-nav-min-height-mobile: 48px;
-  --main-nav-border-bottom-color: rgba(0 0 0 / 90%);
-  --main-nav-background-color: rgba(0 0 0 / 80%);
+  --main-nav-border-bottom-color: rgb(0 0 0 / 90%);
+  --main-nav-background-color: rgb(0 0 0 / 80%);
   --main-nav-text-color: #fff;
 }
 
