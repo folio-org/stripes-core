@@ -50,8 +50,10 @@ const Pluggable = (props) => {
     ));
   }
 
-  // Display null when no plugins are available to avoid rendering BadRequestScreen
-  if (!props.children || !plugins.length) return null;
+  // No plugin of the requested type is available: render the fallback
+  // children, if any. This must not depend on whether *other* plugins are
+  // present in the bundle (STCOR-1116).
+  if (!props.children) return null;
   if (props.children.length) {
     // eslint-disable-next-line no-console
     console.error(`<Pluggable type="${props.type}"> has ${props.children.length} children, can only return one`);

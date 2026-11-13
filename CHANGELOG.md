@@ -34,6 +34,7 @@
 * Restore path after session timeout. Refs STCOR-1108.
 * Lint. Taste it again for the first time. Thanks, oxlint! Refs STCOR-1103.
 * Finish purging `@bigtest/mirage`. Refs STCOR-1111.
+* `<Pluggable>` renders its fallback children even when the bundle contains no plugins at all. Refs STCOR-1116.
 
 ## [11.1.1](https://github.com/folio-org/stripes-core/tree/v11.1.1) (2026-04-20)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v11.1.0...v11.1.1)
