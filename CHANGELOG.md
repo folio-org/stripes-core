@@ -34,6 +34,7 @@
 * Restore path after session timeout. Refs STCOR-1108.
 * Lint. Taste it again for the first time. Thanks, oxlint! Refs STCOR-1103.
 * Finish purging `@bigtest/mirage`. Refs STCOR-1111.
+* Announce the "email has been sent" status message and spam-folder caution on Forgot username/password pages to screen readers. Refs STCOR-1090.
 
 ## [11.1.1](https://github.com/folio-org/stripes-core/tree/v11.1.1) (2026-04-20)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v11.1.0...v11.1.1)
