@@ -61,7 +61,10 @@ const ForgotPasswordForm = ({ errors = [], onSubmit }) => {
                           bottom="xs"
                         >
                           <Col xs={8}>
-                            <FieldLabel htmlFor="input-email-or-phone">
+                            <FieldLabel
+                              htmlFor="input-email-or-phone"
+                              required
+                            >
                               {forgotPasswordPlaceholder}
                             </FieldLabel>
                           </Col>
