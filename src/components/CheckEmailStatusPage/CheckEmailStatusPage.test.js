@@ -1,6 +1,6 @@
 import { MemoryRouter } from 'react-router-dom';
 
-import { act, render } from '@folio/jest-config-stripes/testing-library/react';
+import { render } from '@folio/jest-config-stripes/testing-library/react';
 
 import CheckEmailStatusPage from './CheckEmailStatusPage';
 
@@ -18,41 +18,27 @@ const renderPage = (userEmail) => render(
 );
 
 describe('CheckEmailStatusPage', () => {
-  beforeEach(() => jest.useFakeTimers());
-  afterEach(() => jest.useRealTimers());
+  const getStatusMessage = () => document.querySelector('[data-test-p-notification]').parentElement;
 
-  const getRegion = () => document.querySelector('[data-test-live-region]');
-  const flushDelay = () => act(() => jest.runAllTimers());
-
-  it('renders an empty live region first, then fills it', () => {
+  it('moves focus to the container holding the notification and caution', () => {
     renderPage('user@example.com');
 
-    const region = getRegion();
-    expect(region).toBeEmptyDOMElement();
-
-    flushDelay();
-    expect(region).toHaveTextContent('stripes-core.label.sent.email');
-    expect(region).toHaveTextContent('stripes-core.label.caution.email');
+    const container = getStatusMessage();
+    expect(container).toHaveFocus();
+    expect(container).toHaveAttribute('tabindex', '-1');
+    expect(container).toHaveTextContent('stripes-core.label.sent.email');
+    expect(container).toHaveTextContent('stripes-core.label.caution.email');
   });
 
-  it('renders the notification and caution inside one polite live region', () => {
+  it('suppresses the focus outline on the container', () => {
     renderPage('user@example.com');
-    flushDelay();
 
-    const region = getRegion();
-    expect(region).toHaveAttribute('aria-live', 'polite');
-    // neither role=status (implies polite) nor aria-atomic (re-reads the region): either can double announcements
-    expect(region).not.toHaveAttribute('aria-atomic');
-    expect(document.querySelectorAll('[aria-live]')).toHaveLength(1);
-    expect(region).not.toHaveAttribute('role');
-    expect(region).toHaveTextContent('stripes-core.label.sent.email');
+    expect(getStatusMessage()).toHaveClass('statusMessage');
   });
 
   it('uses the generic message when the input is not an email', () => {
     renderPage('username');
-    flushDelay();
 
-    const region = getRegion();
-    expect(region).toHaveTextContent('stripes-core.label.your.email');
+    expect(getStatusMessage()).toHaveTextContent('stripes-core.label.your.email');
   });
 });
