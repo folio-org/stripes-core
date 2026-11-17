@@ -6,9 +6,8 @@ import CheckEmailStatusPage from './CheckEmailStatusPage';
 
 jest.mock('../OrganizationLogo/OrganizationLogo', () => () => <div>OrganizationLogo</div>);
 
-// the shared Headline mock drops props; forward them so aria attributes can be asserted.
 jest.mock('@folio/stripes-components', () => ({
-  Headline: ({ children, tag: Tag = 'div', size, weight, faded, ...rest }) => <Tag {...rest}>{children}</Tag>,
+  Headline: ({ children, tag: Tag = 'div', size: _size, weight: _weight, faded: _faded, ...rest }) => <Tag {...rest}>{children}</Tag>,
 }));
 
 const renderPage = (userEmail) => render(
