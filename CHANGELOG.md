@@ -36,6 +36,7 @@
 * Finish purging `@bigtest/mirage`. Refs STCOR-1111.
 * Add an asterisk for the Forgot username/password fields. Refs STCOR-1091.
 * `<Pluggable>` renders its fallback children even when the bundle contains no plugins at all. Refs STCOR-1116.
+* Resolve stylelint issues after its upgrade in STCOR-1112. Refs STCOR-1115.
 
 ## [11.1.1](https://github.com/folio-org/stripes-core/tree/v11.1.1) (2026-04-20)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v11.1.0...v11.1.1)
