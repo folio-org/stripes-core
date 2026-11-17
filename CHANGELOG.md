@@ -37,6 +37,7 @@
 * Add an asterisk for the Forgot username/password fields. Refs STCOR-1091.
 * `<Pluggable>` renders its fallback children even when the bundle contains no plugins at all. Refs STCOR-1116.
 * Resolve stylelint issues after its upgrade in STCOR-1112. Refs STCOR-1115.
+* Replace the deprecated `@folio/stripes-logger` with `categorical-logger`. Refs STCOR-562.
 
 ## [11.1.1](https://github.com/folio-org/stripes-core/tree/v11.1.1) (2026-04-20)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v11.1.0...v11.1.1)

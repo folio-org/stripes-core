@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import Logger from '@folio/stripes-logger';
+import Logger from 'categorical-logger';
 
 export default function configureLogger(config) {
   const categories = _.get(config, ['logCategories'], 'core,action,xhr');

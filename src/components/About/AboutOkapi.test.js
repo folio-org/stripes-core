@@ -63,7 +63,7 @@ describe('AboutOkapi', () => {
     expect(screen.getByText(/about.userInterface/)).toBeInTheDocument();
     expect(screen.getByText(/stripes-connect/)).toBeInTheDocument();
     expect(screen.getByText(/stripes-components/)).toBeInTheDocument();
-    expect(screen.getByText(/stripes-logger/)).toBeInTheDocument();
+    expect(screen.getByText(/categorical-logger/)).toBeInTheDocument();
 
     expect(screen.getByText(/about.okapiServices/)).toBeInTheDocument();
     expect(screen.getByText(/about.version/)).toBeInTheDocument();
