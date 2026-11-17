@@ -80,8 +80,11 @@ jest.mock('@folio/stripes-components', () => ({
       <span>{value || children}</span>
     </>
   )),
-  Label: jest.fn(({ children, ...rest }) => (
-    <span {...rest}>{children}</span>
+  Label: jest.fn(({ children, htmlFor, required, readOnly, tagName: _tagName, ...rest }) => (
+    <label htmlFor={htmlFor} {...rest}>
+      {children}
+      {required && <span>*</span>}
+    </label>
   )),
   List: jest.fn(({ items, itemFormatter = (item, i) => (<li key={i}>{item}</li>) }) => (
     <ul>
