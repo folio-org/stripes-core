@@ -62,7 +62,10 @@ const ForgotUserNameForm = ({ errors = [], isValid, onSubmit }) => {
                           bottom="xs"
                         >
                           <Col xs={6}>
-                            <FieldLabel htmlFor="input-email-or-phone">
+                            <FieldLabel
+                              htmlFor="input-email-or-phone"
+                              required
+                            >
                               {forgotUsernamePlaceholder}
                             </FieldLabel>
                           </Col>
