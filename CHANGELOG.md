@@ -39,6 +39,7 @@
 * Resolve stylelint issues after its upgrade in STCOR-1112. Refs STCOR-1115.
 * Replace the deprecated `@folio/stripes-logger` with `categorical-logger`. Refs STCOR-562.
 * Announce the "email has been sent" status message and spam-folder caution on Forgot username/password pages to screen readers. Refs STCOR-1090.
+* Support `myprofile` as an `actsAs` module-type. Refs STCOR-1114.
 
 ## [11.1.1](https://github.com/folio-org/stripes-core/tree/v11.1.1) (2026-04-20)
 [Full Changelog](https://github.com/folio-org/stripes-core/compare/v11.1.0...v11.1.1)
