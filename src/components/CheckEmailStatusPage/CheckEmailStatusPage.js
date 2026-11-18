@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { withRouter } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
@@ -19,6 +19,10 @@ const CheckEmailStatusPage = (props) => {
       },
     },
   } = props;
+
+  const focusOnMount = useCallback((node) => {
+    node?.focus();
+  }, []);
 
   const isEmail = validateEmail(userEmail);
   const labelNamespace = 'stripes-core.label';
@@ -43,27 +47,33 @@ const CheckEmailStatusPage = (props) => {
         >
           <FormattedMessage id={`${labelNamespace}.check.email`} />
         </Headline>
-        <Headline
-          size="x-large"
-          tag="p"
-          weight="regular"
-          faded
-          data-test-p-notification
+        <div
+          className={styles.statusMessage}
+          tabIndex={-1}
+          ref={focusOnMount}
         >
-          <FormattedMessage
-            id={notificationText}
-            values={userEmailMessage}
-          />
-        </Headline>
-        <Headline
-          size="x-large"
-          tag="p"
-          weight="regular"
-          faded
-          data-test-p-caution
-        >
-          <FormattedMessage id={`${labelNamespace}.caution.email`} />
-        </Headline>
+          <Headline
+            size="x-large"
+            tag="p"
+            weight="regular"
+            faded
+            data-test-p-notification
+          >
+            <FormattedMessage
+              id={notificationText}
+              values={userEmailMessage}
+            />
+          </Headline>
+          <Headline
+            size="x-large"
+            tag="p"
+            weight="regular"
+            faded
+            data-test-p-caution
+          >
+            <FormattedMessage id={`${labelNamespace}.caution.email`} />
+          </Headline>
+        </div>
       </div>
     </div>
   );
