@@ -2,7 +2,7 @@ import _ from 'lodash';
 import { FormattedMessage } from 'react-intl';
 import stripesConnect from '@folio/stripes-connect/package';
 import stripesComponents from '@folio/stripes-components/package';
-import stripesLogger from '@folio/stripes-logger/package';
+import stripesLogger from 'categorical-logger/package';
 
 import {
   Headline,
@@ -29,8 +29,8 @@ const AboutStripes = () => {
       value: `stripes-components ${stripesComponents.version}`,
     },
     {
-      key: 'stripes-logger',
-      value: `stripes-logger ${stripesLogger.version}`,
+      key: 'categorical-logger',
+      value: `categorical-logger ${stripesLogger.version}`,
     },
   ];
 
