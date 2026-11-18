@@ -35,6 +35,9 @@
 * Lint. Taste it again for the first time. Thanks, oxlint! Refs STCOR-1103.
 * Finish purging `@bigtest/mirage`. Refs STCOR-1111.
 * Add an asterisk for the Forgot username/password fields. Refs STCOR-1091.
+* `<Pluggable>` renders its fallback children even when the bundle contains no plugins at all. Refs STCOR-1116.
+* Resolve stylelint issues after its upgrade in STCOR-1112. Refs STCOR-1115.
+* Replace the deprecated `@folio/stripes-logger` with `categorical-logger`. Refs STCOR-562.
 * Announce the "email has been sent" status message and spam-folder caution on Forgot username/password pages to screen readers. Refs STCOR-1090.
 
 ## [11.1.1](https://github.com/folio-org/stripes-core/tree/v11.1.1) (2026-04-20)
