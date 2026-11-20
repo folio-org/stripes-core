@@ -16,8 +16,6 @@ export const MainNavButtons = () => {
 
   return (
     <div className={css.mainNavButtons}>
-      <Pluggable type="notifications" />
-
       <NavButton
         aria-label={intl.formatMessage({ id: 'stripes-core.help' })}
         data-test-item-help-button
@@ -29,6 +27,8 @@ export const MainNavButtons = () => {
         id="helpButton"
         target="_blank"
       />
+
+      <Pluggable type="notifications" />
     </div>
   );
 };
